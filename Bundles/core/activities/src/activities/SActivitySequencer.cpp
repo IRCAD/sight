@@ -54,7 +54,7 @@ const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-SActivitySequencer::SActivitySequencer() throw() :
+SActivitySequencer::SActivitySequencer() noexcept :
     m_currentActivity(-1)
 {
     newSlot(s_NEXT_SLOT, &SActivitySequencer::next, this);
@@ -68,13 +68,13 @@ SActivitySequencer::SActivitySequencer() throw() :
 
 //------------------------------------------------------------------------------
 
-SActivitySequencer::~SActivitySequencer() throw()
+SActivitySequencer::~SActivitySequencer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SActivitySequencer::configuring() throw(fwTools::Failed)
+void SActivitySequencer::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
     BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v,  config.equal_range("activity") )
@@ -85,19 +85,19 @@ void SActivitySequencer::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivitySequencer::starting() throw(::fwTools::Failed)
+void SActivitySequencer::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SActivitySequencer::stopping() throw(::fwTools::Failed)
+void SActivitySequencer::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SActivitySequencer::updating() throw(::fwTools::Failed)
+void SActivitySequencer::updating()
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);

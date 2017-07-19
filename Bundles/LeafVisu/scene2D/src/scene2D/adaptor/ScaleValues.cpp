@@ -22,7 +22,7 @@ namespace scene2D
 namespace adaptor
 {
 
-ScaleValues::ScaleValues() throw() :
+ScaleValues::ScaleValues() noexcept :
     m_min(0.f),
     m_max(0.f),
     m_interval(10.),
@@ -36,13 +36,13 @@ ScaleValues::ScaleValues() throw() :
 
 //---------------------------------------------------------------------------------------------------------------
 
-ScaleValues::~ScaleValues() throw()
+ScaleValues::~ScaleValues() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ScaleValues::configuring() throw ( ::fwTools::Failed )
+void ScaleValues::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -183,7 +183,7 @@ void ScaleValues::buildValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doStart() throw ( ::fwTools::Failed )
+void ScaleValues::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -223,7 +223,7 @@ double ScaleValues::getEndVal()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doUpdate() throw ( ::fwTools::Failed )
+void ScaleValues::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -422,13 +422,13 @@ void ScaleValues::processInteraction( ::scene2D::data::Event::sptr _event)
 
 //----------------------------------------------------------------------------------------
 
-void ScaleValues::doSwap() throw ( ::fwTools::Failed )
+void ScaleValues::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doStop() throw ( ::fwTools::Failed )
+void ScaleValues::doStop()
 {
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);

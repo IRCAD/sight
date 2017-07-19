@@ -33,15 +33,15 @@ struct FWRUNTIME_CLASS_API Plugin : public IPlugin
      * @name    Overrides
      */
     //@{
-    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const throw();
-    FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) throw();
+    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const noexcept;
+    FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) noexcept;
     //@}
 
 
     protected:
 
         // Overrides
-        FWRUNTIME_API void setBundle( std::shared_ptr<Bundle> bundle) throw();
+        FWRUNTIME_API void setBundle( std::shared_ptr<Bundle> bundle) noexcept;
 
 
     private:

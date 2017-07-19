@@ -45,7 +45,7 @@ SActivityView::~SActivityView()
 
 //------------------------------------------------------------------------------
 
-void SActivityView::starting() throw(::fwTools::Failed)
+void SActivityView::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -78,7 +78,7 @@ void SActivityView::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityView::stopping() throw(::fwTools::Failed)
+void SActivityView::stopping()
 {
     if (m_configManager && m_configManager->isStarted())
     {
@@ -95,7 +95,7 @@ void SActivityView::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityView::updating() throw(::fwTools::Failed)
+void SActivityView::updating()
 {
 }
 

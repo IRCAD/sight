@@ -66,7 +66,7 @@ AppConfig::AppConfig(const ConfigType& config) :
 
 //------------------------------------------------------------------------------
 
-DynamicView::DynamicView() throw()
+DynamicView::DynamicView() noexcept
 {
     m_dynamicConfigStartStop = false;
 
@@ -75,13 +75,13 @@ DynamicView::DynamicView() throw()
 
 //------------------------------------------------------------------------------
 
-DynamicView::~DynamicView() throw()
+DynamicView::~DynamicView() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DynamicView::starting() throw(::fwTools::Failed)
+void DynamicView::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -114,7 +114,7 @@ void DynamicView::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DynamicView::stopping() throw(::fwTools::Failed)
+void DynamicView::stopping()
 {
     SLM_TRACE_FUNC();
     while(m_tabWidget->count())
@@ -129,7 +129,7 @@ void DynamicView::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DynamicView::configuring() throw(fwTools::Failed)
+void DynamicView::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
@@ -207,13 +207,13 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
 
 //------------------------------------------------------------------------------
 
-void DynamicView::updating() throw(::fwTools::Failed)
+void DynamicView::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DynamicView::swapping() throw(::fwTools::Failed)
+void DynamicView::swapping()
 {
 }
 

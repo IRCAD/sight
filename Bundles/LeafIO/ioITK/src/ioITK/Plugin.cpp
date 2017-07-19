@@ -18,17 +18,17 @@ namespace ioITK
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("ioITK::Plugin");
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     // force use of code in LIB itkInrImageIO ...
     typedef ::itk::InrImageIO::Self Dummy;
 }
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

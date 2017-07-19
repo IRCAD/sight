@@ -58,7 +58,7 @@ std::string DefaultDicomFilter::getDescription() const
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
     const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
-const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+const
 {
     DicomSeriesContainerType result;
 

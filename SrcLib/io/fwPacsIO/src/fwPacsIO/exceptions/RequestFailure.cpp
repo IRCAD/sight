@@ -18,7 +18,7 @@ RequestFailure::RequestFailure(const std::string& message) :
 
 // ----------------------------------------------------------------------------
 
-RequestFailure::~RequestFailure() throw()
+RequestFailure::~RequestFailure() noexcept
 {
 }
 

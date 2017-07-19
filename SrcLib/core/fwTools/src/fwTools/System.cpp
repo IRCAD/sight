@@ -69,7 +69,7 @@ static struct CleanZombies
 
 //------------------------------------------------------------------------------
 
-int System::getPID() throw()
+int System::getPID() noexcept
 {
     int pid = 0;
 #ifdef WIN32
@@ -83,7 +83,7 @@ int System::getPID() throw()
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path &System::getTempPath() throw()
+const ::boost::filesystem::path &System::getTempPath() noexcept
 {
     namespace fs = ::boost::filesystem;
     static fs::path sysTmp;
@@ -145,7 +145,7 @@ const ::boost::filesystem::path createUniqueFolder(const ::boost::filesystem::pa
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) throw()
+const ::boost::filesystem::path System::getTemporaryFolder(const std::string& subFolderPrefix) noexcept
 {
     namespace fs = ::boost::filesystem;
     static fs::path tmpDirPath;
@@ -185,7 +185,7 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
 
 //------------------------------------------------------------------------------
 
-bool System::isProcessRunning(int pid) throw()
+bool System::isProcessRunning(int pid) noexcept
 {
 #ifdef WIN32
     HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pid);
@@ -207,7 +207,7 @@ bool System::isProcessRunning(int pid) throw()
 
 //------------------------------------------------------------------------------
 
-int System::tempFolderPID(const ::boost::filesystem::path &dir) throw()
+int System::tempFolderPID(const ::boost::filesystem::path &dir) noexcept
 {
     namespace fs = ::boost::filesystem;
 
@@ -250,7 +250,7 @@ int System::tempFolderPID(const ::boost::filesystem::path &dir) throw()
 
 //------------------------------------------------------------------------------
 
-void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
+void System::cleanZombies(const ::boost::filesystem::path &dir) noexcept
 {
     namespace fs = ::boost::filesystem;
 

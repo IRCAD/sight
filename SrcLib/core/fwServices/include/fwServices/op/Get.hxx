@@ -17,7 +17,7 @@ namespace fwServices
 //------------------------------------------------------------------------------
 
 template<class SERVICE>
-SPTR(SERVICE) get( ::fwData::Object::sptr obj ) throw(fwTools::Failed )
+SPTR(SERVICE) get( ::fwData::Object::sptr obj )
 {
     auto services           = ::fwServices::OSR::getServices< SERVICE >( obj );
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname();

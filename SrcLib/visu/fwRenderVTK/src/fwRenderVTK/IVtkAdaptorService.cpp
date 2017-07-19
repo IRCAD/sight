@@ -22,7 +22,7 @@
 namespace fwRenderVTK
 {
 
-IVtkAdaptorService::IVtkAdaptorService() throw() :
+IVtkAdaptorService::IVtkAdaptorService() noexcept :
     m_comChannelPriority(0.5),
     m_vtkPipelineModified(true),
     m_rendererId("default"),
@@ -36,7 +36,7 @@ IVtkAdaptorService::IVtkAdaptorService() throw() :
 {
 }
 
-IVtkAdaptorService::~IVtkAdaptorService() throw()
+IVtkAdaptorService::~IVtkAdaptorService() noexcept
 {
     m_propCollection->Delete();
 }
@@ -51,7 +51,7 @@ void IVtkAdaptorService::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::configuring() throw(fwTools::Failed)
+void IVtkAdaptorService::configuring()
 {
     this->setPickerId( m_configuration->getAttributeValue( "picker"    ) );
     this->setRenderId( m_configuration->getAttributeValue( "renderer"  ) );
@@ -61,7 +61,7 @@ void IVtkAdaptorService::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::starting() throw(fwTools::Failed)
+void IVtkAdaptorService::starting()
 {
     /// Install observation
     if (m_autoConnect)
@@ -76,7 +76,7 @@ void IVtkAdaptorService::starting() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::stopping() throw(fwTools::Failed)
+void IVtkAdaptorService::stopping()
 {
     /// Stop observation
     m_connections.disconnect();
@@ -86,7 +86,7 @@ void IVtkAdaptorService::stopping() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::swapping() throw(fwTools::Failed)
+void IVtkAdaptorService::swapping()
 {
     m_connections.disconnect();
     if (m_autoConnect)
@@ -99,7 +99,7 @@ void IVtkAdaptorService::swapping() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::updating() throw(fwTools::Failed)
+void IVtkAdaptorService::updating()
 {
     doUpdate();
     requestRender();

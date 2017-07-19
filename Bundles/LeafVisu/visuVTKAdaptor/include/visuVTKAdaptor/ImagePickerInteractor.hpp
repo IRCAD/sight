@@ -35,9 +35,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImagePickerInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API ImagePickerInteractor() throw();
+    VISUVTKADAPTOR_API ImagePickerInteractor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ImagePickerInteractor() throw();
+    VISUVTKADAPTOR_API virtual ~ImagePickerInteractor() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -75,8 +75,8 @@ public:
 protected:
     friend class ImagePickerInteractorCallback;
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
     /**
      * @brief Configure the adaptor
@@ -101,9 +101,9 @@ protected:
      *   - MOUSE_WHEELBACKWARD
      *   - MOUSE_MOVE
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
 private:
     /**

@@ -17,13 +17,13 @@ struct Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Install a callback which print the backtrace on a SIGSEV and SIGUSR1 signal
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
 
     // Overrides
-    void stop() throw();
+    void stop() noexcept;
 
 };
 

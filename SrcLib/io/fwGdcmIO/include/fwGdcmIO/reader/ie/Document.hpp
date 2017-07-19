@@ -60,7 +60,7 @@ public:
     /**
      * @brief Read the Structured Report
      */
-    FWGDCMIO_API void readSR() throw (::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API void readSR();
 
 };
 

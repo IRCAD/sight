@@ -70,19 +70,19 @@ protected:
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
-    IODATA_API virtual void starting( ) throw(::fwTools::Failed);
+    IODATA_API virtual void starting( );
 
     /**
      * @brief Stopping method. This method is called by stop() from base service ( ::fwServices::IService )
      *
      * The stopping method is empty for this service.
      */
-    IODATA_API virtual void stopping( ) throw(::fwTools::Failed);
+    IODATA_API virtual void stopping( );
 
     /**
      * @brief Configuring method : calls implementation from `io::IWriter`
      */
-    IODATA_API virtual void configuring() throw(::fwTools::Failed);
+    IODATA_API virtual void configuring();
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -91,7 +91,7 @@ protected:
      * The transformation matrix is written with the writer ::fwDataIO::writer::TransformationMatrix3DWriter.
      * Notify writing.
      */
-    IODATA_API void updating() throw(::fwTools::Failed);
+    IODATA_API void updating();
 
     /**
      * @brief Info method.

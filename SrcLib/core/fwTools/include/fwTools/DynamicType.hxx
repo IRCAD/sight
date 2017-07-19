@@ -66,7 +66,7 @@ public:
 };
 
 template< class TYPE>
-void DynamicType::setType() throw(std::invalid_argument)
+void DynamicType::setType()
 {
     std::list< std::string>::const_iterator supportedTypesIter;
 
@@ -102,7 +102,7 @@ const std::string DynamicType::string()
 
 
 template<class NEWTYPE>
-void DynamicType::registerNewType(const std::string &newKey) throw(std::invalid_argument)
+void DynamicType::registerNewType(const std::string &newKey)
 {
     // ensure isMapping present and well defined
     // if prog trap here it is because is Mapping is not well defined !!!

@@ -59,7 +59,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::ShowHelpConte
 
 //------------------------------------------------------------------------------
 
-ShowHelpContents::ShowHelpContents( ) throw() :
+ShowHelpContents::ShowHelpContents( ) noexcept :
     m_bServiceIsConfigured(false),
     m_fsHelpPath("")
 {
@@ -67,7 +67,7 @@ ShowHelpContents::ShowHelpContents( ) throw() :
 
 //------------------------------------------------------------------------------
 
-ShowHelpContents::~ShowHelpContents() throw()
+ShowHelpContents::~ShowHelpContents() noexcept
 {
 }
 
@@ -80,7 +80,7 @@ void ShowHelpContents::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::configuring() throw(::fwTools::Failed)
+void ShowHelpContents::configuring()
 {
     /*
      * .qhp/.qch (source/binary) : Contains a table of contents,
@@ -101,7 +101,7 @@ void ShowHelpContents::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::updating() throw(::fwTools::Failed)
+void ShowHelpContents::updating()
 {
     SLM_TRACE_FUNC();
     SLM_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
@@ -141,14 +141,14 @@ void ShowHelpContents::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::starting() throw (::fwTools::Failed)
+void ShowHelpContents::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::stopping() throw (::fwTools::Failed)
+void ShowHelpContents::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

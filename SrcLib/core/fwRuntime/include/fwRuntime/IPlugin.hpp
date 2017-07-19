@@ -37,22 +37,22 @@ struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
     /**
      * @brief   Notifies the plugin about its start.
      */
-    virtual void start() throw(::fwRuntime::RuntimeException) = 0;
+    virtual void start() = 0;
 
     /**
      * @brief   Notifies the plugin about its initialisation.
      */
-    FWRUNTIME_API virtual void initialize() throw(::fwRuntime::RuntimeException);
+    FWRUNTIME_API virtual void initialize();
 
     /**
      * @brief   Notifies the plugin about its uninitialisation.
      */
-    FWRUNTIME_API virtual void uninitialize() throw(::fwRuntime::RuntimeException);
+    FWRUNTIME_API virtual void uninitialize();
 
     /**
      * @brief   Notifies the plugin about its stop.
      */
-    virtual void stop() throw() = 0;
+    virtual void stop() noexcept = 0;
 
 };
 

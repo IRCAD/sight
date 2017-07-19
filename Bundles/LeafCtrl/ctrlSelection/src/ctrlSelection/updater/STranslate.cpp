@@ -38,7 +38,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 //-----------------------------------------------------------------------------
 
-STranslate::STranslate() throw()
+STranslate::STranslate() noexcept
 {
     newSlot(s_ADD_OBJECTS_SLOT, &STranslate::addObjects, this);
     newSlot(s_CHANGE_OBJECTS_SLOT, &STranslate::changeObjects, this);
@@ -47,13 +47,13 @@ STranslate::STranslate() throw()
 
 //-----------------------------------------------------------------------------
 
-STranslate::~STranslate() throw()
+STranslate::~STranslate() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void STranslate::starting()  throw ( ::fwTools::Failed )
+void STranslate::starting()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
@@ -81,14 +81,14 @@ void STranslate::starting()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void STranslate::stopping()  throw ( ::fwTools::Failed )
+void STranslate::stopping()
 {
     m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
 
-void STranslate::configuring()  throw ( ::fwTools::Failed )
+void STranslate::configuring()
 {
     const ::fwServices::IService::ConfigType conf = this->getConfigTree().get_child("service");
 
@@ -127,13 +127,13 @@ void STranslate::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void STranslate::reconfiguring()  throw ( ::fwTools::Failed )
+void STranslate::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void STranslate::updating() throw ( ::fwTools::Failed )
+void STranslate::updating()
 {
 }
 

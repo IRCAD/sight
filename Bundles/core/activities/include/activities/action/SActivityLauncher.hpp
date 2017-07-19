@@ -117,10 +117,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SActivityLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SActivityLauncher() throw();
+    ACTIVITIES_API SActivityLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SActivityLauncher() throw();
+    ACTIVITIES_API virtual ~SActivityLauncher() noexcept;
 
     /**
      * @name Slot API
@@ -154,21 +154,21 @@ public:
 protected:
 
     ///This method launches the IAction::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Show activity selector.
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

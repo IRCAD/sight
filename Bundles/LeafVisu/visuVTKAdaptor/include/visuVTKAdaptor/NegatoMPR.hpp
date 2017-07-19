@@ -63,9 +63,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API NegatoMPR() throw();
+    VISUVTKADAPTOR_API NegatoMPR() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~NegatoMPR() throw();
+    VISUVTKADAPTOR_API virtual ~NegatoMPR() noexcept;
 
     typedef enum
     {
@@ -117,16 +117,16 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     /**
      * @brief Configures the service
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
     ::fwRenderVTK::IVtkAdaptorService::sptr addAdaptor(std::string adaptor, int axis = -1);
 

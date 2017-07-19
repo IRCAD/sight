@@ -28,15 +28,15 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SVTKMesher)(::opVTKMesh::IMesher) );
 
-    OPVTKMESH_API SVTKMesher() throw();
+    OPVTKMESH_API SVTKMesher() noexcept;
 
-    OPVTKMESH_API virtual ~SVTKMesher() throw();
+    OPVTKMESH_API virtual ~SVTKMesher() noexcept;
 
 protected:
 
-    OPVTKMESH_API virtual void starting() throw ( ::fwTools::Failed );
+    OPVTKMESH_API virtual void starting();
 
-    OPVTKMESH_API virtual void stopping() throw ( ::fwTools::Failed );
+    OPVTKMESH_API virtual void stopping();
 
     /**
      * @brief Declare the configuration to define percent of reduction, image source and ModelSeries destination.
@@ -56,9 +56,9 @@ protected:
      * - \b image: key of the source image into the composite
      * - \b modelSeries: key of the target ModelSeries into the composite
      */
-    OPVTKMESH_API virtual void configuring() throw ( ::fwTools::Failed );
+    OPVTKMESH_API virtual void configuring();
 
-    OPVTKMESH_API virtual void updating() throw ( ::fwTools::Failed );
+    OPVTKMESH_API virtual void updating();
 
 private:
 

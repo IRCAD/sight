@@ -21,45 +21,45 @@ namespace adaptor
 
 //-----------------------------------------------------------------------------
 
-ViewportInteractor::ViewportInteractor() throw() :
+ViewportInteractor::ViewportInteractor() noexcept :
     m_viewportIsTranslated(false)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ViewportInteractor::~ViewportInteractor() throw()
+ViewportInteractor::~ViewportInteractor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::configuring() throw( ::fwTools::Failed)
+void ViewportInteractor::configuring()
 {
     this->IAdaptor::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doStart() throw( ::fwTools::Failed)
+void ViewportInteractor::doStart()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doStop() throw( ::fwTools::Failed)
+void ViewportInteractor::doStop()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doUpdate() throw( ::fwTools::Failed)
+void ViewportInteractor::doUpdate()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doSwap() throw( ::fwTools::Failed)
+void ViewportInteractor::doSwap()
 {
 }
 

@@ -88,7 +88,7 @@ protected:
      * @return Global raw buffer of the image.
      */
     char* readImageBuffer(const std::vector<unsigned int>& dimensions, unsigned short bitsAllocated,
-                          unsigned short newBitsAllocated, bool performRescale) throw(::fwGdcmIO::exception::Failed);
+                          unsigned short newBitsAllocated, bool performRescale);
 
     /**
      * @brief Correct image buffer according to image orientation

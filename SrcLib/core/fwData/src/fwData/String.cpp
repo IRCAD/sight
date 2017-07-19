@@ -17,13 +17,13 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-String::String(::fwData::Object::Key key ) throw()
+String::String(::fwData::Object::Key key ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-String::~String() throw()
+String::~String() noexcept
 {
 }
 

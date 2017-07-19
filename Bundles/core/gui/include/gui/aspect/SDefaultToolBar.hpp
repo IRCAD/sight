@@ -30,10 +30,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SDefaultToolBar)(::fwGui::IToolBarSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultToolBar() throw();
+    GUI_API SDefaultToolBar() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultToolBar() throw();
+    GUI_API virtual ~SDefaultToolBar() noexcept;
 
 protected:
 
@@ -49,18 +49,18 @@ protected:
      * @brief Create the toolBar
      * @see ::fwGui::IToolBarSrv::create()
      */
-    GUI_API virtual void starting() throw( ::fwTools::Failed );
+    GUI_API virtual void starting();
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
      * @see ::fwGui::IToolBarSrv::destroy()
      */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed );
+    GUI_API virtual void stopping();
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed);
+    GUI_API virtual void updating();
 
     /**
      * @brief Configuring method allows to create a toolBar with several actions.
@@ -105,7 +105,7 @@ protected:
      *
      *  @see ::fwGui::IToolBarSrv::initialize(), ::fwGui::layoutManager::IToolBarLayoutManager::initialize()
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed );
+    GUI_API virtual void configuring();
 
     /**
      * @brief This method is used to give information about the service. Do nothing.

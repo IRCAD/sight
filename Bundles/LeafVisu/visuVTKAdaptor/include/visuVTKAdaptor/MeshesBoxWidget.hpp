@@ -41,9 +41,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (MeshesBoxWidget)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API MeshesBoxWidget() throw();
+    VISUVTKADAPTOR_API MeshesBoxWidget() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~MeshesBoxWidget() throw();
+    VISUVTKADAPTOR_API virtual ~MeshesBoxWidget() noexcept;
 
     /// Updates meshes transformation matrix from vtk box widget transform
     void updateFromVtk();
@@ -60,11 +60,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doStop();
 
     /// Updates vtk transformation from data meshes
     void updateMeshTransform();

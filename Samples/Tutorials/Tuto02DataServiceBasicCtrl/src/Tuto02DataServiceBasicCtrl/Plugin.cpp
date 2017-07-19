@@ -23,25 +23,25 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() throw()
+Plugin::Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::start() throw( ::fwRuntime::RuntimeException )
+void Plugin::start()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
+void Plugin::initialize()
 {
     m_image = ::fwData::Image::New();
 
@@ -88,13 +88,13 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
 //------------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::uninitialize() throw()
+void Plugin::uninitialize() noexcept
 {
     m_renderSrv->stop();
     m_readerSrv->stop();

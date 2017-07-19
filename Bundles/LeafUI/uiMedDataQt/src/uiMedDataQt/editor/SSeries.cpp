@@ -69,13 +69,13 @@ SSeries::SSeries()
 
 //------------------------------------------------------------------------------
 
-SSeries::~SSeries() throw()
+SSeries::~SSeries() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeries::starting() throw(::fwTools::Failed)
+void SSeries::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -116,14 +116,14 @@ void SSeries::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeries::stopping() throw(::fwTools::Failed)
+void SSeries::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeries::updating() throw(::fwTools::Failed)
+void SSeries::updating()
 {
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
     SLM_ASSERT("Failed to retrieve vector", vector);
@@ -233,7 +233,7 @@ void SSeries::onExportClicked()
 
 //------------------------------------------------------------------------------
 
-void SSeries::configuring() throw(::fwTools::Failed)
+void SSeries::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 

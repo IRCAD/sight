@@ -34,13 +34,13 @@ fwServicesRegisterMacro( ::io::IWriter, ::ioITK::SImageSeriesWriter, ::fwMedData
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::SImageSeriesWriter() throw()
+SImageSeriesWriter::SImageSeriesWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::~SImageSeriesWriter() throw()
+SImageSeriesWriter::~SImageSeriesWriter() noexcept
 {
 }
 
@@ -53,7 +53,7 @@ SImageSeriesWriter::~SImageSeriesWriter() throw()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::configuring() throw(::fwTools::Failed)
+void SImageSeriesWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -87,14 +87,14 @@ void SImageSeriesWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::starting() throw(::fwTools::Failed)
+void SImageSeriesWriter::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
+void SImageSeriesWriter::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -108,7 +108,7 @@ void SImageSeriesWriter::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::updating() throw(::fwTools::Failed)
+void SImageSeriesWriter::updating()
 {
     SLM_TRACE_FUNC();
 

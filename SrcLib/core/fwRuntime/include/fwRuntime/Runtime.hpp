@@ -87,7 +87,7 @@ struct Runtime
      * @remark      The given bundle state will be altered according to the current configuration rules.
      * @param[in]   bundle  a shared pointer to the bundle instance to add
      */
-    FWRUNTIME_API void addBundle( std::shared_ptr< Bundle > bundle ) throw( RuntimeException );
+    FWRUNTIME_API void addBundle( std::shared_ptr< Bundle > bundle );
 
     /**
      * @brief       Unregister a bundle instance to the runtime system.
@@ -101,7 +101,7 @@ struct Runtime
      *
      * @param[in]   repository  a path that may containing bundles
      */
-    FWRUNTIME_API void addBundles( const ::boost::filesystem::path& repository ) throw( RuntimeException );
+    FWRUNTIME_API void addBundles( const ::boost::filesystem::path& repository );
 
     /**
      * @brief   Retrieves the iterator on the begining of the bundle collection.
@@ -152,7 +152,7 @@ struct Runtime
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    FWRUNTIME_API void addExecutableFactory( std::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException);
+    FWRUNTIME_API void addExecutableFactory( std::shared_ptr< ExecutableFactory > factory );
 
     /**
      * @brief       Unregister a new executable factory instance to the runtime system.
@@ -173,7 +173,7 @@ struct Runtime
      *
      * @return      a pointer to the created executable instance
      */
-    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type ) throw( RuntimeException );
+    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type );
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
@@ -191,8 +191,7 @@ struct Runtime
      * @return  a pointer to the created executable instance
      */
     FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type,
-                                                         std::shared_ptr< ConfigurationElement > configurationElement )
-    throw( RuntimeException );
+                                                         std::shared_ptr< ConfigurationElement > configurationElement );
 
     /**
      * @brief       Retrieves the executable factory for the given identifier.
@@ -225,7 +224,7 @@ struct Runtime
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    FWRUNTIME_API void addExtension( std::shared_ptr<Extension> extension) throw(RuntimeException);
+    FWRUNTIME_API void addExtension( std::shared_ptr<Extension> extension);
 
     /**
      * @brief       Unregister a new extension.
@@ -268,7 +267,7 @@ struct Runtime
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    FWRUNTIME_API void addExtensionPoint( std::shared_ptr<ExtensionPoint> point) throw(RuntimeException);
+    FWRUNTIME_API void addExtensionPoint( std::shared_ptr<ExtensionPoint> point);
 
     /**
      * @brief       Unregister a new extension point.

@@ -18,7 +18,7 @@ namespace fwTest
 class FWTEST_CLASS_API Data
 {
 public:
-    FWTEST_API static boost::filesystem::path dir() throw(fwTest::Exception);
+    FWTEST_API static boost::filesystem::path dir();
 
 
     static const std::string s_TEST_DATA_DIR_ENV_VAR;

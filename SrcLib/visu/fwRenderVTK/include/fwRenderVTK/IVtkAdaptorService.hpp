@@ -108,12 +108,12 @@ protected:
     /**
      * @brief   constructor
      */
-    FWRENDERVTK_API IVtkAdaptorService() throw();
+    FWRENDERVTK_API IVtkAdaptorService() noexcept;
 
     /**
      * @brief   destructor
      */
-    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw();
+    FWRENDERVTK_API virtual ~IVtkAdaptorService() noexcept;
 
     /**
      * @name    Standard service methods
@@ -121,11 +121,11 @@ protected:
     //@{
     /// Overrides
     FWRENDERVTK_API virtual void info(std::ostream& _sstream );
-    FWRENDERVTK_API void configuring() throw(fwTools::Failed);
-    FWRENDERVTK_API void starting() throw(fwTools::Failed);
-    FWRENDERVTK_API void stopping() throw(fwTools::Failed);
-    FWRENDERVTK_API void swapping() throw(fwTools::Failed);
-    FWRENDERVTK_API void updating() throw(fwTools::Failed);
+    FWRENDERVTK_API void configuring();
+    FWRENDERVTK_API void starting();
+    FWRENDERVTK_API void stopping();
+    FWRENDERVTK_API void swapping();
+    FWRENDERVTK_API void updating();
     //@}
 
 

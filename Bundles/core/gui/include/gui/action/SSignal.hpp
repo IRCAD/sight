@@ -58,12 +58,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SSignal() throw();
+    GUI_API SSignal() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SSignal() throw();
+    GUI_API virtual ~SSignal() noexcept;
 
 protected:
 
@@ -75,16 +75,16 @@ protected:
     /**
      * @brief This method emit a signal.
      */
-    GUI_API void updating() throw (fwTools::Failed);
+    GUI_API void updating();
 
     /**
      * @brief Configures the service
      */
-    GUI_API void configuring() throw( ::fwTools::Failed );
+    GUI_API void configuring();
 
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
     /**
      * @brief setObjects slot's method

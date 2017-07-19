@@ -22,9 +22,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Resection)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Resection() throw();
+    VISUVTKADAPTOR_API Resection() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Resection() throw();
+    VISUVTKADAPTOR_API virtual ~Resection() noexcept;
 
     void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
@@ -47,12 +47,12 @@ public:
     VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
     // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doStop();
 
 private:
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanes;

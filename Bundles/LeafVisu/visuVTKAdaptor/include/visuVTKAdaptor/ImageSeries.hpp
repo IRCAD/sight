@@ -31,9 +31,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImageSeries)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API ImageSeries() throw();
+    VISUVTKADAPTOR_API ImageSeries() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ImageSeries() throw();
+    VISUVTKADAPTOR_API virtual ~ImageSeries() noexcept;
 
     void setAllowAlphaInTF(bool allow)
     {
@@ -51,19 +51,19 @@ public:
 protected:
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
 
     /// Configure the adaptor.
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doSwap();
 
     /// Creates and starts image adaptor. Redraw all (stop then restart sub services).
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     /// Stops and unregister image subservice.
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStop();
 
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
     void setSliceMode(NegatoMPR::SliceMode sliceMode);

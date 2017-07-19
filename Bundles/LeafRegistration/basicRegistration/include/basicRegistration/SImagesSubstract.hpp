@@ -28,25 +28,25 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SImagesSubstract)(::gui::editor::IEditor) );
 
-    BASICREGISTRATION_API SImagesSubstract() throw();
+    BASICREGISTRATION_API SImagesSubstract() noexcept;
 
-    BASICREGISTRATION_API virtual ~SImagesSubstract() throw();
+    BASICREGISTRATION_API virtual ~SImagesSubstract() noexcept;
 
 protected:
 
-    BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void configuring();
 
     /// Overrides
-    BASICREGISTRATION_API virtual void starting() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void starting();
 
     /// Overrides
-    BASICREGISTRATION_API virtual void stopping() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void stopping();
 
     /// Overrides
-    BASICREGISTRATION_API virtual void updating() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void updating();
 
     /// Overrides
-    BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void swapping();
 
 
 

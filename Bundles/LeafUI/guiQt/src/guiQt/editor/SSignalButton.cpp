@@ -43,7 +43,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SSignalButton,
 
 //-----------------------------------------------------------------------------
 
-SSignalButton::SSignalButton() throw() :
+SSignalButton::SSignalButton() noexcept :
     m_checkable(false),
     m_checkAtStart(false),
     m_iconWidth(0),
@@ -57,13 +57,13 @@ SSignalButton::SSignalButton() throw() :
 
 //-----------------------------------------------------------------------------
 
-SSignalButton::~SSignalButton() throw()
+SSignalButton::~SSignalButton() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::starting() throw(::fwTools::Failed)
+void SSignalButton::starting()
 {
     this->create();
 
@@ -108,14 +108,14 @@ void SSignalButton::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::stopping() throw(::fwTools::Failed)
+void SSignalButton::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::configuring()  throw ( ::fwTools::Failed )
+void SSignalButton::configuring()
 {
     this->initialize();
 
@@ -224,7 +224,7 @@ void SSignalButton::setChecked(bool checked)
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::updating() throw ( ::fwTools::Failed )
+void SSignalButton::updating()
 {
 
 }

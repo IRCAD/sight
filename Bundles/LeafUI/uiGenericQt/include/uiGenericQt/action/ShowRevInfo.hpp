@@ -43,9 +43,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ShowRevInfo)( ::fwGui::IActionSrv) );
 
-    UIGENERICQT_API ShowRevInfo() throw();
+    UIGENERICQT_API ShowRevInfo() noexcept;
 
-    UIGENERICQT_API virtual ~ShowRevInfo() throw();
+    UIGENERICQT_API virtual ~ShowRevInfo() noexcept;
 
 protected:
 
@@ -55,16 +55,16 @@ protected:
        <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowRevInfo" autoConnect="no" />
        @endcode
      */
-    UIGENERICQT_API void configuring() throw( ::fwTools::Failed );
+    UIGENERICQT_API void configuring();
 
     /// Starts action
-    UIGENERICQT_API void starting() throw (::fwTools::Failed);
+    UIGENERICQT_API void starting();
 
     /// Show the frame
-    UIGENERICQT_API void updating() throw (::fwTools::Failed);
+    UIGENERICQT_API void updating();
 
     /// Stops action
-    UIGENERICQT_API void stopping() throw (::fwTools::Failed);
+    UIGENERICQT_API void stopping();
 
     UIGENERICQT_API void info(std::ostream &_sstream );
 

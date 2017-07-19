@@ -32,14 +32,14 @@ struct Win32 : public Native
      *
      * @param[in]   modulePath      a path to the module to manage
      */
-    Win32( const boost::filesystem::path & modulePath ) throw();
+    Win32( const boost::filesystem::path & modulePath ) noexcept;
 
     /**
      * @brief   Tells if the module is loaded.
      *
      * @return  true or false
      */
-    bool isLoaded() const throw();
+    bool isLoaded() const noexcept;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -48,17 +48,17 @@ struct Win32 : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void * getSymbol(const std::string& name) const throw(RuntimeException);
+    void * getSymbol(const std::string& name) const;
 
     /**
      * @brief   Loads the module.
      */
-    void load() throw(RuntimeException);
+    void load();
 
     /**
      * @brief   Undloads the module.
      */
-    void unload() throw(RuntimeException);
+    void unload();
 
 
     private:

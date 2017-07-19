@@ -65,7 +65,7 @@ const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAG
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() throw() :
+SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() noexcept :
     m_delay(500)
 {
     m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::readImage, this);
@@ -78,7 +78,7 @@ SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() throw() :
 }
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() throw()
+SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 {
 }
 
@@ -91,7 +91,7 @@ void SSliceIndexDicomPullerEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
+void SSliceIndexDicomPullerEditor::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
 
@@ -122,7 +122,7 @@ void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
+void SSliceIndexDicomPullerEditor::starting()
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
@@ -207,7 +207,7 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::stopping() throw(::fwTools::Failed)
+void SSliceIndexDicomPullerEditor::stopping()
 {
     // Worker
     m_pullSeriesWorker->stop();
@@ -228,7 +228,7 @@ void SSliceIndexDicomPullerEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::updating() throw(::fwTools::Failed)
+void SSliceIndexDicomPullerEditor::updating()
 {
 }
 

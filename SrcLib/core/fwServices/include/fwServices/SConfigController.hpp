@@ -53,21 +53,21 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SConfigController)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
-    FWSERVICES_API SConfigController() throw();
+    FWSERVICES_API SConfigController() noexcept;
 
     /// Destructor. Does nothing.
-    FWSERVICES_API virtual ~SConfigController() throw();
+    FWSERVICES_API virtual ~SConfigController() noexcept;
 
 protected:
 
     /// Starts the config
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops the config
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
 
     /**
@@ -90,10 +90,10 @@ protected:
         @endcode
      * It MUST have at least one key node and at least one replace node.
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Swaps the config
-    virtual void swapping() throw ( ::fwTools::Failed );
+    virtual void swapping();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

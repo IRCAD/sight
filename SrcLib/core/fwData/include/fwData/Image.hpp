@@ -73,7 +73,7 @@ public:
     /**
      * @brief Destructor
      */
-    FWDATA_API virtual ~Image() throw();
+    FWDATA_API virtual ~Image() noexcept;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
@@ -165,11 +165,10 @@ public:
      *
      * @return Allocated size in bytes
      */
-    FWDATA_API size_t allocate() throw(::fwData::Exception);
+    FWDATA_API size_t allocate();
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                               const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
-    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
-    throw(::fwData::Exception);
+                               const ::fwTools::Type &type, size_t numberOfComponents = 1);
+    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1);
     /// @}
 
 

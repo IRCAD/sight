@@ -29,8 +29,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Negato)(::scene2D::adaptor::IAdaptor) );
 
-    SCENE2D_API Negato() throw();
-    SCENE2D_API virtual ~Negato() throw();
+    SCENE2D_API Negato() noexcept;
+    SCENE2D_API virtual ~Negato() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -46,11 +46,11 @@ public:
 
 protected:
 
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
-    SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
-    SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-    SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
-    SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
+    SCENE2D_API void doStart();
+    SCENE2D_API void doUpdate();
+    SCENE2D_API void doSwap();
+    SCENE2D_API void doStop();
     SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
 
 

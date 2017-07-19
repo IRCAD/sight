@@ -39,7 +39,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateIm
 
 //------------------------------------------------------------------------------
 
-Image::Image() throw() :
+Image::Image() noexcept :
     m_imageRegister(nullptr),
     m_imagePortId(-1),
     m_imageOpacity(0.),
@@ -54,7 +54,7 @@ Image::Image() throw() :
 
 //------------------------------------------------------------------------------
 
-Image::~Image() throw()
+Image::~Image() noexcept
 {
     SLM_TRACE_FUNC();
     m_lut->Delete();
@@ -69,7 +69,7 @@ Image::~Image() throw()
 
 //------------------------------------------------------------------------------
 
-void Image::doStart() throw(fwTools::Failed)
+void Image::doStart()
 {
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
@@ -80,7 +80,7 @@ void Image::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image::doStop() throw(fwTools::Failed)
+void Image::doStop()
 {
     this->removeTFConnections();
     this->destroyPipeline();
@@ -88,7 +88,7 @@ void Image::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image::doSwap() throw(fwTools::Failed)
+void Image::doSwap()
 {
     this->removeTFConnections();
     this->doUpdate();
@@ -97,7 +97,7 @@ void Image::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image::doUpdate() throw(::fwTools::Failed)
+void Image::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -138,7 +138,7 @@ void Image::updatingTFWindowing(double window, double level)
 
 //------------------------------------------------------------------------------
 
-void Image::doConfigure() throw(fwTools::Failed)
+void Image::doConfigure()
 {
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("vtkimageregister") )

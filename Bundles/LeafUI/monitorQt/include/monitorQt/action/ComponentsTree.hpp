@@ -32,24 +32,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ComponentsTree)(::fwGui::IActionSrv) );
 
     /// Does nothing
-    MONITORQT_API ComponentsTree() throw();
+    MONITORQT_API ComponentsTree() noexcept;
 
     /// Does nothing
-    MONITORQT_API virtual ~ComponentsTree() throw();
+    MONITORQT_API virtual ~ComponentsTree() noexcept;
 
 protected:
 
     /// Calls classic IAction methods to configure
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Prepare dialog box
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Fill factory information in m_tree and show the dialog
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Delete dialog box
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
 private:
 

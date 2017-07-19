@@ -28,7 +28,7 @@ public:
     /**
      * @brief Destructor
      */
-    IOTUTO_API ~ExternalDataReaderService() throw();
+    IOTUTO_API ~ExternalDataReaderService() noexcept;
 
     /**
      * @brief   returns  (filename) extension
@@ -46,7 +46,7 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IOTUTO_API virtual void starting() throw(::fwTools::Failed)
+    IOTUTO_API virtual void starting()
     {
     }
 
@@ -55,7 +55,7 @@ protected:
      *
      * The stopping method is empty for this service.
      */
-    IOTUTO_API virtual void stopping() throw(::fwTools::Failed)
+    IOTUTO_API virtual void stopping()
     {
     }
 
@@ -71,7 +71,7 @@ protected:
      *
      * Configure External data info filename.
      */
-    IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
+    IOTUTO_API virtual void configuring( );
 
     /**
      * @brief Configure the image path.
@@ -86,7 +86,7 @@ protected:
      *
      * This method is used to update the service.
      */
-    IOTUTO_API void updating() throw(::fwTools::Failed);
+    IOTUTO_API void updating();
 
     /**
      * @brief Info method.

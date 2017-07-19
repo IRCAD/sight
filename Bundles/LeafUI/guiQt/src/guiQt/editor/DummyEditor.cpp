@@ -30,20 +30,20 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::gui::editor::DummyEditor, ::f
 
 //-----------------------------------------------------------------------------
 
-DummyEditor::DummyEditor() throw() :
+DummyEditor::DummyEditor() noexcept :
     m_text("")
 {
 }
 
 //-----------------------------------------------------------------------------
 
-DummyEditor::~DummyEditor() throw()
+DummyEditor::~DummyEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::starting() throw(::fwTools::Failed)
+void DummyEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -65,7 +65,7 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::stopping() throw(::fwTools::Failed)
+void DummyEditor::stopping()
 {
     SLM_TRACE_FUNC();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -77,7 +77,7 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::configuring()  throw ( ::fwTools::Failed )
+void DummyEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -91,7 +91,7 @@ void DummyEditor::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::updating() throw ( ::fwTools::Failed )
+void DummyEditor::updating()
 {
     SLM_TRACE_FUNC();
     QPalette palette;

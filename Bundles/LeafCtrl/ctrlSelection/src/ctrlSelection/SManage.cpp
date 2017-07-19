@@ -44,7 +44,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::SManage, ::
 
 //-----------------------------------------------------------------------------
 
-SManage::SManage() throw()
+SManage::SManage() noexcept
 {
     newSlot(s_ADD_OR_SWAP_SLOT, &SManage::addOrSwap, this);
     newSlot(s_ADD_SLOT, &SManage::add, this);
@@ -55,13 +55,13 @@ SManage::SManage() throw()
 
 //-----------------------------------------------------------------------------
 
-SManage::~SManage() throw()
+SManage::~SManage() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SManage::configuring()  throw ( ::fwTools::Failed )
+void SManage::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 
@@ -85,19 +85,19 @@ void SManage::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SManage::starting()  throw ( ::fwTools::Failed )
+void SManage::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SManage::stopping()  throw ( ::fwTools::Failed )
+void SManage::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SManage::updating() throw ( ::fwTools::Failed )
+void SManage::updating()
 {
 }
 

@@ -91,10 +91,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SActivityWizard)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIMEDDATAQT_API SActivityWizard() throw();
+    UIMEDDATAQT_API SActivityWizard() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEDDATAQT_API virtual ~SActivityWizard() throw();
+    UIMEDDATAQT_API virtual ~SActivityWizard() noexcept;
 
     /**
      * @name Slot API
@@ -122,16 +122,16 @@ public:
 protected:
 
     ///This method creates the editor gui.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method destroys the editor gui.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update the activity if it is defined in the configuration, else does nothing.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Initialize the editor.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

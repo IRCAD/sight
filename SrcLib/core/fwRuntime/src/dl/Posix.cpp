@@ -17,7 +17,7 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Posix::Posix( const boost::filesystem::path & modulePath ) throw() :
+Posix::Posix( const boost::filesystem::path & modulePath ) noexcept :
     Native(modulePath),
     m_handle  ( 0 )
 {
@@ -25,20 +25,20 @@ Posix::Posix( const boost::filesystem::path & modulePath ) throw() :
 
 //------------------------------------------------------------------------------
 
-Posix::~Posix() throw()
+Posix::~Posix() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-bool Posix::isLoaded() const throw()
+bool Posix::isLoaded() const noexcept
 {
     return m_handle != 0;
 }
 
 //------------------------------------------------------------------------------
 
-void * Posix::getSymbol( const std::string & name ) const throw(RuntimeException)
+void * Posix::getSymbol( const std::string & name ) const
 {
     void* result = 0;
     if(isLoaded() == true)
@@ -59,7 +59,7 @@ void * Posix::getSymbol( const std::string & name ) const throw(RuntimeException
 
 //------------------------------------------------------------------------------
 
-void Posix::load() throw(RuntimeException)
+void Posix::load()
 {
     if(m_handle == 0)
     {
@@ -75,7 +75,7 @@ void Posix::load() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Posix::unload() throw(RuntimeException)
+void Posix::unload()
 {
     if(m_handle != 0)
     {

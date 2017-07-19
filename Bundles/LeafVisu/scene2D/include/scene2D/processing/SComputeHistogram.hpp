@@ -31,10 +31,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SComputeHistogram)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
-    SCENE2D_API SComputeHistogram() throw();
+    SCENE2D_API SComputeHistogram() noexcept;
 
     /// Destructor. Does nothing.
-    SCENE2D_API virtual ~SComputeHistogram() throw();
+    SCENE2D_API virtual ~SComputeHistogram() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -67,19 +67,19 @@ protected:
      * - \b histogramId: Id of the histogram object.
      * - \b binsWidth: desired bins width used to classified pixel.
      */
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
 
     /// Starts the service. Calls updating().
-    SCENE2D_API void starting()    throw ( ::fwTools::Failed );
+    SCENE2D_API void starting();
 
     /// Computes the histogram and notifies Histogram::s_MODIFIED_SIG.
-    SCENE2D_API void updating()    throw ( ::fwTools::Failed );
+    SCENE2D_API void updating();
 
     /// Swaps the service. Calls updating().
-    SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
+    SCENE2D_API void swapping();
 
     /// Stops the service. Does nothing.
-    SCENE2D_API void stopping()    throw ( ::fwTools::Failed );
+    SCENE2D_API void stopping();
 
 private:
 

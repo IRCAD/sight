@@ -23,13 +23,13 @@ namespace fwGuiQt
 
 //------------------------------------------------------------------------------
 
-QtMainFrame::QtMainFrame() throw() : QMainWindow()
+QtMainFrame::QtMainFrame() noexcept : QMainWindow()
 {
 }
 
 //------------------------------------------------------------------------------
 
-QtMainFrame::~QtMainFrame() throw()
+QtMainFrame::~QtMainFrame() noexcept
 {
 }
 

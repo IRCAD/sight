@@ -23,20 +23,20 @@ namespace adaptor
 
 //------------------------------------------------------------------------------
 
-GridFromFloat::GridFromFloat() throw() : m_xSpacing (10.f),
+GridFromFloat::GridFromFloat() noexcept : m_xSpacing (10.f),
                                          m_ySpacing (10.f)
 {
 }
 
 //------------------------------------------------------------------------------
 
-GridFromFloat::~GridFromFloat() throw()
+GridFromFloat::~GridFromFloat() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::configuring() throw ( ::fwTools::Failed )
+void GridFromFloat::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -137,7 +137,7 @@ void GridFromFloat::draw()
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doStart() throw ( ::fwTools::Failed )
+void GridFromFloat::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -151,7 +151,7 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
+void GridFromFloat::doUpdate()
 {
     // Check if the float object isn't negative
     if (this->getObject< ::fwData::Float >()->getValue() > 0)
@@ -165,14 +165,14 @@ void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doSwap() throw ( ::fwTools::Failed )
+void GridFromFloat::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doStop() throw ( ::fwTools::Failed )
+void GridFromFloat::doStop()
 {
     SLM_TRACE_FUNC();
 

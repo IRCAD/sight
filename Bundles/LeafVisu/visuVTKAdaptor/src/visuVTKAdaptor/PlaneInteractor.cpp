@@ -86,7 +86,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PlaneInteractor::PlaneInteractor() throw() :
+PlaneInteractor::PlaneInteractor() noexcept :
     m_vtkObserver(nullptr),
     m_priority(1.)
 {
@@ -94,19 +94,19 @@ PlaneInteractor::PlaneInteractor() throw() :
 
 //------------------------------------------------------------------------------
 
-PlaneInteractor::~PlaneInteractor() throw()
+PlaneInteractor::~PlaneInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doConfigure() throw(fwTools::Failed)
+void PlaneInteractor::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doStart() throw(fwTools::Failed)
+void PlaneInteractor::doStart()
 {
     if (::fwData::Plane::dynamicCast(this->getObject()))
     {
@@ -124,13 +124,13 @@ void PlaneInteractor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doUpdate() throw(fwTools::Failed)
+void PlaneInteractor::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doSwap() throw(fwTools::Failed)
+void PlaneInteractor::doSwap()
 {
     SLM_TRACE_FUNC();
     this->doStop();
@@ -139,7 +139,7 @@ void PlaneInteractor::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doStop() throw(fwTools::Failed)
+void PlaneInteractor::doStop()
 {
     if(m_vtkObserver)
     {

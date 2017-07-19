@@ -28,7 +28,7 @@ public:
     FWPACSIO_API PresentationContextMissing(const std::string& message);
 
     /// Destructor
-    FWPACSIO_API virtual ~PresentationContextMissing() throw ();
+    FWPACSIO_API virtual ~PresentationContextMissing() noexcept;
 
 };
 

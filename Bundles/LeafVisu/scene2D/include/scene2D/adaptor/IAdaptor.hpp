@@ -62,28 +62,28 @@ public:
 protected:
 
     /// Constructor, set the zValue to 0.
-    SCENE2D_API IAdaptor() throw();
+    SCENE2D_API IAdaptor() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~IAdaptor() throw();
+    SCENE2D_API virtual ~IAdaptor() noexcept;
 
     /// ToDo IM
     SCENE2D_API virtual void info(std::ostream& _sstream );
 
     /// Not implemented in IAdaptor but in its subclasses
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
 
     /// Call doStart() function.
-    SCENE2D_API void starting() throw ( ::fwTools::Failed );
+    SCENE2D_API void starting();
 
     /// Call DoUpdate() function.
-    SCENE2D_API void updating() throw ( ::fwTools::Failed );
+    SCENE2D_API void updating();
 
     /// Start and stop the IAdaptor.
-    SCENE2D_API void swapping() throw ( ::fwTools::Failed );
+    SCENE2D_API void swapping();
 
     /// Call doStop() function and reset the axis.
-    SCENE2D_API void stopping()    throw ( ::fwTools::Failed );
+    SCENE2D_API void stopping();
 
     /// Pure virtual -> implemented in the subclasses
     SCENE2D_API virtual void doStart() = 0;

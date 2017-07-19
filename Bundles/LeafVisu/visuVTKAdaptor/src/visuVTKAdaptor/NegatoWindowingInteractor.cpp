@@ -154,7 +154,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-NegatoWindowingInteractor::NegatoWindowingInteractor() throw() :
+NegatoWindowingInteractor::NegatoWindowingInteractor() noexcept :
     m_vtkObserver(nullptr),
     m_initialWindow(0.),
     m_initialLevel(0.),
@@ -164,13 +164,13 @@ NegatoWindowingInteractor::NegatoWindowingInteractor() throw() :
 
 //------------------------------------------------------------------------------
 
-NegatoWindowingInteractor::~NegatoWindowingInteractor() throw()
+NegatoWindowingInteractor::~NegatoWindowingInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doConfigure() throw(fwTools::Failed)
+void NegatoWindowingInteractor::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -181,7 +181,7 @@ void NegatoWindowingInteractor::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
+void NegatoWindowingInteractor::doStart()
 {
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
@@ -201,7 +201,7 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
+void NegatoWindowingInteractor::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -210,7 +210,7 @@ void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doSwap() throw(fwTools::Failed)
+void NegatoWindowingInteractor::doSwap()
 {
     SLM_TRACE_FUNC();
     this->doUpdate();
@@ -218,7 +218,7 @@ void NegatoWindowingInteractor::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
+void NegatoWindowingInteractor::doStop()
 {
     this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_WINDOWING_EVENT, m_vtkObserver);

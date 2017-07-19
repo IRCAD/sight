@@ -40,10 +40,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API PointEditor() throw();
+    UIVISUQT_API PointEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~PointEditor() throw();
+    UIVISUQT_API virtual ~PointEditor() noexcept;
 
 protected:
 
@@ -51,16 +51,16 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
-    void swapping() throw(::fwTools::Failed);
+    void swapping();
 
-    void configuring() throw( ::fwTools::Failed);
+    void configuring();
 
     /// Overrides
     virtual void info( std::ostream& _sstream );

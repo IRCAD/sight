@@ -42,26 +42,26 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Snapshot)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Snapshot() throw();
+    VISUVTKADAPTOR_API Snapshot() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Snapshot() throw();
+    VISUVTKADAPTOR_API virtual ~Snapshot() noexcept;
 
 protected:
 
     /// Does nothing.
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
 
     /// Does nothing.
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStop();
 
     /// Gets the image object if any and stores its uid.
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
 
     /// Does nothing.
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doSwap();
 
     /// Does nothing.
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
 private:
 

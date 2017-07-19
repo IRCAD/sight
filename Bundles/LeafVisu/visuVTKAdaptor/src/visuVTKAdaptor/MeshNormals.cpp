@@ -53,7 +53,7 @@ const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_NORMAL_MODE_SLOT   = "up
 
 //------------------------------------------------------------------------------
 
-MeshNormals::MeshNormals() throw() : m_normalRepresentation(CELL_NORMAL)
+MeshNormals::MeshNormals() noexcept : m_normalRepresentation(CELL_NORMAL)
 {
     m_actor = vtkActor::New();
 
@@ -79,7 +79,7 @@ MeshNormals::MeshNormals() throw() : m_normalRepresentation(CELL_NORMAL)
 
 //------------------------------------------------------------------------------
 
-MeshNormals::~MeshNormals() throw()
+MeshNormals::~MeshNormals() noexcept
 {
     m_actor->Delete();
     m_actor = 0;
@@ -87,7 +87,7 @@ MeshNormals::~MeshNormals() throw()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doConfigure() throw( ::fwTools::Failed)
+void MeshNormals::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -104,7 +104,7 @@ void MeshNormals::doConfigure() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doStart() throw( ::fwTools::Failed)
+void MeshNormals::doStart()
 {
     SLM_TRACE_FUNC();
     this->doUpdate();
@@ -113,7 +113,7 @@ void MeshNormals::doStart() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doSwap() throw( ::fwTools::Failed)
+void MeshNormals::doSwap()
 {
     SLM_TRACE_FUNC();
     this->doUpdate();
@@ -121,7 +121,7 @@ void MeshNormals::doSwap() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doUpdate() throw( ::fwTools::Failed)
+void MeshNormals::doUpdate()
 {
     this->updateMeshNormals();
 }
@@ -197,7 +197,7 @@ void MeshNormals::updateMeshNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doStop() throw( ::fwTools::Failed)
+void MeshNormals::doStop()
 {
     this->removeAllPropFromRenderer();
 }

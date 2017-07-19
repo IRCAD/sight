@@ -38,7 +38,7 @@ namespace scene2D
 namespace adaptor
 {
 
-TransferFunction::TransferFunction() throw() :
+TransferFunction::TransferFunction() noexcept :
     m_layer(nullptr),
     m_circleWidth(0.),
     m_circleHeight(0.),
@@ -51,13 +51,13 @@ TransferFunction::TransferFunction() throw() :
 
 //-----------------------------------------------------------------------------
 
-TransferFunction::~TransferFunction() throw()
+TransferFunction::~TransferFunction() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::configuring() throw ( ::fwTools::Failed )
+void TransferFunction::configuring()
 {
     SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
 
@@ -502,7 +502,7 @@ void TransferFunction::updateImageTF()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doStart() throw ( ::fwTools::Failed )
+void TransferFunction::doStart()
 {
     // Initialize the layer and the circle height and width
     m_layer = new QGraphicsItemGroup();
@@ -524,7 +524,7 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
+void TransferFunction::doUpdate()
 {
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
@@ -556,7 +556,7 @@ void TransferFunction::updatingTFWindowing(double window, double level)
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doSwap() throw ( ::fwTools::Failed )
+void TransferFunction::doSwap()
 {
     this->removeTFConnections();
     this->doUpdate();
@@ -565,7 +565,7 @@ void TransferFunction::doSwap() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doStop() throw ( ::fwTools::Failed )
+void TransferFunction::doStop()
 {
     this->removeTFConnections();
     m_connection.disconnect();

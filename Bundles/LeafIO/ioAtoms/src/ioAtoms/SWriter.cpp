@@ -69,19 +69,19 @@ SWriter::SWriter() :
 
 //-----------------------------------------------------------------------------
 
-void SWriter::starting() throw(::fwTools::Failed)
+void SWriter::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SWriter::stopping() throw(::fwTools::Failed)
+void SWriter::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SWriter::configuring() throw(::fwTools::Failed)
+void SWriter::configuring()
 {
     ::io::IWriter::configuring();
 
@@ -207,7 +207,7 @@ bool SWriter::versionSelection()
 
 //-----------------------------------------------------------------------------
 
-void SWriter::updating() throw(::fwTools::Failed)
+void SWriter::updating()
 {
     if(!this->hasLocationDefined())
     {

@@ -42,15 +42,15 @@ class SCENE2D_CLASS_API Histogram : public ::scene2D::adaptor::IAdaptor
 public:
     fwCoreServiceClassDefinitionsMacro( (Histogram)( ::scene2D::adaptor::IAdaptor) );
 
-    SCENE2D_API Histogram() throw();
-    SCENE2D_API virtual ~Histogram() throw();
+    SCENE2D_API Histogram() noexcept;
+    SCENE2D_API virtual ~Histogram() noexcept;
 
 protected:
-    SCENE2D_API void configuring()  throw ( ::fwTools::Failed );
-    SCENE2D_API void doStart()      throw ( ::fwTools::Failed );
-    SCENE2D_API void doUpdate()     throw ( ::fwTools::Failed );
-    SCENE2D_API void doSwap()       throw ( ::fwTools::Failed );
-    SCENE2D_API void doStop()       throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
+    SCENE2D_API void doStart();
+    SCENE2D_API void doUpdate();
+    SCENE2D_API void doSwap();
+    SCENE2D_API void doStop();
 
     SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
 

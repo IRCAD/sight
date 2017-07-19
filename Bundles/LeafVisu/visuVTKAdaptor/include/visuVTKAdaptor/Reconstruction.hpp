@@ -27,9 +27,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Reconstruction() throw();
+    VISUVTKADAPTOR_API Reconstruction() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Reconstruction() throw();
+    VISUVTKADAPTOR_API virtual ~Reconstruction() noexcept;
 
     //------------------------------------------------------------------------------
 
@@ -87,11 +87,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     void createMeshService();
 

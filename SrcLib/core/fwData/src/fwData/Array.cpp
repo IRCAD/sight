@@ -119,7 +119,7 @@ size_t Array::resize(
     const SizeType &size,
     size_t nbOfComponents,
     bool reallocate
-    ) throw(::fwData::Exception)
+    )
 {
     nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
     size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
@@ -152,21 +152,21 @@ size_t Array::resize(
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType &size, size_t nbOfComponents, bool reallocate) throw(::fwData::Exception)
+size_t Array::resize(const SizeType &size, size_t nbOfComponents, bool reallocate)
 {
     return this->resize(m_type, size, nbOfComponents, reallocate);
 }
 
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const SizeType &size, bool reallocate) throw(::fwData::Exception)
+size_t Array::resize(const SizeType &size, bool reallocate)
 {
     return this->resize(m_type, size, m_nbOfComponents, reallocate);
 }
 //------------------------------------------------------------------------------
 
 size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
-                     bool reallocate) throw(::fwData::Exception)
+                     bool reallocate)
 {
     ::fwTools::Type fwType = ::fwTools::Type::create(type);
     return this->resize( fwType, size, nbOfComponents, reallocate);

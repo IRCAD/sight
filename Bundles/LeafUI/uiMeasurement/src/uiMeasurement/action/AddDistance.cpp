@@ -36,14 +36,14 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddDistan
 //------------------------------------------------------------------------------
 
 
-AddDistance::AddDistance( ) throw() :
+AddDistance::AddDistance( ) noexcept :
     m_actionCheckId(-1)
 {
 }
 
 //------------------------------------------------------------------------------
 
-AddDistance::~AddDistance() throw()
+AddDistance::~AddDistance() noexcept
 {
 }
 
@@ -56,7 +56,7 @@ void AddDistance::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void AddDistance::updating() throw(::fwTools::Failed)
+void AddDistance::updating()
 {
     SLM_TRACE("AddDistance::updating");
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -99,21 +99,21 @@ void AddDistance::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddDistance::configuring() throw (::fwTools::Failed)
+void AddDistance::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void AddDistance::starting() throw (::fwTools::Failed)
+void AddDistance::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void AddDistance::stopping() throw (::fwTools::Failed)
+void AddDistance::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

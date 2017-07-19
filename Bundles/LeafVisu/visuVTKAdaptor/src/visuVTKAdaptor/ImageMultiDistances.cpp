@@ -150,7 +150,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_DISTANCE_SLOT = "removeDistanc
 
 //------------------------------------------------------------------------------
 
-ImageMultiDistances::ImageMultiDistances() throw() :
+ImageMultiDistances::ImageMultiDistances() noexcept :
     m_rightButtonCommand(nullptr),
     m_needSubservicesDeletion(false)
 {
@@ -160,19 +160,19 @@ ImageMultiDistances::ImageMultiDistances() throw() :
 
 //------------------------------------------------------------------------------
 
-ImageMultiDistances::~ImageMultiDistances() throw()
+ImageMultiDistances::~ImageMultiDistances() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doConfigure() throw(fwTools::Failed)
+void ImageMultiDistances::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doStart() throw(fwTools::Failed)
+void ImageMultiDistances::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -186,7 +186,7 @@ void ImageMultiDistances::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doSwap() throw(fwTools::Failed)
+void ImageMultiDistances::doSwap()
 {
     SLM_TRACE("SWAPPING ImageMultiDistances **TODO**");
     this->doStop();
@@ -322,7 +322,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
+void ImageMultiDistances::doUpdate()
 {
     // get PointList in image Field then install distance service if required
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -393,7 +393,7 @@ void ImageMultiDistances::createDistance()
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwTools::Failed)
+void ImageMultiDistances::createNewDistance( std::string sceneId )
 {
     ::fwData::Image::sptr image     = this->getObject< ::fwData::Image >();
     ::fwData::PointList::sptr newPL = ::fwData::PointList::New();
@@ -430,7 +430,7 @@ void ImageMultiDistances::setNeedSubservicesDeletion( bool _needSubservicesDelet
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doStop() throw(fwTools::Failed)
+void ImageMultiDistances::doStop()
 {
     if ( m_rightButtonCommand ) // can be not instantiated (use of ImageMultiDistances::show() )
     {

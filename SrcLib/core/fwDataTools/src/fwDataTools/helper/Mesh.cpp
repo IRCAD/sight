@@ -79,7 +79,7 @@ void Mesh::updateLock()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextPoint(const ::fwData::Mesh::PointValueType p[3]) throw(::fwData::Exception)
+::fwData::Mesh::Id Mesh::insertNextPoint(const ::fwData::Mesh::PointValueType p[3])
 {
     ::fwData::Mesh::Id nbPoints  = m_mesh->getNumberOfPoints();
     ::fwData::Array::sptr points = m_mesh->getPointsArray();
@@ -97,7 +97,7 @@ void Mesh::updateLock()
 
 ::fwData::Mesh::Id Mesh::insertNextPoint(::fwData::Mesh::PointValueType x,
                                          ::fwData::Mesh::PointValueType y,
-                                         ::fwData::Mesh::PointValueType z) throw(::fwData::Exception)
+                                         ::fwData::Mesh::PointValueType z)
 {
     const ::fwData::Mesh::PointValueType p[3] = {x,y,z};
     return this->insertNextPoint(p);
@@ -167,7 +167,7 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 
 ::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellTypesEnum type,
                                         const ::fwData::Mesh::CellValueType* cell,
-                                        size_t nb) throw(::fwData::Exception)
+                                        size_t nb)
 {
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'",
                type != ::fwData::Mesh::NO_CELL || nb == 0);
@@ -229,7 +229,7 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 
 //------------------------------------------------------------------------------
 
-::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p) throw(::fwData::Exception)
+::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p)
 {
     ::fwData::Mesh::CellValueType point[1] = {p};
     return this->insertNextCell(::fwData::Mesh::POINT, point, 1);
@@ -238,7 +238,7 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 //------------------------------------------------------------------------------
 
 ::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
-                                        ::fwData::Mesh::CellValueType p2) throw(::fwData::Exception)
+                                        ::fwData::Mesh::CellValueType p2)
 {
     ::fwData::Mesh::CellValueType p[2] = {p1, p2};
     return this->insertNextCell(::fwData::Mesh::EDGE, p, 2);
@@ -248,7 +248,7 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 
 ::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
                                         ::fwData::Mesh::CellValueType p2,
-                                        ::fwData::Mesh::CellValueType p3) throw(::fwData::Exception)
+                                        ::fwData::Mesh::CellValueType p3)
 {
     ::fwData::Mesh::CellValueType p[3] = {p1, p2, p3};
     return this->insertNextCell(::fwData::Mesh::TRIANGLE, p, 3);
@@ -259,7 +259,7 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 ::fwData::Mesh::Id Mesh::insertNextCell(::fwData::Mesh::CellValueType p1,
                                         ::fwData::Mesh::CellValueType p2,
                                         ::fwData::Mesh::CellValueType p3,
-                                        ::fwData::Mesh::CellValueType p4) throw(::fwData::Exception)
+                                        ::fwData::Mesh::CellValueType p4)
 {
     ::fwData::Mesh::CellValueType p[4] = {p1, p2, p3, p4};
     return this->insertNextCell(::fwData::Mesh::QUAD, p, 4);

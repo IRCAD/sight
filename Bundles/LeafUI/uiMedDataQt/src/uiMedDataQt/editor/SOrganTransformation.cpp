@@ -41,7 +41,7 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SOrganTransformation, ::fwMedData::ModelSeries );
 
-SOrganTransformation::SOrganTransformation() throw() :
+SOrganTransformation::SOrganTransformation() noexcept :
     m_saveButton( 0 ),
     m_loadButton( 0 ),
     m_resetButton( 0 ),
@@ -52,13 +52,13 @@ SOrganTransformation::SOrganTransformation() throw() :
 
 //------------------------------------------------------------------------------
 
-SOrganTransformation::~SOrganTransformation() throw()
+SOrganTransformation::~SOrganTransformation() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::configuring() throw( ::fwTools::Failed )
+void SOrganTransformation::configuring()
 {
     this->initialize();
     if( m_configuration->findConfigurationElement( "TMSUid" ) )
@@ -69,7 +69,7 @@ void SOrganTransformation::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::starting() throw( ::fwTools::Failed )
+void SOrganTransformation::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -113,7 +113,7 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::stopping() throw( ::fwTools::Failed )
+void SOrganTransformation::stopping()
 {
     QObject::disconnect(m_reconstructionListBox,
                         SIGNAL(itemClicked(QListWidgetItem* )),
@@ -129,14 +129,14 @@ void SOrganTransformation::stopping() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::swapping() throw( ::fwTools::Failed )
+void SOrganTransformation::swapping()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::updating() throw( ::fwTools::Failed )
+void SOrganTransformation::updating()
 {
     this->refresh();
 }

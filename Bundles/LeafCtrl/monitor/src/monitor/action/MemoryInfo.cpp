@@ -24,20 +24,20 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::f
 
 //------------------------------------------------------------------------------
 
-MemoryInfo::MemoryInfo( ) throw()
+MemoryInfo::MemoryInfo( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-MemoryInfo::~MemoryInfo() throw()
+MemoryInfo::~MemoryInfo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
 
-void MemoryInfo::updating( ) throw(::fwTools::Failed)
+void MemoryInfo::updating( )
 {
     // Memory information
     ::boost::uint64_t mo                = 1024*1024;
@@ -72,21 +72,21 @@ void MemoryInfo::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MemoryInfo::configuring() throw (::fwTools::Failed)
+void MemoryInfo::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void MemoryInfo::starting() throw (::fwTools::Failed)
+void MemoryInfo::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void MemoryInfo::stopping() throw (::fwTools::Failed)
+void MemoryInfo::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

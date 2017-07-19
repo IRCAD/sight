@@ -22,7 +22,7 @@ class BadExtension : public fwAtomsPatch::exceptions::Base
 {
 public:
     BadExtension(const std::string& message);
-    virtual ~BadExtension() throw()
+    virtual ~BadExtension() noexcept
     {
     }
 };

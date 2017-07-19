@@ -26,9 +26,9 @@ class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
 {
 public:
     fwCoreServiceClassDefinitionsMacro ( (ShowHelpContents)( ::fwGui::IActionSrv) );
-    UIGENERICQT_API ShowHelpContents() throw();
+    UIGENERICQT_API ShowHelpContents() noexcept;
 
-    UIGENERICQT_API virtual ~ShowHelpContents() throw();
+    UIGENERICQT_API virtual ~ShowHelpContents() noexcept;
 
 protected:
 
@@ -43,16 +43,16 @@ protected:
        @endcode
      * This method is used to configure the service.
      */
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Starts action
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Show the frame
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
     /// Stops action
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     UIGENERICQT_API void info(std::ostream &_sstream );
 

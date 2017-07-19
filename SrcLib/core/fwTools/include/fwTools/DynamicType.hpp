@@ -58,7 +58,7 @@ public:
      * @note    A BOOST_ASSERTION can be raised if TYPE is not managed by isMapping
      **/
     template< class TYPE>
-    void setType() throw(std::invalid_argument);
+    void setType();
 
 
     /**
@@ -80,7 +80,7 @@ public:
      * Check are performed to ensure robsutess
      */
     template<class NEWTYPE>
-    static void registerNewType(const std::string &newKey) throw(std::invalid_argument);
+    static void registerNewType(const std::string &newKey);
 
 
     /// Default destrucor : do nothing

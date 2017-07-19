@@ -37,7 +37,7 @@ const ::fwCom::Slots::SlotKeyType Texture::s_APPLY_TEXTURE_SLOT = "applyTexture"
 
 //------------------------------------------------------------------------------
 
-Texture::Texture() throw() :
+Texture::Texture() noexcept :
     m_filtering("linear"),
     m_wrapping("repeat"),
     m_lighting(true)
@@ -49,13 +49,13 @@ Texture::Texture() throw() :
 
 //------------------------------------------------------------------------------
 
-Texture::~Texture() throw()
+Texture::~Texture() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doConfigure() throw(fwTools::Failed)
+void Texture::doConfigure()
 {
     SLM_ASSERT("Missing configuration", m_configuration->getName() == "config");
 
@@ -83,13 +83,13 @@ void Texture::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Texture::doStart() throw(fwTools::Failed)
+void Texture::doStart()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doUpdate() throw(fwTools::Failed)
+void Texture::doUpdate()
 {
     for(::fwData::Material::sptr material :  m_materialSet)
     {
@@ -98,14 +98,14 @@ void Texture::doUpdate() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-void Texture::doSwap() throw(fwTools::Failed)
+void Texture::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doStop() throw(fwTools::Failed)
+void Texture::doStop()
 {
     this->unregisterServices();
 }

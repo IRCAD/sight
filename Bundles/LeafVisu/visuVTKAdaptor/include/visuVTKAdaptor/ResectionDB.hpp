@@ -21,9 +21,9 @@ class VISUVTKADAPTOR_CLASS_API ResectionDB : public ::fwRenderVTK::IVtkAdaptorSe
 public:
     fwCoreServiceClassDefinitionsMacro ( (ResectionDB)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API ResectionDB() throw();
+    VISUVTKADAPTOR_API ResectionDB() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ResectionDB() throw();
+    VISUVTKADAPTOR_API virtual ~ResectionDB() noexcept;
 
     void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
@@ -47,12 +47,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
     // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doStop();
 
 private:
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanes;

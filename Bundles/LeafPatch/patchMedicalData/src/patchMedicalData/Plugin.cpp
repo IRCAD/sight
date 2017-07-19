@@ -17,11 +17,11 @@ namespace patchMedicalData
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::patchMedicalData::Plugin");
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     //Hack: force link with fwStructuralPatch
     ::fwStructuralPatch::PatchLoader::loadPatches();
@@ -32,7 +32,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     ::fwMDSemanticPatch::PatchLoader::loadPatches();
 }
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

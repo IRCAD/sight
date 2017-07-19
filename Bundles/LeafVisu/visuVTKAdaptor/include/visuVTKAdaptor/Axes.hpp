@@ -43,8 +43,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (Axes)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Axes() throw();
-    VISUVTKADAPTOR_API virtual ~Axes() throw();
+    VISUVTKADAPTOR_API Axes() noexcept;
+    VISUVTKADAPTOR_API virtual ~Axes() noexcept;
 
     /**
      * @name Slots API
@@ -59,11 +59,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
     void buildPipeline();
 

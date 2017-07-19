@@ -62,7 +62,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Transform::Transform() throw() :
+Transform::Transform() noexcept :
     m_transform(nullptr),
     m_transformCommand(TransformCallback::New(this))
 {
@@ -70,7 +70,7 @@ Transform::Transform() throw() :
 
 //------------------------------------------------------------------------------
 
-Transform::~Transform() throw()
+Transform::~Transform() noexcept
 {
     if( m_transformCommand )
     {
@@ -81,7 +81,7 @@ Transform::~Transform() throw()
 
 //------------------------------------------------------------------------------
 
-void Transform::doConfigure() throw(fwTools::Failed)
+void Transform::doConfigure()
 {
     assert(m_configuration->getName() == "config");
 
@@ -105,7 +105,7 @@ void Transform::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Transform::doStart() throw(fwTools::Failed)
+void Transform::doStart()
 {
     if(!m_transformId.empty())
     {
@@ -170,7 +170,7 @@ int Transform::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void Transform::doUpdate() throw(fwTools::Failed)
+void Transform::doUpdate()
 {
     vtkTransform* vtkTrf = this->getTransform();
 
@@ -238,14 +238,14 @@ vtkTransform* Transform::getTransform()
 
 //------------------------------------------------------------------------------
 
-void Transform::doSwap() throw(fwTools::Failed)
+void Transform::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Transform::doStop() throw(fwTools::Failed)
+void Transform::doStop()
 {
     this->getTransform()->RemoveObserver(m_transformCommand);
     this->unregisterServices();

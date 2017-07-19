@@ -55,7 +55,7 @@ SCommandHistory::~SCommandHistory()
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::configuring() throw( ::fwTools::Failed )
+void SCommandHistory::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
@@ -76,21 +76,21 @@ void SCommandHistory::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::starting() throw( ::fwTools::Failed )
+void SCommandHistory::starting()
 {
     this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::updating() throw( ::fwTools::Failed )
+void SCommandHistory::updating()
 {
     this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::stopping() throw( ::fwTools::Failed )
+void SCommandHistory::stopping()
 {
     m_undoRedoManager.clear();
 }

@@ -49,7 +49,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SModelSeriesReader::SModelSeriesReader() throw()
+SModelSeriesReader::SModelSeriesReader() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
@@ -95,21 +95,21 @@ void SModelSeriesReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::starting() throw(::fwTools::Failed)
+void SModelSeriesReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::stopping() throw(::fwTools::Failed)
+void SModelSeriesReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::configuring() throw(::fwTools::Failed)
+void SModelSeriesReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -123,7 +123,7 @@ void SModelSeriesReader::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::updating() throw(::fwTools::Failed)
+void SModelSeriesReader::updating()
 {
     if(  this->hasLocationDefined() )
     {

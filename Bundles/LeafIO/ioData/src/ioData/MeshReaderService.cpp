@@ -61,7 +61,7 @@ std::vector< std::string > MeshReaderService::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::configuring() throw(::fwTools::Failed)
+void MeshReaderService::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -95,7 +95,7 @@ void MeshReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::updating() throw(::fwTools::Failed)
+void MeshReaderService::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )

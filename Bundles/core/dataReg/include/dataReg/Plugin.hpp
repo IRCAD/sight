@@ -21,16 +21,16 @@ class DATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Destructor. Do nothing.
-    DATAREG_API ~Plugin() throw();
+    DATAREG_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    DATAREG_API void start() throw( ::fwRuntime::RuntimeException );
+    DATAREG_API void start();
 
     /// Overrides stop method. Do nothing
-    DATAREG_API void stop() throw();
+    DATAREG_API void stop() noexcept;
 
 private:
     /// Dummy variable members used to force link with fwDataCamp and fwMedDataCamp bundles

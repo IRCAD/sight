@@ -29,10 +29,10 @@ public:
     };
 
     /// Constructor, set the x and y spacing to 10
-    SCENE2D_API Grid2D() throw();
+    SCENE2D_API Grid2D() noexcept;
 
     /// Basic destructor, do nothing
-    SCENE2D_API virtual ~Grid2D() throw();
+    SCENE2D_API virtual ~Grid2D() noexcept;
 
 protected:
     /**
@@ -72,19 +72,19 @@ protected:
      * (the higher the zValue, the higher the layer is).
      *
      */
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
-    SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doStart();
 
     /// Do nothing.
-    SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doUpdate();
 
     /// Do nothing.
-    SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doSwap();
 
     /// Clean the lines vector and remove the layer from the scene.
-    SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doStop();
 
     /// Manage the given events
     SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );

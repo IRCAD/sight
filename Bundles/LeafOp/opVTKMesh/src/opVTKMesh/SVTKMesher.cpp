@@ -41,32 +41,32 @@ fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opVTKMesh::SVTKMesher, ::fwData
 
 //-----------------------------------------------------------------------------
 
-SVTKMesher::SVTKMesher() throw() :
+SVTKMesher::SVTKMesher() noexcept :
     m_reduction(0)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SVTKMesher::~SVTKMesher() throw()
+SVTKMesher::~SVTKMesher() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SVTKMesher::starting() throw ( ::fwTools::Failed )
+void SVTKMesher::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SVTKMesher::stopping() throw ( ::fwTools::Failed )
+void SVTKMesher::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SVTKMesher::configuring() throw ( ::fwTools::Failed )
+void SVTKMesher::configuring()
 {
     const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
 
@@ -91,7 +91,7 @@ void SVTKMesher::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SVTKMesher::updating() throw ( ::fwTools::Failed )
+void SVTKMesher::updating()
 {
     ::fwData::Image::csptr image;
     ::fwMedData::ModelSeries::sptr modelSeries;

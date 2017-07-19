@@ -21,34 +21,34 @@ fwServicesRegisterMacro( ::fwServices::IController, ::fwServices::SConfigControl
 
 //------------------------------------------------------------------------------
 
-SConfigController::SConfigController() throw()
+SConfigController::SConfigController() noexcept
 {
     m_configLauncher = ::fwServices::helper::ConfigLauncher::New();
 }
 
 //------------------------------------------------------------------------------
 
-SConfigController::~SConfigController() throw()
+SConfigController::~SConfigController() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SConfigController::starting() throw(::fwTools::Failed)
+void SConfigController::starting()
 {
     m_configLauncher->startConfig(this->getSptr());
 }
 
 //------------------------------------------------------------------------------
 
-void SConfigController::stopping() throw(::fwTools::Failed)
+void SConfigController::stopping()
 {
     m_configLauncher->stopConfig();
 }
 
 //------------------------------------------------------------------------------
 
-void SConfigController::swapping() throw(::fwTools::Failed)
+void SConfigController::swapping()
 {
     m_configLauncher->stopConfig();
     m_configLauncher->startConfig(this->getSptr());
@@ -56,7 +56,7 @@ void SConfigController::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigController::configuring() throw(fwTools::Failed)
+void SConfigController::configuring()
 {
     if(this->isVersion2())
     {
@@ -125,7 +125,7 @@ void SConfigController::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigController::updating() throw(::fwTools::Failed)
+void SConfigController::updating()
 {
 }
 

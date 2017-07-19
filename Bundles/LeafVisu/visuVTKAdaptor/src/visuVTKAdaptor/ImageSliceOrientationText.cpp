@@ -165,20 +165,20 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSlice
 
 //------------------------------------------------------------------------------
 
-ImageSliceOrientationText::ImageSliceOrientationText() throw() : m_pimpl( new ImageSliceOrientationTextPImpl )
+ImageSliceOrientationText::ImageSliceOrientationText() noexcept : m_pimpl( new ImageSliceOrientationTextPImpl )
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &ImageSliceOrientationText::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
 
-ImageSliceOrientationText::~ImageSliceOrientationText() throw()
+ImageSliceOrientationText::~ImageSliceOrientationText() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doStart() throw(fwTools::Failed)
+void ImageSliceOrientationText::doStart()
 {
     if(m_initialOrientation == "axial")
     {
@@ -206,14 +206,14 @@ void ImageSliceOrientationText::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doStop() throw(fwTools::Failed)
+void ImageSliceOrientationText::doStop()
 {
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doSwap() throw(fwTools::Failed)
+void ImageSliceOrientationText::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -221,7 +221,7 @@ void ImageSliceOrientationText::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doUpdate() throw(::fwTools::Failed)
+void ImageSliceOrientationText::doUpdate()
 {
     m_pimpl->setText(m_locations);
     m_pimpl->setOrientation(m_orientation);
@@ -251,7 +251,7 @@ void ImageSliceOrientationText::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doConfigure() throw(fwTools::Failed)
+void ImageSliceOrientationText::doConfigure()
 {
 
     ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("config");

@@ -30,19 +30,19 @@ fwServicesRegisterMacro( ::io::IReader, ::ioDcmtk::SDicomTagSeriesDBReader, ::fw
 
 //------------------------------------------------------------------------------
 
-SDicomTagSeriesDBReader::SDicomTagSeriesDBReader() throw()
+SDicomTagSeriesDBReader::SDicomTagSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SDicomTagSeriesDBReader::~SDicomTagSeriesDBReader() throw()
+SDicomTagSeriesDBReader::~SDicomTagSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::configuring() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -71,14 +71,14 @@ void SDicomTagSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::starting() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::stopping() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -137,7 +137,7 @@ std::string SDicomTagSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )

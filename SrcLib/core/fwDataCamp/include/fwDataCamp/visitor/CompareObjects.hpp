@@ -104,7 +104,7 @@ public:
      * @throw ::fwCore::Exception if classnames of reference and compared objects are different
      */
     FWDATACAMP_API void compare(SPTR(::fwData::Object) objRef,
-                                SPTR(::fwData::Object) objComp) throw(::fwCore::Exception);
+                                SPTR(::fwData::Object) objComp);
 
     /// Property value for differences map meaning a missing property.
     FWDATACAMP_API static const std::string s_MISSING_PROPERTY;

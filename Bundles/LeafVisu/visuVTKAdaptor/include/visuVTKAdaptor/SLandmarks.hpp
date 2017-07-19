@@ -68,9 +68,9 @@ public:
     typedef vtkSmartPointer< vtkHandleWidget > LandmarkWidgetType;
     typedef vtkSmartPointer< vtkActor2D > LabelActorType;
 
-    VISUVTKADAPTOR_API SLandmarks() throw();
+    VISUVTKADAPTOR_API SLandmarks() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~SLandmarks() throw();
+    VISUVTKADAPTOR_API virtual ~SLandmarks() noexcept;
 
     VISUVTKADAPTOR_API virtual void show(bool b = true);
 
@@ -89,12 +89,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
 private:
 

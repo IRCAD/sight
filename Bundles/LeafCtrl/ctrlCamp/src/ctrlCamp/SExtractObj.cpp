@@ -42,7 +42,7 @@ SExtractObj::~SExtractObj()
 
 //-----------------------------------------------------------------------------
 
-void SExtractObj::configuring() throw( ::fwTools::Failed )
+void SExtractObj::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -107,7 +107,7 @@ void SExtractObj::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractObj::starting() throw( ::fwTools::Failed )
+void SExtractObj::starting()
 {
     if(m_mode == ModeType::START)
     {
@@ -117,7 +117,7 @@ void SExtractObj::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractObj::updating() throw( ::fwTools::Failed )
+void SExtractObj::updating()
 {
     if(m_mode == ModeType::UPDATE)
     {
@@ -131,7 +131,7 @@ void SExtractObj::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractObj::stopping() throw( ::fwTools::Failed )
+void SExtractObj::stopping()
 {
     // Unregister outputs
     for (size_t i = 0; i<this->getKeyGroupSize("target"); ++i)

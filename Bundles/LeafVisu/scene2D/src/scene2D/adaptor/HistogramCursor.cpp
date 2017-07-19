@@ -24,7 +24,7 @@ namespace scene2D
 namespace adaptor
 {
 
-HistogramCursor::HistogramCursor() throw() :
+HistogramCursor::HistogramCursor() noexcept :
     m_color("red"),
     m_borderColor(Qt::gray),
     m_opacity(0.8f),
@@ -36,13 +36,13 @@ HistogramCursor::HistogramCursor() throw() :
 
 //---------------------------------------------------------------------------------------------------------------
 
-HistogramCursor::~HistogramCursor() throw()
+HistogramCursor::~HistogramCursor() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::configuring() throw( ::fwTools::Failed)
+void HistogramCursor::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -83,7 +83,7 @@ void HistogramCursor::configuring() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doStart() throw( ::fwTools::Failed)
+void HistogramCursor::doStart()
 {
     m_index = new QGraphicsEllipseItem();
     m_index->setBrush( m_color.color() );
@@ -112,14 +112,14 @@ void HistogramCursor::doStart() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doStop() throw( ::fwTools::Failed)
+void HistogramCursor::doStop()
 {
     m_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doUpdate() throw( ::fwTools::Failed)
+void HistogramCursor::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -170,7 +170,7 @@ void HistogramCursor::doUpdate() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doSwap() throw( ::fwTools::Failed)
+void HistogramCursor::doSwap()
 {
 }
 

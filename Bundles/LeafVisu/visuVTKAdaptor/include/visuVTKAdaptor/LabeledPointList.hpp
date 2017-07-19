@@ -39,9 +39,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (LabeledPointList)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API LabeledPointList() throw();
+    VISUVTKADAPTOR_API LabeledPointList() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~LabeledPointList() throw();
+    VISUVTKADAPTOR_API virtual ~LabeledPointList() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -55,12 +55,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 

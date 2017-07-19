@@ -45,7 +45,7 @@ bool Composite::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfg
 
 //------------------------------------------------------------------------------
 
-void Composite::updating( ) throw( ::fwTools::Failed)
+void Composite::updating()
 {
     SLM_FATAL("This method is deprecated, and this, shouldn't be used.");
 }

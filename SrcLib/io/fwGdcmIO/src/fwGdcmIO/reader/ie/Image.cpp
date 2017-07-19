@@ -302,7 +302,7 @@ void Image::readImagePixelModule()
 //------------------------------------------------------------------------------
 
 char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsigned short bitsAllocated,
-                             unsigned short newBitsAllocated, bool performRescale) throw(::fwGdcmIO::exception::Failed)
+                             unsigned short newBitsAllocated, bool performRescale)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);

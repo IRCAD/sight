@@ -27,20 +27,20 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SAddLabeledPoint)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API SAddLabeledPoint() throw();
+    UIMEASUREMENT_API SAddLabeledPoint() noexcept;
 
-    UIMEASUREMENT_API virtual ~SAddLabeledPoint() throw();
+    UIMEASUREMENT_API virtual ~SAddLabeledPoint() noexcept;
 
 protected:
 
 
-    UIMEASUREMENT_API void configuring() throw (::fwTools::Failed);
+    UIMEASUREMENT_API void configuring();
 
-    UIMEASUREMENT_API void starting() throw (::fwTools::Failed);
+    UIMEASUREMENT_API void starting();
 
-    UIMEASUREMENT_API void updating() throw (::fwTools::Failed);
+    UIMEASUREMENT_API void updating();
 
-    UIMEASUREMENT_API void stopping() throw (::fwTools::Failed);
+    UIMEASUREMENT_API void stopping();
 
     UIMEASUREMENT_API void info(std::ostream &_sstream );
 

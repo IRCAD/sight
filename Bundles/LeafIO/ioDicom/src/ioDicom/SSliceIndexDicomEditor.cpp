@@ -62,7 +62,7 @@ const ::fwCom::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() throw() :
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
     m_delay(500)
 {
     m_slotReadImage = newSlot(s_READ_IMAGE_SLOT, &SSliceIndexDicomEditor::readImage, this);
@@ -70,13 +70,13 @@ SSliceIndexDicomEditor::SSliceIndexDicomEditor() throw() :
 }
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() throw()
+SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::configuring() throw(::fwTools::Failed)
+void SSliceIndexDicomEditor::configuring()
 {
     SLM_TRACE_FUNC();
     ::fwGui::IGuiContainerSrv::initialize();
@@ -108,7 +108,7 @@ void SSliceIndexDicomEditor::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::starting() throw(::fwTools::Failed)
+void SSliceIndexDicomEditor::starting()
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
@@ -184,7 +184,7 @@ void SSliceIndexDicomEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::stopping() throw(::fwTools::Failed)
+void SSliceIndexDicomEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -203,7 +203,7 @@ void SSliceIndexDicomEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::updating() throw(::fwTools::Failed)
+void SSliceIndexDicomEditor::updating()
 {
 }
 

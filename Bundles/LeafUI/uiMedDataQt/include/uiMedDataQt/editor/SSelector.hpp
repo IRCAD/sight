@@ -71,7 +71,7 @@ public:
     UIMEDDATAQT_API SSelector();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SSelector() throw();
+    UIMEDDATAQT_API virtual ~SSelector() noexcept;
 
     typedef ::fwCom::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
 
@@ -99,16 +99,16 @@ public:
 protected:
 
     /// Installs GUI : create container and add selector.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroys GUI.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Configures the service according to the xml tags found.
-    virtual void configuring() throw (::fwTools::Failed);
+    virtual void configuring();
 
     /// Fill selector with the series contained in SeriesDB.
-    virtual void updating() throw (::fwTools::Failed);
+    virtual void updating();
 
     virtual void info( std::ostream& _sstream );
 

@@ -40,7 +40,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //------------------------------------------------------------------------------
 
-PointList::PointList() throw() :
+PointList::PointList() noexcept :
     m_radius(7.0),
     m_interaction(true)
 {
@@ -52,12 +52,12 @@ PointList::PointList() throw() :
 
 //------------------------------------------------------------------------------
 
-PointList::~PointList() throw()
+PointList::~PointList() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void PointList::doConfigure() throw(fwTools::Failed)
+void PointList::doConfigure()
 {
     SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
 
@@ -87,7 +87,7 @@ void PointList::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointList::doStart() throw(fwTools::Failed)
+void PointList::doStart()
 {
     m_oldWeakPointList.clear();
 
@@ -98,7 +98,7 @@ void PointList::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointList::doUpdate() throw(fwTools::Failed)
+void PointList::doUpdate()
 {
     WeakPointListType points = this->getNewPoints();
     this->createServices( points );
@@ -125,7 +125,7 @@ void PointList::updateSpline()
 
 //------------------------------------------------------------------------------
 
-void PointList::doSwap() throw(fwTools::Failed)
+void PointList::doSwap()
 {
     this->doStop();
     this->doUpdate();
@@ -133,7 +133,7 @@ void PointList::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointList::doStop() throw(fwTools::Failed)
+void PointList::doStop()
 {
     m_oldWeakPointList.clear();
     m_weakPointList.clear();

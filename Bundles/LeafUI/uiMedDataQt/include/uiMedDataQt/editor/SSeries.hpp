@@ -46,7 +46,7 @@ public:
     UIMEDDATAQT_API SSeries();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SSeries() throw();
+    UIMEDDATAQT_API virtual ~SSeries() noexcept;
 
     /**
      * @brief Signal type and key triggered when the series has been exported to related series DB.
@@ -81,10 +81,10 @@ public:
 protected:
 
     /// Installs GUI : create container and add selector.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroys GUI.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      *
@@ -99,10 +99,10 @@ protected:
      * - \b selectionMode : defines the selection mode for the series
      * - \b allowedRemove : allows user to remove series
      */
-    virtual void configuring() throw (::fwTools::Failed);
+    virtual void configuring();
 
     /// Fill selector with the series contained in SeriesDB.
-    virtual void updating() throw (::fwTools::Failed);
+    virtual void updating();
 
 protected Q_SLOTS:
 

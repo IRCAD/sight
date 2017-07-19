@@ -51,7 +51,7 @@ SInitNewSeries::SInitNewSeries() : m_defaultInstitution("")
 
 //------------------------------------------------------------------------------
 
-SInitNewSeries::~SInitNewSeries() throw()
+SInitNewSeries::~SInitNewSeries() noexcept
 {
 }
 
@@ -65,21 +65,21 @@ void SInitNewSeries::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::starting() throw(::fwTools::Failed)
+void SInitNewSeries::starting()
 {
     this->actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::stopping() throw(::fwTools::Failed)
+void SInitNewSeries::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::updating() throw(::fwTools::Failed)
+void SInitNewSeries::updating()
 {
     using namespace ::boost::posix_time;
 
@@ -156,7 +156,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::configuring() throw(::fwTools::Failed)
+void SInitNewSeries::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 

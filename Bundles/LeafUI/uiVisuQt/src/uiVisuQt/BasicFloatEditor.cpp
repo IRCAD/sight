@@ -29,19 +29,19 @@ namespace uiVisu
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor, ::fwData::Float );
 
-BasicFloatEditor::BasicFloatEditor() throw()
+BasicFloatEditor::BasicFloatEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-BasicFloatEditor::~BasicFloatEditor() throw()
+BasicFloatEditor::~BasicFloatEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::starting() throw(::fwTools::Failed)
+void BasicFloatEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -67,7 +67,7 @@ void BasicFloatEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::stopping() throw(::fwTools::Failed)
+void BasicFloatEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -78,7 +78,7 @@ void BasicFloatEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::configuring() throw(fwTools::Failed)
+void BasicFloatEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -86,7 +86,7 @@ void BasicFloatEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::updating() throw(::fwTools::Failed)
+void BasicFloatEditor::updating()
 {
     ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
     SLM_ASSERT("The given float object is null", floatObj);
@@ -103,7 +103,7 @@ void BasicFloatEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::swapping() throw(::fwTools::Failed)
+void BasicFloatEditor::swapping()
 {
     this->updating();
 }

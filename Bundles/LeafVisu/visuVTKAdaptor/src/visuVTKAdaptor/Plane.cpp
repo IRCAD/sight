@@ -49,7 +49,7 @@ const ::fwCom::Signals::SignalKeyType Plane::s_INTERACTION_STARTED_SIG = "intera
 
 //------------------------------------------------------------------------------
 
-Plane::Plane() throw() :
+Plane::Plane() noexcept :
     m_vtkPlane(nullptr),
     m_actorPlan(nullptr),
     m_vtkImplicitPlane(nullptr),
@@ -64,20 +64,20 @@ Plane::Plane() throw() :
 
 //------------------------------------------------------------------------------
 
-Plane::~Plane() throw()
+Plane::~Plane() noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::doConfigure() throw(fwTools::Failed)
+void Plane::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::doStart() throw(fwTools::Failed)
+void Plane::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -116,7 +116,7 @@ void Plane::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Plane::doSwap() throw(fwTools::Failed)
+void Plane::doSwap()
 {
     SLM_TRACE("SWAPPING Plane");
     m_pPlane = this->getObject< ::fwData::Plane >();
@@ -125,7 +125,7 @@ void Plane::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Plane::doUpdate() throw(fwTools::Failed)
+void Plane::doUpdate()
 {
     assert(!m_pPlane.expired());
     ::fwData::Plane::sptr plane = m_pPlane.lock();
@@ -172,7 +172,7 @@ void Plane::startInteraction()
 
 //------------------------------------------------------------------------------
 
-void Plane::doStop() throw(fwTools::Failed)
+void Plane::doStop()
 {
     if (m_vtkPlaneCollection && m_vtkImplicitPlane)
     {

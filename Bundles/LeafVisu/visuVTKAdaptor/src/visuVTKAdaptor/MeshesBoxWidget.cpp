@@ -73,7 +73,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT  = "removeObjects
 
 //-----------------------------------------------------------------------------
 
-MeshesBoxWidget::MeshesBoxWidget() throw() :
+MeshesBoxWidget::MeshesBoxWidget() noexcept :
     m_assembly(nullptr),
     m_boxWidgetCommand(MeshesBoxClallback::New(this)),
     m_vtkBoxWidget(nullptr)
@@ -86,19 +86,19 @@ MeshesBoxWidget::MeshesBoxWidget() throw() :
 
 //-----------------------------------------------------------------------------
 
-MeshesBoxWidget::~MeshesBoxWidget() throw()
+MeshesBoxWidget::~MeshesBoxWidget() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::doConfigure() throw(fwTools::Failed)
+void MeshesBoxWidget::doConfigure()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::doStart() throw(fwTools::Failed)
+void MeshesBoxWidget::doStart()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
@@ -119,7 +119,7 @@ void MeshesBoxWidget::doStart() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::doUpdate() throw(fwTools::Failed)
+void MeshesBoxWidget::doUpdate()
 {
     m_assembly->GetParts()->RemoveAllItems();
     if (!m_meshMap.empty())
@@ -141,14 +141,14 @@ void MeshesBoxWidget::doUpdate() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::doSwap() throw(fwTools::Failed)
+void MeshesBoxWidget::doSwap()
 {
     this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::doStop() throw(fwTools::Failed)
+void MeshesBoxWidget::doStop()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 

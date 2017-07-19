@@ -42,7 +42,7 @@ public:
     IOATOMS_API SWriter();
 
     /// Does nothing
-    IOATOMS_API virtual ~SWriter() throw()
+    IOATOMS_API virtual ~SWriter() noexcept
     {
     }
 
@@ -93,19 +93,19 @@ protected:
      * @see ::io::IWriter
      * @throw ::fwTools::Failed
      */
-    IOATOMS_API void configuring() throw(::fwTools::Failed);
+    IOATOMS_API void configuring();
 
     /// Does nothing
-    IOATOMS_API void starting() throw(::fwTools::Failed);
+    IOATOMS_API void starting();
 
     /// Does nothing
-    IOATOMS_API void stopping() throw(::fwTools::Failed);
+    IOATOMS_API void stopping();
 
     /**
      * @brief Convert fwData to fwAtoms, and apply the writer chosen from file extension
      * @note Data is locked (mutex) recursively during writing
      */
-    IOATOMS_API void updating() throw(::fwTools::Failed);
+    IOATOMS_API void updating();
 
     /// Returns managed path type, here service manages only single file
     IOATOMS_API ::io::IOPathType getIOPathType() const;

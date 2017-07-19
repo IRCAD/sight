@@ -42,13 +42,13 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::LoadLandm
 //------------------------------------------------------------------------------
 
 
-LoadLandmark::LoadLandmark( ) throw()
+LoadLandmark::LoadLandmark( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-LoadLandmark::~LoadLandmark() throw()
+LoadLandmark::~LoadLandmark() noexcept
 {
 }
 
@@ -61,7 +61,7 @@ void LoadLandmark::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void LoadLandmark::updating() throw(::fwTools::Failed)
+void LoadLandmark::updating()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -99,21 +99,21 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LoadLandmark::configuring() throw (::fwTools::Failed)
+void LoadLandmark::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void LoadLandmark::starting() throw (::fwTools::Failed)
+void LoadLandmark::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void LoadLandmark::stopping() throw (::fwTools::Failed)
+void LoadLandmark::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

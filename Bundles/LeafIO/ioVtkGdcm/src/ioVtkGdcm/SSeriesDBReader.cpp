@@ -42,14 +42,14 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::SSeriesDBReader() throw()
+SSeriesDBReader::SSeriesDBReader() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBReader::~SSeriesDBReader() throw()
+SSeriesDBReader::~SSeriesDBReader() noexcept
 {
 }
 
@@ -77,21 +77,21 @@ void SSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::starting() throw(::fwTools::Failed)
+void SSeriesDBReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::stopping() throw(::fwTools::Failed)
+void SSeriesDBReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::configuring() throw(::fwTools::Failed)
+void SSeriesDBReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -152,7 +152,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::updating() throw(::fwTools::Failed)
+void SSeriesDBReader::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )

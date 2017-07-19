@@ -57,12 +57,12 @@ public:
     /**
      * @brief    Constructor
      */
-    VTKCOMPOSITEMESH_API RendererService() throw();
+    VTKCOMPOSITEMESH_API RendererService() noexcept;
 
     /**
      * @brief    Destructor
      */
-    VTKCOMPOSITEMESH_API virtual ~RendererService() throw();
+    VTKCOMPOSITEMESH_API virtual ~RendererService() noexcept;
 
     /// This method is used to notify that the VTK camera position is updated.
     void notifyCamPositionUpdated();
@@ -83,7 +83,7 @@ protected:
      * This method is used to initialize the service.
      * Initialize VTK renderer and create qt containers
      */
-    VTKCOMPOSITEMESH_API virtual void starting() throw(fwTools::Failed);
+    VTKCOMPOSITEMESH_API virtual void starting();
 
 
     /**
@@ -95,7 +95,7 @@ protected:
        @endcode
      * This method is used to configure the service. Initialize qt container.
      */
-    VTKCOMPOSITEMESH_API virtual void configuring() throw(::fwTools::Failed);
+    VTKCOMPOSITEMESH_API virtual void configuring();
 
 
     /**
@@ -103,7 +103,7 @@ protected:
      *
      * Destroy VTK renderer and containers
      */
-    VTKCOMPOSITEMESH_API virtual void stopping() throw(fwTools::Failed);
+    VTKCOMPOSITEMESH_API virtual void stopping();
 
     /**
      * @brief Updating method.
@@ -111,7 +111,7 @@ protected:
      * This method is used to update the service.
      * Make a render if necessary
      */
-    VTKCOMPOSITEMESH_API virtual void updating() throw(fwTools::Failed);
+    VTKCOMPOSITEMESH_API virtual void updating();
 
     /// @brief vtk renderer
     vtkRenderer * m_render;

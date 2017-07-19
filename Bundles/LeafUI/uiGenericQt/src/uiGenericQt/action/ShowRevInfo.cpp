@@ -40,13 +40,13 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::ShowRevInfo, 
 
 //------------------------------------------------------------------------------
 
-ShowRevInfo::ShowRevInfo( ) throw()
+ShowRevInfo::ShowRevInfo( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-ShowRevInfo::~ShowRevInfo() throw()
+ShowRevInfo::~ShowRevInfo() noexcept
 {
 }
 
@@ -58,13 +58,13 @@ void ShowRevInfo::info(std::ostream& _sstream )
 }
 
 //------------------------------------------------------------------------------
-void ShowRevInfo::configuring() throw(::fwTools::Failed)
+void ShowRevInfo::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
-void ShowRevInfo::updating( ) throw(::fwTools::Failed)
+void ShowRevInfo::updating( )
 {
     SLM_TRACE_FUNC();
 
@@ -103,14 +103,14 @@ void ShowRevInfo::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowRevInfo::starting() throw (::fwTools::Failed)
+void ShowRevInfo::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowRevInfo::stopping() throw (::fwTools::Failed)
+void ShowRevInfo::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

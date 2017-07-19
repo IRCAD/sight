@@ -29,7 +29,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     m_preferences = ::fwData::Composite::New();
 
@@ -62,7 +62,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 //-----------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
     if(::fwTools::fwID::exist(s_PREF_SERVICE_UID))
     {

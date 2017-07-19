@@ -53,7 +53,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
 
 //------------------------------------------------------------------------------
 
-void Object::updating( ) throw(fwTools::Failed)
+void Object::updating( )
 {
     SLM_FATAL("This method is deprecated, and thus, shouldn't be used.");
 }

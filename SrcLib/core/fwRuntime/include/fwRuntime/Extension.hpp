@@ -126,7 +126,7 @@ struct Extension : public BundleElement,
          *
          * @remark  Assignment is forbidden.
          */
-        void operator=(const Extension&) throw();
+        void operator=(const Extension&) noexcept;
 
 };
 

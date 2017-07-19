@@ -44,7 +44,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 
 //------------------------------------------------------------------------------
 
-ImageSlice::ImageSlice() throw() :
+ImageSlice::ImageSlice() noexcept :
     m_interpolation(true),
     m_useImageTF(false),
     m_actorOpacity(1.),
@@ -61,7 +61,7 @@ ImageSlice::ImageSlice() throw() :
 
 //------------------------------------------------------------------------------
 
-ImageSlice::~ImageSlice() throw()
+ImageSlice::~ImageSlice() noexcept
 {
     m_imageActor->Delete();
     m_imageActor = nullptr;
@@ -78,7 +78,7 @@ ImageSlice::~ImageSlice() throw()
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doStart() throw(fwTools::Failed)
+void ImageSlice::doStart()
 {
     this->addToRenderer(m_imageActor);
     this->addToRenderer(m_planeOutlineActor);
@@ -97,7 +97,7 @@ void ImageSlice::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doStop() throw(fwTools::Failed)
+void ImageSlice::doStop()
 {
     SLM_TRACE_FUNC();
 
@@ -108,7 +108,7 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doSwap() throw(fwTools::Failed)
+void ImageSlice::doSwap()
 {
     m_connections.disconnect();
     m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
@@ -145,7 +145,7 @@ void ImageSlice::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doUpdate() throw(::fwTools::Failed)
+void ImageSlice::doUpdate()
 {
     ::fwData::Image::sptr image = this->getCtrlImage();
 
@@ -189,7 +189,7 @@ void ImageSlice::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::doConfigure() throw(fwTools::Failed)
+void ImageSlice::doConfigure()
 {
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("sliceIndex"))

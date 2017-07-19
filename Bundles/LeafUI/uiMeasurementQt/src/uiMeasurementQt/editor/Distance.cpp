@@ -39,20 +39,20 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurement::editor::Distan
 
 const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
-Distance::Distance() throw()
+Distance::Distance() noexcept
 {
     m_sigDistanceRequested = newSignal< DistanceRequestedSignalType >(s_DISTANCE_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-Distance::~Distance() throw()
+Distance::~Distance() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::starting() throw(::fwTools::Failed)
+void Distance::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -79,7 +79,7 @@ void Distance::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::stopping() throw(::fwTools::Failed)
+void Distance::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -90,7 +90,7 @@ void Distance::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::configuring() throw(fwTools::Failed)
+void Distance::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -105,13 +105,13 @@ void Distance::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::updating() throw(::fwTools::Failed)
+void Distance::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::swapping() throw(::fwTools::Failed)
+void Distance::swapping()
 {
 
 }

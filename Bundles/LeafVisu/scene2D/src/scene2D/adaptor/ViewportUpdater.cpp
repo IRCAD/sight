@@ -19,19 +19,19 @@ namespace adaptor
 {
 
 
-ViewportUpdater::ViewportUpdater() throw()
+ViewportUpdater::ViewportUpdater() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ViewportUpdater::~ViewportUpdater() throw()
+ViewportUpdater::~ViewportUpdater() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::configuring() throw( ::fwTools::Failed)
+void ViewportUpdater::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -40,21 +40,21 @@ void ViewportUpdater::configuring() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::doStart() throw( ::fwTools::Failed)
+void ViewportUpdater::doStart()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::doStop() throw( ::fwTools::Failed)
+void ViewportUpdater::doStop()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::doUpdate() throw( ::fwTools::Failed)
+void ViewportUpdater::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -77,7 +77,7 @@ void ViewportUpdater::doUpdate() throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ViewportUpdater::doSwap() throw( ::fwTools::Failed)
+void ViewportUpdater::doSwap()
 {
 }
 

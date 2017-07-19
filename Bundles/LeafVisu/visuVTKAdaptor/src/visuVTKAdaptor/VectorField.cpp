@@ -42,14 +42,14 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-VectorField::VectorField() throw()
+VectorField::VectorField() noexcept
 {
     m_imageData = vtkImageData::New();
 }
 
 //------------------------------------------------------------------------------
 
-VectorField::~VectorField() throw()
+VectorField::~VectorField() noexcept
 {
     m_imageData->Delete();
     m_imageData = NULL;
@@ -57,28 +57,28 @@ VectorField::~VectorField() throw()
 
 //------------------------------------------------------------------------------
 
-void VectorField::doStart() throw(fwTools::Failed)
+void VectorField::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::doStop() throw(fwTools::Failed)
+void VectorField::doStop()
 {
     this->destroyPipeline();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::doSwap() throw(fwTools::Failed)
+void VectorField::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::doUpdate() throw(::fwTools::Failed)
+void VectorField::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -95,7 +95,7 @@ void VectorField::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void VectorField::doConfigure() throw(fwTools::Failed)
+void VectorField::doConfigure()
 {
 }
 

@@ -38,13 +38,13 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddLandma
 //------------------------------------------------------------------------------
 
 
-AddLandmark::AddLandmark( ) throw()
+AddLandmark::AddLandmark( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-AddLandmark::~AddLandmark() throw()
+AddLandmark::~AddLandmark() noexcept
 {
 }
 
@@ -83,7 +83,7 @@ bool defineLabel(std::string& name)
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::updating() throw(::fwTools::Failed)
+void AddLandmark::updating()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image;
@@ -142,21 +142,21 @@ void AddLandmark::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::configuring() throw (::fwTools::Failed)
+void AddLandmark::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::starting() throw (::fwTools::Failed)
+void AddLandmark::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::stopping() throw (::fwTools::Failed)
+void AddLandmark::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

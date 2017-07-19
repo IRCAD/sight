@@ -60,9 +60,9 @@ class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwDataTools::helper::Medi
 public:
     fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API SlicesCursor()  throw();
+    VISUVTKADAPTOR_API SlicesCursor()  noexcept;
 
-    VISUVTKADAPTOR_API virtual ~SlicesCursor()  throw();
+    VISUVTKADAPTOR_API virtual ~SlicesCursor()  noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -91,12 +91,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doConfigure();
 
     /// Slot: set the scale for the cross : 1. means full cross, 0.5 half cross, 0. no cross
     void setCrossScale(double scale);

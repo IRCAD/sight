@@ -69,7 +69,7 @@ const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG
 
 //------------------------------------------------------------------------------
 
-SActivityLauncher::SActivityLauncher() throw() :
+SActivityLauncher::SActivityLauncher() noexcept :
     m_mode("message")
 {
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
@@ -81,13 +81,13 @@ SActivityLauncher::SActivityLauncher() throw() :
 
 //------------------------------------------------------------------------------
 
-SActivityLauncher::~SActivityLauncher() throw()
+SActivityLauncher::~SActivityLauncher() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::starting() throw(::fwTools::Failed)
+void SActivityLauncher::starting()
 {
     this->actionServiceStarting();
     this->updateState();
@@ -95,7 +95,7 @@ void SActivityLauncher::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::stopping() throw(::fwTools::Failed)
+void SActivityLauncher::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -103,7 +103,7 @@ void SActivityLauncher::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::configuring() throw(fwTools::Failed)
+void SActivityLauncher::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
     typedef ::fwServices::IService::ConfigType ConfigType;
@@ -274,7 +274,7 @@ SActivityLauncher::ActivityInfoContainer SActivityLauncher::getEnabledActivities
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::updating() throw(::fwTools::Failed)
+void SActivityLauncher::updating()
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 

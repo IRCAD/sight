@@ -42,9 +42,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Plane)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Plane() throw();
+    VISUVTKADAPTOR_API Plane() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Plane() throw();
+    VISUVTKADAPTOR_API virtual ~Plane() noexcept;
 
     VISUVTKADAPTOR_API void setVtkPlaneCollection( vtkObject* col );
 
@@ -70,11 +70,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doStop();
 
     /**
      * @name Slots

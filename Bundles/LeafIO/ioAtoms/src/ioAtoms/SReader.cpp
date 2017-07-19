@@ -72,19 +72,19 @@ SReader::SReader() :
 
 //-----------------------------------------------------------------------------
 
-void SReader::starting() throw(::fwTools::Failed)
+void SReader::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SReader::stopping() throw(::fwTools::Failed)
+void SReader::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SReader::configuring() throw(::fwTools::Failed)
+void SReader::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -199,7 +199,7 @@ void SReader::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SReader::updating() throw(::fwTools::Failed)
+void SReader::updating()
 {
     if(this->hasLocationDefined())
     {

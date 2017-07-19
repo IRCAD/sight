@@ -21,7 +21,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Line::Line() throw() :
+Line::Line() noexcept :
     m_x1(0.f),
     m_x2(0.f),
     m_y1(0.f),
@@ -33,13 +33,13 @@ Line::Line() throw() :
 
 //---------------------------------------------------------------------------------------------------------------
 
-Line::~Line() throw()
+Line::~Line() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::configuring() throw ( ::fwTools::Failed )
+void Line::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -90,7 +90,7 @@ void Line::draw()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doStart() throw ( ::fwTools::Failed )
+void Line::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -103,21 +103,21 @@ void Line::doStart() throw ( ::fwTools::Failed )
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doUpdate() throw ( ::fwTools::Failed )
+void Line::doUpdate()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doSwap() throw ( ::fwTools::Failed )
+void Line::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doStop() throw ( ::fwTools::Failed )
+void Line::doStop()
 {
     SLM_TRACE_FUNC();
     // Remove the layer (and therefore its related line item) from the scene

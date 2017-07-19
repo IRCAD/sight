@@ -35,7 +35,7 @@ const ::fwCom::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "serie
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::SSeriesSignal() throw()
+SSeriesSignal::SSeriesSignal() noexcept
 {
     m_sigSeriesAdded = newSignal< SeriesAddedSignalType >(s_SERIES_ADDED_SIG);
 
@@ -44,25 +44,25 @@ SSeriesSignal::SSeriesSignal() throw()
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::~SSeriesSignal() throw()
+SSeriesSignal::~SSeriesSignal() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::starting() throw(::fwTools::Failed)
+void SSeriesSignal::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::stopping() throw(::fwTools::Failed)
+void SSeriesSignal::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::configuring() throw(fwTools::Failed)
+void SSeriesSignal::configuring()
 {
 
     const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
@@ -109,7 +109,7 @@ void SSeriesSignal::reportSeries(::fwMedData::SeriesDB::ContainerType addedSerie
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::updating() throw(::fwTools::Failed)
+void SSeriesSignal::updating()
 {
 }
 

@@ -75,7 +75,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      *
      * @return  a shared pointer to a bundle instance
      */
-    FWRUNTIME_API const std::shared_ptr< Bundle > getBundle() const throw();
+    FWRUNTIME_API const std::shared_ptr< Bundle > getBundle() const noexcept;
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -92,7 +92,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      * @see     getExistingAttributeValue
      * @see     getSafeAttributeValue
      */
-    FWRUNTIME_API const std::string getAttributeValue(const std::string& name) const throw();
+    FWRUNTIME_API const std::string getAttributeValue(const std::string& name) const noexcept;
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -110,7 +110,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      * @see         getAttributeValue
      * @see         getSafeAttributeValue
      */
-    FWRUNTIME_API const std::string getExistingAttributeValue(const std::string& name) const throw(NoSuchAttribute);
+    FWRUNTIME_API const std::string getExistingAttributeValue(const std::string& name) const;
 
     /**
      * @brief       Retrieves the value of an existing attribute for the specified name.
@@ -126,21 +126,21 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      * @see         getAttributeValue
      * @see         getExistingAttributeValue
      */
-    FWRUNTIME_API const AttributePair getSafeAttributeValue(const std::string& name) const throw();
+    FWRUNTIME_API const AttributePair getSafeAttributeValue(const std::string& name) const noexcept;
 
     /**
      * @brief   Retrieves the name of the configuration element.
      *
      * @return  a string containing the configuration element name
      */
-    FWRUNTIME_API const std::string getName() const throw();
+    FWRUNTIME_API const std::string getName() const noexcept;
 
     /**
      * @brief   Retrieves the configuration element value.
      *
      * @return  a string containing the configuration element value
      */
-    FWRUNTIME_API const std::string getValue() const throw();
+    FWRUNTIME_API const std::string getValue() const noexcept;
 
     /**
      * @brief       Tells if the specified attributes exists.
@@ -149,12 +149,12 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      *
      * @return      true or false
      */
-    FWRUNTIME_API bool hasAttribute(const std::string& name) const throw();
+    FWRUNTIME_API bool hasAttribute(const std::string& name) const noexcept;
 
     /**
      * @brief   Return the map with attributes
      */
-    FWRUNTIME_API const std::map<std::string, std::string> getAttributes() const throw();
+    FWRUNTIME_API const std::map<std::string, std::string> getAttributes() const noexcept;
 
     /**
      * @brief   Print contents
@@ -205,14 +205,14 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          * @param[in]   name    a string containing the attribute name
          * @param[in]   value   a string containing the attribute value
          */
-        FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) throw();
+        FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) noexcept;
 
         /**
          * @brief       Sets the value of the configuration element it-self.
          *
          * @param[in]   value   a string containing the new configuration element value
          */
-        FWRUNTIME_API void setValue(const std::string& value) throw();
+        FWRUNTIME_API void setValue(const std::string& value) noexcept;
 
 
     private:
@@ -249,7 +249,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          *
          * @remark  Assignement is forbidden for this class.
          */
-        void operator=(const ConfigurationElement&) throw();
+        void operator=(const ConfigurationElement&) noexcept;
 };
 
 

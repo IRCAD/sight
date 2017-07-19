@@ -26,16 +26,16 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (Cube)(::fwRenderVTK::IVtkAdaptorService) );
 
 protected:
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    void doSwap() throw(fwTools::Failed)
+    void doSwap()
     {
     }
-    void doUpdate() throw(fwTools::Failed)
+    void doUpdate()
     {
     }
-    void doConfigure() throw(fwTools::Failed)
+    void doConfigure()
     {
     }
 };

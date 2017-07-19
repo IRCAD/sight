@@ -288,7 +288,7 @@ public:
      * @param[in] point 3D point
      */
     FWGDCMIO_API static int convertPointToFrameNumber(
-        const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point) throw(::fwGdcmIO::exception::Failed);
+        const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point);
 
     /***
      * @brief Convert a frame number to a Z coordinate
@@ -296,7 +296,7 @@ public:
      * @param[in] frameNumber Frame number
      */
     FWGDCMIO_API static double convertFrameNumberToZCoordinate(
-        const ::fwData::Image::csptr& image, int frameNumber) throw(::fwGdcmIO::exception::Failed);
+        const ::fwData::Image::csptr& image, int frameNumber);
 };
 
 } // namespace helper

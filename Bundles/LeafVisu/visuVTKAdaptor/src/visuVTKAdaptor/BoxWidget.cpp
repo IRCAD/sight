@@ -69,7 +69,7 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Bo
 
 //------------------------------------------------------------------------------
 
-BoxWidget::BoxWidget() throw() :
+BoxWidget::BoxWidget() noexcept :
     ::fwRenderVTK::IVtkAdaptorService(),
     m_transform(nullptr),
     m_vtkBoxWidget(nullptr),
@@ -82,13 +82,13 @@ BoxWidget::BoxWidget() throw() :
 
 //------------------------------------------------------------------------------
 
-BoxWidget::~BoxWidget() throw()
+BoxWidget::~BoxWidget() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doConfigure() throw( ::fwTools::Failed )
+void BoxWidget::doConfigure()
 {
     if (m_configuration->hasAttribute("scaleFactor"))
     {
@@ -106,7 +106,7 @@ void BoxWidget::doConfigure() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doStart() throw( ::fwTools::Failed )
+void BoxWidget::doStart()
 {
     m_transform = getTransform();
     SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
@@ -134,7 +134,7 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doStop() throw( ::fwTools::Failed )
+void BoxWidget::doStop()
 {
     unregisterServices();
 
@@ -148,7 +148,7 @@ void BoxWidget::doStop() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doSwap() throw( ::fwTools::Failed )
+void BoxWidget::doSwap()
 {
     doUpdate();
 }
@@ -188,7 +188,7 @@ void BoxWidget::updateFromVtk()
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doUpdate() throw( ::fwTools::Failed )
+void BoxWidget::doUpdate()
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );

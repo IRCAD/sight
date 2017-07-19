@@ -25,19 +25,19 @@ class UIMEASUREMENT_CLASS_API AddDistance : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (AddDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API AddDistance() throw();
+    UIMEASUREMENT_API AddDistance() noexcept;
 
-    UIMEASUREMENT_API virtual ~AddDistance() throw();
+    UIMEASUREMENT_API virtual ~AddDistance() noexcept;
 
 protected:
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     UIMEASUREMENT_API void info(std::ostream &_sstream );
 

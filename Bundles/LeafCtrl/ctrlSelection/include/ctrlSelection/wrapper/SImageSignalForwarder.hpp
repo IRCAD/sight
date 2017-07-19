@@ -49,28 +49,28 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SImageSignalForwarder)(::ctrlSelection::IWrapperSrv) );
 
-    CTRLSELECTION_API SImageSignalForwarder() throw();
+    CTRLSELECTION_API SImageSignalForwarder() noexcept;
 
-    CTRLSELECTION_API virtual ~SImageSignalForwarder() throw();
+    CTRLSELECTION_API virtual ~SImageSignalForwarder() noexcept;
 
 protected:
 
     /// Implements starting method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Implements swapping method derived from IService. Convert the image.
-    CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void swapping();
 
     /**
      * @brief Configures the service.
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements updating method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

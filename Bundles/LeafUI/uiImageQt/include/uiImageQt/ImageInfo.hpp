@@ -37,23 +37,23 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) );
 
-    UIIMAGEQT_API ImageInfo() throw();
+    UIIMAGEQT_API ImageInfo() noexcept;
 
-    UIIMAGEQT_API virtual ~ImageInfo() throw();
+    UIIMAGEQT_API virtual ~ImageInfo() noexcept;
 
 protected:
 
     /// Starts editor.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops editor.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
-    virtual void configuring() throw( ::fwTools::Failed);
+    virtual void configuring();
 
     virtual void info( std::ostream& _sstream );
 

@@ -56,7 +56,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 
 //------------------------------------------------------------------------------
 
-SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
+SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceIndexPositionEditor::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceIndexPositionEditor::updateSliceType, this);
@@ -64,13 +64,13 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
 
 //------------------------------------------------------------------------------
 
-SliceIndexPositionEditor::~SliceIndexPositionEditor() throw()
+SliceIndexPositionEditor::~SliceIndexPositionEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::starting()
 {
     this->create();
 
@@ -105,7 +105,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::stopping()
 {
     this->destroy();
     m_sliceSelectorPanel = nullptr;
@@ -113,7 +113,7 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
+void SliceIndexPositionEditor::configuring()
 {
     this->initialize();
 
@@ -147,7 +147,7 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::updating() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::updating()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -158,7 +158,7 @@ void SliceIndexPositionEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::swapping() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::swapping()
 {
     this->updating();
 }

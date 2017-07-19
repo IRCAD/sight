@@ -52,9 +52,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (Point)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Point() throw();
+    VISUVTKADAPTOR_API Point() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Point() throw();
+    VISUVTKADAPTOR_API virtual ~Point() noexcept;
 
     VISUVTKADAPTOR_API void setRadius(const double radius);
 
@@ -86,11 +86,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doStop();
 
 private:
     vtkHandleWidget* m_handle;

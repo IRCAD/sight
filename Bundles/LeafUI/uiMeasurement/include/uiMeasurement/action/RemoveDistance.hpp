@@ -30,19 +30,19 @@ class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (RemoveDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API RemoveDistance() throw();
+    UIMEASUREMENT_API RemoveDistance() noexcept;
 
-    UIMEASUREMENT_API virtual ~RemoveDistance() throw();
+    UIMEASUREMENT_API virtual ~RemoveDistance() noexcept;
 
 protected:
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     UIMEASUREMENT_API void info(std::ostream &_sstream );
 

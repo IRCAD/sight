@@ -38,7 +38,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 //-----------------------------------------------------------------------------
 
-SObjFromSlot::SObjFromSlot() throw()
+SObjFromSlot::SObjFromSlot() noexcept
 {
     m_slots(s_ADD_OR_SWAP_SLOT, &SObjFromSlot::addOrSwap, this)
         (s_ADD_SLOT, &SObjFromSlot::add, this)
@@ -51,13 +51,13 @@ SObjFromSlot::SObjFromSlot() throw()
 
 //-----------------------------------------------------------------------------
 
-SObjFromSlot::~SObjFromSlot() throw()
+SObjFromSlot::~SObjFromSlot() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::configuring()  throw ( ::fwTools::Failed )
+void SObjFromSlot::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 
@@ -73,20 +73,20 @@ void SObjFromSlot::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::starting()  throw ( ::fwTools::Failed )
+void SObjFromSlot::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::stopping()  throw ( ::fwTools::Failed )
+void SObjFromSlot::stopping()
 {
 }
 
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::updating() throw ( ::fwTools::Failed )
+void SObjFromSlot::updating()
 {
 }
 

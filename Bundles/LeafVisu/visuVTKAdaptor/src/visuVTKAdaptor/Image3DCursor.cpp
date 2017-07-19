@@ -47,7 +47,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPHERE_SLOT      = "updateSphe
 
 //------------------------------------------------------------------------------
 
-Image3DCursor::Image3DCursor() throw() : m_priority(.6)
+Image3DCursor::Image3DCursor() noexcept : m_priority(.6)
 {
     ////handlingEventOff();
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Image3DCursor::updateSliceIndex, this);
@@ -56,7 +56,7 @@ Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 
 //------------------------------------------------------------------------------
 
-Image3DCursor::~Image3DCursor() throw()
+Image3DCursor::~Image3DCursor() noexcept
 {
 }
 
@@ -70,13 +70,13 @@ void Image3DCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doConfigure() throw(fwTools::Failed)
+void Image3DCursor::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doStart() throw(fwTools::Failed)
+void Image3DCursor::doStart()
 {
     m_cursorPolyData = vtkSmartPointer<vtkPolyData>::New();
     m_cursorMapper   = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -111,7 +111,7 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doUpdate() throw(fwTools::Failed)
+void Image3DCursor::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -127,7 +127,7 @@ void Image3DCursor::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doSwap() throw(fwTools::Failed)
+void Image3DCursor::doSwap()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -136,7 +136,7 @@ void Image3DCursor::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doStop() throw(fwTools::Failed)
+void Image3DCursor::doStop()
 {
     this->removeAllPropFromRenderer();
     m_cursorPolyData = 0;

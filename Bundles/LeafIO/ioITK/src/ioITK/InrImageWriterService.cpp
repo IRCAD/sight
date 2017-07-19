@@ -30,13 +30,13 @@ fwServicesRegisterMacro( ::io::IWriter, ::ioITK::InrImageWriterService, ::fwData
 
 //------------------------------------------------------------------------------
 
-InrImageWriterService::InrImageWriterService() throw()
+InrImageWriterService::InrImageWriterService() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-InrImageWriterService::~InrImageWriterService() throw()
+InrImageWriterService::~InrImageWriterService() noexcept
 {
 }
 
@@ -49,7 +49,7 @@ InrImageWriterService::~InrImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::configuring() throw(::fwTools::Failed)
+void InrImageWriterService::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -83,14 +83,14 @@ void InrImageWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::starting() throw(::fwTools::Failed)
+void InrImageWriterService::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::stopping() throw(::fwTools::Failed)
+void InrImageWriterService::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -137,7 +137,7 @@ void InrImageWriterService::saveImage( const ::boost::filesystem::path& inrFile,
 
 //------------------------------------------------------------------------------
 
-void InrImageWriterService::updating() throw(::fwTools::Failed)
+void InrImageWriterService::updating()
 {
     SLM_TRACE_FUNC();
 

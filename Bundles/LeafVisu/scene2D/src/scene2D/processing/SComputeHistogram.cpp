@@ -29,19 +29,19 @@ namespace scene2D
 namespace processing
 {
 
-SComputeHistogram::SComputeHistogram() throw() : m_binsWidth(1.0f)
+SComputeHistogram::SComputeHistogram() noexcept : m_binsWidth(1.0f)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SComputeHistogram::~SComputeHistogram() throw()
+SComputeHistogram::~SComputeHistogram() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SComputeHistogram::configuring() throw ( ::fwTools::Failed )
+void SComputeHistogram::configuring()
 {
     if(!this->isVersion2())
     {
@@ -62,14 +62,14 @@ void SComputeHistogram::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SComputeHistogram::starting() throw ( ::fwTools::Failed )
+void SComputeHistogram::starting()
 {
     m_slotUpdate->asyncRun();
 }
 
 //-----------------------------------------------------------------------------
 
-void SComputeHistogram::updating() throw ( ::fwTools::Failed )
+void SComputeHistogram::updating()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -99,14 +99,14 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SComputeHistogram::swapping() throw ( ::fwTools::Failed )
+void SComputeHistogram::swapping()
 {
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void SComputeHistogram::stopping() throw ( ::fwTools::Failed )
+void SComputeHistogram::stopping()
 {
 }
 

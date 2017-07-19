@@ -47,8 +47,7 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATATOOLS_API  ::fwData::Mesh::Id insertNextPoint(const ::fwData::Mesh::PointValueType p[3])
-    throw(::fwData::Exception);
+    FWDATATOOLS_API  ::fwData::Mesh::Id insertNextPoint(const ::fwData::Mesh::PointValueType p[3]);
 
     /**
      * @brief Insert a point into the mesh.
@@ -56,7 +55,7 @@ public:
      */
     FWDATATOOLS_API ::fwData::Mesh::Id insertNextPoint(::fwData::Mesh::PointValueType x,
                                                        ::fwData::Mesh::PointValueType y,
-                                                       ::fwData::Mesh::PointValueType z) throw(::fwData::Exception);
+                                                       ::fwData::Mesh::PointValueType z);
 
     /**
      * @brief Set a point coordinates.
@@ -165,25 +164,25 @@ public:
      */
     FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellTypesEnum type,
                                                       const ::fwData::Mesh::CellValueType* cell,
-                                                      size_t nb ) throw(::fwData::Exception);
+                                                      size_t nb );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
-    FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p)  throw(::fwData::Exception);
+    FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p);
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
     FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
-                                                      ::fwData::Mesh::CellValueType p2 ) throw(::fwData::Exception);
+                                                      ::fwData::Mesh::CellValueType p2 );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
     FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
                                                       ::fwData::Mesh::CellValueType p2,
-                                                      ::fwData::Mesh::CellValueType p3 ) throw(::fwData::Exception);
+                                                      ::fwData::Mesh::CellValueType p3 );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
@@ -191,14 +190,14 @@ public:
     FWDATATOOLS_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
                                                       ::fwData::Mesh::CellValueType p2,
                                                       ::fwData::Mesh::CellValueType p3,
-                                                      ::fwData::Mesh::CellValueType p4 ) throw(::fwData::Exception);
+                                                      ::fwData::Mesh::CellValueType p4 );
     /**
      * @brief Insert a cell into the mesh.
      * @see insertNextCell
      */
     template <typename T> ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellTypesEnum type,
                                                             const T& pointsBegin,
-                                                            const T& pointsEnd ) throw(::fwData::Exception);
+                                                            const T& pointsEnd );
 
 
 

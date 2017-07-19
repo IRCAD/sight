@@ -28,30 +28,30 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (LockDumpSrv)(::fwServices::IController) );
 
     /// Constructor. Does nothing
-    CTRLMEMORY_API LockDumpSrv() throw();
+    CTRLMEMORY_API LockDumpSrv() noexcept;
 
     /// Destructor. Does nothing
-    CTRLMEMORY_API virtual ~LockDumpSrv() throw();
+    CTRLMEMORY_API virtual ~LockDumpSrv() noexcept;
 
 protected:
 
     /// Uses ::fwData::ObjectLock to dump lock the associated data
-    CTRLMEMORY_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void starting();
 
     /// Dump unlock the associated data
-    CTRLMEMORY_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void stopping();
 
     /// Does nothing
-    CTRLMEMORY_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void reconfiguring();
 
     /// Does nothing
-    CTRLMEMORY_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void updating();
 
     /// Does nothing
     CTRLMEMORY_API virtual void info( std::ostream &_sstream );
 
     /// Does nothing
-    CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void configuring();
 
 private:
 

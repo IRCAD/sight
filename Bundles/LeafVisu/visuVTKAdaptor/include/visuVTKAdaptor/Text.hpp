@@ -28,7 +28,7 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (Text)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Text();
-    VISUVTKADAPTOR_API virtual ~Text() throw();
+    VISUVTKADAPTOR_API virtual ~Text() noexcept;
 
     VISUVTKADAPTOR_API virtual void setText(const std::string &str);
     std::string getText() const
@@ -38,12 +38,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API virtual void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doStop() throw(fwTools::Failed);
-    virtual void doSwap() throw(fwTools::Failed)
+    VISUVTKADAPTOR_API virtual void doStart();
+    VISUVTKADAPTOR_API virtual void doStop();
+    virtual void doSwap()
     {
     }
-    virtual void doUpdate() throw(fwTools::Failed)
+    virtual void doUpdate()
     {
     }
 
@@ -74,7 +74,7 @@ protected:
      *   (see second example). This is useful for multiline text. The same rules
      *   that for the attribute are applied.
      */
-    VISUVTKADAPTOR_API virtual void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API virtual void doConfigure();
 
     std::string m_text;
 

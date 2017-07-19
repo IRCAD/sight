@@ -37,9 +37,9 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) );
 
 
-    CTRLSELECTION_API MedicalImageSrv() throw();
+    CTRLSELECTION_API MedicalImageSrv() noexcept;
 
-    CTRLSELECTION_API virtual ~MedicalImageSrv() throw();
+    CTRLSELECTION_API virtual ~MedicalImageSrv() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -53,22 +53,22 @@ public:
 protected:
 
     /// Implements starting method derived from IService. Convert the image.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Implements swapping method derived from IService. Convert the image.
-    CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void swapping();
 
     /// Implements configuring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void reconfiguring();
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

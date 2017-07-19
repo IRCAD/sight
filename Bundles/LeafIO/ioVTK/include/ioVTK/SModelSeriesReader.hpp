@@ -41,9 +41,9 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    IOVTK_API SModelSeriesReader() throw();
+    IOVTK_API SModelSeriesReader() noexcept;
 
-    ~SModelSeriesReader() throw()
+    ~SModelSeriesReader() noexcept
     {
     }
 
@@ -63,21 +63,21 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IOVTK_API virtual void starting() throw(::fwTools::Failed);
+    IOVTK_API virtual void starting();
 
     /**
      * @brief Stopping method.
      *
      * The stopping method is empty for this service.
      */
-    IOVTK_API virtual void stopping() throw(::fwTools::Failed);
+    IOVTK_API virtual void stopping();
 
     /**
      * @brief Configuring method.
      *
      * The configuring method only calls the configuring method from the base class
      */
-    IOVTK_API virtual void configuring() throw(::fwTools::Failed);
+    IOVTK_API virtual void configuring();
 
     /**
      * @brief Updating method.
@@ -85,7 +85,7 @@ protected:
      * This method is used to update the service.
      * The mesh is read.
      */
-    IOVTK_API void updating() throw(::fwTools::Failed);
+    IOVTK_API void updating();
 
     /**
      * @brief Info method.

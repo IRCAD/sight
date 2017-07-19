@@ -35,7 +35,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-Render::Render() throw() :
+Render::Render() noexcept :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
     m_scene(nullptr),
@@ -50,7 +50,7 @@ Render::Render() throw() :
 
 //-----------------------------------------------------------------------------
 
-Render::~Render() throw()
+Render::~Render() noexcept
 {
 }
 
@@ -121,7 +121,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 
 //-----------------------------------------------------------------------------
 
-void Render::configuring() throw ( ::fwTools::Failed )
+void Render::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -168,7 +168,7 @@ void Render::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Render::starting() throw ( ::fwTools::Failed )
+void Render::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -299,21 +299,21 @@ void Render::disconnect(const ::fwData::Composite::ContainerType& objects)
 
 //-----------------------------------------------------------------------------
 
-void Render::updating() throw ( ::fwTools::Failed )
+void Render::updating()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::swapping() throw ( ::fwTools::Failed )
+void Render::swapping()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
+void Render::swapping(const IService::KeyType& key)
 {
     if (this->isVersion2())
     {
@@ -377,7 +377,7 @@ void Render::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void Render::stopping() throw ( ::fwTools::Failed )
+void Render::stopping()
 {
     SLM_TRACE_FUNC();
 

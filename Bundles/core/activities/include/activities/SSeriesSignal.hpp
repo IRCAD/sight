@@ -61,10 +61,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SSeriesSignal)(::fwServices::IController) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SSeriesSignal() throw();
+    ACTIVITIES_API SSeriesSignal() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SSeriesSignal() throw();
+    ACTIVITIES_API virtual ~SSeriesSignal() noexcept;
 
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_REPORT_SERIES_SLOT;
 
@@ -83,16 +83,16 @@ public:
 protected:
 
     /// Do nothing
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Do nothing
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Parse XML configuration
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

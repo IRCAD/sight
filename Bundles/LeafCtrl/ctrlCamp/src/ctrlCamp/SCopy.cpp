@@ -39,7 +39,7 @@ SCopy::~SCopy()
 
 //-----------------------------------------------------------------------------
 
-void SCopy::configuring() throw( ::fwTools::Failed )
+void SCopy::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -100,7 +100,7 @@ void SCopy::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SCopy::starting() throw( ::fwTools::Failed )
+void SCopy::starting()
 {
     if(m_mode == ModeType::START)
     {
@@ -110,7 +110,7 @@ void SCopy::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SCopy::updating() throw( ::fwTools::Failed )
+void SCopy::updating()
 {
     if(m_mode == ModeType::UPDATE)
     {
@@ -124,7 +124,7 @@ void SCopy::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SCopy::stopping() throw( ::fwTools::Failed )
+void SCopy::stopping()
 {
     // Unregister output
     this->setOutput(s_TARGET_INOUT, nullptr);

@@ -21,19 +21,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ClassFactoryReg
 
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::ClassFactoryRegistryInfo( ) throw()
+ClassFactoryRegistryInfo::ClassFactoryRegistryInfo( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() throw()
+ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::updating( ) throw(::fwTools::Failed)
+void ClassFactoryRegistryInfo::updating( )
 {
     m_tree->clearSelection();
     m_tree->clear();
@@ -54,14 +54,14 @@ void ClassFactoryRegistryInfo::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::configuring() throw (::fwTools::Failed)
+void ClassFactoryRegistryInfo::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
+void ClassFactoryRegistryInfo::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
@@ -86,7 +86,7 @@ void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::stopping() throw (::fwTools::Failed)
+void ClassFactoryRegistryInfo::stopping()
 {
     m_dialog->hide();
     delete m_tree;

@@ -63,7 +63,7 @@ bool TagValueSorter::isConfigurationRequired() const
 
 TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
     const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
-const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+const
 {
 
     if(m_tag == DCM_UndefinedTagKey)

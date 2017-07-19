@@ -31,13 +31,13 @@ fwServicesRegisterMacro( ::io::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedD
 
 //------------------------------------------------------------------------------
 
-SJpgImageSeriesWriter::SJpgImageSeriesWriter() throw()
+SJpgImageSeriesWriter::SJpgImageSeriesWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SJpgImageSeriesWriter::~SJpgImageSeriesWriter() throw()
+SJpgImageSeriesWriter::~SJpgImageSeriesWriter() noexcept
 {
 }
 
@@ -50,7 +50,7 @@ SJpgImageSeriesWriter::~SJpgImageSeriesWriter() throw()
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::configuring() throw(::fwTools::Failed)
+void SJpgImageSeriesWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -103,14 +103,14 @@ void SJpgImageSeriesWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::starting() throw(::fwTools::Failed)
+void SJpgImageSeriesWriter::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::stopping() throw(::fwTools::Failed)
+void SJpgImageSeriesWriter::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -124,7 +124,7 @@ void SJpgImageSeriesWriter::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::updating() throw(::fwTools::Failed)
+void SJpgImageSeriesWriter::updating()
 {
     SLM_TRACE_FUNC();
 

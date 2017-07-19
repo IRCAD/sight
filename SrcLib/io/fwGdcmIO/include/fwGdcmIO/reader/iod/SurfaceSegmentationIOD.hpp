@@ -56,7 +56,7 @@ public:
      * @brief Read a DICOM File
      * @param[in,out] series Series that must be enriched
      */
-    FWGDCMIO_API void read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API void read(::fwMedData::Series::sptr series);
 
 };
 

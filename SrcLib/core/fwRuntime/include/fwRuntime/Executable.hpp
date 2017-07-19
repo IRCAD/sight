@@ -38,7 +38,7 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
      * @return  a shared pointer to the configuration element being the initialization data of the executable
      *          or null when none
      */
-    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > getInitializationData() const throw();
+    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > getInitializationData() const noexcept;
 
 
     /**
@@ -46,10 +46,10 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
      */
     /// @{
 
-    FWRUNTIME_API virtual std::shared_ptr<Bundle> getBundle() const throw();
+    FWRUNTIME_API virtual std::shared_ptr<Bundle> getBundle() const noexcept;
 
     FWRUNTIME_API virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration )
-    throw();
+    noexcept;
 
     /// @}
 

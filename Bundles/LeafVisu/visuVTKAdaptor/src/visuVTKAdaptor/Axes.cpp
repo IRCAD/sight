@@ -32,7 +32,7 @@ const ::fwCom::Slots::SlotKeyType Axes::s_UPDATE_VISIBILITY_SLOT = "updateVisibi
 
 //------------------------------------------------------------------------------
 
-Axes::Axes() throw() :
+Axes::Axes() noexcept :
     m_axesActor(fwVtkAxesActor::New()),
     m_sphereActor(nullptr),
     m_length(1.),
@@ -48,7 +48,7 @@ Axes::Axes() throw() :
 
 //------------------------------------------------------------------------------
 
-Axes::~Axes() throw()
+Axes::~Axes() noexcept
 {
     m_axesActor->Delete();
     m_axesActor = 0;
@@ -60,7 +60,7 @@ Axes::~Axes() throw()
 
 //------------------------------------------------------------------------------
 
-void Axes::doStart() throw(fwTools::Failed)
+void Axes::doStart()
 {
     this->buildPipeline();
     this->addToRenderer( m_axesActor );
@@ -72,7 +72,7 @@ void Axes::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Axes::doStop() throw(fwTools::Failed)
+void Axes::doStop()
 {
     this->removeAllPropFromRenderer();
     this->getRenderer()->RemoveActor(m_axesActor);
@@ -84,19 +84,19 @@ void Axes::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Axes::doSwap() throw(fwTools::Failed)
+void Axes::doSwap()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Axes::doUpdate() throw(fwTools::Failed)
+void Axes::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Axes::doConfigure() throw(fwTools::Failed)
+void Axes::doConfigure()
 {
     SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
     if ( m_configuration->hasAttribute( "length" ) )

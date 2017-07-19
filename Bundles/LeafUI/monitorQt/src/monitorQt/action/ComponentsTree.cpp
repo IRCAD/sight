@@ -26,19 +26,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ComponentsTree,
 
 //------------------------------------------------------------------------------
 
-ComponentsTree::ComponentsTree( ) throw()
+ComponentsTree::ComponentsTree( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-ComponentsTree::~ComponentsTree() throw()
+ComponentsTree::~ComponentsTree() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ComponentsTree::updating( ) throw(::fwTools::Failed)
+void ComponentsTree::updating( )
 {
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
@@ -84,14 +84,14 @@ void ComponentsTree::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ComponentsTree::configuring() throw (::fwTools::Failed)
+void ComponentsTree::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ComponentsTree::starting() throw (::fwTools::Failed)
+void ComponentsTree::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
@@ -108,7 +108,7 @@ void ComponentsTree::starting() throw (::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-void ComponentsTree::stopping() throw (::fwTools::Failed)
+void ComponentsTree::stopping()
 {
     m_dialog->hide();
     delete m_treeContainer;

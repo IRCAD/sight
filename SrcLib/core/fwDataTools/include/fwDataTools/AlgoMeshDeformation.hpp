@@ -27,12 +27,12 @@ public:
     /**
      * @brief   Constructor
      */
-    FWDATATOOLS_API AlgoMeshDeformation() throw();
+    FWDATATOOLS_API AlgoMeshDeformation() noexcept;
 
     /**
      * @brief   Destructor
      */
-    FWDATATOOLS_API virtual ~AlgoMeshDeformation() throw();
+    FWDATATOOLS_API virtual ~AlgoMeshDeformation() noexcept;
 
     /**
      * @brief Initialize algorithm's parameters.

@@ -34,9 +34,9 @@ public:
 
 protected:
 
-    GUI_API IDialogEditor() throw();
+    GUI_API IDialogEditor() noexcept;
 
-    GUI_API virtual ~IDialogEditor() throw();
+    GUI_API virtual ~IDialogEditor() noexcept;
 
     /** @name Service methods ( override from ::fwServices::IService )
      *  @{

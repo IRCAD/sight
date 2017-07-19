@@ -250,7 +250,6 @@ std::string CompareObjects::getPath(const std::string& property) const
 //-----------------------------------------------------------------------------
 
 void CompareObjects::compare(SPTR(::fwData::Object)objRef, SPTR(::fwData::Object)objComp)
-throw (::fwCore::Exception)
 {
     if(objRef->getClassname() != objComp->getClassname())
     {

@@ -38,7 +38,7 @@ static const ::fwCom::Slots::SlotKeyType s_ADD_PLANE_SLOT        = "addPlane";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_PLANE_SLOT     = "removePlane";
 static const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
 
-PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
+PlaneSelectionNotifier::PlaneSelectionNotifier() noexcept
 {
     m_slotUpdatePlaneList = newSlot(s_UPDATE_PLANELIST_SLOT, &PlaneSelectionNotifier::updatePlaneList, this);
     newSlot(s_SELECT_PLANE_SLOT, &PlaneSelectionNotifier::selectPlane, this);
@@ -50,13 +50,13 @@ PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
 
 //------------------------------------------------------------------------------
 
-PlaneSelectionNotifier::~PlaneSelectionNotifier() throw()
+PlaneSelectionNotifier::~PlaneSelectionNotifier() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doConfigure() throw(fwTools::Failed)
+void PlaneSelectionNotifier::doConfigure()
 {
     SLM_TRACE_FUNC();
     assert(m_configuration->getName() == "config");
@@ -69,7 +69,7 @@ void PlaneSelectionNotifier::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
+void PlaneSelectionNotifier::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -99,21 +99,21 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doUpdate() throw(fwTools::Failed)
+void PlaneSelectionNotifier::doUpdate()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doSwap() throw(fwTools::Failed)
+void PlaneSelectionNotifier::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
+void PlaneSelectionNotifier::doStop()
 {
     SLM_TRACE_FUNC();
 

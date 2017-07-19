@@ -27,19 +27,19 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (InteractorStyle)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API InteractorStyle() throw();
+    VISUVTKADAPTOR_API InteractorStyle() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~InteractorStyle() throw();
+    VISUVTKADAPTOR_API virtual ~InteractorStyle() noexcept;
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
     // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     void setInteractorStyle(vtkInteractorStyle *interactor);
 

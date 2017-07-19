@@ -34,12 +34,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    IODATA_API SMeshModifier() throw();
+    IODATA_API SMeshModifier() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    IODATA_API virtual ~SMeshModifier() throw();
+    IODATA_API virtual ~SMeshModifier() noexcept;
 
 protected:
 
@@ -66,16 +66,16 @@ protected:
      *  - ShakeCellNormals
      *  - MeshDeformation
      */
-    IODATA_API virtual void configuring() throw( ::fwTools::Failed );
+    IODATA_API virtual void configuring();
 
-    IODATA_API virtual void starting() throw(::fwTools::Failed);
+    IODATA_API virtual void starting();
 
-    IODATA_API virtual void stopping() throw(::fwTools::Failed);
+    IODATA_API virtual void stopping();
 
     /**
      * @brief Process the action: modifies the mesh using the selected functor.
      */
-    IODATA_API virtual void updating() throw(::fwTools::Failed);
+    IODATA_API virtual void updating();
 
     /**
      * @brief This method gives information about the class.

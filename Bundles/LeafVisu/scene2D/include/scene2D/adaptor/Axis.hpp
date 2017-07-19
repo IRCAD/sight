@@ -23,16 +23,16 @@ class SCENE2D_CLASS_API Axis : public ::scene2D::adaptor::IAdaptor
 public:
     fwCoreServiceClassDefinitionsMacro ( (Axis)(::scene2D::adaptor::IAdaptor) );
 
-    SCENE2D_API Axis() throw();
-    SCENE2D_API virtual ~Axis() throw();
+    SCENE2D_API Axis() noexcept;
+    SCENE2D_API virtual ~Axis() noexcept;
 
 protected:
 
-    void doStart() throw( ::fwTools::Failed);
-    void doStop() throw( ::fwTools::Failed);
-    void doSwap() throw( ::fwTools::Failed);
-    void doUpdate() throw( ::fwTools::Failed);
-    void configuring() throw( ::fwTools::Failed);
+    void doStart();
+    void doStop();
+    void doSwap();
+    void doUpdate();
+    void configuring();
 
     /// Manage the given events
     SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );

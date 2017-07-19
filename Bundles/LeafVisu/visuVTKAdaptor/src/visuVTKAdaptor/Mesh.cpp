@@ -383,7 +383,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-Mesh::Mesh() throw() :
+Mesh::Mesh() noexcept :
     m_showClippedPart(false),
     m_autoResetCamera(true),
     m_polyData(nullptr),
@@ -435,7 +435,7 @@ Mesh::Mesh() throw() :
 
 //------------------------------------------------------------------------------
 
-Mesh::~Mesh() throw()
+Mesh::~Mesh() noexcept
 {
     m_clippingPlanes = nullptr;
 
@@ -460,7 +460,7 @@ Mesh::~Mesh() throw()
 
 //------------------------------------------------------------------------------
 
-void Mesh::doConfigure() throw(fwTools::Failed)
+void Mesh::doConfigure()
 {
     assert(m_configuration->getName() == "config");
 
@@ -512,7 +512,7 @@ void Mesh::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Mesh::doUpdate() throw(fwTools::Failed)
+void Mesh::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -522,7 +522,7 @@ void Mesh::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Mesh::doStart() throw(fwTools::Failed)
+void Mesh::doStart()
 {
     if(!m_textureAdaptorUID.empty())
     {
@@ -541,7 +541,7 @@ void Mesh::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Mesh::doStop() throw(fwTools::Failed)
+void Mesh::doStop()
 {
     m_transformService.lock()->stop();
     ::fwServices::OSR::unregisterService(m_transformService.lock());
@@ -563,7 +563,7 @@ void Mesh::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Mesh::doSwap() throw(fwTools::Failed)
+void Mesh::doSwap()
 {
     SLM_TRACE_FUNC();
     m_transformService.lock()->stop();

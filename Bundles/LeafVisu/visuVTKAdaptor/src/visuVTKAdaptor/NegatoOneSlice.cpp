@@ -42,7 +42,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT      = "updateImage
 
 //------------------------------------------------------------------------------
 
-NegatoOneSlice::NegatoOneSlice() throw() :
+NegatoOneSlice::NegatoOneSlice() noexcept :
     m_manageImageSource(false),
     m_imageSource(nullptr),
     m_allowAlphaInTF(false),
@@ -55,7 +55,7 @@ NegatoOneSlice::NegatoOneSlice() throw() :
 
 //------------------------------------------------------------------------------
 
-NegatoOneSlice::~NegatoOneSlice() throw()
+NegatoOneSlice::~NegatoOneSlice() noexcept
 {
     this->unregisterServices();
     this->cleanImageSource();
@@ -176,7 +176,7 @@ void NegatoOneSlice::cleanImageSource()
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doStart() throw(fwTools::Failed)
+void NegatoOneSlice::doStart()
 {
     SLM_TRACE_FUNC();
     if (nullptr == vtkImageBlend::SafeDownCast(this->getImageSource())
@@ -189,7 +189,7 @@ void NegatoOneSlice::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doStop() throw(fwTools::Failed)
+void NegatoOneSlice::doStop()
 {
     this->unregisterServices();
     this->cleanImageSource();
@@ -197,7 +197,7 @@ void NegatoOneSlice::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doSwap() throw(fwTools::Failed)
+void NegatoOneSlice::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -205,7 +205,7 @@ void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
+void NegatoOneSlice::doUpdate()
 {
     SLM_TRACE_FUNC();
     if (nullptr == vtkImageBlend::SafeDownCast(this->getImageSource())
@@ -241,7 +241,7 @@ void NegatoOneSlice::updateImage()
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::doConfigure() throw(fwTools::Failed)
+void NegatoOneSlice::doConfigure()
 {
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("sliceIndex"))

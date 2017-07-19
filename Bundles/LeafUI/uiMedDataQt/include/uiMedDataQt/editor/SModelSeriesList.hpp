@@ -53,10 +53,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SModelSeriesList)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIMEDDATAQT_API SModelSeriesList() throw();
+    UIMEDDATAQT_API SModelSeriesList() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEDDATAQT_API virtual ~SModelSeriesList() throw();
+    UIMEDDATAQT_API virtual ~SModelSeriesList() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -71,14 +71,14 @@ public:
 protected:
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configures the editor.
@@ -102,7 +102,7 @@ protected:
      *
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

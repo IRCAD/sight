@@ -24,7 +24,7 @@ namespace scene2D
 namespace adaptor
 {
 
-ViewportRangeSelector::ViewportRangeSelector() throw() :
+ViewportRangeSelector::ViewportRangeSelector() noexcept :
     m_shutter(nullptr),
     m_isLeftInteracting( false ),
     m_isRightInteracting( false ),
@@ -38,13 +38,13 @@ ViewportRangeSelector::ViewportRangeSelector() throw() :
 
 //---------------------------------------------------------------------------------------------------------------
 
-ViewportRangeSelector::~ViewportRangeSelector() throw()
+ViewportRangeSelector::~ViewportRangeSelector() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::configuring() throw( ::fwTools::Failed)
+void ViewportRangeSelector::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -90,7 +90,7 @@ void ViewportRangeSelector::configuring() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
+void ViewportRangeSelector::doStart()
 {
     ::scene2D::data::Viewport::sptr viewport = this->getObject< ::scene2D::data::Viewport>();
 
@@ -125,21 +125,21 @@ void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doStop() throw( ::fwTools::Failed)
+void ViewportRangeSelector::doStop()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doUpdate() throw( ::fwTools::Failed)
+void ViewportRangeSelector::doUpdate()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doSwap() throw( ::fwTools::Failed)
+void ViewportRangeSelector::doSwap()
 {
     SLM_TRACE_FUNC();
 }

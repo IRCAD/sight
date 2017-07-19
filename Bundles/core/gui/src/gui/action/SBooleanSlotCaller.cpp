@@ -33,19 +33,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SBooleanSlotCaller,
 
 //-----------------------------------------------------------------------------
 
-SBooleanSlotCaller::SBooleanSlotCaller() throw()
+SBooleanSlotCaller::SBooleanSlotCaller() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SBooleanSlotCaller::~SBooleanSlotCaller() throw()
+SBooleanSlotCaller::~SBooleanSlotCaller() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SBooleanSlotCaller::updating() throw( ::fwTools::Failed )
+void SBooleanSlotCaller::updating()
 {
     for(SlotInfoType info :  m_slotInfos)
     {

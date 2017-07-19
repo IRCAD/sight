@@ -37,12 +37,12 @@ public:
     /**
      * @brief Constructor
      */
-    IOGDCM_API SSeriesDBWriter() throw();
+    IOGDCM_API SSeriesDBWriter() noexcept;
 
     /**
      * @brief Destructor
      */
-    IOGDCM_API virtual ~SSeriesDBWriter() throw();
+    IOGDCM_API virtual ~SSeriesDBWriter() noexcept;
 
     /// Propose a directory selection where to save the DICOM files.
     IOGDCM_API virtual void configureWithIHM();
@@ -50,16 +50,16 @@ public:
 protected:
 
     /// Does nothing
-    IOGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOGDCM_API virtual void starting();
 
     /// Does nothing
-    IOGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOGDCM_API virtual void stopping();
 
     /// Does nothing
-    IOGDCM_API virtual void configuring() throw(::fwTools::Failed);
+    IOGDCM_API virtual void configuring();
 
     /// Write the ImageSeries in DICOM format.
-    IOGDCM_API void updating() throw(::fwTools::Failed);
+    IOGDCM_API void updating();
 
     /// Return path type managed by the service, here FOLDER
     IOGDCM_API ::io::IOPathType getIOPathType() const;

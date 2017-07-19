@@ -21,21 +21,21 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-InteractorStyle::InteractorStyle() throw() :
+InteractorStyle::InteractorStyle() noexcept :
     m_interactorStyle(nullptr)
 {
 }
 
 //------------------------------------------------------------------------------
 
-InteractorStyle::~InteractorStyle() throw()
+InteractorStyle::~InteractorStyle() noexcept
 {
     SLM_ASSERT("InteractorStyle should be NULL", !m_interactorStyle);
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doConfigure() throw(fwTools::Failed)
+void InteractorStyle::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -46,7 +46,7 @@ void InteractorStyle::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doStart() throw(fwTools::Failed)
+void InteractorStyle::doStart()
 {
     vtkObject* objectStyle         = vtkInstantiator::CreateInstance(m_configuredStyle.c_str());
     vtkInteractorStyle* interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
@@ -61,20 +61,20 @@ void InteractorStyle::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doUpdate() throw(fwTools::Failed)
+void InteractorStyle::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doSwap() throw(fwTools::Failed)
+void InteractorStyle::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doStop() throw(fwTools::Failed)
+void InteractorStyle::doStop()
 {
     this->setInteractorStyle(nullptr);
 }

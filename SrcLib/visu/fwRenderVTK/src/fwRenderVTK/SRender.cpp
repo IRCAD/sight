@@ -64,7 +64,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-SRender::SRender() throw() :
+SRender::SRender() noexcept :
     m_pendingRenderRequest(false),
     m_renderMode(RenderMode::AUTO),
     m_width(1280),
@@ -82,7 +82,7 @@ SRender::SRender() throw() :
 
 //-----------------------------------------------------------------------------
 
-SRender::~SRender() throw()
+SRender::~SRender() noexcept
 {
 }
 
@@ -346,7 +346,7 @@ void SRender::addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj )
 
 //-----------------------------------------------------------------------------
 
-void SRender::configuring() throw(fwTools::Failed)
+void SRender::configuring()
 {
     SLM_TRACE_FUNC();
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
@@ -417,7 +417,7 @@ void SRender::configuring() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::starting() throw(fwTools::Failed)
+void SRender::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -550,7 +550,7 @@ void SRender::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::stopping() throw(fwTools::Failed)
+void SRender::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -662,13 +662,13 @@ void SRender::removeObjects(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-void SRender::updating() throw(fwTools::Failed)
+void SRender::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SRender::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
+void SRender::swapping(const IService::KeyType& key)
 {
     if (this->isVersion2())
     {

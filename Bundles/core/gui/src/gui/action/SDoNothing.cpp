@@ -19,26 +19,26 @@ namespace action
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing, ::fwData::Object );
 
 
-SDoNothing::SDoNothing() throw()
+SDoNothing::SDoNothing() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDoNothing::~SDoNothing() throw()
+SDoNothing::~SDoNothing() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::configuring() throw( ::fwTools::Failed )
+void SDoNothing::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::starting() throw( ::fwTools::Failed )
+void SDoNothing::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -46,7 +46,7 @@ void SDoNothing::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::stopping() throw( ::fwTools::Failed )
+void SDoNothing::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -54,7 +54,7 @@ void SDoNothing::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::updating() throw( ::fwTools::Failed )
+void SDoNothing::updating()
 {
     SLM_TRACE_FUNC();
 }

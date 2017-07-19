@@ -43,20 +43,20 @@ CrossTypeAction::m_scaleConversion
           (std::string("half"),0.5)
           (std::string("hide"),0.0);
 
-CrossTypeAction::CrossTypeAction() throw()
+CrossTypeAction::CrossTypeAction() noexcept
 {
     m_sigCrossTypeModified = newSignal< CrossTypeModifiedSignalType >(s_CROSS_TYPE_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-CrossTypeAction::~CrossTypeAction() throw()
+CrossTypeAction::~CrossTypeAction() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::starting() throw(::fwTools::Failed)
+void CrossTypeAction::starting()
 {
     SLM_TRACE_FUNC();
     ::fwGui::IActionSrv::actionServiceStarting();
@@ -64,7 +64,7 @@ void CrossTypeAction::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::stopping() throw(::fwTools::Failed)
+void CrossTypeAction::stopping()
 {
     SLM_TRACE_FUNC();
     ::fwGui::IActionSrv::actionServiceStopping();
@@ -72,7 +72,7 @@ void CrossTypeAction::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::configuring() throw(fwTools::Failed)
+void CrossTypeAction::configuring()
 {
     SLM_TRACE_FUNC();
     ::fwGui::IActionSrv::initialize();
@@ -90,14 +90,14 @@ void CrossTypeAction::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::updating() throw(::fwTools::Failed)
+void CrossTypeAction::updating()
 {
     m_sigCrossTypeModified->asyncEmit(m_scaleConversion[m_crossType]);
 }
 
 //------------------------------------------------------------------------------
 
-void CrossTypeAction::swapping() throw(::fwTools::Failed)
+void CrossTypeAction::swapping()
 {
 
 }

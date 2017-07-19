@@ -130,7 +130,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-Point::Point() throw() :
+Point::Point() noexcept :
     m_handle( vtkHandleWidget::New() ),
     m_representation( ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::New() ),
     m_pointUpdateCommand(nullptr),
@@ -164,7 +164,7 @@ Point::Point() throw() :
 
 //------------------------------------------------------------------------------
 
-Point::~Point() throw()
+Point::~Point() noexcept
 {
     m_handle->SetRepresentation(0);
     m_handle->Delete();
@@ -176,7 +176,7 @@ Point::~Point() throw()
 
 //------------------------------------------------------------------------------
 
-void Point::doConfigure() throw(fwTools::Failed)
+void Point::doConfigure()
 {
     SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
 
@@ -211,7 +211,7 @@ void Point::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Point::doStart() throw(fwTools::Failed)
+void Point::doStart()
 {
     SLM_TRACE_FUNC();
     m_handle->SetInteractor(  this->getInteractor() );
@@ -232,7 +232,7 @@ void Point::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Point::doSwap() throw(fwTools::Failed)
+void Point::doSwap()
 {
     SLM_TRACE_FUNC();
     this->doUpdate();
@@ -240,7 +240,7 @@ void Point::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Point::doUpdate() throw(fwTools::Failed)
+void Point::doUpdate()
 {
     ::fwData::Point::sptr point = this->getObject < ::fwData::Point >();
 
@@ -275,7 +275,7 @@ void Point::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Point::doStop() throw(fwTools::Failed)
+void Point::doStop()
 {
     m_handle->Off();
     m_handle->RemoveObserver(m_pointUpdateCommand);

@@ -30,9 +30,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API NegatoOneSlice() throw();
+    VISUVTKADAPTOR_API NegatoOneSlice() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~NegatoOneSlice() throw();
+    VISUVTKADAPTOR_API virtual ~NegatoOneSlice() noexcept;
 
     void setAllowAlphaInTF(bool allow)
     {
@@ -67,10 +67,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     /**
      * @brief Configures the service
@@ -92,8 +92,8 @@ protected:
      * - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
      * - \b selectedTFKey (optional): key of the transfer function to use in negato
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
     bool m_manageImageSource;
     std::string m_imageSourceId;

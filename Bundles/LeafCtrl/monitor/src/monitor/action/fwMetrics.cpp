@@ -26,19 +26,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::fwMetrics, ::fw
 
 //------------------------------------------------------------------------------
 
-fwMetrics::fwMetrics( ) throw()
+fwMetrics::fwMetrics( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-fwMetrics::~fwMetrics() throw()
+fwMetrics::~fwMetrics() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void fwMetrics::updating() throw(::fwTools::Failed)
+void fwMetrics::updating()
 {
     std::stringstream stream;
 
@@ -62,21 +62,21 @@ void fwMetrics::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void fwMetrics::configuring() throw (::fwTools::Failed)
+void fwMetrics::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void fwMetrics::starting() throw (::fwTools::Failed)
+void fwMetrics::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void fwMetrics::stopping() throw (::fwTools::Failed)
+void fwMetrics::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

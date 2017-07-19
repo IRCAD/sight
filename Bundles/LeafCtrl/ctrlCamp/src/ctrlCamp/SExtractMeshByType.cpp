@@ -44,7 +44,7 @@ SExtractMeshByType::~SExtractMeshByType()
 
 //-----------------------------------------------------------------------------
 
-void SExtractMeshByType::configuring() throw( ::fwTools::Failed )
+void SExtractMeshByType::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 
@@ -108,13 +108,13 @@ void SExtractMeshByType::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractMeshByType::starting() throw( ::fwTools::Failed )
+void SExtractMeshByType::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SExtractMeshByType::updating() throw( ::fwTools::Failed )
+void SExtractMeshByType::updating()
 {
     if(this->isVersion2())
     {
@@ -209,7 +209,7 @@ void SExtractMeshByType::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractMeshByType::stopping() throw( ::fwTools::Failed )
+void SExtractMeshByType::stopping()
 {
     // Unregister outputs
     for (size_t i = 0; i<this->getKeyGroupSize("target"); ++i)

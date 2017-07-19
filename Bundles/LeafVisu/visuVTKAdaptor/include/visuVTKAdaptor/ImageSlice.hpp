@@ -72,9 +72,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImageSlice)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API ImageSlice() throw();
+    VISUVTKADAPTOR_API ImageSlice() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ImageSlice() throw();
+    VISUVTKADAPTOR_API virtual ~ImageSlice() noexcept;
 
     void setCtrlImageId(std::string id)
     {
@@ -119,13 +119,13 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
     virtual void buildPipeline();
     virtual void buildOutline();

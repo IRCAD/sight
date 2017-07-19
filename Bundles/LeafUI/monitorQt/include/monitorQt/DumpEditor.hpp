@@ -50,10 +50,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (DumpEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Does nothing.
-    MONITORQT_API DumpEditor() throw();
+    MONITORQT_API DumpEditor() noexcept;
 
     /// Destructor. Does nothing.
-    MONITORQT_API virtual ~DumpEditor() throw();
+    MONITORQT_API virtual ~DumpEditor() noexcept;
 
 protected:
 
@@ -61,19 +61,19 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Install the layout and call updating() method
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stop the layout.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update the choice selection
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Call updating() method
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /// Calls classic IAction methods to configure
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides. Does nothing.
     virtual void info( std::ostream &_sstream );

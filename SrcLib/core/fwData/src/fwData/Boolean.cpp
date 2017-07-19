@@ -17,14 +17,14 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Boolean::Boolean( ::fwData::Object::Key key  ) throw() :
+Boolean::Boolean( ::fwData::Object::Key key  ) noexcept :
     GenericField< bool >( false )
 {
 }
 
 //------------------------------------------------------------------------------
 
-Boolean::~Boolean() throw()
+Boolean::~Boolean() noexcept
 {
 }
 

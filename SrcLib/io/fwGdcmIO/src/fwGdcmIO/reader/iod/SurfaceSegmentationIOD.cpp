@@ -47,7 +47,7 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
+void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
     SLM_ASSERT("ModelSeries should not be null.", modelSeries);

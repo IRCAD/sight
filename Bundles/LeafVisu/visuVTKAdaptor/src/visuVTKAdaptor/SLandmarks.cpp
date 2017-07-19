@@ -233,7 +233,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-SLandmarks::SLandmarks() throw() :
+SLandmarks::SLandmarks() noexcept :
     m_noSelectionCommand(nullptr),
     m_count(0),
     m_interaction(true)
@@ -253,13 +253,13 @@ SLandmarks::SLandmarks() throw() :
 
 //------------------------------------------------------------------------------
 
-SLandmarks::~SLandmarks() throw()
+SLandmarks::~SLandmarks() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doConfigure() throw(fwTools::Failed)
+void SLandmarks::doConfigure()
 {
     const std::string interaction = m_configuration->getAttributeValue("interaction");
 
@@ -274,7 +274,7 @@ void SLandmarks::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doStart() throw(fwTools::Failed)
+void SLandmarks::doStart()
 {
     vtkDeselectLandmarksCallBack* callback = vtkDeselectLandmarksCallBack::New();
     callback->setAdaptor(this->getSptr());
@@ -287,7 +287,7 @@ void SLandmarks::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doSwap() throw(fwTools::Failed)
+void SLandmarks::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -295,7 +295,7 @@ void SLandmarks::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doUpdate() throw(fwTools::Failed)
+void SLandmarks::doUpdate()
 {
     this->clearLandmarks();
 
@@ -314,7 +314,7 @@ void SLandmarks::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doStop() throw(fwTools::Failed)
+void SLandmarks::doStop()
 {
     this->clearLandmarks();
     if (m_noSelectionCommand)

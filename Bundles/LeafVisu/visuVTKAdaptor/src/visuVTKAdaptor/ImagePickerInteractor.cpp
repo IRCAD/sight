@@ -203,7 +203,7 @@ const ::fwCom::Signals::SignalKeyType ImagePickerInteractor::s_PICKED_SIGNAL = "
 
 //------------------------------------------------------------------------------
 
-ImagePickerInteractor::ImagePickerInteractor() throw() :
+ImagePickerInteractor::ImagePickerInteractor() noexcept :
     m_interactionCommand(nullptr)
 {
     newSignal<PickedSignalType>(s_PICKED_SIGNAL);
@@ -212,13 +212,13 @@ ImagePickerInteractor::ImagePickerInteractor() throw() :
 
 //------------------------------------------------------------------------------
 
-ImagePickerInteractor::~ImagePickerInteractor() throw()
+ImagePickerInteractor::~ImagePickerInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doConfigure() throw(fwTools::Failed)
+void ImagePickerInteractor::doConfigure()
 {
     SLM_ASSERT("Required element 'config' is missing.", m_configuration->getName() == "config");
 
@@ -246,7 +246,7 @@ void ImagePickerInteractor::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doStart() throw(fwTools::Failed)
+void ImagePickerInteractor::doStart()
 {
     ImagePickerInteractorCallback* observer = ImagePickerInteractorCallback::New();
     observer->setAdaptor( ImagePickerInteractor::dynamicCast(this->getSptr()) );
@@ -274,7 +274,7 @@ void ImagePickerInteractor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doUpdate() throw(fwTools::Failed)
+void ImagePickerInteractor::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -291,7 +291,7 @@ void ImagePickerInteractor::updateSliceIndex(int axial, int frontal, int sagitta
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doSwap() throw(fwTools::Failed)
+void ImagePickerInteractor::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -299,7 +299,7 @@ void ImagePickerInteractor::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doStop() throw(fwTools::Failed)
+void ImagePickerInteractor::doStop()
 {
     vtkRenderWindowInteractor* interactor = this->getInteractor();
     interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent, m_interactionCommand);

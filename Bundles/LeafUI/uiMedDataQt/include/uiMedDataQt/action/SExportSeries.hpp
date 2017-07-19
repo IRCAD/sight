@@ -55,7 +55,7 @@ public:
     UIMEDDATAQT_API SExportSeries();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SExportSeries() throw();
+    UIMEDDATAQT_API virtual ~SExportSeries() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -69,16 +69,16 @@ public:
 protected:
 
     /// This method is used to configure the service parameters
-    virtual void configuring() throw (::fwTools::Failed);
+    virtual void configuring();
 
     /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops service. Does nothing.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Adds the series specified by m_seriesId in the SeriesDB.
-    virtual void updating() throw (::fwTools::Failed);
+    virtual void updating();
 
     virtual void info( std::ostream& _sstream );
 

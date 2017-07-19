@@ -37,14 +37,14 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SAddLabel
 //------------------------------------------------------------------------------
 
 
-SAddLabeledPoint::SAddLabeledPoint( ) throw()
+SAddLabeledPoint::SAddLabeledPoint( ) noexcept
     : m_count(1)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SAddLabeledPoint::~SAddLabeledPoint() throw()
+SAddLabeledPoint::~SAddLabeledPoint() noexcept
 {
 }
 
@@ -82,7 +82,7 @@ bool SAddLabeledPoint::defineLabel(std::string& name)
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::updating() throw(::fwTools::Failed)
+void SAddLabeledPoint::updating()
 {
     SLM_TRACE_FUNC();
     ::fwData::PointList::sptr landmarks = this->getObject< ::fwData::PointList >();
@@ -114,21 +114,21 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::configuring() throw (::fwTools::Failed)
+void SAddLabeledPoint::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::starting() throw (::fwTools::Failed)
+void SAddLabeledPoint::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::stopping() throw (::fwTools::Failed)
+void SAddLabeledPoint::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

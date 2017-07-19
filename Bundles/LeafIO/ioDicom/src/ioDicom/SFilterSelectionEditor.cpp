@@ -37,12 +37,12 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicom::SFilterSelectionEdit
 
 //------------------------------------------------------------------------------
 
-SFilterSelectionEditor::SFilterSelectionEditor() throw()
+SFilterSelectionEditor::SFilterSelectionEditor() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-SFilterSelectionEditor::~SFilterSelectionEditor() throw()
+SFilterSelectionEditor::~SFilterSelectionEditor() noexcept
 {
 }
 
@@ -55,14 +55,14 @@ void SFilterSelectionEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectionEditor::configuring() throw(::fwTools::Failed)
+void SFilterSelectionEditor::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
+void SFilterSelectionEditor::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -229,7 +229,7 @@ void SFilterSelectionEditor::fillAvailableFilters()
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectionEditor::stopping() throw(::fwTools::Failed)
+void SFilterSelectionEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -250,7 +250,7 @@ void SFilterSelectionEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectionEditor::updating() throw(::fwTools::Failed)
+void SFilterSelectionEditor::updating()
 {
 }
 

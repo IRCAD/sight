@@ -22,13 +22,13 @@ struct BASICREGISTRATION_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    BASICREGISTRATION_API ~Plugin() throw();
+    BASICREGISTRATION_API ~Plugin() noexcept;
 
     /// Overrides
-    BASICREGISTRATION_API void start() throw(::fwRuntime::RuntimeException);
+    BASICREGISTRATION_API void start();
 
     /// Overrides
-    BASICREGISTRATION_API void stop() throw();
+    BASICREGISTRATION_API void stop() noexcept;
 
 };
 

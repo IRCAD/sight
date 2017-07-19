@@ -29,7 +29,7 @@ static const ::fwCom::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress"
 
 //------------------------------------------------------------------------------
 
-SProgressBarController::SProgressBarController() throw()
+SProgressBarController::SProgressBarController() noexcept
 {
     newSlot(s_START_PROGRESS_SLOT, &SProgressBarController::startProgress, this);
     newSlot(s_UPDATE_PROGRESS_SLOT, &SProgressBarController::updateProgress, this);
@@ -37,7 +37,7 @@ SProgressBarController::SProgressBarController() throw()
 }
 //------------------------------------------------------------------------------
 
-SProgressBarController::~SProgressBarController() throw()
+SProgressBarController::~SProgressBarController() noexcept
 {
 }
 
@@ -50,28 +50,28 @@ void SProgressBarController::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::starting() throw(::fwTools::Failed)
+void SProgressBarController::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::stopping() throw(::fwTools::Failed)
+void SProgressBarController::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::configuring() throw(::fwTools::Failed)
+void SProgressBarController::configuring()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::updating() throw(::fwTools::Failed)
+void SProgressBarController::updating()
 {
     SLM_TRACE_FUNC();
 }

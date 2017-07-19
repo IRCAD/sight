@@ -31,10 +31,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (LaunchBrowserActionService)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIGENERICQT_API LaunchBrowserActionService() throw();
+    UIGENERICQT_API LaunchBrowserActionService() noexcept;
 
     /// Destructor. Do nothing.
-    UIGENERICQT_API virtual ~LaunchBrowserActionService() throw();
+    UIGENERICQT_API virtual ~LaunchBrowserActionService() noexcept;
 
 protected:
 
@@ -47,16 +47,16 @@ protected:
        </service>
        @endcode
      */
-    void configuring() throw( ::fwTools::Failed );
+    void configuring();
 
     /// Starts action
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Launch a browser on the url given in the configuration
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
     /// Stops action
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     void info( std::ostream &_sstream );
 

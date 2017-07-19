@@ -161,7 +161,7 @@ void Mesh::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::fwData::Exception)
+size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData)
 {
     if (nbCellsData == 0)
     {
@@ -180,7 +180,7 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointNormals() throw(::fwData::Exception)
+size_t Mesh::allocatePointNormals()
 {
     size_t allocatedSize = 0;
     if (!m_pointNormals )
@@ -193,7 +193,7 @@ size_t Mesh::allocatePointNormals() throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
+size_t Mesh::allocatePointColors(ColorArrayTypes t)
 {
     OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
@@ -207,7 +207,7 @@ size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocatePointTexCoords() throw(::fwData::Exception)
+size_t Mesh::allocatePointTexCoords()
 {
     size_t allocatedSize = 0;
     if (!m_pointTexCoords )
@@ -222,7 +222,7 @@ size_t Mesh::allocatePointTexCoords() throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocateCellNormals() throw(::fwData::Exception)
+size_t Mesh::allocateCellNormals()
 {
     size_t allocatedSize = 0;
     if (!m_cellNormals )
@@ -235,7 +235,7 @@ size_t Mesh::allocateCellNormals() throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
+size_t Mesh::allocateCellColors(ColorArrayTypes t)
 {
     OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
@@ -249,7 +249,7 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-size_t Mesh::allocateCellTexCoords() throw(::fwData::Exception)
+size_t Mesh::allocateCellTexCoords()
 {
     size_t allocatedSize = 0;
     if (!m_cellTexCoords )
@@ -263,7 +263,7 @@ size_t Mesh::allocateCellTexCoords() throw(::fwData::Exception)
 
 //------------------------------------------------------------------------------
 
-bool Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
+bool Mesh::adjustAllocatedMemory()
 {
     size_t oldAllocatedSize = this->getAllocatedSizeInBytes();
 

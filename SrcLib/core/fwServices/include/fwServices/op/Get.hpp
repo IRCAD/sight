@@ -27,17 +27,17 @@ namespace fwServices
  *
  */
 FWSERVICES_API ::fwServices::IService::sptr get( ::fwData::Object::sptr obj,
-                                                 std::string serviceType ) throw(fwTools::Failed );
+                                                 std::string serviceType );
 
 template<class SERVICE>
-SPTR(SERVICE) get( ::fwData::Object::sptr obj) throw(fwTools::Failed );
+SPTR(SERVICE) get( ::fwData::Object::sptr obj);
 
 /**
  * @brief Return a registered IService having uid as unique universal identifier , its an alias on fwData::Object::getID(...) method
  *
 
  */
-FWSERVICES_API ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed );
+FWSERVICES_API ::fwServices::IService::sptr get( std::string uid );
 
 
 //@}

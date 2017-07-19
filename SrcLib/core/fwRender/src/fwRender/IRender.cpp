@@ -21,13 +21,13 @@ namespace fwRender
 
 //-----------------------------------------------------------------------------
 
-IRender::IRender() throw()
+IRender::IRender() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-IRender::~IRender() throw()
+IRender::~IRender() noexcept
 {
 }
 

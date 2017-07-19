@@ -55,7 +55,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper:
 
 //-----------------------------------------------------------------------------
 
-SImageSignalForwarder::SImageSignalForwarder() throw()
+SImageSignalForwarder::SImageSignalForwarder() noexcept
 {
     m_availableConnection[::fwData::Image::s_MODIFIED_SIG]              = s_FORWARD_MODIFIED_SLOT;
     m_availableConnection[::fwData::Image::s_BUFFER_MODIFIED_SIG]       = s_FORWARD_BUFFER_MODIFIED_SLOT;
@@ -92,13 +92,13 @@ SImageSignalForwarder::SImageSignalForwarder() throw()
 
 //-----------------------------------------------------------------------------
 
-SImageSignalForwarder::~SImageSignalForwarder() throw()
+SImageSignalForwarder::~SImageSignalForwarder() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::configuring()  throw ( ::fwTools::Failed )
+void SImageSignalForwarder::configuring()
 {
     if (!this->isVersion2())
     {
@@ -143,7 +143,7 @@ void SImageSignalForwarder::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::starting()  throw ( ::fwTools::Failed )
+void SImageSignalForwarder::starting()
 {
     ::fwData::Image::csptr src;
 
@@ -175,14 +175,14 @@ void SImageSignalForwarder::starting()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::stopping()  throw ( ::fwTools::Failed )
+void SImageSignalForwarder::stopping()
 {
     m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::swapping()  throw ( ::fwTools::Failed )
+void SImageSignalForwarder::swapping()
 {
     this->stopping();
     this->starting();
@@ -190,7 +190,7 @@ void SImageSignalForwarder::swapping()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SImageSignalForwarder::updating() throw ( ::fwTools::Failed )
+void SImageSignalForwarder::updating()
 {
 }
 

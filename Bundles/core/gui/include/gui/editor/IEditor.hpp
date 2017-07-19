@@ -36,10 +36,10 @@ protected:
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
      */
-    GUI_API IEditor() throw();
+    GUI_API IEditor() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~IEditor() throw();
+    GUI_API virtual ~IEditor() noexcept;
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{

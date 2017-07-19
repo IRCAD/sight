@@ -60,7 +60,7 @@ std::string SliceThicknessModifier::getDescription() const
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
-const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+const
 {
     DicomSeriesContainerType result;
 

@@ -174,7 +174,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-LabeledPointList::LabeledPointList() throw() :
+LabeledPointList::LabeledPointList() noexcept :
     m_rightButtonCommand(nullptr),
     m_radius(7.0),
     m_interaction(true)
@@ -183,13 +183,13 @@ LabeledPointList::LabeledPointList() throw() :
 
 //------------------------------------------------------------------------------
 
-LabeledPointList::~LabeledPointList() throw()
+LabeledPointList::~LabeledPointList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doConfigure() throw(fwTools::Failed)
+void LabeledPointList::doConfigure()
 {
     SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
 
@@ -230,7 +230,7 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doStart() throw(fwTools::Failed)
+void LabeledPointList::doStart()
 {
     SLM_TRACE_FUNC();
     if(m_interaction)
@@ -245,7 +245,7 @@ void LabeledPointList::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doSwap() throw(fwTools::Failed)
+void LabeledPointList::doSwap()
 {
     SLM_TRACE("SWAPPING LabeledPointList **TODO**");
     this->doStop();
@@ -254,7 +254,7 @@ void LabeledPointList::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doUpdate() throw(fwTools::Failed)
+void LabeledPointList::doUpdate()
 {
     // get PointList in image Field then install distance service if required
     ::fwData::PointList::sptr landmarks = this->getObject< ::fwData::PointList >();
@@ -301,7 +301,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doStop() throw(fwTools::Failed)
+void LabeledPointList::doStop()
 {
     if ( m_rightButtonCommand ) // can be not instanciated (use of LabeledPointList::show() )
     {

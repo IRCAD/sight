@@ -18,19 +18,19 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Pl
 namespace visuVTKAdaptor
 {
 
-PlaneSelector::PlaneSelector() throw()
+PlaneSelector::PlaneSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-PlaneSelector::~PlaneSelector() throw()
+PlaneSelector::~PlaneSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doConfigure() throw(fwTools::Failed)
+void PlaneSelector::doConfigure()
 {
     SLM_TRACE_FUNC();
     assert(m_configuration->getName() == "config");
@@ -38,7 +38,7 @@ void PlaneSelector::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doStart() throw(fwTools::Failed)
+void PlaneSelector::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -53,14 +53,14 @@ void PlaneSelector::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doUpdate() throw(fwTools::Failed)
+void PlaneSelector::doUpdate()
 {
     SLM_ASSERT("NOT IMPLEMENTED", false);
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doSwap() throw(fwTools::Failed)
+void PlaneSelector::doSwap()
 {
     ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(this->getObject());
     this->selectObject(object);
@@ -68,7 +68,7 @@ void PlaneSelector::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::doStop() throw(fwTools::Failed)
+void PlaneSelector::doStop()
 {
     this->selectObject( ::fwData::Object::sptr() );
 }

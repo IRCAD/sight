@@ -47,7 +47,7 @@ static const std::string s_slicingStoppingProxy = "slicingStoppingProxy";
 
 //------------------------------------------------------------------------------
 
-NegatoMPR::NegatoMPR() throw() :
+NegatoMPR::NegatoMPR() noexcept :
     m_allowAlphaInTF(false),
     m_interpolation(false),
     m_actorOpacity(1.0),
@@ -64,21 +64,21 @@ NegatoMPR::NegatoMPR() throw() :
 
 //------------------------------------------------------------------------------
 
-NegatoMPR::~NegatoMPR() throw()
+NegatoMPR::~NegatoMPR() noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doStart() throw(fwTools::Failed)
+void NegatoMPR::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doStop() throw(fwTools::Failed)
+void NegatoMPR::doStop()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     //disconnect proxy
@@ -111,7 +111,7 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doSwap() throw(fwTools::Failed)
+void NegatoMPR::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -140,7 +140,7 @@ void NegatoMPR::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doUpdate() throw(::fwTools::Failed)
+void NegatoMPR::doUpdate()
 {
     this->doStop();
 
@@ -286,7 +286,7 @@ void NegatoMPR::changeImageSource(std::string _value, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doConfigure() throw(fwTools::Failed)
+void NegatoMPR::doConfigure()
 {
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 

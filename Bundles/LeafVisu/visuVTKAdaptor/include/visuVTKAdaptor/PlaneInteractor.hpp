@@ -31,9 +31,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (PlaneInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API PlaneInteractor() throw();
+    VISUVTKADAPTOR_API PlaneInteractor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PlaneInteractor() throw();
+    VISUVTKADAPTOR_API virtual ~PlaneInteractor() noexcept;
 
     VISUVTKADAPTOR_API void switchPlaneNormal();
 
@@ -43,13 +43,13 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
     // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     vtkCommand* m_vtkObserver;
     double m_priority;

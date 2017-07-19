@@ -65,10 +65,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SCreateActivity)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SCreateActivity() throw();
+    ACTIVITIES_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SCreateActivity() throw();
+    ACTIVITIES_API virtual ~SCreateActivity() noexcept;
 
     /**
      * @name Signals API
@@ -84,16 +84,16 @@ public:
 protected:
 
     /// Initialize the editor.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Show activity selector.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     typedef std::vector< std::string > KeysType;
 

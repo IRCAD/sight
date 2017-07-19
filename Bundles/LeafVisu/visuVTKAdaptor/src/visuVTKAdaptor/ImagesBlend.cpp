@@ -50,7 +50,7 @@ const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SL
 
 //------------------------------------------------------------------------------
 
-ImagesBlend::ImagesBlend() throw() :
+ImagesBlend::ImagesBlend() noexcept :
     m_imageAlgorithm(nullptr),
     m_checkerboardDivision(10)
 {
@@ -60,14 +60,14 @@ ImagesBlend::ImagesBlend() throw() :
 
 //------------------------------------------------------------------------------
 
-ImagesBlend::~ImagesBlend() throw()
+ImagesBlend::~ImagesBlend() noexcept
 {
     m_imageAlgorithm = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doStart() throw(fwTools::Failed)
+void ImagesBlend::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -102,7 +102,7 @@ void ImagesBlend::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doStop() throw(fwTools::Failed)
+void ImagesBlend::doStop()
 {
     SLM_TRACE_FUNC();
     this->removeImageAdaptors();
@@ -110,7 +110,7 @@ void ImagesBlend::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doSwap() throw(fwTools::Failed)
+void ImagesBlend::doSwap()
 {
     SLM_TRACE_FUNC();
     doUpdate();
@@ -118,7 +118,7 @@ void ImagesBlend::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doUpdate() throw(::fwTools::Failed)
+void ImagesBlend::doUpdate()
 {
     SLM_TRACE_FUNC();
     this->removeImageAdaptors();
@@ -127,7 +127,7 @@ void ImagesBlend::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doConfigure() throw(fwTools::Failed)
+void ImagesBlend::doConfigure()
 {
     assert(m_configuration->getName() == "config");
 

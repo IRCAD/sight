@@ -228,7 +228,7 @@ void IService::configure()
 
 //-----------------------------------------------------------------------------
 
-void IService::reconfiguring() throw ( ::fwTools::Failed )
+void IService::reconfiguring()
 {
     OSLM_FATAL(
         "If this method (reconfiguring) is called, it must be overriden in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
@@ -406,35 +406,35 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
 
 //-----------------------------------------------------------------------------
 
-IService::GlobalStatus IService::getStatus() const throw()
+IService::GlobalStatus IService::getStatus() const noexcept
 {
     return m_globalState;
 }
 
 //-----------------------------------------------------------------------------
 
-bool IService::isStarted() const throw()
+bool IService::isStarted() const noexcept
 {
     return (m_globalState == STARTED);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IService::isStopped() const throw()
+bool IService::isStopped() const noexcept
 {
     return (m_globalState == STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
-IService::ConfigurationStatus IService::getConfigurationStatus() const throw()
+IService::ConfigurationStatus IService::getConfigurationStatus() const noexcept
 {
     return m_configurationState;
 }
 
 //-----------------------------------------------------------------------------
 
-IService::UpdatingStatus IService::getUpdatingStatus() const throw()
+IService::UpdatingStatus IService::getUpdatingStatus() const noexcept
 {
     return m_updatingState;
 }

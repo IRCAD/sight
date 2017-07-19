@@ -44,7 +44,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SModelSeriesWriter::SModelSeriesWriter() throw()
+SModelSeriesWriter::SModelSeriesWriter() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
@@ -104,21 +104,21 @@ void SModelSeriesWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::starting() throw(::fwTools::Failed)
+void SModelSeriesWriter::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::stopping() throw(::fwTools::Failed)
+void SModelSeriesWriter::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::configuring() throw(::fwTools::Failed)
+void SModelSeriesWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -132,7 +132,7 @@ void SModelSeriesWriter::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::updating() throw(::fwTools::Failed)
+void SModelSeriesWriter::updating()
 {
     SLM_TRACE_FUNC();
 

@@ -28,21 +28,21 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (PlaneSelector)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API PlaneSelector() throw();
+    VISUVTKADAPTOR_API PlaneSelector() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PlaneSelector() throw();
+    VISUVTKADAPTOR_API virtual ~PlaneSelector() noexcept;
 
     VISUVTKADAPTOR_API void selectObject( ::fwData::Object::sptr object );
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     ::fwData::Object::wptr m_currentObject;
 };

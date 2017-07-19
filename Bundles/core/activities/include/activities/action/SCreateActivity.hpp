@@ -64,10 +64,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SCreateActivity)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SCreateActivity() throw();
+    ACTIVITIES_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SCreateActivity() throw();
+    ACTIVITIES_API virtual ~SCreateActivity() noexcept;
 
     /**
      * @name Signals API
@@ -83,21 +83,21 @@ public:
 protected:
 
     ///This method launches the IAction::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Show activity selector.
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     typedef std::vector< std::string > KeysType;
 

@@ -21,7 +21,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-void Cube::doStart() throw(fwTools::Failed)
+void Cube::doStart()
 {
     vtkCubeSource *cube       = vtkCubeSource::New();
     vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
@@ -34,7 +34,7 @@ void Cube::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Cube::doStop() throw(fwTools::Failed)
+void Cube::doStop()
 {
     this->removeAllPropFromRenderer();
 }

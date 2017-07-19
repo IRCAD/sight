@@ -60,10 +60,10 @@ public:
 
     /// Constructor, set coordinates m_sceneStart to (-100, -100), m_sceneWidth to (200, 200) and add new handle events
     //  ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS.
-    SCENE2D_API Render() throw();
+    SCENE2D_API Render() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~Render() throw();
+    SCENE2D_API virtual ~Render() noexcept;
 
     /// Get the scene.
     SCENE2D_API QGraphicsScene* getScene() const;
@@ -204,23 +204,23 @@ protected:
      *        object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
      *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
 
     /// Call startContext to set the scene, the viewport and the view, and add'em to the QtContainer and start the adaptors
     //  contained in the adaptors id vector of the ObjectsID2AdaptorIDVector map.
-    SCENE2D_API void starting()    throw ( ::fwTools::Failed );
+    SCENE2D_API void starting();
 
     /// Do nothing.
-    SCENE2D_API void updating()    throw ( ::fwTools::Failed );
+    SCENE2D_API void updating();
 
-    SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
+    SCENE2D_API void swapping();
 
     /// Start/stop adaptors
-    SCENE2D_API void swapping(const KeyType& key) throw(::fwTools::Failed);
+    SCENE2D_API void swapping(const KeyType& key);
 
     /// Stop all the adaptors attached to the render related composite, stop all those rattached to the objects contained
     //  by the render related composite, clear the maps and call stopContext().
-    SCENE2D_API void stopping()    throw ( ::fwTools::Failed );
+    SCENE2D_API void stopping();
 
 private:
 

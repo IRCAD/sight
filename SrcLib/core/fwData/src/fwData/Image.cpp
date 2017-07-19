@@ -63,7 +63,7 @@ Image::Image(::fwData::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-Image::~Image() throw()
+Image::~Image() noexcept
 {
     SLM_TRACE_FUNC();
 }
@@ -128,7 +128,7 @@ void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate() throw(::fwData::Exception)
+size_t Image::allocate()
 {
     if (!m_dataArray)
     {
@@ -142,7 +142,7 @@ size_t Image::allocate() throw(::fwData::Exception)
 //------------------------------------------------------------------------------
 
 size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                       const ::fwTools::Type& type, size_t numberOfComponents) throw(::fwData::Exception)
+                       const ::fwTools::Type& type, size_t numberOfComponents)
 {
     m_size               = { x, y, z};
     m_type               = type;
@@ -153,7 +153,6 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 //------------------------------------------------------------------------------
 
 size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
-throw(::fwData::Exception)
 {
     m_size               = size;
     m_type               = type;

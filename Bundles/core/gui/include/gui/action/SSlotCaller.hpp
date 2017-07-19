@@ -48,10 +48,10 @@ public:
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Constructor. Does nothing.
-    GUI_API SSlotCaller() throw();
+    GUI_API SSlotCaller() noexcept;
 
     /// Destructor. Does nothing.
-    GUI_API virtual ~SSlotCaller() throw();
+    GUI_API virtual ~SSlotCaller() noexcept;
 
 protected:
 
@@ -59,14 +59,14 @@ protected:
     GUI_API virtual void info(std::ostream& _sstream );
 
     /// This method run the specified slots.
-    GUI_API void updating() throw (fwTools::Failed);
+    GUI_API void updating();
 
     ///  This method is used to configure the service parameters: specifies which slots must be called.
-    GUI_API void configuring() throw( ::fwTools::Failed );
+    GUI_API void configuring();
 
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;

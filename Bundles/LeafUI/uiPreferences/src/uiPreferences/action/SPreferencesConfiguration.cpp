@@ -39,20 +39,20 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPreferences::action::SPreferen
 
 //-----------------------------------------------------------------------------
 
-SPreferencesConfiguration::SPreferencesConfiguration() throw()
+SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 {
     m_sigParametersModified = newSignal< ParametersModifiedSignalType >(s_PARAMETERS_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-SPreferencesConfiguration::~SPreferencesConfiguration() throw()
+SPreferencesConfiguration::~SPreferencesConfiguration() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::starting() throw(::fwTools::Failed)
+void SPreferencesConfiguration::starting()
 {
     this->actionServiceStarting();
 
@@ -81,14 +81,14 @@ void SPreferencesConfiguration::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::stopping() throw(::fwTools::Failed)
+void SPreferencesConfiguration::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::configuring() throw(fwTools::Failed)
+void SPreferencesConfiguration::configuring()
 {
     this->initialize();
 
@@ -152,7 +152,7 @@ void SPreferencesConfiguration::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::updating() throw(::fwTools::Failed)
+void SPreferencesConfiguration::updating()
 {
     QPointer<QDialog> dialog     = new QDialog();
     QPointer<QGridLayout> layout = new QGridLayout();
@@ -254,7 +254,7 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::swapping() throw(::fwTools::Failed)
+void SPreferencesConfiguration::swapping()
 {
 }
 

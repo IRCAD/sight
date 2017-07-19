@@ -42,7 +42,7 @@ namespace visuVTKAdaptor
 const ::fwCom::Slots::SlotKeyType Snapshot::s_SNAP_SLOT        = "snap";
 const ::fwCom::Slots::SlotKeyType Snapshot::s_SNAPTOIMAGE_SLOT = "snapToImage";
 
-Snapshot::Snapshot() throw()
+Snapshot::Snapshot() noexcept
 {
     newSlot(s_SNAP_SLOT, &Snapshot::snap, this);
     newSlot(s_SNAPTOIMAGE_SLOT, &Snapshot::snapToImage, this);
@@ -50,13 +50,13 @@ Snapshot::Snapshot() throw()
 
 //------------------------------------------------------------------------------
 
-Snapshot::~Snapshot() throw()
+Snapshot::~Snapshot() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doConfigure() throw(fwTools::Failed)
+void Snapshot::doConfigure()
 {
     if(m_configuration->hasAttribute("image"))
     {
@@ -66,27 +66,27 @@ void Snapshot::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doStart() throw(fwTools::Failed)
+void Snapshot::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doUpdate() throw(fwTools::Failed)
+void Snapshot::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doSwap() throw(fwTools::Failed)
+void Snapshot::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doStop() throw(fwTools::Failed)
+void Snapshot::doStop()
 {
 }
 

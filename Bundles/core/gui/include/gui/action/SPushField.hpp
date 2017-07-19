@@ -42,10 +42,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SPushField)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API SPushField() throw();
+    GUI_API SPushField() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SPushField() throw();
+    GUI_API virtual ~SPushField() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -59,16 +59,16 @@ public:
 protected:
 
     /// Configure the service.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Register the action and check if the action is executable.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Unregister the action.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Extract the object.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
 private:
 

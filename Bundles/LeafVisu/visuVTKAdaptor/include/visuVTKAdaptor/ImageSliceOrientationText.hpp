@@ -34,8 +34,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImageSliceOrientationText)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API ImageSliceOrientationText() throw();
-    VISUVTKADAPTOR_API virtual ~ImageSliceOrientationText() throw();
+    VISUVTKADAPTOR_API ImageSliceOrientationText() noexcept;
+    VISUVTKADAPTOR_API virtual ~ImageSliceOrientationText() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -68,14 +68,14 @@ protected:
      *   if 'default' is given, 'R,L,A,P,S,I' is used. If empty, nothing is displayed
      * - initialOrientation : initial orientation of the associated slice
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
 
     /// @brief IService API implementation
     /// @{
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doSwap();
     /// @}
 
     /// Overides MedicalImageAdaptor's setOrientation

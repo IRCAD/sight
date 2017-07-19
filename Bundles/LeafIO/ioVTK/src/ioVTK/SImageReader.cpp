@@ -90,26 +90,26 @@ void SImageReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-SImageReader::SImageReader() throw()
+SImageReader::SImageReader() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-void SImageReader::starting() throw ( ::fwTools::Failed )
+void SImageReader::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageReader::stopping() throw ( ::fwTools::Failed )
+void SImageReader::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageReader::configuring() throw ( ::fwTools::Failed )
+void SImageReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -123,7 +123,7 @@ void SImageReader::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SImageReader::updating() throw ( ::fwTools::Failed )
+void SImageReader::updating()
 {
     if( this->hasLocationDefined() )
     {

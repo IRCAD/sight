@@ -42,24 +42,24 @@ public:
     fwCoreServiceClassDefinitionsMacro((SAddField)(::fwServices::IController));
 
     /// Constructor.
-    CTRLSELECTION_API SAddField() throw ();
+    CTRLSELECTION_API SAddField() noexcept;
 
     /// Destructor.
-    virtual ~SAddField() throw ();
+    virtual ~SAddField() noexcept;
 
 protected:
 
     /// Configure the service.
-    CTRLSELECTION_API void configuring() throw (fwTools::Failed);
+    CTRLSELECTION_API void configuring();
 
     /// Do nothing.
-    CTRLSELECTION_API void starting() throw (fwTools::Failed);
+    CTRLSELECTION_API void starting();
 
     /// Do nothing.
-    CTRLSELECTION_API void stopping() throw (fwTools::Failed);
+    CTRLSELECTION_API void stopping();
 
     /// Add the source object as fields of the target object.
-    CTRLSELECTION_API void updating() throw (fwTools::Failed);
+    CTRLSELECTION_API void updating();
 
 private:
 

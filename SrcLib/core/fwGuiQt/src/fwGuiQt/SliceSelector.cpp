@@ -22,7 +22,7 @@ namespace fwGuiQt
 
 //------------------------------------------------------------------------------
 
-SliceSelector::SliceSelector(QWidget* const parent ) throw() : QWidget( parent )
+SliceSelector::SliceSelector(QWidget* const parent ) noexcept : QWidget( parent )
 {
     m_fctChangeIndexCallback = std::bind( &::fwGuiQt::SliceSelector::printIndex, this, std::placeholders:: _1);
     m_fctChangeTypeCallback  = std::bind( &::fwGuiQt::SliceSelector::printType, this, std::placeholders:: _1);
@@ -53,7 +53,7 @@ SliceSelector::SliceSelector(QWidget* const parent ) throw() : QWidget( parent )
 
 //------------------------------------------------------------------------------
 
-SliceSelector::~SliceSelector() throw()
+SliceSelector::~SliceSelector() noexcept
 {
     QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
     QObject::disconnect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
@@ -90,7 +90,7 @@ void SliceSelector::setTypeSelection( int type )
 
 //------------------------------------------------------------------------------
 
-void SliceSelector::onSliceIndexChange( int value ) throw()
+void SliceSelector::onSliceIndexChange( int value ) noexcept
 {
     SLM_TRACE_FUNC();
     m_fctChangeIndexCallback( value );

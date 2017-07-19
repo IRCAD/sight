@@ -32,15 +32,15 @@ public:
     IODICOM_API SFilterSelectorDialog();
 
     /// Destructor. Do nothing.
-    IODICOM_API virtual ~SFilterSelectorDialog() throw();
+    IODICOM_API virtual ~SFilterSelectorDialog() noexcept;
 
 protected:
 
     ///Starts the service. Do nothing.
-    IODICOM_API void starting() throw( ::fwTools::Failed );
+    IODICOM_API void starting();
 
     /// Stops the service. Do nothing.
-    IODICOM_API void stopping() throw( ::fwTools::Failed );
+    IODICOM_API void stopping();
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -62,11 +62,11 @@ protected:
      *  - \b addSelection
      *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
      **/
-    IODICOM_API void configuring() throw( ::fwTools::Failed );
+    IODICOM_API void configuring();
 
     /// Create a dialog box to provide the user different available filters for the FilterSelector associated objects.
     /// Then, the selected filter is applied.
-    IODICOM_API void updating() throw( ::fwTools::Failed );
+    IODICOM_API void updating();
 
     /// Gives the name of the class. Do nothing.
     IODICOM_API void info( std::ostream& _sstream );

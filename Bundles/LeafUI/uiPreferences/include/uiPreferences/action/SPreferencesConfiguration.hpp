@@ -80,10 +80,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SPreferencesConfiguration)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIPREFERENCES_API SPreferencesConfiguration() throw();
+    UIPREFERENCES_API SPreferencesConfiguration() noexcept;
 
     /// Destructor. Do nothing.
-    UIPREFERENCES_API virtual ~SPreferencesConfiguration() throw();
+    UIPREFERENCES_API virtual ~SPreferencesConfiguration() noexcept;
 
     /// Type of signal when parameters are updated.
     typedef ::fwCom::Signal< void () > ParametersModifiedSignalType;
@@ -92,19 +92,19 @@ public:
 protected:
 
     /// Start the action. Gets the preference composite
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Does nothing
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Shows a dialog to configure preferences declared in xml.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /// Configures the service
-    virtual void configuring() throw(::fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

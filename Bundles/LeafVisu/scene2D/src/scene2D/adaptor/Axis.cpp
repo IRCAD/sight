@@ -22,7 +22,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Axis::Axis() throw() :
+Axis::Axis() noexcept :
     m_showLine(true),
     m_tickSize(0.02f),
     m_color(Qt::white)
@@ -31,14 +31,14 @@ Axis::Axis() throw() :
 
 //--------------------------------------------------------------------------------------------------
 
-Axis::~Axis() throw()
+Axis::~Axis() noexcept
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doStart() throw( ::fwTools::Failed)
+void Axis::doStart()
 {
     m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
 
@@ -51,7 +51,7 @@ void Axis::doStart() throw( ::fwTools::Failed)
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doStop() throw( ::fwTools::Failed)
+void Axis::doStop()
 {
     m_connection.disconnect();
 
@@ -60,14 +60,14 @@ void Axis::doStop() throw( ::fwTools::Failed)
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doSwap() throw( ::fwTools::Failed)
+void Axis::doSwap()
 {
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::configuring() throw( ::fwTools::Failed)
+void Axis::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -168,7 +168,7 @@ double Axis::getEndVal()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Axis::doUpdate() throw( ::fwTools::Failed)
+void Axis::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();

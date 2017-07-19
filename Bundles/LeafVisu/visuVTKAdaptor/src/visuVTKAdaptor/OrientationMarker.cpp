@@ -32,7 +32,7 @@ OrientationMarker::OrientationMarker() : m_hAlign("left")
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::doStart() throw(fwTools::Failed)
+void OrientationMarker::doStart()
 {
 
     std::string file = std::string(BUNDLE_PREFIX) +
@@ -72,14 +72,14 @@ void OrientationMarker::doStart() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::doStop() throw(fwTools::Failed)
+void OrientationMarker::doStop()
 {
     this->removeAllPropFromRenderer();
 }
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::doConfigure() throw(fwTools::Failed)
+void OrientationMarker::doConfigure()
 {
     if(m_configuration->hasAttribute("hAlign"))
     {

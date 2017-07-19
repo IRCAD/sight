@@ -15,13 +15,13 @@ namespace editor
 {
 
 
-IDialogEditor::IDialogEditor() throw()
+IDialogEditor::IDialogEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-IDialogEditor::~IDialogEditor() throw()
+IDialogEditor::~IDialogEditor() noexcept
 {
 }
 

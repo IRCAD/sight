@@ -43,7 +43,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SImageWriter::SImageWriter() throw()
+SImageWriter::SImageWriter() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
@@ -87,21 +87,21 @@ void SImageWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::starting() throw(::fwTools::Failed)
+void SImageWriter::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::stopping() throw(::fwTools::Failed)
+void SImageWriter::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::configuring() throw(::fwTools::Failed)
+void SImageWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -184,7 +184,7 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::updating() throw(::fwTools::Failed)
+void SImageWriter::updating()
 {
     SLM_TRACE_FUNC();
 

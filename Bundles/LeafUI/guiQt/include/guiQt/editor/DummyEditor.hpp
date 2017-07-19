@@ -38,10 +38,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    GUIQT_API DummyEditor() throw();
+    GUIQT_API DummyEditor() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~DummyEditor() throw();
+    GUIQT_API virtual ~DummyEditor() noexcept;
 
 protected:
 
@@ -51,22 +51,22 @@ protected:
     /**
      * @brief This method launches the IEditor::starting method.
      */
-    GUIQT_API virtual void starting() throw( ::fwTools::Failed );
+    GUIQT_API virtual void starting();
 
     /**
      * @brief This method launches the IEditor::stopping method.
      */
-    GUIQT_API virtual void stopping() throw( ::fwTools::Failed );
+    GUIQT_API virtual void stopping();
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUIQT_API virtual void updating() throw(::fwTools::Failed);
+    GUIQT_API virtual void updating();
 
     /**
      * @brief This method is used to configure the class parameters. Do nothing.
      */
-    GUIQT_API virtual void configuring() throw( ::fwTools::Failed );
+    GUIQT_API virtual void configuring();
 
     /**
      * @brief This method is used to give information about the service. Do nothing.

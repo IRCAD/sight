@@ -56,12 +56,12 @@ public:
     /**
      * @brief Constructor
      */
-    IODICOM_API SFilterSelectionEditor() throw();
+    IODICOM_API SFilterSelectionEditor() noexcept;
 
     /**
      * @brief Destructor
      */
-    IODICOM_API virtual ~SFilterSelectionEditor() throw();
+    IODICOM_API virtual ~SFilterSelectionEditor() noexcept;
 
 private Q_SLOTS:
     /// Slot called when a new filter type is selected in the context menu
@@ -93,16 +93,16 @@ private Q_SLOTS:
 protected:
 
     /// Do nothing.
-    IODICOM_API virtual void configuring() throw(::fwTools::Failed);
+    IODICOM_API virtual void configuring();
 
     /// Override
-    IODICOM_API virtual void starting() throw(::fwTools::Failed);
+    IODICOM_API virtual void starting();
 
     /// Override
-    IODICOM_API virtual void stopping() throw(::fwTools::Failed);
+    IODICOM_API virtual void stopping();
 
     /// Override
-    IODICOM_API void updating() throw(::fwTools::Failed);
+    IODICOM_API void updating();
 
     /// Override
     IODICOM_API void info(std::ostream& _sstream );

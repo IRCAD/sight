@@ -36,9 +36,9 @@ class VISUVTKADAPTOR_CLASS_API Image3DCursor : public  ::fwDataTools::helper::Me
 public:
     fwCoreServiceClassDefinitionsMacro ( (Image3DCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Image3DCursor() throw();
+    VISUVTKADAPTOR_API Image3DCursor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Image3DCursor() throw();
+    VISUVTKADAPTOR_API virtual ~Image3DCursor() noexcept;
 
     VISUVTKADAPTOR_API void updateCursorPosition( double world[3] );
 
@@ -54,13 +54,13 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
     // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     void buildPolyData(float radius = 1.0);
 

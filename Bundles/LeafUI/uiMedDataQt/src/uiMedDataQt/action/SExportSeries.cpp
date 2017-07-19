@@ -52,7 +52,7 @@ SExportSeries::SExportSeries()
 
 //------------------------------------------------------------------------------
 
-SExportSeries::~SExportSeries() throw()
+SExportSeries::~SExportSeries() noexcept
 {
 }
 
@@ -69,7 +69,7 @@ SExportSeries::~SExportSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::configuring() throw(::fwTools::Failed)
+void SExportSeries::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 
@@ -83,7 +83,7 @@ void SExportSeries::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::starting() throw(::fwTools::Failed)
+void SExportSeries::starting()
 {
     this->actionServiceStarting();
     ::fwMedData::SeriesDB::sptr seriesDB;
@@ -107,14 +107,14 @@ void SExportSeries::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::stopping() throw(::fwTools::Failed)
+void SExportSeries::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::updating() throw(::fwTools::Failed)
+void SExportSeries::updating()
 {
     ::fwMedData::SeriesDB::sptr seriesDB;
     if(this->isVersion2())

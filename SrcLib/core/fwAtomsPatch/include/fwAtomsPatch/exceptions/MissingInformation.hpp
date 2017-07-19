@@ -22,7 +22,7 @@ class MissingInformation : public fwAtomsPatch::exceptions::Base
 {
 public:
     MissingInformation(const std::string& message);
-    virtual ~MissingInformation() throw()
+    virtual ~MissingInformation() noexcept
     {
     }
 };

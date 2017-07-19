@@ -31,7 +31,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Material::Material() throw() :
+Material::Material() noexcept :
     m_property(vtkProperty::New()),
     m_manageProperty(true),
     m_lighting(true)
@@ -40,7 +40,7 @@ Material::Material() throw() :
 
 //------------------------------------------------------------------------------
 
-Material::~Material() throw()
+Material::~Material() noexcept
 {
     if (m_manageProperty)
     {
@@ -81,20 +81,20 @@ vtkProperty *Material::getVtkProperty() const
 
 //------------------------------------------------------------------------------
 
-void Material::doConfigure() throw(fwTools::Failed)
+void Material::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Material::doStart() throw(fwTools::Failed)
+void Material::doStart()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void Material::doSwap() throw(fwTools::Failed)
+void Material::doSwap()
 {
     SLM_TRACE("SWAPPING Material");
     this->doUpdate();
@@ -102,7 +102,7 @@ void Material::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Material::doUpdate() throw(fwTools::Failed)
+void Material::doUpdate()
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 
@@ -111,7 +111,7 @@ void Material::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Material::doStop() throw(fwTools::Failed)
+void Material::doStop()
 {
     //this->removeAllPropFromRenderer();
     //this->unregisterServices();

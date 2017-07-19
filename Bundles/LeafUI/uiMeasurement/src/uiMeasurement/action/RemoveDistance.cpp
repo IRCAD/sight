@@ -34,13 +34,13 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveDis
 
 //------------------------------------------------------------------------------
 
-RemoveDistance::RemoveDistance( ) throw()
+RemoveDistance::RemoveDistance( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-RemoveDistance::~RemoveDistance() throw()
+RemoveDistance::~RemoveDistance() noexcept
 {
 }
 
@@ -140,7 +140,7 @@ void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::Po
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::updating( ) throw(::fwTools::Failed)
+void RemoveDistance::updating( )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -176,21 +176,21 @@ void RemoveDistance::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::configuring() throw (::fwTools::Failed)
+void RemoveDistance::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::starting() throw (::fwTools::Failed)
+void RemoveDistance::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::stopping() throw (::fwTools::Failed)
+void RemoveDistance::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

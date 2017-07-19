@@ -38,8 +38,8 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    UIGENERICQT_API SShowAbout() throw();
-    UIGENERICQT_API virtual ~SShowAbout() throw();
+    UIGENERICQT_API SShowAbout() noexcept;
+    UIGENERICQT_API virtual ~SShowAbout() noexcept;
     /**  @} */
 
 protected:
@@ -56,16 +56,16 @@ protected:
        @endcode
      * This method is used to configure the service.
      */
-    void configuring() throw( ::fwTools::Failed );
+    void configuring();
 
     /// Starts action
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Shows the frame
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
     /// Stops action
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     /// Prints service info
     void info(std::ostream &_sstream);

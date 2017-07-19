@@ -43,7 +43,7 @@ static const std::string s_IMAGE_KEY = "image";
 
 //-----------------------------------------------------------------------------
 
-SRenderer::SRenderer() throw() :
+SRenderer::SRenderer() noexcept :
     m_render( 0 ),
     m_bPipelineIsInit(false)
 {
@@ -53,14 +53,14 @@ SRenderer::SRenderer() throw() :
 
 //-----------------------------------------------------------------------------
 
-SRenderer::~SRenderer() throw()
+SRenderer::~SRenderer() noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::configuring() throw(::fwTools::Failed)
+void SRenderer::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -68,7 +68,7 @@ void SRenderer::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::starting() throw(fwTools::Failed)
+void SRenderer::starting()
 {
     this->create();
 
@@ -85,7 +85,7 @@ void SRenderer::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::stopping() throw(fwTools::Failed)
+void SRenderer::stopping()
 {
     if( m_render == 0 )
     {
@@ -113,7 +113,7 @@ void SRenderer::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::updating() throw(fwTools::Failed)
+void SRenderer::updating()
 {
 
 //    m_interactorManager->getInteractor()->Render();

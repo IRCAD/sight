@@ -49,7 +49,7 @@ const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SET_CROSS_SCALE_SLOT   = "setC
 
 //-----------------------------------------------------------------------------
 
-SlicesCursor::SlicesCursor()  throw() :
+SlicesCursor::SlicesCursor()  noexcept :
     m_cursorPolyData( vtkPolyData::New() ),
     m_cursorMapper( vtkPolyDataMapper::New() ),
     m_cursorActor( vtkActor::New() ),
@@ -66,7 +66,7 @@ SlicesCursor::SlicesCursor()  throw() :
 
 //-----------------------------------------------------------------------------
 
-SlicesCursor::~SlicesCursor()  throw()
+SlicesCursor::~SlicesCursor()  noexcept
 {
     m_cursorActor->Delete();
     m_cursorActor = NULL;
@@ -85,7 +85,7 @@ void SlicesCursor::setCrossScale(double scale)
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doConfigure() throw(fwTools::Failed)
+void SlicesCursor::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -99,7 +99,7 @@ void SlicesCursor::doConfigure() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doStart() throw(fwTools::Failed)
+void SlicesCursor::doStart()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->buildPolyData();
@@ -120,7 +120,7 @@ void SlicesCursor::doStart() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doStop() throw(fwTools::Failed)
+void SlicesCursor::doStop()
 {
     m_isSelected = false;
     this->removeAllPropFromRenderer();
@@ -287,7 +287,7 @@ void SlicesCursor::updateColors()
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doSwap() throw(fwTools::Failed)
+void SlicesCursor::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -296,7 +296,7 @@ void SlicesCursor::doSwap() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doUpdate() throw(fwTools::Failed)
+void SlicesCursor::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

@@ -44,7 +44,7 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
+void CTMRImageIOD::read(::fwMedData::Series::sptr series)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);

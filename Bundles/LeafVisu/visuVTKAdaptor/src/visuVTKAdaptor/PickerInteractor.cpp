@@ -203,7 +203,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PickerInteractor::PickerInteractor() throw() :
+PickerInteractor::PickerInteractor() noexcept :
     m_interactionCommand(nullptr)
 {
     newSignal<PickedSignalType>(s_PICKED_SIGNAL);
@@ -211,13 +211,13 @@ PickerInteractor::PickerInteractor() throw() :
 
 //------------------------------------------------------------------------------
 
-PickerInteractor::~PickerInteractor() throw()
+PickerInteractor::~PickerInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doConfigure() throw(fwTools::Failed)
+void PickerInteractor::doConfigure()
 {
     SLM_ASSERT("Required element 'config' is missing.", m_configuration->getName() == "config");
 
@@ -245,7 +245,7 @@ void PickerInteractor::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doStart() throw(fwTools::Failed)
+void PickerInteractor::doStart()
 {
     PickerInteractorCallback* observer = PickerInteractorCallback::New();
     observer->setAdaptor( PickerInteractor::dynamicCast(this->getSptr()) );
@@ -271,19 +271,19 @@ void PickerInteractor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doUpdate() throw(fwTools::Failed)
+void PickerInteractor::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doSwap() throw(fwTools::Failed)
+void PickerInteractor::doSwap()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doStop() throw(fwTools::Failed)
+void PickerInteractor::doStop()
 {
     vtkRenderWindowInteractor* interactor = this->getInteractor();
     interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent, m_interactionCommand);

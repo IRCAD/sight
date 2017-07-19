@@ -45,7 +45,7 @@ public:
     /**
      * @brief   Destructor
      */
-    IODATA_API ~SplineReaderService() throw();
+    IODATA_API ~SplineReaderService() noexcept;
 
     /** @name Specified reader service methods ( override from ::io::IReader )
      * @{
@@ -78,7 +78,7 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    virtual void starting() throw(::fwTools::Failed)
+    virtual void starting()
     {
     }
 
@@ -87,7 +87,7 @@ protected:
      *
      * The stopping method is empty for this service.
      */
-    virtual void stopping() throw(::fwTools::Failed)
+    virtual void stopping()
     {
     }
 
@@ -107,7 +107,7 @@ protected:
        </service>
        @endcode
      */
-    IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
+    IODATA_API virtual void configuring( );
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -115,7 +115,7 @@ protected:
      * This method is used to update the service.
      * Read the spline and notify.
      */
-    IODATA_API void updating() throw(::fwTools::Failed);
+    IODATA_API void updating();
 
     /**
      * @brief Info method.

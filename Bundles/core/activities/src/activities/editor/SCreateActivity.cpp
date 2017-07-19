@@ -62,7 +62,7 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG     
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::SCreateActivity() throw()
+SCreateActivity::SCreateActivity() noexcept
 {
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     newSignal< LoadRequestedSignalType >(s_LOAD_REQUESTED_SIG);
@@ -70,13 +70,13 @@ SCreateActivity::SCreateActivity() throw()
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::~SCreateActivity() throw()
+SCreateActivity::~SCreateActivity() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::configuring() throw(fwTools::Failed)
+void SCreateActivity::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 
@@ -104,7 +104,7 @@ void SCreateActivity::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::starting() throw(::fwTools::Failed)
+void SCreateActivity::starting()
 {
     fwGui::IGuiContainerSrv::create();
 
@@ -205,7 +205,7 @@ void SCreateActivity::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::stopping() throw(::fwTools::Failed)
+void SCreateActivity::stopping()
 {
     this->disconnect();
     this->destroy();
@@ -213,7 +213,7 @@ void SCreateActivity::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::updating() throw(::fwTools::Failed)
+void SCreateActivity::updating()
 {
 }
 

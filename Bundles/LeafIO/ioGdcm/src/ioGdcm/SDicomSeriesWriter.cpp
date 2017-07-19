@@ -41,7 +41,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesWriter::SDicomSeriesWriter() throw() :
+SDicomSeriesWriter::SDicomSeriesWriter() noexcept :
     m_sigJobCreated(JobCreatedSignal::New()),
     m_cancelled(false)
 {
@@ -51,7 +51,7 @@ SDicomSeriesWriter::SDicomSeriesWriter() throw() :
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesWriter::~SDicomSeriesWriter() throw()
+SDicomSeriesWriter::~SDicomSeriesWriter() noexcept
 {
 }
 
@@ -83,26 +83,26 @@ void SDicomSeriesWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::starting() throw(::fwTools::Failed)
+void SDicomSeriesWriter::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::stopping() throw(::fwTools::Failed)
+void SDicomSeriesWriter::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::configuring() throw(::fwTools::Failed)
+void SDicomSeriesWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesWriter::updating() throw(::fwTools::Failed)
+void SDicomSeriesWriter::updating()
 {
     if( this->hasLocationDefined() )
     {

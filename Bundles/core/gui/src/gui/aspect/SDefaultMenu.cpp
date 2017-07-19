@@ -22,26 +22,26 @@ namespace aspect
 
 //-----------------------------------------------------------------------------
 
-SDefaultMenu::SDefaultMenu() throw()
+SDefaultMenu::SDefaultMenu() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultMenu::~SDefaultMenu() throw()
+SDefaultMenu::~SDefaultMenu() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::configuring() throw( ::fwTools::Failed )
+void SDefaultMenu::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::starting() throw( ::fwTools::Failed )
+void SDefaultMenu::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -49,7 +49,7 @@ void SDefaultMenu::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::stopping() throw( ::fwTools::Failed )
+void SDefaultMenu::stopping()
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -57,7 +57,7 @@ void SDefaultMenu::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::updating() throw(::fwTools::Failed)
+void SDefaultMenu::updating()
 {
     SLM_TRACE_FUNC();
 }

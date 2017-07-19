@@ -27,24 +27,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SDumpAll)(::fwGui::IActionSrv) );
 
     /// Does nothing
-    MONITOR_API SDumpAll() throw();
+    MONITOR_API SDumpAll() noexcept;
 
     /// Does nothing
-    MONITOR_API virtual ~SDumpAll() throw();
+    MONITOR_API virtual ~SDumpAll() noexcept;
 
 protected:
 
     /// Calls classic IAction methods to configure
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Calls classic IAction methods to start
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Dump all unlocked array/image etc
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Calls classic IAction methods to stop
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
 };
 

@@ -278,7 +278,7 @@ const ::fwCom::Signals::SignalKeyType NegatoSlicingInteractor::s_SLICING_STOPPED
 
 //-----------------------------------------------------------------------------
 
-NegatoSlicingInteractor::NegatoSlicingInteractor() throw() : m_vtkObserver(nullptr), m_priority(.6)
+NegatoSlicingInteractor::NegatoSlicingInteractor() noexcept : m_vtkObserver(nullptr), m_priority(.6)
 {
     m_sigSlicingStarted = newSignal< SlicingStartedSignalType >(s_SLICING_STARTED_SIG);
     m_sigSlicingStopped = newSignal< SlicingStoppedSignalType >(s_SLICING_STOPPED_SIG);
@@ -289,19 +289,19 @@ NegatoSlicingInteractor::NegatoSlicingInteractor() throw() : m_vtkObserver(nullp
 
 //-----------------------------------------------------------------------------
 
-NegatoSlicingInteractor::~NegatoSlicingInteractor() throw()
+NegatoSlicingInteractor::~NegatoSlicingInteractor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doConfigure() throw(fwTools::Failed)
+void NegatoSlicingInteractor::doConfigure()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doStart() throw(fwTools::Failed)
+void NegatoSlicingInteractor::doStart()
 {
     NegatoSlicingCallback* observer = NegatoSlicingCallback::New();
     observer->setAdaptor( NegatoSlicingInteractor::dynamicCast(this->getSptr()) );
@@ -322,7 +322,7 @@ void NegatoSlicingInteractor::doStart() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doUpdate() throw(fwTools::Failed)
+void NegatoSlicingInteractor::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -330,7 +330,7 @@ void NegatoSlicingInteractor::doUpdate() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doSwap() throw(fwTools::Failed)
+void NegatoSlicingInteractor::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -338,7 +338,7 @@ void NegatoSlicingInteractor::doSwap() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doStop() throw(fwTools::Failed)
+void NegatoSlicingInteractor::doStop()
 {
     this->getInteractor()->RemoveObservers(START_SLICING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_SLICING_EVENT, m_vtkObserver);

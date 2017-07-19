@@ -40,9 +40,9 @@ public:
     /** @} */
 
     /// Constructor
-    VISUVTKADAPTOR_API Texture() throw();
+    VISUVTKADAPTOR_API Texture() noexcept;
     /// Destructor
-    VISUVTKADAPTOR_API virtual ~Texture() throw();
+    VISUVTKADAPTOR_API virtual ~Texture() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -56,7 +56,7 @@ public:
 protected:
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
 
     /**
      * @brief Configure the adaptor.
@@ -77,16 +77,16 @@ protected:
      *  - \b mesh : a mesh data, in this case the first mesh adaptor linked to it is used
      *  - \b modelSeries : a model series data, the first mesh adaptor of all reconstructions are used
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doSwap();
 
     /// Updates the vtkTransform from the TransformationMatrix3D
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     /// Does nothing
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStop();
 
     /// Slot called when a texture must be applied on a material.
     void applyTexture( SPTR(::fwData::Material) _material);

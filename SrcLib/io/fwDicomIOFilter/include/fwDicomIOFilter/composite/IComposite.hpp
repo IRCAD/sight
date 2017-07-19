@@ -35,8 +35,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
-    throw(::fwDicomIOFilter::exceptions::FilterFailure);
+        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
 
     /**
      * @brief Apply every filters without throwing any exceptions.

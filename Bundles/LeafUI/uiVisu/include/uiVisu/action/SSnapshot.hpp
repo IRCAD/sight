@@ -41,26 +41,26 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SSnapshot)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIVISU_API SSnapshot() throw();
+    UIVISU_API SSnapshot() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~SSnapshot() throw();
+    UIVISU_API virtual ~SSnapshot() noexcept;
 
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Starts action
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops action
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Show a file dialog and notify the scene which must be printed.
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
     /// Does nothing
-    void swapping() throw(::fwTools::Failed);
+    void swapping();
 
     /**
      * @brief Configure action.
@@ -68,7 +68,7 @@ protected:
        <service type="::fwGui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no" />
        @endcode
      */
-    void configuring() throw(fwTools::Failed);
+    void configuring();
 
     virtual void info( std::ostream &_sstream );
 

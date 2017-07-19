@@ -35,7 +35,7 @@ namespace visuVTKAdaptor
 {
 
 
-Distance::Distance() throw() :
+Distance::Distance() noexcept :
     m_distanceRepresentation( vtkDistanceRepresentation2D::New()),
     m_lineActor(vtkActor::New()),
     m_lineSource(vtkLineSource::New())
@@ -64,14 +64,14 @@ Distance::Distance() throw() :
 
 //------------------------------------------------------------------------------
 
-Distance::~Distance() throw()
+Distance::~Distance() noexcept
 {
     m_distanceRepresentation->Delete();
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::setAxisColor( ::fwData::Color::sptr newColor) throw()
+void Distance::setAxisColor( ::fwData::Color::sptr newColor) noexcept
 {
     SLM_ASSERT("newColor not instanced", newColor);
     m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(
@@ -87,7 +87,7 @@ void Distance::setAxisColor( ::fwData::Color::sptr newColor) throw()
 
 //------------------------------------------------------------------------------
 
-void Distance::doConfigure() throw(fwTools::Failed)
+void Distance::doConfigure()
 {
 }
 
@@ -121,7 +121,7 @@ void Distance::doStart()
 
 //------------------------------------------------------------------------------
 
-void Distance::doUpdate() throw(fwTools::Failed)
+void Distance::doUpdate()
 {
     ::fwData::Point::sptr p1 = m_point1.lock();
     ::fwData::Point::sptr p2 = m_point2.lock();
@@ -147,7 +147,7 @@ void Distance::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::doSwap() throw(fwTools::Failed)
+void Distance::doSwap()
 {
     this->doStop();
     this->doStart();

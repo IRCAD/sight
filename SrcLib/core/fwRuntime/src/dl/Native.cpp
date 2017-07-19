@@ -21,7 +21,7 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Native::Native( const ::boost::filesystem::path & modulePath ) throw() :
+Native::Native( const ::boost::filesystem::path & modulePath ) noexcept :
     m_modulePath( modulePath ),
     m_bundle( 0 )
 {
@@ -29,7 +29,7 @@ Native::Native( const ::boost::filesystem::path & modulePath ) throw() :
 
 //------------------------------------------------------------------------------
 
-Native::~Native() throw()
+Native::~Native() noexcept
 {
 }
 
@@ -46,7 +46,7 @@ const ::boost::filesystem::path Native::getBundleLocation() const
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const throw(RuntimeException)
+const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) const
 {
     // Pre-condition
     SLM_ASSERT("bundle not initialized", m_bundle != 0 );
@@ -95,7 +95,7 @@ const ::boost::regex Native::getNativeName() const
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
+const ::boost::filesystem::path Native::getPath() const
 {
     // Pre-condition
     SLM_ASSERT("bundle not initialized", m_bundle != 0 );
@@ -123,7 +123,7 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Native::setBundle( const Bundle * bundle ) throw()
+void Native::setBundle( const Bundle * bundle ) noexcept
 {
     // Pre-condition
     SLM_ASSERT("bundle already initialized", m_bundle == 0 );
@@ -134,7 +134,7 @@ void Native::setBundle( const Bundle * bundle ) throw()
 
 //------------------------------------------------------------------------------
 
-void Native::operator=(const Native&) throw()
+void Native::operator=(const Native&) noexcept
 {
 }
 

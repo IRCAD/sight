@@ -22,20 +22,20 @@ class APPXML2_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Constructor.
-    APPXML2_API Plugin() throw();
+    APPXML2_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    APPXML2_API ~Plugin() throw();
+    APPXML2_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    APPXML2_API void start() throw(::fwRuntime::RuntimeException);
+    APPXML2_API void start();
 
     /// Overrides stop method. Do nothing
-    APPXML2_API void stop() throw();
+    APPXML2_API void stop() noexcept;
 
-    APPXML2_API void initialize() throw( ::fwRuntime::RuntimeException );
+    APPXML2_API void initialize();
 
-    APPXML2_API void uninitialize() throw();
+    APPXML2_API void uninitialize() noexcept;
 
 private:
     std::string m_configurationName;

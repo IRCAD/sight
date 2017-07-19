@@ -59,14 +59,14 @@ SIOSelector::SIOSelector() :
 
 //------------------------------------------------------------------------------
 
-SIOSelector::~SIOSelector()  throw()
+SIOSelector::~SIOSelector()  noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SIOSelector::configuring() throw( ::fwTools::Failed )
+void SIOSelector::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -139,21 +139,21 @@ void SIOSelector::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SIOSelector::starting() throw( ::fwTools::Failed )
+void SIOSelector::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SIOSelector::stopping() throw( ::fwTools::Failed )
+void SIOSelector::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SIOSelector::updating() throw( ::fwTools::Failed )
+void SIOSelector::updating()
 {
     SLM_TRACE_FUNC();
 

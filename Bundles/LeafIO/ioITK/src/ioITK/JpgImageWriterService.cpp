@@ -29,13 +29,13 @@ fwServicesRegisterMacro( ::io::IWriter, ::ioITK::JpgImageWriterService, ::fwData
 
 //------------------------------------------------------------------------------
 
-JpgImageWriterService::JpgImageWriterService() throw()
+JpgImageWriterService::JpgImageWriterService() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-JpgImageWriterService::~JpgImageWriterService() throw()
+JpgImageWriterService::~JpgImageWriterService() noexcept
 {
 }
 
@@ -48,7 +48,7 @@ JpgImageWriterService::~JpgImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::configuring() throw(::fwTools::Failed)
+void JpgImageWriterService::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -82,14 +82,14 @@ void JpgImageWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::starting() throw(::fwTools::Failed)
+void JpgImageWriterService::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::stopping() throw(::fwTools::Failed)
+void JpgImageWriterService::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -138,7 +138,7 @@ void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, 
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::updating() throw(::fwTools::Failed)
+void JpgImageWriterService::updating()
 {
     SLM_TRACE_FUNC();
 

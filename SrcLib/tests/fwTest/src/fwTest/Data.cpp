@@ -18,7 +18,7 @@ namespace fwTest
 
 const std::string Data::s_TEST_DATA_DIR_ENV_VAR("FWTEST_DATA_DIR");
 
-::boost::filesystem::path Data::dir() throw(fwTest::Exception)
+::boost::filesystem::path Data::dir()
 {
     char * val = std::getenv(s_TEST_DATA_DIR_ENV_VAR.c_str());
     if (val == 0)

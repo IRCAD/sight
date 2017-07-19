@@ -92,14 +92,14 @@ public:
      * @throw ::fwData::Exception
      */
     FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, size_t nbOfComponents,
-                                     bool reallocate = false) throw(::fwData::Exception);
+                                     bool reallocate = false);
 
     /// Aliases to the resize method
     FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
-                                     bool reallocate = false) throw(::fwData::Exception);
+                                     bool reallocate = false);
     FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents, bool reallocate =
-                                         false) throw(::fwData::Exception);
-    FWDATA_API virtual size_t resize(const SizeType &size, bool reallocate = false) throw(::fwData::Exception);
+                                         false);
+    FWDATA_API virtual size_t resize(const SizeType &size, bool reallocate = false);
 
     /**
      * @brief Clear this array.

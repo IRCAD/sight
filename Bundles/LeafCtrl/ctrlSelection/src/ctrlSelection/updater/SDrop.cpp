@@ -35,14 +35,14 @@ fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater:
 
 //-----------------------------------------------------------------------------
 
-SDrop::SDrop() throw()
+SDrop::SDrop() noexcept
 {
     newSlot(s_ADD_OBJECT_SLOT, &SDrop::addObject, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SDrop::~SDrop() throw()
+SDrop::~SDrop() noexcept
 {
 }
 
@@ -91,33 +91,33 @@ void SDrop::addObject( std::string uid )
 
 //-----------------------------------------------------------------------------
 
-void SDrop::starting()  throw ( ::fwTools::Failed )
+void SDrop::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDrop::stopping()  throw ( ::fwTools::Failed )
+void SDrop::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDrop::configuring()  throw ( ::fwTools::Failed )
+void SDrop::configuring()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDrop::reconfiguring()  throw ( ::fwTools::Failed )
+void SDrop::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDrop::updating() throw ( ::fwTools::Failed )
+void SDrop::updating()
 {
 }
 

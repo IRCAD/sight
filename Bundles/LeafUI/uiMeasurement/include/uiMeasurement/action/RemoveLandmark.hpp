@@ -32,20 +32,20 @@ class UIMEASUREMENT_CLASS_API RemoveLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (RemoveLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API RemoveLandmark() throw();
+    UIMEASUREMENT_API RemoveLandmark() noexcept;
 
-    UIMEASUREMENT_API virtual ~RemoveLandmark() throw();
+    UIMEASUREMENT_API virtual ~RemoveLandmark() noexcept;
 
 protected:
 
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     void info(std::ostream &_sstream );
 

@@ -416,19 +416,19 @@ QVariant InfoTableModel::headerData(int section, Qt::Orientation orientation, in
 
 //------------------------------------------------------------------------------
 
-DumpEditor::DumpEditor() throw()
+DumpEditor::DumpEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-DumpEditor::~DumpEditor() throw()
+DumpEditor::~DumpEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::starting() throw(::fwTools::Failed)
+void DumpEditor::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -507,7 +507,7 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::stopping() throw(::fwTools::Failed)
+void DumpEditor::stopping()
 {
     m_connection.disconnect();
     QObject::disconnect(m_refresh, SIGNAL(clicked()), this, SLOT(onRefreshButton()));
@@ -519,7 +519,7 @@ void DumpEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::configuring() throw(fwTools::Failed)
+void DumpEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -563,7 +563,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::updating() throw(::fwTools::Failed)
+void DumpEditor::updating()
 {
     m_policyEditor->reset();
     m_policyEditor->resizeColumnsToContents();
@@ -666,7 +666,7 @@ void DumpEditor::onBufferInfo()
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::swapping() throw(::fwTools::Failed)
+void DumpEditor::swapping()
 {
     this->updating();
 }

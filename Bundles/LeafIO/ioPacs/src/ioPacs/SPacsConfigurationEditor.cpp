@@ -33,12 +33,12 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioPacs::SPacsConfigurationEdi
 
 //------------------------------------------------------------------------------
 
-SPacsConfigurationEditor::SPacsConfigurationEditor() throw()
+SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-SPacsConfigurationEditor::~SPacsConfigurationEditor() throw()
+SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 {
 }
 
@@ -51,7 +51,7 @@ void SPacsConfigurationEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::starting() throw(::fwTools::Failed)
+void SPacsConfigurationEditor::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -136,7 +136,7 @@ void SPacsConfigurationEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::stopping() throw(::fwTools::Failed)
+void SPacsConfigurationEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -161,7 +161,7 @@ void SPacsConfigurationEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::configuring() throw(::fwTools::Failed)
+void SPacsConfigurationEditor::configuring()
 {
     SLM_TRACE_FUNC();
     ::fwGui::IGuiContainerSrv::initialize();
@@ -169,7 +169,7 @@ void SPacsConfigurationEditor::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationEditor::updating() throw(::fwTools::Failed)
+void SPacsConfigurationEditor::updating()
 {
     SLM_TRACE_FUNC();
 }

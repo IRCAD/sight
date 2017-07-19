@@ -50,14 +50,14 @@ SFilterSelectorDialog::SFilterSelectorDialog() :
 
 //------------------------------------------------------------------------------
 
-SFilterSelectorDialog::~SFilterSelectorDialog()  throw()
+SFilterSelectorDialog::~SFilterSelectorDialog()  noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectorDialog::configuring() throw( ::fwTools::Failed )
+void SFilterSelectorDialog::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -97,21 +97,21 @@ void SFilterSelectorDialog::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectorDialog::starting() throw( ::fwTools::Failed )
+void SFilterSelectorDialog::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectorDialog::stopping() throw( ::fwTools::Failed )
+void SFilterSelectorDialog::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
+void SFilterSelectorDialog::updating()
 {
     SLM_TRACE_FUNC();
 

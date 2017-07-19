@@ -42,7 +42,7 @@ Text::Text() :
 
 //-----------------------------------------------------------------------------
 
-Text::~Text() throw()
+Text::~Text() noexcept
 {
     m_actor->Delete();
     m_actor = nullptr;
@@ -53,7 +53,7 @@ Text::~Text() throw()
 
 //-----------------------------------------------------------------------------
 
-void Text::doConfigure() throw(fwTools::Failed)
+void Text::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -133,14 +133,14 @@ void Text::doConfigure() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void Text::doStart() throw(fwTools::Failed)
+void Text::doStart()
 {
     this->addToRenderer(m_actor);
 }
 
 //-----------------------------------------------------------------------------
 
-void Text::doStop() throw(fwTools::Failed)
+void Text::doStop()
 {
     this->removeAllPropFromRenderer();
 }

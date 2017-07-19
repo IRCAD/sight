@@ -38,11 +38,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doSwap();
 
-    void starting() throw(::fwTools::Failed);
-    void stopping() throw(::fwTools::Failed);
+    void starting();
+    void stopping();
 };
 
 } //namespace visuVTKAdaptor

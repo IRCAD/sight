@@ -39,7 +39,7 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::SConfigLauncher() throw()
+SConfigLauncher::SConfigLauncher() noexcept
 {
     m_configLauncher = ::fwServices::helper::ConfigLauncher::New();
 
@@ -51,13 +51,13 @@ SConfigLauncher::SConfigLauncher() throw()
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::~SConfigLauncher() throw()
+SConfigLauncher::~SConfigLauncher() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::starting() throw(::fwTools::Failed)
+void SConfigLauncher::starting()
 {
 
     m_proxychannel = this->getID() + "_stopConfig";
@@ -70,7 +70,7 @@ void SConfigLauncher::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::stopping() throw(::fwTools::Failed)
+void SConfigLauncher::stopping()
 {
     this->stopConfig();
     this->actionServiceStopping();
@@ -78,7 +78,7 @@ void SConfigLauncher::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::configuring() throw(fwTools::Failed)
+void SConfigLauncher::configuring()
 {
     this->initialize();
 
@@ -170,7 +170,7 @@ void SConfigLauncher::setIsActive(bool isActive)
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::updating() throw(::fwTools::Failed)
+void SConfigLauncher::updating()
 {
 }
 

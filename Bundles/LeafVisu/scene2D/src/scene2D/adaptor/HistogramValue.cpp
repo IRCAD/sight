@@ -24,7 +24,7 @@ namespace scene2D
 namespace adaptor
 {
 
-HistogramValue::HistogramValue() throw() :
+HistogramValue::HistogramValue() noexcept :
     m_color(Qt::white),
     m_isInteracting(false),
     m_text(nullptr),
@@ -35,13 +35,13 @@ HistogramValue::HistogramValue() throw() :
 
 //---------------------------------------------------------------------------------------------------------------
 
-HistogramValue::~HistogramValue() throw()
+HistogramValue::~HistogramValue() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::configuring() throw( ::fwTools::Failed)
+void HistogramValue::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -72,7 +72,7 @@ void HistogramValue::configuring() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doStart() throw( ::fwTools::Failed)
+void HistogramValue::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -106,14 +106,14 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doStop() throw( ::fwTools::Failed)
+void HistogramValue::doStop()
 {
     m_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doUpdate() throw( ::fwTools::Failed)
+void HistogramValue::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -178,7 +178,7 @@ void HistogramValue::doUpdate() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doSwap() throw( ::fwTools::Failed)
+void HistogramValue::doSwap()
 {
 }
 

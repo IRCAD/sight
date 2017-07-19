@@ -21,7 +21,7 @@ namespace adaptor
 
 //-----------------------------------------------------------------------------
 
-Square::Square() throw() :
+Square::Square() noexcept :
     m_size(0),
     m_layer(nullptr),
     m_rec(nullptr),
@@ -31,13 +31,13 @@ Square::Square() throw() :
 
 //-----------------------------------------------------------------------------
 
-Square::~Square() throw()
+Square::~Square() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::configuring() throw ( ::fwTools::Failed )
+void Square::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -58,7 +58,7 @@ void Square::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Square::doStart() throw ( ::fwTools::Failed )
+void Square::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -79,21 +79,21 @@ void Square::doStart() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Square::doUpdate() throw ( ::fwTools::Failed )
+void Square::doUpdate()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::doSwap() throw ( ::fwTools::Failed )
+void Square::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::doStop() throw ( ::fwTools::Failed )
+void Square::doStop()
 {
     SLM_TRACE_FUNC();
     this->getScene2DRender()->getScene()->removeItem(m_layer);

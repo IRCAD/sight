@@ -38,12 +38,12 @@ struct Native
      *
      * @param[in]   modulePath      a path to the module to manage
      */
-    Native( const boost::filesystem::path & modulePath) throw();
+    Native( const boost::filesystem::path & modulePath) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~Native() throw();
+    virtual ~Native() noexcept;
 
 
     /**
@@ -51,7 +51,7 @@ struct Native
      *
      * @return  true or false
      */
-    virtual bool isLoaded() const throw() = 0;
+    virtual bool isLoaded() const noexcept = 0;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -60,17 +60,17 @@ struct Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    virtual void * getSymbol( const std::string& name ) const throw(RuntimeException) = 0;
+    virtual void * getSymbol( const std::string& name ) const = 0;
 
     /**
      * @brief   Loads the module.
      */
-    virtual void load() throw(RuntimeException) = 0;
+    virtual void load() = 0;
 
     /**
      * @brief   Undloads the module.
      */
-    virtual void unload() throw(RuntimeException) = 0;
+    virtual void unload() = 0;
 
     /**
      * @brief       Retrieves the file path of the library including the owning bundle's path.
@@ -81,7 +81,7 @@ struct Native
      *
      * @see         getPath
      */
-    const boost::filesystem::path getFullPath( const bool _bMustBeFile = false ) const throw(RuntimeException);
+    const boost::filesystem::path getFullPath( const bool _bMustBeFile = false ) const;
 
     /**
      * @brief   Retrieves the file path of the native library.
@@ -90,14 +90,14 @@ struct Native
      *
      * @return  a string containing the native module file path
      */
-    const boost::filesystem::path getPath() const throw(RuntimeException);
+    const boost::filesystem::path getPath() const;
 
     /**
      * @brief       Set the bundle the library is attached to.
      *
      * @param[in]   bundle  a pointer to a bundle instance
      */
-    void setBundle( const ::fwRuntime::Bundle * bundle ) throw();
+    void setBundle( const ::fwRuntime::Bundle * bundle ) noexcept;
 
     /**
      * @brief  Retrieves the pattern of the dynamic library file name given the host OS
@@ -130,7 +130,7 @@ struct Native
          *
          * @remark  Assignment is forbidden for this class.
          */
-        void operator=( const Native & ) throw();
+        void operator=( const Native & ) noexcept;
 
 };
 

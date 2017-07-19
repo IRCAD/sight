@@ -18,7 +18,7 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Re
 namespace visuVTKAdaptor
 {
 
-Resection::Resection() throw() :
+Resection::Resection() noexcept :
     m_sharpEdgeAngle(50.),
     m_autoResetCamera(true)
 {
@@ -26,13 +26,13 @@ Resection::Resection() throw() :
 
 //------------------------------------------------------------------------------
 
-Resection::~Resection() throw()
+Resection::~Resection() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Resection::doConfigure() throw(fwTools::Failed)
+void Resection::doConfigure()
 {
     assert(m_configuration->getName() == "config");
 
@@ -54,14 +54,14 @@ void Resection::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Resection::doStart() throw(fwTools::Failed)
+void Resection::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Resection::doUpdate() throw(fwTools::Failed)
+void Resection::doUpdate()
 {
     SLM_TRACE_FUNC();
     doStop();
@@ -111,14 +111,14 @@ void Resection::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Resection::doSwap() throw(fwTools::Failed)
+void Resection::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Resection::doStop() throw(fwTools::Failed)
+void Resection::doStop()
 {
     this->unregisterServices();
 }

@@ -124,7 +124,7 @@ std::vector< std::string > SAttachmentSeriesReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-void SAttachmentSeriesReader::configuring() throw(::fwTools::Failed)
+void SAttachmentSeriesReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -157,7 +157,7 @@ void SAttachmentSeriesReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SAttachmentSeriesReader::updating() throw(::fwTools::Failed)
+void SAttachmentSeriesReader::updating()
 {
     if(this->hasLocationDefined())
     {

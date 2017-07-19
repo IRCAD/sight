@@ -50,7 +50,7 @@ typedef ::fwDataTools::helper::MedicalImageAdaptor MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
-Negato::Negato() throw() :
+Negato::Negato() noexcept :
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
@@ -67,13 +67,13 @@ Negato::Negato() throw() :
 
 //-----------------------------------------------------------------------------
 
-Negato::~Negato() throw()
+Negato::~Negato() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Negato::configuring() throw ( ::fwTools::Failed )
+void Negato::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -296,7 +296,7 @@ QImage* Negato::createQImage()
 
 //-----------------------------------------------------------------------------
 
-void Negato::doStart() throw ( ::fwTools::Failed )
+void Negato::doStart()
 {
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
@@ -325,7 +325,7 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::doUpdate() throw ( ::fwTools::Failed )
+void Negato::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -412,7 +412,7 @@ void Negato::updatingTFWindowing(double window, double level)
 
 //-----------------------------------------------------------------------------
 
-void Negato::doSwap() throw ( ::fwTools::Failed )
+void Negato::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -420,7 +420,7 @@ void Negato::doSwap() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::doStop() throw ( ::fwTools::Failed )
+void Negato::doStop()
 {
     this->removeTFConnections();
 

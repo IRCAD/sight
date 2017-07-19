@@ -46,7 +46,7 @@ const ::fwCom::Slots::SlotKeyType Reconstruction::s_UPDATE_VISIBILITY_SLOT  = "u
 const ::fwCom::Slots::SlotKeyType Reconstruction::s_UPDATE_NORMAL_MODE_SLOT = "updateNormalMode";
 
 //------------------------------------------------------------------------------
-Reconstruction::Reconstruction() throw() :
+Reconstruction::Reconstruction() noexcept :
     m_sharpEdgeAngle(180.),
     m_autoResetCamera(true)
 {
@@ -57,13 +57,13 @@ Reconstruction::Reconstruction() throw() :
 
 //------------------------------------------------------------------------------
 
-Reconstruction::~Reconstruction() throw()
+Reconstruction::~Reconstruction() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doConfigure() throw(fwTools::Failed)
+void Reconstruction::doConfigure()
 {
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 
@@ -76,7 +76,7 @@ void Reconstruction::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doStart() throw(fwTools::Failed)
+void Reconstruction::doStart()
 {
     this->createMeshService();
 }
@@ -123,7 +123,7 @@ void Reconstruction::createMeshService()
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doSwap() throw(fwTools::Failed)
+void Reconstruction::doSwap()
 {
     SLM_TRACE_FUNC();
     this->doUpdate();
@@ -131,7 +131,7 @@ void Reconstruction::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doUpdate() throw(fwTools::Failed)
+void Reconstruction::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -156,7 +156,7 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doStop() throw(fwTools::Failed)
+void Reconstruction::doStop()
 {
     SLM_TRACE_FUNC();
     this->removeAllPropFromRenderer();

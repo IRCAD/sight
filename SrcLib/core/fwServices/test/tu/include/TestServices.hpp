@@ -26,12 +26,12 @@ class TestConfigService : public ::fwServices::IService
 {
 public:
     fwCoreServiceClassDefinitionsMacro ( (TestConfigService)(::fwServices::IService) );
-    TestConfigService() throw()
+    TestConfigService() noexcept
         :   m_isUpdated(false)
     {
     }
 
-    virtual ~TestConfigService() throw()
+    virtual ~TestConfigService() noexcept
     {
     }
 
@@ -42,16 +42,16 @@ public:
     }
 
 protected:
-    virtual void configuring() throw( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
-    virtual void starting() throw(::fwTools::Failed)
+    virtual void starting()
     {
     }
-    virtual void stopping() throw(::fwTools::Failed)
+    virtual void stopping()
     {
     }
-    virtual void updating() throw(::fwTools::Failed)
+    virtual void updating()
     {
     }
     virtual void info( std::ostream& _sstream )
@@ -70,23 +70,23 @@ class TestServiceImplementationImage : public TestConfigService
 
 public:
     fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwServices::ut::TestConfigService) );
-    TestServiceImplementationImage() throw()
+    TestServiceImplementationImage() noexcept
     {
     }
-    virtual ~TestServiceImplementationImage() throw()
+    virtual ~TestServiceImplementationImage() noexcept
     {
     }
 
-    virtual void configuring() throw( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
-    virtual void starting() throw(::fwTools::Failed)
+    virtual void starting()
     {
     }
-    virtual void stopping() throw(::fwTools::Failed)
+    virtual void stopping()
     {
     }
-    virtual void updating() throw(::fwTools::Failed)
+    virtual void updating()
     {
         m_isUpdated = true;
     }

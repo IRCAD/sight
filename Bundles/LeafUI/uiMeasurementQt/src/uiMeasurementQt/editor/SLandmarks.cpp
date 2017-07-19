@@ -53,7 +53,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup"
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
-SLandmarks::SLandmarks() throw() :
+SLandmarks::SLandmarks() noexcept :
     m_advancedMode(false)
 {
     newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
@@ -72,13 +72,13 @@ SLandmarks::SLandmarks() throw() :
 
 //------------------------------------------------------------------------------
 
-SLandmarks::~SLandmarks() throw()
+SLandmarks::~SLandmarks() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::configuring() throw(fwTools::Failed)
+void SLandmarks::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
@@ -94,7 +94,7 @@ void SLandmarks::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::starting() throw(::fwTools::Failed)
+void SLandmarks::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -166,7 +166,7 @@ void SLandmarks::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::updating() throw(::fwTools::Failed)
+void SLandmarks::updating()
 {
     m_treeWidget->blockSignals(true);
 
@@ -194,7 +194,7 @@ void SLandmarks::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::stopping() throw(::fwTools::Failed)
+void SLandmarks::stopping()
 {
     this->destroy();
 }

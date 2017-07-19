@@ -41,10 +41,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Does nothing.
-    CTRLMEMORY_API LockDumpManagerSrv() throw();
+    CTRLMEMORY_API LockDumpManagerSrv() noexcept;
 
     /// Destructor. Does nothing.
-    CTRLMEMORY_API virtual ~LockDumpManagerSrv() throw();
+    CTRLMEMORY_API virtual ~LockDumpManagerSrv() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -59,16 +59,16 @@ public:
 protected:
 
     /// Dump lock composite objects
-    CTRLMEMORY_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void starting();
 
     /// Dump unlock composite objects
-    CTRLMEMORY_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void stopping();
 
     /// Does nothing
-    CTRLMEMORY_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void reconfiguring();
 
     /// Does nothing
-    CTRLMEMORY_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void updating();
 
     /// Does nothing
     CTRLMEMORY_API virtual void info( std::ostream &_sstream );
@@ -78,7 +78,7 @@ protected:
      * configuration \<manageLockOn key="CompositeObjectKey" /\>
      * if configuration is empty, service locks all composite objects
      */
-    CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLMEMORY_API virtual void configuring();
 
 private:
 

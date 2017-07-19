@@ -36,29 +36,29 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (TransformationMatrixEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API TransformationMatrixEditor() throw();
+    UIVISUQT_API TransformationMatrixEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~TransformationMatrixEditor() throw();
+    UIVISUQT_API virtual ~TransformationMatrixEditor() noexcept;
 
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Install the layout.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroy the layout.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Do nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /// Configure the editor. Do nothing.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

@@ -39,7 +39,7 @@ Medical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
 
 //------------------------------------------------------------------------------
 
-Medical3DCamera::Medical3DCamera() throw() :
+Medical3DCamera::Medical3DCamera() noexcept :
     m_resetAtStart(false)
 
 {
@@ -56,13 +56,13 @@ Medical3DCamera::Medical3DCamera() throw() :
 
 //------------------------------------------------------------------------------
 
-Medical3DCamera::~Medical3DCamera() throw()
+Medical3DCamera::~Medical3DCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doConfigure() throw(fwTools::Failed)
+void Medical3DCamera::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -85,7 +85,7 @@ void Medical3DCamera::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doStart() throw(fwTools::Failed)
+void Medical3DCamera::doStart()
 {
     m_camera = this->getRenderer()->GetActiveCamera();
 
@@ -97,7 +97,7 @@ void Medical3DCamera::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doUpdate() throw(fwTools::Failed)
+void Medical3DCamera::doUpdate()
 {
     SLM_TRACE_FUNC();
     this->updateView();
@@ -105,14 +105,14 @@ void Medical3DCamera::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doSwap() throw(fwTools::Failed)
+void Medical3DCamera::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doStop() throw(fwTools::Failed)
+void Medical3DCamera::doStop()
 {
     this->unregisterServices();
 }

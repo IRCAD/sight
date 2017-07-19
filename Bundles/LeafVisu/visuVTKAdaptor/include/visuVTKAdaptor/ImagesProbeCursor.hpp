@@ -35,9 +35,9 @@ class VISUVTKADAPTOR_CLASS_API ImagesProbeCursor : public  ::fwDataTools::helper
 public:
     fwCoreServiceClassDefinitionsMacro ( (ImagesProbeCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API ImagesProbeCursor() throw();
+    VISUVTKADAPTOR_API ImagesProbeCursor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ImagesProbeCursor() throw();
+    VISUVTKADAPTOR_API virtual ~ImagesProbeCursor() noexcept;
 
     VISUVTKADAPTOR_API void updateView( double world[3] );
 
@@ -47,8 +47,8 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
     /**
      * @code{.xml}
@@ -60,9 +60,9 @@ protected:
        </adaptor>
        @endcode
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     void buildTextActor();
     void buildPolyData();

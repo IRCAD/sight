@@ -93,26 +93,26 @@ public:
     /**
      * @brief Constructor
      */
-    IODICOM_API SSliceIndexDicomEditor() throw();
+    IODICOM_API SSliceIndexDicomEditor() noexcept;
 
     /**
      * @brief Destructor
      */
-    IODICOM_API virtual ~SSliceIndexDicomEditor() throw();
+    IODICOM_API virtual ~SSliceIndexDicomEditor() noexcept;
 
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    IODICOM_API virtual void configuring() throw(::fwTools::Failed);
+    IODICOM_API virtual void configuring();
 
     /// Override
-    IODICOM_API virtual void starting() throw(::fwTools::Failed);
+    IODICOM_API virtual void starting();
 
     /// Override
-    IODICOM_API virtual void stopping() throw(::fwTools::Failed);
+    IODICOM_API virtual void stopping();
 
     /// Override
-    IODICOM_API void updating() throw(::fwTools::Failed);
+    IODICOM_API void updating();
 
     /// Override
     IODICOM_API void info(std::ostream& _sstream );

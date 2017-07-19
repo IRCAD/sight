@@ -43,7 +43,7 @@ const ::fwCom::Signals::SignalKeyType RepresentationEditor::s_NORMALS_MODE_MODIF
 
 //------------------------------------------------------------------------------
 
-RepresentationEditor::RepresentationEditor() throw()
+RepresentationEditor::RepresentationEditor() noexcept
 {
     m_sigNormalsModeModified = NormalsModeModifiedSignalType::New();
     ::fwCom::HasSignals::m_signals(s_NORMALS_MODE_MODIFIED_SIG, m_sigNormalsModeModified);
@@ -51,13 +51,13 @@ RepresentationEditor::RepresentationEditor() throw()
 
 //------------------------------------------------------------------------------
 
-RepresentationEditor::~RepresentationEditor() throw()
+RepresentationEditor::~RepresentationEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::starting() throw(::fwTools::Failed)
+void RepresentationEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -154,7 +154,7 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::stopping() throw(::fwTools::Failed)
+void RepresentationEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -168,7 +168,7 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::configuring() throw(fwTools::Failed)
+void RepresentationEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -176,7 +176,7 @@ void RepresentationEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::updating() throw(::fwTools::Failed)
+void RepresentationEditor::updating()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
@@ -195,7 +195,7 @@ void RepresentationEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::swapping() throw(::fwTools::Failed)
+void RepresentationEditor::swapping()
 {
     this->updating();
 }

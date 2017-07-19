@@ -69,10 +69,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SLandmarks)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIMEASUREMENTQT_API SLandmarks() throw();
+    UIMEASUREMENTQT_API SLandmarks() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEASUREMENTQT_API virtual ~SLandmarks() throw();
+    UIMEASUREMENTQT_API virtual ~SLandmarks() noexcept;
 
     UIMEASUREMENTQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
@@ -85,19 +85,19 @@ protected:
      *
      * This method launches the IEditor::starting method.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      *
      * This method launches the IEditor::stopping method.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

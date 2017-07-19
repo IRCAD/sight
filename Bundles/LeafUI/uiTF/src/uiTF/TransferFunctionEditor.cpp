@@ -53,13 +53,13 @@ TransferFunctionEditor::TransferFunctionEditor() :
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-TransferFunctionEditor::~TransferFunctionEditor() throw ()
+TransferFunctionEditor::~TransferFunctionEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
+void TransferFunctionEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -110,7 +110,7 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
+void TransferFunctionEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -180,14 +180,14 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
+void TransferFunctionEditor::updating()
 {
     this->updateTransferFunctionPreset();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
+void TransferFunctionEditor::stopping()
 {
     SLM_TRACE_FUNC();
 

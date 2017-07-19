@@ -34,7 +34,7 @@ static const ::fwCom::Signals::SignalKeyType SET_OBJECT_SLOT = "setObjects";
 
 //-----------------------------------------------------------------------------
 
-SSignal::SSignal() throw() :
+SSignal::SSignal() noexcept :
     m_sigTriggered(TrigerredSignalType::New()),
     m_sigCancelled(TrigerredSignalType::New()),
     m_slotSetObjects(SSignal::SetObjectsSlotType::New(&SSignal::setObjects, this))
@@ -53,13 +53,13 @@ SSignal::SSignal() throw() :
 
 //-----------------------------------------------------------------------------
 
-SSignal::~SSignal() throw()
+SSignal::~SSignal() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SSignal::starting() throw( ::fwTools::Failed )
+void SSignal::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -67,7 +67,7 @@ void SSignal::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSignal::stopping() throw( ::fwTools::Failed )
+void SSignal::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -85,7 +85,7 @@ void SSignal::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void SSignal::updating() throw( ::fwTools::Failed )
+void SSignal::updating()
 {
     SLM_TRACE_FUNC();
     if (this->confirmAction())
@@ -101,7 +101,7 @@ void SSignal::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSignal::configuring() throw( ::fwTools::Failed )
+void SSignal::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();

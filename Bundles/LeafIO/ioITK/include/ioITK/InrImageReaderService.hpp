@@ -29,27 +29,27 @@ class IOITK_CLASS_API InrImageReaderService : public ::io::IReader
 public:
     fwCoreServiceClassDefinitionsMacro( (InrImageReaderService)( ::io::IReader) );
 
-    IOITK_API InrImageReaderService() throw();
+    IOITK_API InrImageReaderService() noexcept;
 
-    IOITK_API virtual ~InrImageReaderService() throw();
+    IOITK_API virtual ~InrImageReaderService() noexcept;
 
 protected:
 
     /// Override
-    virtual void starting() throw(::fwTools::Failed)
+    virtual void starting()
     {
     }
 
     /// Override
-    virtual void stopping() throw(::fwTools::Failed)
+    virtual void stopping()
     {
     }
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed);
+    IOITK_API virtual void configuring();
 
     /// Override
-    IOITK_API virtual void updating() throw(::fwTools::Failed);
+    IOITK_API virtual void updating();
 
     /// Override
     IOITK_API void info(std::ostream& _sstream );

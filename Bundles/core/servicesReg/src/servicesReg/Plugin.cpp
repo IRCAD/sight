@@ -24,13 +24,13 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start() throw( ::fwRuntime::RuntimeException )
+void Plugin::start()
 {
     ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
     ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
@@ -43,13 +43,13 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 
 //-----------------------------------------------------------------------------
 
-void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
+void Plugin::initialize()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
+void Plugin::uninitialize()
 {
     ::fwThread::deleteDefaultPool();
 
@@ -71,7 +71,7 @@ void Plugin::uninitialize() throw( ::fwRuntime::RuntimeException )
 
 //-----------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

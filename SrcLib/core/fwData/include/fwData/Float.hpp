@@ -37,12 +37,12 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWDATA_API Float( ::fwData::Object::Key key ) throw();
+    FWDATA_API Float( ::fwData::Object::Key key ) noexcept;
 
     /**
      * @brief Destructor.
      */
-    FWDATA_API virtual ~Float() throw();
+    FWDATA_API virtual ~Float() noexcept;
 
 
     /// Defines shallow copy
@@ -53,7 +53,7 @@ public:
 
 protected:
 
-    FWDATA_API Float() throw();
+    FWDATA_API Float() noexcept;
 };
 
 } // namespace fwData

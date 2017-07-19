@@ -41,24 +41,24 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SSeriesDBLazyReader)( ::io::IReader) );
 
     /// constructor
-    IOVTKGDCM_API SSeriesDBLazyReader() throw();
+    IOVTKGDCM_API SSeriesDBLazyReader() noexcept;
 
     /// destructor
-    IOVTKGDCM_API virtual ~SSeriesDBLazyReader() throw();
+    IOVTKGDCM_API virtual ~SSeriesDBLazyReader() noexcept;
 
 protected:
 
     /// Override
-    IOVTKGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void starting();
 
     /// Override
-    IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void stopping();
 
     /// Override
-    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void configuring();
 
     /// Override
-    IOVTKGDCM_API void updating() throw(::fwTools::Failed);
+    IOVTKGDCM_API void updating();
 
     /// Override
     IOVTKGDCM_API void info(std::ostream& _sstream );

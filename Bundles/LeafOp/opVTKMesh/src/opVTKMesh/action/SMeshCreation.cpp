@@ -42,20 +42,20 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation
 
 //-----------------------------------------------------------------------------
 
-SMeshCreation::SMeshCreation() throw() :
+SMeshCreation::SMeshCreation() noexcept :
     m_reduction(0)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SMeshCreation::~SMeshCreation() throw()
+SMeshCreation::~SMeshCreation() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SMeshCreation::starting() throw ( ::fwTools::Failed )
+void SMeshCreation::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -63,7 +63,7 @@ void SMeshCreation::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SMeshCreation::stopping() throw ( ::fwTools::Failed )
+void SMeshCreation::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -71,7 +71,7 @@ void SMeshCreation::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SMeshCreation::configuring() throw ( ::fwTools::Failed )
+void SMeshCreation::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -89,7 +89,7 @@ void SMeshCreation::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SMeshCreation::updating() throw ( ::fwTools::Failed )
+void SMeshCreation::updating()
 {
     SLM_TRACE_FUNC();
 

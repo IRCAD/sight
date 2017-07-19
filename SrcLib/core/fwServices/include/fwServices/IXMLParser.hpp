@@ -66,24 +66,24 @@ protected:
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void starting() throw(::fwTools::Failed);
+    FWSERVICES_API virtual void starting();
 
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void stopping() throw(::fwTools::Failed);
+    FWSERVICES_API virtual void stopping();
 
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void configuring() throw(::fwTools::Failed);
+    FWSERVICES_API virtual void configuring();
 
     /**
      * @brief Parse the XML configuration
      * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both
      *       specific compositions and this generic one
      */
-    FWSERVICES_API virtual void updating() throw(::fwTools::Failed);
+    FWSERVICES_API virtual void updating();
 };
 
 

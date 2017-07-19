@@ -19,14 +19,14 @@ static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIH
 
 //-----------------------------------------------------------------------------
 
-IWriter::IWriter() throw()
+IWriter::IWriter() noexcept
 {
     newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
 }
 
 //-----------------------------------------------------------------------------
 
-IWriter::~IWriter() throw()
+IWriter::~IWriter() noexcept
 {
 }
 
@@ -100,7 +100,7 @@ void IWriter::clearLocations()
 
 //-----------------------------------------------------------------------------
 
-void IWriter::configuring() throw (fwTools::Failed)
+void IWriter::configuring()
 {
     SLM_ASSERT("Generic configuring method is only available for io service that uses paths.",
                !( this->getIOPathType() & ::io::TYPE_NOT_DEFINED ) );

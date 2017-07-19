@@ -22,7 +22,7 @@ namespace scene2D
 namespace adaptor
 {
 
-IAdaptor::IAdaptor() throw() :
+IAdaptor::IAdaptor() noexcept :
     m_zValue(0),
     m_opacity(1)
 {
@@ -30,7 +30,7 @@ IAdaptor::IAdaptor() throw() :
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::~IAdaptor() throw()
+IAdaptor::~IAdaptor() noexcept
 {
     m_xAxis.reset();
     m_yAxis.reset();
@@ -182,7 +182,7 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::da
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::configuring() throw ( ::fwTools::Failed )
+void IAdaptor::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -260,7 +260,7 @@ void IAdaptor::initializeViewportSize()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::starting() throw ( ::fwTools::Failed )
+void IAdaptor::starting()
 {
     m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
@@ -269,14 +269,14 @@ void IAdaptor::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::updating() throw ( ::fwTools::Failed )
+void IAdaptor::updating()
 {
     doUpdate();
 }
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::swapping() throw(fwTools::Failed)
+void IAdaptor::swapping()
 {
     m_connections.disconnect();
     m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
@@ -285,7 +285,7 @@ void IAdaptor::swapping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::stopping() throw ( ::fwTools::Failed )
+void IAdaptor::stopping()
 {
     m_connections.disconnect();
     doStop();

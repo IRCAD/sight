@@ -46,10 +46,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIRECONSTRUCTIONQT_API RepresentationEditor() throw();
+    UIRECONSTRUCTIONQT_API RepresentationEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() throw();
+    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() noexcept;
 
     /**
      * @name Signals API
@@ -66,16 +66,16 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

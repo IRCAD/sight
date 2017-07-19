@@ -42,10 +42,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SnapshotEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API SnapshotEditor() throw();
+    UIVISUQT_API SnapshotEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~SnapshotEditor() throw();
+    UIVISUQT_API virtual ~SnapshotEditor() noexcept;
 
 protected:
 
@@ -54,18 +54,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Do nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the editor.
@@ -75,7 +75,7 @@ protected:
        <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
        @endcode
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

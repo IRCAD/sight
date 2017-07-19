@@ -22,7 +22,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Grid2D::Grid2D() throw() :
+Grid2D::Grid2D() noexcept :
     m_xSpacing(10),
     m_ySpacing(10)
 {
@@ -30,13 +30,13 @@ Grid2D::Grid2D() throw() :
 
 //---------------------------------------------------------------------------------------------------------------
 
-Grid2D::~Grid2D() throw()
+Grid2D::~Grid2D() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::configuring() throw ( ::fwTools::Failed )
+void Grid2D::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -135,7 +135,7 @@ void Grid2D::draw()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doStart() throw ( ::fwTools::Failed )
+void Grid2D::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -180,7 +180,7 @@ float Grid2D::getYEndVal()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doUpdate() throw ( ::fwTools::Failed )
+void Grid2D::doUpdate()
 {
     SLM_TRACE_FUNC();
 }
@@ -197,14 +197,14 @@ void Grid2D::processInteraction( ::scene2D::data::Event::sptr _event)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doSwap() throw ( ::fwTools::Failed )
+void Grid2D::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doStop() throw ( ::fwTools::Failed )
+void Grid2D::doStop()
 {
     SLM_TRACE_FUNC();
 

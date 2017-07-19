@@ -34,7 +34,7 @@ static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::SSeriesDBMerger( ) throw() :
+SSeriesDBMerger::SSeriesDBMerger( ) noexcept :
     m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
 {
     m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
@@ -43,7 +43,7 @@ SSeriesDBMerger::SSeriesDBMerger( ) throw() :
 
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::~SSeriesDBMerger() throw()
+SSeriesDBMerger::~SSeriesDBMerger() noexcept
 {
 }
 
@@ -56,7 +56,7 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::configuring() throw( ::fwTools::Failed )
+void SSeriesDBMerger::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -72,7 +72,7 @@ void SSeriesDBMerger::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
+void SSeriesDBMerger::updating( )
 {
     SLM_TRACE_FUNC();
     ::fwGui::LockAction lock(this->getSptr());
@@ -120,14 +120,14 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::starting() throw (::fwTools::Failed)
+void SSeriesDBMerger::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::stopping() throw (::fwTools::Failed)
+void SSeriesDBMerger::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

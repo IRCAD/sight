@@ -33,18 +33,18 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Distance)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Distance() throw();
+    VISUVTKADAPTOR_API Distance() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Distance() throw();
+    VISUVTKADAPTOR_API virtual ~Distance() noexcept;
 
     /// set Distance Axis color AND alpha
-    VISUVTKADAPTOR_API void setAxisColor( ::fwData::Color::sptr newColor) throw();
+    VISUVTKADAPTOR_API void setAxisColor( ::fwData::Color::sptr newColor) noexcept;
 
 protected:
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
     VISUVTKADAPTOR_API void doStart();
     VISUVTKADAPTOR_API void doStop();
 

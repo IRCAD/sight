@@ -76,19 +76,19 @@ protected:
     }RegistrationModeType;
 
     /// Configures the service
-    BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void configuring();
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void starting() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void starting();
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void stopping() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void stopping();
 
     /// Perform the registration
-    BASICREGISTRATION_API virtual void updating() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void updating();
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
+    BASICREGISTRATION_API virtual void swapping();
 
 private:
 

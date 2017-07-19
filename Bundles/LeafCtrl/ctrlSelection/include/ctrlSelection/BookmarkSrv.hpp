@@ -27,20 +27,20 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (BookmarkSrv)(::fwServices::IController) );
 
-    CTRLSELECTION_API BookmarkSrv() throw();
+    CTRLSELECTION_API BookmarkSrv() noexcept;
 
-    CTRLSELECTION_API virtual ~BookmarkSrv() throw();
+    CTRLSELECTION_API virtual ~BookmarkSrv() noexcept;
 
 protected:
 
     /// Adds the object in bookmark.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Removes the object from bookmark
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Do nothing
-    CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void swapping();
 
     /**
      * @code{.xml}
@@ -52,13 +52,13 @@ protected:
      * - \b name : name of the bookmark
      * The prefix and the name are concatenated as 'prefix_name'.
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Do nothing
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void reconfiguring();
 
     /// Do nothing
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 

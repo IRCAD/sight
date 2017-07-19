@@ -30,41 +30,41 @@ const ::fwCom::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::fwData::Object );
 
 
-SSnapshot::SSnapshot() throw()
+SSnapshot::SSnapshot() noexcept
 {
     m_sigSnapped = newSignal< SnappedSignalType >(s_SNAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-SSnapshot::~SSnapshot() throw()
+SSnapshot::~SSnapshot() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::starting() throw(::fwTools::Failed)
+void SSnapshot::starting()
 {
     ::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::stopping() throw(::fwTools::Failed)
+void SSnapshot::stopping()
 {
     ::fwGui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::configuring() throw(fwTools::Failed)
+void SSnapshot::configuring()
 {
     ::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::updating() throw(::fwTools::Failed)
+void SSnapshot::updating()
 {
     std::string filename = this->requestFileName();
 
@@ -76,7 +76,7 @@ void SSnapshot::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSnapshot::swapping() throw(::fwTools::Failed)
+void SSnapshot::swapping()
 {
 
 }

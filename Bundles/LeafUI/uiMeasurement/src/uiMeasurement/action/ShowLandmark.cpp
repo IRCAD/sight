@@ -36,14 +36,14 @@ static const ::fwCom::Slots::SlotKeyType s_SHOW_LANDMARK_SLOT = "showLandmark";
 
 //------------------------------------------------------------------------------
 
-ShowLandmark::ShowLandmark( ) throw()
+ShowLandmark::ShowLandmark( ) noexcept
 {
     newSlot(s_SHOW_LANDMARK_SLOT, &ShowLandmark::showLandmark, this);
 }
 
 //------------------------------------------------------------------------------
 
-ShowLandmark::~ShowLandmark() throw()
+ShowLandmark::~ShowLandmark() noexcept
 {
 }
 
@@ -56,7 +56,7 @@ void ShowLandmark::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::updating() throw(::fwTools::Failed)
+void ShowLandmark::updating()
 {
     SLM_TRACE_FUNC();
 
@@ -89,7 +89,7 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::swapping() throw(::fwTools::Failed)
+void ShowLandmark::swapping()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
@@ -109,21 +109,21 @@ void ShowLandmark::showLandmark(bool isShown)
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::configuring() throw (::fwTools::Failed)
+void ShowLandmark::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::starting() throw (::fwTools::Failed)
+void ShowLandmark::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::stopping() throw (::fwTools::Failed)
+void ShowLandmark::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

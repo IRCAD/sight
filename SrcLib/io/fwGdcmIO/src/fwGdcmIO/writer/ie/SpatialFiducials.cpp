@@ -128,7 +128,6 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 //------------------------------------------------------------------------------
 
 void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence)
-throw(::fwGdcmIO::exception::Failed)
 {
     ::fwData::PointList::sptr pointList =
         m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
@@ -274,8 +273,7 @@ void SpatialFiducials::writeSOPCommonModule()
 //------------------------------------------------------------------------------
 
 void SpatialFiducials::addReferencedImage(int frameNumber,
-                                          ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(
-    ::fwGdcmIO::exception::Failed)
+                                          ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence)
 {
     ::gdcm::Item referencedImageItem;
     referencedImageItem.SetVLToUndefined();

@@ -32,28 +32,28 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SQuit() throw();
+    GUI_API SQuit() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SQuit() throw();
+    GUI_API virtual ~SQuit() noexcept;
 
 protected:
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
      */
-    GUI_API void configuring() throw( ::fwTools::Failed );
+    GUI_API void configuring();
 
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
     /**
      * @brief This method tries to close the window and reset root object.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed);
+    GUI_API virtual void updating();
 
     /*
      * @brief This method gives information about the class.

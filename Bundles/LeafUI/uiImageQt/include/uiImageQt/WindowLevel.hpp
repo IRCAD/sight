@@ -77,10 +77,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (WindowLevel)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API WindowLevel() throw();
+    UIIMAGEQT_API WindowLevel() noexcept;
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~WindowLevel() throw();
+    UIIMAGEQT_API virtual ~WindowLevel() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -105,18 +105,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update editor information from the image
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Swap of image
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the editor.
@@ -133,7 +133,7 @@ protected:
      *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
      *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream );

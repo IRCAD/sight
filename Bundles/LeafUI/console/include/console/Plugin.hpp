@@ -27,16 +27,16 @@ class CONSOLE_CLASS_API Plugin : public ::fwRuntime::Plugin
 public:
 
     /// Destructor
-    CONSOLE_API ~Plugin() throw();
+    CONSOLE_API ~Plugin() noexcept;
 
     /// @override
-    CONSOLE_API void start() throw(::fwRuntime::RuntimeException);
+    CONSOLE_API void start();
 
     /// @override
-    CONSOLE_API void stop() throw();
+    CONSOLE_API void stop() noexcept;
 
     /// Run callback
-    CONSOLE_API int run() throw();
+    CONSOLE_API int run() noexcept;
 
 private:
 

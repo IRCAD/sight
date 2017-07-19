@@ -30,12 +30,12 @@ struct FWTOOLS_CLASS_API Exception : public ::fwCore::Exception
      *
      * @param[in]   message a string containing the failure message
      */
-    FWTOOLS_API Exception(const std::string &message) throw();
+    FWTOOLS_API Exception(const std::string &message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
-    FWTOOLS_API ~Exception() throw();
+    FWTOOLS_API ~Exception() noexcept;
 
 
 };

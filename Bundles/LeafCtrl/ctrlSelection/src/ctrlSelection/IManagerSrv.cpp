@@ -28,7 +28,7 @@ IManagerSrv::~IManagerSrv()
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::swapping() throw ( ::fwTools::Failed )
+void IManagerSrv::swapping()
 {
     this->stopping();
     this->starting();

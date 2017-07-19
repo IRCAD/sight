@@ -143,7 +143,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PointListInteractor::PointListInteractor() throw() :
+PointListInteractor::PointListInteractor() noexcept :
     m_interactionCommand(nullptr),
     m_priority(0.999f)
 {
@@ -151,19 +151,19 @@ PointListInteractor::PointListInteractor() throw() :
 
 //------------------------------------------------------------------------------
 
-PointListInteractor::~PointListInteractor() throw()
+PointListInteractor::~PointListInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::doConfigure() throw(fwTools::Failed)
+void PointListInteractor::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::doStart() throw(fwTools::Failed)
+void PointListInteractor::doStart()
 {
     PointListInteractorCallback *observer = PointListInteractorCallback::New();
     observer->setAdaptor( PointListInteractor::dynamicCast(this->getSptr()) );
@@ -178,19 +178,19 @@ void PointListInteractor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::doUpdate() throw(fwTools::Failed)
+void PointListInteractor::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::doSwap() throw(fwTools::Failed)
+void PointListInteractor::doSwap()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::doStop() throw(fwTools::Failed)
+void PointListInteractor::doStop()
 {
     this->getInteractor()->RemoveObservers(START_INTERACTION_EVENT, m_interactionCommand);
     this->getInteractor()->RemoveObservers(STOP_INTERACTION_EVENT, m_interactionCommand);

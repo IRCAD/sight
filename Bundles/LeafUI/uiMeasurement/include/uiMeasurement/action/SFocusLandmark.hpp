@@ -44,9 +44,9 @@ class UIMEASUREMENT_CLASS_API SFocusLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro( (SFocusLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API SFocusLandmark() throw();
+    UIMEASUREMENT_API SFocusLandmark() noexcept;
 
-    UIMEASUREMENT_API virtual ~SFocusLandmark() throw();
+    UIMEASUREMENT_API virtual ~SFocusLandmark() noexcept;
 
     /// Defines connection to Landmarks data
     UIMEASUREMENT_API KeyConnectionsMap getAutoConnections() const;
@@ -54,16 +54,16 @@ public:
 protected:
 
     /// Do nothing
-    UIMEASUREMENT_API void starting() throw ( ::fwTools::Failed );
+    UIMEASUREMENT_API void starting();
 
     /// Do nothing
-    UIMEASUREMENT_API void stopping() throw ( ::fwTools::Failed );
+    UIMEASUREMENT_API void stopping();
 
     /// Do nothing
-    UIMEASUREMENT_API void configuring() throw ( ::fwTools::Failed );
+    UIMEASUREMENT_API void configuring();
 
     /// Focus the image slices on the selected landmark
-    UIMEASUREMENT_API void updating() throw ( ::fwTools::Failed );
+    UIMEASUREMENT_API void updating();
 
 private:
     /// Slot: keep a reference to the selected landmark

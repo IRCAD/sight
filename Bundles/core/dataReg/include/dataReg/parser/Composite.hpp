@@ -63,7 +63,7 @@ protected:
      *
      * Parse the composite configuration element to configure and add its objects.
      */
-    DATAREG_API virtual void updating( ) throw(fwTools::Failed);
+    DATAREG_API virtual void updating( );
 
 private:
 

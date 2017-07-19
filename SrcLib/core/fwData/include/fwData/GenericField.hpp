@@ -37,31 +37,31 @@ public:
     typedef T ValueType;
 
     /// @brief Get the value (mutable version).
-    T& value() throw()
+    T& value() noexcept
     {
         return m_value;
     }
 
     /// @brief Get the value (constant version).
-    const T& value() const throw()
+    const T& value() const noexcept
     {
         return m_value;
     }
 
     /// @brief set the value
-    void setValue(const T &newValue) throw()
+    void setValue(const T &newValue) noexcept
     {
         m_value = newValue;
     }
 
     /// @brief get the value
-    T getValue() const throw()
+    T getValue() const noexcept
     {
         return m_value;
     }
 
     /// @brief Conversion to a scalar type.
-    operator T() throw() { return m_value; }
+    operator T() noexcept { return m_value; }
 
     bool operator== (const GenericFieldBase &lf)
     {
@@ -127,7 +127,7 @@ protected:
      * @brief Constructor.
      * @param[in] value The initial value.
      */
-    GenericField( const T value = T( ) ) throw() :
+    GenericField( const T value = T( ) ) noexcept :
         m_value( value )
     {
     }
@@ -135,7 +135,7 @@ protected:
     /**
      * @brief Destructor.
      */
-    virtual ~GenericField() throw()
+    virtual ~GenericField() noexcept
     {
     }
 

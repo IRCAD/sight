@@ -42,26 +42,26 @@ public:
      * @brief   constructor
      *
      */
-    IOVTKGDCM_API SSeriesDBReader() throw();
+    IOVTKGDCM_API SSeriesDBReader() noexcept;
 
     /**
      * @brief   destructor
      */
-    IOVTKGDCM_API virtual ~SSeriesDBReader() throw();
+    IOVTKGDCM_API virtual ~SSeriesDBReader() noexcept;
 
 protected:
 
     /// Override
-    IOVTKGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void starting();
 
     /// Override
-    IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void stopping();
 
     /// Override
-    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void configuring();
 
     /// Override
-    IOVTKGDCM_API void updating() throw(::fwTools::Failed);
+    IOVTKGDCM_API void updating();
 
     /// Override
     IOVTKGDCM_API void info(std::ostream& _sstream );

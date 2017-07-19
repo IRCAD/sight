@@ -24,7 +24,7 @@ namespace visuVTKAdaptor
 {
 
 
-ImageSeries::ImageSeries() throw() :
+ImageSeries::ImageSeries() noexcept :
     m_allowAlphaInTF(false),
     m_interpolation(false),
     m_3dModeEnabled ( ::boost::logic::indeterminate ),
@@ -35,13 +35,13 @@ ImageSeries::ImageSeries() throw() :
 
 //------------------------------------------------------------------------------
 
-ImageSeries::~ImageSeries() throw()
+ImageSeries::~ImageSeries() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doConfigure() throw(fwTools::Failed)
+void ImageSeries::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -106,14 +106,14 @@ void ImageSeries::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doStart() throw(fwTools::Failed)
+void ImageSeries::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doUpdate() throw(fwTools::Failed)
+void ImageSeries::doUpdate()
 {
     ::fwMedData::ImageSeries::sptr series = this->getObject< ::fwMedData::ImageSeries >();
 
@@ -145,14 +145,14 @@ void ImageSeries::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doSwap() throw(fwTools::Failed)
+void ImageSeries::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doStop() throw(fwTools::Failed)
+void ImageSeries::doStop()
 {
     this->unregisterServices();
 }

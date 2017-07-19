@@ -60,7 +60,7 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::SCreateActivity() throw()
+SCreateActivity::SCreateActivity() noexcept
 {
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
@@ -68,27 +68,27 @@ SCreateActivity::SCreateActivity() throw()
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::~SCreateActivity() throw()
+SCreateActivity::~SCreateActivity() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::starting() throw(::fwTools::Failed)
+void SCreateActivity::starting()
 {
     this->actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::stopping() throw(::fwTools::Failed)
+void SCreateActivity::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::configuring() throw(fwTools::Failed)
+void SCreateActivity::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
     typedef ::fwServices::IService::ConfigType ConfigType;
@@ -217,7 +217,7 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::updating() throw(::fwTools::Failed)
+void SCreateActivity::updating()
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 

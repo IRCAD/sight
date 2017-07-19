@@ -50,7 +50,7 @@ public:
     UIIO_API SIOSelector();
 
     /// Destructor. Do nothing.
-    UIIO_API virtual ~SIOSelector() throw();
+    UIIO_API virtual ~SIOSelector() noexcept;
 
     /**
      * @brief This method allows to configure the service in reader or writer mode (set SIOSelector::m_mode).
@@ -62,10 +62,10 @@ public:
 protected:
 
     ///Starts the service. Do nothing.
-    UIIO_API void starting() throw( ::fwTools::Failed );
+    UIIO_API void starting();
 
     /// Stops the service. Do nothing.
-    UIIO_API void stopping() throw( ::fwTools::Failed );
+    UIIO_API void stopping();
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -94,10 +94,10 @@ protected:
      *      - \b id (mandatory) : the id of the configuration to use.
      *      - \b service (mandatory) :  the name of the service.
      **/
-    UIIO_API void configuring() throw( ::fwTools::Failed );
+    UIIO_API void configuring();
 
     /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated objects. Then, the selected reader (writer) is executed.
-    UIIO_API void updating() throw( ::fwTools::Failed );
+    UIIO_API void updating();
 
     /// Gives the name of the class. Do nothing.
     UIIO_API void info( std::ostream &_sstream );

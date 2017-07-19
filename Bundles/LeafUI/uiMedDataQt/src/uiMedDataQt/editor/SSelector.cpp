@@ -68,7 +68,7 @@ SSelector::SSelector() :
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector() throw()
+SSelector::~SSelector() noexcept
 {
 }
 
@@ -82,7 +82,7 @@ void SSelector::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSelector::starting() throw(::fwTools::Failed)
+void SSelector::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -122,14 +122,14 @@ void SSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelector::stopping() throw(::fwTools::Failed)
+void SSelector::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SSelector::updating() throw(::fwTools::Failed)
+void SSelector::updating()
 {
     ::fwMedData::SeriesDB::sptr seriesDB;
     if (this->isVersion2())
@@ -151,7 +151,7 @@ void SSelector::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelector::configuring() throw(::fwTools::Failed)
+void SSelector::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 

@@ -25,9 +25,9 @@ class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (ShowDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API ShowDistance() throw();
+    UIMEASUREMENT_API ShowDistance() noexcept;
 
-    UIMEASUREMENT_API virtual ~ShowDistance() throw();
+    UIMEASUREMENT_API virtual ~ShowDistance() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -47,15 +47,15 @@ public:
 protected:
 
 
-    void swapping() throw(::fwTools::Failed);
+    void swapping();
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     void info(std::ostream &_sstream );
 

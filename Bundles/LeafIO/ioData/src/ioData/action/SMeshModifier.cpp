@@ -25,19 +25,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioData::action::SMeshModifier, :
 
 //-----------------------------------------------------------------------------
 
-SMeshModifier::SMeshModifier() throw()
+SMeshModifier::SMeshModifier() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SMeshModifier::~SMeshModifier() throw()
+SMeshModifier::~SMeshModifier() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SMeshModifier::configuring() throw( ::fwTools::Failed )
+void SMeshModifier::configuring()
 {
     this->initialize();
 
@@ -64,7 +64,7 @@ void SMeshModifier::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SMeshModifier::starting() throw( ::fwTools::Failed )
+void SMeshModifier::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -73,7 +73,7 @@ void SMeshModifier::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SMeshModifier::stopping() throw( ::fwTools::Failed )
+void SMeshModifier::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -81,7 +81,7 @@ void SMeshModifier::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SMeshModifier::updating() throw( ::fwTools::Failed )
+void SMeshModifier::updating()
 {
     SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();

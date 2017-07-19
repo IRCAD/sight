@@ -57,7 +57,7 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
      *
      * @return  a pointer to an executable instance
      */
-    virtual IExecutable* createExecutable() const throw(RuntimeException) = 0;
+    virtual IExecutable* createExecutable() const = 0;
 
 
     /**

@@ -26,9 +26,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (PointListInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API PointListInteractor() throw();
+    VISUVTKADAPTOR_API PointListInteractor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PointListInteractor() throw();
+    VISUVTKADAPTOR_API virtual ~PointListInteractor() noexcept;
 
 
     VISUVTKADAPTOR_API void resetPointList();
@@ -36,12 +36,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     vtkCommand *m_interactionCommand;
     float m_priority;

@@ -19,7 +19,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Sin::Sin() throw() :
+Sin::Sin() noexcept :
     m_xMin(0.f),
     m_xMax(0.f)
 {
@@ -27,13 +27,13 @@ Sin::Sin() throw() :
 
 //---------------------------------------------------------------------------------------------------------
 
-Sin::~Sin() throw()
+Sin::~Sin() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void Sin::configuring() throw (::fwTools::Failed)
+void Sin::configuring()
 {
     assert(m_configuration->getName() == "config");
 

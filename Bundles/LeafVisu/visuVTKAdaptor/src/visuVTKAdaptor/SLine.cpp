@@ -32,7 +32,7 @@ const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_LENGTH_SLOT     = "updateLengt
 
 //------------------------------------------------------------------------------
 
-SLine::SLine() throw() :
+SLine::SLine() noexcept :
     m_lineActor(vtkSmartPointer<vtkActor>::New()),
     m_vtkLine(vtkSmartPointer<vtkLineSource>::New()),
     m_mapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
@@ -47,14 +47,14 @@ SLine::SLine() throw() :
 
 //------------------------------------------------------------------------------
 
-SLine::~SLine() throw()
+SLine::~SLine() noexcept
 {
     m_lineActor = 0;
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doStart() throw(fwTools::Failed)
+void SLine::doStart()
 {
     this->buildPipeline();
     this->addToRenderer( m_lineActor );
@@ -62,7 +62,7 @@ void SLine::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLine::doStop() throw(fwTools::Failed)
+void SLine::doStop()
 {
     this->removeAllPropFromRenderer();
     this->getRenderer()->RemoveActor(m_lineActor);
@@ -70,19 +70,19 @@ void SLine::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLine::doSwap() throw(fwTools::Failed)
+void SLine::doSwap()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doUpdate() throw(fwTools::Failed)
+void SLine::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doConfigure() throw(fwTools::Failed)
+void SLine::doConfigure()
 {
     SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
     if ( m_configuration->hasAttribute( "length" ) )

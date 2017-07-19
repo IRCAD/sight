@@ -19,13 +19,13 @@ namespace preferences
 class Plugin : public ::fwRuntime::Plugin
 {
 public:
-    ~Plugin() throw()
+    ~Plugin() noexcept
     {
     }
 
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
 
-    void stop() throw();
+    void stop() noexcept;
 
 protected:
 

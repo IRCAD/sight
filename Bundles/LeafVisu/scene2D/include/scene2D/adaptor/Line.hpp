@@ -31,10 +31,10 @@ public:
     };
 
     /// Basic constructor, do nothing.
-    SCENE2D_API Line() throw();
+    SCENE2D_API Line() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~Line() throw();
+    SCENE2D_API virtual ~Line() noexcept;
 
 protected:
     /**
@@ -64,19 +64,19 @@ protected:
      *
      * \b zValue : no mandatory (default value : 0) : Set the zValue of the line layer (the higher the zValue, the higher the layer is).
      */
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
 
     /// Initialize the layer and call the draw() function.
-    SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doStart();
 
     /// Do nothing.
-    SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doUpdate();
 
     /// Do nothing.
-    SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doSwap();
 
     /// Remove the layer from the scene.
-    SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doStop();
 
 private:
 

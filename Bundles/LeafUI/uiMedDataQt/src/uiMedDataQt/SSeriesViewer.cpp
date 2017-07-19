@@ -33,7 +33,7 @@ SSeriesViewer::SSeriesViewer()
 
 //------------------------------------------------------------------------------
 
-SSeriesViewer::~SSeriesViewer() throw()
+SSeriesViewer::~SSeriesViewer() noexcept
 {
 }
 
@@ -47,14 +47,14 @@ void SSeriesViewer::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::starting() throw(::fwTools::Failed)
+void SSeriesViewer::starting()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::stopping() throw(::fwTools::Failed)
+void SSeriesViewer::stopping()
 {
     if(m_configTemplateManager)
     {
@@ -65,7 +65,7 @@ void SSeriesViewer::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::updating() throw(::fwTools::Failed)
+void SSeriesViewer::updating()
 {
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
 
@@ -119,7 +119,7 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::configuring() throw(::fwTools::Failed)
+void SSeriesViewer::configuring()
 {
     std::vector < ::fwRuntime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
     SLM_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);

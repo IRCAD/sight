@@ -27,9 +27,9 @@ class UIMEASUREMENT_CLASS_API ShowLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (ShowLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API ShowLandmark() throw();
+    UIMEASUREMENT_API ShowLandmark() noexcept;
 
-    UIMEASUREMENT_API virtual ~ShowLandmark() throw();
+    UIMEASUREMENT_API virtual ~ShowLandmark() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -48,15 +48,15 @@ public:
     UIMEASUREMENT_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 protected:
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
-    UIMEASUREMENT_API void swapping() throw(::fwTools::Failed);
+    UIMEASUREMENT_API void swapping();
     UIMEASUREMENT_API void info(std::ostream &_sstream );
 
 private:

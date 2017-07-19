@@ -49,7 +49,7 @@ const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_PROGRESSED_SIG       = "p
 const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STARTED_PROGRESS_SIG = "startedProgress";
 const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
 
-SSeriesPuller::SSeriesPuller() throw() :
+SSeriesPuller::SSeriesPuller() noexcept :
     m_isPulling(false),
     m_progressbarId("pullDicomProgressBar"),
     m_seriesCount(0),
@@ -71,7 +71,7 @@ SSeriesPuller::SSeriesPuller() throw() :
 }
 //------------------------------------------------------------------------------
 
-SSeriesPuller::~SSeriesPuller() throw()
+SSeriesPuller::~SSeriesPuller() noexcept
 {
 }
 
@@ -84,7 +84,7 @@ void SSeriesPuller::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::configuring() throw(::fwTools::Failed)
+void SSeriesPuller::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioPacs::SSeriesPuller must have a \"config\" element.",config);
@@ -101,7 +101,7 @@ void SSeriesPuller::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::starting() throw(::fwTools::Failed)
+void SSeriesPuller::starting()
 {
     // Create enquirer
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
@@ -150,7 +150,7 @@ void SSeriesPuller::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::stopping() throw(::fwTools::Failed)
+void SSeriesPuller::stopping()
 {
     // Stop reader service
     m_dicomReader->stop();
@@ -162,7 +162,7 @@ void SSeriesPuller::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::updating() throw(::fwTools::Failed)
+void SSeriesPuller::updating()
 {
     ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
 

@@ -96,11 +96,11 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SDynamicView)(::gui::view::IActivityView) );
 
     /// Constructor. Do nothing.
-    GUIQT_API SDynamicView() throw();
+    GUIQT_API SDynamicView() noexcept;
 
     /// Destructor. Do nothing.
 
-    GUIQT_API virtual ~SDynamicView() throw();
+    GUIQT_API virtual ~SDynamicView() noexcept;
 
     typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > ActivitySelectedSignalType;
     GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
@@ -111,31 +111,31 @@ protected:
     /**
      * @brief Install the container.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the container.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Update
      *
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Swap
      *
      * Update the editors.
      */
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the view
      * @see fwGui::IGuiContainerSrv::initialize()
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     virtual void info( std::ostream& _sstream );
 

@@ -35,16 +35,16 @@ struct EmptyPlugin : public Plugin
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~EmptyPlugin() throw()
+    virtual ~EmptyPlugin() noexcept
     {
     }
 
 
     // Overrides
-    virtual void start() throw(::fwRuntime::RuntimeException);
+    virtual void start();
 
     // Overrides
-    virtual void stop() throw();
+    virtual void stop() noexcept;
 
 };
 

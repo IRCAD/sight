@@ -28,10 +28,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SDefaultView)(::gui::view::IView) );
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultView() throw();
+    GUI_API SDefaultView() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultView() throw();
+    GUI_API virtual ~SDefaultView() noexcept;
 
 protected:
 
@@ -44,24 +44,24 @@ protected:
      * @brief This method is used to configure the class parameters.
      * @see ::fwGui::IGuiContainerSrv::initialize()
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed );
+    GUI_API virtual void configuring();
 
     /**
      * @brief Register a view with defined id.
      * @see ::fwGui::IGuiContainerSrv::create()
      */
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
     /**
      * @brief This method remove the view in the frame.
      * @see ::fwGui::IGuiContainerSrv::destroy()
      */
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed);
+    GUI_API virtual void updating();
 
     /**
      * @brief This method gives information about the class. Do nothing.

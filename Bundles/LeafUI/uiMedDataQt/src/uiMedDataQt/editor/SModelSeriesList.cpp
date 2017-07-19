@@ -129,7 +129,7 @@ const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTE
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
 
-SModelSeriesList::SModelSeriesList() throw() :
+SModelSeriesList::SModelSeriesList() noexcept :
     m_tree(new QTreeWidget()),
     m_enableHideAll(true)
 {
@@ -142,7 +142,7 @@ SModelSeriesList::SModelSeriesList() throw() :
 
 //------------------------------------------------------------------------------
 
-SModelSeriesList::~SModelSeriesList() throw()
+SModelSeriesList::~SModelSeriesList() noexcept
 {
     for(auto cIt :  m_displayedInfo)
     {
@@ -152,7 +152,7 @@ SModelSeriesList::~SModelSeriesList() throw()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::starting() throw(::fwTools::Failed)
+void SModelSeriesList::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -195,7 +195,7 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::stopping() throw(::fwTools::Failed)
+void SModelSeriesList::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -214,7 +214,7 @@ void SModelSeriesList::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::configuring() throw(fwTools::Failed)
+void SModelSeriesList::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -255,7 +255,7 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::updating() throw(::fwTools::Failed)
+void SModelSeriesList::updating()
 {
     m_tree->blockSignals(true);
 
@@ -268,7 +268,7 @@ void SModelSeriesList::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::swapping() throw(::fwTools::Failed)
+void SModelSeriesList::swapping()
 {
     this->updating();
 }

@@ -29,7 +29,7 @@ const float Histogram::SCALE = 1.1f; // vertical scaling factor applied at each 
 
 //---------------------------------------------------------------------------------------------------------
 
-Histogram::Histogram() throw() :
+Histogram::Histogram() noexcept :
     m_color("green"),
     m_opacity( 0.80f ),
     m_scale(1.0)
@@ -39,13 +39,13 @@ Histogram::Histogram() throw() :
 
 //---------------------------------------------------------------------------------------------------------
 
-Histogram::~Histogram() throw()
+Histogram::~Histogram() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::configuring() throw( ::fwTools::Failed)
+void Histogram::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -73,7 +73,7 @@ void Histogram::configuring() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doStart() throw( ::fwTools::Failed)
+void Histogram::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -82,7 +82,7 @@ void Histogram::doStart() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doUpdate() throw( ::fwTools::Failed)
+void Histogram::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -176,14 +176,14 @@ void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doSwap() throw( ::fwTools::Failed)
+void Histogram::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doStop() throw( ::fwTools::Failed)
+void Histogram::doStop()
 {
     if (m_layer)
     {

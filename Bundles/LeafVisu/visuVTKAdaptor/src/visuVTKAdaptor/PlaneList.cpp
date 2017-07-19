@@ -178,7 +178,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList() throw()  : m_rightButtonCommand(nullptr), m_planeCollectionId("")
+PlaneList::PlaneList() noexcept  : m_rightButtonCommand(nullptr), m_planeCollectionId("")
 {
     newSlot(s_UPDATE_SELECTION_SLOT, &PlaneList::updateSelection, this);
     newSlot(s_UPDATE_PLANES_SLOT, &PlaneList::updatePlanes, this);
@@ -189,13 +189,13 @@ PlaneList::PlaneList() throw()  : m_rightButtonCommand(nullptr), m_planeCollecti
 
 //------------------------------------------------------------------------------
 
-PlaneList::~PlaneList() throw()
+PlaneList::~PlaneList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doConfigure() throw(fwTools::Failed)
+void PlaneList::doConfigure()
 {
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     this->setPlaneCollectionId( m_configuration->getAttributeValue("planecollection") );
@@ -203,7 +203,7 @@ void PlaneList::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doStart() throw(fwTools::Failed)
+void PlaneList::doStart()
 {
     m_rightButtonCommand = vtkPlaneDeleteCallBack::New(this);
     this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
@@ -214,7 +214,7 @@ void PlaneList::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doUpdate() throw(fwTools::Failed)
+void PlaneList::doUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
@@ -276,7 +276,7 @@ void PlaneList::showPlanes(bool visible)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doSwap() throw(fwTools::Failed)
+void PlaneList::doSwap()
 {
     this->doStop();
 
@@ -299,7 +299,7 @@ void PlaneList::updateSelection(::fwData::Plane::sptr plane)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doStop() throw(fwTools::Failed)
+void PlaneList::doStop()
 {
     if ( m_rightButtonCommand ) // can be not instanciated
     {

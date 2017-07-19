@@ -32,9 +32,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (PickerInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API PickerInteractor() throw();
+    VISUVTKADAPTOR_API PickerInteractor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PickerInteractor() throw();
+    VISUVTKADAPTOR_API virtual ~PickerInteractor() noexcept;
 
     /**
      * @name Signals API
@@ -61,8 +61,8 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
     /**
      * @brief Configure the adaptor
@@ -87,9 +87,9 @@ protected:
      *   - MOUSE_WHEELBACKWARD
      *   - MOUSE_MOVE
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     typedef std::map< std::string, EventID > MapEventIdType; ///< typedef for the map (seen below).
     static MapEventIdType m_eventIdConversion; ///< map containing the association between 'event text' and 'event ID'.

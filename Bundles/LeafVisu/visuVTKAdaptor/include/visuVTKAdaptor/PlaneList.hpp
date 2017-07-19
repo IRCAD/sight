@@ -30,9 +30,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (PlaneList)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API PlaneList() throw();
+    VISUVTKADAPTOR_API PlaneList() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PlaneList() throw();
+    VISUVTKADAPTOR_API virtual ~PlaneList() noexcept;
 
     void setPlaneCollectionId(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
@@ -49,12 +49,12 @@ protected:
     /// Type of signal emitted when plane selection changed
     typedef  ::fwCom::Signal< void (::fwData::Plane::sptr) > SelectedignalType;
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     /// Slot: Update plane selection
     void updateSelection(::fwData::Plane::sptr plane);

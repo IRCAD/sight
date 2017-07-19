@@ -40,27 +40,27 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::basicRegistration::SImagesSub
 namespace basicRegistration
 {
 
-SImagesSubstract::SImagesSubstract() throw() :
+SImagesSubstract::SImagesSubstract() noexcept :
     ::gui::editor::IEditor(),
     mpComputeButton(0)
 {
 
 }
 
-SImagesSubstract::~SImagesSubstract() throw()
+SImagesSubstract::~SImagesSubstract() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImagesSubstract::configuring() throw ( ::fwTools::Failed )
+void SImagesSubstract::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SImagesSubstract::starting() throw ( ::fwTools::Failed )
+void SImagesSubstract::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -78,7 +78,7 @@ void SImagesSubstract::starting() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SImagesSubstract::stopping() throw ( ::fwTools::Failed )
+void SImagesSubstract::stopping()
 {
     this->destroy();
 
@@ -86,7 +86,7 @@ void SImagesSubstract::stopping() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SImagesSubstract::updating() throw ( ::fwTools::Failed )
+void SImagesSubstract::updating()
 {
     ::fwTools::Type REQUESTED_TYPE = ::fwTools::Type::create("int16");
 
@@ -164,7 +164,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SImagesSubstract::swapping() throw ( ::fwTools::Failed )
+void SImagesSubstract::swapping()
 {
     // Classic default approach to update service when oject change
 //    this->stopping();

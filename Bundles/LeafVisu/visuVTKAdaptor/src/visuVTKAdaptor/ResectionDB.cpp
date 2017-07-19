@@ -21,19 +21,19 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-ResectionDB::ResectionDB() throw() : m_sharpEdgeAngle(50.)
+ResectionDB::ResectionDB() noexcept : m_sharpEdgeAngle(50.)
 {
 }
 
 //------------------------------------------------------------------------------
 
-ResectionDB::~ResectionDB() throw()
+ResectionDB::~ResectionDB() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doConfigure() throw(fwTools::Failed)
+void ResectionDB::doConfigure()
 {
     assert(m_configuration->getName() == "config");
 
@@ -49,14 +49,14 @@ void ResectionDB::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doStart() throw(fwTools::Failed)
+void ResectionDB::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doUpdate() throw(fwTools::Failed)
+void ResectionDB::doUpdate()
 {
     SLM_TRACE_FUNC();
     doStop();
@@ -102,14 +102,14 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doSwap() throw(fwTools::Failed)
+void ResectionDB::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::doStop() throw(fwTools::Failed)
+void ResectionDB::doStop()
 {
     this->unregisterServices();
 }

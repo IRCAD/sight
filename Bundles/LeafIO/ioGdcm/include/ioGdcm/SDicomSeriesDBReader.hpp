@@ -50,12 +50,12 @@ public:
      * @brief   constructor
      *
      */
-    IOGDCM_API SDicomSeriesDBReader() throw();
+    IOGDCM_API SDicomSeriesDBReader() noexcept;
 
     /**
      * @brief   destructor
      */
-    IOGDCM_API virtual ~SDicomSeriesDBReader() throw();
+    IOGDCM_API virtual ~SDicomSeriesDBReader() noexcept;
 
 protected:
 
@@ -77,13 +77,13 @@ protected:
 
 
     /// Override
-    IOGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOGDCM_API virtual void starting();
 
     /// Override
-    IOGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOGDCM_API virtual void stopping();
 
     /// Override
-    IOGDCM_API void updating() throw(::fwTools::Failed);
+    IOGDCM_API void updating();
 
     /// Override
     IOGDCM_API void info(std::ostream& _sstream );
@@ -101,7 +101,7 @@ protected:
        </config>
        @endcode
      */
-    IOGDCM_API virtual void configuring() throw (fwTools::Failed);
+    IOGDCM_API virtual void configuring();
 
     /// Override
     IOGDCM_API virtual void configureWithIHM();

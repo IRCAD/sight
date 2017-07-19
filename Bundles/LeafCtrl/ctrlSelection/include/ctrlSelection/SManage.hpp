@@ -80,10 +80,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SManage)(::fwServices::IController) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SManage() throw();
+    CTRLSELECTION_API SManage() noexcept;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SManage() throw();
+    CTRLSELECTION_API virtual ~SManage() noexcept;
 
     /**
      * @name Slots
@@ -101,16 +101,16 @@ public:
 protected:
 
     /// Configures the service.
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements starting method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /**
      * @name Slots

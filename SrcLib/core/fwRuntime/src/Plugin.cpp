@@ -12,20 +12,20 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Bundle> Plugin::getBundle() const throw()
+std::shared_ptr<Bundle> Plugin::getBundle() const noexcept
 {
     return m_bundle;
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::setInitializationData(const ConfigurationElement::sptr) throw()
+void Plugin::setInitializationData(const ConfigurationElement::sptr) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::setBundle( std::shared_ptr<Bundle> bundle) throw()
+void Plugin::setBundle( std::shared_ptr<Bundle> bundle) noexcept
 {
     m_bundle = bundle;
 }

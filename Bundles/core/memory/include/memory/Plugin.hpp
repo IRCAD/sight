@@ -19,7 +19,7 @@ struct Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   Destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     /**
      * @brief Start method. (does nothing)
@@ -28,14 +28,14 @@ struct Plugin : public ::fwRuntime::Plugin
      *
      * @exception ::fwRuntime::RuntimeException.
      */
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
 
     /**
      * @brief Stop method. (does nothing)
      *
      * This method is used by runtime in order to close the bundle.
      */
-    void stop() throw();
+    void stop() noexcept;
 
 };
 

@@ -65,9 +65,9 @@ public:
     VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT;
     VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT;
 
-    VISUVTKADAPTOR_API ImagesBlend() throw();
+    VISUVTKADAPTOR_API ImagesBlend() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ImagesBlend() throw();
+    VISUVTKADAPTOR_API virtual ~ImagesBlend() noexcept;
 
     //------------------------------------------------------------------------------
 
@@ -106,12 +106,12 @@ protected:
         ::fwCom::helper::SigSlotConnection m_connections;
     };
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
     void addImageAdaptors();
     void removeImageAdaptors();

@@ -69,9 +69,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Volume)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKVRADAPTOR_API Volume() throw();
+    VISUVTKVRADAPTOR_API Volume() noexcept;
 
-    VISUVTKVRADAPTOR_API virtual ~Volume() throw();
+    VISUVTKVRADAPTOR_API virtual ~Volume() noexcept;
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
@@ -97,19 +97,19 @@ public:
 
 protected:
 
-    VISUVTKVRADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doStart();
 
-    VISUVTKVRADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doStop();
 
-    VISUVTKVRADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doUpdate();
 
     /**
      * @brief Configures the service
      * @throw fwTools::Failed
      */
-    VISUVTKVRADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doConfigure();
 
-    VISUVTKVRADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doSwap();
 
 
     /// Called when transfer function points are modified.

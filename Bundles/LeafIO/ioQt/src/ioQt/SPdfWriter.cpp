@@ -52,14 +52,14 @@ void SPdfWriter::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-SPdfWriter::~SPdfWriter() throw()
+SPdfWriter::~SPdfWriter() noexcept
 {
     this->stopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SPdfWriter::configuring() throw(::fwTools::Failed)
+void SPdfWriter::configuring()
 {
     this->::io::IWriter::configuring();
     if(!this->isVersion2())
@@ -128,7 +128,7 @@ void SPdfWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SPdfWriter::updating() throw(::fwTools::Failed)
+void SPdfWriter::updating()
 {
     if( !this->hasLocationDefined() )
     {
@@ -196,7 +196,7 @@ void SPdfWriter::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPdfWriter::starting() throw(::fwTools::Failed)
+void SPdfWriter::starting()
 {
     if (!this->isVersion2())
     {
@@ -241,7 +241,7 @@ void SPdfWriter::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPdfWriter::stopping() throw(::fwTools::Failed)
+void SPdfWriter::stopping()
 {
     for( QWidget*& qtContainer : m_containersToExport )
     {

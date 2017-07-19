@@ -50,10 +50,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (Code)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    GUIQT_API Code() throw();
+    GUIQT_API Code() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~Code() throw();
+    GUIQT_API virtual ~Code() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -67,19 +67,19 @@ protected:
 
 
     /// Install the layout.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroy the layout
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update the value from the String object.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Update the value from the String object.
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /// Parses the configuration
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

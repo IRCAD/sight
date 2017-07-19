@@ -54,13 +54,13 @@ std::vector< std::string > ExternalDataReaderService::getSupportedExtensions()
 
 //-----------------------------------------------------------------------------
 
-ExternalDataReaderService::~ExternalDataReaderService() throw()
+ExternalDataReaderService::~ExternalDataReaderService() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ExternalDataReaderService::configuring( ) throw(::fwTools::Failed)
+void ExternalDataReaderService::configuring( )
 {
     if( m_configuration->findConfigurationElement("filename") )
     {
@@ -98,7 +98,7 @@ void ExternalDataReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void ExternalDataReaderService::updating() throw(::fwTools::Failed)
+void ExternalDataReaderService::updating()
 {
     this->configureWithIHM();
 

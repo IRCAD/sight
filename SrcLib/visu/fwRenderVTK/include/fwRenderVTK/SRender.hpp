@@ -65,9 +65,9 @@ public:
     FWRENDERVTK_API static const ::fwCom::Signals::SignalKeyType s_DROPPED_SIG;
     typedef ::fwCom::Signal< void (std::string)> DroppedSignalType;
 
-    FWRENDERVTK_API SRender() throw();
+    FWRENDERVTK_API SRender() noexcept;
 
-    FWRENDERVTK_API virtual ~SRender() throw();
+    FWRENDERVTK_API virtual ~SRender() noexcept;
 
     /// Returns the vtkRenderer with the given id
     FWRENDERVTK_API vtkRenderer* getRenderer(RendererIdType rendererId);
@@ -129,9 +129,9 @@ protected:
     FWRENDERVTK_API void render();
 
     /// Install observations : should be implemented in IService
-    FWRENDERVTK_API virtual void starting() throw( ::fwTools::Failed);
+    FWRENDERVTK_API virtual void starting();
     /// Uninstall observations : should be implemented in IService
-    FWRENDERVTK_API virtual void stopping() throw( ::fwTools::Failed);
+    FWRENDERVTK_API virtual void stopping();
 
     /**
      * @brief configures the adaptor
@@ -203,13 +203,13 @@ protected:
      *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
      *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
-    FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed);
+    FWRENDERVTK_API virtual void configuring();
 
     /// Does nothing.
-    FWRENDERVTK_API virtual void updating() throw( ::fwTools::Failed);
+    FWRENDERVTK_API virtual void updating();
 
     /// Start/stop adaptors
-    FWRENDERVTK_API virtual void swapping(const KeyType& key) throw(::fwTools::Failed);
+    FWRENDERVTK_API virtual void swapping(const KeyType& key);
 
     /// Add a vtk object in the SRender, referenced by a key.
     FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj );

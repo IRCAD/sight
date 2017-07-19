@@ -54,10 +54,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (Distance)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIMEASUREMENTQT_API Distance() throw();
+    UIMEASUREMENTQT_API Distance() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEASUREMENTQT_API virtual ~Distance() throw();
+    UIMEASUREMENTQT_API virtual ~Distance() noexcept;
 
     /**
      * @name Signal
@@ -77,22 +77,22 @@ protected:
      *
      * This method launches the IEditor::starting method.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      *
      * This method launches the IEditor::stopping method.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Do nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream& _sstream );

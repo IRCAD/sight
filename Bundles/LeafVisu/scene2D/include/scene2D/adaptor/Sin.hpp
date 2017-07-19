@@ -22,11 +22,11 @@ class SCENE2D_CLASS_API Sin : public ::scene2D::adaptor::IAdaptor
 public:
     fwCoreServiceClassDefinitionsMacro ( (Sin)(::scene2D::adaptor::IAdaptor) );
 
-    SCENE2D_API Sin() throw();
-    SCENE2D_API virtual ~Sin() throw();
+    SCENE2D_API Sin() noexcept;
+    SCENE2D_API virtual ~Sin() noexcept;
 
 protected:
-    SCENE2D_API void configuring() throw (::fwTools::Failed);
+    SCENE2D_API void configuring();
     SCENE2D_API void doStart();
     SCENE2D_API void doUpdate();
     SCENE2D_API void doSwap();

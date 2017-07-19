@@ -27,25 +27,25 @@ class IOITK_CLASS_API InrImageWriterService : public ::io::IWriter
 public:
     fwCoreServiceClassDefinitionsMacro( (InrImageWriterService)( ::io::IWriter) );
 
-    IOITK_API InrImageWriterService() throw();
+    IOITK_API InrImageWriterService() noexcept;
 
-    IOITK_API virtual ~InrImageWriterService() throw();
+    IOITK_API virtual ~InrImageWriterService() noexcept;
 
     IOITK_API static void saveImage( const ::boost::filesystem::path& inrFile, const SPTR(::fwData::Image)& image );
 
 protected:
 
     /// Override
-    IOITK_API virtual void starting() throw(::fwTools::Failed);
+    IOITK_API virtual void starting();
 
     /// Override
-    IOITK_API virtual void stopping() throw(::fwTools::Failed);
+    IOITK_API virtual void stopping();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed);
+    IOITK_API virtual void configuring();
 
     /// Override
-    IOITK_API void updating() throw(::fwTools::Failed);
+    IOITK_API void updating();
 
     /// Override
     IOITK_API void info(std::ostream& _sstream );

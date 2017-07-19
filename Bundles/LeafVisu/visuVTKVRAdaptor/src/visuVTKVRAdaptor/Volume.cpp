@@ -128,7 +128,7 @@ static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 
 //------------------------------------------------------------------------------
 
-Volume::Volume() throw() :
+Volume::Volume() noexcept :
     ::fwDataTools::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
     m_clippingPlanes(nullptr),
@@ -161,7 +161,7 @@ Volume::Volume() throw() :
 
 //------------------------------------------------------------------------------
 
-Volume::~Volume() throw()
+Volume::~Volume() noexcept
 {
     m_volumeMapper->Delete();
     m_volumeMapper = nullptr;
@@ -198,7 +198,7 @@ void Volume::setVtkClippingPlanes(vtkPlaneCollection* planes)
 
 //------------------------------------------------------------------------------
 
-void Volume::doStart() throw(fwTools::Failed)
+void Volume::doStart()
 {
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
@@ -235,7 +235,7 @@ void Volume::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Volume::doStop() throw(fwTools::Failed)
+void Volume::doStop()
 {
     this->removeTFConnections();
     this->removeAllPropFromRenderer();
@@ -255,7 +255,7 @@ void Volume::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Volume::doSwap() throw(fwTools::Failed)
+void Volume::doSwap()
 {
     this->removeTFConnections();
     this->doUpdate();
@@ -264,7 +264,7 @@ void Volume::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Volume::doUpdate() throw(::fwTools::Failed)
+void Volume::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -301,7 +301,7 @@ void Volume::updatingTFWindowing(double window, double level)
 
 //------------------------------------------------------------------------------
 
-void Volume::doConfigure() throw(fwTools::Failed)
+void Volume::doConfigure()
 {
     SLM_TRACE_FUNC();
 

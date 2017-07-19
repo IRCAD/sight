@@ -38,20 +38,20 @@ const ::fwCom::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwData::Object );
 
-SnapshotEditor::SnapshotEditor() throw()
+SnapshotEditor::SnapshotEditor() noexcept
 {
     m_sigSnapped = newSignal< SnappedSignalType >(s_SNAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-SnapshotEditor::~SnapshotEditor() throw()
+SnapshotEditor::~SnapshotEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::starting() throw(::fwTools::Failed)
+void SnapshotEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -77,7 +77,7 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::stopping() throw(::fwTools::Failed)
+void SnapshotEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -86,20 +86,20 @@ void SnapshotEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::configuring() throw(fwTools::Failed)
+void SnapshotEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::updating() throw(::fwTools::Failed)
+void SnapshotEditor::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::swapping() throw(::fwTools::Failed)
+void SnapshotEditor::swapping()
 {
 
 }

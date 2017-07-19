@@ -35,10 +35,10 @@ public:
     };
 
     /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
-    SCENE2D_API TransferFunction() throw();
+    SCENE2D_API TransferFunction() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~TransferFunction() throw();
+    SCENE2D_API virtual ~TransferFunction() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -71,22 +71,22 @@ protected:
      *
      * \b zValue : no mandatory (default value : 0) : Set the zValue of the TF layer (the higher the zValue, the higher the layer is).
      */
-    SCENE2D_API void configuring() throw ( ::fwTools::Failed );
+    SCENE2D_API void configuring();
 
     /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport
     ///  dimensions, and call DoUpdate().
-    SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doStart();
 
     /// Call buildTFPoints(), buildCircles(), buildLinesAndPolygons() and buildLayer() to build the tf points map,
     ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
-    SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doUpdate();
 
     /// @todo
-    SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doSwap();
 
     /// Clear the m_circles and m_linesAndPolygons vectors and remove the layer (and therefore all it's related
     ///  items) from the scene.
-    SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
+    SCENE2D_API void doStop();
 
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.

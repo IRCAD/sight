@@ -42,19 +42,19 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SBooleanSlotCaller() throw();
+    GUI_API SBooleanSlotCaller() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SBooleanSlotCaller() throw();
+    GUI_API virtual ~SBooleanSlotCaller() noexcept;
 
 protected:
 
     /**
      * @brief This method run the specified slots.
      */
-    GUI_API void updating() throw (fwTools::Failed);
+    GUI_API void updating();
 
 };
 

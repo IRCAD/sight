@@ -9,13 +9,13 @@
 namespace fwTools
 {
 
-Failed::Failed(const std::string &message) throw()
+Failed::Failed(const std::string &message) noexcept
     : ::fwCore::Exception(message)
 {
 }
 
 
-Failed::~Failed() throw()
+Failed::~Failed() noexcept
 {
 }
 

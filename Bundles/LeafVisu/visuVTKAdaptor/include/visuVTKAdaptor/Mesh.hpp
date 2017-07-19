@@ -79,8 +79,8 @@ class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IVtkAdaptorService
 public:
     fwCoreServiceClassDefinitionsMacro( (Mesh)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Mesh() throw();
-    VISUVTKADAPTOR_API virtual ~Mesh() throw();
+    VISUVTKADAPTOR_API Mesh() noexcept;
+    VISUVTKADAPTOR_API virtual ~Mesh() noexcept;
 
     /**
      * @name Signals API
@@ -174,11 +174,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart    () throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop     () throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap   () throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate   () throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart    ();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doStop     ();
+    VISUVTKADAPTOR_API void doSwap   ();
+    VISUVTKADAPTOR_API void doUpdate   ();
 
     /**
      * @name Slots methods

@@ -34,12 +34,12 @@ protected:
     /**
      * @brief Constructor. Do nothing (Just initialize parameters).
      */
-    GUI_API IView() throw();
+    GUI_API IView() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~IView() throw();
+    GUI_API virtual ~IView() noexcept;
 
 };
 

@@ -32,9 +32,9 @@ public:
     fwCoreServiceClassDefinitionsMacro( (Transform)(::fwRenderVTK::IVtkAdaptorService) );
 
     /// Constructor
-    VISUVTKADAPTOR_API Transform() throw();
+    VISUVTKADAPTOR_API Transform() noexcept;
     /// Destructor
-    VISUVTKADAPTOR_API virtual ~Transform() throw();
+    VISUVTKADAPTOR_API virtual ~Transform() noexcept;
 
     /// Set a new vtkTransform
     VISUVTKADAPTOR_API void setTransform(vtkTransform* t);
@@ -51,7 +51,7 @@ public:
 protected:
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
 
     /**
      * @brief Configure the adaptor.
@@ -66,16 +66,16 @@ protected:
      *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
      *  - \b parent (optional): id of the parent vtkTransform, it will be concatenated with this current vtkTransform.
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doSwap();
 
     /// Updates the vtkTransform from the TransformationMatrix3D
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     /// Does nothing
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStop();
 
     /// Current vtkTransform
     vtkTransform* m_transform;

@@ -39,14 +39,14 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SSeriesDBLazyReader::SSeriesDBLazyReader() throw()
+SSeriesDBLazyReader::SSeriesDBLazyReader() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBLazyReader::~SSeriesDBLazyReader() throw()
+SSeriesDBLazyReader::~SSeriesDBLazyReader() noexcept
 {
 }
 
@@ -74,21 +74,21 @@ void SSeriesDBLazyReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBLazyReader::starting() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBLazyReader::stopping() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBLazyReader::configuring() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -149,7 +149,7 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
+void SSeriesDBLazyReader::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )

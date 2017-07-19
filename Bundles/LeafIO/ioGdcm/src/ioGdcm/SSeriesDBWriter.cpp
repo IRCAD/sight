@@ -38,14 +38,14 @@ fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vec
 
 //------------------------------------------------------------------------------
 
-SSeriesDBWriter::SSeriesDBWriter() throw() :
+SSeriesDBWriter::SSeriesDBWriter() noexcept :
     m_fiducialsExportMode(::fwGdcmIO::writer::Series::COMPREHENSIVE_3D_SR)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBWriter::~SSeriesDBWriter() throw()
+SSeriesDBWriter::~SSeriesDBWriter() noexcept
 {
 }
 
@@ -77,26 +77,26 @@ void SSeriesDBWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::starting() throw(::fwTools::Failed)
+void SSeriesDBWriter::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::stopping() throw(::fwTools::Failed)
+void SSeriesDBWriter::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::configuring() throw(::fwTools::Failed)
+void SSeriesDBWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBWriter::updating() throw(::fwTools::Failed)
+void SSeriesDBWriter::updating()
 {
     if( this->hasLocationDefined() )
     {

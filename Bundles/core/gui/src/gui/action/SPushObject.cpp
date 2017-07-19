@@ -40,20 +40,20 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, ::fwDa
 
 //------------------------------------------------------------------------------
 
-SPushObject::SPushObject() throw()
+SPushObject::SPushObject() noexcept
 {
     newSlot(s_UPDATE_OBJECTS_SLOT, &SPushObject::updateObjects, this);
 }
 
 //------------------------------------------------------------------------------
 
-SPushObject::~SPushObject() throw()
+SPushObject::~SPushObject() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SPushObject::configuring() throw( ::fwTools::Failed)
+void SPushObject::configuring()
 {
     this->initialize();
 
@@ -95,7 +95,7 @@ void SPushObject::configuring() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPushObject::starting() throw(::fwTools::Failed)
+void SPushObject::starting()
 {
     this->actionServiceStarting();
     this->updateObjects();
@@ -103,14 +103,14 @@ void SPushObject::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPushObject::stopping() throw(::fwTools::Failed)
+void SPushObject::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SPushObject::updating() throw(::fwTools::Failed)
+void SPushObject::updating()
 {
     if(this->isVersion2())
     {

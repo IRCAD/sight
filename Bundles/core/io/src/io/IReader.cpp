@@ -30,7 +30,7 @@ static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIH
 
 //-----------------------------------------------------------------------------
 
-IReader::IReader() throw()
+IReader::IReader() noexcept
 {
     newSlot(s_READ_FOLDER_SLOT, &IReader::readFolder, this);
     newSlot(s_READ_FILE_SLOT, &IReader::readFile, this);
@@ -40,7 +40,7 @@ IReader::IReader() throw()
 
 //-----------------------------------------------------------------------------
 
-IReader::~IReader() throw()
+IReader::~IReader() noexcept
 {
 }
 
@@ -128,7 +128,7 @@ void IReader::clearLocations()
 
 //-----------------------------------------------------------------------------
 
-void IReader::configuring() throw (fwTools::Failed)
+void IReader::configuring()
 {
     SLM_ASSERT("Generic configuring method is only available for io service that use paths.",
                !( this->getIOPathType() & ::io::TYPE_NOT_DEFINED ) );

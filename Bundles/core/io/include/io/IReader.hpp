@@ -124,9 +124,9 @@ public:
 
 protected:
 
-    IO_API IReader() throw();
+    IO_API IReader() noexcept;
 
-    IO_API virtual ~IReader() throw();
+    IO_API virtual ~IReader() noexcept;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -163,7 +163,7 @@ protected:
        </service>
        @endcode
      */
-    IO_API virtual void configuring() throw (fwTools::Failed);
+    IO_API virtual void configuring();
 
     /**
      * @brief Title of the window that will open when the `configureWithIHM` slot is called

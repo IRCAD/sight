@@ -34,7 +34,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 
 //------------------------------------------------------------------------------
 
-SliceFollowerCamera::SliceFollowerCamera() throw() : m_camera(nullptr)
+SliceFollowerCamera::SliceFollowerCamera() noexcept : m_camera(nullptr)
 {
     m_comChannelPriority = 0.49;
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceFollowerCamera::updateSliceIndex, this);
@@ -43,13 +43,13 @@ SliceFollowerCamera::SliceFollowerCamera() throw() : m_camera(nullptr)
 
 //------------------------------------------------------------------------------
 
-SliceFollowerCamera::~SliceFollowerCamera() throw()
+SliceFollowerCamera::~SliceFollowerCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doConfigure() throw(fwTools::Failed)
+void SliceFollowerCamera::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -74,7 +74,7 @@ void SliceFollowerCamera::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doStart() throw(fwTools::Failed)
+void SliceFollowerCamera::doStart()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -86,7 +86,7 @@ void SliceFollowerCamera::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doUpdate() throw(fwTools::Failed)
+void SliceFollowerCamera::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -95,7 +95,7 @@ void SliceFollowerCamera::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doSwap() throw(fwTools::Failed)
+void SliceFollowerCamera::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -104,7 +104,7 @@ void SliceFollowerCamera::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doStop() throw(fwTools::Failed)
+void SliceFollowerCamera::doStop()
 {
     this->unregisterServices();
 }

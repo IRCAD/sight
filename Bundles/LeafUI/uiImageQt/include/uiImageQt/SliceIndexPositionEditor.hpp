@@ -51,10 +51,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API SliceIndexPositionEditor() throw();
+    UIIMAGEQT_API SliceIndexPositionEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() throw();
+    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -75,18 +75,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update editor information from the image
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Swap of image
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the editor.
@@ -99,7 +99,7 @@ protected:
        @endcode
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream );

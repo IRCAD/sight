@@ -62,10 +62,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SConfigLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API SConfigLauncher() throw();
+    GUI_API SConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SConfigLauncher() throw();
+    GUI_API virtual ~SConfigLauncher() noexcept;
 
     /// Set the action service is activated/disable.
     GUI_API virtual void setIsActive(bool isActive);
@@ -91,15 +91,15 @@ protected:
     /**  @} */
 
     ///This method launches the IAction::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Starts the view and initialize the operator.
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
 
     /**
@@ -121,7 +121,7 @@ protected:
        </service>
         @endcode
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

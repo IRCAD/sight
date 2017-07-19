@@ -19,14 +19,14 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) throw() :
+QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) noexcept :
     m_container(0)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtContainer::~QtContainer() throw()
+QtContainer::~QtContainer() noexcept
 {
     SLM_ASSERT(
         "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",

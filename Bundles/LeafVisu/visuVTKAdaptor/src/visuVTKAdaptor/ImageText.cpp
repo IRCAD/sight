@@ -38,7 +38,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSlic
 
 //-----------------------------------------------------------------------------
 
-ImageText::ImageText() throw()
+ImageText::ImageText() noexcept
 {
     this->installTFSlots(this);
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ImageText::updateSliceIndex, this);
@@ -46,13 +46,13 @@ ImageText::ImageText() throw()
 
 //-----------------------------------------------------------------------------
 
-ImageText::~ImageText() throw()
+ImageText::~ImageText() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageText::doStart() throw(::fwTools::Failed)
+void ImageText::doStart()
 {
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
@@ -67,7 +67,7 @@ void ImageText::doStart() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ImageText::doStop() throw(fwTools::Failed)
+void ImageText::doStop()
 {
     this->removeTFConnections();
     this->Text::doStop();
@@ -75,7 +75,7 @@ void ImageText::doStop() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ImageText::doConfigure() throw(fwTools::Failed)
+void ImageText::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -87,7 +87,7 @@ void ImageText::doConfigure() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void ImageText::doUpdate() throw(::fwTools::Failed)
+void ImageText::doUpdate()
 {
     std::stringstream ss;
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -129,7 +129,7 @@ void ImageText::updateSliceIndex(int axial, int frontal, int sagittal)
 
 //------------------------------------------------------------------------------
 
-void ImageText::doSwap() throw(fwTools::Failed)
+void ImageText::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->removeTFConnections();

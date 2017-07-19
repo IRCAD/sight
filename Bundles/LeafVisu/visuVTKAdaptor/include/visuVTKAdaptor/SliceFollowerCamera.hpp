@@ -29,9 +29,9 @@ class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera : public ::fwDataTools::helpe
 public:
     fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API SliceFollowerCamera() throw();
+    VISUVTKADAPTOR_API SliceFollowerCamera() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~SliceFollowerCamera() throw();
+    VISUVTKADAPTOR_API virtual ~SliceFollowerCamera() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -46,13 +46,13 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
     // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
 
     void initializeCamera();
     void updateCamera(double distance = -1., double size = -1);

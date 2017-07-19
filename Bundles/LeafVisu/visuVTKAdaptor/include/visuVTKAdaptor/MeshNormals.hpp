@@ -38,9 +38,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (MeshNormals)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API MeshNormals() throw();
+    VISUVTKADAPTOR_API MeshNormals() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~MeshNormals() throw();
+    VISUVTKADAPTOR_API virtual ~MeshNormals() noexcept;
 
     VISUVTKADAPTOR_API void setPolyData(vtkSmartPointer< vtkPolyData > polydata);
 
@@ -87,11 +87,11 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doStop();
 
     vtkActor* getActor() const;
     void updateMeshNormals();

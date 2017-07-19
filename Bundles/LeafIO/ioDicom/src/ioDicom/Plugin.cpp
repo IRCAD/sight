@@ -16,18 +16,18 @@ namespace ioDicom
 using namespace ::fwRuntime::utils;
 static GenericExecutableFactoryRegistrar<Plugin> registrar("ioDicom::Plugin");
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
     // Hack to force link with Qt filters
     ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter::sptr t =
         ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter::New();
 }
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
 }
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

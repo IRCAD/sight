@@ -39,7 +39,7 @@ PointLabel::PointLabel() : Text()
 
 //------------------------------------------------------------------------------
 
-void PointLabel::starting() throw(::fwTools::Failed)
+void PointLabel::starting()
 {
     Text::starting();
     doUpdate();
@@ -47,14 +47,14 @@ void PointLabel::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointLabel::stopping() throw(::fwTools::Failed)
+void PointLabel::stopping()
 {
     Text::stopping();
 }
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doUpdate() throw(::fwTools::Failed)
+void PointLabel::doUpdate()
 {
     ::fwData::Point::sptr point = this->getObject< ::fwData::Point >();
 
@@ -72,7 +72,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doSwap() throw(fwTools::Failed)
+void PointLabel::doSwap()
 {
     this->doUpdate();
 }

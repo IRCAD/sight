@@ -27,10 +27,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SDefaultMenu)(::fwGui::IMenuSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultMenu() throw();
+    GUI_API SDefaultMenu() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultMenu() throw();
+    GUI_API virtual ~SDefaultMenu() noexcept;
 
 protected:
 
@@ -68,22 +68,22 @@ protected:
      *
      *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuLayoutManager::initialize()
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed );
+    GUI_API virtual void configuring();
 
     /**
      * @brief Create the menu items and start the managed services.
      * @see ::fwGui::IMenuSrv::create()
      */
-    GUI_API virtual void starting() throw( ::fwTools::Failed );
+    GUI_API virtual void starting();
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to menuBar
      * @see ::fwGui::IMenuSrv::destroy()
      */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed );
+    GUI_API virtual void stopping();
 
     /// Updating service, do nothing.
-    GUI_API virtual void updating() throw(::fwTools::Failed);
+    GUI_API virtual void updating();
     ///@}
 
 };

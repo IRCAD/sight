@@ -33,9 +33,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API Medical3DCamera() throw();
+    VISUVTKADAPTOR_API Medical3DCamera() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Medical3DCamera() throw();
+    VISUVTKADAPTOR_API virtual ~Medical3DCamera() noexcept;
 
     typedef ::fwCom::Slot< void () > SetCameraSlotType;
 
@@ -66,15 +66,15 @@ protected:
      * - resetAtStart : update view when adaptor is started if set to yes, default value is no.
      *
      */
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
 
     /**
      * @name Overrides
      * @{ */
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
     /**  @} */
 
 private:

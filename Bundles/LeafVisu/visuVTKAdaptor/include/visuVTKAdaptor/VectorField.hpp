@@ -31,9 +31,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (VectorField)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API VectorField() throw();
+    VISUVTKADAPTOR_API VectorField() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~VectorField() throw();
+    VISUVTKADAPTOR_API virtual ~VectorField() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -46,12 +46,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doUpdate() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
 
     virtual void buildPipeline();
     virtual void destroyPipeline();

@@ -38,7 +38,7 @@ const float CurvedHistogram::NB_POINTS_BEZIER = 100.0f;
 
 //-----------------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::CurvedHistogram() throw() : m_borderWidth(1.75f), m_scale(1.0)
+CurvedHistogram::CurvedHistogram() noexcept : m_borderWidth(1.75f), m_scale(1.0)
 {
     m_layer       = NULL;
     m_painterPath = NULL;
@@ -46,13 +46,13 @@ CurvedHistogram::CurvedHistogram() throw() : m_borderWidth(1.75f), m_scale(1.0)
 
 //-----------------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::~CurvedHistogram() throw()
+CurvedHistogram::~CurvedHistogram() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::configuring() throw( ::fwTools::Failed)
+void CurvedHistogram::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -89,7 +89,7 @@ void CurvedHistogram::configuring() throw( ::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doStart() throw( ::fwTools::Failed)
+void CurvedHistogram::doStart()
 {
     SLM_TRACE_FUNC();
 
@@ -245,7 +245,7 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points & _bS
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doUpdate() throw( ::fwTools::Failed)
+void CurvedHistogram::doUpdate()
 {
     SLM_TRACE_FUNC();
 
@@ -500,14 +500,14 @@ CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, c
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doSwap() throw( ::fwTools::Failed)
+void CurvedHistogram::doSwap()
 {
     this->doUpdate();
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doStop() throw( ::fwTools::Failed)
+void CurvedHistogram::doStop()
 {
     if (m_layer)
     {

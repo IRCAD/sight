@@ -52,9 +52,9 @@ public:
      */
     FWRUNTIME_API void addConfigurationElement( EConfigurationElement::sptr element );
 
-    FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) throw();
+    FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) noexcept;
 
-    FWRUNTIME_API void setValue(const std::string& value) throw();
+    FWRUNTIME_API void setValue(const std::string& value) noexcept;
 };
 
 }

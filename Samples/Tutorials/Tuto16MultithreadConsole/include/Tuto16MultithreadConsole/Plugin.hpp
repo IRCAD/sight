@@ -23,13 +23,13 @@ class TUTO16MULTITHREADCONSOLE_CLASS_API Plugin : public ::fwRuntime::Plugin
 public:
 
     /// PLugin destructor
-    TUTO16MULTITHREADCONSOLE_API ~Plugin() throw();
+    TUTO16MULTITHREADCONSOLE_API ~Plugin() noexcept;
 
     /// This method is used by runtime to initialize the bundle.
-    TUTO16MULTITHREADCONSOLE_API void start() throw( ::fwRuntime::RuntimeException );
+    TUTO16MULTITHREADCONSOLE_API void start();
 
     /// This method is used by runtime to stop the bundle.
-    TUTO16MULTITHREADCONSOLE_API void stop() throw();
+    TUTO16MULTITHREADCONSOLE_API void stop() noexcept;
 };
 
 } // namespace Tuto16MultithreadConsole

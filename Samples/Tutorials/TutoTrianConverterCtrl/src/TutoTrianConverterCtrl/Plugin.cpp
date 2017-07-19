@@ -26,25 +26,25 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() throw()
+Plugin::Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::start() throw( ::fwRuntime::RuntimeException )
+void Plugin::start()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
+void Plugin::initialize()
 {
     namespace po = boost::program_options;
 
@@ -109,13 +109,13 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
 //------------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::uninitialize() throw()
+void Plugin::uninitialize() noexcept
 {
     if (m_writerSrv)
     {

@@ -286,31 +286,31 @@ public:
      * @brief Return the global process status
      * @return m_globalState
      */
-    FWSERVICES_API GlobalStatus getStatus() const throw();
+    FWSERVICES_API GlobalStatus getStatus() const noexcept;
 
     /**
      * @brief Test if the service is started or not
      * @return true if m_globalState == STARTED
      */
-    FWSERVICES_API bool isStarted() const throw();
+    FWSERVICES_API bool isStarted() const noexcept;
 
     /**
      * @brief Test if the service is stopped or not
      * @return true if m_globalState == STOPPED
      */
-    FWSERVICES_API bool isStopped() const throw();
+    FWSERVICES_API bool isStopped() const noexcept;
 
     /**
      * @brief Return the configuration process status
      * @return m_configurationState
      */
-    FWSERVICES_API ConfigurationStatus getConfigurationStatus() const throw();
+    FWSERVICES_API ConfigurationStatus getConfigurationStatus() const noexcept;
 
     /**
      * @brief Return the update process status
      * @return m_updatingState
      */
-    FWSERVICES_API UpdatingStatus getUpdatingStatus() const throw();
+    FWSERVICES_API UpdatingStatus getUpdatingStatus() const noexcept;
     //@}
 
 
@@ -562,14 +562,14 @@ protected:
      * installs a button in a frame and show the frame.
      * @see start()
      */
-    FWSERVICES_API virtual void starting() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void starting() = 0;
 
     /**
      * @brief Uninitialize the service activity. The stop() method is always invoked before destroying a service.
      *
      * @see stop()
      */
-    FWSERVICES_API virtual void stopping() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void stopping() = 0;
 
     /**
      * @brief Swap the service from associated object to another object
@@ -579,7 +579,7 @@ protected:
      * @todo This method must have in parameter the new object or the old ?
      * @deprecated use swapping(const KeyType& key) instead
      */
-    virtual void swapping() throw ( ::fwTools::Failed )
+    virtual void swapping()
     {
     }
 
@@ -593,7 +593,7 @@ protected:
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?
      */
-    virtual void swapping(const KeyType& key) throw ( ::fwTools::Failed )
+    virtual void swapping(const KeyType& key)
     {
     }
 
@@ -601,20 +601,20 @@ protected:
      * @brief Configure the service before starting. Apply the configuration to service.
      * @see configure()
      */
-    FWSERVICES_API virtual void configuring() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void configuring() = 0;
 
     /**
      * @brief Reconfigure the service activity when is started.
      * @todo This method should be pure virtual
      * @see configure()
      */
-    FWSERVICES_API virtual void reconfiguring() throw ( ::fwTools::Failed );
+    FWSERVICES_API virtual void reconfiguring();
 
     /**
      * @brief Perform some computations according to object (this service is attached to) attribute values and its internal state.
      * @see update()
      */
-    FWSERVICES_API virtual void updating() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void updating() = 0;
 
     /**
      * @brief Write information in a stream.

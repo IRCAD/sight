@@ -53,9 +53,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKADAPTOR_API PointList() throw();
+    VISUVTKADAPTOR_API PointList() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PointList() throw();
+    VISUVTKADAPTOR_API virtual ~PointList() noexcept;
 
     VISUVTKADAPTOR_API void setRadius(const double);
 
@@ -75,12 +75,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void doStop();
 
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void doUpdate();
 
     VISUVTKADAPTOR_API void createServices(WeakPointListType& wPtList);
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();

@@ -43,9 +43,9 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SOrganTransformation)(::gui::editor::IEditor) );
 
     /// constructor
-    UIMEDDATAQT_API SOrganTransformation() throw();
+    UIMEDDATAQT_API SOrganTransformation() noexcept;
     /// destructor
-    UIMEDDATAQT_API virtual ~SOrganTransformation() throw();
+    UIMEDDATAQT_API virtual ~SOrganTransformation() noexcept;
 
 
     /**
@@ -69,11 +69,11 @@ protected:
        @endcode
      * - \b TMSUid = composite uid
      */
-    UIMEDDATAQT_API virtual void configuring() throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void starting()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void stopping()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void swapping()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void updating()    throw( ::fwTools::Failed );
+    UIMEDDATAQT_API virtual void configuring();
+    UIMEDDATAQT_API virtual void starting();
+    UIMEDDATAQT_API virtual void stopping();
+    UIMEDDATAQT_API virtual void swapping();
+    UIMEDDATAQT_API virtual void updating();
     UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
 
 private Q_SLOTS:

@@ -37,7 +37,7 @@ const ::fwCom::Slots::SlotKeyType ModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "sh
 
 //------------------------------------------------------------------------------
 
-ModelSeries::ModelSeries() throw() :
+ModelSeries::ModelSeries() noexcept :
     m_sigTextureApplied(TextureAppliedSignalType::New()),
     m_autoResetCamera(true)
 {
@@ -55,13 +55,13 @@ ModelSeries::ModelSeries() throw() :
 
 //------------------------------------------------------------------------------
 
-ModelSeries::~ModelSeries() throw()
+ModelSeries::~ModelSeries() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doConfigure() throw(fwTools::Failed)
+void ModelSeries::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -83,14 +83,14 @@ void ModelSeries::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doStart() throw(fwTools::Failed)
+void ModelSeries::doStart()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doUpdate() throw(fwTools::Failed)
+void ModelSeries::doUpdate()
 {
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
 
@@ -156,14 +156,14 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doSwap() throw(fwTools::Failed)
+void ModelSeries::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doStop() throw(fwTools::Failed)
+void ModelSeries::doStop()
 {
     m_connections.disconnect();
     this->unregisterServices();

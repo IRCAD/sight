@@ -27,19 +27,19 @@ namespace uiVisu
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::TransformationMatrixEditor,
                          ::fwData::TransformationMatrix3D );
 
-TransformationMatrixEditor::TransformationMatrixEditor() throw()
+TransformationMatrixEditor::TransformationMatrixEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-TransformationMatrixEditor::~TransformationMatrixEditor() throw()
+TransformationMatrixEditor::~TransformationMatrixEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
+void TransformationMatrixEditor::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -63,7 +63,7 @@ void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::stopping() throw(::fwTools::Failed)
+void TransformationMatrixEditor::stopping()
 {
     SLM_TRACE_FUNC();
     QObject::disconnect(m_angleSlider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChange(int)));
@@ -73,7 +73,7 @@ void TransformationMatrixEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::configuring() throw(fwTools::Failed)
+void TransformationMatrixEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -81,7 +81,7 @@ void TransformationMatrixEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::updating() throw(::fwTools::Failed)
+void TransformationMatrixEditor::updating()
 {
     ::fwData::TransformationMatrix3D::sptr tm3D = this->getObject< ::fwData::TransformationMatrix3D >();
 
@@ -91,7 +91,7 @@ void TransformationMatrixEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
+void TransformationMatrixEditor::swapping()
 {
 }
 

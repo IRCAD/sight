@@ -41,10 +41,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SRenderer)(::fwRender::IRender) );
 
     /// Constructor
-    VTKSIMPLENEGATO_API SRenderer() throw();
+    VTKSIMPLENEGATO_API SRenderer() noexcept;
 
     /// Destructor
-    VTKSIMPLENEGATO_API virtual ~SRenderer() throw();
+    VTKSIMPLENEGATO_API virtual ~SRenderer() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -63,14 +63,14 @@ protected:
      * This method is used to initialize the service.
      * Initialize VTK renderer and gui containers
      */
-    VTKSIMPLENEGATO_API virtual void starting() throw(fwTools::Failed);
+    VTKSIMPLENEGATO_API virtual void starting();
 
     /**
      * @brief Stopping method.
      *
      * Destroy VTK renderer and gui containers
      */
-    VTKSIMPLENEGATO_API virtual void stopping() throw(fwTools::Failed);
+    VTKSIMPLENEGATO_API virtual void stopping();
 
     /**
      * @brief Updating method.
@@ -78,14 +78,14 @@ protected:
      * This method is used to update the service.
      * Make a render if necessary
      */
-    VTKSIMPLENEGATO_API virtual void updating() throw(fwTools::Failed);
+    VTKSIMPLENEGATO_API virtual void updating();
 
     /**
      * @brief This method is used to configure the service.
      *
      * It initializes the qt container.
      */
-    VTKSIMPLENEGATO_API virtual void configuring() throw(::fwTools::Failed);
+    VTKSIMPLENEGATO_API virtual void configuring();
 
 private:
     /**

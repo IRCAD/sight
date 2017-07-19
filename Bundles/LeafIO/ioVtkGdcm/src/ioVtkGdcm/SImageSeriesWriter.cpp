@@ -39,14 +39,14 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::SImageSeriesWriter() throw()
+SImageSeriesWriter::SImageSeriesWriter() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::~SImageSeriesWriter() throw()
+SImageSeriesWriter::~SImageSeriesWriter() noexcept
 {
 }
 
@@ -78,26 +78,26 @@ void SImageSeriesWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::starting() throw(::fwTools::Failed)
+void SImageSeriesWriter::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
+void SImageSeriesWriter::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::configuring() throw(::fwTools::Failed)
+void SImageSeriesWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::updating() throw(::fwTools::Failed)
+void SImageSeriesWriter::updating()
 {
     if( this->hasLocationDefined() )
     {

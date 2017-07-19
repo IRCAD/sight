@@ -30,7 +30,7 @@ public:
     UIMEDDATAQT_API SSeriesViewer();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SSeriesViewer() throw();
+    UIMEDDATAQT_API virtual ~SSeriesViewer() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -44,10 +44,10 @@ public:
 protected:
 
     /// Calls updating on starting.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops the config if it is running.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Configures the service.
@@ -74,7 +74,7 @@ protected:
      *     - \b by : specific value to replace for the parameter
      * - \b extract : extracts the object from the path and replaces pattern with its fwID
      */
-    virtual void configuring() throw (::fwTools::Failed);
+    virtual void configuring();
 
     /**
      * @brief Launch the config on the object if possible.
@@ -84,7 +84,7 @@ protected:
      * no configuration are launched if there is no selection, a multiple selection or if there is no configuration
      * associated with the selected object.
      */
-    virtual void updating() throw (::fwTools::Failed);
+    virtual void updating();
 
     virtual void info( std::ostream& _sstream );
 

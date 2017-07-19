@@ -36,7 +36,7 @@ struct LibraryBridge
      * @param[in]   modulePath      a path pointing the module to load without any extension
      *                          information
      */
-    LibraryBridge( const boost::filesystem::path & modulePath ) throw()
+    LibraryBridge( const boost::filesystem::path & modulePath ) noexcept
         : m_implementor( modulePath )
     {
     }
@@ -44,7 +44,7 @@ struct LibraryBridge
     /**
      * @brief   Destructor : does nothing.
      */
-    ~LibraryBridge() throw()
+    ~LibraryBridge() noexcept
     {
     }
 
@@ -54,7 +54,7 @@ struct LibraryBridge
      *
      * @return  true or false
      */
-    bool isLoaded() const throw()
+    bool isLoaded() const noexcept
     {
         return m_implementor.isLoaded();
     }
@@ -66,7 +66,7 @@ struct LibraryBridge
      *
      * @see     getPath
      */
-    const boost::filesystem::path getFullPath() const throw(RuntimeException)
+    const boost::filesystem::path getFullPath() const
     {
         return m_implementor.getFullPath();
     }
@@ -80,7 +80,7 @@ struct LibraryBridge
      *
      * @see     getFullPath
      */
-    const boost::filesystem::path getPath() const throw(RuntimeException)
+    const boost::filesystem::path getPath() const
     {
         return m_implementor.getPath();
     }
@@ -92,7 +92,7 @@ struct LibraryBridge
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol(const std::string& name) const throw(RuntimeException)
+    void* getSymbol(const std::string& name) const
     {
         return m_implementor.getSymbol(name);
     }
@@ -100,7 +100,7 @@ struct LibraryBridge
     /**
      * @brief   Loads the module.
      */
-    void load() throw(RuntimeException)
+    void load()
     {
         m_implementor.load();
     }
@@ -110,7 +110,7 @@ struct LibraryBridge
      *
      * @param[in]   bundle  a pointer to a bundle instance
      */
-    void setBundle(const ::fwRuntime::Bundle* bundle) throw()
+    void setBundle(const ::fwRuntime::Bundle* bundle) noexcept
     {
         m_implementor.setBundle(bundle);
     }
@@ -118,7 +118,7 @@ struct LibraryBridge
     /**
      * @brief   Undloads the module.
      */
-    void unload() throw(RuntimeException)
+    void unload()
     {
         m_implementor.unload();
     }
@@ -137,7 +137,7 @@ struct LibraryBridge
          *
          * @remark  Assignment is forbidden for this class.
          */
-        void operator=(const LibraryBridge&) throw()
+        void operator=(const LibraryBridge&) noexcept
         {
         }
 };

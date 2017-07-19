@@ -31,12 +31,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SDoNothing() throw();
+    GUI_API SDoNothing() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SDoNothing() throw();
+    GUI_API virtual ~SDoNothing() noexcept;
 
 protected:
 
@@ -47,16 +47,16 @@ protected:
     /**
      * @brief This method is used to configure the action.
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed );
+    GUI_API virtual void configuring();
 
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
     /**
      * @brief Process the action. Do nothing.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed);
+    GUI_API virtual void updating();
 
     /**
      * @brief This method gives information about the class.

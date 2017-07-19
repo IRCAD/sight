@@ -57,7 +57,6 @@ std::string ImageDimensionsSplitter::getDescription() const
 
 ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply(
     const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
-throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
     result.push_back(series);

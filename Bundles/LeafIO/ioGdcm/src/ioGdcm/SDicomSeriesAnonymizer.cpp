@@ -43,7 +43,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() throw() :
+SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() noexcept :
     m_cancelled(false)
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
@@ -51,19 +51,19 @@ SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() throw() :
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() throw()
+SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::configuring() throw(::fwTools::Failed)
+void SDicomSeriesAnonymizer::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::starting() throw(::fwTools::Failed)
+void SDicomSeriesAnonymizer::starting()
 {
     m_seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
     SLM_ASSERT("The SeriesDB key doesn't exist.", m_seriesDB);
@@ -71,13 +71,13 @@ void SDicomSeriesAnonymizer::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::stopping() throw(::fwTools::Failed)
+void SDicomSeriesAnonymizer::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::updating() throw(::fwTools::Failed)
+void SDicomSeriesAnonymizer::updating()
 {
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >("selectedSeries");
 

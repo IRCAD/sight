@@ -47,7 +47,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::WindowLevel, ::fwDat
 
 //------------------------------------------------------------------------------
 
-WindowLevel::WindowLevel() throw()
+WindowLevel::WindowLevel() noexcept
 {
     m_widgetDynamicRangeMin   = -1024.;
     m_widgetDynamicRangeWidth = 4000.;
@@ -59,13 +59,13 @@ WindowLevel::WindowLevel() throw()
 
 //------------------------------------------------------------------------------
 
-WindowLevel::~WindowLevel() throw()
+WindowLevel::~WindowLevel() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::starting() throw(::fwTools::Failed)
+void WindowLevel::starting()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -148,7 +148,7 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::stopping() throw(::fwTools::Failed)
+void WindowLevel::stopping()
 {
     this->removeTFConnections();
     QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
@@ -166,7 +166,7 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::configuring() throw(fwTools::Failed)
+void WindowLevel::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -196,7 +196,7 @@ void WindowLevel::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updating() throw(::fwTools::Failed)
+void WindowLevel::updating()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
@@ -245,7 +245,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::swapping() throw(::fwTools::Failed)
+void WindowLevel::swapping()
 {
     this->removeTFConnections();
     this->updating();

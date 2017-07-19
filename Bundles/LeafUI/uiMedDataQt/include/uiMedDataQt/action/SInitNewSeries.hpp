@@ -32,15 +32,15 @@ public:
     UIMEDDATAQT_API SInitNewSeries();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SInitNewSeries() throw();
+    UIMEDDATAQT_API virtual ~SInitNewSeries() noexcept;
 
 protected:
 
     /// Starts service.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops service. Does nothing.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      *
@@ -53,10 +53,10 @@ protected:
      * \b seriesDB : UID of series DB used to add new series for each patient/study group
      * \b institution (not mandatory) : default value to be set for new series equipment's institution
      */
-    virtual void configuring() throw (::fwTools::Failed);
+    virtual void configuring();
 
     /// Adds the fake series in series DB.
-    virtual void updating() throw (::fwTools::Failed);
+    virtual void updating();
 
     virtual void info( std::ostream &_sstream );
 

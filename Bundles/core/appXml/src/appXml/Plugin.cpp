@@ -17,19 +17,19 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() throw() : m_configurationName(""),m_parametersName("")
+Plugin::Plugin() noexcept : m_configurationName(""),m_parametersName("")
 {
 }
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::start() throw( ::fwRuntime::RuntimeException )
+void Plugin::start()
 {
     SLM_FATAL_IF("Bundle appXml, missing param config in profile", !this->getBundle()->hasParameter("config"));
     m_configurationName = this->getBundle()->getParameterValue("config");
@@ -41,7 +41,7 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 
 //------------------------------------------------------------------------------
 
-void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
+void Plugin::initialize()
 {
     SLM_ASSERT("The OSR is already initialized.", !m_appConfigMng );
     SLM_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
@@ -65,13 +65,13 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
 //------------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::uninitialize() throw()
+void Plugin::uninitialize() noexcept
 {
     SLM_ASSERT("The OSR is not initialized.", m_appConfigMng );
     m_appConfigMng->stopAndDestroy();

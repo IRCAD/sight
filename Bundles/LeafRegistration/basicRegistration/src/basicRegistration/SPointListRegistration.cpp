@@ -49,7 +49,7 @@ SPointListRegistration::~SPointListRegistration()
 
 // ----------------------------------------------------------------------------
 
-void SPointListRegistration::configuring() throw ( ::fwTools::Failed )
+void SPointListRegistration::configuring()
 {
     if(!this->isVersion2())
     {
@@ -63,19 +63,19 @@ void SPointListRegistration::configuring() throw ( ::fwTools::Failed )
 
 // ----------------------------------------------------------------------------
 
-void SPointListRegistration::starting() throw ( ::fwTools::Failed )
+void SPointListRegistration::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SPointListRegistration::stopping() throw ( ::fwTools::Failed )
+void SPointListRegistration::stopping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SPointListRegistration::updating() throw ( ::fwTools::Failed )
+void SPointListRegistration::updating()
 {
     ::fwData::PointList::sptr registeredPL;
     ::fwData::PointList::sptr referencePL;
@@ -214,7 +214,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
 
 //----------------------------------------------------------------------------
 
-void SPointListRegistration::swapping() throw ( ::fwTools::Failed )
+void SPointListRegistration::swapping()
 {
     // Classic default approach to update service when object change
     this->stopping();

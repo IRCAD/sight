@@ -61,7 +61,7 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Camera2::Camera2() throw() :
+Camera2::Camera2() noexcept :
     m_cameraCommand(Camera2Clallback::New(this)),
     m_transOrig(nullptr)
 {
@@ -69,19 +69,19 @@ Camera2::Camera2() throw() :
 
 //------------------------------------------------------------------------------
 
-Camera2::~Camera2() throw()
+Camera2::~Camera2() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doConfigure() throw(fwTools::Failed)
+void Camera2::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doStart() throw(fwTools::Failed)
+void Camera2::doStart()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
 
@@ -103,7 +103,7 @@ void Camera2::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Camera2::doUpdate() throw(fwTools::Failed)
+void Camera2::doUpdate()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver( m_cameraCommand );
@@ -150,14 +150,14 @@ void Camera2::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Camera2::doSwap() throw(fwTools::Failed)
+void Camera2::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doStop() throw(fwTools::Failed)
+void Camera2::doStop()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver( m_cameraCommand );

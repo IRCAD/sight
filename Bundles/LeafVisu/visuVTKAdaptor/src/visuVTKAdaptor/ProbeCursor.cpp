@@ -162,7 +162,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSlic
 
 //------------------------------------------------------------------------------
 
-ProbeCursor::ProbeCursor() throw() :
+ProbeCursor::ProbeCursor() noexcept :
     m_priority(.6),
     m_vtkObserver(nullptr),
     m_textActor(vtkActor2D::New()),
@@ -176,7 +176,7 @@ ProbeCursor::ProbeCursor() throw() :
 
 //------------------------------------------------------------------------------
 
-ProbeCursor::~ProbeCursor() throw()
+ProbeCursor::~ProbeCursor() noexcept
 {
     m_textMapper->Delete();
     m_textActor->Delete();
@@ -199,7 +199,7 @@ void ProbeCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doConfigure() throw(fwTools::Failed)
+void ProbeCursor::doConfigure()
 {
 }
 
@@ -227,7 +227,7 @@ void ProbeCursor::buildTextActor()
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doStart() throw(fwTools::Failed)
+void ProbeCursor::doStart()
 {
     this->buildTextActor();
     this->addToRenderer(m_textActor );
@@ -260,7 +260,7 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doUpdate() throw(fwTools::Failed)
+void ProbeCursor::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -269,7 +269,7 @@ void ProbeCursor::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doSwap() throw(fwTools::Failed)
+void ProbeCursor::doSwap()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -277,7 +277,7 @@ void ProbeCursor::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doStop() throw(fwTools::Failed)
+void ProbeCursor::doStop()
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);

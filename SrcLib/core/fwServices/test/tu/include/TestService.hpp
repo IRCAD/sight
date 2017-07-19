@@ -33,7 +33,7 @@ public:
     static unsigned int s_UPDATE_COUNTER;
 
     fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
-    TestService() throw() :
+    TestService() noexcept :
         m_isUpdated(false),
         m_isUpdated2(false),
         m_isUpdatedMessage(false),
@@ -42,18 +42,18 @@ public:
     {
     }
 
-    virtual ~TestService() throw()
+    virtual ~TestService() noexcept
     {
     }
 
-    virtual void configuring() throw( ::fwTools::Failed ) final
+    virtual void configuring() final
     {
     }
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed) final
+    virtual void starting();
+    virtual void stopping() final
     {
     }
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
     virtual void info(std::ostream& _sstream )
     {
         _sstream << "TestService";
@@ -125,37 +125,37 @@ public:
     typedef ::fwCom::Signal< void (const std::string&)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
-    TestServiceImplementation() throw()
+    TestServiceImplementation() noexcept
     {
         newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
         newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
     }
     //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation() throw()
+    virtual ~TestServiceImplementation() noexcept
     {
     }
 
     //-------------------------------------------------------------------------
-    virtual void starting() throw(::fwTools::Failed) final
+    virtual void starting() final
     {
         TestService::starting();
     }
 
     //-------------------------------------------------------------------------
-    virtual void updating() throw(::fwTools::Failed)override
+    virtual void updating()override
     {
         TestService::updating();
         m_isUpdated = true;
     }
 
     //-------------------------------------------------------------------------
-    void update2() throw(::fwTools::Failed)
+    void update2()
     {
         m_isUpdated2 = true;
     }
 
     //-------------------------------------------------------------------------
-    virtual void swapping(const KeyType& key) throw(::fwTools::Failed)override
+    virtual void swapping(const KeyType& key)override
     {
         m_swappedObjectKey = key;
         m_swappedObject    = this->getInput< ::fwData::Object>(key);
@@ -198,11 +198,11 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation2)(::fwServices::ut::TestService) );
 
     //-------------------------------------------------------------------------
-    TestServiceImplementation2() throw()
+    TestServiceImplementation2() noexcept
     {
     }
     //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation2() throw()
+    virtual ~TestServiceImplementation2() noexcept
     {
     }
 };
@@ -226,19 +226,19 @@ public:
 
     //-------------------------------------------------------------------------
 
-    TestSrvAutoconnect() throw() :
+    TestSrvAutoconnect() noexcept :
         m_received(false)
     {
         newSignal<MsgSentSignalType>(s_SIG_1);
         newSlot(s_SLOT_1, &TestSrvAutoconnect::receiveSlot, this);
     }
     //-------------------------------------------------------------------------
-    virtual ~TestSrvAutoconnect() throw()
+    virtual ~TestSrvAutoconnect() noexcept
     {
     }
     //-------------------------------------------------------------------------
 
-    virtual void updating() throw(::fwTools::Failed)override
+    virtual void updating()override
     {
         m_isUpdated = true;
     }

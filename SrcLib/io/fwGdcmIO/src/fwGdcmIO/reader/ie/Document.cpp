@@ -41,7 +41,7 @@ Document::~Document()
 
 //------------------------------------------------------------------------------
 
-void Document::readSR() throw (::fwGdcmIO::exception::Failed)
+void Document::readSR()
 {
     // Retrieve dataset
     const ::gdcm::DataSet& datasetRoot = m_reader->GetFile().GetDataSet();

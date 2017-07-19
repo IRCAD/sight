@@ -156,7 +156,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-ImagesProbeCursor::ImagesProbeCursor() throw() :
+ImagesProbeCursor::ImagesProbeCursor() noexcept :
     m_priority(.6),
     m_vtkObserver(nullptr),
     m_textActor(vtkActor2D::New()),
@@ -169,7 +169,7 @@ ImagesProbeCursor::ImagesProbeCursor() throw() :
 
 //------------------------------------------------------------------------------
 
-ImagesProbeCursor::~ImagesProbeCursor() throw()
+ImagesProbeCursor::~ImagesProbeCursor() noexcept
 {
     m_textMapper->Delete();
     m_textActor->Delete();
@@ -193,7 +193,7 @@ void ImagesProbeCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doConfigure() throw(fwTools::Failed)
+void ImagesProbeCursor::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -239,7 +239,7 @@ void ImagesProbeCursor::buildTextActor()
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doStart() throw(fwTools::Failed)
+void ImagesProbeCursor::doStart()
 {
     buildTextActor();
     this->addToRenderer(m_textActor );
@@ -268,20 +268,20 @@ void ImagesProbeCursor::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doUpdate() throw(fwTools::Failed)
+void ImagesProbeCursor::doUpdate()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doSwap() throw(fwTools::Failed)
+void ImagesProbeCursor::doSwap()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doStop() throw(fwTools::Failed)
+void ImagesProbeCursor::doStop()
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
