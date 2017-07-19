@@ -109,7 +109,7 @@
         </service>
 
         <service uid="CalibrationXmlWriter" type="::ioCalibration::SOpenCVWriter">
-            <in key="target" uid="${cameraSeries}"/>
+            <in key="target" uid="newCameraSeries"/>
         </service>
 
         <service uid="ActionStartCamera" type="::gui::action::SSlotCaller" >
