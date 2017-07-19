@@ -21,13 +21,13 @@ struct VISUOGREQT_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    VISUOGREQT_API void start() throw(::fwRuntime::RuntimeException);
+    VISUOGREQT_API void start();
 
     // Overrides
-    VISUOGREQT_API void stop() throw();
+    VISUOGREQT_API void stop() noexcept;
 
 };
 

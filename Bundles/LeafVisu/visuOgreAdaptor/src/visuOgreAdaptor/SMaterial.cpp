@@ -61,7 +61,7 @@ static const std::string s_NORMALS_PASS = "NormalsPass";
 
 //------------------------------------------------------------------------------
 
-SMaterial::SMaterial() throw() :
+SMaterial::SMaterial() noexcept :
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_hasMeshNormal(true),
     m_hasVertexColor(false),
@@ -79,7 +79,7 @@ SMaterial::SMaterial() throw() :
 
 //------------------------------------------------------------------------------
 
-SMaterial::~SMaterial() throw()
+SMaterial::~SMaterial() noexcept
 {
 
 }
@@ -180,7 +180,7 @@ int SMaterial::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doConfigure() throw(::fwTools::Failed)
+void SMaterial::doConfigure()
 {
     if(m_configuration->hasAttribute("materialTemplate"))
     {
@@ -216,7 +216,7 @@ void SMaterial::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStart() throw(::fwTools::Failed)
+void SMaterial::doStart()
 {
     if(!m_shadingMode.empty())
     {
@@ -284,7 +284,7 @@ void SMaterial::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStop() throw(::fwTools::Failed)
+void SMaterial::doStop()
 {
     m_material.setNull();
     m_textureConnection.disconnect();
@@ -299,7 +299,7 @@ void SMaterial::doStop() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doSwap() throw(::fwTools::Failed)
+void SMaterial::doSwap()
 {
     SLM_TRACE("SWAPPING Material");
     this->stopping();
@@ -308,7 +308,7 @@ void SMaterial::doSwap() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doUpdate() throw(::fwTools::Failed)
+void SMaterial::doUpdate()
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 

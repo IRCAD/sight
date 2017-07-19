@@ -52,7 +52,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-SRender::SRender() throw() :
+SRender::SRender() noexcept :
     m_interactorManager(nullptr),
     m_showOverlay(false),
     m_startAdaptor(false),
@@ -73,7 +73,7 @@ SRender::SRender() throw() :
 
 //-----------------------------------------------------------------------------
 
-SRender::~SRender() throw()
+SRender::~SRender() noexcept
 {
     m_ogreRoot = nullptr;
 
@@ -86,7 +86,7 @@ SRender::~SRender() throw()
 
 //-----------------------------------------------------------------------------
 
-void SRender::configuring() throw(::fwTools::Failed)
+void SRender::configuring()
 {
     this->initialize();
 
@@ -146,7 +146,7 @@ void SRender::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::starting() throw(::fwTools::Failed)
+void SRender::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -200,7 +200,7 @@ void SRender::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::stopping() throw(::fwTools::Failed)
+void SRender::stopping()
 {
     m_connections.disconnect();
 
@@ -239,7 +239,7 @@ void SRender::stopping() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::updating() throw(::fwTools::Failed)
+void SRender::updating()
 {
 }
 

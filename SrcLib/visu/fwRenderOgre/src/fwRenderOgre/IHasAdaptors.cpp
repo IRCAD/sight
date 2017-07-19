@@ -15,13 +15,13 @@ namespace fwRenderOgre
 
 //------------------------------------------------------------------------------
 
-IHasAdaptors::IHasAdaptors() throw()
+IHasAdaptors::IHasAdaptors() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-IHasAdaptors::~IHasAdaptors() throw()
+IHasAdaptors::~IHasAdaptors() noexcept
 {
 }
 

@@ -37,7 +37,7 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVideo, ::
 static const char* VIDEO_MATERIAL_NAME = "Video";
 
 //------------------------------------------------------------------------------
-SVideo::SVideo() throw() :
+SVideo::SVideo() noexcept :
     m_imageData(nullptr),
     m_isTextureInit(false),
     m_previousWidth(0),
@@ -48,13 +48,13 @@ SVideo::SVideo() throw() :
 
 //------------------------------------------------------------------------------
 
-SVideo::~SVideo() throw()
+SVideo::~SVideo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doStart() throw(::fwTools::Failed)
+void SVideo::doStart()
 {
     m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
         this->getID() + "_VideoTexture",
@@ -77,21 +77,21 @@ void SVideo::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideo::doStop() throw(::fwTools::Failed)
+void SVideo::doStop()
 {
     m_texture.setNull();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doSwap() throw(::fwTools::Failed)
+void SVideo::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doConfigure() throw(::fwTools::Failed)
+void SVideo::doConfigure()
 {
     const std::string reverse = m_configuration->getAttributeValue("reverse");
     if (!reverse.empty() )
@@ -105,7 +105,7 @@ void SVideo::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideo::doUpdate() throw(::fwTools::Failed)
+void SVideo::doUpdate()
 {
     this->getRenderService()->makeCurrent();
 

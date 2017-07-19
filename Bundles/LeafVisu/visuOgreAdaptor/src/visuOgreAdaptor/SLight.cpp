@@ -43,7 +43,7 @@ const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoub
 
 //------------------------------------------------------------------------------
 
-SLight::SLight() throw() :
+SLight::SLight() noexcept :
     m_light(nullptr),
     m_lightName(""),
     m_lightType(::Ogre::Light::LT_DIRECTIONAL),
@@ -72,13 +72,13 @@ SLight::SLight(::fwRenderOgre::ILight::Key key) :
 
 //------------------------------------------------------------------------------
 
-SLight::~SLight() throw()
+SLight::~SLight() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doConfigure() throw(::fwTools::Failed)
+void SLight::doConfigure()
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
 
@@ -113,7 +113,7 @@ void SLight::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLight::doStart() throw(::fwTools::Failed)
+void SLight::doStart()
 {
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >("diffuseColor");
     m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
@@ -149,7 +149,7 @@ void SLight::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLight::doUpdate() throw(::fwTools::Failed)
+void SLight::doUpdate()
 {
     SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
 
@@ -293,14 +293,14 @@ void SLight::attachNode(::Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SLight::doSwap() throw(::fwTools::Failed)
+void SLight::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doStop() throw(::fwTools::Failed)
+void SLight::doStop()
 {
     if(!m_transformService.expired())
     {

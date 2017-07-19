@@ -53,10 +53,10 @@ public:
     /** @} */
 
     /// Constructor.
-    UIVISUOGRE_API SCompositorSelector() throw();
+    UIVISUOGRE_API SCompositorSelector() noexcept;
 
     /// Destructor. Does nothing
-    UIVISUOGRE_API virtual ~SCompositorSelector() throw();
+    UIVISUOGRE_API virtual ~SCompositorSelector() noexcept;
 
 protected:
 
@@ -69,16 +69,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Sets the connections and the UI elements
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Destroys the connections and cleans the container
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Does nothing
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
 private Q_SLOTS:
 

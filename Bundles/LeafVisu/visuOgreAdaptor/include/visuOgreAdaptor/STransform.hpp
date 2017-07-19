@@ -35,9 +35,9 @@ public:
     fwCoreServiceClassDefinitionsMacro((STransform)(::fwRenderOgre::IAdaptor));
 
     /// Constructor,
-    VISUOGREADAPTOR_API STransform() throw();
+    VISUOGREADAPTOR_API STransform() noexcept;
     /// Destructor, does nothing
-    VISUOGREADAPTOR_API virtual ~STransform() throw();
+    VISUOGREADAPTOR_API virtual ~STransform() noexcept;
 
     /// Get Ogre transform matrix
     VISUOGREADAPTOR_API const ::Ogre::Matrix4& getTransform() const;
@@ -52,15 +52,15 @@ public:
 
 protected:
     /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
     /// Unregisters the service
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
     /// Takes the attribute "parent" from m_config, and then puts it in m_parentTransformUID
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
     /// Updates m_transform and m_ogreTransformNode from ::fwData::TransformationMatrix3D
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
     /// Ogre transform node.
     ::Ogre::SceneNode* m_transformNode;

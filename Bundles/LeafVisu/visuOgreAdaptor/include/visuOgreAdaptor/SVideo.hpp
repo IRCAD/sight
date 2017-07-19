@@ -31,10 +31,10 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_UPDATE_SIZE_SIG;
 
     /// Constructor.
-    VISUOGREADAPTOR_API SVideo() throw();
+    VISUOGREADAPTOR_API SVideo() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SVideo() throw();
+    VISUOGREADAPTOR_API virtual ~SVideo() noexcept;
 
 protected:
 
@@ -47,19 +47,19 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    VISUOGREADAPTOR_API void doConfigure() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doConfigure();
 
     /// Create the ogre texture and mapper used to show the video frame.
-    VISUOGREADAPTOR_API void doStart() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doStart();
 
     /// Removes the actor from the renderer
-    VISUOGREADAPTOR_API void doStop() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doStop();
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
     /// Updated the frame from the current Image.
-    VISUOGREADAPTOR_API void doUpdate() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doUpdate();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;

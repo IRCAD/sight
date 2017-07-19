@@ -33,19 +33,19 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SStereoSelector, 
 
 //------------------------------------------------------------------------------
 
-SStereoSelector::SStereoSelector() throw()
+SStereoSelector::SStereoSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SStereoSelector::~SStereoSelector() throw()
+SStereoSelector::~SStereoSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SStereoSelector::starting() throw(::fwTools::Failed)
+void SStereoSelector::starting()
 {
     this->create();
 
@@ -79,21 +79,21 @@ void SStereoSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SStereoSelector::stopping() throw(::fwTools::Failed)
+void SStereoSelector::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SStereoSelector::configuring() throw(::fwTools::Failed)
+void SStereoSelector::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SStereoSelector::updating() throw(::fwTools::Failed)
+void SStereoSelector::updating()
 {
 }
 

@@ -38,10 +38,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::visuOgreAdaptor::IParameter) );
 
     /// Constructor.
-    VISUOGREADAPTOR_API SCompositorParameter() throw();
+    VISUOGREADAPTOR_API SCompositorParameter() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SCompositorParameter() throw();
+    VISUOGREADAPTOR_API virtual ~SCompositorParameter() noexcept;
 
     /// Updates parameter according to the attached fwData::Object
     VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
@@ -52,13 +52,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doConfigure();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStart()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStart();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStop();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doSwap();
 
 private:
 

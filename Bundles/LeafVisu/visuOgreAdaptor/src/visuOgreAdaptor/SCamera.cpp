@@ -38,7 +38,7 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformat
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
+SCamera::SCamera() noexcept :
     m_camera(nullptr),
     m_nearClipDistance(1.f),
     m_aspectRatio(0.f)
@@ -49,19 +49,19 @@ SCamera::SCamera() throw() :
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() throw()
+SCamera::~SCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doConfigure() throw(::fwTools::Failed)
+void SCamera::doConfigure()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStart() throw(::fwTools::Failed)
+void SCamera::doStart()
 {
     m_camera      = this->getLayer()->getDefaultCamera();
     m_calibration = this->getInput< ::arData::Camera >("calibration");
@@ -78,7 +78,7 @@ void SCamera::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doUpdate() throw(::fwTools::Failed)
+void SCamera::doUpdate()
 {
 }
 
@@ -128,14 +128,14 @@ void SCamera::attachNode(::Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doSwap() throw(::fwTools::Failed)
+void SCamera::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStop() throw(::fwTools::Failed)
+void SCamera::doStop()
 {
     m_layerConnection.disconnect();
 

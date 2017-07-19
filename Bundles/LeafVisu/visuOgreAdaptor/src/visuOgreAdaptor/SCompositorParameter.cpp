@@ -58,13 +58,13 @@ private:
 
 //------------------------------------------------------------------------------
 
-SCompositorParameter::SCompositorParameter() throw()
+SCompositorParameter::SCompositorParameter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SCompositorParameter::~SCompositorParameter() throw()
+SCompositorParameter::~SCompositorParameter() noexcept
 {
 }
 
@@ -85,7 +85,7 @@ const std::string& SCompositorParameter::getCompositorName() const
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doConfigure() throw(::fwTools::Failed)
+void SCompositorParameter::doConfigure()
 {
     this->IParameter::doConfigure();
 
@@ -95,7 +95,7 @@ void SCompositorParameter::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doStart() throw(::fwTools::Failed)
+void SCompositorParameter::doStart()
 {
     ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
 
@@ -112,7 +112,7 @@ void SCompositorParameter::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doStop() throw(::fwTools::Failed)
+void SCompositorParameter::doStop()
 {
     this->IParameter::doStop();
 
@@ -123,7 +123,7 @@ void SCompositorParameter::doStop() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doSwap() throw(::fwTools::Failed)
+void SCompositorParameter::doSwap()
 {
 }
 //------------------------------------------------------------------------------

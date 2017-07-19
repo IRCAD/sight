@@ -110,8 +110,8 @@ class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 public:
     fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
 
-    FWRENDEROGRE_API SRender() throw();
-    FWRENDEROGRE_API virtual ~SRender() throw();
+    FWRENDEROGRE_API SRender() noexcept;
+    FWRENDEROGRE_API virtual ~SRender() noexcept;
 
     typedef std::string AdaptorIdType;
     typedef std::string OgreObjectIdType;
@@ -200,15 +200,15 @@ protected:
     FWRENDEROGRE_API void render();
 
     /// Configures the adaptors and the connections
-    FWRENDEROGRE_API virtual void starting() throw( ::fwTools::Failed);
+    FWRENDEROGRE_API virtual void starting();
     /// Stops all the adaptors
-    FWRENDEROGRE_API virtual void stopping() throw( ::fwTools::Failed);
+    FWRENDEROGRE_API virtual void stopping();
 
     ///Configures the adaptor
-    FWRENDEROGRE_API virtual void configuring() throw( ::fwTools::Failed);
+    FWRENDEROGRE_API virtual void configuring();
 
     /// Does nothing.
-    FWRENDEROGRE_API void updating() throw( ::fwTools::Failed);
+    FWRENDEROGRE_API void updating();
 
 private:
 

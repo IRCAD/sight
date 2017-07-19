@@ -48,10 +48,10 @@ public:
 protected:
 
     /// Constructor
-    FWRENDEROGRE_API IHasAdaptors() throw();
+    FWRENDEROGRE_API IHasAdaptors() noexcept;
 
     /// Destructor
-    FWRENDEROGRE_API virtual ~IHasAdaptors() throw();
+    FWRENDEROGRE_API virtual ~IHasAdaptors() noexcept;
 
     /**
      * @brief Register a new service linked to this adaptor

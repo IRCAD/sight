@@ -18,13 +18,13 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-VideoPickerInteractor::VideoPickerInteractor() throw()
+VideoPickerInteractor::VideoPickerInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-VideoPickerInteractor::~VideoPickerInteractor() throw()
+VideoPickerInteractor::~VideoPickerInteractor() noexcept
 {
 }
 

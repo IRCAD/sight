@@ -33,27 +33,27 @@ const ::fwCom::Slots::SlotKeyType SLightEditor::s_EDIT_LIGHT_SLOT = "editLight";
 
 //------------------------------------------------------------------------------
 
-SLightEditor::SLightEditor() throw()
+SLightEditor::SLightEditor() noexcept
 {
     newSlot(s_EDIT_LIGHT_SLOT, &SLightEditor::editLight, this);
 }
 
 //------------------------------------------------------------------------------
 
-SLightEditor::~SLightEditor() throw()
+SLightEditor::~SLightEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::configuring() throw( ::fwTools::Failed )
+void SLightEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::starting() throw( ::fwTools::Failed )
+void SLightEditor::starting()
 {
     this->create();
 
@@ -122,14 +122,14 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::stopping() throw( ::fwTools::Failed )
+void SLightEditor::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::updating() throw( ::fwTools::Failed )
+void SLightEditor::updating()
 {
 }
 

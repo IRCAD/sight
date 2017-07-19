@@ -145,27 +145,27 @@ public:
     } VREffectType;
 
     /// Constructor.
-    VISUOGREADAPTOR_API SVolumeRender() throw();
+    VISUOGREADAPTOR_API SVolumeRender() noexcept;
 
     /// Destructor.
-    VISUOGREADAPTOR_API virtual ~SVolumeRender() throw();
+    VISUOGREADAPTOR_API virtual ~SVolumeRender() noexcept;
 
 protected:
 
     /// Starts the service initializes scene objects.
-    VISUOGREADAPTOR_API virtual void doStart() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStart();
 
     /// Cleans up memory.
-    VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStop();
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doSwap();
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doUpdate();
 
     /// Configures the service
-    VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doConfigure();
 
     /// Returns the priority of the adaptor
     VISUOGREADAPTOR_API virtual int getStartPriority();

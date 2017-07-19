@@ -39,7 +39,7 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateV
 
 //------------------------------------------------------------------------------
 
-SNegato3D::SNegato3D() throw() :
+SNegato3D::SNegato3D() noexcept :
     m_autoResetCamera(true),
     m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
@@ -56,13 +56,13 @@ SNegato3D::SNegato3D() throw() :
 
 //------------------------------------------------------------------------------
 
-SNegato3D::~SNegato3D() throw()
+SNegato3D::~SNegato3D() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doStart() throw(::fwTools::Failed)
+void SNegato3D::doStart()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     SLM_ASSERT("TF 'key' not found", tfSelection);
@@ -118,7 +118,7 @@ void SNegato3D::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doStop() throw(::fwTools::Failed)
+void SNegato3D::doStop()
 {
     this->removeTFConnections();
 
@@ -138,7 +138,7 @@ void SNegato3D::doStop() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doConfigure() throw(::fwTools::Failed)
+void SNegato3D::doConfigure()
 {
     // Axis orientation mode by default
     m_orientation = OrientationMode::Z_AXIS;
@@ -191,14 +191,14 @@ void SNegato3D::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doUpdate() throw(::fwTools::Failed)
+void SNegato3D::doUpdate()
 {
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doSwap() throw(::fwTools::Failed)
+void SNegato3D::doSwap()
 {
     this->stopping();
     this->starting();

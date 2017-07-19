@@ -34,7 +34,7 @@ const std::string STexture::DEFAULT_TEXTURE_FILENAME = "default.png";
 
 //------------------------------------------------------------------------------
 
-STexture::STexture() throw() :
+STexture::STexture() noexcept :
     m_textureName(""),
     m_filtering("linear"),
     m_wrapping("repeat"),
@@ -46,7 +46,7 @@ STexture::STexture() throw() :
 
 //------------------------------------------------------------------------------
 
-STexture::~STexture() throw()
+STexture::~STexture() noexcept
 {
 
 }
@@ -74,7 +74,7 @@ int STexture::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void STexture::doConfigure() throw(::fwTools::Failed)
+void STexture::doConfigure()
 {
     if(m_configuration->hasAttribute("textureName"))
     {
@@ -111,7 +111,7 @@ void STexture::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doStart() throw(::fwTools::Failed)
+void STexture::doStart()
 {
     m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         m_textureName,
@@ -123,7 +123,7 @@ void STexture::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doUpdate() throw(::fwTools::Failed)
+void STexture::doUpdate()
 {
     // Retrieves associated f4s image
     ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
@@ -145,14 +145,14 @@ void STexture::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doSwap() throw(::fwTools::Failed)
+void STexture::doSwap()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void STexture::doStop() throw(::fwTools::Failed)
+void STexture::doStop()
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();

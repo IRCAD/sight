@@ -32,10 +32,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SReconstruction)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor.
-    VISUOGREADAPTOR_API SReconstruction() throw();
+    VISUOGREADAPTOR_API SReconstruction() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SReconstruction() throw();
+    VISUOGREADAPTOR_API virtual ~SReconstruction() noexcept;
 
     /**
      * @name Slots API
@@ -69,9 +69,9 @@ public:
 
 protected:
     /// starts the service; creates the mesh service.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
     /// stops and unregisters the service.
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /**
      * @brief Configure the Reconstruction adaptor.
@@ -84,11 +84,11 @@ protected:
      *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor
      *  - \b autoresetcamera (optional)
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
 private:
     /// Changes the attached mesh

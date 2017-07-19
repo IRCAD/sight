@@ -23,13 +23,13 @@ fwServicesRegisterMacro( ::visuOgreAdaptor::IParameter, ::visuOgreAdaptor::SShad
 
 //------------------------------------------------------------------------------
 
-SShaderParameter::SShaderParameter() throw()
+SShaderParameter::SShaderParameter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShaderParameter::~SShaderParameter() throw()
+SShaderParameter::~SShaderParameter() noexcept
 {
 }
 
@@ -42,7 +42,7 @@ void SShaderParameter::setMaterialName(const std::string& matName)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doConfigure() throw(::fwTools::Failed)
+void SShaderParameter::doConfigure()
 {
     this->IParameter::doConfigure();
 
@@ -52,7 +52,7 @@ void SShaderParameter::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doStart() throw(::fwTools::Failed)
+void SShaderParameter::doStart()
 {
     // Retrieves the associated material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
@@ -61,14 +61,14 @@ void SShaderParameter::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doStop() throw(::fwTools::Failed)
+void SShaderParameter::doStop()
 {
     this->IParameter::doStop();
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doSwap() throw(::fwTools::Failed)
+void SShaderParameter::doSwap()
 {
 }
 

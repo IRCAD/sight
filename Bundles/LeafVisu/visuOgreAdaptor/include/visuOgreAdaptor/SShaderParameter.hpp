@@ -37,10 +37,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::visuOgreAdaptor::IParameter) );
 
     /// Constructor.
-    VISUOGREADAPTOR_API SShaderParameter() throw();
+    VISUOGREADAPTOR_API SShaderParameter() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SShaderParameter() throw();
+    VISUOGREADAPTOR_API virtual ~SShaderParameter() noexcept;
 
     /// Set the value of the member m_materialName.
     VISUOGREADAPTOR_API void setMaterialName(const std::string& matName);
@@ -48,13 +48,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doConfigure();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStart() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStart();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStop();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doSwap();
 
 private:
 

@@ -87,9 +87,9 @@ public:
     fwCoreServiceClassDefinitionsMacro((SMesh)(::fwRenderOgre::IAdaptor));
 
     /// Constructor: Sets default parameters and initializes necessary members.
-    VISUOGREADAPTOR_API SMesh() throw();
+    VISUOGREADAPTOR_API SMesh() noexcept;
     /// Destructor: if an entity exists in the Ogre Scene, asks Ogre to destroy it.
-    VISUOGREADAPTOR_API virtual ~SMesh() throw();
+    VISUOGREADAPTOR_API virtual ~SMesh() noexcept;
 
     /// Returns the material associated to this.
     VISUOGREADAPTOR_API SPTR(::fwData::Material) getMaterial() const;
@@ -136,15 +136,15 @@ private:
     };
 
     /// Configures the adaptor
-    void doConfigure() throw(::fwTools::Failed);
+    void doConfigure();
     /// Manually creates a Mesh in the Default Ogre Ressource group
-    void doStart    () throw(::fwTools::Failed);
+    void doStart    ();
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void doStop     () throw(::fwTools::Failed);
+    void doStop     ();
     /// Performs a Stop -> Start
-    void doSwap     () throw(::fwTools::Failed);
+    void doSwap     ();
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void doUpdate   () throw(::fwTools::Failed);
+    void doUpdate   ();
 
     ::Ogre::Entity* newEntity();
 

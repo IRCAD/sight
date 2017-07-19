@@ -53,10 +53,10 @@ public:
 protected:
 
     /// Constructor
-    FWRENDEROGRE_API IAdaptor() throw();
+    FWRENDEROGRE_API IAdaptor() noexcept;
 
     /// Destructor
-    FWRENDEROGRE_API virtual ~IAdaptor() throw();
+    FWRENDEROGRE_API virtual ~IAdaptor() noexcept;
 
     /**
      * @name Standard service methods
@@ -64,11 +64,11 @@ protected:
     //@{
     /// Overrides
     FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
-    FWRENDEROGRE_API void configuring() throw(::fwTools::Failed);
-    FWRENDEROGRE_API void starting() throw(::fwTools::Failed);
-    FWRENDEROGRE_API void stopping() throw(::fwTools::Failed);
-    FWRENDEROGRE_API void swapping() throw(::fwTools::Failed);
-    FWRENDEROGRE_API void updating() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void configuring();
+    FWRENDEROGRE_API void starting();
+    FWRENDEROGRE_API void stopping();
+    FWRENDEROGRE_API void swapping();
+    FWRENDEROGRE_API void updating();
     //@}
 
     /**
@@ -76,7 +76,7 @@ protected:
      */
     //@{
     /// Pure virtual methods
-    FWRENDEROGRE_API virtual void doConfigure() throw ( ::fwTools::Failed ) = 0;
+    FWRENDEROGRE_API virtual void doConfigure() = 0;
     FWRENDEROGRE_API virtual void doStart()                                 = 0;
     FWRENDEROGRE_API virtual void doStop()                                  = 0;
     FWRENDEROGRE_API virtual void doSwap()                                  = 0;

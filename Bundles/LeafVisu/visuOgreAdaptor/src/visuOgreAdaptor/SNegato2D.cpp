@@ -35,7 +35,7 @@ const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
 //------------------------------------------------------------------------------
 
-SNegato2D::SNegato2D() throw() :
+SNegato2D::SNegato2D() noexcept :
     ::fwDataTools::helper::MedicalImageAdaptor(),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
@@ -54,14 +54,14 @@ SNegato2D::SNegato2D() throw() :
 
 //------------------------------------------------------------------------------
 
-SNegato2D::~SNegato2D() throw()
+SNegato2D::~SNegato2D() noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doStart() throw(::fwTools::Failed)
+void SNegato2D::doStart()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
@@ -100,7 +100,7 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doStop() throw(::fwTools::Failed)
+void SNegato2D::doStop()
 {
     this->removeTFConnections();
 
@@ -120,7 +120,7 @@ void SNegato2D::doStop() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doConfigure() throw(::fwTools::Failed)
+void SNegato2D::doConfigure()
 {
     if(m_configuration->hasAttribute("sliceIndex"))
     {
@@ -167,7 +167,7 @@ void SNegato2D::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doUpdate() throw(::fwTools::Failed)
+void SNegato2D::doUpdate()
 {
     this->requestRender();
 }
@@ -315,7 +315,7 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doSwap() throw(::fwTools::Failed)
+void SNegato2D::doSwap()
 {
     this->stopping();
     this->starting();

@@ -26,7 +26,7 @@ const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT  = "modifyV
 
 //------------------------------------------------------------------------------
 
-SReconstruction::SReconstruction() throw() :
+SReconstruction::SReconstruction() noexcept :
     m_autoResetCamera(true),
     m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_isDynamic(false),
@@ -38,13 +38,13 @@ SReconstruction::SReconstruction() throw() :
 
 //------------------------------------------------------------------------------
 
-SReconstruction::~SReconstruction() throw()
+SReconstruction::~SReconstruction() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doConfigure() throw(::fwTools::Failed)
+void SReconstruction::doConfigure()
 {
     // The transform attribute is mandatory in the XML configuration
     this->setTransformId(m_configuration->getAttributeValue("transform"));
@@ -58,7 +58,7 @@ void SReconstruction::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doStart() throw(::fwTools::Failed)
+void SReconstruction::doStart()
 {
     SLM_TRACE_FUNC();
     createMeshService();
@@ -111,14 +111,14 @@ void SReconstruction::createMeshService()
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doSwap() throw(::fwTools::Failed)
+void SReconstruction::doSwap()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doUpdate() throw(::fwTools::Failed)
+void SReconstruction::doUpdate()
 {
     if (!m_meshAdaptor.expired())
     {
@@ -141,7 +141,7 @@ void SReconstruction::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doStop() throw(::fwTools::Failed)
+void SReconstruction::doStop()
 {
     SLM_TRACE_FUNC();
     this->unregisterServices();

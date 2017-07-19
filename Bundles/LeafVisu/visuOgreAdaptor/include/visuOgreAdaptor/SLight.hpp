@@ -73,29 +73,29 @@ public:
     /** @} */
 
     /// Constructor.
-    VISUOGREADAPTOR_API SLight() throw();
+    VISUOGREADAPTOR_API SLight() noexcept;
 
     /// Factory Constructor.
     VISUOGREADAPTOR_API SLight(::fwRenderOgre::ILight::Key key);
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SLight() throw();
+    VISUOGREADAPTOR_API virtual ~SLight() noexcept;
 
 protected:
     /// Starting method. Do nothing
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /// Configures the service.
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
 
     /// Swaping method, only asks for an updating.
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
     /// Updates the light position and orientation
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
     /// Light name getter.
     VISUOGREADAPTOR_API virtual const std::string& getName() const;

@@ -51,10 +51,10 @@ public:
     /** @} */
 
     /// Constructor. Creates signals and slots
-    VISUOGREADAPTOR_API SInteractorStyle() throw();
+    VISUOGREADAPTOR_API SInteractorStyle() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SInteractorStyle() throw();
+    VISUOGREADAPTOR_API virtual ~SInteractorStyle() noexcept;
 
 protected:
 
@@ -72,19 +72,19 @@ protected:
      * if \b Selection, Mesh or Video can be used.
 
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
 
     /// Starting method
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
 
     /// Update the interactor
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /// Swaping method, do nothing
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
 private:
 

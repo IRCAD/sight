@@ -30,19 +30,19 @@ namespace uiVisuOgre
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, ::fwData::Reconstruction);
 
 //------------------------------------------------------------------------------
-SShaderParameterEditor::SShaderParameterEditor() throw()
+SShaderParameterEditor::SShaderParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShaderParameterEditor::~SShaderParameterEditor() throw()
+SShaderParameterEditor::~SShaderParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::starting() throw(::fwTools::Failed)
+void SShaderParameterEditor::starting()
 {
     ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
     ::fwData::Material::sptr material  = rec->getMaterial();
@@ -62,7 +62,7 @@ void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
+void SShaderParameterEditor::stopping()
 {
     m_connections.disconnect();
     this->clear();
@@ -71,7 +71,7 @@ void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
+void SShaderParameterEditor::swapping()
 {
     m_connections.disconnect();
     ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
@@ -83,14 +83,14 @@ void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::configuring() throw(::fwTools::Failed)
+void SShaderParameterEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::updating() throw(::fwTools::Failed)
+void SShaderParameterEditor::updating()
 {
     this->clear();
     this->updateGuiInfo();

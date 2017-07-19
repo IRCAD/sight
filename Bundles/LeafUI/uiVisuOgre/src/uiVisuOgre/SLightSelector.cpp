@@ -45,7 +45,7 @@ const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT   = "in
 
 //------------------------------------------------------------------------------
 
-SLightSelector::SLightSelector() throw()
+SLightSelector::SLightSelector() noexcept
 {
     newSignal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
     newSlot(s_INIT_LIGHT_LIST_SLOT, &SLightSelector::initLightList, this);
@@ -53,13 +53,13 @@ SLightSelector::SLightSelector() throw()
 
 //------------------------------------------------------------------------------
 
-SLightSelector::~SLightSelector() throw()
+SLightSelector::~SLightSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::starting() throw(::fwTools::Failed)
+void SLightSelector::starting()
 {
     this->create();
 
@@ -107,7 +107,7 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::stopping() throw(::fwTools::Failed)
+void SLightSelector::stopping()
 {
     m_connections.disconnect();
 
@@ -116,14 +116,14 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::configuring() throw(::fwTools::Failed)
+void SLightSelector::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::updating() throw(::fwTools::Failed)
+void SLightSelector::updating()
 {
 }
 

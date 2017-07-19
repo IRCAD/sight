@@ -48,10 +48,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SCoreCompositorEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UIVISUOGRE_API SCoreCompositorEditor() throw();
+    UIVISUOGRE_API SCoreCompositorEditor() noexcept;
 
     /// Destructor. Does nothing
-    UIVISUOGRE_API virtual ~SCoreCompositorEditor() throw();
+    UIVISUOGRE_API virtual ~SCoreCompositorEditor() noexcept;
 
 protected:
 
@@ -64,16 +64,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// FILL ME.
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// FILL ME.
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// FILL ME.
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
     /// FILL ME.
     UIVISUOGRE_API void refreshRenderers();

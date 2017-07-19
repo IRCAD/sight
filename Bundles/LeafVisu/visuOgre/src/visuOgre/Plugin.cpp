@@ -25,13 +25,13 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     // Redirect Ogre Log to FW4SPL Log
     ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
@@ -42,7 +42,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

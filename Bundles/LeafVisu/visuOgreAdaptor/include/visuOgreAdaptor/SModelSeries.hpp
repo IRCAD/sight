@@ -32,17 +32,17 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SModelSeries)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor.
-    VISUOGREADAPTOR_API SModelSeries() throw();
+    VISUOGREADAPTOR_API SModelSeries() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SModelSeries() throw();
+    VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
 
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
 protected:
     /// Creates a Transform Service, then updates.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
 
     /**
      * @brief Configure the ModelSeries adaptor.
@@ -57,13 +57,13 @@ protected:
      *  - \b texture : the OgreTexture to associate to the adaptor
      *  - \b autoresetcamera (optional)
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
     /// Redraws all (stops then restarts sub services)
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
     /// Closes connections and unregisters service.
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /// Calls updating
     VISUOGREADAPTOR_API void addReconstruction();

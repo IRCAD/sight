@@ -35,20 +35,20 @@ const ::fwCom::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SL
 
 //------------------------------------------------------------------------------
 
-SCompositorSelector::SCompositorSelector() throw()
+SCompositorSelector::SCompositorSelector() noexcept
 {
     newSlot(s_INIT_COMPOSITOR_LIST_SLOT, &SCompositorSelector::initCompositorList, this);
 }
 
 //------------------------------------------------------------------------------
 
-SCompositorSelector::~SCompositorSelector() throw()
+SCompositorSelector::~SCompositorSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCompositorSelector::starting() throw(::fwTools::Failed)
+void SCompositorSelector::starting()
 {
     this->create();
 
@@ -73,7 +73,7 @@ void SCompositorSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorSelector::stopping() throw(::fwTools::Failed)
+void SCompositorSelector::stopping()
 {
     m_connections.disconnect();
 
@@ -82,14 +82,14 @@ void SCompositorSelector::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorSelector::configuring() throw(::fwTools::Failed)
+void SCompositorSelector::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SCompositorSelector::updating() throw(::fwTools::Failed)
+void SCompositorSelector::updating()
 {
 }
 

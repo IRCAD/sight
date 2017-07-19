@@ -35,7 +35,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_RECONSTRUCTION_SLOT = "removeR
 
 //------------------------------------------------------------------------------
 
-SModelSeries::SModelSeries() throw() :
+SModelSeries::SModelSeries() noexcept :
     m_autoResetCamera(true),
     m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_isDynamic(false),
@@ -47,13 +47,13 @@ SModelSeries::SModelSeries() throw() :
 
 //------------------------------------------------------------------------------
 
-SModelSeries::~SModelSeries() throw()
+SModelSeries::~SModelSeries() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doConfigure() throw(::fwTools::Failed)
+void SModelSeries::doConfigure()
 {
     if (m_configuration->hasAttribute("transform"))
     {
@@ -86,14 +86,14 @@ void SModelSeries::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doStart() throw(::fwTools::Failed)
+void SModelSeries::doStart()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doUpdate() throw(::fwTools::Failed)
+void SModelSeries::doUpdate()
 {
     // Retrieves the associated f4s ModelSeries object
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
@@ -135,14 +135,14 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doSwap() throw(::fwTools::Failed)
+void SModelSeries::doSwap()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doStop() throw(::fwTools::Failed)
+void SModelSeries::doStop()
 {
     this->unregisterServices();
 }

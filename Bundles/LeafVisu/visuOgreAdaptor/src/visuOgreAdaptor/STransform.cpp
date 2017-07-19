@@ -25,7 +25,7 @@ namespace visuOgreAdaptor
 
 //------------------------------------------------------------------------------
 
-STransform::STransform() throw() :
+STransform::STransform() noexcept :
     m_transformNode(nullptr),
     m_parentTransformNode(nullptr)
 {
@@ -33,13 +33,13 @@ STransform::STransform() throw() :
 
 //------------------------------------------------------------------------------
 
-STransform::~STransform() throw()
+STransform::~STransform() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void STransform::doConfigure() throw(::fwTools::Failed)
+void STransform::doConfigure()
 {
     this->setTransformId( m_configuration->getAttributeValue("transform") );
 
@@ -59,7 +59,7 @@ void STransform::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STransform::doStart() throw(::fwTools::Failed)
+void STransform::doStart()
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     if(!this->getTransformId().empty())
@@ -118,7 +118,7 @@ void STransform::updateFromOgre()
 
 //------------------------------------------------------------------------------
 
-void STransform::doUpdate() throw(::fwTools::Failed)
+void STransform::doUpdate()
 {
     m_fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
 
@@ -172,14 +172,14 @@ const ::Ogre::Matrix4& STransform::getTransform() const
 
 //------------------------------------------------------------------------------
 
-void STransform::doSwap() throw(::fwTools::Failed)
+void STransform::doSwap()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void STransform::doStop() throw(::fwTools::Failed)
+void STransform::doStop()
 {
 }
 

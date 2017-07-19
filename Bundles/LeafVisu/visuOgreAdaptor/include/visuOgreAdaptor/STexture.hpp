@@ -33,8 +33,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (STexture)(::fwRenderOgre::IAdaptor) );
 
-    VISUOGREADAPTOR_API STexture() throw();
-    VISUOGREADAPTOR_API virtual ~STexture() throw();
+    VISUOGREADAPTOR_API STexture() noexcept;
+    VISUOGREADAPTOR_API virtual ~STexture() noexcept;
 
     /**
      * @name Signals API
@@ -63,7 +63,7 @@ public:
 protected:
 
     /// Creates the managed Ogre texture
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
 
     /**
      * @brief Configure the adaptor.
@@ -79,16 +79,16 @@ protected:
      *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
      *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
     /// Updates the attached
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
     /// Does nothing
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;

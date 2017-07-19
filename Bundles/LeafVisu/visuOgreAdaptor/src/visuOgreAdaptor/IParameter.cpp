@@ -48,7 +48,7 @@ const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "se
 
 //------------------------------------------------------------------------------
 
-IParameter::IParameter() throw() :
+IParameter::IParameter() noexcept :
     m_shaderType(::Ogre::GPT_FRAGMENT_PROGRAM),
     m_dirty(true)
 {
@@ -64,7 +64,7 @@ IParameter::IParameter() throw() :
 
 //------------------------------------------------------------------------------
 
-IParameter::~IParameter() throw()
+IParameter::~IParameter() noexcept
 {
 }
 
@@ -91,7 +91,7 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
-void IParameter::doConfigure() throw(::fwTools::Failed)
+void IParameter::doConfigure()
 {
     m_paramName = m_configuration->getAttributeValue("parameter");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
@@ -122,7 +122,7 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IParameter::doUpdate() throw(::fwTools::Failed)
+void IParameter::doUpdate()
 {
     if(m_material.isNull() || !m_dirty)
     {
@@ -170,7 +170,7 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IParameter::doStop() throw ( ::fwTools::Failed )
+void IParameter::doStop()
 {
     m_material.setNull();
 }

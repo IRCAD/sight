@@ -35,10 +35,10 @@ class FWRENDEROGRE_CLASS_API MeshPickerInteractor : public ::fwRenderOgre::inter
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API MeshPickerInteractor() throw();
+    FWRENDEROGRE_API MeshPickerInteractor() noexcept;
 
     /// Destructor. Does nothing
-    FWRENDEROGRE_API ~MeshPickerInteractor() throw();
+    FWRENDEROGRE_API ~MeshPickerInteractor() noexcept;
 
 protected:
 

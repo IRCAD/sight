@@ -38,9 +38,9 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SNegato3D)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor
-    VISUOGREADAPTOR_API SNegato3D() throw();
+    VISUOGREADAPTOR_API SNegato3D() noexcept;
     /// Destructor. Does nothing.
-    VISUOGREADAPTOR_API virtual ~SNegato3D() throw();
+    VISUOGREADAPTOR_API virtual ~SNegato3D() noexcept;
     /// Sets the filtering type
     VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
 
@@ -58,11 +58,11 @@ public:
 protected:
 
     /// Starts the service,
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
     /// Stops the service, disconnects connections.
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
     /// Requests rendering of the scene.
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
     /**
      * @brief Configures the service
@@ -78,9 +78,9 @@ protected:
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
      * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
      */
-    VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doConfigure();
     /// Performs stop, start and update.
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;

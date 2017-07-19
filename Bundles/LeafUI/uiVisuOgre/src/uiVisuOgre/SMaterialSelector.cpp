@@ -41,20 +41,20 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SMaterialSelector
 const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
 //------------------------------------------------------------------------------
-SMaterialSelector::SMaterialSelector() throw()
+SMaterialSelector::SMaterialSelector() noexcept
 {
     newSignal< SelectedSignalType >( s_SELECTED_SIG );
 }
 
 //------------------------------------------------------------------------------
 
-SMaterialSelector::~SMaterialSelector() throw()
+SMaterialSelector::~SMaterialSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SMaterialSelector::starting() throw(::fwTools::Failed)
+void SMaterialSelector::starting()
 {
     this->create();
 
@@ -101,28 +101,28 @@ void SMaterialSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterialSelector::stopping() throw(::fwTools::Failed)
+void SMaterialSelector::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SMaterialSelector::configuring() throw(::fwTools::Failed)
+void SMaterialSelector::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SMaterialSelector::updating() throw(::fwTools::Failed)
+void SMaterialSelector::updating()
 {
     this->updateMaterial();
 }
 
 //------------------------------------------------------------------------------
 
-void SMaterialSelector::swapping() throw(::fwTools::Failed)
+void SMaterialSelector::swapping()
 {
     this->updating();
 }

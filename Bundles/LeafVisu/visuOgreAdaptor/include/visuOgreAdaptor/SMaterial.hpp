@@ -58,10 +58,10 @@ public:
     VISUOGREADAPTOR_API static const std::string DEFAULT_MATERIAL_TEMPLATE_NAME;
 
     /// Constructor
-    VISUOGREADAPTOR_API SMaterial() throw();
+    VISUOGREADAPTOR_API SMaterial() noexcept;
 
     /// Destructor
-    VISUOGREADAPTOR_API virtual ~SMaterial() throw();
+    VISUOGREADAPTOR_API virtual ~SMaterial() noexcept;
 
     /// Get Ogre associated material
     VISUOGREADAPTOR_API ::Ogre::MaterialPtr getMaterial();
@@ -120,19 +120,19 @@ protected:
      *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
      *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
 
     /// Starting method under fixed function pipeline
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /// Swapping method, updating
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
     /// Updating method, updates fixed function pipeline parameters
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
 private:
 

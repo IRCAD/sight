@@ -22,14 +22,14 @@ const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT = "startObject";
 
 //------------------------------------------------------------------------------
 
-IAdaptor::IAdaptor() throw()
+IAdaptor::IAdaptor() noexcept
 {
     newSlot(s_START_OBJECT_SLOT, &IAdaptor::doStart, this);
 }
 
 //------------------------------------------------------------------------------
 
-IAdaptor::~IAdaptor() throw()
+IAdaptor::~IAdaptor() noexcept
 {
 }
 
@@ -43,7 +43,7 @@ void IAdaptor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring() throw ( ::fwTools::Failed )
+void IAdaptor::configuring()
 {
     auto config = m_configuration->findConfigurationElement("config");
 
@@ -58,7 +58,7 @@ void IAdaptor::configuring() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::starting() throw ( ::fwTools::Failed )
+void IAdaptor::starting()
 {
     if(m_renderService.expired())
     {
@@ -82,20 +82,20 @@ void IAdaptor::starting() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::stopping() throw(::fwTools::Failed)
+void IAdaptor::stopping()
 {
     doStop();
 }
 //------------------------------------------------------------------------------
 
-void IAdaptor::swapping() throw(::fwTools::Failed)
+void IAdaptor::swapping()
 {
     doSwap();
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::updating() throw(::fwTools::Failed)
+void IAdaptor::updating()
 {
     doUpdate();
 }

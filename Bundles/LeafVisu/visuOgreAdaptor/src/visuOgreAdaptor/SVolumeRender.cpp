@@ -58,7 +58,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT     
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::SVolumeRender() throw() :
+SVolumeRender::SVolumeRender() noexcept :
     m_volumeRenderer(nullptr),
     m_sceneManager(nullptr),
     m_volumeSceneNode(nullptr),
@@ -109,13 +109,13 @@ SVolumeRender::SVolumeRender() throw() :
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::~SVolumeRender() throw()
+SVolumeRender::~SVolumeRender() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
+void SVolumeRender::doConfigure()
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
 
@@ -283,7 +283,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doStart() throw ( ::fwTools::Failed )
+void SVolumeRender::doStart()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
@@ -394,7 +394,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doStop() throw ( ::fwTools::Failed )
+void SVolumeRender::doStop()
 {
     this->removeTFConnections();
 
@@ -430,13 +430,13 @@ void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doUpdate() throw ( ::fwTools::Failed )
+void SVolumeRender::doUpdate()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doSwap() throw ( ::fwTools::Failed )
+void SVolumeRender::doSwap()
 {
 }
 

@@ -61,10 +61,10 @@ public:
     ///@}
 
     /// Constructor.
-    VISUOGREADAPTOR_API IParameter() throw();
+    VISUOGREADAPTOR_API IParameter() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~IParameter() throw();
+    VISUOGREADAPTOR_API virtual ~IParameter() noexcept;
 
     /// Set the shaderType by passing the value of the ShaderEnumType of this adaptor.
     VISUOGREADAPTOR_API void setShaderType(::Ogre::GpuProgramType shaderType);
@@ -81,13 +81,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doConfigure();
 
     /// Updates the shader parameter values and requests a render of the scene.
-    VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doUpdate();
 
     /// Clear the mesh pointer.
-    VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStop();
 
     /// Set the parameter for a given technique
     VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);

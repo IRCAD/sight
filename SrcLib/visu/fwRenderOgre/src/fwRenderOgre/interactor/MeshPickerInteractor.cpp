@@ -19,13 +19,13 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-MeshPickerInteractor::MeshPickerInteractor() throw()
+MeshPickerInteractor::MeshPickerInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-MeshPickerInteractor::~MeshPickerInteractor() throw()
+MeshPickerInteractor::~MeshPickerInteractor() noexcept
 {
 }
 

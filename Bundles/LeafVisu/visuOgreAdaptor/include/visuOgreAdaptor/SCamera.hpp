@@ -60,10 +60,10 @@ public:
     fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::IAdaptor));
 
     /// Constructor.
-    VISUOGREADAPTOR_API SCamera() throw();
+    VISUOGREADAPTOR_API SCamera() noexcept;
 
     /// Destructor. Does nothing.
-    VISUOGREADAPTOR_API virtual ~SCamera() throw();
+    VISUOGREADAPTOR_API virtual ~SCamera() noexcept;
 
     /**
      * @name Slots API
@@ -96,19 +96,19 @@ public:
 
 protected:
     /// Starting method. Does nothing.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart();
 
     /// Stopping method.
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop();
 
     /// Configures the service.
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure();
 
     /// Swaping method, only asks for a updating.
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap();
 
     /// Updating method. Does nothing.
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate();
 
 private:
 

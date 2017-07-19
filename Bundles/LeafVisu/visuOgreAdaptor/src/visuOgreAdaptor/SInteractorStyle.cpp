@@ -28,7 +28,7 @@ const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_POINT_CLI
 
 //------------------------------------------------------------------------------
 
-SInteractorStyle::SInteractorStyle() throw()
+SInteractorStyle::SInteractorStyle() noexcept
 {
     newSlot( s_POINT_CLICKED_SLOT, &::visuOgreAdaptor::SInteractorStyle::clickedPoint, this );
 
@@ -44,13 +44,13 @@ SInteractorStyle::SInteractorStyle() throw()
 
 //------------------------------------------------------------------------------
 
-SInteractorStyle::~SInteractorStyle() throw()
+SInteractorStyle::~SInteractorStyle() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doConfigure() throw(::fwTools::Failed)
+void SInteractorStyle::doConfigure()
 {
     SLM_ASSERT("Interactor style not found, in xml, config style must be 'Default', 'Fixed', 'Negato2D', 'Mesh', "
                "or 'Video'",
@@ -60,7 +60,7 @@ void SInteractorStyle::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doStart() throw(::fwTools::Failed)
+void SInteractorStyle::doStart()
 {
     this->setInteractorStyle();
 
@@ -81,20 +81,20 @@ void SInteractorStyle::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doUpdate() throw(::fwTools::Failed)
+void SInteractorStyle::doUpdate()
 {
     this->setInteractorStyle();
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doSwap() throw(::fwTools::Failed)
+void SInteractorStyle::doSwap()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doStop() throw(::fwTools::Failed)
+void SInteractorStyle::doStop()
 {
     m_connections.disconnect();
 }

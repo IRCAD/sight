@@ -27,13 +27,13 @@ struct MATERIAL_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    MATERIAL_API ~Plugin() throw();
+    MATERIAL_API ~Plugin() noexcept;
 
     // Overrides
-    MATERIAL_API void start() throw(::fwRuntime::RuntimeException);
+    MATERIAL_API void start();
 
     // Overrides
-    MATERIAL_API void stop() throw();
+    MATERIAL_API void stop() noexcept;
 };
 
 } // namespace material

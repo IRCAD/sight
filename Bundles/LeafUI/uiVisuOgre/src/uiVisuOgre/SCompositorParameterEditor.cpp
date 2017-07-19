@@ -28,19 +28,19 @@ namespace uiVisuOgre
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor, ::fwData::Object);
 
 //------------------------------------------------------------------------------
-SCompositorParameterEditor::SCompositorParameterEditor() throw()
+SCompositorParameterEditor::SCompositorParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SCompositorParameterEditor::~SCompositorParameterEditor() throw()
+SCompositorParameterEditor::~SCompositorParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::configuring() throw(::fwTools::Failed)
+void SCompositorParameterEditor::configuring()
 {
     this->initialize();
 
@@ -52,7 +52,7 @@ void SCompositorParameterEditor::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
+void SCompositorParameterEditor::starting()
 {
     this->create();
 
@@ -105,7 +105,7 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
+void SCompositorParameterEditor::stopping()
 {
     m_layerConnection.disconnect();
     this->clear();
@@ -114,7 +114,7 @@ void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::updating() throw(::fwTools::Failed)
+void SCompositorParameterEditor::updating()
 {
     this->clear();
     this->updateGuiInfo();
