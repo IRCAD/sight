@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,27 +14,25 @@
 
 #include <fwData/Point.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkParametricFunctionSource.h>
 #include <vtkParametricSpline.h>
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-
 namespace visuNavigation
 {
 
 /**
  * @brief Adaptor representing a spline from a point list.
- * @class SSplineAdaptor
  */
-class VISUNAVIGATION_CLASS_API SSplineAdaptor : public ::fwRenderVTK::IVtkAdaptorService
+class VISUNAVIGATION_CLASS_API SSplineAdaptor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SSplineAdaptor)(::fwRenderVTK::IVtkAdaptorService));
+    fwCoreServiceClassDefinitionsMacro((SSplineAdaptor)(::fwRenderVTK::IAdaptor));
 
     /**
      * @name Constructor/Destructor
@@ -60,6 +58,8 @@ protected:
      * @{ */
     VISUNAVIGATION_API void doStart();
     VISUNAVIGATION_API void doStop();
+    //------------------------------------------------------------------------------
+
     void doSwap()
     {
     }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,8 +20,7 @@
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-
-fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuNavigation::SSplineAdaptor, ::fwData::PointList);
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuNavigation::SSplineAdaptor, ::fwData::PointList);
 
 namespace visuNavigation
 {
@@ -34,8 +33,9 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //-----------------------------------------------------------------------------------
 
-SSplineAdaptor::SSplineAdaptor() noexcept
-    : m_numberOfPoints(0), m_splineLength(0.0)
+SSplineAdaptor::SSplineAdaptor() noexcept :
+    m_numberOfPoints(0),
+    m_splineLength(0.0)
 {
     m_parametricSpline = vtkSmartPointer<vtkParametricSpline>::New();
     m_vtkpoints        = vtkSmartPointer<vtkPoints>::New();
@@ -147,7 +147,6 @@ void SSplineAdaptor::doUpdate()
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuNavigation
 
