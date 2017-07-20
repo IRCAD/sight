@@ -10,7 +10,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
-        <service>::scene2D::Render</service>
+        <service>::scene2D::SRender</service>
         <object>::fwData::Composite</object>
     </extension>
 

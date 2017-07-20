@@ -36,7 +36,7 @@
                     </registry>
                 </service>
 
-                <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+                <service uid="GENERIC_UID_Scene2D" impl="::scene2D::SRender" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <viewport id="view1" x="-100" y="-100" width="200" height="200" />
                         <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />

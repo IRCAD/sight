@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 #define __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 
-#include "scene2D/Render.hpp"
 #include "scene2D/config.hpp"
 #include "scene2D/data/Axis.hpp"
 #include "scene2D/data/Event.hpp"
+#include "scene2D/SRender.hpp"
 
 #include <fwServices/IService.hpp>
 
@@ -39,7 +39,7 @@ public:
     // <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
 
     /// Set the zValue.
     SCENE2D_API void setZValue(float _zValue);
@@ -48,15 +48,16 @@ public:
     SCENE2D_API float getZValue() const;
 
     /// Set the render that manages the IAdaptor.
-    SCENE2D_API void setScene2DRender( ::scene2D::Render::sptr _scene2DRender);
+    SCENE2D_API void setScene2DRender( ::scene2D::SRender::sptr _scene2DRender);
 
     /// Get the render that manages the IAdaptor.
-    SCENE2D_API SPTR(::scene2D::Render) getScene2DRender() const;
+    SCENE2D_API SPTR(::scene2D::SRender) getScene2DRender() const;
 
     /// Get the object associated to the IAdaptor.
-    SCENE2D_API ::fwData::Object::sptr getRegisteredObject(::scene2D::Render::ObjectIDType _objectId) const;
+    SCENE2D_API ::fwData::Object::sptr getRegisteredObject(::scene2D::SRender::ObjectIDType _objectId) const;
 
-    /// Interact with the mouse events catched on the IAdaptor (virtual function, its behavior is only defined in the specific adaptors).
+    /// Interact with the mouse events catched on the IAdaptor (virtual function, its behavior is only defined in the
+    // specific adaptors).
     SCENE2D_API virtual void processInteraction( ::scene2D::data::Event::sptr _event );
 
 protected:
@@ -127,7 +128,8 @@ protected:
     /// The y Axis.
     SPTR(::scene2D::data::Axis) m_yAxis;
 
-    /// The adaptor zValue (depth within the scene). The adaptor with the highest zValue is displayed on top of all adaptors.
+    /// The adaptor zValue (depth within the scene). The adaptor with the highest zValue is displayed on top of all
+    // adaptors.
     float m_zValue;
 
     /// Opacity of the adaptor. Default value set to 1 (opaque).
@@ -168,7 +170,7 @@ private:
     ManagedAdaptorVector m_managedAdaptors;
 
     /// The render that manage the IAdaptor.
-    ::scene2D::Render::wptr m_scene2DRender;
+    ::scene2D::SRender::wptr m_scene2DRender;
 
 };
 

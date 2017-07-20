@@ -211,7 +211,7 @@
             </scene>
         </service>
 
-        <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
+        <service uid="Scene2D" type="::scene2D::SRender" autoConnect="yes">
 
             <in key="imageKey" uid="${image}" />
             <in key="histogram" uid="Histogram" />
@@ -287,7 +287,7 @@
 
         </service>
 
-        <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes">
+        <service uid="Scene2D_Shutter" type="::scene2D::SRender" autoConnect="yes">
             <in key="histogram" uid="Histogram" />
             <inout key="viewport" uid="Viewport" />
 

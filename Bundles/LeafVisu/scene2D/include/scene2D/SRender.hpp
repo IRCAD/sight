@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_RENDER_HPP__
-#define __SCENE2D_RENDER_HPP__
+#ifndef __SCENE2D_SRENDER_HPP__
+#define __SCENE2D_SRENDER_HPP__
 
 #include "scene2D/config.hpp"
 #include "scene2D/data/Axis.hpp"
@@ -42,12 +42,12 @@ class IAdaptor;
 /**
  * @brief Scene2D rendering class
  */
-class SCENE2D_CLASS_API Render : public ::fwRender::IRender
+class SCENE2D_CLASS_API SRender : public ::fwRender::IRender
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Render)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
 
     /// A string type representing adaptors id.
     typedef std::string AdaptorIDType;
@@ -60,10 +60,10 @@ public:
 
     /// Constructor, set coordinates m_sceneStart to (-100, -100), m_sceneWidth to (200, 200) and add new handle events
     //  ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS.
-    SCENE2D_API Render() noexcept;
+    SCENE2D_API SRender() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~Render() noexcept;
+    SCENE2D_API virtual ~SRender() noexcept;
 
     /// Get the scene.
     SCENE2D_API QGraphicsScene* getScene() const;
@@ -77,7 +77,8 @@ public:
     /// Get the object referenced in m_objectID2Object by the key _objectID.
     SCENE2D_API SPTR(::fwData::Object) getRegisteredObject(ObjectIDType _objectID) const;
 
-    /// Iterate on the m_zValue2AdaptorID map and, if the event hasn't been accepted yet, call the adaptor processInteraction function.
+    /// Iterate on the m_zValue2AdaptorID map and, if the event hasn't been accepted yet, call the adaptor
+    // processInteraction function.
     SCENE2D_API void dispatchInteraction( SPTR(::scene2D::data::Event) _event );
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
@@ -112,11 +113,11 @@ public:
 protected:
 
     /**
-     * @brief Configuring the Render service.
+     * @brief Configuring the SRender service.
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+       <service uid="GENERIC_UID_Scene2D" impl="::scene2D::SRender" type="::fwRender::IRender" autoConnect="yes">
 
         <scene>
 
@@ -206,7 +207,8 @@ protected:
      */
     SCENE2D_API void configuring();
 
-    /// Call startContext to set the scene, the viewport and the view, and add'em to the QtContainer and start the adaptors
+    /// Call startContext to set the scene, the viewport and the view, and add'em to the QtContainer and start the
+    // adaptors
     //  contained in the adaptors id vector of the ObjectsID2AdaptorIDVector map.
     SCENE2D_API void starting();
 
@@ -218,7 +220,8 @@ protected:
     /// Start/stop adaptors
     SCENE2D_API void swapping(const KeyType& key);
 
-    /// Stop all the adaptors attached to the render related composite, stop all those rattached to the objects contained
+    /// Stop all the adaptors attached to the render related composite, stop all those rattached to the objects
+    // contained
     //  by the render related composite, clear the maps and call stopContext().
     SCENE2D_API void stopping();
 
@@ -247,7 +250,7 @@ private:
         }
 
         /// Get the related service.
-        SPTR (adaptor::IAdaptor) getService() const
+        SPTR(adaptor::IAdaptor) getService() const
         {
             return m_service.lock();
         }
@@ -275,16 +278,19 @@ private:
     /// Ensure that the given adaptor has a unique value among all other adaptors.
     void ensureUniqueZValue( SceneAdaptor2D _adaptee );
 
-    /// Get the axis configuration specifications, create a new axis, store it in the m_objectID2Object map and set its attributes.
+    /// Get the axis configuration specifications, create a new axis, store it in the m_objectID2Object map and set its
+    // attributes.
     void configureAxis ( ConfigurationType _conf );
 
-    /// Get the viewport configuration specifications, create a new viewport, store it in the m_objectID2Object map and set its attributes.
+    /// Get the viewport configuration specifications, create a new viewport, store it in the m_objectID2Object map and
+    // set its attributes.
     void configureViewport ( ConfigurationType _conf );
 
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
     void configureScene( ConfigurationType _conf );
 
-    /// Get the adaptor configuration specifications, push back the id attribute in the m_objectsID2AdaptorIDVector map, create a SceneAdaptor2D,
+    /// Get the adaptor configuration specifications, push back the id attribute in the m_objectsID2AdaptorIDVector map,
+    // create a SceneAdaptor2D,
     //  set its attributes and push it back in the m_adaptorID2SceneAdaptor2D map.
     void configureAdaptor ( ConfigurationType _conf );
 
@@ -297,8 +303,10 @@ private:
     /// Get all the objects of the render related composite, and swap all their related adaptors.
     void swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
 
-    /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
-    ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map.
+    /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service
+    // corresponding to _object,
+    ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the
+    // m_zValue2AdaptorID map.
     void startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData::Object)& _object);
 
     /// Swap the SceneAdaptor2D to _object.
@@ -381,6 +389,5 @@ private:
 
 } // namespace scene2D
 
-
-#endif // __SCENE2D_RENDER_HPP__
+#endif // __SCENE2D_SRENDER_HPP__
 

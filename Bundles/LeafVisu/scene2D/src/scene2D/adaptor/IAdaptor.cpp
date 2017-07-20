@@ -60,7 +60,7 @@ float IAdaptor::getZValue() const
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::setScene2DRender( ::scene2D::Render::sptr _scene2DRender)
+void IAdaptor::setScene2DRender( ::scene2D::SRender::sptr _scene2DRender)
 {
     SLM_ASSERT("Service not instanced", _scene2DRender);
     SLM_ASSERT("Adaptor is already started", this->isStopped() );
@@ -69,7 +69,7 @@ void IAdaptor::setScene2DRender( ::scene2D::Render::sptr _scene2DRender)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::Render::sptr IAdaptor::getScene2DRender() const
+::scene2D::SRender::sptr IAdaptor::getScene2DRender() const
 {
     return m_scene2DRender.lock();
 }
@@ -293,7 +293,7 @@ void IAdaptor::stopping()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr IAdaptor::getRegisteredObject(::scene2D::Render::ObjectIDType _objectId) const
+::fwData::Object::sptr IAdaptor::getRegisteredObject(::scene2D::SRender::ObjectIDType _objectId) const
 {
     ::fwData::Object::sptr obj;
     if (!_objectId.empty())

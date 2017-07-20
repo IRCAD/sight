@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/data/Size.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/Render.hpp"
+
+#include "scene2D/data/Size.hpp"
+#include "scene2D/SRender.hpp"
 
 #include <fwData/Composite.hpp>
-
 
 #include <QMouseEvent>
 
@@ -18,7 +18,8 @@ namespace scene2D
 
 //-----------------------------------------------------------------------------
 
-Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget) : QGraphicsView(scene,widget)
+Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget) :
+    QGraphicsView(scene, widget)
 {
     if( !this->hasMouseTracking() )
     {
@@ -47,7 +48,7 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::setSceneRender( SPTR(::scene2D::Render)sceneRender )
+void Scene2DGraphicsView::setSceneRender( SPTR(::scene2D::SRender)sceneRender )
 {
     m_scene2DRender = sceneRender;
 }
@@ -80,7 +81,7 @@ void Scene2DGraphicsView::keyReleaseEvent(QKeyEvent* _event)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::resizeEvent(QResizeEvent *_event)
+void Scene2DGraphicsView::resizeEvent(QResizeEvent* _event)
 {
     this->updateFromViewport();
 
@@ -96,7 +97,7 @@ void Scene2DGraphicsView::resizeEvent(QResizeEvent *_event)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
+void Scene2DGraphicsView::mousePressEvent ( QMouseEvent* _event )
 {
     SLM_TRACE_FUNC();
 
@@ -170,7 +171,7 @@ void Scene2DGraphicsView::mousePressEvent ( QMouseEvent * _event )
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
+void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent* _event )
 {
     SLM_TRACE_FUNC();
 
@@ -187,7 +188,7 @@ void Scene2DGraphicsView::mouseDoubleClickEvent ( QMouseEvent * _event )
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
+void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent* _event )
 {
     SLM_TRACE_FUNC();
     OSLM_TRACE("Release in x = " <<  _event->localPos().x() << " y = " << _event->localPos().y() );
@@ -202,7 +203,7 @@ void Scene2DGraphicsView::mouseReleaseEvent ( QMouseEvent * _event )
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
+void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent* _event )
 {
     SLM_TRACE_FUNC();
 
@@ -218,7 +219,7 @@ void Scene2DGraphicsView::mouseMoveEvent ( QMouseEvent * _event )
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::wheelEvent ( QWheelEvent * _event )
+void Scene2DGraphicsView::wheelEvent ( QWheelEvent* _event )
 {
     SLM_TRACE_FUNC();
 
@@ -253,7 +254,7 @@ void Scene2DGraphicsView::updateFromViewport()
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::paintEvent(QPaintEvent * event)
+void Scene2DGraphicsView::paintEvent(QPaintEvent* event)
 {
     // QGraphicsView optimization
     QPaintEvent* newEvent = new QPaintEvent( event->region().boundingRect() );

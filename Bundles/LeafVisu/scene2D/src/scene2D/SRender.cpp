@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/Render.hpp"
+#include "scene2D/SRender.hpp"
 
 #include "scene2D/adaptor/IAdaptor.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
@@ -24,7 +24,7 @@
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::Render, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::SRender, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -35,7 +35,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-Render::Render() noexcept :
+SRender::SRender() noexcept :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
     m_scene(nullptr),
@@ -43,41 +43,41 @@ Render::Render() noexcept :
     m_antialiasing(false),
     m_aspectRatioMode(Qt::IgnoreAspectRatio)
 {
-    newSlot(s_ADD_OBJECTS_SLOT, &Render::addObjects, this);
-    newSlot(s_CHANGE_OBJECTS_SLOT, &Render::changeObjects, this);
-    newSlot(s_REMOVE_OBJECTS_SLOT, &Render::removeObjects, this);
+    newSlot(s_ADD_OBJECTS_SLOT, &SRender::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &SRender::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &SRender::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
 
-Render::~Render() noexcept
+SRender::~SRender() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QGraphicsScene* Render::getScene() const
+QGraphicsScene* SRender::getScene() const
 {
     return m_scene;
 }
 
 //-----------------------------------------------------------------------------
 
-Scene2DGraphicsView* Render::getView() const
+Scene2DGraphicsView* SRender::getView() const
 {
     return m_view;
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(::scene2D::data::Viewport) Render::getViewport()
+SPTR(::scene2D::data::Viewport) SRender::getViewport()
 {
     return ::scene2D::data::Viewport::dynamicCast( m_objectID2Object["view1"] );
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(::fwData::Object) Render::getRegisteredObject(ObjectIDType _objectID) const
+SPTR(::fwData::Object) SRender::getRegisteredObject(ObjectIDType _objectID) const
 {
     ObjectID2Object::const_iterator iter = m_objectID2Object.find( _objectID );
     OSLM_ASSERT("Sorry, the object id '"<< _objectID <<"' does not exist in the registered objects map.",
@@ -87,7 +87,7 @@ SPTR(::fwData::Object) Render::getRegisteredObject(ObjectIDType _objectID) const
 
 //-----------------------------------------------------------------------------
 
-void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
+void SRender::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 {
     SLM_TRACE_FUNC();
 
@@ -111,7 +111,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord& coord ) const
+::scene2D::data::Coord SRender::mapToScene( const ::scene2D::data::Coord& coord ) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
     QPoint qp( static_cast<int>(coord.getX()), static_cast<int>(coord.getY()) );
@@ -121,7 +121,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 
 //-----------------------------------------------------------------------------
 
-void Render::configuring()
+void SRender::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -168,7 +168,7 @@ void Render::configuring()
 
 //-----------------------------------------------------------------------------
 
-void Render::starting()
+void SRender::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -247,7 +247,7 @@ void Render::starting()
 
 //-----------------------------------------------------------------------------
 
-void Render::connectAfterWait(const ::fwData::Composite::ContainerType& objects)
+void SRender::connectAfterWait(const ::fwData::Composite::ContainerType& objects)
 {
 
     for(const ::fwData::Composite::value_type& element : objects)
@@ -281,7 +281,7 @@ void Render::connectAfterWait(const ::fwData::Composite::ContainerType& objects)
 
 //-----------------------------------------------------------------------------
 
-void Render::disconnect(const ::fwData::Composite::ContainerType& objects)
+void SRender::disconnect(const ::fwData::Composite::ContainerType& objects)
 {
 
     for(const ::fwData::Composite::value_type& element : objects)
@@ -299,21 +299,21 @@ void Render::disconnect(const ::fwData::Composite::ContainerType& objects)
 
 //-----------------------------------------------------------------------------
 
-void Render::updating()
+void SRender::updating()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::swapping()
+void SRender::swapping()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::swapping(const IService::KeyType& key)
+void SRender::swapping(const IService::KeyType& key)
 {
     if (this->isVersion2())
     {
@@ -377,7 +377,7 @@ void Render::swapping(const IService::KeyType& key)
 
 //-----------------------------------------------------------------------------
 
-void Render::stopping()
+void SRender::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -442,7 +442,7 @@ void Render::stopping()
 
 //-----------------------------------------------------------------------------
 
-void Render::startContext()
+void SRender::startContext()
 {
     SLM_TRACE_FUNC();
 
@@ -457,7 +457,7 @@ void Render::startContext()
 
     m_view = new Scene2DGraphicsView( m_scene, qtContainer->getQtContainer() );
     m_view->setViewport( viewport );
-    m_view->setSceneRender( ::scene2D::Render::dynamicCast( this->getSptr() ) );
+    m_view->setSceneRender( ::scene2D::SRender::dynamicCast( this->getSptr() ) );
     m_view->setRenderHint( QPainter::Antialiasing, m_antialiasing );
 
     QVBoxLayout* layout = new QVBoxLayout;
@@ -469,7 +469,7 @@ void Render::startContext()
 
 //-----------------------------------------------------------------------------
 
-void Render::stopContext()
+void SRender::stopContext()
 {
     SLM_TRACE_FUNC();
 
@@ -479,14 +479,14 @@ void Render::stopContext()
 
 //-----------------------------------------------------------------------------
 
-Qt::AspectRatioMode Render::getAspectRatioMode() const
+Qt::AspectRatioMode SRender::getAspectRatioMode() const
 {
     return m_aspectRatioMode;
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::ensureUniqueZValue( SceneAdaptor2D _adaptee )
+void SRender::ensureUniqueZValue( SceneAdaptor2D _adaptee )
 {
     SLM_TRACE_FUNC();
 
@@ -501,7 +501,7 @@ void Render::ensureUniqueZValue( SceneAdaptor2D _adaptee )
 
 //-----------------------------------------------------------------------------
 
-void Render::configureAxis( ConfigurationType _conf )
+void SRender::configureAxis( ConfigurationType _conf )
 {
     SLM_TRACE_FUNC();
 
@@ -524,7 +524,7 @@ void Render::configureAxis( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
-void Render::configureViewport( ConfigurationType _conf )
+void SRender::configureViewport( ConfigurationType _conf )
 {
     SLM_TRACE_FUNC();
 
@@ -546,7 +546,7 @@ void Render::configureViewport( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
-void Render::configureScene( ConfigurationType _conf )
+void SRender::configureScene( ConfigurationType _conf )
 {
     SLM_TRACE_FUNC();
 
@@ -579,7 +579,7 @@ void Render::configureScene( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
-void Render::configureAdaptor( ConfigurationType _conf )
+void SRender::configureAdaptor( ConfigurationType _conf )
 {
     SLM_TRACE_FUNC();
 
@@ -606,7 +606,7 @@ void Render::configureAdaptor( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptorsFromComposite(const ConstObjectMapType& objects)
+void SRender::startAdaptorsFromComposite(const ConstObjectMapType& objects)
 {
     SLM_TRACE_FUNC();
 
@@ -628,7 +628,7 @@ void Render::startAdaptorsFromComposite(const ConstObjectMapType& objects)
 
 //-----------------------------------------------------------------------------
 
-void Render::swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
+void SRender::swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
 {
     for(const ::fwData::Composite::value_type& elem : objects)
     {
@@ -653,7 +653,7 @@ void Render::swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType&
 
 //-----------------------------------------------------------------------------
 
-void Render::stopAdaptorsFromComposite(const ConstObjectMapType& objects)
+void SRender::stopAdaptorsFromComposite(const ConstObjectMapType& objects)
 {
     for(const auto& elem : objects)
     {
@@ -671,7 +671,7 @@ void Render::stopAdaptorsFromComposite(const ConstObjectMapType& objects)
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData::Object)& _object)
+void SRender::startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData::Object)& _object)
 {
     if (!m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid.empty())
     {
@@ -687,7 +687,7 @@ void Render::startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData:
     SLM_ASSERT("\"config\" tag required", m_adaptorID2SceneAdaptor2D[_adaptorID].m_config->getName() == "config");
     SLM_ASSERT("Adaptor service expired", m_adaptorID2SceneAdaptor2D[_adaptorID].getService());
 
-    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->setScene2DRender(Render::dynamicCast(this->shared_from_this()));
+    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->setScene2DRender(SRender::dynamicCast(this->shared_from_this()));
     m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->setConfiguration(
         m_adaptorID2SceneAdaptor2D[_adaptorID].m_config);
     m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->configure();
@@ -701,7 +701,7 @@ void Render::startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData:
 
 //-----------------------------------------------------------------------------
 
-void Render::swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object)
+void SRender::swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object)
 {
     SLM_TRACE_FUNC();
 
@@ -710,7 +710,7 @@ void Render::swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::O
 
 //-----------------------------------------------------------------------------
 
-void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
+void SRender::stopAdaptor(const AdaptorIDType& _adaptorID)
 {
     SLM_TRACE_FUNC();
 
@@ -729,7 +729,7 @@ void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
 
 //-----------------------------------------------------------------------------
 
-void Render::updateSceneSize( float ratioPercent )
+void SRender::updateSceneSize( float ratioPercent )
 {
     QRectF rec = m_scene->itemsBoundingRect();
     qreal x, y, w, h;
@@ -755,7 +755,7 @@ void Render::updateSceneSize( float ratioPercent )
 
 //------------------------------------------------------------------------------
 
-void Render::addObjects(::fwData::Composite::ContainerType objects)
+void SRender::addObjects(::fwData::Composite::ContainerType objects)
 {
     ConstObjectMapType map;
     std::for_each(objects.begin(), objects.end(), [&map](
@@ -766,8 +766,8 @@ void Render::addObjects(::fwData::Composite::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-void Render::changeObjects(::fwData::Composite::ContainerType newObjects,
-                           ::fwData::Composite::ContainerType oldObjects)
+void SRender::changeObjects(::fwData::Composite::ContainerType newObjects,
+                            ::fwData::Composite::ContainerType oldObjects)
 {
     this->disconnect(oldObjects);
     this->swapAdaptorsFromComposite(newObjects);
@@ -776,7 +776,7 @@ void Render::changeObjects(::fwData::Composite::ContainerType newObjects,
 
 //------------------------------------------------------------------------------
 
-void Render::removeObjects(::fwData::Composite::ContainerType objects)
+void SRender::removeObjects(::fwData::Composite::ContainerType objects)
 {
     this->disconnect(objects);
     ConstObjectMapType map;
@@ -787,7 +787,7 @@ void Render::removeObjects(::fwData::Composite::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Render::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsType SRender::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
@@ -799,7 +799,7 @@ void Render::removeObjects(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap Render::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SRender::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );

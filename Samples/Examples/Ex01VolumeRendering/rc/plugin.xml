@@ -336,7 +336,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
 
             <!-- Declaration of the 2D scene service uses to create the TF editor which draw the range of transfer function define by the Scene2D_Shutter -->
-            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes" >
+            <service uid="Scene2D" type="::scene2D::SRender" autoConnect="yes" >
                 <in key="image" uid="imageUID" />
                 <inout key="viewport" uid="Viewport" />
                 <inout key="TFSelections" uid="TFSelectionsUID" />
@@ -407,7 +407,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
             </service>
 
             <!-- Declaration of the shutter service uses to focus a range of the transfer function which will be draw by the Scene2D service. -->
-            <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes" >
+            <service uid="Scene2D_Shutter" type="::scene2D::SRender" autoConnect="yes" >
                 <in key="image" uid="imageUID" />
                 <inout key="viewport" uid="Viewport" />
                 <inout key="TFSelections" uid="TFSelectionsUID" />
