@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,36 @@
 #ifndef __BASICREGISTRATION_SIMAGESSUBSTRACT_HPP__
 #define __BASICREGISTRATION_SIMAGESSUBSTRACT_HPP__
 
-#include <QObject>
-#include <QPointer>
+#include "basicRegistration/config.hpp"
 
 #include <gui/editor/IEditor.hpp>
 
-#include "basicRegistration/config.hpp"
+#include <QObject>
+#include <QPointer>
 
 class QPushButton;
 
 namespace basicRegistration
 {
+
+/**
+ * @brief Compute the substraction of two images.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::basicRegistration::SImagesSubstract">
+       <in key="image1" uid="..." />
+       <in key="image2" uid="..." />
+       <inout key="result" uid="..." />
+   </service>
+   @endcode
+ * @subsection In In
+ * - \b image1 [::fwData::Image]: first image.
+ * - \b image2 [::fwData::Image]: second image.
+ * @subsection InOut InOut
+ * - \b result [::fwData::Image]: substract image.
+ */
 
 class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,
                                                      public ::gui::editor::IEditor
@@ -26,7 +45,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SImagesSubstract)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SImagesSubstract)(::gui::editor::IEditor) );
 
     BASICREGISTRATION_API SImagesSubstract() noexcept;
 
@@ -48,9 +67,6 @@ protected:
     /// Overrides
     BASICREGISTRATION_API virtual void swapping();
 
-
-
-
 private Q_SLOTS:
 
     /// Compute the subtraction between two images.
@@ -58,11 +74,7 @@ private Q_SLOTS:
 
 private:
     QPointer< QPushButton > mpComputeButton;
-
-
 };
-
-
 
 } // namespace basicRegistration
 

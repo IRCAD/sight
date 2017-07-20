@@ -21,8 +21,8 @@ set( REQUIREMENTS
     uiVisu
     uiVisuQt
     ctrlSelection
-    appXml
+    appXml2
     basicRegistration
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex04ImagesRegistrationConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex04ImagesRegistrationConfig)
