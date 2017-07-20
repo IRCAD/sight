@@ -1,0 +1,81 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>camViewManagerConfig</id>
+    <parameters>
+        <param name="COMPOSITE_VISU_UID" />
+        <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+    </parameters>
+    <config>
+
+
+        <object type="::fwData::Composite">
+
+            <!-- MAIN FRAME -->
+            <service uid="camViewManagerConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Cam View</name>
+                        <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                        <minSize width="400" height="600" />
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="genericScene3" start="yes" />
+                </registry>
+            </service>
+
+            <item key="compositeVisu">
+                <object uid="${COMPOSITE_VISU_UID}" src="ref" type="::fwData::Composite">
+                    <service uid="genericScene3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
+                        <scene>
+                            <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
+
+                            <adaptor id="camPosMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="camPosMatrix">
+                                <config renderer="default" picker="" transform="camPosMatrixTransform" />
+                            </adaptor>
+
+                            <adaptor id="modelSeriesAdaptor" uid="genericScene3_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <config renderer="default" picker="" />
+                            </adaptor>
+
+                            <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+                            </adaptor>
+
+                            <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="camPosMatrix">
+                                <config renderer="default" picker="" transform="camPosMatrixTransform" />
+                            </adaptor>
+
+                            <proxy channel="${ModelRepresentationChannel}" waitForKey="modelSeries">
+                                <slot>genericScene3_modelSeriesAdaptorUid/updateNormalMode</slot>
+                            </proxy>
+
+                            <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeries">
+                                <slot>genericScene3_modelSeriesAdaptorUid/showReconstructions</slot>
+                            </proxy>
+
+                        </scene>
+                    </service>
+
+                </object>
+            </item>
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>camViewManagerConfigFrame/closed</signal>
+            </proxy>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="camViewManagerConfigFrame" />
+
+        </object>
+
+
+    </config>
+</extension>
