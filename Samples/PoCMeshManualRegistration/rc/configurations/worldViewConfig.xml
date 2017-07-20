@@ -1,0 +1,85 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>worldViewConfig</id>
+    <parameters>
+        <param name="COMPOSITE_VISU_UID" />
+        <param name="GENERIC_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+        <param name="ModelDisplayChannel" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <!-- MAIN FRAME -->
+            <service uid="${GENERIC_UID}_worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>world View</name>
+                        <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                        <minSize width="400" height="600" />
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_genericWorld" start="yes" />
+                </registry>
+            </service>
+
+            <item key="compositeVisu">
+                <object uid="${COMPOSITE_VISU_UID}" src="ref" type="::fwData::Composite">
+
+                    <service uid="${GENERIC_UID}_genericWorld" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
+                        <scene>
+                            <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                            <renderer id="default" background="0.0" />
+
+                            <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
+                            <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
+
+                            <adaptor id="modelSeriesAdaptor" uid="${GENERIC_UID}_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <config renderer="default" picker="" autoresetcamera="no" />
+                            </adaptor>
+
+                            <adaptor id="cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam1Mesh">
+                                <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
+                            </adaptor>
+
+                            <adaptor id="cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam2Mesh">
+                                <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
+                            </adaptor>
+                            <adaptor id="camWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
+                                <config renderer="default" transform="cam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
+                            </adaptor>
+                            <adaptor id="camWidget2" class="::visuVTKAdaptor::BoxWidget" objectId="view2">
+                                <config renderer="default" transform="cam2PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
+                            </adaptor>
+                            <adaptor id="cam1Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                                <config renderer="default" transform="cam1PosMatrixTransform" length="5" label="no" />
+                            </adaptor>
+                            <adaptor id="cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                                <config renderer="default" transform="cam2PosMatrixTransform" length="5" label="no" />
+                            </adaptor>
+
+                            <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/showReconstructions</slot>
+                            </proxy>
+
+                        </scene>
+                    </service>
+                </object>
+            </item>
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_worldViewConfigFrame/closed</signal>
+            </proxy>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_worldViewConfigFrame" />
+
+        </object>
+
+
+    </config>
+</extension>

@@ -1,0 +1,176 @@
+<serviceList>
+
+    <service uid="IHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+        <gui>
+            <frame>
+                <name>PoC Mesh Manual Registration</name>
+                <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                <minSize width="800" height="600" />
+            </frame>
+            <menuBar />
+        </gui>
+        <registry>
+            <menuBar sid="menuBar" start="yes" />
+            <view sid="viewSplitter" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
+        <gui>
+            <layout>
+                <menu name="File" />
+                <menu name="Tools" />
+            </layout>
+        </gui>
+        <registry>
+            <menu sid="menu_File" start="yes" />
+            <menu sid="menu_Tools" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+        <gui>
+            <layout>
+                <menuItem name="Load image" shortcut="Ctrl+I" />
+                <menuItem name="Load meshes" shortcut="Ctrl+M" />
+                <separator />
+                <menuItem name="Load camera representation" shortcut="Ctrl+P" />
+                <separator />
+                <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="action_openImage" start="yes" />
+            <menuItem sid="action_openMeshes" start="yes" />
+            <menuItem sid="action_openCamFile" start="yes" />
+            <menuItem sid="action_quit" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="menu_Tools" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+        <gui>
+            <layout>
+                <menuItem name="Manage organs colors" shortcut="F9" style="check" />
+                <menuItem name="Manual registration" shortcut="F10" style="check" />
+                <menuItem name="View manager" shortcut="F11" style="check" />
+                <menuItem name="View world" shortcut="F12" style="check" />
+            </layout>
+        </gui>
+        <registry>
+            <menuItem sid="action_manageOrgansColors" start="yes" />
+            <menuItem sid="action_manageRegistration" start="yes" />
+            <menuItem sid="action_manageView" start="yes" />
+            <menuItem sid="action_worldView" start="yes" />
+        </registry>
+    </service>
+
+    <service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+        <config>
+            <appConfig id="organManagerConfig">
+                <parameters>
+                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID" />
+                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+                </parameters>
+            </appConfig>
+        </config>
+    </service>
+
+    <service uid="action_manageView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+        <config>
+            <appConfig id="camViewManagerConfig">
+                <parameters>
+                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID" />
+                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+                </parameters>
+            </appConfig>
+        </config>
+    </service>
+
+    <service uid="action_manageRegistration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+        <config>
+            <appConfig id="manualRegistrationEditorConfig">
+                <parameters>
+                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID" />
+                    <parameter replace="MESHDB_UID" by="meshDBUid" />
+                </parameters>
+            </appConfig>
+        </config>
+    </service>
+
+    <service uid="action_worldView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+        <config>
+            <appConfig id="worldViewConfig">
+                <parameters>
+                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID" />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+                </parameters>
+            </appConfig>
+        </config>
+    </service>
+
+    <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+        <start uid="imageReaderUid" />
+    </service>
+    <service uid="action_openMeshes" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+        <start uid="modelSeriesReaderUid" />
+    </service>
+
+    <service uid="action_openCamFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+        <start uid="camReaderFile" />
+    </service>
+
+    <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+
+    <service uid="viewSplitter" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <gui>
+            <layout type="::fwGui::LineLayoutManager">
+                <orientation value="horizontal" />
+                <view proportion="1" />
+                <view proportion="1" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="multiView_scene1" start="yes" />
+            <view sid="genericScene2" start="yes" />
+        </registry>
+    </service>
+
+
+
+    <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <gui>
+            <layout type="::fwGui::LineLayoutManager">
+                <orientation value="vertical" />
+                <view proportion="1" />
+                <view proportion="0" minHeight="30" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="genericScene" start="yes" />
+            <view sid="multiView_scene1_bottom" start="yes" />
+        </registry>
+    </service>
+
+
+    <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <gui>
+            <layout type="::fwGui::LineLayoutManager">
+                <orientation value="horizontal" />
+                <view proportion="0" minWidth="30" />
+                <view proportion="0" minWidth="50" />
+                <view proportion="1" />
+                <view proportion="0" minWidth="30" />
+            </layout>
+        </gui>
+        <registry>
+            <view sid="sliceListEditor" start="no" />
+            <view sid="showScanEditor" start="no" />
+            <view sid="sliderIndexEditor" start="no" />
+            <view sid="snapshotScene1Editor" start="yes" />
+        </registry>
+    </service>
+
+
+</serviceList>
