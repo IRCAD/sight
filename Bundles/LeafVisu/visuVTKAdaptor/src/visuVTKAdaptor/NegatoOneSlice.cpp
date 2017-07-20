@@ -105,12 +105,9 @@ void NegatoOneSlice::cleanImageSource()
         ::fwData::Image::sptr image;
         ::fwData::Composite::sptr sceneComposite;
 
-        image          = this->getObject< ::fwData::Image >();
-        sceneComposite = this->getRenderService()->getComposite();
+        image = this->getObject< ::fwData::Image >();
 
-        adaptor = ::fwServices::add< ::fwRenderVTK::IAdaptor >(
-            sceneComposite,
-            "::visuVTKAdaptor::ImageSlice");
+        adaptor = ::fwServices::add< ::fwRenderVTK::IAdaptor >(image, "::visuVTKAdaptor::ImageSlice");
         adaptor->setRenderService(this->getRenderService());
         adaptor->setRenderId( this->getRenderId() );
         adaptor->setPickerId( this->getPickerId() );

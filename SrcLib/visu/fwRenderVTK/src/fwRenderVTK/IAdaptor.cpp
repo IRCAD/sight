@@ -6,6 +6,8 @@
 
 #include "fwRenderVTK/IAdaptor.hpp"
 
+#include "fwRenderVTK/registry/adaptors.hpp"
+
 #include <fwData/String.hpp>
 
 #include <fwServices/macros.hpp>
@@ -31,8 +33,7 @@ IAdaptor::IAdaptor() noexcept :
     m_transformId(""),
     // by default no Transform
     m_propCollection( vtkPropCollection::New() ),
-    m_autoRender(true),
-    m_autoConnect(true)
+    m_autoRender(true)
 {
 }
 
@@ -43,66 +44,59 @@ IAdaptor::~IAdaptor() noexcept
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::info(std::ostream& _sstream )
-{
-    _sstream << "IAdaptor : ";
-    this->SuperClass::info( _sstream );
-}
-
-//------------------------------------------------------------------------------
-
 void IAdaptor::configuring()
 {
-    this->setPickerId( m_configuration->getAttributeValue( "picker"    ) );
-    this->setRenderId( m_configuration->getAttributeValue( "renderer"  ) );
-    this->setTransformId( m_configuration->getAttributeValue( "transform" ) );
-    doConfigure();
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    this->setPickerId(config.get<std::string>("picker", ""));
+    this->setRenderId(config.get<std::string>("renderer", ""));
+    this->setTransformId(config.get<std::string>("transform", ""));
 }
 
 //------------------------------------------------------------------------------
 
 void IAdaptor::starting()
 {
-    /// Install observation
-    if (m_autoConnect)
-    {
-        m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
-    }
-    assert( m_renderService.lock() );
-
-    doStart();
-    requestRender();
+    SLM_ERROR("starting() method must be implemented for '" + this->getClassname() + "'");
 }
 
 //------------------------------------------------------------------------------
 
 void IAdaptor::stopping()
 {
-    /// Stop observation
-    m_connections.disconnect();
-    doStop();
-    requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::swapping()
-{
-    m_connections.disconnect();
-    if (m_autoConnect)
-    {
-        m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
-    }
-    doSwap();
-    requestRender();
+    SLM_ERROR("stopping() method must be implemented for '" + this->getClassname() + "'");
 }
 
 //------------------------------------------------------------------------------
 
 void IAdaptor::updating()
 {
-    doUpdate();
-    requestRender();
+    SLM_ERROR("updating() method must be implemented for '" + this->getClassname() + "'");
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::initialize()
+{
+    if(m_renderService.expired())
+    {
+        // retrieve the SRender service associated to this adaptor
+        const auto servicesVector = ::fwServices::OSR::getServices("::fwRenderVTK::SRender");
+
+        const auto& registry        = ::fwRenderVTK::registry::getAdaptorRegistry();
+        const auto& renderServiceId = registry.at(this->getID());
+
+        auto result =
+            std::find_if(servicesVector.begin(), servicesVector.end(),
+                         [renderServiceId](const ::fwServices::IService::sptr& srv)
+            {
+                return srv->getID() == renderServiceId;
+            });
+        SLM_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+
+        ::fwRenderVTK::SRender::sptr renderService = ::fwRenderVTK::SRender::dynamicCast(*result);
+        m_autoRender                               = (renderService->getRenderMode() == SRender::RenderMode::AUTO);
+        m_renderService                            = renderService;
+    }
 }
 
 //------------------------------------------------------------------------------

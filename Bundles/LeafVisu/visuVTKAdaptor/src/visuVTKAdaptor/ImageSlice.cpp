@@ -32,7 +32,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSlice );
 
 namespace visuVTKAdaptor
 {
@@ -125,20 +125,7 @@ void ImageSlice::doSwap()
 
 ::fwData::Image::sptr ImageSlice::getCtrlImage()
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    if (m_ctrlImage.expired())
-    {
-        if (!m_ctrlImageId.empty())
-        {
-            m_ctrlImage.reset();
-            ::fwData::Composite::iterator it = (*composite).find(m_ctrlImageId);
-            if (it != (*composite).end())
-            {
-                m_ctrlImage = ::fwData::Image::dynamicCast((*it).second);
-            }
-        }
-    }
-    SLM_ASSERT("Null control image", !m_ctrlImage.expired());
+    m_ctrlImage = this->getObject< ::fwData::Image >();
     return m_ctrlImage.lock();
 }
 
@@ -416,9 +403,6 @@ void ImageSlice::checkCtrlImage()
 ::fwServices::IService::KeyConnectionsType ImageSlice::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_CHECK_CTRL_IMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHECK_CTRL_IMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_CHECK_CTRL_IMAGE_SLOT ) );
 
     return connections;
 }

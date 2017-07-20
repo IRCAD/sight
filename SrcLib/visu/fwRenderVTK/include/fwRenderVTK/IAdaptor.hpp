@@ -25,6 +25,9 @@ class vtkTransform;
 namespace fwRenderVTK
 {
 
+/**
+ * @brief Base class for VTK adaptors
+ */
 class FWRENDERVTK_CLASS_API IAdaptor : public fwServices::IService
 {
 friend class SRender;
@@ -81,18 +84,6 @@ public:
         m_autoRender = autoRender;
     }
 
-    /// Return true if the service slots are automatically connected to the object signals
-    bool getAutoConnect() const
-    {
-        return m_autoConnect;
-    }
-
-    /// Set if the service slots are automatically connected to the object signals
-    void setAutoConnect(bool autoConnect)
-    {
-        m_autoConnect = autoConnect;
-    }
-
     /**
      * @brief   Returns the starting priority of the adaptor.
      *
@@ -102,6 +93,8 @@ public:
     FWRENDERVTK_API virtual int getStartPriority();
 
 protected:
+
+    typedef std::vector < ::fwRenderVTK::IAdaptor::wptr > ServiceVector;
 
     /**
      * @brief   constructor
@@ -118,39 +111,14 @@ protected:
      */
     //@{
     /// Overrides
-    FWRENDERVTK_API virtual void info(std::ostream& _sstream );
     FWRENDERVTK_API void configuring();
     FWRENDERVTK_API void starting();
     FWRENDERVTK_API void stopping();
-    FWRENDERVTK_API void swapping();
     FWRENDERVTK_API void updating();
     //@}
 
-    /// priority of comChannel observing related object (specified with objectId)
-    double m_comChannelPriority;
-
-    /// state of the pipeline
-    bool m_vtkPipelineModified;
-    SRender::RendererIdType m_rendererId;
-    SRender::PickerIdType m_pickerId;
-    SRender::VtkObjectIdType m_transformId;
-    SRender::wptr m_renderService;
-
-    ::fwCom::helper::SigSlotConnection m_connections;
-
-    typedef std::vector < ::fwRenderVTK::IAdaptor::wptr > ServiceVector;
-    ServiceVector m_subServices;
-
-    vtkPropCollection* m_propCollection;
-
-    bool m_autoRender;
-    bool m_autoConnect; ///< If true, connect the adaptor slots to its objects signals
-
-    FWRENDERVTK_API virtual void doStart()     = 0;
-    FWRENDERVTK_API virtual void doStop()      = 0;
-    FWRENDERVTK_API virtual void doSwap()      = 0;
-    FWRENDERVTK_API virtual void doUpdate()    = 0;
-    FWRENDERVTK_API virtual void doConfigure() = 0;
+    /// Initialize the adaptor with the associated render service. (must be call in starting).
+    FWRENDERVTK_API void initialize();
 
     //------------------------------------------------------------------------------
 
@@ -179,6 +147,24 @@ protected:
     CSPTR(DATATYPE) getSafeInput(const std::string& key) const;
     template< class DATATYPE >
     SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
+
+    /// priority of comChannel observing related object (specified with objectId)
+    double m_comChannelPriority;
+
+    /// state of the pipeline
+    bool m_vtkPipelineModified;
+    SRender::RendererIdType m_rendererId;
+    SRender::PickerIdType m_pickerId;
+    SRender::VtkObjectIdType m_transformId;
+    SRender::wptr m_renderService;
+
+    ServiceVector m_subServices;
+
+    vtkPropCollection* m_propCollection;
+
+    ::fwCom::helper::SigSlotConnection m_connections;
+
+    bool m_autoRender;
 };
 
 //------------------------------------------------------------------------------

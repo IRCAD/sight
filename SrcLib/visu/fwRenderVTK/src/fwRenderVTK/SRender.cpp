@@ -9,6 +9,7 @@
 #include "fwRenderVTK/IAdaptor.hpp"
 #include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
 #include "fwRenderVTK/OffScreenInteractorManager.hpp"
+#include "fwRenderVTK/registry/adaptors.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -48,7 +49,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender );
 
 using namespace fwServices;
 
@@ -57,10 +58,6 @@ namespace fwRenderVTK
 const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG     = "dropped";
 const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT         = "render";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT = "requestRender";
-
-static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 //-----------------------------------------------------------------------------
 
@@ -75,9 +72,6 @@ SRender::SRender() noexcept :
 
     newSlot(s_RENDER_SLOT, &SRender::render, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
-    newSlot(s_ADD_OBJECTS_SLOT, &SRender::addObjects, this);
-    newSlot(s_CHANGE_OBJECTS_SLOT, &SRender::changeObjects, this);
-    newSlot(s_REMOVE_OBJECTS_SLOT, &SRender::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,119 +154,6 @@ void SRender::configurePicker( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureObject( ConfigurationType conf )
-{
-    assert(conf->getName() == "adaptor");
-    ::fwData::Composite::sptr composite = this->getComposite();
-
-    const std::string id            = conf->getAttributeValue("id");
-    const std::string objectId      = conf->getAttributeValue("objectId");
-    const std::string adaptor       = conf->getAttributeValue("class");
-    const std::string uid           = conf->getAttributeValue("uid");
-    const std::string autoConnect   = conf->getAttributeValue("autoConnect");
-    const std::string compositeName = "self";
-
-    SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
-    SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
-    SLM_ASSERT( "'adaptor' required attribute missing or empty", !adaptor.empty() );
-
-    const size_t compositeObjectCount = composite->getContainer().count(objectId);
-
-    OSLM_TRACE_IF(objectId << " not found in composite. If it exist, associated Adaptor will be destroyed",
-                  !(compositeObjectCount == 1 || objectId == compositeName) );
-
-    ::fwData::Object::csptr object;
-    if (compositeObjectCount)
-    {
-        object = ::fwData::Object::dynamicCast(composite->getContainer()[objectId]);
-    }
-    else if (objectId == compositeName)
-    {
-        object = ::fwData::Object::dynamicCast(composite);
-    }
-    else if(this->isVersion2())
-    {
-        // Last chance with V2 behavior
-        object = this->getInput< ::fwData::Object >(objectId);
-        if(!object)
-        {
-            object = this->getInOut< ::fwData::Object >(objectId);
-        }
-    }
-
-    if ( m_sceneAdaptors.count(id) == 0 && object )
-    {
-        OSLM_TRACE("Adding service : IAdaptor " << adaptor << " on "<< objectId );
-        SceneAdaptor adaptee;
-        adaptee.m_config = *(conf->begin());
-        if (!uid.empty())
-        {
-            OSLM_TRACE("SRender::configureObject : uid = " << uid);
-            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( object, adaptor, uid);
-        }
-        else
-        {
-            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( object, adaptor);
-        }
-
-        assert(adaptee.m_config->getName() == "config");
-        assert(adaptee.getService());
-
-        adaptee.getService()->setConfiguration(adaptee.m_config);
-        adaptee.getService()->setAutoRender(m_renderMode == RenderMode::AUTO);
-        adaptee.getService()->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-        adaptee.getService()->configure();
-        adaptee.getService()->setName(id);
-
-        if (!autoConnect.empty())
-        {
-            SLM_ASSERT("'autoConnect' attribut value must be 'yes' or 'no', actual: " + autoConnect,
-                       autoConnect == "yes" || autoConnect == "no" );
-            adaptee.getService()->setAutoConnect(autoConnect == "yes");
-        }
-
-        if (this->isStarted() || this->getStatus() == SWAPPING)
-        {
-            adaptee.getService()->start();
-        }
-
-        m_sceneAdaptors[id] = adaptee;
-    }
-    else if(m_sceneAdaptors.count(id) == 1)
-    {
-        SceneAdaptor& adaptee = m_sceneAdaptors[id];
-        SLM_ASSERT("Adaptor service expired !", adaptee.getService() );
-        OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ", adaptee.getService()->isStarted());
-        if (object)
-        {
-            OSLM_TRACE("Swapping IAdaptor " << adaptor << " on "<< objectId );
-            if(adaptee.getService()->getObject() != object)
-            {
-                adaptee.getService()->swap( ::fwData::Object::constCast(object) );
-            }
-            else
-            {
-                OSLM_WARN(adaptor << "'s object already is '"
-                                  << adaptee.getService()->getObject()->getID()
-                                  << "', no need to swap");
-            }
-        }
-        else
-        {
-            adaptee.getService()->stop();
-            ::fwServices::OSR::unregisterService(adaptee.getService());
-            adaptee.m_service.reset();
-            m_sceneAdaptors.erase(id);
-        }
-    }
-    else
-    {
-        OSLM_TRACE( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SRender::configureVtkObject( ConfigurationType conf )
 {
     assert(conf->getName() == "vtkObject");
@@ -348,11 +229,8 @@ void SRender::addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj )
 
 void SRender::configuring()
 {
-    SLM_TRACE_FUNC();
-    SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
-
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
-    SLM_ASSERT("Missing 'scene' configuration.", !vectConfig.empty());
+    SLM_FATAL_IF("Missing 'scene' configuration.", vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
 
     m_offScreenImageKey = m_sceneConfiguration->getAttributeValue("offScreen");
@@ -396,6 +274,26 @@ void SRender::configuring()
         m_height = ::boost::lexical_cast<unsigned int>(heightKey);
     }
 
+    auto adaptorConfigs = m_sceneConfiguration->findAllConfigurationElement("adaptor");
+    for (const auto& currentConfig : adaptorConfigs)
+    {
+        SLM_FATAL_IF("Missing 'uid' attribute in adaptor configuration", !currentConfig->hasAttribute("uid"));
+
+        SceneAdaptor adaptor;
+        std::string uid        = currentConfig->getAttributeValue("uid");
+        std::string startValue = currentConfig->getAttributeValue("start");
+
+        SLM_FATAL_IF("Wrong value '"+ startValue +"' for 'start' attribute (require yes or no)",
+                     !startValue.empty() && startValue != "yes" && startValue != "no");
+        adaptor.m_start = (startValue == "yes");
+
+        m_sceneAdaptors[uid] = adaptor;
+
+        // register the assiciation <adaptor, scene>
+        auto& registry = ::fwRenderVTK::registry::getAdaptorRegistry();
+        registry[uid] = this->getID();
+    }
+
     /// Target frame rate (default 30Hz)
     unsigned int targetFrameRate = 30;
     ::fwRuntime::ConfigurationElement::sptr fpsConfig = m_configuration->findConfigurationElement("fps");
@@ -419,8 +317,6 @@ void SRender::configuring()
 
 void SRender::starting()
 {
-    SLM_TRACE_FUNC();
-
     if (!m_offScreen)
     {
         this->create();
@@ -440,78 +336,9 @@ void SRender::starting()
         {
             this->configurePicker(*iter);
         }
-        else if ((*iter)->getName() == "adaptor")
-        {
-            this->configureObject(*iter);
-        }
         else if ((*iter)->getName() == "vtkObject")
         {
             this->configureVtkObject(*iter);
-        }
-        else if((*iter)->getName() == "connect")
-        {
-            if((*iter)->hasAttribute("waitForKey"))
-            {
-                std::string key = (*iter)->getAttributeValue("waitForKey");
-
-                if(this->isVersion2())
-                {
-                    auto object = this->getInput< ::fwData::Object >(key);
-                    if(object)
-                    {
-                        this->manageConnection(key, object, *iter);
-                    }
-                }
-                else
-                {
-                    ::fwData::Composite::sptr composite               = this->getComposite();
-                    ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                    if(iterComposite != composite->end())
-                    {
-                        this->manageConnection(key, iterComposite->second, *iter);
-
-                    }
-                }
-                m_connect.push_back(*iter);
-            }
-            else
-            {
-                ::fwServices::helper::Config::createConnections(*iter, m_connections);
-            }
-        }
-        else if((*iter)->getName() == "proxy")
-        {
-            if((*iter)->hasAttribute("waitForKey"))
-            {
-                std::string key = (*iter)->getAttributeValue("waitForKey");
-
-                if(this->isVersion2())
-                {
-                    auto object = this->getInput< ::fwData::Object >(key);
-                    if(object)
-                    {
-                        this->manageProxy(key, object, *iter);
-                    }
-                }
-                else
-                {
-                    ::fwData::Composite::sptr composite               = this->getComposite();
-                    ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                    if(iterComposite != composite->end())
-                    {
-                        this->manageProxy(key, iterComposite->second, *iter);
-                    }
-                }
-                m_proxies.push_back(*iter);
-            }
-            else
-            {
-                ::fwServices::helper::Config::createProxy("self", *iter, m_proxyMap);
-            }
-        }
-        else
-        {
-            OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
         }
     }
 
@@ -525,9 +352,24 @@ void SRender::starting()
     // Start adaptors according to their starting priority
     std::vector< SPTR(IAdaptor) > startAdaptors;
 
+    const auto servicesVector = ::fwServices::OSR::getServices("::fwRenderVTK::IAdaptor");
+
     for(auto& sceneAdaptor : m_sceneAdaptors)
     {
-        startAdaptors.emplace_back(sceneAdaptor.second.getService());
+        if (sceneAdaptor.second.m_start)
+        {
+            auto result =
+                std::find_if(servicesVector.begin(), servicesVector.end(),
+                             [sceneAdaptor](const ::fwServices::IService::sptr& srv)
+                {
+                    return srv->getID() == sceneAdaptor.first;
+                });
+
+            SLM_ASSERT("Adaptor '" + sceneAdaptor.first + "' is not found", result != servicesVector.end());
+
+            sceneAdaptor.second.m_service = ::fwRenderVTK::IAdaptor::dynamicCast(*result);
+            startAdaptors.emplace_back(sceneAdaptor.second.getService());
+        }
     }
 
     std::sort(startAdaptors.begin(), startAdaptors.end(),
@@ -552,35 +394,6 @@ void SRender::starting()
 
 void SRender::stopping()
 {
-    SLM_TRACE_FUNC();
-
-    m_connections.disconnect();
-
-    if(this->isVersion2())
-    {
-        ConstObjectMapType container;
-        for(auto obj : this->getInputs())
-        {
-            if(obj.first != s_DEFAULT_OBJECT)
-            {
-                container[obj.first] = obj.second.lock();
-            }
-        }
-        for(auto obj : this->getInOuts())
-        {
-            if(obj.first != s_DEFAULT_OBJECT)
-            {
-                container[obj.first] = obj.second.lock();
-            }
-        }
-        this->disconnect(container);
-        ::fwServices::helper::Config::disconnectProxies("self", m_proxyMap);
-    }
-    else
-    {
-        this->disconnect(this->getComposite()->getContainer());
-    }
-
     if(m_timer)
     {
         m_timer->stop();
@@ -591,7 +404,10 @@ void SRender::stopping()
 
     for(auto& sceneAdaptor : m_sceneAdaptors)
     {
-        stopAdaptors.emplace_back(sceneAdaptor.second.getService());
+        if(sceneAdaptor.second.m_start && sceneAdaptor.second.getService())
+        {
+            stopAdaptors.emplace_back(sceneAdaptor.second.getService());
+        }
     }
 
     std::sort(stopAdaptors.begin(), stopAdaptors.end(),
@@ -603,8 +419,6 @@ void SRender::stopping()
     for(auto& adaptor : stopAdaptors)
     {
         adaptor->stop();
-        SLM_ASSERT("Adaptor is not stopped", adaptor->isStopped());
-        ::fwServices::OSR::unregisterService(adaptor);
     }
     stopAdaptors.clear();
     m_sceneAdaptors.clear();
@@ -617,79 +431,10 @@ void SRender::stopping()
     }
 }
 
-//------------------------------------------------------------------------------
-
-void SRender::configureObjects(::fwData::Composite::ContainerType objects)
-{
-    SLM_ASSERT("Scene configuration is not defined",  m_sceneConfiguration );
-    SLM_ASSERT("This should not be called in a AppXml2 application",  !this->isVersion2() );
-
-    for( ::fwData::Composite::ContainerType::value_type objectId :  objects)
-    {
-        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor", "objectId", objectId.first);
-        for( ConfigurationType cfg :  confVec )
-        {
-            this->configureObject(cfg);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::addObjects(::fwData::Composite::ContainerType objects)
-{
-    this->configureObjects(objects);
-    this->connectAfterWait(objects);
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::changeObjects(::fwData::Composite::ContainerType newObjects,
-                            ::fwData::Composite::ContainerType oldObjects)
-{
-    this->disconnect(oldObjects);
-    this->configureObjects(newObjects);
-    this->connectAfterWait(newObjects);
-}
-
-//------------------------------------------------------------------------------
-
-void SRender::removeObjects(::fwData::Composite::ContainerType objects)
-{
-    this->disconnect(objects);
-    this->configureObjects(objects);
-}
-
 //-----------------------------------------------------------------------------
 
 void SRender::updating()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::swapping(const IService::KeyType& key)
-{
-    if (this->isVersion2())
-    {
-        // remove connections
-        auto iter = m_objectConnections.find(key);
-        if(iter != m_objectConnections.end())
-        {
-            iter->second.disconnect();
-            m_objectConnections.erase(key);
-        }
-        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
-    }
-
-    std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor", "objectId", key);
-    for( ConfigurationType cfg : confVec )
-    {
-        this->configureObject(cfg);
-    }
-
-    // create connections
-    this->connectAfterWait(key);
 }
 
 //-----------------------------------------------------------------------------
@@ -709,16 +454,7 @@ void SRender::render()
         windowToImageFilter->Update();
 
         vtkImageData* vtkImage = windowToImageFilter->GetOutput();
-        ::fwData::Image::sptr image;
-        if (!this->isVersion2())
-        {
-            ::fwData::Composite::sptr composite = this->getComposite();
-            image                               = composite->at< ::fwData::Image >(m_offScreenImageKey);
-        }
-        else
-        {
-            image = this->getInOut< ::fwData::Image >(m_offScreenImageKey);
-        }
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(m_offScreenImageKey);
         SLM_ASSERT("Image '" + m_offScreenImageKey + "' not found.", image);
 
         {
@@ -803,8 +539,6 @@ void SRender::startContext()
 
 void SRender::stopContext()
 {
-    SLM_TRACE_FUNC();
-
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
     {
         vtkRenderer* renderer = iter->second;
@@ -884,117 +618,6 @@ vtkTransform* SRender::getOrAddVtkTransform( const VtkObjectIdType& _id )
         this->addVtkObject(_id, t);
     }
     return t;
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::connectAfterWait(::fwData::Composite::ContainerType objects)
-{
-    for(::fwData::Composite::value_type element :  objects)
-    {
-        for(const ::fwRuntime::ConfigurationElement::sptr& connect :  m_connect)
-        {
-            this->manageConnection(element.first, element.second, connect);
-        }
-        for(const ::fwRuntime::ConfigurationElement::sptr& proxy :  m_proxies)
-        {
-            this->manageProxy(element.first, element.second, proxy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::connectAfterWait(const std::string& key)
-{
-    if (this->isVersion2())
-    {
-        ::fwData::Object::csptr obj;
-        obj = this->getInput< ::fwData::Object >(key);
-        if(!obj)
-        {
-            obj = this->getInOut< ::fwData::Object >(key);
-        }
-        if (obj)
-        {
-            for(const ::fwRuntime::ConfigurationElement::sptr& connect :  m_connect)
-            {
-                this->manageConnection(key, obj, connect);
-            }
-            for(const ::fwRuntime::ConfigurationElement::sptr& proxy :  m_proxies)
-            {
-                this->manageProxy(key, obj, proxy);
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
-                               const ConfigurationType& config)
-{
-    if(config->hasAttribute("waitForKey"))
-    {
-        std::string waitForKey = config->getAttributeValue("waitForKey");
-        if(waitForKey == key)
-        {
-            ::fwServices::helper::Config::createConnections(config, m_objectConnections[key], obj);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
-                          const ConfigurationType& config)
-{
-    if(config->hasAttribute("waitForKey"))
-    {
-        std::string waitForKey = config->getAttributeValue("waitForKey");
-        if(waitForKey == key)
-        {
-            ::fwServices::helper::Config::createProxy(key, config, m_proxyMap, obj);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType SRender::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
-
-    return connections;
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SRender::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
-    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT );
-    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Composite::sptr SRender::getComposite()
-{
-    if(this->isVersion2())
-    {
-        return this->getInOut< ::fwData::Composite >(s_DEFAULT_OBJECT);
-    }
-    else
-    {
-        return this->getObject< ::fwData::Composite >();
-    }
 }
 
 //-----------------------------------------------------------------------------
