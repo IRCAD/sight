@@ -471,7 +471,7 @@
             <config selectedTFKey="transformedTF" autoWindowing="yes"/>
         </service>
 
-        <service uid="transformedTFWindow" type="::scene2D::Render" autoConnect="yes">
+        <service uid="transformedTFWindow" type="::scene2D::SRender" autoConnect="yes">
             <inout key="viewport" uid="viewport" />
             <in key="Histogram" uid="Histogram" />
             <scene>
@@ -511,7 +511,7 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <service uid="transformedTFEditor" type="::scene2D::Render" autoConnect="yes">
+        <service uid="transformedTFEditor" type="::scene2D::SRender" autoConnect="yes">
             <in key="image" uid="${referenceImageUid}" />
             <inout key="viewport" uid="viewport" />
             <in key="Histogram" uid="Histogram" />

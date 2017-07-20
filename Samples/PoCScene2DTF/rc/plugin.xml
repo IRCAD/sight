@@ -151,7 +151,7 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::SRender" type="::fwRender::IRender" autoConnect="yes">
 
                             <scene>
 
@@ -232,7 +232,7 @@
 
                         </service>
 
-                        <service uid="GENERIC_UID_Scene2D_Shutter" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="GENERIC_UID_Scene2D_Shutter" impl="::scene2D::SRender" type="::fwRender::IRender" autoConnect="yes">
 
                             <scene>
 
@@ -263,7 +263,7 @@
 
                         </service>
 
-                        <service uid="GENERIC_UID_Scene2DNegato" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="GENERIC_UID_Scene2DNegato" impl="::scene2D::SRender" type="::fwRender::IRender" autoConnect="yes">
 
                             <scene>
 
