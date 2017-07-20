@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,10 +12,10 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwDataTools/PickingInfo.hpp>
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/PickingInfo.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkCommand.h>
 
@@ -28,12 +28,12 @@ namespace visuVTKAdaptor
  * @brief Adaptor to manage image picking
  */
 class VISUVTKADAPTOR_CLASS_API ImagePickerInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                       public ::fwRenderVTK::IVtkAdaptorService
+                                                       public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImagePickerInteractor)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ImagePickerInteractor)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API ImagePickerInteractor() noexcept;
 
@@ -121,9 +121,6 @@ private:
     vtkCommand* m_interactionCommand; ///< the vtk mouse events observer
     SetEventIdType m_eventId; ///< event ID treated for picking
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

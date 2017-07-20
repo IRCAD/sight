@@ -15,7 +15,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkImageActor;
 class vtkLookupTable;
@@ -55,12 +55,12 @@ namespace visuVTKAdaptor
  *      - \b opacity (optional, default=1.0): opacity (0.0..1.0)
  *
  */
-class VISUVTKADAPTOR_CLASS_API ImagesBlend : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API ImagesBlend : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ImagesBlend)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ImagesBlend)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT;
     VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT;
@@ -136,7 +136,7 @@ private:
     ImageInfoMap m_imagesInfo;
 
     /// map <fwId, adaptor>
-    typedef std::map< std::string, ::fwRenderVTK::IVtkAdaptorService::sptr > RegisteredImageMap;
+    typedef std::map< std::string, ::fwRenderVTK::IAdaptor::sptr > RegisteredImageMap;
     RegisteredImageMap m_registeredImages;
 
     /// Holds the vtkImageblend or vtkimageCheckerboard algorithms

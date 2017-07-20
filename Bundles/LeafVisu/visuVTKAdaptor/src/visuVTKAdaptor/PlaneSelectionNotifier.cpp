@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,8 +24,7 @@
 
 #include <fwServices/macros.hpp>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PlaneSelectionNotifier,
                          ::fwData::Composite );
 
 namespace visuVTKAdaptor
@@ -241,7 +240,6 @@ void PlaneSelectionNotifier::updateSelection(bool selected)
     return connections;
 }
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor
 

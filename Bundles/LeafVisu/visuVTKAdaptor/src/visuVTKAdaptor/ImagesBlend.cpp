@@ -40,7 +40,7 @@
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
@@ -359,8 +359,8 @@ void ImagesBlend::changeMode(std::string _value, std::string _key)
 
 void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
 {
-    ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptorService
-        = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img, "::visuVTKAdaptor::Image");
+    ::fwRenderVTK::IAdaptor::sptr imageAdaptorService
+        = ::fwServices::add< ::fwRenderVTK::IAdaptor >( img, "::visuVTKAdaptor::Image");
 
     imageAdaptorService->setRenderService(this->getRenderService());
     imageAdaptorService->setRenderId( this->getRenderId() );

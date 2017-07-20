@@ -16,7 +16,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <set>
 #include <vector>
@@ -44,14 +44,14 @@ namespace visuVTKAdaptor
  * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 
-class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IAdaptor
 {
 
 public:
     typedef std::vector< WPTR(::fwData::Point) > WeakPointListType;
     typedef std::set< WPTR(::fwData::Point) > WeakPointSetType;
 
-    fwCoreServiceClassDefinitionsMacro( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PointList)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API PointList() noexcept;
 

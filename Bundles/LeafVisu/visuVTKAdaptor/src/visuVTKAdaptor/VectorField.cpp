@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,12 +33,10 @@
 #include <vtkPointData.h>
 #include <vtkPolyDataMapper.h>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::VectorField, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::VectorField, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -125,11 +123,10 @@ void VectorField::buildPipeline( )
     ptMask->SetOnRatio(1);
     ptMask->RandomModeOn();
 
-
     // vtkSmartPointer<vtkAssignAttribute> assignAttr = vtkSmartPointer<vtkAssignAttribute>::New();
     // assignAttr->SetInputConnection(ptMask->GetOutputPort());
-    // assignAttr->Assign( vtkDataSetAttributes::SCALARS, vtkDataSetAttributes::VECTORS, vtkAssignAttribute::POINT_DATA );
-
+    // assignAttr->Assign( vtkDataSetAttributes::SCALARS, vtkDataSetAttributes::VECTORS, vtkAssignAttribute::POINT_DATA
+    // );
 
 // #define USE_GPU_GLYPH
 #ifndef USE_GPU_GLYPH
@@ -165,7 +162,6 @@ void VectorField::buildPipeline( )
     SLM_WARN("USE_GPU");
 #endif
 
-
     vtkSmartPointer<vtkActor> vectorActor = vtkSmartPointer<vtkActor>::New();
     vectorActor->SetMapper(vectorMapper);
 
@@ -194,6 +190,5 @@ void VectorField::destroyPipeline( )
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

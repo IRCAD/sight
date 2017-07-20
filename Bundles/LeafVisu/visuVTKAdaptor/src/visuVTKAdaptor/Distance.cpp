@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,12 +28,10 @@
 #include <vtkRenderer.h>
 #include <vtkTextProperty.h>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Distance, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
-
 
 Distance::Distance() noexcept :
     m_distanceRepresentation( vtkDistanceRepresentation2D::New()),
@@ -49,11 +47,11 @@ Distance::Distance() noexcept :
 
     m_lineActor->SetMapper(lineMapper);
     m_lineActor->GetProperty()->SetLineWidth(5.);
-    m_lineActor->GetProperty()->SetColor(1.,1.,0.);
+    m_lineActor->GetProperty()->SetColor(1., 1., 0.);
     m_lineActor->GetProperty()->SetOpacity(0.4);
 
     lineMapper->Delete();
-    m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(1.0,0.0,1.);
+    m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(1.0, 0.0, 1.);
     m_distanceRepresentation->GetAxis()->SetTitlePosition(0.9);
 
     //fixed font size for displaying distance
@@ -75,9 +73,9 @@ void Distance::setAxisColor( ::fwData::Color::sptr newColor) noexcept
 {
     SLM_ASSERT("newColor not instanced", newColor);
     m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(
-        newColor->red(),newColor->green(),newColor->blue() );
+        newColor->red(), newColor->green(), newColor->blue() );
     m_distanceRepresentation->GetAxis()->GetProperty()->SetOpacity(newColor->alpha() );
-    m_lineActor->GetProperty()->SetColor(newColor->red(),newColor->green(),newColor->blue());
+    m_lineActor->GetProperty()->SetColor(newColor->red(), newColor->green(), newColor->blue());
     m_lineActor->GetProperty()->SetOpacity( newColor->alpha() * 0.4);
 
     m_distanceRepresentation->GetAxis()->GetTitleTextProperty()->SetColor(
@@ -127,10 +125,10 @@ void Distance::doUpdate()
     ::fwData::Point::sptr p2 = m_point2.lock();
 
     double ps1[3];
-    std::copy(p1->getCRefCoord().begin(),(p1)->getCRefCoord().end(), ps1 );
+    std::copy(p1->getCRefCoord().begin(), (p1)->getCRefCoord().end(), ps1 );
 
     double ps2[3];
-    std::copy(p2->getCRefCoord().begin(),(p2)->getCRefCoord().end(), ps2 );
+    std::copy(p2->getCRefCoord().begin(), (p2)->getCRefCoord().end(), ps2 );
 
     m_distanceRepresentation->GetPoint1Representation()->SetWorldPosition(ps1);
     m_distanceRepresentation->GetPoint2Representation()->SetWorldPosition(ps2);
@@ -168,7 +166,6 @@ void Distance::doStop()
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor
 

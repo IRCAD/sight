@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,19 +15,17 @@
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <vtkImageData.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkProperty.h>
 #include <vtkSmartPointer.h>
-#include <vtkImageData.h>
 #include <vtkTexture.h>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Material, ::fwData::Material );
 
 namespace visuVTKAdaptor
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -51,7 +49,7 @@ Material::~Material() noexcept
 
 //------------------------------------------------------------------------------
 
-void Material::setVtkProperty(vtkProperty *property)
+void Material::setVtkProperty(vtkProperty* property)
 {
     if (m_manageProperty)
     {
@@ -74,7 +72,7 @@ void Material::setVtkProperty(vtkProperty *property)
 
 //------------------------------------------------------------------------------
 
-vtkProperty *Material::getVtkProperty() const
+vtkProperty* Material::getVtkProperty() const
 {
     return m_property;
 }
@@ -133,7 +131,7 @@ void Material::updateMaterial( SPTR(::fwData::Material)material )
     ::fwData::Color::sptr ambient = material->ambient();
     m_property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
 
-    m_property->SetSpecularColor(1.,1.,1.);
+    m_property->SetSpecularColor(1., 1., 1.);
     m_property->SetSpecularPower(100.); //Shininess
 
     // set texture

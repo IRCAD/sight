@@ -1,27 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Resection.hpp"
 #include "visuVTKAdaptor/ResectionDB.hpp"
 
-#include <fwData/ResectionDB.hpp>
+#include "visuVTKAdaptor/Resection.hpp"
+
 #include <fwData/Resection.hpp>
+#include <fwData/ResectionDB.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB );
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-ResectionDB::ResectionDB() noexcept : m_sharpEdgeAngle(50.)
+ResectionDB::ResectionDB() noexcept :
+    m_sharpEdgeAngle(50.)
 {
 }
 
@@ -65,8 +66,8 @@ void ResectionDB::doUpdate()
 
     for( ::fwData::Resection::sptr resection :  resecDB->getResections() )
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resection, "::visuVTKAdaptor::Resection" );
+        ::fwRenderVTK::IAdaptor::sptr service =
+            ::fwServices::add< ::fwRenderVTK::IAdaptor > ( resection, "::visuVTKAdaptor::Resection" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -85,8 +86,8 @@ void ResectionDB::doUpdate()
     ::fwData::Resection::sptr resec = resecDB->getSafeResection();
     if(resec)
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resec, "::visuVTKAdaptor::Resection" );
+        ::fwRenderVTK::IAdaptor::sptr service =
+            ::fwServices::add< ::fwRenderVTK::IAdaptor > ( resec, "::visuVTKAdaptor::Resection" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );

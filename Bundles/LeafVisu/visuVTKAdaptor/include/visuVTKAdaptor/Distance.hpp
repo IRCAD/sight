@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,10 +12,10 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
-#include <fwData/Point.hpp>
 #include <fwData/Color.hpp>
+#include <fwData/Point.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vector>
 
@@ -26,12 +26,12 @@ class vtkLineSource;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Distance : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Distance : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Distance)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Distance)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Distance() noexcept;
 
@@ -50,10 +50,10 @@ protected:
 
 private:
 
-    vtkDistanceRepresentation2D * m_distanceRepresentation;
+    vtkDistanceRepresentation2D* m_distanceRepresentation;
 
-    vtkActor          *m_lineActor;
-    vtkLineSource     *m_lineSource;
+    vtkActor* m_lineActor;
+    vtkLineSource* m_lineSource;
 
     ::fwData::Point::wptr m_point1;
     ::fwData::Point::wptr m_point2;
@@ -64,9 +64,6 @@ private:
     /// Connection between point 2 modified and this service reveive
     ::fwCom::Connection m_point2Connection;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

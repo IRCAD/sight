@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,9 +10,9 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
@@ -31,6 +31,8 @@ class Camera2Clallback : public ::vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor)
     {
         Camera2Clallback* cb = new Camera2Clallback;
@@ -38,12 +40,15 @@ public:
         return cb;
     }
 
-    Camera2Clallback() : m_adaptor(nullptr)
+    Camera2Clallback() :
+        m_adaptor(nullptr)
     {
     }
     ~Camera2Clallback()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
     {
@@ -53,7 +58,7 @@ public:
     ::visuVTKAdaptor::Camera2* m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Camera2,
                          ::fwData::TransformationMatrix3D );
 
 namespace visuVTKAdaptor
@@ -93,7 +98,7 @@ void Camera2::doStart()
     m_transOrig->Identity();
     m_transOrig->SetupCamera(position, focal, viewUp );
 
-    camera->SetPosition (position);
+    camera->SetPosition(position);
     camera->SetFocalPoint(focal);
     camera->SetViewUp(viewUp);
     //camera->SetClippingRange(0.1, 10000);
@@ -114,11 +119,11 @@ void Camera2::doUpdate()
 
     ::fwData::mt::ObjectReadLock lock(transMat);
 
-    for(int lt = 0; lt<4; lt++)
+    for(int lt = 0; lt < 4; lt++)
     {
-        for(int ct = 0; ct<4; ct++)
+        for(int ct = 0; ct < 4; ct++)
         {
-            mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+            mat->SetElement(lt, ct, transMat->getCoefficient(lt, ct));
         }
     }
 
@@ -183,11 +188,11 @@ void Camera2::updateFromVtk()
     trans->Concatenate(m_transOrig);
     vtkMatrix4x4* mat = trans->GetMatrix();
 
-    for(int lt = 0; lt<4; lt++)
+    for(int lt = 0; lt < 4; lt++)
     {
-        for(int ct = 0; ct<4; ct++)
+        for(int ct = 0; ct < 4; ct++)
         {
-            trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+            trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
         }
     }
 

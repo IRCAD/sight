@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
 #include <fwServices/macros.hpp>
@@ -26,9 +26,8 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoWindowingInteractor,
                          ::fwData::Image );
-
 
 #define START_WINDOWING_EVENT vtkCommand::RightButtonPressEvent
 #define STOP_WINDOWING_EVENT  vtkCommand::RightButtonReleaseEvent
@@ -39,6 +38,8 @@ namespace visuVTKAdaptor
 class NegatoWindowingCallback : public vtkCommand
 {
 public:
+    //------------------------------------------------------------------------------
+
     static NegatoWindowingCallback* New()
     {
         return new NegatoWindowingCallback();
@@ -59,6 +60,8 @@ public:
     {
 
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -104,8 +107,8 @@ public:
             else if (eventId == vtkCommand::MouseMoveEvent)
             {
                 SLM_ASSERT("m_mouseMoveObserved not instanced", m_mouseMoveObserved);
-                int x,y;
-                m_adaptor->getInteractor()->GetEventPosition(x,y);
+                int x, y;
+                m_adaptor->getInteractor()->GetEventPosition(x, y);
 
                 double dx = m_windowStep * ( x - m_x );
                 double dy = m_levelStep  * ( m_y - y );
@@ -128,10 +131,14 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void setAdaptor( NegatoWindowingInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPicker( vtkAbstractPropPicker* picker)
     {
@@ -303,6 +310,5 @@ void NegatoWindowingInteractor::resetWindowing()
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

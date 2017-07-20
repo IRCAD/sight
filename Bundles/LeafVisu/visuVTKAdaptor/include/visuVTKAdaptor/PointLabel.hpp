@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,9 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/Text.hpp"
 
+#include <fwRenderVTK/IAdaptor.hpp>
+
 #include <string>
-
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 
 class VISUVTKADAPTOR_CLASS_API vtkTextActor;
 
@@ -24,7 +23,7 @@ class VISUVTKADAPTOR_CLASS_API PointLabel : public Text
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (PointLabel)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PointLabel)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API PointLabel();
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,10 +18,7 @@
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
-
 #include <fwVtkIO/vtk.hpp>
-
-#include <limits>
 
 #include <vtkActor.h>
 #include <vtkAssembly.h>
@@ -33,35 +30,42 @@
 #include <vtkProp3DCollection.h>
 #include <vtkTransform.h>
 
+#include <limits>
+
 class MeshesBoxClallback : public ::vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static MeshesBoxClallback* New(::visuVTKAdaptor::MeshesBoxWidget* adaptor)
     {
-        MeshesBoxClallback *cb = new MeshesBoxClallback;
+        MeshesBoxClallback* cb = new MeshesBoxClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-    MeshesBoxClallback() : m_adaptor(NULL)
+    MeshesBoxClallback() :
+        m_adaptor(NULL)
     {
     }
     ~MeshesBoxClallback()
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
     {
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::MeshesBoxWidget *m_adaptor;
+    ::visuVTKAdaptor::MeshesBoxWidget* m_adaptor;
 };
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
@@ -104,7 +108,7 @@ void MeshesBoxWidget::doStart()
 
     m_assembly = vtkAssembly::New();
 
-    vtkBoxRepresentation *boxRep = vtkBoxRepresentation::New();
+    vtkBoxRepresentation* boxRep = vtkBoxRepresentation::New();
     boxRep->SetPlaceFactor(1.0);
 
     m_vtkBoxWidget = vtkBoxWidget2::New();
@@ -128,7 +132,7 @@ void MeshesBoxWidget::doUpdate()
         {
             m_assembly->AddPart( elt.second );
         }
-        vtkBoxRepresentation *boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+        vtkBoxRepresentation* boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
         boxRep->PlaceWidget(m_assembly->GetBounds());
         m_vtkBoxWidget->On();
     }
@@ -179,8 +183,8 @@ void MeshesBoxWidget::updateFromVtk()
 
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    vtkBoxRepresentation *boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
-    vtkTransform * boxTransform  = vtkTransform::New();
+    vtkBoxRepresentation* boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+    vtkTransform* boxTransform   = vtkTransform::New();
     boxRep->GetTransform(boxTransform);
 
     for(::fwData::Composite::value_type elt :  *composite)
@@ -190,17 +194,17 @@ void MeshesBoxWidget::updateFromVtk()
         SLM_ASSERT("Mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"));
         fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
-        vtkTransform * transform           = vtkTransform::New();
-        vtkLinearTransform * meshTransform = m_meshMap[elt.first]->GetUserTransform();
+        vtkTransform* transform           = vtkTransform::New();
+        vtkLinearTransform* meshTransform = m_meshMap[elt.first]->GetUserTransform();
         transform->Concatenate(boxTransform);
         transform->Concatenate(meshTransform);
 
         vtkMatrix4x4* mat = transform->GetMatrix();
-        for(int lt = 0; lt<4; lt++)
+        for(int lt = 0; lt < 4; lt++)
         {
-            for(int ct = 0; ct<4; ct++)
+            for(int ct = 0; ct < 4; ct++)
             {
-                fieldTransform->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+                fieldTransform->setCoefficient(lt, ct, mat->GetElement(lt, ct));
             }
         }
 
@@ -232,11 +236,11 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::ContainerT
 
         vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
 
-        for(int lt = 0; lt<4; lt++)
+        for(int lt = 0; lt < 4; lt++)
         {
-            for(int ct = 0; ct<4; ct++)
+            for(int ct = 0; ct < 4; ct++)
             {
-                matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
+                matrix->SetElement(lt, ct, fieldTransform->getCoefficient(lt, ct));
             }
         }
 
@@ -244,7 +248,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::ContainerT
         vtkSmartPointer<vtkPolyDataMapper> meshMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         meshMapper->SetInputData(vtkMesh);
 
-        vtkActor *meshActor = vtkActor::New();
+        vtkActor* meshActor = vtkActor::New();
         meshActor->SetMapper(meshMapper);
         meshActor->SetUserTransform(transform);
 
@@ -277,20 +281,19 @@ void MeshesBoxWidget::updateMeshTransform()
 
         vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
 
-        for(int lt = 0; lt<4; lt++)
+        for(int lt = 0; lt < 4; lt++)
         {
-            for(int ct = 0; ct<4; ct++)
+            for(int ct = 0; ct < 4; ct++)
             {
-                matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
+                matrix->SetElement(lt, ct, fieldTransform->getCoefficient(lt, ct));
             }
         }
 
         transform->SetMatrix(matrix);
-        vtkActor *meshActor = m_meshMap[elt.first];
+        vtkActor* meshActor = m_meshMap[elt.first];
         meshActor->SetUserTransform(transform);
     }
 }
-
 
 //-----------------------------------------------------------------------------
 

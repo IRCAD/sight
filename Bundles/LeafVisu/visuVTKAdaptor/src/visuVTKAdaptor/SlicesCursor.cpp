@@ -34,7 +34,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {

@@ -41,7 +41,7 @@ class Timer;
 namespace fwRenderVTK
 {
 
-class IVtkAdaptorService;
+class IAdaptor;
 class IVtkRenderWindowInteractorManager;
 
 /**
@@ -82,7 +82,7 @@ public:
     FWRENDERVTK_API vtkObject* getVtkObject(const VtkObjectIdType& objectId) const;
 
     /// Returns the adaptor with the given id
-    FWRENDERVTK_API SPTR(IVtkAdaptorService) getAdaptor(const AdaptorIdType &adaptorId) const;
+    FWRENDERVTK_API SPTR(IAdaptor) getAdaptor(const AdaptorIdType &adaptorId) const;
 
     /// Get a vtkTransform in the SRender, referenced by a key. Create it if it does not exist.
     FWRENDERVTK_API vtkTransform* getOrAddVtkTransform( const VtkObjectIdType& _id );
@@ -242,13 +242,13 @@ private:
 
     public:
 
-        SPTR(IVtkAdaptorService) getService() const
+        SPTR(IAdaptor) getService() const
         {
             return m_service.lock();
         }
 
         ConfigurationType m_config;
-        WPTR(IVtkAdaptorService) m_service;
+        WPTR(IAdaptor) m_service;
 
     };
 

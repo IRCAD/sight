@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,11 +18,10 @@
 
 #include <fwServices/macros.hpp>
 
-
-#include <vtkRenderWindowInteractor.h>
 #include <vtkCommand.h>
+#include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -30,7 +29,9 @@ namespace visuVTKAdaptor
 class PlaneInteractorCallback : public vtkCommand
 {
 public:
-    static PlaneInteractorCallback *New()
+    //------------------------------------------------------------------------------
+
+    static PlaneInteractorCallback* New()
     {
         return new PlaneInteractorCallback();
     }
@@ -43,15 +44,17 @@ public:
     {
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    //------------------------------------------------------------------------------
+
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         if ( eventId == vtkCommand::KeyPressEvent)
         {
-            vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
+            vtkRenderWindowInteractor* rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
             SLM_ASSERT("invalid vtkRenderWindowInteractor", rwi);
             SLM_ASSERT("invalid m_adaptor", m_adaptor);
 
-            char *keySym = rwi->GetKeySym();
+            char* keySym = rwi->GetKeySym();
 
             if (std::string(keySym) == "space")
             {
@@ -73,6 +76,8 @@ public:
             m_adaptor->pushPlane(-1);
         }
     }
+
+    //------------------------------------------------------------------------------
 
     void setAdaptor( PlaneInteractor::sptr adaptor)
     {
@@ -110,7 +115,7 @@ void PlaneInteractor::doStart()
 {
     if (::fwData::Plane::dynamicCast(this->getObject()))
     {
-        PlaneInteractorCallback *observer = PlaneInteractorCallback::New();
+        PlaneInteractorCallback* observer = PlaneInteractorCallback::New();
         observer->setAdaptor( PlaneInteractor::dynamicCast(this->getSptr()) );
 
         m_vtkObserver = observer;
@@ -156,7 +161,7 @@ void PlaneInteractor::doStop()
 
 void PlaneInteractor::switchPlaneNormal()
 {
-    ::fwData::Plane::sptr plane ( ::fwData::Plane::dynamicCast( this->getObject() ) );
+    ::fwData::Plane::sptr plane( ::fwData::Plane::dynamicCast( this->getObject() ) );
 
     if (plane)
     {
@@ -165,7 +170,7 @@ void PlaneInteractor::switchPlaneNormal()
         ::fwData::Point::sptr pt2 = plane->getPoints()[2];
         if ( pt0 && pt1 && pt2 )
         {
-            plane->setValue(pt0,pt2,pt1);
+            plane->setValue(pt0, pt2, pt1);
 
             auto sig = plane->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
             sig->asyncEmit();
@@ -178,7 +183,7 @@ void PlaneInteractor::switchPlaneNormal()
 
 void PlaneInteractor::pushPlane(double factor)
 {
-    ::fwData::Plane::sptr plane ( ::fwData::Plane::dynamicCast( this->getObject() ) );
+    ::fwData::Plane::sptr plane( ::fwData::Plane::dynamicCast( this->getObject() ) );
     if (plane)
     {
         ::fwData::Point::sptr pt0 = plane->getPoints()[0];
@@ -205,7 +210,7 @@ void PlaneInteractor::pushPlane(double factor)
             pt1->setCoord(vec1);
             pt2->setCoord(vec2);
 
-            plane->setValue(pt0,pt1,pt2);
+            plane->setValue(pt0, pt1, pt2);
             ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
             normal = ::fwMath::getNormal(planeDesc);
 
@@ -228,14 +233,13 @@ void PlaneInteractor::pushPlane(double factor)
 
 void PlaneInteractor::deselectPlane()
 {
-    ::fwData::Plane::sptr plane ( ::fwData::Plane::dynamicCast( this->getObject() ) );
+    ::fwData::Plane::sptr plane( ::fwData::Plane::dynamicCast( this->getObject() ) );
     if (plane)
     {
         auto sig = plane->signal< ::fwData::Plane::SelectedSignalType >(::fwData::Plane::s_SELECTED_SIG);
         sig->asyncEmit(false);
     }
 }
-
 
 } //namespace visuVTKAdaptor
 

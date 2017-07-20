@@ -1,10 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-
 
 #ifndef __VISUVTKVRADAPTOR_VOLUME_HPP__
 #define __VISUVTKVRADAPTOR_VOLUME_HPP__
@@ -15,9 +13,8 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/SRender.hpp>
-
 
 class vtkAbstractVolumeMapper;
 class vtkBoxWidget2;
@@ -62,12 +59,12 @@ namespace visuVTKVRAdaptor
  * - \b selectedTFKey (optional) : key of the transfer funtion in the tf composite.
  */
 class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                          public ::fwRenderVTK::IVtkAdaptorService
+                                          public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Volume)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Volume)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKVRADAPTOR_API Volume() noexcept;
 
@@ -110,7 +107,6 @@ protected:
     VISUVTKVRADAPTOR_API void doConfigure();
 
     VISUVTKVRADAPTOR_API void doSwap();
-
 
     /// Called when transfer function points are modified.
     VISUVTKVRADAPTOR_API virtual void updatingTFPoints();
@@ -165,9 +161,6 @@ private:
 
     double m_reductionFactor;
 };
-
-
-
 
 } //namespace visuVTKVRAdaptor
 

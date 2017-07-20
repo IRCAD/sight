@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #include "visuVTKAdaptor/ImageText.hpp"
 
@@ -21,15 +20,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/format.hpp>
+
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
 
-#include <boost/format.hpp>
-
 #include <sstream>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageText, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -83,7 +81,6 @@ void ImageText::doConfigure()
 
     this->parseTFConfig( m_configuration );
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -166,6 +163,5 @@ void ImageText::updatingTFWindowing(double window, double level)
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

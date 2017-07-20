@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -19,12 +19,12 @@ namespace visuVTKAdaptor
 /**
  * @brief Adaptor using for displayed an orientationMarker in a generic scene
  */
-class VISUVTKADAPTOR_CLASS_API OrientationMarker : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API OrientationMarker : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (OrientationMarker)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (OrientationMarker)(::fwRenderVTK::IAdaptor) );
     VISUVTKADAPTOR_API OrientationMarker();
 
 protected:
@@ -37,6 +37,8 @@ protected:
     void doSwap()
     {
     }
+    //------------------------------------------------------------------------------
+
     void doUpdate()
     {
     }

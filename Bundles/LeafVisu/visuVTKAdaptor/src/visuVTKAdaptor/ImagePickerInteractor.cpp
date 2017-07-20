@@ -21,6 +21,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/tokenizer.hpp>
+
 #include <vtkAbstractPropPicker.h>
 #include <vtkActor.h>
 #include <vtkCommand.h>
@@ -28,12 +30,10 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include <boost/tokenizer.hpp>
-
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {

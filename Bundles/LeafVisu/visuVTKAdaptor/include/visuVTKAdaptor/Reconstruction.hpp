@@ -10,7 +10,7 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace fwData
 {
@@ -20,12 +20,12 @@ class Mesh;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Reconstruction : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Reconstruction : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Reconstruction)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Reconstruction() noexcept;
 
@@ -51,7 +51,7 @@ public:
     VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
 
     /// Retrieve a weak_ptr on underlying mesh adaptor service
-    ::fwRenderVTK::IVtkAdaptorService::wptr getMeshService() const
+    ::fwRenderVTK::IAdaptor::wptr getMeshService() const
     {
         return m_meshService;
     }
@@ -97,7 +97,7 @@ protected:
 
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_meshService;
+    ::fwRenderVTK::IAdaptor::wptr m_meshService;
 
     double m_sharpEdgeAngle;
 

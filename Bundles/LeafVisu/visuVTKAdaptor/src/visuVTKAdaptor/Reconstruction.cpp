@@ -35,7 +35,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Reconstruction,
                          ::fwData::Reconstruction );
 
 namespace visuVTKAdaptor
@@ -92,8 +92,8 @@ void Reconstruction::createMeshService()
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr meshService;
-        meshService = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+        ::fwRenderVTK::IAdaptor::sptr meshService;
+        meshService = ::fwServices::add< ::fwRenderVTK::IAdaptor > (
             mesh,
             "::visuVTKAdaptor::Mesh" );
         SLM_ASSERT("meshService not instanced", meshService);
@@ -137,7 +137,7 @@ void Reconstruction::doUpdate()
 
     if (!m_meshService.expired())
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
+        ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
 
         ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor      = Mesh::dynamicCast(meshService);
@@ -179,7 +179,7 @@ void Reconstruction::updateVisibility(bool visible)
     SLM_TRACE_FUNC();
     if (!m_meshService.expired())
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
+        ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor
             = Mesh::dynamicCast(meshService);
 

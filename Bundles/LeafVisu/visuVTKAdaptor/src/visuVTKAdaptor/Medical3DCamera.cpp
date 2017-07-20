@@ -14,15 +14,15 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/assign/list_of.hpp>
+
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleImage.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 
-#include <boost/assign/list_of.hpp>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {

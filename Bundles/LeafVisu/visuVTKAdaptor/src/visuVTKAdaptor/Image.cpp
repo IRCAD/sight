@@ -30,7 +30,7 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Image, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {

@@ -32,7 +32,7 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -95,9 +95,9 @@ void NegatoOneSlice::cleanImageSource()
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IVtkAdaptorService::sptr NegatoOneSlice::getImageSliceAdaptor()
+::fwRenderVTK::IAdaptor::sptr NegatoOneSlice::getImageSliceAdaptor()
 {
-    ::fwRenderVTK::IVtkAdaptorService::sptr adaptor;
+    ::fwRenderVTK::IAdaptor::sptr adaptor;
 
     if (m_imageSliceAdaptor.expired())
     {
@@ -108,7 +108,7 @@ void NegatoOneSlice::cleanImageSource()
         image          = this->getObject< ::fwData::Image >();
         sceneComposite = this->getRenderService()->getComposite();
 
-        adaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+        adaptor = ::fwServices::add< ::fwRenderVTK::IAdaptor >(
             sceneComposite,
             "::visuVTKAdaptor::ImageSlice");
         adaptor->setRenderService(this->getRenderService());
@@ -137,16 +137,16 @@ void NegatoOneSlice::cleanImageSource()
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IVtkAdaptorService::sptr NegatoOneSlice::getImageAdaptor()
+::fwRenderVTK::IAdaptor::sptr NegatoOneSlice::getImageAdaptor()
 {
-    ::fwRenderVTK::IVtkAdaptorService::sptr adaptor;
+    ::fwRenderVTK::IAdaptor::sptr adaptor;
 
     if (m_imageAdaptor.expired())
     {
         OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
         image   = this->getObject< ::fwData::Image >();
-        adaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+        adaptor = ::fwServices::add< ::fwRenderVTK::IAdaptor >(
             image,
             "::visuVTKAdaptor::Image");
         adaptor->setRenderService(this->getRenderService());

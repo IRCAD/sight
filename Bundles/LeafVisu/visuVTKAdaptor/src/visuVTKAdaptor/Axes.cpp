@@ -22,7 +22,7 @@
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Axes, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {

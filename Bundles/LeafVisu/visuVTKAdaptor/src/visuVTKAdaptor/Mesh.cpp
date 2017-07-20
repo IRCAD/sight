@@ -45,7 +45,7 @@
 #include <vtkTextureMapToSphere.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Mesh, ::fwData::Mesh );
 
 //-----------------------------------------------------------------------------
 
@@ -328,8 +328,8 @@ public:
                 vtkPlaneCollection* newCollection = vtkPlaneCollection::New();
                 newCollection->AddItem(newPlane);
 
-                ::fwRenderVTK::IVtkAdaptorService::sptr meshService =
-                    ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+                ::fwRenderVTK::IAdaptor::sptr meshService =
+                    ::fwServices::add< ::fwRenderVTK::IAdaptor > (
                         service->getObject(),
                         "::visuVTKAdaptor::Mesh" );
 
@@ -526,9 +526,9 @@ void Mesh::doStart()
 {
     if(!m_textureAdaptorUID.empty())
     {
-        ::fwRenderVTK::SRender::sptr renderService      = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor  = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::fwRenderVTK::SRender::sptr renderService     = this->getRenderService();
+        ::fwRenderVTK::IAdaptor::sptr adaptor          = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections.connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
@@ -569,8 +569,8 @@ void Mesh::doSwap()
     m_transformService.lock()->stop();
     ::fwServices::OSR::unregisterService(m_transformService.lock());
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr materialService              = m_materialService.lock();
-    ::fwRenderVTK::IVtkAdaptorService::sptr unclippedPartMaterialService = m_unclippedPartMaterialService.lock();
+    ::fwRenderVTK::IAdaptor::sptr materialService              = m_materialService.lock();
+    ::fwRenderVTK::IAdaptor::sptr unclippedPartMaterialService = m_unclippedPartMaterialService.lock();
 
     this->setServiceOnMaterial(materialService, m_material);
     this->setServiceOnMaterial(unclippedPartMaterialService, m_unclippedPartMaterial);
@@ -603,7 +603,7 @@ void Mesh::createTransformService()
     vtkTransform* vtkFieldTransform = vtkTransform::New();
     vtkFieldTransform->Identity();
     m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
-        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
+        ::fwServices::add< ::fwRenderVTK::IAdaptor > (
             fieldTransform,
             "::visuVTKAdaptor::Transform"
             )
@@ -675,11 +675,11 @@ void Mesh::setClippingPlanesId(::fwRenderVTK::SRender::VtkObjectIdType id)
 
 //------------------------------------------------------------------------------
 
-void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr& srv, ::fwData::Material::sptr material)
+void Mesh::setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv, ::fwData::Material::sptr material)
 {
     if (!srv)
     {
-        srv = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (material, "::visuVTKAdaptor::Material");
+        srv = ::fwServices::add< ::fwRenderVTK::IAdaptor > (material, "::visuVTKAdaptor::Material");
         SLM_ASSERT("srv not instanced", srv);
 
         srv->setRenderService(this->getRenderService());
@@ -730,8 +730,8 @@ void Mesh::createNormalsService()
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
-        ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+        ::fwRenderVTK::IAdaptor::sptr service =
+            ::fwServices::add< ::fwRenderVTK::IAdaptor >(
                 mesh,
                 "::visuVTKAdaptor::MeshNormals"
                 );
@@ -773,8 +773,8 @@ void Mesh::buildPipeline()
         this->setVtkClippingPlanes( planes );
     }
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr materialService;
-    ::fwRenderVTK::IVtkAdaptorService::sptr unclippedPartMaterialService;
+    ::fwRenderVTK::IAdaptor::sptr materialService;
+    ::fwRenderVTK::IAdaptor::sptr unclippedPartMaterialService;
 
     this->setServiceOnMaterial(materialService, m_material);
     this->setServiceOnMaterial(unclippedPartMaterialService, m_unclippedPartMaterial);

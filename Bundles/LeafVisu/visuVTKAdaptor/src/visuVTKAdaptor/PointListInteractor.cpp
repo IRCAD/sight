@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PointListInteractor,
                          ::fwData::PointList );
 
 namespace visuVTKAdaptor
@@ -41,7 +41,9 @@ namespace visuVTKAdaptor
 class PointListInteractorCallback : public vtkCommand
 {
 public:
-    static PointListInteractorCallback *New()
+    //------------------------------------------------------------------------------
+
+    static PointListInteractorCallback* New()
     {
         return new PointListInteractorCallback();
     }
@@ -58,9 +60,11 @@ public:
     {
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    //------------------------------------------------------------------------------
+
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
-        assert(m_priority>=0);
+        assert(m_priority >= 0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
         SLM_ASSERT("m_picker not instanced", m_picker);
         if ( m_mouseMoveObserved ||
@@ -95,9 +99,11 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     bool pickSomething()
     {
-        int x,y;
+        int x, y;
         double display[3];
 
         m_adaptor->getInteractor()->GetEventPosition(x, y);
@@ -108,6 +114,7 @@ public:
         return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
+    //------------------------------------------------------------------------------
 
     void process() // from
     {
@@ -117,15 +124,21 @@ public:
         m_adaptor->addPoint( world[0], world[1], world[2] );
     }
 
+    //------------------------------------------------------------------------------
+
     void setAdaptor( PointListInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
 
-    void setPicker( vtkAbstractPropPicker *adaptor)
+    //------------------------------------------------------------------------------
+
+    void setPicker( vtkAbstractPropPicker* adaptor)
     {
         m_picker = adaptor;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPriority( float priority )
     {
@@ -134,7 +147,7 @@ public:
 
 protected:
     PointListInteractor::sptr m_adaptor;
-    vtkAbstractPropPicker *m_picker;
+    vtkAbstractPropPicker* m_picker;
     float m_priority;
 
     bool m_mouseMoveObserved;
@@ -165,7 +178,7 @@ void PointListInteractor::doConfigure()
 
 void PointListInteractor::doStart()
 {
-    PointListInteractorCallback *observer = PointListInteractorCallback::New();
+    PointListInteractorCallback* observer = PointListInteractorCallback::New();
     observer->setAdaptor( PointListInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
@@ -217,7 +230,7 @@ void PointListInteractor::resetPointList()
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::addPoint(const double &x, const double &y, const double &z)
+void PointListInteractor::addPoint(const double& x, const double& y, const double& z)
 {
     ::fwData::PointList::sptr list             = this->getObject< ::fwData::PointList >();
     ::fwData::Point::PointCoordArrayType coord = {{ x, y, z }};

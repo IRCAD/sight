@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkSmartPointer.h>
 
@@ -24,12 +24,12 @@ class vtkGlyph3D;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API VectorField : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API VectorField : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (VectorField)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (VectorField)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API VectorField() noexcept;
 

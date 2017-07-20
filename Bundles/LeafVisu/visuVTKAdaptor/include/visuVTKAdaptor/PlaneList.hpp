@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,35 +9,39 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/MeshFactory.hpp"
 #include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwData/Plane.hpp>
 
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkCommand;
 
 namespace visuVTKAdaptor
 {
 
-
-class VISUVTKADAPTOR_CLASS_API PlaneList : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PlaneList : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PlaneList)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API PlaneList() noexcept;
 
     VISUVTKADAPTOR_API virtual ~PlaneList() noexcept;
 
+    //------------------------------------------------------------------------------
+
     void setPlaneCollectionId(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_planeCollectionId = id;
     }
+
+    //------------------------------------------------------------------------------
 
     ::fwRenderVTK::SRender::VtkObjectIdType getPlaneCollectionId() const
     {
@@ -79,9 +83,6 @@ private:
      * @}
      */
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

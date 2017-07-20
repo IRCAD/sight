@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,26 +10,30 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Resection : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Resection : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Resection)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Resection)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Resection() noexcept;
 
     VISUVTKADAPTOR_API virtual ~Resection() noexcept;
 
+    //------------------------------------------------------------------------------
+
     void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_clippingPlanes = id;
     }
+
+    //------------------------------------------------------------------------------
 
     void setSharpEdgeAngle(double angle)
     {
@@ -59,9 +63,6 @@ private:
     double m_sharpEdgeAngle;
     bool m_autoResetCamera;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

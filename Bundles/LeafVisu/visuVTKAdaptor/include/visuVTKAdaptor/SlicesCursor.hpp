@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,13 +13,11 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkPolyData;
 class vtkPolyDataMapper;
 class vtkActor;
-
 
 namespace visuVTKAdaptor
 {
@@ -54,11 +52,11 @@ namespace visuVTKAdaptor
  */
 
 class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                              public ::fwRenderVTK::IVtkAdaptorService
+                                              public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SlicesCursor)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API SlicesCursor()  noexcept;
 
@@ -144,9 +142,6 @@ private:
                                     double _ptBprime[3] );
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

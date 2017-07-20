@@ -13,7 +13,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <boost/logic/tribool.hpp>
 
@@ -56,12 +56,12 @@ class SliceCursor;
  * - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                           public ::fwRenderVTK::IVtkAdaptorService
+                                           public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (NegatoMPR)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API NegatoMPR() noexcept;
 
@@ -128,7 +128,7 @@ protected:
     VISUVTKADAPTOR_API void doConfigure();
     VISUVTKADAPTOR_API void doSwap();
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr addAdaptor(std::string adaptor, int axis = -1);
+    ::fwRenderVTK::IAdaptor::sptr addAdaptor(std::string adaptor, int axis = -1);
 
 private:
 
@@ -169,7 +169,7 @@ private:
     SliceMode m_backupedSliceMode;
     ::fwCom::helper::SigSlotConnection m_connections; /// store subservices connections
 
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_sliceCursor;
+    ::fwRenderVTK::IAdaptor::wptr m_sliceCursor;
 };
 
 } //namespace visuVTKAdaptor

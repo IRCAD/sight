@@ -7,7 +7,7 @@
     <requirement id="visuVTK" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <type>::fwRenderVTK::IAdaptor</type>
         <service>::visuVTKVRAdaptor::Volume</service>
         <object>::fwData::Image</object>
     </extension>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,17 +17,15 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <vtkActor2D.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 
-#include <boost/algorithm/string.hpp>
-
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSliceOrientationText,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSliceOrientationText,
                          ::fwData::Object );
 
 namespace visuVTKAdaptor
@@ -38,6 +36,8 @@ class ImageSliceOrientationTextPImpl
 public:
     typedef vtkSmartPointer<vtkActor2D> TextActorPtr;
     typedef vtkSmartPointer<vtkTextMapper> TextMapperPtr;
+
+    //------------------------------------------------------------------------------
 
     void configure(TextActorPtr& actor, TextMapperPtr& mapper)
     {
@@ -86,6 +86,8 @@ public:
         textProp->SetVerticalJustificationToBottom();
     }
 
+    //------------------------------------------------------------------------------
+
     void setText(const std::string& str)
     {
         m_rightStr     = "-";
@@ -101,15 +103,17 @@ public:
             ::boost::algorithm::split( locations, str, ::boost::algorithm::is_any_of(",") );
             SLM_ASSERT("Six location should be given, got : " << locations.size() << ":" << str, locations.size());
 
-            m_rightStr     = (locations.size()>0) ? locations[0] : "";
-            m_leftStr      = (locations.size()>1) ? locations[1] : "";
-            m_anteriorStr  = (locations.size()>2) ? locations[2] : "";
-            m_porteriorStr = (locations.size()>3) ? locations[3] : "";
-            m_superiorStr  = (locations.size()>4) ? locations[4] : "";
-            m_inferiorStr  = (locations.size()>5) ? locations[5] : "";
+            m_rightStr     = (locations.size() > 0) ? locations[0] : "";
+            m_leftStr      = (locations.size() > 1) ? locations[1] : "";
+            m_anteriorStr  = (locations.size() > 2) ? locations[2] : "";
+            m_porteriorStr = (locations.size() > 3) ? locations[3] : "";
+            m_superiorStr  = (locations.size() > 4) ? locations[4] : "";
+            m_inferiorStr  = (locations.size() > 5) ? locations[5] : "";
         }
 
     }
+
+    //------------------------------------------------------------------------------
 
     void setOrientation( ::fwDataTools::helper::MedicalImageAdaptor::Orientation orientation )
     {
@@ -165,7 +169,8 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSlice
 
 //------------------------------------------------------------------------------
 
-ImageSliceOrientationText::ImageSliceOrientationText() noexcept : m_pimpl( new ImageSliceOrientationTextPImpl )
+ImageSliceOrientationText::ImageSliceOrientationText() noexcept :
+    m_pimpl( new ImageSliceOrientationTextPImpl )
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &ImageSliceOrientationText::updateSliceType, this);
 }
@@ -256,13 +261,13 @@ void ImageSliceOrientationText::doConfigure()
 
     ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("config");
 
-    m_locations = srvconfig.get("locations","");
+    m_locations = srvconfig.get("locations", "");
 
     // R,L,A,P,S,I, right, left, anterior, posterior, superior, inferior, referenced by :
     // http://en.wikipedia.org/wiki/Anatomical_terms_of_location#Human_anatomy
     m_locations = (m_locations == "default") ? "R,L,A,P,S,I" : m_locations;
 
-    m_initialOrientation = srvconfig.get("initialOrientation","axial");
+    m_initialOrientation = srvconfig.get("initialOrientation", "axial");
     SLM_TRACE("initialOrientation " + m_initialOrientation);
 }
 
@@ -279,6 +284,5 @@ void ImageSliceOrientationText::doConfigure()
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

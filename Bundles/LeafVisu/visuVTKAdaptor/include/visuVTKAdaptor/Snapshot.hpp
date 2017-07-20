@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __VISUVTKADAPTOR_SNAPSHOT_HPP__
 #define __VISUVTKADAPTOR_SNAPSHOT_HPP__
 
-
-#include "visuVTKAdaptor/MeshFactory.hpp"
 #include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -35,12 +34,12 @@ namespace visuVTKAdaptor
  *
  */
 
-class VISUVTKADAPTOR_CLASS_API Snapshot : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Snapshot : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Snapshot)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Snapshot)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Snapshot() noexcept;
 
@@ -75,7 +74,6 @@ private:
     /// Type of slot to snap shot to image
     static const ::fwCom::Slots::SlotKeyType s_SNAPTOIMAGE_SLOT;
 
-
     /// Slot: snap shot the generic scene.
     void snap(std::string filePath);
 
@@ -88,7 +86,6 @@ private:
     /// UID of the image
     std::string m_imageUid;
 };
-
 
 } //namespace visuVTKAdaptor
 

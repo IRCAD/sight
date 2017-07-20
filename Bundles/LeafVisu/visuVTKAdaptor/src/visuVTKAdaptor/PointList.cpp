@@ -30,7 +30,7 @@
 #include <functional>
 #include <iterator>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PointList, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
@@ -150,14 +150,14 @@ void PointList::createServices(WeakPointListType& wPtList)
 
         ::fwData::Point::sptr pt = wpt.lock();
 
-        ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+        ::fwRenderVTK::IAdaptor::sptr service =
+            ::fwServices::add< ::fwRenderVTK::IAdaptor >
                 ( pt, "::visuVTKAdaptor::Point" );
         SLM_ASSERT("service not instanced", service);
 
         ::visuVTKAdaptor::Point::sptr pointAdaptor = ::visuVTKAdaptor::Point::dynamicCast(service);
 
-        SLM_ASSERT("Bad cast of IVtkAdaptorService to Point", pointAdaptor);
+        SLM_ASSERT("Bad cast of IAdaptor to Point", pointAdaptor);
 
         service->setRenderService(this->getRenderService());
         service->setRenderId( this->getRenderId() );

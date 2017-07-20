@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkCommand;
 class vtkActor;
@@ -29,11 +29,11 @@ namespace visuVTKAdaptor
  * @brief   Draw pixel information from images given by id in composite.
  */
 class VISUVTKADAPTOR_CLASS_API ImagesProbeCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
-                                                   public ::fwRenderVTK::IVtkAdaptorService
+                                                   public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ImagesProbeCursor)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ImagesProbeCursor)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API ImagesProbeCursor() noexcept;
 
@@ -82,12 +82,7 @@ protected:
     vtkPolyDataMapper* m_cursorMapper;
     vtkActor* m_cursorActor;
 
-
-
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

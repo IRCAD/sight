@@ -11,7 +11,7 @@
 
 #include <fwData/Color.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkActor.h>
 #include <vtkLineSource.h>
@@ -42,11 +42,11 @@ namespace visuVTKAdaptor
  * - \b dotted : true if dotted line
  */
 
-class VISUVTKADAPTOR_CLASS_API SLine : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API SLine : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API SLine() noexcept;
     VISUVTKADAPTOR_API virtual ~SLine() noexcept;

@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/ModelSeries.hpp"
+
+#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/Reconstruction.hpp"
 #include "visuVTKAdaptor/Texture.hpp"
 
@@ -25,7 +26,7 @@
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries );
 
 namespace visuVTKAdaptor
 {
@@ -104,9 +105,9 @@ void ModelSeries::doUpdate()
 
     if(!m_textureAdaptorUID.empty())
     {
-        ::fwRenderVTK::SRender::sptr renderService      = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor  = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::fwRenderVTK::SRender::sptr renderService     = this->getRenderService();
+        ::fwRenderVTK::IAdaptor::sptr adaptor          = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections.connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
@@ -115,8 +116,8 @@ void ModelSeries::doUpdate()
 
     for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+        ::fwRenderVTK::IAdaptor::sptr service =
+            ::fwServices::add< ::fwRenderVTK::IAdaptor >
                 ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
         SLM_ASSERT("service not instanced", service);
 
@@ -133,7 +134,6 @@ void ModelSeries::doUpdate()
         renconstructionAdaptor->setForceHide( !showRec );
 
         this->registerService(service);
-
 
         if(!m_textureAdaptorUID.empty())
         {

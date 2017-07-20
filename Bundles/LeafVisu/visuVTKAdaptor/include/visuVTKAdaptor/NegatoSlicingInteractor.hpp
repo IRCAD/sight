@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,23 +13,20 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class VISUVTKADAPTOR_CLASS_API vtkCommand;
 
 namespace visuVTKAdaptor
 {
 
-
-
 class VISUVTKADAPTOR_CLASS_API NegatoSlicingInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                         public ::fwRenderVTK::IVtkAdaptorService
+                                                         public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoSlicingInteractor)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (NegatoSlicingInteractor)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API NegatoSlicingInteractor() noexcept;
 
@@ -94,7 +91,6 @@ protected:
 
     vtkCommand* m_vtkObserver;
     double m_priority;
-
 
 private:
 

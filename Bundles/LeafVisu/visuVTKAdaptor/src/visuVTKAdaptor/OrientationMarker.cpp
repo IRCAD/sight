@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,24 +9,24 @@
 
 #include <fwServices/macros.hpp>
 
-#include <vtkCubeSource.h>
-#include <vtkRenderer.h>
 #include <vtkActor.h>
 #include <vtkAxesActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkOrientationMarkerWidget.h>
+#include <vtkCubeSource.h>
 #include <vtkGenericDataObjectReader.h>
+#include <vtkOrientationMarkerWidget.h>
 #include <vtkPolyData.h>
-#include <vtkTransform.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 
-OrientationMarker::OrientationMarker() : m_hAlign("left")
+OrientationMarker::OrientationMarker() :
+    m_hAlign("left")
 {
 }
 
@@ -40,11 +40,10 @@ void OrientationMarker::doStart()
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
     reader->SetFileName( file.c_str() );
     reader->Update();
-    vtkDataObject *obj = reader->GetOutput();
+    vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
 
     SLM_WARN_IF("Orientation marker load failed", !obj);
-
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(mesh);
@@ -89,7 +88,6 @@ void OrientationMarker::doConfigure()
                    || m_hAlign == "right");
     }
 }
-
 
 } //namespace visuVTKAdaptor
 #endif // ANDROID

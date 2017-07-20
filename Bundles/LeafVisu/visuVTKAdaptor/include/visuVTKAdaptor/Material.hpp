@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class VISUVTKADAPTOR_CLASS_API vtkProperty;
 
@@ -23,24 +21,23 @@ class Material;
 namespace visuVTKAdaptor
 {
 
-
 /**
  * @brief Manage material representation of meshes
  */
-class VISUVTKADAPTOR_CLASS_API Material : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Material : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Material)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Material)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Material() noexcept;
 
     VISUVTKADAPTOR_API virtual ~Material() noexcept;
 
-    VISUVTKADAPTOR_API void setVtkProperty(vtkProperty *property);
+    VISUVTKADAPTOR_API void setVtkProperty(vtkProperty* property);
 
-    VISUVTKADAPTOR_API vtkProperty *getVtkProperty() const;
+    VISUVTKADAPTOR_API vtkProperty* getVtkProperty() const;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -60,15 +57,11 @@ protected:
 
     void updateMaterial( SPTR(::fwData::Material) material );
 
-
-    vtkProperty *m_property;
+    vtkProperty* m_property;
     bool m_manageProperty;
     bool m_lighting;
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

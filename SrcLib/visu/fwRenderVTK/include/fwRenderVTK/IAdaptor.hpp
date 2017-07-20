@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
-#define __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
+#ifndef __FWRENDERVTK_IADAPTOR_HPP__
+#define __FWRENDERVTK_IADAPTOR_HPP__
 
-#include "fwRenderVTK/SRender.hpp"
 #include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/SRender.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
@@ -25,31 +25,30 @@ class vtkTransform;
 namespace fwRenderVTK
 {
 
-class FWRENDERVTK_CLASS_API IVtkAdaptorService : public fwServices::IService
+class FWRENDERVTK_CLASS_API IAdaptor : public fwServices::IService
 {
 friend class SRender;
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
 
     typedef fwServices::IService SuperClass;
-
 
     /// To set a representation
     virtual void show(bool b = true)
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void hide()
     {
         this->show(false);
     }
-
 
     FWRENDERVTK_API void setRenderService( SRender::sptr service );
     FWRENDERVTK_API void setRenderId(SRender::RendererIdType newID);
     FWRENDERVTK_API SRender::sptr getRenderService() const;
     FWRENDERVTK_API SRender::RendererIdType getRenderId() const;
     FWRENDERVTK_API vtkRenderer* getRenderer();
-
 
     FWRENDERVTK_API void setPickerId(SRender::PickerIdType newID);
     FWRENDERVTK_API SRender::PickerIdType getPickerId() const;
@@ -62,7 +61,6 @@ public:
     FWRENDERVTK_API vtkObject* getVtkObject(const SRender::VtkObjectIdType& objectId) const;
 
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
-
 
     FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp* prop, int depth = 0);
 
@@ -108,12 +106,12 @@ protected:
     /**
      * @brief   constructor
      */
-    FWRENDERVTK_API IVtkAdaptorService() noexcept;
+    FWRENDERVTK_API IAdaptor() noexcept;
 
     /**
      * @brief   destructor
      */
-    FWRENDERVTK_API virtual ~IVtkAdaptorService() noexcept;
+    FWRENDERVTK_API virtual ~IAdaptor() noexcept;
 
     /**
      * @name    Standard service methods
@@ -128,7 +126,6 @@ protected:
     FWRENDERVTK_API void updating();
     //@}
 
-
     /// priority of comChannel observing related object (specified with objectId)
     double m_comChannelPriority;
 
@@ -141,8 +138,7 @@ protected:
 
     ::fwCom::helper::SigSlotConnection m_connections;
 
-
-    typedef std::vector < ::fwRenderVTK::IVtkAdaptorService::wptr > ServiceVector;
+    typedef std::vector < ::fwRenderVTK::IAdaptor::wptr > ServiceVector;
     ServiceVector m_subServices;
 
     vtkPropCollection* m_propCollection;
@@ -156,11 +152,13 @@ protected:
     FWRENDERVTK_API virtual void doUpdate()    = 0;
     FWRENDERVTK_API virtual void doConfigure() = 0;
 
+    //------------------------------------------------------------------------------
+
     ServiceVector& getRegisteredServices()
     {
         return m_subServices;
     }
-    FWRENDERVTK_API void registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service );
+    FWRENDERVTK_API void registerService( ::fwRenderVTK::IAdaptor::sptr service );
     FWRENDERVTK_API void unregisterServices();
 
     FWRENDERVTK_API void registerProp(vtkProp* prop);
@@ -186,7 +184,7 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-CSPTR(DATATYPE) IVtkAdaptorService::getSafeInput(const std::string& key) const
+CSPTR(DATATYPE) IAdaptor::getSafeInput(const std::string& key) const
 {
     if( ::fwServices::IService::isVersion2() )
     {
@@ -201,7 +199,7 @@ CSPTR(DATATYPE) IVtkAdaptorService::getSafeInput(const std::string& key) const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-SPTR(DATATYPE) IVtkAdaptorService::getSafeInOut(const std::string& key) const
+SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
 {
     if( ::fwServices::IService::isVersion2() )
     {
@@ -217,4 +215,4 @@ SPTR(DATATYPE) IVtkAdaptorService::getSafeInOut(const std::string& key) const
 
 }
 
-#endif /*__FWRENDERVTK_IVTKADAPTORSERVICE_HPP__*/
+#endif /*__FWRENDERVTK_IADAPTOR_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,11 +20,11 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkMath.h>
 #include <vtkMatrix4x4.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -34,7 +34,8 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 
 //------------------------------------------------------------------------------
 
-SliceFollowerCamera::SliceFollowerCamera() noexcept : m_camera(nullptr)
+SliceFollowerCamera::SliceFollowerCamera() noexcept :
+    m_camera(nullptr)
 {
     m_comChannelPriority = 0.49;
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceFollowerCamera::updateSliceIndex, this);

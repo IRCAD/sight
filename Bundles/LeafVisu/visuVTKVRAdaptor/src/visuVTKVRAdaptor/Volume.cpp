@@ -37,7 +37,7 @@
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKVRAdaptor::Volume, ::fwData::Image );
 
 namespace visuVTKVRAdaptor
 {
@@ -130,7 +130,7 @@ static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 
 Volume::Volume() noexcept :
     ::fwDataTools::helper::MedicalImageAdaptor(),
-    ::fwRenderVTK::IVtkAdaptorService(),
+    ::fwRenderVTK::IAdaptor(),
     m_clippingPlanes(nullptr),
     m_volumeMapper( vtkSmartVolumeMapper::New()),
     m_volumeProperty(vtkVolumeProperty::New()),

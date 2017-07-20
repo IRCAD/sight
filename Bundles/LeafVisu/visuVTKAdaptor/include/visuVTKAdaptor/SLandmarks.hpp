@@ -11,7 +11,7 @@
 
 #include <fwData/Landmarks.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/vtk/fwHandleRepresentation3D.hpp>
 
 #include <fwThread/Timer.hpp>
@@ -56,12 +56,12 @@ namespace visuVTKAdaptor
  * - \b picker: landmarks picker
  * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
-class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLandmarks)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SLandmarks)(::fwRenderVTK::IAdaptor) );
     fwCoreAllowSharedFromThis();
 
     /// Widget used to display and interact with landmarks.

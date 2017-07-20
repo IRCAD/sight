@@ -12,14 +12,14 @@
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Connection.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/PlaneList.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -27,12 +27,12 @@ namespace visuVTKAdaptor
 /**
  * @brief Update selection plan in resection activity
  */
-class VISUVTKADAPTOR_CLASS_API PlaneSelectionNotifier : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PlaneSelectionNotifier : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (PlaneSelectionNotifier)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PlaneSelectionNotifier)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API PlaneSelectionNotifier() noexcept;
 

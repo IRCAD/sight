@@ -16,7 +16,7 @@
 
 #include <fwData/Color.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkHandleWidget;
 class vtkHandleRepresentation;
@@ -45,12 +45,12 @@ namespace visuVTKAdaptor
  * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 
-class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Point)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Point)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Point() noexcept;
 

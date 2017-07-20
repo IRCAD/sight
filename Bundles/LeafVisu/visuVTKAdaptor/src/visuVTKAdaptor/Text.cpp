@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/Text.hpp"
 
+#include <fwData/Color.hpp>
+#include <fwData/GenericFieldBase.hpp>
+
 #include <fwDataCamp/getObject.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwData/GenericFieldBase.hpp>
-#include <fwData/Color.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -19,7 +19,7 @@
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 
-fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Text, ::fwData::Object);
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Text, ::fwData::Object);
 
 namespace visuVTKAdaptor
 {
@@ -77,7 +77,7 @@ void Text::doConfigure()
         auto textVector = m_configuration->find("text");
         if(!textVector.empty())
         {
-            OSLM_ASSERT("<text> tag shall be set at most once", textVector.size()<=1);
+            OSLM_ASSERT("<text> tag shall be set at most once", textVector.size() <= 1);
             auto item = textVector[0];
             text = item->getValue();
         }
@@ -179,12 +179,12 @@ void Text::setAlignment()
         y = 0.02;
     }
 
-    m_actor->SetPosition(x,y);
+    m_actor->SetPosition(x, y);
 }
 
 //-----------------------------------------------------------------------------
 
-void Text::setText(const std::string &str)
+void Text::setText(const std::string& str)
 {
     m_text = str;
     m_mapper->SetInput(m_text.c_str());

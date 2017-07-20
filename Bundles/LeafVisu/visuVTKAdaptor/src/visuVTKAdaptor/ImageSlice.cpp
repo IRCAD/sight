@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,8 +32,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
@@ -326,20 +325,20 @@ void ImageSlice::buildOutline()
     int i;
     for (i = 0; i < 4; i++)
     {
-        points->SetPoint(i,0.0,0.0,0.0);
+        points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
     vtkCellArray* cells = vtkCellArray::New();
-    cells->Allocate(cells->EstimateSize(4,2));
+    cells->Allocate(cells->EstimateSize(4, 2));
     vtkIdType pts[2];
     pts[0] = 3; pts[1] = 2;       // top edge
-    cells->InsertNextCell(2,pts);
+    cells->InsertNextCell(2, pts);
     pts[0] = 0; pts[1] = 1;       // bottom edge
-    cells->InsertNextCell(2,pts);
+    cells->InsertNextCell(2, pts);
     pts[0] = 0; pts[1] = 3;       // left edge
-    cells->InsertNextCell(2,pts);
+    cells->InsertNextCell(2, pts);
     pts[0] = 1; pts[1] = 2;       // right edge
-    cells->InsertNextCell(2,pts);
+    cells->InsertNextCell(2, pts);
 
     m_planeOutlinePolyData->SetPoints(points);
     points->Delete();
@@ -366,15 +365,14 @@ void ImageSlice::buildOutline()
 void ImageSlice::updateOutline()
 {
     SLM_TRACE_FUNC();
-    static const int indexZ[12]   = { 0,2,4, 1,2,4,  1,3,4,0,3,4 };
-    static const int indexY[12]   = { 0,2,4, 1,2,4,  1,2,5,0,2,5 };
-    static const int indexX[12]   = { 0,2,4, 0,2,5,  0,3,5,0,3,4 };
+    static const int indexZ[12]   = { 0, 2, 4, 1, 2, 4,  1, 3, 4, 0, 3, 4 };
+    static const int indexY[12]   = { 0, 2, 4, 1, 2, 4,  1, 2, 5, 0, 2, 5 };
+    static const int indexX[12]   = { 0, 2, 4, 0, 2, 5,  0, 3, 5, 0, 3, 4 };
     static const int* indexSet[3] = { indexX, indexY, indexZ  };
-    static double colors[3][3]    = { {0.,0.,1.}, {0.,1.,0.}, {1.,0.,0.} };
+    static double colors[3][3]    = { {0., 0., 1.}, {0., 1., 0.}, {1., 0., 0.} };
 
     double* extent    = m_imageActor->GetBounds();
     vtkPoints* points = m_planeOutlinePolyData->GetPoints();
-
 
     const int* index = indexSet[ m_orientation ];
     for ( int i = 0; i < 4; ++i)
@@ -383,7 +381,7 @@ void ImageSlice::updateOutline()
         pt[0] = extent[ *(index++) ];
         pt[1] = extent[ *(index++) ];
         pt[2] = extent[ *(index++) ];
-        points->SetPoint(i,pt);
+        points->SetPoint(i, pt);
     }
 
     points->GetData()->Modified();

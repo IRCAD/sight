@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,22 +16,22 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/format.hpp>
+
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
 
-#include <boost/format.hpp>
-
 #include <sstream>
 
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PointLabel, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-PointLabel::PointLabel() : Text()
+PointLabel::PointLabel() :
+    Text()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
@@ -66,7 +66,7 @@ void PointLabel::doUpdate()
     double py = point->getCRefCoord()[1];
     double pz = point->getCRefCoord()[2];
 
-    m_actor->GetPositionCoordinate()->SetValue(px,py,pz);
+    m_actor->GetPositionCoordinate()->SetValue(px, py, pz);
     this->setVtkPipelineModified();
 }
 

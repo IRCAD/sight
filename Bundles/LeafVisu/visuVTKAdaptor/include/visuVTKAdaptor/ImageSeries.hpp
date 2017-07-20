@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,42 +7,47 @@
 #ifndef __VISUVTKADAPTOR_IMAGESERIES_HPP__
 #define __VISUVTKADAPTOR_IMAGESERIES_HPP__
 
-#include "visuVTKAdaptor/NegatoMPR.hpp"
 #include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/NegatoMPR.hpp"
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vector>
 
 namespace visuVTKAdaptor
 {
 
-
 /**
  * @brief This adaptor shows ImageSeries. Creates an adaptor for the image in the series.
  */
 class VISUVTKADAPTOR_CLASS_API ImageSeries : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                             public ::fwRenderVTK::IVtkAdaptorService
+                                             public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageSeries)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ImageSeries)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API ImageSeries() noexcept;
 
     VISUVTKADAPTOR_API virtual ~ImageSeries() noexcept;
 
+    //------------------------------------------------------------------------------
+
     void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
+    //------------------------------------------------------------------------------
+
     void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+    //------------------------------------------------------------------------------
+
     void setVtkImageSourceId(std::string id)
     {
         m_imageSourceId = id;
@@ -87,9 +92,6 @@ private:
     NegatoMPR::SliceMode m_sliceMode;
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

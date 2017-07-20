@@ -32,7 +32,7 @@
 #include <vtkSphereSource.h>
 #include <vtkWidgetEventTranslator.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Point, ::fwData::Point );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Point, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
@@ -47,12 +47,12 @@ class vtkPointUpdateCallBack : public vtkCommand
 public:
     //------------------------------------------------------------------------------
 
-    static vtkPointUpdateCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
+    static vtkPointUpdateCallBack* New( ::fwRenderVTK::IAdaptor* service)
     {
         return new vtkPointUpdateCallBack(service);
     }
 
-    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService* service ) :
+    vtkPointUpdateCallBack( ::fwRenderVTK::IAdaptor* service ) :
         m_service(service),
         m_pickLimiter(0)
     {
@@ -123,7 +123,7 @@ public:
 
 protected:
 
-    ::fwRenderVTK::IVtkAdaptorService * m_service;
+    ::fwRenderVTK::IAdaptor * m_service;
 
     int m_pickLimiter;
 };

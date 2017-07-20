@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,9 +15,9 @@
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
@@ -28,7 +28,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTexture.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Texture, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -183,6 +183,5 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

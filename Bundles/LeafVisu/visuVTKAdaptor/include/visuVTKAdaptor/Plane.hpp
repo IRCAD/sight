@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,7 @@
 
 #include <fwData/Plane.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkPlaneSource;
 class vtkPlaneCollection;
@@ -33,14 +32,12 @@ class Plane;
 namespace visuVTKAdaptor
 {
 
-
-
-class VISUVTKADAPTOR_CLASS_API Plane : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Plane : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Plane)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Plane)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Plane() noexcept;
 
@@ -104,7 +101,6 @@ private:
     /// register connections between plane's points and this service
     ::fwCom::helper::SigSlotConnection m_connections;
 };
-
 
 } //namespace visuVTKAdaptor
 

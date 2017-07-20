@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #ifndef ANDROID
 
 #include "visuVTKAdaptor/Plane.hpp"
+
 #include "visuVTKAdaptor/Point.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -36,7 +37,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Plane, ::fwData::Plane );
 
 namespace visuVTKAdaptor
 {
@@ -85,8 +86,8 @@ void Plane::doStart()
 
     for( ::fwData::Point::sptr point :  m_pPlane.lock()->getPoints() )
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr servicePoint =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+        ::fwRenderVTK::IAdaptor::sptr servicePoint =
+            ::fwServices::add< ::fwRenderVTK::IAdaptor >
                 ( point, "::visuVTKAdaptor::Point" );
         SLM_ASSERT("servicePoint not instanced", servicePoint);
 
@@ -225,11 +226,11 @@ void Plane::selectPlane(bool select)
             ::visuVTKAdaptor::Point::sptr servicePoint = ::visuVTKAdaptor::Point::dynamicCast(service.lock());
             if(select)
             {
-                servicePoint->setColor(1.,0.,0.);
+                servicePoint->setColor(1., 0., 0.);
             }
             else
             {
-                servicePoint->setColor(1.,1.,1.);
+                servicePoint->setColor(1., 1., 1.);
             }
         }
     }
@@ -249,8 +250,6 @@ void Plane::selectPlane(bool select)
 }
 
 //------------------------------------------------------------------------------
-
-
 
 } //namespace visuVTKAdaptor
 

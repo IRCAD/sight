@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vector>
 
@@ -24,10 +24,10 @@ namespace visuVTKAdaptor
  * @brief Update the camera according to slice move.
  */
 class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                     public ::fwRenderVTK::IVtkAdaptorService
+                                                     public ::fwRenderVTK::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SliceFollowerCamera)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API SliceFollowerCamera() noexcept;
 
@@ -73,7 +73,6 @@ private:
      * @}
      */
 };
-
 
 } //namespace visuVTKAdaptor
 

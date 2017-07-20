@@ -11,7 +11,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkTransform;
 class vtkBoxWidget2;
@@ -23,11 +23,11 @@ namespace visuVTKAdaptor
 class Transform;
 
 // BoxWidget
-class VISUVTKADAPTOR_CLASS_API BoxWidget : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API BoxWidget : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (BoxWidget)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (BoxWidget)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API BoxWidget() noexcept;
     VISUVTKADAPTOR_API virtual ~BoxWidget() noexcept;

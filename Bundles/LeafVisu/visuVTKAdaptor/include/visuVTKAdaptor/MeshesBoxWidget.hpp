@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #ifndef ANDROID
 
@@ -30,16 +30,13 @@ namespace visuVTKAdaptor
 
 /**
  * @brief   Create a Box widget around the meshes contained in the composite.
- * @class   MeshesBoxWidget
- *
- * @date    2010.
  */
-class VISUVTKADAPTOR_CLASS_API MeshesBoxWidget : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API MeshesBoxWidget : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshesBoxWidget)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (MeshesBoxWidget)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API MeshesBoxWidget() noexcept;
 
@@ -99,13 +96,10 @@ private:
     MeshMapType m_meshMap;
     ConnectionMapType m_connections;
 
-    vtkAssembly * m_assembly;
+    vtkAssembly* m_assembly;
     vtkCommand* m_boxWidgetCommand;
     vtkBoxWidget2* m_vtkBoxWidget;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

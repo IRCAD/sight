@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/Plane.hpp"
 #include "visuVTKAdaptor/PlaneList.hpp"
+
+#include "visuVTKAdaptor/Plane.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -32,7 +33,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList );
 
 namespace visuVTKAdaptor
 {
@@ -45,7 +46,6 @@ const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
 
 //------------------------------------------------------------------------------
 
-
 void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sptr plane )
 {
     auto sig = planeList->signal< ::fwData::PlaneList::PlaneRemovedSignalType >(
@@ -57,12 +57,14 @@ class vtkPlaneDeleteCallBack : public vtkCommand
 {
 
 public:
-    static vtkPlaneDeleteCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
+    //------------------------------------------------------------------------------
+
+    static vtkPlaneDeleteCallBack* New( ::fwRenderVTK::IAdaptor* service)
     {
         return new vtkPlaneDeleteCallBack(service);
     }
 
-    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service ) :
+    vtkPlaneDeleteCallBack( ::fwRenderVTK::IAdaptor* service ) :
         m_service(service),
         m_picker( vtkCellPicker::New() ),
         m_propCollection( vtkPropCollection::New() )
@@ -84,6 +86,7 @@ public:
         m_propCollection = NULL;
     }
 
+    //------------------------------------------------------------------------------
 
     void fillPickList()
     {
@@ -99,6 +102,8 @@ public:
             m_picker->AddPickList(prop);
         }
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -138,6 +143,8 @@ public:
             notifyDeletePlane(planeList, planeBackup);
         }
     }
+    //------------------------------------------------------------------------------
+
     bool getSelectedPlane()
     {
         bool isFind              = false;
@@ -147,7 +154,7 @@ public:
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
         {
-            m_pickedPlane = ::fwData::Plane::dynamicCast(m_service->getAssociatedObject(prop,1));
+            m_pickedPlane = ::fwData::Plane::dynamicCast(m_service->getAssociatedObject(prop, 1));
             if( !m_pickedPlane.expired() )
             {
                 ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
@@ -167,7 +174,7 @@ public:
     }
 
 protected:
-    ::fwRenderVTK::IVtkAdaptorService *m_service;
+    ::fwRenderVTK::IAdaptor *m_service;
     vtkPicker* m_picker;
     vtkPropCollection* m_propCollection;
     double m_display[3];
@@ -178,7 +185,9 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList() noexcept  : m_rightButtonCommand(nullptr), m_planeCollectionId("")
+PlaneList::PlaneList() noexcept  :
+    m_rightButtonCommand(nullptr),
+    m_planeCollectionId("")
 {
     newSlot(s_UPDATE_SELECTION_SLOT, &PlaneList::updateSelection, this);
     newSlot(s_UPDATE_PLANES_SLOT, &PlaneList::updatePlanes, this);
@@ -225,8 +234,8 @@ void PlaneList::doUpdate()
     {
         for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
-            ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+            ::fwRenderVTK::IAdaptor::sptr servicePlane =
+                ::fwServices::add< ::fwRenderVTK::IAdaptor >
                     ( plane, "::visuVTKAdaptor::Plane" );
             SLM_ASSERT("servicePlane not instanced", servicePlane);
 
@@ -311,7 +320,6 @@ void PlaneList::doStop()
 
     this->unregisterServices();
 }
-
 
 } //namespace visuVTKAdaptor
 

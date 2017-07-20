@@ -21,7 +21,7 @@
 #include <vtkTexture.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SLine, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SLine, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {

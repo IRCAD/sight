@@ -9,7 +9,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkSmartPointer.h>
 
@@ -24,12 +24,12 @@ namespace visuVTKAdaptor
 /**
  * @brief Adaptor to manage a TransformationMatrix3D from a vtkTransform and vice versa
  */
-class VISUVTKADAPTOR_CLASS_API Transform : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Transform : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Transform)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Transform)(::fwRenderVTK::IAdaptor) );
 
     /// Constructor
     VISUVTKADAPTOR_API Transform() noexcept;

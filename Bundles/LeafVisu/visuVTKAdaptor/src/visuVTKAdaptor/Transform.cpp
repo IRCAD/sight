@@ -54,7 +54,7 @@ public:
     ::visuVTKAdaptor::Transform* m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Transform,
                          ::fwData::TransformationMatrix3D );
 
 namespace visuVTKAdaptor
@@ -231,7 +231,7 @@ vtkTransform* Transform::getTransform()
     vtkTransform* t = m_transform;
     if (t == 0)
     {
-        t = this->IVtkAdaptorService::getTransform();
+        t = this->IAdaptor::getTransform();
     }
     return t;
 }

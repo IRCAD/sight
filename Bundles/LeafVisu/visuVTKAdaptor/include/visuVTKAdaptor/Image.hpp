@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkSmartPointer.h>
 
@@ -28,29 +28,37 @@ namespace visuVTKAdaptor
  * @brief Render an image on the generic scene
  */
 class VISUVTKADAPTOR_CLASS_API Image : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                       public ::fwRenderVTK::IVtkAdaptorService
+                                       public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Image)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Image)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Image() noexcept;
 
     VISUVTKADAPTOR_API virtual ~Image() noexcept;
 
+    //------------------------------------------------------------------------------
+
     void setVtkImageRegisterId(std::string id)
     {
         m_imageRegisterId = id;
     }
+    //------------------------------------------------------------------------------
+
     void setVtkImageRegister(vtkObject* obj)
     {
         m_imageRegister = obj;
     }
+    //------------------------------------------------------------------------------
+
     void setImageOpacity(double opacity)
     {
         m_imageOpacity = opacity;
     }
+    //------------------------------------------------------------------------------
+
     void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
@@ -75,7 +83,6 @@ protected:
     VISUVTKADAPTOR_API void doUpdate();
     VISUVTKADAPTOR_API void doConfigure();
     VISUVTKADAPTOR_API void doSwap();
-
 
     virtual void buildPipeline();
     virtual void destroyPipeline();

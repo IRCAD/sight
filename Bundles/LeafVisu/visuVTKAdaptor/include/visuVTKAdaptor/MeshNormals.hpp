@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,10 +12,9 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkSmartPointer.h>
-
 
 class vtkPolyData;
 class vtkActor;
@@ -23,8 +22,7 @@ class vtkActor;
 namespace visuVTKAdaptor
 {
 
-
-class VISUVTKADAPTOR_CLASS_API MeshNormals : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API MeshNormals : public ::fwRenderVTK::IAdaptor
 {
 
 public:
@@ -36,7 +34,7 @@ public:
         CELL_NORMAL
     } NormalRepresentation;
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshNormals)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (MeshNormals)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API MeshNormals() noexcept;
 
@@ -50,7 +48,6 @@ public:
      */
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VERTEX_SLOT;
     typedef ::fwCom::Slot<void ()> UpdateVertexSlotType;
-
 
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_NORMALS_SLOT;
     typedef ::fwCom::Slot<void ()> UpdatePointNormalsSlotType;
@@ -146,7 +143,6 @@ private:
      * @}
      */
 };
-
 
 } //namespace visuVTKAdaptor
 

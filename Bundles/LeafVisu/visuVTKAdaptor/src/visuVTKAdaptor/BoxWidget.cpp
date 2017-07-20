@@ -16,17 +16,17 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <vtkBoxRepresentation.h>
 #include <vtkBoxWidget2.h>
 #include <vtkCamera.h>
 #include <vtkCommand.h>
 #include <vtkMatrix4x4.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkRenderer.h>
 #include <vtkTransform.h>
-
-#include <boost/lexical_cast.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -64,13 +64,13 @@ public:
 
 // BoxWidget
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::BoxWidget,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::BoxWidget,
                          ::fwData::TransformationMatrix3D );
 
 //------------------------------------------------------------------------------
 
 BoxWidget::BoxWidget() noexcept :
-    ::fwRenderVTK::IVtkAdaptorService(),
+    ::fwRenderVTK::IAdaptor(),
     m_transform(nullptr),
     m_vtkBoxWidget(nullptr),
     m_boxWidgetCommand(nullptr),

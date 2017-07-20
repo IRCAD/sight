@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkInteractorStyle;
 
@@ -20,12 +19,12 @@ namespace visuVTKAdaptor
 /**
  * @brief Managing vtk interactor style
  */
-class VISUVTKADAPTOR_CLASS_API InteractorStyle : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API InteractorStyle : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (InteractorStyle)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (InteractorStyle)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API InteractorStyle() noexcept;
 
@@ -41,10 +40,10 @@ protected:
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate();
 
-    void setInteractorStyle(vtkInteractorStyle *interactor);
+    void setInteractorStyle(vtkInteractorStyle* interactor);
 
     std::string m_configuredStyle;
-    vtkInteractorStyle *m_interactorStyle;
+    vtkInteractorStyle* m_interactorStyle;
 };
 
 } //namespace visuVTKAdaptor

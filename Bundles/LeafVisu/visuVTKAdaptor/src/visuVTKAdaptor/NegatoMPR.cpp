@@ -32,7 +32,7 @@
 
 #include <string>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -162,8 +162,8 @@ void NegatoMPR::doUpdate()
                 this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Z_AXIS);
             }
 
-            ::fwRenderVTK::IVtkAdaptorService::sptr sliceCursor;
-            ::fwRenderVTK::IVtkAdaptorService::sptr negatoSlicingInteractor;
+            ::fwRenderVTK::IAdaptor::sptr sliceCursor;
+            ::fwRenderVTK::IAdaptor::sptr negatoSlicingInteractor;
             this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
             negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
             sliceCursor             = this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
@@ -385,14 +385,14 @@ void NegatoMPR::set3dMode( bool enabled )
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IVtkAdaptorService::sptr NegatoMPR::addAdaptor(std::string adaptor, int axis)
+::fwRenderVTK::IAdaptor::sptr NegatoMPR::addAdaptor(std::string adaptor, int axis)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwRenderVTK::IVtkAdaptorService::sptr service;
+    ::fwRenderVTK::IAdaptor::sptr service;
 
     if(axis >= 0)
     {
-        service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
+        service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, adaptor );
         SLM_ASSERT("service not instanced", service);
         ::fwDataTools::helper::MedicalImageAdaptor::sptr adaptorSrv =
             ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
@@ -401,7 +401,7 @@ void NegatoMPR::set3dMode( bool enabled )
     }
     else
     {
-        service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
+        service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, adaptor );
         SLM_ASSERT("service not instanced", service);
     }
 

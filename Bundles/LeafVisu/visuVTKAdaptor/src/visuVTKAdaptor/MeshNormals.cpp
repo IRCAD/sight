@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,19 +17,18 @@
 
 #include <fwVtkIO/helper/Mesh.hpp>
 
-#include <vtkCellCenters.h>
+#include <boost/assign/list_of.hpp>
+
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
+#include <vtkCellCenters.h>
 #include <vtkGlyph3D.h>
 #include <vtkGlyphSource2D.h>
 #include <vtkMaskPoints.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 
-#include <boost/assign/list_of.hpp>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh );
-
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh );
 
 namespace visuVTKAdaptor
 {
@@ -39,7 +38,6 @@ MeshNormals::m_normalRepresentationConversion
     = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
           (std::string("CELL"), CELL_NORMAL)
           (std::string("NONE"), NONE);
-
 
 //------------------------------------------------------------------------------
 
@@ -53,7 +51,8 @@ const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_NORMAL_MODE_SLOT   = "up
 
 //------------------------------------------------------------------------------
 
-MeshNormals::MeshNormals() noexcept : m_normalRepresentation(CELL_NORMAL)
+MeshNormals::MeshNormals() noexcept :
+    m_normalRepresentation(CELL_NORMAL)
 {
     m_actor = vtkActor::New();
 
@@ -175,7 +174,7 @@ void MeshNormals::updateMeshNormals()
         algo->SetInputData(m_polyData);
 
         vtkSmartPointer<vtkGlyphSource2D> arrow = vtkSmartPointer<vtkGlyphSource2D>::New();
-        arrow->SetGlyphTypeToArrow ();
+        arrow->SetGlyphTypeToArrow();
         arrow->FilledOff();
 
         vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();

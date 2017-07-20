@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,43 +13,51 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkObject;
-
 
 namespace visuVTKAdaptor
 {
 
 class VISUVTKADAPTOR_CLASS_API NegatoOneSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                public ::fwRenderVTK::IVtkAdaptorService
+                                                public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (NegatoOneSlice)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API NegatoOneSlice() noexcept;
 
     VISUVTKADAPTOR_API virtual ~NegatoOneSlice() noexcept;
 
+    //------------------------------------------------------------------------------
+
     void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
+    //------------------------------------------------------------------------------
+
     void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+    //------------------------------------------------------------------------------
+
     void setVtkImageSourceId(std::string id)
     {
         m_imageSourceId = id;
     }
+    //------------------------------------------------------------------------------
+
     void setVtkImageSource(vtkObject* obj)
     {
         m_imageSource = obj;
     }
+    //------------------------------------------------------------------------------
+
     void setActorOpacity(double actorOpacity)
     {
         m_actorOpacity = actorOpacity;
@@ -82,7 +90,8 @@ protected:
                    selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
        </adaptor>
        @endcode
-     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
+     * renderer.
      * - \b picker (mandatory): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
      * - \b transform (optional): the vtkTransform to associate to the adaptor
@@ -105,11 +114,11 @@ protected:
 
     vtkObject* getImageSource();
     void cleanImageSource();
-    ::fwRenderVTK::IVtkAdaptorService::sptr getImageSliceAdaptor();
-    ::fwRenderVTK::IVtkAdaptorService::sptr getImageAdaptor();
+    ::fwRenderVTK::IAdaptor::sptr getImageSliceAdaptor();
+    ::fwRenderVTK::IAdaptor::sptr getImageAdaptor();
 
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_imageAdaptor;
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_imageSliceAdaptor;
+    ::fwRenderVTK::IAdaptor::wptr m_imageAdaptor;
+    ::fwRenderVTK::IAdaptor::wptr m_imageSliceAdaptor;
 
 private:
     /**
@@ -125,7 +134,6 @@ private:
      * @}
      */
 };
-
 
 } //namespace visuVTKAdaptor
 

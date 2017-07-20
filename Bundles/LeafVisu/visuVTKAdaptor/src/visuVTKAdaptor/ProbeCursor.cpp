@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,6 +25,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/format.hpp>
+
 #include <vtkAbstractPropPicker.h>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -40,15 +42,10 @@
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
 
-#include <boost/format.hpp>
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image );
-
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image );
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_PROBE_EVENT  vtkCommand::LeftButtonReleaseEvent
-
 
 namespace visuVTKAdaptor
 {
@@ -56,6 +53,8 @@ namespace visuVTKAdaptor
 class ProbingCallback : public vtkCommand
 {
 public:
+    //------------------------------------------------------------------------------
+
     static ProbingCallback* New()
     {
         return new ProbingCallback();
@@ -73,9 +72,11 @@ public:
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
-        assert(m_priority>=0);
+        assert(m_priority >= 0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
         SLM_ASSERT("m_picker not instanced", m_picker);
         if ( m_mouseMoveObserved || !m_adaptor->getInteractor()->GetShiftKey() )
@@ -108,9 +109,11 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     bool pickSomething()
     {
-        int x,y;
+        int x, y;
         double display[3];
 
         m_adaptor->getInteractor()->GetEventPosition(x, y);
@@ -121,10 +124,11 @@ public:
         return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
+    //------------------------------------------------------------------------------
 
     void process() // from
     {
-        double world[3] = {-1,0,0};
+        double world[3] = {-1, 0, 0};
         if ( pickSomething() )
         {
             ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
@@ -134,15 +138,21 @@ public:
         m_adaptor->updateView(world);
     }
 
+    //------------------------------------------------------------------------------
+
     void setAdaptor( ProbeCursor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
 
+    //------------------------------------------------------------------------------
+
     void setPicker( vtkAbstractPropPicker* adaptor)
     {
         m_picker = adaptor;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPriority( float priority )
     {
@@ -208,7 +218,7 @@ void ProbeCursor::doConfigure()
 void ProbeCursor::buildTextActor()
 {
     vtkTextProperty* textprop = m_textMapper->GetTextProperty();
-    textprop->SetColor(1,1,1);
+    textprop->SetColor(1, 1, 1);
     textprop->SetFontFamilyToArial();
     textprop->SetFontSize(20);
     textprop->BoldOn();
@@ -235,7 +245,7 @@ void ProbeCursor::doStart()
     this->buildPolyData();
     m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
-    m_cursorActor->GetProperty()->SetColor(1,0,0);
+    m_cursorActor->GetProperty()->SetColor(1, 0, 0);
     m_cursorActor->GetProperty()->SetOpacity(0.9);
     if(!this->getTransformId().empty())
     {
@@ -314,10 +324,10 @@ void ProbeCursor::updateView( double world[3] )
     std::string txt;
 
     if ( world[0] < image->getOrigin()[0] || world[1] < image->getOrigin()[1] || world[2] < image->getOrigin()[2]  ||
-         index[0]< 0 || index[1]< 0 || index[2]< 0 ||
-         index[0]>= image->getSize()[0] ||
-         index[1]>= image->getSize()[1] ||
-         index[2]>= image->getSize()[2]
+         index[0] < 0 || index[1] < 0 || index[2] < 0 ||
+         index[0] >= image->getSize()[0] ||
+         index[1] >= image->getSize()[1] ||
+         index[2] >= image->getSize()[2]
          )
     {
         txt = "(---,---,---)";
@@ -340,7 +350,7 @@ void ProbeCursor::updateView( double world[3] )
         for ( int i = 0; i < 4; ++i)
         {
             OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
-            points->SetPoint(i,worldCross[i]);
+            points->SetPoint(i, worldCross[i]);
         }
         m_cursorPolyData->Modified();
     }
@@ -361,18 +371,18 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCr
     sliceIndex[0] = m_sagittalIndex->value();
 
     double probeWorld[3]; // probe index in world positioning system
-    for (int dim = 0; dim<3; ++dim )
+    for (int dim = 0; dim < 3; ++dim )
     {
-        if ( probeSlice[dim]==sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
+        if ( probeSlice[dim] == sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
             this->setOrientation(dim);
         }
         probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
 
-    for ( int p = 0; p<2; ++p )
+    for ( int p = 0; p < 2; ++p )
     {
-        for (int dim = 0; dim<3; ++dim )
+        for (int dim = 0; dim < 3; ++dim )
         {
             worldCross[p][dim]   = probeWorld[dim];
             worldCross[p+2][dim] = probeWorld[dim];
@@ -402,13 +412,13 @@ void ProbeCursor::buildPolyData()
     }
 
     vtkCellArray* cells = vtkCellArray::New();
-    cells->Allocate(cells->EstimateSize(nbPoints,2));
+    cells->Allocate(cells->EstimateSize(nbPoints, 2));
 
     vtkIdType pts[2];
     pts[0] = 0; pts[1] = 2;
-    cells->InsertNextCell(2,pts);
+    cells->InsertNextCell(2, pts);
     pts[0] = 1; pts[1] = 3;
-    cells->InsertNextCell(2,pts);
+    cells->InsertNextCell(2, pts);
 
     m_cursorPolyData->SetPoints(points);
     points->Delete();

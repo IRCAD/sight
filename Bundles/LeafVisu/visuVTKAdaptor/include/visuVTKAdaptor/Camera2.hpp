@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vector>
 
@@ -19,13 +19,12 @@ class vtkPerspectiveTransform;
 namespace visuVTKAdaptor
 {
 
-
-class VISUVTKADAPTOR_CLASS_API Camera2 : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Camera2 : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Camera2)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Camera2)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Camera2() noexcept;
 
@@ -47,9 +46,6 @@ private:
     vtkPerspectiveTransform* m_transOrig;
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

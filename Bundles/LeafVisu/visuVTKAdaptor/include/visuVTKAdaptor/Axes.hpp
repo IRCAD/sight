@@ -13,7 +13,7 @@
 
 #include <fwData/Color.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/vtk/fwVtkAxesActor.hpp>
 
 #include <vtkSmartPointer.h>
@@ -37,11 +37,11 @@ namespace visuVTKAdaptor
  * - \b markerColor(#FFFFFF) : color of the sphere marker.
  */
 
-class VISUVTKADAPTOR_CLASS_API Axes : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Axes : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Axes)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Axes)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Axes() noexcept;
     VISUVTKADAPTOR_API virtual ~Axes() noexcept;

@@ -49,7 +49,7 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SLandmarks, ::fwData::Landmarks );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SLandmarks, ::fwData::Landmarks );
 
 namespace visuVTKAdaptor
 {

@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Reconstruction.hpp"
 #include "visuVTKAdaptor/Resection.hpp"
 
-#include <fwData/Resection.hpp>
+#include "visuVTKAdaptor/Reconstruction.hpp"
+
 #include <fwData/Reconstruction.hpp>
+#include <fwData/Resection.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Resection, ::fwData::Resection );
 
 namespace visuVTKAdaptor
 {
@@ -83,8 +84,8 @@ void Resection::doUpdate()
         }
         for (iterRes = vReconst.begin(); iterRes != vReconst.end(); ++iterRes)
         {
-            ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+            ::fwRenderVTK::IAdaptor::sptr service =
+                ::fwServices::add< ::fwRenderVTK::IAdaptor >
                     ( *iterRes, "::visuVTKAdaptor::Reconstruction" );
             SLM_ASSERT("service not instanced", service);
 

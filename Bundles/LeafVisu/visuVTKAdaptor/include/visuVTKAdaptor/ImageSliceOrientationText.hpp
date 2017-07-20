@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,11 +11,10 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <memory> //unique_ptr
 #include <string>
-
 
 namespace visuVTKAdaptor
 {
@@ -27,12 +26,12 @@ class ImageSliceOrientationTextPImpl;
  * This adaptor show locations labels in the four borders of the scene
  */
 class VISUVTKADAPTOR_CLASS_API ImageSliceOrientationText : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                           public ::fwRenderVTK::IVtkAdaptorService
+                                                           public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageSliceOrientationText)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ImageSliceOrientationText)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API ImageSliceOrientationText() noexcept;
     VISUVTKADAPTOR_API virtual ~ImageSliceOrientationText() noexcept;
@@ -48,7 +47,6 @@ public:
     VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
-
 
     /**
      * @brief Configure the adaptor
@@ -81,7 +79,6 @@ protected:
     /// Overides MedicalImageAdaptor's setOrientation
     VISUVTKADAPTOR_API void setOrientation( Orientation orientation );
 
-
     /// Locations string
     std::string m_locations;
 
@@ -102,7 +99,6 @@ private:
      * @}
      */
 };
-
 
 } //namespace visuVTKAdaptor
 

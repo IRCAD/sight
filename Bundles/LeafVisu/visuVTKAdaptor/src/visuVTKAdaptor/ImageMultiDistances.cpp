@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,6 +29,8 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <boost/assign/std/vector.hpp>
+
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>
@@ -38,16 +40,14 @@
 #include <vtkCubeSource.h>
 #include <vtkInteractorStyle.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkRenderer.h>
-
-#include <boost/assign/std/vector.hpp>
 
 #include <algorithm>
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -59,15 +59,17 @@ class vtkDistanceDeleteCallBack : public vtkCommand
 
 public:
 
+    //------------------------------------------------------------------------------
+
     static vtkDistanceDeleteCallBack* New( ImageMultiDistances* service )
     {
         return new vtkDistanceDeleteCallBack(service);
     }
 
-    vtkDistanceDeleteCallBack( ImageMultiDistances* service )
-        : m_service(service),
-          m_picker( vtkCellPicker::New() ),
-          m_propCollection( vtkPropCollection::New() )
+    vtkDistanceDeleteCallBack( ImageMultiDistances* service ) :
+        m_service(service),
+        m_picker( vtkCellPicker::New() ),
+        m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
@@ -76,6 +78,8 @@ public:
 
         m_display[2] = 0.0;
     }
+
+    //------------------------------------------------------------------------------
 
     void fillPickList()
     {
@@ -92,11 +96,12 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
-
 
         if ( eventId == vtkCommand::RightButtonPressEvent )
         {
@@ -108,7 +113,6 @@ public:
             m_display[0] = pos[0];
             m_display[1] = pos[1];
 
-
             this->fillPickList();
             if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
@@ -119,7 +123,7 @@ public:
                 while ( (prop = propc->GetNextProp()) )
                 {
                     ::fwData::PointList::sptr plist =
-                        ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop,1));
+                        ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop, 1));
 
                     if(plist)
                     {
@@ -178,8 +182,12 @@ void ImageMultiDistances::doStart()
 
     m_rightButtonCommand = vtkDistanceDeleteCallBack::New(this);
     this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );  // jamais reçu quand TrackBallCameraStyle activé (GrabFocus)
-    this->getInteractor()->AddObserver( "StartInteractionEvent", m_rightButtonCommand, 0);     // par contre ce style lance un event d'interaction
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );  // jamais reçu quand
+                                                                                               // TrackBallCameraStyle
+                                                                                               // activé (GrabFocus)
+    this->getInteractor()->AddObserver( "StartInteractionEvent", m_rightButtonCommand, 0);     // par contre ce style
+                                                                                               // lance un event
+                                                                                               // d'interaction
 
     this->doUpdate();
 }
@@ -245,18 +253,17 @@ void ImageMultiDistances::doSwap()
 
 void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 {
-    if ( pl->getPoints().size()>1 )
+    if ( pl->getPoints().size() > 1 )
     {
         // SERVICE DISTANCE
-        ::fwRenderVTK::IVtkAdaptorService::sptr serviceDistance;
+        ::fwRenderVTK::IAdaptor::sptr serviceDistance;
         serviceDistance =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+            ::fwServices::add< ::fwRenderVTK::IAdaptor >
                 ( pl, "::visuVTKAdaptor::Distance");
         SLM_ASSERT("serviceDistance not instanced", serviceDistance);
 
         // install  Color Field if none
         pl->setDefaultField( ::fwDataTools::fieldHelper::Image::m_colorId, generateColor() );
-
 
         // no mandatory to set picker id
         serviceDistance->setPickerId( this->getPickerId() );
@@ -266,9 +273,9 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         serviceDistance->start();
 
         // SERVICE POINT LIST
-        ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;
+        ::fwRenderVTK::IAdaptor::sptr servicePointList;
         servicePointList =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+            ::fwServices::add< ::fwRenderVTK::IAdaptor >
                 ( pl, "::visuVTKAdaptor::PointList");
         SLM_ASSERT("servicePointList not instanced", servicePointList);
 
@@ -285,7 +292,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
 //------------------------------------------------------------------------------
 
-::fwData::Point::sptr ImageMultiDistances::screenToWorld(int X,int Y)
+::fwData::Point::sptr ImageMultiDistances::screenToWorld(int X, int Y)
 {
     double* world;
     double display[3];
@@ -303,12 +310,18 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         // set temporaly the clipping around the focal point : see (1)
         vtkCamera* camera         = this->getRenderer()->GetActiveCamera();
         double* clippingCamBackup = camera->GetClippingRange();
-        camera->SetClippingRange( camera->GetDistance() - 0.1, camera->GetDistance() + 0.1 );  // set the clipping around the focal point
+        camera->SetClippingRange( camera->GetDistance() - 0.1, camera->GetDistance() + 0.1 );  // set the clipping
+                                                                                               // around the focal point
 
         world = worldTmp;
-        // (1) this function use the near clipping range to estimate the world point (by defaut 0.1 from camera view). The clipping can be modified
-        // by insertion of new object. By setting previously the clipping to the focal point we ensure to not place new point a camera position
-        this->getInteractor()->GetInteractorStyle()->ComputeDisplayToWorld ( this->getRenderer(), X, Y, 0, world);    // RETURN HOMOGEN COORD !!!
+        // (1) this function use the near clipping range to estimate the world point (by defaut 0.1 from camera view).
+        // The clipping can be modified
+        // by insertion of new object. By setting previously the clipping to the focal point we ensure to not place new
+        // point a camera position
+        this->getInteractor()->GetInteractorStyle()->ComputeDisplayToWorld( this->getRenderer(), X, Y, 0, world);     // RETURN
+                                                                                                                      // HOMOGEN
+                                                                                                                      // COORD
+                                                                                                                      // !!!
 
         // restore initial clipping
         camera->SetClippingRange( clippingCamBackup );
@@ -410,7 +423,7 @@ void ImageMultiDistances::createNewDistance( std::string sceneId )
     int sizeX = this->getRenderer()->GetRenderWindow()->GetSize()[0];
     int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];
 
-    SLM_ASSERT("invalid RenderWindow size",  sizeX>0 && sizeY>0 );
+    SLM_ASSERT("invalid RenderWindow size",  sizeX > 0 && sizeY > 0 );
     ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3.0, sizeY/2.0);
     ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3.0, sizeY/2.0);
 

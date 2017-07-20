@@ -11,7 +11,7 @@
 
 #include <fwData/Color.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkCommand;
 
@@ -32,12 +32,12 @@ namespace visuVTKAdaptor
  * - \b radius(double) : points radius.
  * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
-class VISUVTKADAPTOR_CLASS_API LabeledPointList : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API LabeledPointList : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (LabeledPointList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (LabeledPointList)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API LabeledPointList() noexcept;
 
@@ -62,7 +62,7 @@ protected:
     VISUVTKADAPTOR_API void doSwap();
     VISUVTKADAPTOR_API void doUpdate();
 
-    std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
+    std::list< ::fwRenderVTK::IAdaptor::sptr > m_subServices;
 
     vtkCommand* m_rightButtonCommand;
 

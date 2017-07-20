@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwRenderVTK/vtk/Helpers.hpp>
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
+#include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -36,11 +36,8 @@
 #include <vtkProp3DCollection.h>
 #include <vtkRenderWindowInteractor.h>
 
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoSlicingInteractor,
                          ::fwData::Image );
-
 
 namespace visuVTKAdaptor
 {
@@ -51,6 +48,8 @@ namespace visuVTKAdaptor
 class NegatoSlicingCallback : public vtkCommand
 {
 public:
+    //------------------------------------------------------------------------------
+
     static NegatoSlicingCallback* New()
     {
         return new NegatoSlicingCallback();
@@ -69,6 +68,8 @@ public:
     {
     }
 
+    //------------------------------------------------------------------------------
+
     bool Pick(double pickPoint[3], double position[3])
     {
         SLM_ASSERT("m_picker should be set before picking.", m_picker);
@@ -80,6 +81,8 @@ public:
         }
         return false;
     }
+
+    //------------------------------------------------------------------------------
 
     bool localPick(double pickPoint[3], double position[3])
     {
@@ -93,6 +96,8 @@ public:
         return false;
     }
 
+    //------------------------------------------------------------------------------
+
     void startSlicing()
     {
         SLM_TRACE("vtkEvent: MiddleButtonPressEvent");
@@ -102,7 +107,7 @@ public:
         double pickPoint[3];
         double pickedPoint[3];
 
-        int x,y;
+        int x, y;
         m_adaptor->getInteractor()->GetEventPosition(x, y);
         pickPoint[0] = x;
         pickPoint[1] = y;
@@ -134,6 +139,8 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void stopSlicing()
     {
         SLM_TRACE("vtkEvent: MiddleButtonReleaseEvent");
@@ -148,6 +155,8 @@ public:
         m_localPicker = nullptr;
         m_pickedProp  = nullptr;
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -172,11 +181,11 @@ public:
                 SLM_TRACE("vtkEvent: MouseMoveEvent");
                 SLM_ASSERT("m_mouseMoveObserved not instanced", m_mouseMoveObserved);
 
-                int x,y;
+                int x, y;
                 double pickPoint[3];
                 double pickedPoint[3];
 
-                m_adaptor->getInteractor()->GetEventPosition(x,y);
+                m_adaptor->getInteractor()->GetEventPosition(x, y);
                 pickPoint[0] = x;
                 pickPoint[1] = y;
                 pickPoint[2] = 0;
@@ -252,10 +261,14 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void setAdaptor( NegatoSlicingInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPicker( vtkAbstractPropPicker* picker)
     {
@@ -278,7 +291,9 @@ const ::fwCom::Signals::SignalKeyType NegatoSlicingInteractor::s_SLICING_STOPPED
 
 //-----------------------------------------------------------------------------
 
-NegatoSlicingInteractor::NegatoSlicingInteractor() noexcept : m_vtkObserver(nullptr), m_priority(.6)
+NegatoSlicingInteractor::NegatoSlicingInteractor() noexcept :
+    m_vtkObserver(nullptr),
+    m_priority(.6)
 {
     m_sigSlicingStarted = newSignal< SlicingStartedSignalType >(s_SLICING_STARTED_SIG);
     m_sigSlicingStopped = newSignal< SlicingStoppedSignalType >(s_SLICING_STOPPED_SIG);
@@ -386,7 +401,7 @@ void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
     m_sigSlicingStarted->asyncEmit();
 
     int i;
-    for (i = 0; i<3; i++)
+    for (i = 0; i < 3; i++)
     {
         if (index[i] == sliceIndex[i]->value())
         {
@@ -440,7 +455,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
     {
         OSLM_ASSERT("index["<< i <<"] = " << index[i]
                             << " and image->getSize()[" << i << "] = " << image->getSize()[i],
-                    index[i] >=0 && index[i] < image->getSize()[i]);
+                    index[i] >= 0 && index[i] < image->getSize()[i]);
     }
 #endif
 

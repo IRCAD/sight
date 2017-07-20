@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,16 +18,15 @@
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSeries, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSeries, ::fwMedData::ImageSeries );
 
 namespace visuVTKAdaptor
 {
 
-
 ImageSeries::ImageSeries() noexcept :
     m_allowAlphaInTF(false),
     m_interpolation(false),
-    m_3dModeEnabled ( ::boost::logic::indeterminate ),
+    m_3dModeEnabled( ::boost::logic::indeterminate ),
     m_sliceMode(NegatoMPR::THREE_SLICES)
 
 {
@@ -121,8 +120,8 @@ void ImageSeries::doUpdate()
 
     ::fwData::Image::sptr image = series->getImage();
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr service =
-        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, "::visuVTKAdaptor::NegatoMPR" );
+    ::fwRenderVTK::IAdaptor::sptr service =
+        ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, "::visuVTKAdaptor::NegatoMPR" );
     SLM_ASSERT("service not instanced", service);
 
     service->setTransformId( this->getTransformId() );

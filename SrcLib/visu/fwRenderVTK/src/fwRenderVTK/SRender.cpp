@@ -6,7 +6,7 @@
 
 #include "fwRenderVTK/SRender.hpp"
 
-#include "fwRenderVTK/IVtkAdaptorService.hpp"
+#include "fwRenderVTK/IAdaptor.hpp"
 #include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
 #include "fwRenderVTK/OffScreenInteractorManager.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
@@ -202,17 +202,17 @@ void SRender::configureObject( ConfigurationType conf )
 
     if ( m_sceneAdaptors.count(id) == 0 && object )
     {
-        OSLM_TRACE("Adding service : IVtkAdaptorService " << adaptor << " on "<< objectId );
+        OSLM_TRACE("Adding service : IAdaptor " << adaptor << " on "<< objectId );
         SceneAdaptor adaptee;
         adaptee.m_config = *(conf->begin());
         if (!uid.empty())
         {
             OSLM_TRACE("SRender::configureObject : uid = " << uid);
-            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object, adaptor, uid);
+            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( object, adaptor, uid);
         }
         else
         {
-            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object, adaptor);
+            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( object, adaptor);
         }
 
         assert(adaptee.m_config->getName() == "config");
@@ -245,7 +245,7 @@ void SRender::configureObject( ConfigurationType conf )
         OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ", adaptee.getService()->isStarted());
         if (object)
         {
-            OSLM_TRACE("Swapping IVtkAdaptorService " << adaptor << " on "<< objectId );
+            OSLM_TRACE("Swapping IAdaptor " << adaptor << " on "<< objectId );
             if(adaptee.getService()->getObject() != object)
             {
                 adaptee.getService()->swap( ::fwData::Object::constCast(object) );
@@ -523,7 +523,7 @@ void SRender::starting()
     }
 
     // Start adaptors according to their starting priority
-    std::vector< SPTR(IVtkAdaptorService) > startAdaptors;
+    std::vector< SPTR(IAdaptor) > startAdaptors;
 
     for(auto& sceneAdaptor : m_sceneAdaptors)
     {
@@ -531,7 +531,7 @@ void SRender::starting()
     }
 
     std::sort(startAdaptors.begin(), startAdaptors.end(),
-              [](const SPTR(IVtkAdaptorService)& a, const SPTR(IVtkAdaptorService)& b)
+              [](const SPTR(IAdaptor)& a, const SPTR(IAdaptor)& b)
         {
             return b->getStartPriority() > a->getStartPriority();
         });
@@ -587,7 +587,7 @@ void SRender::stopping()
     }
 
     // Stop adaptors in the reverse order of their starting priority
-    std::vector< SPTR(IVtkAdaptorService) > stopAdaptors;
+    std::vector< SPTR(IAdaptor) > stopAdaptors;
 
     for(auto& sceneAdaptor : m_sceneAdaptors)
     {
@@ -595,7 +595,7 @@ void SRender::stopping()
     }
 
     std::sort(stopAdaptors.begin(), stopAdaptors.end(),
-              [](const SPTR(IVtkAdaptorService)& a, const SPTR(IVtkAdaptorService)& b)
+              [](const SPTR(IAdaptor)& a, const SPTR(IAdaptor)& b)
         {
             return b->getStartPriority() < a->getStartPriority();
         });
@@ -856,9 +856,9 @@ vtkObject* SRender::getVtkObject(const VtkObjectIdType& objectId) const
 
 //-----------------------------------------------------------------------------
 
-SPTR(IVtkAdaptorService) SRender::getAdaptor(const SRender::AdaptorIdType& adaptorId) const
+SPTR(IAdaptor) SRender::getAdaptor(const SRender::AdaptorIdType& adaptorId) const
 {
-    IVtkAdaptorService::sptr adaptor;
+    IAdaptor::sptr adaptor;
     SceneAdaptorsMapType::const_iterator it = m_sceneAdaptors.find(adaptorId);
 
     if ( it != m_sceneAdaptors.end() )

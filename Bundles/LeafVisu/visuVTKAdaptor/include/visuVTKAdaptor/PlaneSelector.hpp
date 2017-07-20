@@ -13,7 +13,7 @@
 
 #include <fwData/PlaneList.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -21,12 +21,12 @@ namespace visuVTKAdaptor
 /**
  * @brief Manage the current selected plan
  */
-class VISUVTKADAPTOR_CLASS_API PlaneSelector : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PlaneSelector : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (PlaneSelector)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PlaneSelector)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API PlaneSelector() noexcept;
 

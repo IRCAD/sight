@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,9 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <string>
-
 
 class vtkTextActor;
 class vtkActor2D;
@@ -21,16 +20,18 @@ class vtkTextMapper;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Text : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Text : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Text)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Text)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Text();
     VISUVTKADAPTOR_API virtual ~Text() noexcept;
 
-    VISUVTKADAPTOR_API virtual void setText(const std::string &str);
+    VISUVTKADAPTOR_API virtual void setText(const std::string& str);
+    //------------------------------------------------------------------------------
+
     std::string getText() const
     {
         return m_text;
@@ -40,9 +41,13 @@ protected:
 
     VISUVTKADAPTOR_API virtual void doStart();
     VISUVTKADAPTOR_API virtual void doStop();
+    //------------------------------------------------------------------------------
+
     virtual void doSwap()
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void doUpdate()
     {
     }
@@ -79,7 +84,7 @@ protected:
     std::string m_text;
 
     vtkActor2D* m_actor;
-    vtkTextMapper * m_mapper;
+    vtkTextMapper* m_mapper;
 
     /// Font size (in points) applied to VTK text mapper.
     unsigned int m_fontSize;

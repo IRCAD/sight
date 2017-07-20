@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,26 +7,24 @@
 #ifndef __VISUVTKADAPTOR_MODELSERIES_HPP__
 #define __VISUVTKADAPTOR_MODELSERIES_HPP__
 
-#include <vector>
-
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwRenderVTK/IAdaptor.hpp>
+
+#include <vector>
 
 namespace visuVTKAdaptor
 {
 
-
 /**
  * @brief This adaptor shows ModelSeries. Creates adaptors for each reconstruction in model.
- * @class ModelSeries
  */
-class VISUVTKADAPTOR_CLASS_API ModelSeries : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API ModelSeries : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ModelSeries)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ModelSeries)(::fwRenderVTK::IAdaptor) );
 
     /**
      * @name Signals API
@@ -53,6 +51,8 @@ public:
     VISUVTKADAPTOR_API ModelSeries() noexcept;
 
     VISUVTKADAPTOR_API virtual ~ModelSeries() noexcept;
+
+    //------------------------------------------------------------------------------
 
     void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
@@ -97,14 +97,12 @@ protected:
      * @}
      */
 
-
 private:
     bool m_autoResetCamera;
     std::string m_textureAdaptorUID;
 
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;
-
 
     /**
      * @name Slots attributes
@@ -119,9 +117,6 @@ private:
      * @}
      */
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

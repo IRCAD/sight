@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,30 +7,29 @@
 #ifndef __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
 #define __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
 
-#include "visuVTKAdaptor/MeshFactory.hpp"
 #include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
 #include <fwDataTools/PickingInfo.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkCommand.h>
 
 #include <vector>
 
-
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PickerInteractor : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PickerInteractor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PickerInteractor)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PickerInteractor)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API PickerInteractor() noexcept;
 
@@ -97,9 +96,6 @@ protected:
     vtkCommand* m_interactionCommand; ///< the vtk mouse events observer
     SetEventIdType m_eventId; ///< event ID treated for picking
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

@@ -12,7 +12,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 class vtkCommand;
 class vtkDepthSortPolyData;
@@ -73,11 +73,11 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * coordinates layer, or to generate uv on-the-fly with the \b uvgen parameter.
  * - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
  */
-class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (Mesh)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Mesh)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKADAPTOR_API Mesh() noexcept;
     VISUVTKADAPTOR_API virtual ~Mesh() noexcept;
@@ -226,7 +226,7 @@ protected:
 
     void updateMesh( SPTR(::fwData::Mesh) mesh );
 
-    void setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv,
+    void setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr &srv,
                               SPTR(::fwData::Material) material);
 
     void removePlaneCollectionShifterCommand();
@@ -253,9 +253,9 @@ protected:
     SPTR(::fwData::Material)       m_material;
     SPTR(::fwData::Material)       m_unclippedPartMaterial;
 
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_materialService;
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_unclippedPartMaterialService;
-    ::fwRenderVTK::IVtkAdaptorService::wptr m_normalsService;
+    ::fwRenderVTK::IAdaptor::wptr m_materialService;
+    ::fwRenderVTK::IAdaptor::wptr m_unclippedPartMaterialService;
+    ::fwRenderVTK::IAdaptor::wptr m_normalsService;
 
     vtkTransform* m_transform;
     WPTR(::visuVTKAdaptor::Transform) m_transformService;

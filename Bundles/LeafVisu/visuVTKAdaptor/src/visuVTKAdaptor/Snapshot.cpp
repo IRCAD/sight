@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #include "visuVTKAdaptor/Snapshot.hpp"
 
@@ -21,20 +20,20 @@
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <boost/filesystem.hpp>
+
 #include <vtkActor.h>
 #include <vtkBMPWriter.h>
 #include <vtkImageData.h>
 #include <vtkImageWriter.h>
 #include <vtkJPEGWriter.h>
 #include <vtkPNGWriter.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
 
-#include <boost/filesystem.hpp>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Snapshot, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Snapshot, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
@@ -136,19 +135,19 @@ void Snapshot::snap(std::string filePath)
     ext = pathImageSnap.extension().string();
     vtkImageWriter* writer = 0;
 
-    if( ext==".jpg" || ext==".jpeg" )
+    if( ext == ".jpg" || ext == ".jpeg" )
     {
         writer = vtkJPEGWriter::New();
     }
-    else if ( ext==".bmp" )
+    else if ( ext == ".bmp" )
     {
         writer = vtkBMPWriter::New();
     }
-    else if ( ext==".tiff" )
+    else if ( ext == ".tiff" )
     {
         writer = vtkTIFFWriter::New();
     }
-    else if ( ext==".png" )
+    else if ( ext == ".png" )
     {
         writer = vtkPNGWriter::New();
     }
@@ -168,6 +167,5 @@ void Snapshot::snap(std::string filePath)
     snapper->Delete();
     writer->Delete();
 }
-
 
 } //namespace visuVTKAdaptor

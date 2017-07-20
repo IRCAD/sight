@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,6 +24,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/format.hpp>
+
 #include <vtkActor.h>
 #include <vtkParametricBoy.h>
 #include <vtkParametricFunctionSource.h>
@@ -34,10 +36,7 @@
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
 
-#include <boost/format.hpp>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
-
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -47,7 +46,8 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPHERE_SLOT      = "updateSphe
 
 //------------------------------------------------------------------------------
 
-Image3DCursor::Image3DCursor() noexcept : m_priority(.6)
+Image3DCursor::Image3DCursor() noexcept :
+    m_priority(.6)
 {
     ////handlingEventOff();
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Image3DCursor::updateSliceIndex, this);
@@ -95,7 +95,7 @@ void Image3DCursor::doStart()
     else
     {
         this->buildPolyData();
-        m_cursorActor->GetProperty()->SetColor(1,1,1);
+        m_cursorActor->GetProperty()->SetColor(1, 1, 1);
     }
 
     m_cursorMapper->SetInputData( m_cursorPolyData );

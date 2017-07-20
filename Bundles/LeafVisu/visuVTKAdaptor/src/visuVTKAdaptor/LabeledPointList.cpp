@@ -31,7 +31,7 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
@@ -44,12 +44,12 @@ class vtkLabeledPointDeleteCallBack : public vtkCommand
 public:
     //------------------------------------------------------------------------------
 
-    static vtkLabeledPointDeleteCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
+    static vtkLabeledPointDeleteCallBack* New( ::fwRenderVTK::IAdaptor* service)
     {
         return new vtkLabeledPointDeleteCallBack(service);
     }
 
-    vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service ) :
+    vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IAdaptor* service ) :
         m_service(service),
         m_picker( vtkCellPicker::New() ),
         m_propCollection( vtkPropCollection::New() )
@@ -162,7 +162,7 @@ public:
     }
 
 protected:
-    ::fwRenderVTK::IVtkAdaptorService *m_service;
+    ::fwRenderVTK::IAdaptor *m_service;
     vtkPicker* m_picker;
     vtkPropCollection* m_propCollection;
     double m_display[3];
@@ -263,14 +263,14 @@ void LabeledPointList::doUpdate()
 
     if ( !landmarks->getPoints().empty() )
     {
-        ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;
-        servicePointList = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( landmarks,
-                                                                                   "::visuVTKAdaptor::PointList");
+        ::fwRenderVTK::IAdaptor::sptr servicePointList;
+        servicePointList = ::fwServices::add< ::fwRenderVTK::IAdaptor >( landmarks,
+                                                                         "::visuVTKAdaptor::PointList");
         SLM_ASSERT("servicePointList not instanced", servicePointList);
 
         ::visuVTKAdaptor::PointList::sptr pointListAdaptor = ::visuVTKAdaptor::PointList::dynamicCast(servicePointList);
 
-        SLM_ASSERT("Bad cast of IVtkAdaptorService to servicePointList", pointListAdaptor);
+        SLM_ASSERT("Bad cast of IAdaptor to servicePointList", pointListAdaptor);
 
         pointListAdaptor->setColor(m_ptColor);
         pointListAdaptor->setRadius(m_radius);
@@ -285,9 +285,9 @@ void LabeledPointList::doUpdate()
 
         for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
         {
-            ::fwRenderVTK::IVtkAdaptorService::sptr serviceLabel;
+            ::fwRenderVTK::IAdaptor::sptr serviceLabel;
             serviceLabel =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point, "::visuVTKAdaptor::PointLabel");
+                ::fwServices::add< ::fwRenderVTK::IAdaptor >(point, "::visuVTKAdaptor::PointLabel");
             SLM_ASSERT("serviceLabel not instanced", serviceLabel);
             serviceLabel->setRenderService( this->getRenderService() );
             serviceLabel->setAutoRender( this->getAutoRender() );
