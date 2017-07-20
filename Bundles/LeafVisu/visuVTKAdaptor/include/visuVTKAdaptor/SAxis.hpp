@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_AXES_HPP__
-#define __VISUVTKADAPTOR_AXES_HPP__
+#ifndef __VISUVTKADAPTOR_SAXIS_HPP__
+#define __VISUVTKADAPTOR_SAXIS_HPP__
 
 #ifndef ANDROID
 
@@ -22,29 +22,34 @@ namespace visuVTKAdaptor
 {
 
 /**
- * @brief Render axes in the generic scene.
+ * @brief Render axis in the generic scene.
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : show/hide the axis
+ *
+ * @section XML XML Configuration
  *
  * @code{.xml}
-      <adaptor id="..." class="::visuVTKAdaptor::Axes" objectId="self">
+   <service type="::visuVTKAdaptor::SAxis">
        <config renderer="default" length="..." transform="..." label="..." marker="..." markerColor="..." />
-      </adaptor>
-     @endcode
- * - \b renderer : defines the renderer to show the axes.
- * - \b length : defines the length of the axes.
- * - \b transform : transformation matrix applied to the axes.
- * - \b label : display the name of the axes.
- * - \b marker(no) : enable the sphere marker.
- * - \b markerColor(#FFFFFF) : color of the sphere marker.
+   </service>
+   @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer(mandatory) : defines the renderer to show the axes.
+ * - \b transform(mandatory) : transformation matrix applied to the axes.
+ * - \b length(optional, default: 1.0) : defines the length of the axes.
+ * - \b label(optional, default: yes) : display the name of the axes.
+ * - \b marker(optional, default: no) : enable the sphere marker.
+ * - \b markerColor(optional, default: #FFFFFF) : color of the sphere marker.
  */
-
-class VISUVTKADAPTOR_CLASS_API Axes : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SAxis : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Axes)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SAxis)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API Axes() noexcept;
-    VISUVTKADAPTOR_API virtual ~Axes() noexcept;
+    VISUVTKADAPTOR_API SAxis() noexcept;
+    VISUVTKADAPTOR_API virtual ~SAxis() noexcept;
 
     /**
      * @name Slots API
@@ -59,18 +64,17 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-    VISUVTKADAPTOR_API void doUpdate();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     void buildPipeline();
 
-    fwVtkAxesActor* m_axesActor;
+    fwVtkAxesActor* m_axisActor;
     double m_length;
     bool m_labelOn;
-    vtkSmartPointer< vtkTransform> m_transformAxes;
+    vtkSmartPointer< vtkTransform> m_transformAxis;
 
     /// actor for the sphere marker
     vtkSmartPointer< vtkActor> m_sphereActor;
@@ -89,4 +93,4 @@ protected:
 
 #endif // ANDROID
 
-#endif // __VISUVTKADAPTOR_AXES_HPP__
+#endif // __VISUVTKADAPTOR_SAXIS_HPP__
