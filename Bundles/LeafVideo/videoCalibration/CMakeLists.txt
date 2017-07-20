@@ -9,7 +9,6 @@ find_library(VCL_LIBRARY vcl)
 
 fwInclude(
     ${Boost_INCLUDE_DIRS}
-    ${CPPUNIT_INCLUDE_DIR}
     ${VNL_INCLUDE_PATH}
     ${VNL_INCLUDE_PATH}/vxl
     ${VNL_INCLUDE_PATH}/vxl/core
@@ -20,7 +19,6 @@ fwInclude(
 )
 fwLink(
     ${Boost_SYSTEM_LIBRARY}
-    ${CPPUNIT_LIBRARY}
     ${VNL_ALGO_LIBRARY}
     ${VNL_LIBRARY}
     ${VCL_LIBRARY}
