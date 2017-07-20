@@ -4,10 +4,6 @@ if(${FWPROJECT_NAME}_INSTALL)
     install(DIRECTORY "${QT_DIR}/plugins" DESTINATION qtplugins COMPONENT QtPlugins)
 endif()
 
-find_package(Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
-
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
 fwForwardInclude(

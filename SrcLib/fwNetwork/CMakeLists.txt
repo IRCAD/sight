@@ -1,8 +1,5 @@
 fwLoadProperties()
 
-find_package(Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-
 find_package(Qt5 COMPONENTS Core Gui Network REQUIRED)
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIR}
