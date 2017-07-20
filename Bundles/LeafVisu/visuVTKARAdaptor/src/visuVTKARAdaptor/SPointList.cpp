@@ -22,7 +22,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SPointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList, ::fwData::PointList );
 
 namespace visuVTKARAdaptor
 {

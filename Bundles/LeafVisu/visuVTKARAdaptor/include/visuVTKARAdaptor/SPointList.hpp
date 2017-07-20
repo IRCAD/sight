@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 namespace fwData
 {
@@ -29,13 +29,13 @@ namespace visuVTKARAdaptor
  *  The coordinate system of the point list is [ (0,0);(width,-height) ] whereas the coordinate system of the scene
  *  is [ (-width/2;-height/2,width/2:height/2], so we need to transform the points.
  */
-class VISUVTKARADAPTOR_CLASS_API SPointList : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKARADAPTOR_CLASS_API SPointList : public ::fwRenderVTK::IAdaptor
 {
 
 public:
     typedef std::vector< SPTR(::fwData::Point) > PointListType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SPointList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SPointList)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKARADAPTOR_API SPointList() noexcept;
 
@@ -87,9 +87,6 @@ private:
     std::string m_radius;
 
 };
-
-
-
 
 } //namespace visuVTKARAdaptor
 

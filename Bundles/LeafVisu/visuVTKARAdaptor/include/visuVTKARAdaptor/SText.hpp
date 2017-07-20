@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
-#include <string>
 #include <algorithm>
+#include <string>
 
 class vtkTextActor;
 class vtkActor2D;
@@ -45,14 +45,15 @@ typedef enum
 
 struct TextProperty
 {
-    TextProperty() : m_fontFamily(ARIAL),
-                     m_fontSize(20),
-                     m_hAlign(LEFT),
-                     m_vAlign(BOTTOM),
-                     m_bold(false),
-                     m_italic(false),
-                     m_shadow(false),
-                     m_opacity(1.0)
+    TextProperty() :
+        m_fontFamily(ARIAL),
+        m_fontSize(20),
+        m_hAlign(LEFT),
+        m_vAlign(BOTTOM),
+        m_bold(false),
+        m_italic(false),
+        m_shadow(false),
+        m_opacity(1.0)
     {
         std::fill(m_color, m_color+3, 0.);
     }
@@ -73,13 +74,12 @@ struct TextProperty
 /**
  * @brief   Adaptor to show a text, representing the associated object, in the scene.
  *          The service listens to the event OBJECT_MODIFIED for updating the displayed text.
- * @class   SText
  */
-class VISUVTKARADAPTOR_CLASS_API SText : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKARADAPTOR_CLASS_API SText : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SText)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SText)(::fwRenderVTK::IAdaptor) );
 
     /// Constructor
     VISUVTKARADAPTOR_API SText();
@@ -140,11 +140,10 @@ protected:
      */
     VISUVTKARADAPTOR_API virtual void doConfigure();
 
-
 private:
 
     vtkActor2D* m_actor; ///< the vtk actor for showing the 2D text.
-    vtkTextMapper * m_mapper; ///< provides 2D text annotation support for VTK
+    vtkTextMapper* m_mapper;  ///< provides 2D text annotation support for VTK
 
     TextProperty m_textProperty; ///< text properties (bold, italic, font size...)
 

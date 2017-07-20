@@ -36,7 +36,7 @@
 #include <vtkRenderer.h>
 #include <vtkTexture.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SVideoAdapter, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideoAdapter, ::fwData::Image );
 
 namespace visuVTKARAdaptor
 {

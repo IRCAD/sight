@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,10 +18,10 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Color.hpp>
-#include <fwData/PointList.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/PointList.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkActor.h>
 #include <vtkPolyData.h>
@@ -42,13 +42,13 @@ namespace visuVTKARAdaptor
  *
  *  This adaptor works on a ::fwData::PointList.
  */
-class VISUVTKARADAPTOR_CLASS_API SPointList3D : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKARADAPTOR_CLASS_API SPointList3D : public ::fwRenderVTK::IAdaptor
 {
 
 public:
     typedef std::vector< SPTR(::fwData::Point) > PointListType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SPointList3D)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SPointList3D)(::fwRenderVTK::IAdaptor) );
 
     VISUVTKARADAPTOR_API SPointList3D() noexcept;
 
@@ -91,9 +91,6 @@ private:
     ::fwData::Color::sptr m_ptColor;
 
 };
-
-
-
 
 } //namespace visuVTKRDAdaptor
 

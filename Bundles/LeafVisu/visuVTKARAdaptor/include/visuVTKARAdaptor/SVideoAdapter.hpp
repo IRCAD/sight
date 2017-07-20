@@ -11,7 +11,7 @@
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkLookupTable.h>
 #include <vtkSmartPointer.h>
@@ -52,11 +52,11 @@ namespace visuVTKARAdaptor
  *      when rendering
  */
 class VISUVTKARADAPTOR_CLASS_API SVideoAdapter : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                 public ::fwRenderVTK::IVtkAdaptorService
+                                                 public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SVideoAdapter)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SVideoAdapter)(::fwRenderVTK::IAdaptor) );
 
     /// Constructor
     SVideoAdapter() noexcept;

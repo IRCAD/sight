@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,23 +17,23 @@
 
 #include <fwServices/macros.hpp>
 
-#include <vtkPoints.h>
-#include <vtkSphereSource.h>
-#include <vtkSmartPointer.h>
-#include <vtkGlyph3D.h>
-#include <vtkCubeSource.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
-#include <vtkTransform.h>
-
 #include <boost/lexical_cast.hpp>
 
-#include <iterator>
+#include <vtkActor.h>
+#include <vtkCubeSource.h>
+#include <vtkGlyph3D.h>
+#include <vtkPoints.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
+#include <vtkTransform.h>
+
 #include <algorithm>
 #include <functional>
+#include <iterator>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SPointList3D, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList3D, ::fwData::PointList );
 
 namespace visuVTKARAdaptor
 {
@@ -126,7 +126,7 @@ void SPointList3D::doUpdate()
     ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
 
     {
-        ::fwData::mt::ObjectReadLock lock (pl);
+        ::fwData::mt::ObjectReadLock lock(pl);
 
         for( ::fwData::Point::sptr pt : pl->getPoints() )
         {
@@ -153,7 +153,6 @@ void SPointList3D::doStop()
 {
     this->removeAllPropFromRenderer();
 }
-
 
 //------------------------------------------------------------------------------
 

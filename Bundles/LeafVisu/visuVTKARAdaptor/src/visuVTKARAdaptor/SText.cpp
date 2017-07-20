@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKARAdaptor/SText.hpp"
 
-#include <fwServices/macros.hpp>
+#include <fwData/Color.hpp>
+#include <fwData/GenericFieldBase.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
-#include <fwData/GenericFieldBase.hpp>
-#include <fwData/Color.hpp>
+#include <fwServices/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -19,7 +19,7 @@
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 
-fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SText, ::fwData::Object);
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SText, ::fwData::Object);
 
 namespace visuVTKARAdaptor
 {
