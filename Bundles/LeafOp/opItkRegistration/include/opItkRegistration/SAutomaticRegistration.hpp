@@ -94,6 +94,12 @@ private:
     /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
     virtual void setEnumParameter(std::string val, std::string key);
 
+    /// Set the minimum and maximum step sizes. keys are "minStep" and "maxStep".
+    virtual void setDoubleParameter(double val, std::string key);
+
+    /// Set the maximum number of iterations, key must be "maxIterations".
+    virtual void setIntParameter(int val, std::string key);
+
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
     void setMetric(const std::string& metricName);
 

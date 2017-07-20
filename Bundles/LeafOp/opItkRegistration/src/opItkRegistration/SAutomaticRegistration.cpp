@@ -135,6 +135,35 @@ void SAutomaticRegistration::setEnumParameter(std::string val, std::string key)
 
 //------------------------------------------------------------------------------
 
+void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
+{
+    if(key == "minStep")
+    {
+        m_minStep = val;
+    }
+    else if(key == "maxStep")
+    {
+        m_maxStep = val;
+    }
+    else
+    {
+        OSLM_FATAL("Unknown key : " << key);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SAutomaticRegistration::setIntParameter(int val, std::string key)
+{
+    if(key == "maxIterations")
+    {
+        OSLM_FATAL_IF("The numbner of iterations must be greater than 0 !!", val <= 0);
+        m_maxIterations = static_cast<unsigned long>(val);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SAutomaticRegistration::setMetric(const std::string& metricName)
 {
     if(metricName == "MeanSquares")
