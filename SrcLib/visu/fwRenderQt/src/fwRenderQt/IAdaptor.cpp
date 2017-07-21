@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "fwRenderQt/IAdaptor.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
+#include "fwRenderQt/Scene2DGraphicsView.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
@@ -17,14 +17,14 @@
 
 #include <QGraphicsItemGroup>
 
-namespace scene2D
-{
-namespace adaptor
+namespace fwRenderQt
 {
 
 IAdaptor::IAdaptor() noexcept :
-    m_zValue(0),
-    m_opacity(1)
+    m_xAxis(nullptr),
+    m_yAxis(nullptr),
+    m_zValue(0.f),
+    m_opacity(1.f)
 {
 }
 
@@ -32,16 +32,12 @@ IAdaptor::IAdaptor() noexcept :
 
 IAdaptor::~IAdaptor() noexcept
 {
-    m_xAxis.reset();
-    m_yAxis.reset();
 }
 
 //-----------------------------------------------------------------------------
 
 void IAdaptor::info(std::ostream& _sstream )
 {
-    /*_sstream << "IAdaptor : " ;
-       this->SuperClass::info( _sstream ) ;*/
 }
 
 //-----------------------------------------------------------------------------
@@ -60,16 +56,16 @@ float IAdaptor::getZValue() const
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::setScene2DRender( ::scene2D::SRender::sptr _scene2DRender)
+void IAdaptor::setScene2DRender( ::fwRenderQt::SRender::sptr render)
 {
-    SLM_ASSERT("Service not instanced", _scene2DRender);
+    SLM_ASSERT("Service not instanced", render);
     SLM_ASSERT("Adaptor is already started", this->isStopped() );
-    m_scene2DRender = _scene2DRender;
+    m_scene2DRender = render;
 }
 
 //-----------------------------------------------------------------------------
 
-::scene2D::SRender::sptr IAdaptor::getScene2DRender() const
+::fwRenderQt::SRender::sptr IAdaptor::getScene2DRender() const
 {
     return m_scene2DRender.lock();
 }
@@ -96,8 +92,8 @@ IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio() const
 
 IAdaptor::Scene2DRatio IAdaptor::getRatio() const
 {
-    ViewSizeRatio ratioView         = this->getViewSizeRatio();
-    ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
+    const ViewSizeRatio ratioView         = this->getViewSizeRatio();
+    const ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
 
     return Scene2DRatio(    ratioView.first / ratioViewport.first,
                             ratioView.second / ratioViewport.second );
@@ -105,47 +101,48 @@ IAdaptor::Scene2DRatio IAdaptor::getRatio() const
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis,
-                                                  ::scene2D::data::Axis::sptr _yAxis )
+IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
+                                                  const ::fwRenderQt::data::Axis& _xAxis,
+                                                  const ::fwRenderQt::data::Axis& _yAxis ) const
 {
     double x, y;
 
-    if (_xAxis->getScaleType() == "LOG")
+    if (_xAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
         // Logarithme 10 cannot get negative values
-        if (_xy.first <= 0)
+        if (_xy.first <= 0.)
         {
-            x = 0;
+            x = 0.;
         }
         else
         {
             // Apply the x scale and the log to the x value
-            x = _xAxis->getScale() * log10( _xy.first );
+            x = _xAxis.getScale() * log10( _xy.first );
         }
     }
     else
     {
         // Apply just the x scale to the x value
-        x = _xAxis->getScale() * _xy.first;
+        x = _xAxis.getScale() * _xy.first;
     }
 
-    if (_yAxis->getScaleType() == "LOG")
+    if (_yAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
-        if (_xy.second <= 0)
+        if (_xy.second <= 0.)
         {
-            y = 0;
+            y = 0.;
         }
         else
         {
             // Apply the y scale and the log to the y value
-            y = _yAxis->getScale() * log10( _xy.second );
+            y = _yAxis.getScale() * log10( _xy.second );
         }
     }
     else
     {
         // Apply just the y scale to the y value
-        y = _yAxis->getScale() * _xy.second;
+        y = _yAxis.getScale() * _xy.second;
     }
 
     return Point2DType( x, y );
@@ -153,28 +150,28 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(Point2DType _xy, ::scene2D::da
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis,
-                                                  ::scene2D::data::Axis::sptr _yAxis )
+IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
+                                                  const ::fwRenderQt::data::Axis& _xAxis,
+                                                  const ::fwRenderQt::data::Axis& _yAxis ) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
-
-    if (_xAxis->getScaleType() == "LOG")
+    if (_xAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
-        x = 10 * exp( _xy.first ) / _xAxis->getScale();
+        x = 10. * exp( _xy.first ) / _xAxis.getScale();
     }
     else
     {
-        x = ( _xy.first ) / _xAxis->getScale();
+        x = ( _xy.first ) / _xAxis.getScale();
     }
 
-    if (_yAxis->getScaleType() == "LOG")
+    if (_yAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
-        y = 10 * ( _xy.second ) / _yAxis->getScale();
+        y = 10. * ( _xy.second ) / _yAxis.getScale();
     }
     else
     {
-        y = _xy.second / _yAxis->getScale();
+        y = _xy.second / _yAxis.getScale();
     }
 
     return Point2DType( x, y );
@@ -184,8 +181,6 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::da
 
 void IAdaptor::configuring()
 {
-    SLM_TRACE_FUNC();
-
     m_viewInitialSize.first  = -1.0f;
     m_viewInitialSize.second = -1.0f;
 
@@ -195,22 +190,14 @@ void IAdaptor::configuring()
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if ( m_configuration->hasAttribute("xAxis") )
     {
-        m_xAxis = ::scene2D::data::Axis::dynamicCast(
-            this->getScene2DRender()->getRegisteredObject(m_configuration->getAttributeValue("xAxis")));
-    }
-    else
-    {
-        m_xAxis = ::scene2D::data::Axis::New();
+        m_xAxis = this->getScene2DRender()->getAxis(m_configuration->getAttributeValue("xAxis"));
+        SLM_ASSERT("xAxis not found", m_xAxis);
     }
 
     if ( m_configuration->hasAttribute("yAxis") )
     {
-        m_yAxis = ::scene2D::data::Axis::dynamicCast(
-            this->getScene2DRender()->getRegisteredObject(m_configuration->getAttributeValue("yAxis")));
-    }
-    else
-    {
-        m_yAxis = ::scene2D::data::Axis::New();
+        m_yAxis = this->getScene2DRender()->getAxis(m_configuration->getAttributeValue("yAxis"));
+        SLM_ASSERT("yAxis not found", m_xAxis);
     }
 
     if ( m_configuration->hasAttribute("zValue") )
@@ -293,28 +280,14 @@ void IAdaptor::stopping()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr IAdaptor::getRegisteredObject(::scene2D::SRender::ObjectIDType _objectId) const
-{
-    ::fwData::Object::sptr obj;
-    if (!_objectId.empty())
-    {
-        // Get an object from an id
-        obj = m_scene2DRender.lock()->getRegisteredObject(_objectId);
-    }
-
-    return obj;
-}
-
-//-----------------------------------------------------------------------------
-
-void IAdaptor::processInteraction( ::scene2D::data::Event::sptr _event )
+void IAdaptor::processInteraction(::fwRenderQt::data::Event& _event )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::registerService( ::scene2D::adaptor::IAdaptor::sptr srv )
+void IAdaptor::registerService( ::fwRenderQt::IAdaptor::sptr srv )
 {
     m_managedAdaptors.push_back( srv );
 }
@@ -333,6 +306,5 @@ void IAdaptor::unregisterServices()
 
 //-----------------------------------------------------------------------------
 
-}
-} // namespace scene2D
+} // namespace fwRenderQt
 

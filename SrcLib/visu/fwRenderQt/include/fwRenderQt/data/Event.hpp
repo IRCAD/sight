@@ -4,18 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_DATA_EVENT_HPP__
-#define __SCENE2D_DATA_EVENT_HPP__
+#ifndef __FWRENDERQT_DATA_EVENT_HPP__
+#define __FWRENDERQT_DATA_EVENT_HPP__
 
-#include "scene2D/config.hpp"
-#include "scene2D/data/Coord.hpp"
-#include "scene2D/data/Size.hpp"
-
-#include <fwData/Object.hpp>
+#include "fwRenderQt/data/Coord.hpp"
+#include "fwRenderQt/data/Size.hpp"
 
 #include <Qt>
 
-namespace scene2D
+namespace fwRenderQt
 {
 namespace data
 {
@@ -26,7 +23,7 @@ namespace data
  * @brief This class manage events on the scene 2D (mouse event, keyboard event ,
  * ...).
  */
-class SCENE2D_CLASS_API Event : public ::fwData::Object
+class Event
 {
 
 public:
@@ -62,20 +59,18 @@ public:
         AltModifier
     } Modifier;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >);
-
     /**
      * @brief Constructor
      * @param key Private construction key
      */
-    SCENE2D_API Event( ::fwData::Object::Key key );
-    SCENE2D_API virtual ~Event();
-
-    /// Defines shallow copy
-    SCENE2D_API void shallowCopy( const ::fwData::Object::csptr& _source );
-
-    /// Defines deep copy
-    SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    Event() :
+        m_type(NoType),
+        m_button(NoButton),
+        m_modifier(NoModifier),
+        m_accepted(false),
+        m_key(Qt::Key_unknown)
+    {
+    }
 
     bool isAccepted() const;
     void setAccepted(bool accepted);
@@ -226,7 +221,7 @@ inline void Event::setType(Type type)
 }
 
 } // namespace data
-} // namespace scene2D
+} // namespace fwRenderQt
 
-#endif // __SCENE2D_DATA_EVENT_HPP__
+#endif // __FWRENDERQT_DATA_EVENT_HPP__
 

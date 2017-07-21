@@ -1,22 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/data/InitQtPen.hpp"
+#include "fwRenderQt/data/InitQtPen.hpp"
 
 #include <fwCore/base.hpp>
 
-
-namespace scene2D
+namespace fwRenderQt
 {
 namespace data
 {
 
 //---------------------------------------------------------------------------------------
 
-void InitQtPen::setPenColor(QPen & _pen, std::string _color)
+void InitQtPen::setPenColor(QPen& _pen, std::string _color)
 {
     QColor color(QString::fromStdString(_color));
     if (color.isValid())
@@ -33,7 +32,7 @@ void InitQtPen::setPenColor(QPen & _pen, std::string _color)
 
 //---------------------------------------------------------------------------------------
 
-void InitQtPen::setPenColor(QPen & _pen, std::string _color, float _opacity)
+void InitQtPen::setPenColor(QPen& _pen, std::string _color, float _opacity)
 {
     InitQtPen::setPenColor( _pen, _color );
 
@@ -43,4 +42,4 @@ void InitQtPen::setPenColor(QPen & _pen, std::string _color, float _opacity)
 }
 
 } // namespace data
-} // namespace scene2D
+} // namespace fwRenderQt
