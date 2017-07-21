@@ -43,12 +43,15 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         ::fwGuiQt::container::QtContainer::dynamicCast(parent);
 
     QVBoxLayout* layout = new QVBoxLayout();
+    parentContainer->setLayout(layout);
+
     layout->setContentsMargins(0, 0, 0, 0);
 
     QScrollArea* sv = new QScrollArea();
     ::fwGuiQt::widget::QfwToolBox* toolbox = new ::fwGuiQt::widget::QfwToolBox(sv);
     sv->setWidget(toolbox);
     sv->setWidgetResizable(true);
+    layout->addWidget(sv);
 
     const std::list< ViewInfo>& views = this->getViewsInfo();
     for ( ViewInfo viewInfo : views)
@@ -79,11 +82,12 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
         {
             toolbox->expandItem(index);
         }
-        subContainer->setVisible( viewInfo.m_visible );
-    }
-    layout->addWidget(sv);
 
-    parentContainer->setLayout(layout);
+        if(false == viewInfo.m_visible)
+        {
+            subContainer->setVisible(false);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
