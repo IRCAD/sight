@@ -6,7 +6,6 @@
 
 #include <QHBoxLayout>
 
-#include <cmath>
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
 #endif
@@ -83,7 +82,7 @@ void TransformationMatrixEditor::configuring()
 
 void TransformationMatrixEditor::updating()
 {
-    ::fwData::TransformationMatrix3D::sptr tm3D = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr tm3D = this->getInOut< ::fwData::TransformationMatrix3D>("matrix");
 
     int angle = acos(tm3D->getCoefficient(0, 0)) * 180.0 / M_PI;
     m_angleSlider->setValue(angle);
@@ -105,7 +104,7 @@ void TransformationMatrixEditor::info( std::ostream& _sstream )
 
 void TransformationMatrixEditor::onSliderChange( int angle  )
 {
-    ::fwData::TransformationMatrix3D::sptr tm3D = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr tm3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     double angleRad = angle*M_PI/180.0;
 
