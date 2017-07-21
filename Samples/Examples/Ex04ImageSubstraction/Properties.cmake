@@ -1,5 +1,5 @@
 
-set( NAME Ex04ImagesRegistration)
+set( NAME Ex04ImageSubstraction)
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -25,4 +25,4 @@ set( REQUIREMENTS
     basicRegistration
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex04ImagesRegistrationConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex04ImageSubstractionConfig)
