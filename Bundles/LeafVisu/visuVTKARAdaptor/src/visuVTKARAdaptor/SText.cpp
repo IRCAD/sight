@@ -49,7 +49,7 @@ SText::~SText() noexcept
 void SText::doConfigure()
 {
     SLM_ASSERT("Required 'config' element is missing.", m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    this->setRendererId( m_configuration->getAttributeValue("renderer") );
 
     m_seshatPath = m_configuration->getAttributeValue("seshat");
 

@@ -60,7 +60,7 @@ void SPointList3D::doConfigure()
 
     SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
     this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    this->setRendererId( m_configuration->getAttributeValue("renderer") );
     this->setTransformId( m_configuration->getAttributeValue("transform") );
 
     std::string hexaColor = m_configuration->getAttributeValue("color");
