@@ -4,75 +4,82 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>tutoScene2DConfig</id>
         <config>
-            <object type="::fwData::Composite">
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
+            <object uid="Float" type="::fwData::Float" />
+            <!-- ***************************************** End Objects declaration ******************************************* -->
 
-                <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-                    <gui>
-                        <frame>
-                            <name>TutoScene132D</name>
-                            <icon>@BUNDLE_PREFIX@/Tuto13Scene2D_0-1/tuto.ico</icon>
-                            <minSize width="800" height="600" />
-                        </frame>
-                    </gui>
-                    <registry>
-                        <view sid="GENERIC_UID_GlobalView" start="yes" />
-                    </registry>
-                </service>
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>TutoScene132D</name>
+                        <icon>@BUNDLE_PREFIX@/Tuto13Scene2D_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="GlobalView" start="yes" />
+                </registry>
+            </service>
 
-                <service uid="GENERIC_UID_GlobalView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="vertical" />
-                            <view caption="Scene2D" />
-                            <view caption="FloatEditor" proportion="0" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="GENERIC_UID_Scene2D" start="no" />
-                        <view sid="GENERIC_UID_FloatEditor" start="no" />
-                    </registry>
-                </service>
+            <service uid="GlobalView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view caption="Scene2D" />
+                        <view caption="FloatEditor" proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="Scene2D" start="no" />
+                    <view sid="FloatEditor" start="no" />
+                </registry>
+            </service>
+            <!-- ***************************************** End layouts declaration ***************************************** -->
 
-                <service uid="GENERIC_UID_Scene2D" impl="::scene2D::SRender" type="::fwRender::IRender" autoConnect="yes">
-                    <scene>
-                        <viewport id="view1" x="-100" y="-100" width="200" height="200" />
-                        <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                        <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="data">
-                            <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
-                        </adaptor>
+            <!-- ***************************************** Begin services declarations  ************************************ -->
 
-                        <adaptor id="square1" class="::scene2D::adaptor::Square" objectId="self">
-                            <config x="0" y="0" size="15" color="red" zValue="4" />
-                        </adaptor>
+            <service uid="FloatEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
+                <inout key="float" uid="Float" />
+            </service>
 
-                        <adaptor id="square2" class="::scene2D::adaptor::Square" objectId="self">
-                            <config x="20" y="20" size="30" color="blue" zValue="3" />
-                        </adaptor>
+            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
+                <inout key="floatID" uid="Float" />
+                <scene>
+                    <viewport id="view1" x="-100" y="-100" width="200" height="200" />
+                    <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="floatID">
+                        <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
+                    </adaptor>
 
-                        <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="-100" x2="100" y1="0" y2="0" color="red" zValue="5" />
-                        </adaptor>
+                    <adaptor id="square1" class="::scene2D::adaptor::Square" objectId="self">
+                        <config x="0" y="0" size="15" color="red" zValue="4" />
+                    </adaptor>
 
-                        <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
-                        </adaptor>
-                    </scene>
-                </service>
+                    <adaptor id="square2" class="::scene2D::adaptor::Square" objectId="self">
+                        <config x="20" y="20" size="30" color="blue" zValue="3" />
+                    </adaptor>
 
-                <item key="data">
-                    <object uid="GENERIC_UID_Float" type="::fwData::Float">
-                        <service uid="GENERIC_UID_FloatEditor" impl="::uiVisu::BasicFloatEditor" type="::gui::editor::IEditor" autoConnect="yes" />
-                    </object>
-                </item>
+                    <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="-100" x2="100" y1="0" y2="0" color="red" zValue="5" />
+                    </adaptor>
 
-                <start uid="mainFrame" />
-                <start uid="GENERIC_UID_Scene2D" />
-                <start uid="GENERIC_UID_FloatEditor" />
+                    <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
+                    </adaptor>
+                </scene>
+            </service>
+            <!-- ***************************************** End render scenes declaration ***************************************** -->
 
-            </object>
+            <!-- ***************************************** End services declarations  ************************************************ -->
+
+            <start uid="mainFrame" />
+            <start uid="Scene2D" />
+            <start uid="FloatEditor" />
         </config>
     </extension>
 </plugin>

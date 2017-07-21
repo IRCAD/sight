@@ -27,7 +27,7 @@
 namespace uiVisu
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor, ::fwData::Float );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor );
 
 BasicFloatEditor::BasicFloatEditor() noexcept
 {
@@ -49,7 +49,7 @@ void BasicFloatEditor::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
+    ::fwData::Float::sptr floatObj = this->getInOut< ::fwData::Float >("float");
 
     QHBoxLayout* layout               = new QHBoxLayout();
     QDoubleValidator* doubleValidator = new QDoubleValidator( m_valueCtrl );
@@ -88,7 +88,7 @@ void BasicFloatEditor::configuring()
 
 void BasicFloatEditor::updating()
 {
-    ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
+    ::fwData::Float::sptr floatObj = this->getInOut< ::fwData::Float >("float");
     SLM_ASSERT("The given float object is null", floatObj);
 
     std::stringstream ss;
@@ -120,7 +120,7 @@ void BasicFloatEditor::info( std::ostream& _sstream )
 void BasicFloatEditor::onModifyValue(QString value)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
+    ::fwData::Float::sptr floatObj = this->getInOut< ::fwData::Float >("float");
     ::fwData::Float::sptr oldValue;
     oldValue = ::fwData::Object::copy(floatObj);
 
