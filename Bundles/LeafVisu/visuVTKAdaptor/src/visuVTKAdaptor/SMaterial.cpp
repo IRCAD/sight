@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Material.hpp"
+#include "visuVTKAdaptor/SMaterial.hpp"
 
 #include <fwData/Material.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -22,14 +22,16 @@
 #include <vtkSmartPointer.h>
 #include <vtkTexture.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Material, ::fwData::Material );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial );
+
+static const ::fwServices::IService::KeyType s_MATERIAL_INPUT = "material";
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-Material::Material() noexcept :
+SMaterial::SMaterial() noexcept :
     m_property(vtkProperty::New()),
     m_manageProperty(true),
     m_lighting(true)
@@ -38,7 +40,7 @@ Material::Material() noexcept :
 
 //------------------------------------------------------------------------------
 
-Material::~Material() noexcept
+SMaterial::~SMaterial() noexcept
 {
     if (m_manageProperty)
     {
@@ -49,7 +51,7 @@ Material::~Material() noexcept
 
 //------------------------------------------------------------------------------
 
-void Material::setVtkProperty(vtkProperty* property)
+void SMaterial::setVtkProperty(vtkProperty* property)
 {
     if (m_manageProperty)
     {
@@ -72,52 +74,45 @@ void Material::setVtkProperty(vtkProperty* property)
 
 //------------------------------------------------------------------------------
 
-vtkProperty* Material::getVtkProperty() const
+vtkProperty* SMaterial::getVtkProperty() const
 {
     return m_property;
 }
 
 //------------------------------------------------------------------------------
 
-void Material::doConfigure()
+void SMaterial::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Material::doStart()
+void SMaterial::starting()
 {
-    SLM_TRACE_FUNC();
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void Material::doSwap()
+void SMaterial::updating()
 {
-    SLM_TRACE("SWAPPING Material");
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Material::doUpdate()
-{
-    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    ::fwData::Material::csptr material = this->getInput < ::fwData::Material >(s_MATERIAL_INPUT);
+    SLM_ASSERT("Missing material", material);
 
     this->updateMaterial( material );
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Material::doStop()
+void SMaterial::stopping()
 {
-    //this->removeAllPropFromRenderer();
-    //this->unregisterServices();
+
 }
 
 //------------------------------------------------------------------------------
 
-void Material::updateMaterial( SPTR(::fwData::Material)material )
+void SMaterial::updateMaterial( CSPTR(::fwData::Material)material )
 {
     //3DVSP-like rendering
     m_property->SetLighting(material->getShadingMode() > 0);
@@ -208,10 +203,10 @@ void Material::updateMaterial( SPTR(::fwData::Material)material )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Material::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push( s_MATERIAL_INPUT, ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/MeshNormals.hpp"
+#include "visuVTKAdaptor/SMeshNormals.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>

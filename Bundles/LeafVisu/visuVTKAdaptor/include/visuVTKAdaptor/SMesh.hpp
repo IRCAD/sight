@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_MESH_HPP__
-#define __VISUVTKADAPTOR_MESH_HPP__
+#ifndef __VISUVTKADAPTOR_SMESH_HPP__
+#define __VISUVTKADAPTOR_SMESH_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -59,9 +59,10 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <adaptor type="::visuVTKAdaptor::Mesh">
-            <config renderer="default" picker="" texture="TextureAdaptor" />
-       </adaptor>
+   <service type="::visuVTKAdaptor::SMesh">
+       <in key="mesh" uid="..." />
+       <config renderer="default" picker="" texture="TextureAdaptor" />
+   </service>
    @endcode
  * @subsection Configuration Configuration:
  * - \b color : hexadecimal color code of the diffuse material (i.e RGB "#ff00ff" or RGBA "#ff224508"). This overrides
@@ -73,14 +74,14 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * coordinates layer, or to generate uv on-the-fly with the \b uvgen parameter.
  * - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
  */
-class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SMesh : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (Mesh)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMesh)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API Mesh() noexcept;
-    VISUVTKADAPTOR_API virtual ~Mesh() noexcept;
+    VISUVTKADAPTOR_API SMesh() noexcept;
+    VISUVTKADAPTOR_API virtual ~SMesh() noexcept;
 
     /**
      * @name Signals API
@@ -170,15 +171,14 @@ public:
      * Connect mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to this::s_UPDATE_POINT_TEX_COORDS_SLOT
      * Connect mesh::s_CELL_TEX_COORDS_MODIFIED_SIG to this::s_UPDATE_CELL_TEX_COORDS_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart    ();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doStop     ();
-    VISUVTKADAPTOR_API void doSwap   ();
-    VISUVTKADAPTOR_API void doUpdate   ();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     /**
      * @name Slots methods
@@ -224,7 +224,7 @@ protected:
     vtkActor* newActor();
     void buildPipeline();
 
-    void updateMesh( SPTR(::fwData::Mesh) mesh );
+    void updateMesh( CSPTR(::fwData::Mesh) mesh );
 
     void setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr &srv,
                               SPTR(::fwData::Material) material);
@@ -277,29 +277,6 @@ protected:
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;
 
-private:
-
-    /**
-     * @name Slots attributes
-     * @{
-     */
-    UpdateVisibilitySlotType::sptr m_slotUpdateVisibility; ///< slot used to change the mesh visibility
-    UpdatePointColorsSlotType::sptr m_slotUpdatePointColors; ///< slot used to update point colors
-    UpdateCellColorsSlotType::sptr m_slotUpdateCellColors; ///< slot used to update cell colors
-    UpdateVertexSlotType::sptr m_slotUpdateVertex; ///< slot used to update mesh vertex
-    UpdatePointNormalsSlotType::sptr m_slotUpdatePointNormals; ///< slot used to update point normals
-    UpdateCellNormalsSlotType::sptr m_slotUpdateCellNormals; ///< slot used to update cell normals
-    UpdatePointTexCoordsSlotType::sptr m_slotUpdatePointTexCoords; ///< slot used to update point tex coords
-    UpdateCellTexCoordsSlotType::sptr m_slotUpdateCellTexCoords; ///< slot used to update cell tex coords
-    ShowPointColorsSlotType::sptr m_slotShowPointColors; ///< slot used to show point colors
-    ShowCellColorsSlotType::sptr m_slotShowCellColors; ///< slot used to show cell colors
-    HideColorsSlotType::sptr m_slotHideColors; ///< slot used to hide colors
-    /// slot used to update color mode (0: none, 1: point, 2: cell)
-    UpdateColorModeSlotType::sptr m_slotUpdateColorMode;
-    /**
-     * @}
-     */
-
 public:
 
     //------------------------------------------------------------------------------
@@ -313,4 +290,4 @@ public:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_MESH_HPP__
+#endif // __VISUVTKADAPTOR_SMESH_HPP__

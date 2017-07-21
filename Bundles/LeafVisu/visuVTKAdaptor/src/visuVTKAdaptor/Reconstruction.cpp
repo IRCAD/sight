@@ -6,7 +6,7 @@
 
 #include "visuVTKAdaptor/Reconstruction.hpp"
 
-#include "visuVTKAdaptor/Mesh.hpp"
+#include "visuVTKAdaptor/SMesh.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -95,9 +95,9 @@ void Reconstruction::createMeshService()
         ::fwRenderVTK::IAdaptor::sptr meshService;
         meshService = ::fwServices::add< ::fwRenderVTK::IAdaptor > (
             mesh,
-            "::visuVTKAdaptor::Mesh" );
+            "::visuVTKAdaptor::SMesh" );
         SLM_ASSERT("meshService not instanced", meshService);
-        ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
+        ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
         meshService->setRenderService( this->getRenderService() );
         meshService->setRendererId( this->getRendererId()      );
@@ -140,7 +140,7 @@ void Reconstruction::doUpdate()
         ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
 
         ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-        ::visuVTKAdaptor::Mesh::sptr meshAdaptor      = Mesh::dynamicCast(meshService);
+        ::visuVTKAdaptor::SMesh::sptr meshAdaptor     = SMesh::dynamicCast(meshService);
         //meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
 
         meshAdaptor->setMaterial( reconstruction->getMaterial());
@@ -180,8 +180,8 @@ void Reconstruction::updateVisibility(bool visible)
     if (!m_meshService.expired())
     {
         ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
-        ::visuVTKAdaptor::Mesh::sptr meshAdaptor
-            = Mesh::dynamicCast(meshService);
+        ::visuVTKAdaptor::SMesh::sptr meshAdaptor
+            = SMesh::dynamicCast(meshService);
 
         if (meshAdaptor)
         {
@@ -211,7 +211,7 @@ void Reconstruction::updateNormalMode(std::uint8_t mode)
 {
     if (!m_meshService.expired())
     {
-        ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(m_meshService.lock());
+        ::visuVTKAdaptor::SMesh::sptr meshAdaptor = ::visuVTKAdaptor::SMesh::dynamicCast(m_meshService.lock());
         if (meshAdaptor)
         {
             meshAdaptor->updateNormalMode(mode);

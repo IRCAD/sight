@@ -6,15 +6,12 @@
 
 #include "visuVTKAdaptor/Texture.hpp"
 
-#include "visuVTKAdaptor/Mesh.hpp"
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>

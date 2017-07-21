@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_MESHNORMALS_HPP__
-#define __VISUVTKADAPTOR_MESHNORMALS_HPP__
+#ifndef __VISUVTKADAPTOR_SMESHNORMALS_HPP__
+#define __VISUVTKADAPTOR_SMESHNORMALS_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -146,4 +146,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_MESHNORMALS_HPP__
+#endif // __VISUVTKADAPTOR_SMESHNORMALS_HPP__

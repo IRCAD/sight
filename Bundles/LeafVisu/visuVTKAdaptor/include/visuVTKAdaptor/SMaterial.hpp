@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_MATERIAL_HPP__
-#define __VISUVTKADAPTOR_MATERIAL_HPP__
+#ifndef __VISUVTKADAPTOR_SMATERIAL_HPP__
+#define __VISUVTKADAPTOR_SMATERIAL_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -24,16 +24,16 @@ namespace visuVTKAdaptor
 /**
  * @brief Manage material representation of meshes
  */
-class VISUVTKADAPTOR_CLASS_API Material : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SMaterial : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Material)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API Material() noexcept;
+    VISUVTKADAPTOR_API SMaterial() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Material() noexcept;
+    VISUVTKADAPTOR_API virtual ~SMaterial() noexcept;
 
     VISUVTKADAPTOR_API void setVtkProperty(vtkProperty* property);
 
@@ -45,17 +45,16 @@ public:
      *
      * Connect Material::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
-    void updateMaterial( SPTR(::fwData::Material) material );
+    void updateMaterial( CSPTR(::fwData::Material) material );
 
     vtkProperty* m_property;
     bool m_manageProperty;
@@ -65,4 +64,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_MATERIAL_HPP__
+#endif // __VISUVTKADAPTOR_SMATERIAL_HPP__

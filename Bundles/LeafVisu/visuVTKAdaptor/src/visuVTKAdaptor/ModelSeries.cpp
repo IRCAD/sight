@@ -6,8 +6,8 @@
 
 #include "visuVTKAdaptor/ModelSeries.hpp"
 
-#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/Reconstruction.hpp"
+#include "visuVTKAdaptor/SMesh.hpp"
 #include "visuVTKAdaptor/Texture.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -141,10 +141,10 @@ void ModelSeries::doUpdate()
             SLM_ASSERT("Missing mesh", mesh);
 
             ::fwServices::registry::ObjectService::ServiceVectorType servicesVector;
-            servicesVector = ::fwServices::OSR::getServices(mesh, "::visuVTKAdaptor::Mesh");
+            servicesVector = ::fwServices::OSR::getServices(mesh, "::visuVTKAdaptor::SMesh");
             SLM_ASSERT("Missing material adaptor", !servicesVector.empty());
 
-            ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(*servicesVector.begin());
+            ::visuVTKAdaptor::SMesh::sptr meshAdaptor = ::visuVTKAdaptor::SMesh::dynamicCast(*servicesVector.begin());
 
             ::fwData::Material::sptr material = meshAdaptor->getMaterial();
             SLM_ASSERT("Missing material", material);
