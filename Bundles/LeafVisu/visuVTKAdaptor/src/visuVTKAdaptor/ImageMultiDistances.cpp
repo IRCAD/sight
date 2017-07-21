@@ -267,7 +267,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
         // no mandatory to set picker id
         serviceDistance->setPickerId( this->getPickerId() );
-        serviceDistance->setRenderId( this->getRenderId() );
+        serviceDistance->setRendererId( this->getRendererId() );
         serviceDistance->setRenderService( this->getRenderService() );
         serviceDistance->setAutoRender( this->getAutoRender() );
         serviceDistance->start();
@@ -280,7 +280,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         SLM_ASSERT("servicePointList not instanced", servicePointList);
 
         servicePointList->setPickerId( this->getPickerId() );
-        servicePointList->setRenderId( this->getRenderId() );
+        servicePointList->setRendererId( this->getRendererId() );
         servicePointList->setRenderService( this->getRenderService() );
         servicePointList->setAutoRender(m_autoRender);
         servicePointList->start();

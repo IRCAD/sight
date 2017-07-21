@@ -125,7 +125,7 @@ void ImageSeries::doUpdate()
     SLM_ASSERT("service not instanced", service);
 
     service->setTransformId( this->getTransformId() );
-    service->setRenderId( this->getRenderId() );
+    service->setRendererId( this->getRendererId() );
     service->setPickerId( this->getPickerId() );
     service->setRenderService(this->getRenderService());
     service->setAutoRender( this->getAutoRender() );

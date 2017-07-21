@@ -62,7 +62,7 @@ SAxis::~SAxis() noexcept
 
 void SAxis::configuring()
 {
-    this->::fwRenderVTK::IAdaptor::configuring();
+    this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>.");
 

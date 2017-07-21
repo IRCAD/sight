@@ -190,9 +190,16 @@ private:
     /// Remove scene interactors
     void stopContext();
 
+    /// Parse the 'picker' configuration and create the associated vtk picker
     void configurePicker   ( ConfigurationType conf );
+
+    /// Parse the 'renderer' configuration and create the associated vtk renderer
     void configureRenderer ( ConfigurationType conf );
+
+    /// Parse the 'vtkObject' configuration and create the associated vtk objects
     void configureVtkObject( ConfigurationType conf );
+
+    /// Parse the transform configuration to create vtk transform and manage concatenate
     vtkTransform* createVtkTransform( ConfigurationType conf );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;

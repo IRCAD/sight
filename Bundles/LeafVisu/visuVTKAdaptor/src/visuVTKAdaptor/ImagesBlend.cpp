@@ -363,7 +363,7 @@ void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
         = ::fwServices::add< ::fwRenderVTK::IAdaptor >( img, "::visuVTKAdaptor::Image");
 
     imageAdaptorService->setRenderService(this->getRenderService());
-    imageAdaptorService->setRenderId( this->getRenderId() );
+    imageAdaptorService->setRendererId( this->getRendererId() );
     imageAdaptorService->setPickerId( this->getPickerId() );
     imageAdaptorService->setTransformId( this->getTransformId() );
     imageAdaptorService->setAutoRender( this->getAutoRender() );

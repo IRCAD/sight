@@ -44,12 +44,19 @@ IAdaptor::~IAdaptor() noexcept
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring()
+void IAdaptor::configureParams()
 {
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
     this->setPickerId(config.get<std::string>("picker", ""));
-    this->setRenderId(config.get<std::string>("renderer", ""));
+    this->setRendererId(config.get<std::string>("renderer", ""));
     this->setTransformId(config.get<std::string>("transform", ""));
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::configuring()
+{
+    SLM_ERROR("configuring() method must be implemented for '" + this->getClassname() + "'");
 }
 
 //------------------------------------------------------------------------------
@@ -105,14 +112,13 @@ void IAdaptor::setRenderService( SRender::sptr service)
 {
     /// Preconditions
     SLM_ASSERT("service not instanced", service);
-    assert( this->isStopped() );
 
     m_renderService = service;
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::setRenderId(SRender::RendererIdType newID)
+void IAdaptor::setRendererId(SRender::RendererIdType newID)
 {
     m_rendererId = newID;
 }
@@ -151,7 +157,7 @@ void IAdaptor::requestRender()
 
 //------------------------------------------------------------------------------
 
-SRender::RendererIdType IAdaptor::getRenderId() const
+SRender::RendererIdType IAdaptor::getRendererId() const
 {
     return m_rendererId;
 }

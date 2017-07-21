@@ -336,7 +336,7 @@ public:
                 ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
 
                 meshAdaptor->setRenderService( service->getRenderService()  );
-                meshAdaptor->setRenderId( service->getRenderId()       );
+                meshAdaptor->setRendererId( service->getRendererId()       );
                 meshAdaptor->setPickerId( service->getPickerId()       );
                 meshAdaptor->setMaterial( service->getMaterial()       );
                 meshAdaptor->setVtkClippingPlanes( newCollection );
@@ -612,7 +612,7 @@ void Mesh::createTransformService()
     ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
 
     transformService->setRenderService( this->getRenderService()  );
-    transformService->setRenderId( this->getRenderId()       );
+    transformService->setRendererId( this->getRendererId()       );
     transformService->setAutoRender( this->getAutoRender()     );
 
     transformService->setTransform(vtkFieldTransform);
@@ -738,7 +738,7 @@ void Mesh::createNormalsService()
         SLM_ASSERT("service not instanced", service);
 
         service->setRenderService( this->getRenderService() );
-        service->setRenderId( this->getRenderId()      );
+        service->setRendererId( this->getRendererId()      );
         service->setPickerId( this->getPickerId()      );
         service->setAutoRender( this->getAutoRender()    );
         ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );

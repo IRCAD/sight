@@ -160,7 +160,7 @@ void PointList::createServices(WeakPointListType& wPtList)
         SLM_ASSERT("Bad cast of IAdaptor to Point", pointAdaptor);
 
         service->setRenderService(this->getRenderService());
-        service->setRenderId( this->getRenderId() );
+        service->setRendererId( this->getRendererId() );
         service->setPickerId( this->getPickerId() );
         service->setAutoRender( this->getAutoRender() );
         service->start();

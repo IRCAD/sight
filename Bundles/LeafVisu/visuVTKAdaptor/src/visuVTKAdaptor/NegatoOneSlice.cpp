@@ -109,7 +109,7 @@ void NegatoOneSlice::cleanImageSource()
 
         adaptor = ::fwServices::add< ::fwRenderVTK::IAdaptor >(image, "::visuVTKAdaptor::ImageSlice");
         adaptor->setRenderService(this->getRenderService());
-        adaptor->setRenderId( this->getRenderId() );
+        adaptor->setRendererId( this->getRendererId() );
         adaptor->setPickerId( this->getPickerId() );
         adaptor->setTransformId( this->getTransformId() );
         adaptor->setAutoRender( this->getAutoRender() );
@@ -147,7 +147,7 @@ void NegatoOneSlice::cleanImageSource()
             image,
             "::visuVTKAdaptor::Image");
         adaptor->setRenderService(this->getRenderService());
-        adaptor->setRenderId( this->getRenderId() );
+        adaptor->setRendererId( this->getRendererId() );
         adaptor->setPickerId( this->getPickerId() );
         adaptor->setTransformId( this->getTransformId() );
         adaptor->setAutoRender( this->getAutoRender() );

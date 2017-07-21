@@ -100,7 +100,7 @@ void Reconstruction::createMeshService()
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
 
         meshService->setRenderService( this->getRenderService() );
-        meshService->setRenderId( this->getRenderId()      );
+        meshService->setRendererId( this->getRendererId()      );
         meshService->setPickerId( this->getPickerId()      );
         meshService->setTransformId( this->getTransformId() );
         meshService->setAutoRender( this->getAutoRender() );

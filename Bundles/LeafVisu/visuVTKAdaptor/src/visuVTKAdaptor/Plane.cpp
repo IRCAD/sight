@@ -92,7 +92,7 @@ void Plane::doStart()
         SLM_ASSERT("servicePoint not instanced", servicePoint);
 
         servicePoint->setRenderService(this->getRenderService());
-        servicePoint->setRenderId( this->getRenderId() );
+        servicePoint->setRendererId( this->getRendererId() );
         servicePoint->setPickerId( this->getPickerId() );
         servicePoint->setAutoRender( this->getAutoRender() );
         servicePoint->start();

@@ -240,7 +240,7 @@ void PlaneList::doUpdate()
             SLM_ASSERT("servicePlane not instanced", servicePlane);
 
             servicePlane->setRenderService(this->getRenderService());
-            servicePlane->setRenderId( this->getRenderId() );
+            servicePlane->setRendererId( this->getRendererId() );
             servicePlane->setPickerId( this->getPickerId() );
             servicePlane->setAutoRender( this->getAutoRender() );
 

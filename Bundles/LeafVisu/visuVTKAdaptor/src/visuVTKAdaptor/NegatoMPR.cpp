@@ -430,7 +430,7 @@ void NegatoMPR::set3dMode( bool enabled )
     }
 
     service->setRenderService(this->getRenderService());
-    service->setRenderId( this->getRenderId() );
+    service->setRendererId( this->getRendererId() );
     service->setPickerId( this->getPickerId() );
     service->setTransformId( this->getTransformId() );
     service->setAutoRender( this->getAutoRender() );
