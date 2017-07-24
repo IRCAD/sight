@@ -8,7 +8,6 @@
 #define __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>

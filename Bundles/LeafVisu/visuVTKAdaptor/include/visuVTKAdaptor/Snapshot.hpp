@@ -8,7 +8,6 @@
 #define __VISUVTKADAPTOR_SNAPSHOT_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>

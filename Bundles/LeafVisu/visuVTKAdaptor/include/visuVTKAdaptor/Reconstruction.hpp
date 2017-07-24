@@ -8,7 +8,6 @@
 #define __VISUVTKADAPTOR_RECONSTRUCTION_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwRenderVTK/IAdaptor.hpp>
 

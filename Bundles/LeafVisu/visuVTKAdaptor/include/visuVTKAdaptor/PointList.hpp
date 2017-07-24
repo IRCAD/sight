@@ -10,7 +10,6 @@
 #ifndef ANDROID
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
 #include "visuVTKAdaptor/Point.hpp"
 
 #include <fwData/Color.hpp>
