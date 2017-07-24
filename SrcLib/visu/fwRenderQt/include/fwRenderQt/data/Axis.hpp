@@ -20,6 +20,8 @@ class Axis
 
 public:
 
+    typedef std::shared_ptr < Axis > sptr;
+
     typedef enum
     {
         LINEAR,

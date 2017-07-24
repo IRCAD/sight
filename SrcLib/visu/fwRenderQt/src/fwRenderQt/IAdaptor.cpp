@@ -6,6 +6,7 @@
 
 #include "fwRenderQt/IAdaptor.hpp"
 
+#include "fwRenderQt/registry/Adaptor.hpp"
 #include "fwRenderQt/Scene2DGraphicsView.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
@@ -21,8 +22,6 @@ namespace fwRenderQt
 {
 
 IAdaptor::IAdaptor() noexcept :
-    m_xAxis(nullptr),
-    m_yAxis(nullptr),
     m_zValue(0.f),
     m_opacity(1.f)
 {
@@ -56,18 +55,16 @@ float IAdaptor::getZValue() const
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::setScene2DRender( ::fwRenderQt::SRender::sptr render)
-{
-    SLM_ASSERT("Service not instanced", render);
-    SLM_ASSERT("Adaptor is already started", this->isStopped() );
-    m_scene2DRender = render;
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwRenderQt::SRender::sptr IAdaptor::getScene2DRender() const
 {
-    return m_scene2DRender.lock();
+    const auto& registry = ::fwRenderQt::registry::getAdaptorRegistry();
+    const auto& iter     = registry.find(this->getID());
+    SLM_ASSERT("Adaptor "+ this->getID() +" not registered", iter != registry.end());
+
+    ::fwRenderQt::SRender::sptr render =
+        ::fwRenderQt::SRender::dynamicCast(::fwTools::fwID::getObject(iter->second));
+    SLM_ASSERT("Service SRender "+ iter->second +" not instanced", render);
+    return render;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,12 +99,12 @@ IAdaptor::Scene2DRatio IAdaptor::getRatio() const
 //-----------------------------------------------------------------------------
 
 IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
-                                                  const ::fwRenderQt::data::Axis& _xAxis,
-                                                  const ::fwRenderQt::data::Axis& _yAxis ) const
+                                                  const ::fwRenderQt::data::Axis::sptr& _xAxis,
+                                                  const ::fwRenderQt::data::Axis::sptr& _yAxis ) const
 {
     double x, y;
 
-    if (_xAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_xAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
         // Logarithme 10 cannot get negative values
         if (_xy.first <= 0.)
@@ -117,16 +114,16 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
         else
         {
             // Apply the x scale and the log to the x value
-            x = _xAxis.getScale() * log10( _xy.first );
+            x = _xAxis->getScale() * log10( _xy.first );
         }
     }
     else
     {
         // Apply just the x scale to the x value
-        x = _xAxis.getScale() * _xy.first;
+        x = _xAxis->getScale() * _xy.first;
     }
 
-    if (_yAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_yAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
         // Logarithm 10 cannot get negative values
         if (_xy.second <= 0.)
@@ -136,13 +133,13 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
         else
         {
             // Apply the y scale and the log to the y value
-            y = _yAxis.getScale() * log10( _xy.second );
+            y = _yAxis->getScale() * log10( _xy.second );
         }
     }
     else
     {
         // Apply just the y scale to the y value
-        y = _yAxis.getScale() * _xy.second;
+        y = _yAxis->getScale() * _xy.second;
     }
 
     return Point2DType( x, y );
@@ -151,27 +148,27 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(const Point2DType& _xy,
 //-----------------------------------------------------------------------------
 
 IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
-                                                  const ::fwRenderQt::data::Axis& _xAxis,
-                                                  const ::fwRenderQt::data::Axis& _yAxis ) const
+                                                  const ::fwRenderQt::data::Axis::sptr& _xAxis,
+                                                  const ::fwRenderQt::data::Axis::sptr& _yAxis ) const
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
-    if (_xAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_xAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
-        x = 10. * exp( _xy.first ) / _xAxis.getScale();
+        x = 10. * exp( _xy.first ) / _xAxis->getScale();
     }
     else
     {
-        x = ( _xy.first ) / _xAxis.getScale();
+        x = ( _xy.first ) / _xAxis->getScale();
     }
 
-    if (_yAxis.getScaleType() == ::fwRenderQt::data::Axis::LOG)
+    if (_yAxis->getScaleType() == ::fwRenderQt::data::Axis::LOG)
     {
-        y = 10. * ( _xy.second ) / _yAxis.getScale();
+        y = 10. * ( _xy.second ) / _yAxis->getScale();
     }
     else
     {
-        y = _xy.second / _yAxis.getScale();
+        y = _xy.second / _yAxis->getScale();
     }
 
     return Point2DType( x, y );
@@ -181,6 +178,8 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
 
 void IAdaptor::configuring()
 {
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
     m_viewInitialSize.first  = -1.0f;
     m_viewInitialSize.second = -1.0f;
 
@@ -188,26 +187,34 @@ void IAdaptor::configuring()
     m_viewportInitialSize.second = -1.0f;
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
-    if ( m_configuration->hasAttribute("xAxis") )
+    if( config.count("xAxis") )
     {
-        m_xAxis = this->getScene2DRender()->getAxis(m_configuration->getAttributeValue("xAxis"));
+        m_xAxis = this->getScene2DRender()->getAxis(config.get<std::string>("xAxis"));
         SLM_ASSERT("xAxis not found", m_xAxis);
     }
-
-    if ( m_configuration->hasAttribute("yAxis") )
+    else
     {
-        m_yAxis = this->getScene2DRender()->getAxis(m_configuration->getAttributeValue("yAxis"));
+        m_xAxis = std::make_shared< ::fwRenderQt::data::Axis >();
+    }
+
+    if( config.count("yAxis") )
+    {
+        m_yAxis = this->getScene2DRender()->getAxis(config.get<std::string>("yAxis"));
         SLM_ASSERT("yAxis not found", m_xAxis);
     }
-
-    if ( m_configuration->hasAttribute("zValue") )
+    else
     {
-        m_zValue = std::stof( m_configuration->getAttributeValue("zValue"));
+        m_yAxis = std::make_shared< ::fwRenderQt::data::Axis >();
     }
 
-    if ( m_configuration->hasAttribute("opacity") )
+    if( config.count("zValue") )
     {
-        m_opacity = std::stof( m_configuration->getAttributeValue("opacity"));
+        m_zValue = config.get<float>("zValue");
+    }
+
+    if( config.count("opacity") )
+    {
+        m_opacity = config.get<float>("opacity");
     }
 }
 
@@ -282,7 +289,6 @@ void IAdaptor::stopping()
 
 void IAdaptor::processInteraction(::fwRenderQt::data::Event& _event )
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

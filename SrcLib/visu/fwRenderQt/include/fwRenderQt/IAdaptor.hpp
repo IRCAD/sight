@@ -45,9 +45,6 @@ public:
     /// Get the zValue.
     FWRENDERQT_API float getZValue() const;
 
-    /// Set the render that manages the IAdaptor.
-    FWRENDERQT_API void setScene2DRender( ::fwRenderQt::SRender::sptr render);
-
     /// Get the render that manages the IAdaptor.
     FWRENDERQT_API SPTR(::fwRenderQt::SRender) getScene2DRender() const;
 
@@ -96,14 +93,14 @@ protected:
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     /// coordinates to scene coordinates
     FWRENDERQT_API Point2DType mapAdaptorToScene(const Point2DType& _xy,
-                                                 const ::fwRenderQt::data::Axis& _xAxis,
-                                                 const ::fwRenderQt::data::Axis& _yAxis) const;
+                                                 const ::fwRenderQt::data::Axis::sptr& _xAxis,
+                                                 const ::fwRenderQt::data::Axis::sptr& _yAxis) const;
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from scene
     /// coordinates to adaptor coordinates
     FWRENDERQT_API Point2DType mapSceneToAdaptor(const Point2DType& _xy,
-                                                 const ::fwRenderQt::data::Axis& _xAxis,
-                                                 const ::fwRenderQt::data::Axis& _yAxis) const;
+                                                 const ::fwRenderQt::data::Axis::sptr& _xAxis,
+                                                 const ::fwRenderQt::data::Axis::sptr& _yAxis) const;
 
     /// Return the ratio between view's initial size and its current size
     FWRENDERQT_API ViewSizeRatio getViewSizeRatio() const;
@@ -120,10 +117,10 @@ protected:
     FWRENDERQT_API Scene2DRatio getRatio() const;
 
     /// The x Axis.
-    ::fwRenderQt::data::Axis* m_xAxis;
+    ::fwRenderQt::data::Axis::sptr m_xAxis;
 
     /// The y Axis.
-    ::fwRenderQt::data::Axis* m_yAxis;
+    ::fwRenderQt::data::Axis::sptr m_yAxis;
 
     /// The adaptor zValue (depth within the scene).
     /// The adaptor with the highest zValue is displayed on top of all adaptors.

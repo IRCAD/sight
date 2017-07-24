@@ -72,11 +72,11 @@ public:
     FWRENDERQT_API ::fwRenderQt::data::Viewport::sptr getViewport() const;
 
     /// Get the axis.
-    FWRENDERQT_API ::fwRenderQt::data::Axis* getAxis(const std::string& id) const;
+    FWRENDERQT_API ::fwRenderQt::data::Axis::sptr getAxis(const std::string& id) const;
 
     /// Iterate on the m_zValue2AdaptorID map and, if the event hasn't been accepted yet, call the adaptor
     /// processInteraction function.
-    FWRENDERQT_API void dispatchInteraction( const ::fwRenderQt::data::Event& _event );
+    FWRENDERQT_API void dispatchInteraction(::fwRenderQt::data::Event& _event );
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
     FWRENDERQT_API ::fwRenderQt::data::Coord mapToScene( const ::fwRenderQt::data::Coord& coord ) const;
@@ -234,7 +234,7 @@ private:
     /// Map of AdaptorIDType referenced by AdaptorZValueType;
     ZValue2AdaptorID m_zValue2AdaptorID;
 
-    std::map<std::string, ::fwRenderQt::data::Axis* > m_axisMap;
+    std::map<std::string, ::fwRenderQt::data::Axis::sptr > m_axisMap;
 
     /// The render configuration.
     ConfigurationType m_sceneConfiguration;

@@ -71,9 +71,9 @@ Scene2DGraphicsView* SRender::getView() const
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Axis* SRender::getAxis(const std::string& id) const
+::fwRenderQt::data::Axis::sptr SRender::getAxis(const std::string& id) const
 {
-    ::fwRenderQt::data::Axis* axis = nullptr;
+    ::fwRenderQt::data::Axis::sptr axis;
     const auto iter = m_axisMap.find(id);
     if(iter != m_axisMap.end())
     {
@@ -84,7 +84,7 @@ Scene2DGraphicsView* SRender::getView() const
 
 //-----------------------------------------------------------------------------
 
-void SRender::dispatchInteraction( const ::fwRenderQt::data::Event& _event)
+void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
 {
     /* std::map are sorted regarding to key values. Keys of m_zValue2AdaptorID are z-values (float).
      *
@@ -93,12 +93,12 @@ void SRender::dispatchInteraction( const ::fwRenderQt::data::Event& _event)
      */
     if ( !_event.isAccepted() )
     {
-        auto& registry = ::fwRenderQt::registry::getAdaptorRegistry();
+        const auto& registry = ::fwRenderQt::registry::getAdaptorRegistry();
 
         for( const auto& elt : registry)
         {
             ::fwRenderQt::IAdaptor::sptr adaptor =
-                ::fwRenderQt::IAdaptor::dynamicCast(::fwTools::fwID::getObject(elt.second));
+                ::fwRenderQt::IAdaptor::dynamicCast(::fwTools::fwID::getObject(elt.first));
             if(adaptor != nullptr && adaptor->isStarted())
             {
                 adaptor->processInteraction( _event );
@@ -194,10 +194,6 @@ void SRender::swapping(const IService::KeyType& key)
 
 void SRender::stopping()
 {
-    for(const auto& elt : m_axisMap)
-    {
-        delete elt.second;
-    }
     m_axisMap.clear();
 
     this->stopContext();
@@ -266,7 +262,7 @@ void SRender::configureAxis( ConfigurationType _conf )
     const std::string scale     = _conf->getAttributeValue("scale");
     const std::string scaleType = _conf->getAttributeValue("scaleType");
 
-    ::fwRenderQt::data::Axis* axis = new ::fwRenderQt::data::Axis();
+    ::fwRenderQt::data::Axis::sptr axis = std::make_shared< ::fwRenderQt::data::Axis >();
     axis->setOrigin(std::stof( origin ));
     axis->setScale(std::stof( scale ));
     axis->setScaleType( scaleType == "LINEAR" ? ::fwRenderQt::data::Axis::LINEAR : ::fwRenderQt::data::Axis::LOG);
@@ -328,7 +324,7 @@ void SRender::configureAdaptor( ConfigurationType _conf )
 {
     SLM_ASSERT("\"adaptor\" tag required", _conf->getName() == "adaptor");
 
-    const std::string adaptorId = _conf->getAttributeValue("id");
+    const std::string adaptorId = _conf->getAttributeValue("uid");
 
     auto& registry = ::fwRenderQt::registry::getAdaptorRegistry();
     registry[adaptorId] = this->getID();
