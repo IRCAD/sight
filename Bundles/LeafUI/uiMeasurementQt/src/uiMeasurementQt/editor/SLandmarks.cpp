@@ -83,15 +83,17 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
-    m_defaultLandmarkSize         = config.get_optional<float>("size").get_value_or(10.0);
-    m_defaultLandmarkTransparency = config.get_optional<float>("transparency").get_value_or(1.0);
+    m_defaultLandmarkSize = config.get_optional<float>("size").get_value_or(10.0);
+    OSLM_FATAL_IF(
+        "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
+        m_defaultLandmarkSize <= 0.f);
 
+    m_defaultLandmarkTransparency = config.get_optional<float>("transparency").get_value_or(1.0);
     OSLM_FATAL_IF(
         "'transparency' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkTransparency << ")",
         m_defaultLandmarkTransparency < 0.f || m_defaultLandmarkTransparency > 1.f);
 
     const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
-
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
 
