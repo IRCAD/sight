@@ -39,7 +39,7 @@ namespace uiMedData
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SOrganTransformation, ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SOrganTransformation );
 
 SOrganTransformation::SOrganTransformation() noexcept :
     m_saveButton( 0 ),
@@ -61,10 +61,6 @@ SOrganTransformation::~SOrganTransformation() noexcept
 void SOrganTransformation::configuring()
 {
     this->initialize();
-    if( m_configuration->findConfigurationElement( "TMSUid" ) )
-    {
-        m_TMSUid = m_configuration->findConfigurationElement( "TMSUid" )->getValue();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +150,7 @@ void SOrganTransformation::refresh()
     m_reconstructionMap.clear();
     m_reconstructionListBox->clear();
 
-    ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -166,12 +162,7 @@ void SOrganTransformation::refresh()
 
     if(hasReconstructions)
     {
-        ::fwData::Composite::sptr pComposite;
-        if (::fwTools::fwID::exist(m_TMSUid))
-        {
-            pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-            SLM_ASSERT("The object '"<< m_TMSUid <<"' is not a composite", pComposite);
-        }
+        ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>("composite");
 
         for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
@@ -207,12 +198,9 @@ void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationM
 
 void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 {
-    ::fwData::Composite::sptr pComposite;
-    if (::fwTools::fwID::exist(m_TMSUid))
+    ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>("composite");
+    if (pComposite != nullptr)
     {
-        pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-        SLM_ASSERT("The object '"<< m_TMSUid <<"' is not a composite", pComposite);
-
         ::std::string item_name                        = currentItem->text().toStdString();
         ::fwData::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         ::fwData::Mesh::sptr pMesh                     = pReconstruction->getMesh();
@@ -244,7 +232,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 
 void SOrganTransformation::onResetClick()
 {
-    ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
 
     //search the corresponding triangular mesh
     for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -267,7 +255,7 @@ void SOrganTransformation::onSaveClick()
 {
     InnerMatMappingType matMap;
 
-    ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
 
     if(!series->getReconstructionDB().empty())
     {
@@ -300,7 +288,7 @@ void SOrganTransformation::onLoadClick()
     {
         InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
 
-        ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
+        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
 
         //search the corresponding triangular mesh
         for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -325,43 +313,41 @@ void SOrganTransformation::onLoadClick()
 void SOrganTransformation::onSelectAllChanged(int state)
 {
 
-    if (::fwTools::fwID::exist(m_TMSUid))
+    ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite>("composite");
+    ::fwDataTools::helper::Composite compositeHelper(composite);
+
+    if(state == Qt::Checked)
     {
-        ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-        ::fwDataTools::helper::Composite compositeHelper(composite);
+        m_reconstructionListBox->setEnabled(false);
 
-        if(state == Qt::Checked)
+        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
-            m_reconstructionListBox->setEnabled(false);
-
-            ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
-
-            for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
+            if(composite->find(rec->getOrganName()) == composite->end())
             {
-                if(composite->find(rec->getOrganName()) == composite->end())
-                {
-                    compositeHelper.add(rec->getOrganName(), rec->getMesh());
-                }
+                compositeHelper.add(rec->getOrganName(), rec->getMesh());
             }
-
         }
-        else if(state == Qt::Unchecked)
-        {
-            m_reconstructionListBox->setEnabled(true);
 
-            QList<QListWidgetItem*> itemList = m_reconstructionListBox->findItems("", Qt::MatchContains);
-            for(QListWidgetItem* item :  itemList)
-            {
-                if(item->checkState() == Qt::Unchecked)
-                {
-                    compositeHelper.remove(item->text().toStdString());
-                }
-            }
-
-            this->refresh();
-        }
-        compositeHelper.notify();
     }
+    else if(state == Qt::Unchecked)
+    {
+        m_reconstructionListBox->setEnabled(true);
+
+        QList<QListWidgetItem*> itemList = m_reconstructionListBox->findItems("", Qt::MatchContains);
+        for(QListWidgetItem* item :  itemList)
+        {
+            if(item->checkState() == Qt::Unchecked)
+            {
+                compositeHelper.remove(item->text().toStdString());
+            }
+        }
+
+        this->refresh();
+    }
+    compositeHelper.notify();
+
 }
 
 //------------------------------------------------------------------------------
