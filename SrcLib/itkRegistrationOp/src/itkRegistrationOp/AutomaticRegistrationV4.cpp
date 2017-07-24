@@ -179,15 +179,16 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
                                             double _maxStep,
                                             unsigned long _maxIterations)
 {
-    typedef typename ::itk::VersorRigid3DTransform< float > TransformType;
-    typedef typename ::itk::LinearInterpolateImageFunction< RegisteredImageType, float > InterpolatorType;
+    typedef float RealType;
+    typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
+    typedef typename ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType > InterpolatorType;
     typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
         RegistrationMethodType;
 
-    typedef typename ::itk::GradientDescentOptimizerv4Template<float> OptimizerType;
+    typedef typename ::itk::GradientDescentOptimizerv4Template<RealType> OptimizerType;
 
     typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                          float >::Pointer metric;
+                                          RealType >::Pointer metric;
 
     // Convert input images to float.
     RegisteredImageType::Pointer target    = castToFloat(_target);
@@ -196,20 +197,20 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     // Choose a metric.
     switch(_metric)
     {
-        case AutomaticRegistrationV4::MEAN_SQUARES:
+        case MEAN_SQUARES:
             metric =
                 ::itk::MeanSquaresImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                                        float >::New();
+                                                        RealType >::New();
             break;
-        case AutomaticRegistrationV4::NORMALIZED_CORRELATION:
+        case NORMALIZED_CORRELATION:
             metric =
                 ::itk::CorrelationImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
-                                                        float >::New();
+                                                        RealType >::New();
             break;
-        case AutomaticRegistrationV4::MUTUAL_INFORMATION:
+        case MUTUAL_INFORMATION:
             metric =
                 ::itk::JointHistogramMutualInformationImageToImageMetricv4< RegisteredImageType, RegisteredImageType,
-                                                                            RegisteredImageType, float >::New();
+                                                                            RegisteredImageType, RealType >::New();
             break;
         default:
             OSLM_FATAL("Unknown metric");
@@ -274,6 +275,8 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
 //    optimizer->SetMinimumStepLength( _minStep );
 //    optimizer->SetMaximumStepLength( _maxStep  );
     optimizer->SetNumberOfIterations( _maxIterations );
+    optimizer->SetMinimumConvergenceValue( _minStep );
+    optimizer->SetMaximumStepSizeInPhysicalUnits( _maxStep );
 
     metric->SetFixedInterpolator(interpolator.GetPointer());
     metric->SetMovingInterpolator(interpolator.GetPointer());
@@ -290,8 +293,8 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     // Get the last transform.
     const TransformType* finalTransform = registrator->GetTransform();
 
-    const ::itk::Matrix<float, 3, 3> rigidMat = finalTransform->GetMatrix();
-    const ::itk::Vector<float, 3> offset      = finalTransform->GetOffset();
+    const ::itk::Matrix<RealType, 3, 3> rigidMat = finalTransform->GetMatrix();
+    const ::itk::Vector<RealType, 3> offset      = finalTransform->GetOffset();
 
     // Convert ::itk::RigidTransform to f4s matrix.
     for(std::uint8_t i = 0; i < 3; ++i)

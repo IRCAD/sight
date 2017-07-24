@@ -130,7 +130,7 @@ struct RegistratorParameters
     ::fwData::Image::csptr i_target;
     ::fwData::Image::csptr i_reference;
     ::fwData::TransformationMatrix3D::sptr o_trf;
-    AutomaticRegistration::MetricType i_metric;
+    MetricType i_metric;
     double i_minStep;
     double i_maxStep;
     unsigned long i_maxIters;
@@ -152,7 +152,7 @@ struct Registrator
 
         typedef ::itk::VersorRigid3DTransform< double > TransformType;
         typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
-        typedef ::itk:: LinearInterpolateImageFunction< ReferenceImageType, double > InterpolatorType;
+        typedef ::itk::LinearInterpolateImageFunction< ReferenceImageType, double > InterpolatorType;
         typedef ::itk::ImageRegistrationMethod< TargetImageType, ReferenceImageType > RegistrationType;
 
         const typename TargetImageType::Pointer targetImage =
@@ -168,18 +168,18 @@ struct Registrator
 
         switch(params.i_metric)
         {
-            case AutomaticRegistration::MEAN_SQUARES:
+            case MEAN_SQUARES:
                 metric = ::itk::MeanSquaresImageToImageMetric< TargetImageType, ReferenceImageType >::New();
                 break;
-            case AutomaticRegistration::NORMALIZED_CORRELATION:
+            case NORMALIZED_CORRELATION:
                 metric = ::itk::NormalizedCorrelationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
                 break;
-            case AutomaticRegistration::PATTERN_INTENSITY:
+            case PATTERN_INTENSITY:
                 metric =
                     ::itk::MeanReciprocalSquareDifferenceImageToImageMetric< TargetImageType,
                                                                              ReferenceImageType >::New();
                 break;
-            case AutomaticRegistration::MUTUAL_INFORMATION:
+            case MUTUAL_INFORMATION:
                 auto mutInfo =
                     ::itk::MattesMutualInformationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
                 mutInfo->SetNumberOfSpatialSamples(targetImage->GetLargestPossibleRegion().GetNumberOfPixels() * 0.5);
@@ -323,9 +323,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     // We don't handle int64, uint64 or double images to reduce compile times.
     typedef ::boost::mpl::vector<
-            signed char, unsigned char,
-            signed short, unsigned short,
-            signed int, unsigned int, float > RegistrationType;
+            /*signed char, unsigned char,
+               signed short, unsigned short,
+               signed int, unsigned int,*/float > RegistrationType;
 
     const ::fwTools::DynamicType targetType = _target->getPixelType();
     ::fwTools::Dispatcher< RegistrationType, RegistratorCaller>::invoke(targetType, params);

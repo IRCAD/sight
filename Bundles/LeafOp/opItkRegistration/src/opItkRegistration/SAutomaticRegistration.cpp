@@ -15,6 +15,7 @@
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+#include <itkRegistrationOp/AutomaticRegistrationV4.hpp>
 
 namespace opItkRegistration
 {
@@ -87,8 +88,8 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                              m_maxStep, m_maxIterations);
+    ::itkRegistrationOp::AutomaticRegistrationV4::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                                m_maxStep, m_maxIterations);
 
     m_sigComputed->asyncEmit();
 
@@ -157,7 +158,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
 {
     if(key == "maxIterations")
     {
-        OSLM_FATAL_IF("The numbner of iterations must be greater than 0 !!", val <= 0);
+        OSLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
         m_maxIterations = static_cast<unsigned long>(val);
     }
 }
@@ -168,15 +169,15 @@ void SAutomaticRegistration::setMetric(const std::string& metricName)
 {
     if(metricName == "MeanSquares")
     {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::MEAN_SQUARES;
+        m_metric = ::itkRegistrationOp::MEAN_SQUARES;
     }
     else if(metricName == "NormalizedCorrelation")
     {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::NORMALIZED_CORRELATION;
+        m_metric = ::itkRegistrationOp::NORMALIZED_CORRELATION;
     }
     else if(metricName == "MutualInformation")
     {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::MUTUAL_INFORMATION;
+        m_metric = ::itkRegistrationOp::MUTUAL_INFORMATION;
     }
     else
     {

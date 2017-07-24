@@ -12,6 +12,7 @@
 #include <fwServices/IOperator.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+#include <itkRegistrationOp/Metric.hpp>
 
 namespace opItkRegistration
 {
@@ -113,7 +114,7 @@ private:
     unsigned long m_maxIterations;
 
     /// Metric used by the optimizer.
-    ::itkRegistrationOp::AutomaticRegistration::MetricType m_metric;
+    ::itkRegistrationOp::MetricType m_metric;
 };
 
 } // namespace opItkRegistration

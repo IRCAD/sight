@@ -8,6 +8,7 @@
 #define __ITKREGISTRATIONOP_AUTOMATICREGISTRATIONV4_HPP__
 
 #include "itkRegistrationOp/config.hpp"
+#include "itkRegistrationOp/Metric.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -21,28 +22,6 @@ namespace itkRegistrationOp
 class ITKREGISTRATIONOP_CLASS_API AutomaticRegistrationV4
 {
 public:
-
-    /**
-     * @brief The different metrics used to evaluate the transform during the optimization stage.
-     *
-     * @see https://itk.org/Doxygen/html/RegistrationPage.html
-     *
-     * We can choose between four metrics:
-     *
-     * - Mean squares : works best when the two images have the same intensity range.
-     * - Normalized correlation : this metric allows to register objects whose intensity values
-     * are related by a linear transformation.
-     * - Pattern Intensity : this metric has the advantage of increasing simultaneously when more samples
-     * are available and when intensity values are close
-     * - Mutual Information : The most generic metric, can be used to match images with different modalities.
-     */
-    typedef enum Metric
-    {
-        MEAN_SQUARES,
-        NORMALIZED_CORRELATION,
-        PATTERN_INTENSITY,
-        MUTUAL_INFORMATION
-    } MetricType;
 
     /**
      * @brief find a rigid transform matching the reference image with the target image.
