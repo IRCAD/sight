@@ -162,10 +162,6 @@ private:
 
     /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;
-
-    /// The render that manage the IAdaptor.
-    ::fwRenderQt::SRender::wptr m_scene2DRender;
-
 };
 
 //------------------------------------------------------------------------------
