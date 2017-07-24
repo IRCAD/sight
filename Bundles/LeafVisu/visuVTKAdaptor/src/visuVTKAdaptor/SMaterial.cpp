@@ -24,10 +24,10 @@
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMaterial );
 
-static const ::fwServices::IService::KeyType s_MATERIAL_INPUT = "material";
-
 namespace visuVTKAdaptor
 {
+
+const ::fwServices::IService::KeyType SMaterial::s_MATERIAL_INPUT = "material";
 
 //------------------------------------------------------------------------------
 

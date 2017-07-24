@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_RECONSTRUCTION_HPP__
-#define __VISUVTKADAPTOR_RECONSTRUCTION_HPP__
+#ifndef __VISUVTKADAPTOR_SRECONSTRUCTION_HPP__
+#define __VISUVTKADAPTOR_SRECONSTRUCTION_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -19,16 +19,41 @@ class Mesh;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Reconstruction : public ::fwRenderVTK::IAdaptor
+/**
+ * @brief Displays a Reconstruction
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool) : shows/hides the adaptor
+ * - \b updateNormalMode(std::uint8_t) : updates the normal mode (0: hidden, 1: point normals, 2: cell normals)
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SReconstruction">
+       <in key="reconstruction" uid="..." />
+       <config renderer="default" transform="..." picker="" />
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
+ * @subsection Configuration Configuration
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer(mandatory) : renderer where the reconstruction is displayed
+ *    - \b picker(optional) : picker used to pick on the reconstruction
+ *    - \b autoresetcamera : reset the camera point of view when the mesh is modified ("yes" or "no", default: "yes") .
+ */
+class VISUVTKADAPTOR_CLASS_API SReconstruction : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Reconstruction)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SReconstruction)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API Reconstruction() noexcept;
+    VISUVTKADAPTOR_API SReconstruction() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Reconstruction() noexcept;
+    VISUVTKADAPTOR_API virtual ~SReconstruction() noexcept;
+
+    static const ::fwServices::IService::KeyType s_RECONSTRUCTION_INPUT;
 
     //------------------------------------------------------------------------------
 
@@ -59,9 +84,6 @@ public:
      * @name Slots API
      * @{
      */
-    /// slot used to update mesh
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MESH_SLOT;
-
     /// slot used to update visibility
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
@@ -82,15 +104,14 @@ public:
      * Connect Reconstruction::s_MESH_CHANGED_SIG to this::s_UPDATE_MESH_SLOT
      * Connect Reconstruction::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_VISIBILITY_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     void createMeshService();
 
@@ -100,26 +121,23 @@ protected:
 
     double m_sharpEdgeAngle;
 
+private:
+
     /**
      * @name Slots methods
      * @{
      */
 
-    /// Slot: update mesh
-    void updateMesh(SPTR(::fwData::Mesh));
-
     /// Slot: update visibility
     void updateVisibility(bool visible);
-
     /**
      * @}
      */
 
-private:
     bool m_autoResetCamera;
 
 };
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_RECONSTRUCTION_HPP__
+#endif // __VISUVTKADAPTOR_SRECONSTRUCTION_HPP__

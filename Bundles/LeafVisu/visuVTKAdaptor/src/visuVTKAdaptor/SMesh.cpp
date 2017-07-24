@@ -54,7 +54,8 @@ namespace visuVTKAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SMesh::s_TEXTURE_APPLIED_SIG      = "textureApplied";
+const ::fwCom::Signals::SignalKeyType SMesh::s_TEXTURE_APPLIED_SIG = "textureApplied";
+
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_POINT_COLORS_SLOT     = "updatePointColors";
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_CELL_COLORS_SLOT      = "updateCellColors";
@@ -67,8 +68,9 @@ const ::fwCom::Slots::SlotKeyType SMesh::s_SHOW_POINT_COLORS_SLOT       = "showP
 const ::fwCom::Slots::SlotKeyType SMesh::s_SHOW_CELL_COLORS_SLOT        = "showCellColors";
 const ::fwCom::Slots::SlotKeyType SMesh::s_HIDE_COLORS_SLOT             = "hideColors";
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_COLOR_MODE_SLOT       = "updateColorMode";
+const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_NORMAL_MODE_SLOT      = "updateNormalMode";
 
-static const ::fwServices::IService::KeyType s_MESH_INPUT = "mesh";
+const ::fwServices::IService::KeyType SMesh::s_MESH_INPUT = "mesh";
 
 //-----------------------------------------------------------------------------
 
@@ -330,10 +332,17 @@ public:
                 vtkPlaneCollection* newCollection = vtkPlaneCollection::New();
                 newCollection->AddItem(newPlane);
 
-                ::fwRenderVTK::IAdaptor::sptr meshService =
-                    ::fwServices::add< ::fwRenderVTK::IAdaptor > (
-                        service->getInput< ::fwData::Mesh >(s_MESH_INPUT),
-                        "::visuVTKAdaptor::Mesh" );
+                ::fwServices::registry::ServiceFactory::sptr srvFactory =
+                    ::fwServices::registry::ServiceFactory::getDefault();
+
+                ::fwServices::IService::sptr srv = srvFactory->create("::visuVTKAdaptor::SMesh");
+                SLM_ASSERT("Service of type '::visuVTKAdaptor::SMesh' cannot be instantiated.", srv);
+
+                ::fwRenderVTK::IAdaptor::sptr meshService = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
+                SLM_ASSERT("Service of type '::visuVTKAdaptor::SMesh' is not an adaptor", meshService);
+
+                ::fwServices::OSR::registerServiceInput(service->getInput< ::fwData::Mesh >(SMesh::s_MESH_INPUT),
+                                                        SMesh::s_MESH_INPUT, srv);
 
                 ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
@@ -416,6 +425,7 @@ SMesh::SMesh() noexcept :
     newSlot(s_SHOW_CELL_COLORS_SLOT, &SMesh::showCellColors, this);
     newSlot(s_HIDE_COLORS_SLOT, &SMesh::hideColors, this);
     newSlot(s_UPDATE_COLOR_MODE_SLOT, &SMesh::updateColorMode, this);
+    newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SMesh::updateNormalMode, this);
 }
 
 //------------------------------------------------------------------------------
@@ -449,7 +459,7 @@ void SMesh::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>.");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     std::string color          = config.get<std::string>("color", "#ffffffff");
     std::string unclippedColor = config.get<std::string>("unclippedcolor", "#aaaaff44");
@@ -658,13 +668,12 @@ void SMesh::setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv, ::fwData::M
 {
     if (!srv)
     {
-        srv = this->createAndRegisterServiceInput("::visuVTKAdaptor::SMaterial", material, "material");
+        srv = this->createAndRegisterServiceInput("::visuVTKAdaptor::SMaterial", material, SMaterial::s_MATERIAL_INPUT);
 
         srv->setRenderService(this->getRenderService());
         srv->setAutoRender( this->getAutoRender() );
         srv->start();
         srv->update();
-        this->registerService(srv);
     }
 }
 
@@ -706,7 +715,7 @@ void SMesh::createNormalsService()
         SLM_ASSERT("Missing mesh", mesh);
 
         ::fwRenderVTK::IAdaptor::sptr service = this->createAndRegisterServiceInput( "::visuVTKAdaptor::SMeshNormals",
-                                                                                     mesh, "mesh");
+                                                                                     mesh, SMeshNormals::s_MESH_INPUT);
 
         service->setRenderService( this->getRenderService() );
         service->setRendererId( this->getRendererId()      );

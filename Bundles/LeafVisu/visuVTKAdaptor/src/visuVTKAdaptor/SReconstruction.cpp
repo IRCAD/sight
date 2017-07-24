@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Reconstruction.hpp"
+#include "visuVTKAdaptor/SReconstruction.hpp"
 
 #include "visuVTKAdaptor/SMesh.hpp"
 
@@ -35,78 +35,78 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Reconstruction,
-                         ::fwData::Reconstruction );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SReconstruction);
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType Reconstruction::s_UPDATE_MESH_SLOT        = "updateMesh";
-const ::fwCom::Slots::SlotKeyType Reconstruction::s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType Reconstruction::s_UPDATE_NORMAL_MODE_SLOT = "updateNormalMode";
+const ::fwCom::Slots::SlotKeyType SReconstruction::s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SReconstruction::s_UPDATE_NORMAL_MODE_SLOT = "updateNormalMode";
+
+const ::fwServices::IService::KeyType SReconstruction::s_RECONSTRUCTION_INPUT = "reconstruction";
 
 //------------------------------------------------------------------------------
-Reconstruction::Reconstruction() noexcept :
+SReconstruction::SReconstruction() noexcept :
     m_sharpEdgeAngle(180.),
     m_autoResetCamera(true)
 {
-    newSlot(s_UPDATE_MESH_SLOT, &Reconstruction::updateMesh, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &Reconstruction::updateVisibility, this);
-    newSlot(s_UPDATE_NORMAL_MODE_SLOT, &Reconstruction::updateNormalMode, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SReconstruction::updateVisibility, this);
+    newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SReconstruction::updateNormalMode, this);
 }
 
 //------------------------------------------------------------------------------
 
-Reconstruction::~Reconstruction() noexcept
+SReconstruction::~SReconstruction() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doConfigure()
+void SReconstruction::configuring()
 {
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if (m_configuration->hasAttribute("autoresetcamera") )
-    {
-        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoresetcamera == "yes");
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
+    SLM_ASSERT("'autoresetcamera' value must be 'yes' or 'no', actual: " + autoresetcamera,
+               autoresetcamera == "yes" || autoresetcamera == "no");
+    m_autoResetCamera = (autoresetcamera == "yes");
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doStart()
+void SReconstruction::starting()
 {
+    this->initialize();
     this->createMeshService();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::createMeshService()
+void SReconstruction::createMeshService()
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
+    ::fwData::Reconstruction::csptr reconstruction =
+        this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+    SLM_ASSERT("Missing Reconstruction", reconstruction);
 
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
 
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
-        ::fwRenderVTK::IAdaptor::sptr meshService;
-        meshService = ::fwServices::add< ::fwRenderVTK::IAdaptor > (
-            mesh,
-            "::visuVTKAdaptor::SMesh" );
-        SLM_ASSERT("meshService not instanced", meshService);
+        ::fwRenderVTK::IAdaptor::sptr meshService = this->createAndRegisterServiceInput("::visuVTKAdaptor::SMesh",
+                                                                                        mesh, SMesh::s_MESH_INPUT);
         ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
         meshService->setRenderService( this->getRenderService() );
-        meshService->setRendererId( this->getRendererId()      );
-        meshService->setPickerId( this->getPickerId()      );
+        meshService->setRendererId( this->getRendererId() );
+        meshService->setPickerId( this->getPickerId() );
         meshService->setTransformId( this->getTransformId() );
         meshService->setAutoRender( this->getAutoRender() );
 
-        meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
-        //meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
+        meshAdaptor->setClippingPlanesId( m_clippingPlanesId);
         meshAdaptor->setShowClippedPart( true );
         meshAdaptor->setMaterial( reconstruction->getMaterial()  );
         meshAdaptor->setAutoResetCamera( m_autoResetCamera );
@@ -123,60 +123,64 @@ void Reconstruction::createMeshService()
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doSwap()
+void SReconstruction::updating()
 {
-    SLM_TRACE_FUNC();
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Reconstruction::doUpdate()
-{
-    SLM_TRACE_FUNC();
-
     if (!m_meshService.expired())
     {
         ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
 
-        ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-        ::visuVTKAdaptor::SMesh::sptr meshAdaptor     = SMesh::dynamicCast(meshService);
-        //meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
+        ::fwData::Reconstruction::csptr reconstruction =
+            this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+        SLM_ASSERT("Missing Reconstruction", reconstruction);
+        ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
-        meshAdaptor->setMaterial( reconstruction->getMaterial());
-        meshAdaptor->swap( reconstruction->getMesh() );
-        meshAdaptor->updateVisibility( reconstruction->getIsVisible());
+        ::fwData::Mesh::csptr newMesh    = reconstruction->getMesh();
+        ::fwData::Mesh::csptr oldMesh    = meshAdaptor->getInput< ::fwData::Mesh >(SMesh::s_MESH_INPUT);
+        ::fwData::Material::csptr newMat = reconstruction->getMaterial();
+        ::fwData::Material::csptr oldMat = meshAdaptor->getMaterial();
 
+        // replace the mesh adaptor if the mesh or the material changed
+        if (newMesh != oldMesh || newMat != oldMat)
+        {
+            this->unregisterService(meshAdaptor);
+            this->createMeshService();
+        }
+        else
+        {
+            meshAdaptor->updateVisibility( reconstruction->getIsVisible());
+        }
     }
     else
     {
         this->createMeshService();
     }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::doStop()
+void SReconstruction::stopping()
 {
-    SLM_TRACE_FUNC();
     this->removeAllPropFromRenderer();
 
     this->unregisterServices();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::setForceHide(bool hide)
+void SReconstruction::setForceHide(bool hide)
 {
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
+    ::fwData::Reconstruction::csptr reconstruction =
+        this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+    SLM_ASSERT("Missing Reconstruction", reconstruction);
     this->updateVisibility((hide ? false : reconstruction->getIsVisible()));
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::updateVisibility(bool visible)
+void SReconstruction::updateVisibility(bool visible)
 {
-    SLM_TRACE_FUNC();
     if (!m_meshService.expired())
     {
         ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
@@ -187,27 +191,19 @@ void Reconstruction::updateVisibility(bool visible)
         {
             meshAdaptor->updateVisibility( visible );
         }
-        this->setVtkPipelineModified();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::setAutoResetCamera(bool autoResetCamera)
+void SReconstruction::setAutoResetCamera(bool autoResetCamera)
 {
     m_autoResetCamera = autoResetCamera;
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::updateMesh(SPTR(::fwData::Mesh))
-{
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Reconstruction::updateNormalMode(std::uint8_t mode)
+void SReconstruction::updateNormalMode(std::uint8_t mode)
 {
     if (!m_meshService.expired())
     {
@@ -221,13 +217,13 @@ void Reconstruction::updateNormalMode(std::uint8_t mode)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Reconstruction::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SReconstruction::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Reconstruction::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_UPDATE_MESH_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG,
-                                           s_UPDATE_VISIBILITY_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_UPDATE_SLOT );
+    connections.push(s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG,
+                     s_UPDATE_VISIBILITY_SLOT);
 
     return connections;
 }

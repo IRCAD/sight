@@ -6,7 +6,7 @@
 
 #include "visuVTKAdaptor/Resection.hpp"
 
-#include "visuVTKAdaptor/Reconstruction.hpp"
+#include "visuVTKAdaptor/SReconstruction.hpp"
 
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Resection.hpp>
@@ -86,7 +86,7 @@ void Resection::doUpdate()
         {
             ::fwRenderVTK::IAdaptor::sptr service =
                 ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                    ( *iterRes, "::visuVTKAdaptor::Reconstruction" );
+                    ( *iterRes, "::visuVTKAdaptor::SReconstruction" );
             SLM_ASSERT("service not instanced", service);
 
             service->setTransformId( this->getTransformId() );
@@ -94,7 +94,7 @@ void Resection::doUpdate()
             service->setPickerId( this->getPickerId() );
             service->setRenderService(this->getRenderService());
             service->setAutoRender( this->getAutoRender() );
-            ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(
+            ::visuVTKAdaptor::SReconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::SReconstruction::dynamicCast(
                 service);
             if(!resectionIsValid)
             {

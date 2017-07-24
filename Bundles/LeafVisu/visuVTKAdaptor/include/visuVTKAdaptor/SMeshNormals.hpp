@@ -46,13 +46,15 @@ namespace visuVTKAdaptor
  * - \b mesh [::fwData::Mesh]: mesh to display the normals.
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer(mandatory) : renderer where the mesh is displayed
- *    - \b transform(optional) : transform visually applied on the mesh
+ *    - \b renderer(mandatory) : renderer where the mesh normals are displayed
+ *    - \b transform(optional) : transform visually applied on the mesh normals
  */
 class VISUVTKADAPTOR_CLASS_API SMeshNormals : public ::fwRenderVTK::IAdaptor
 {
 
 public:
+
+    static const ::fwServices::IService::KeyType s_MESH_INPUT;
 
     typedef enum
     {

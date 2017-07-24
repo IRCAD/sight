@@ -281,7 +281,7 @@ vtkRenderWindowInteractor* IAdaptor::getInteractor()
 {
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
 
-    ::fwServices::IService::sptr srv = srvFactory->create("::visuVTKAdaptor::SMaterial");
+    ::fwServices::IService::sptr srv = srvFactory->create(type);
     FW_RAISE_IF("Service of type '" + type + "' cannot be instantiated.", !srv);
 
     ::fwRenderVTK::IAdaptor::sptr adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(srv);

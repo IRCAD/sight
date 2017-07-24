@@ -30,10 +30,12 @@
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMeshNormals);
 
-const ::fwServices::IService::KeyType s_MESH_INPUT = "mesh";
-
 namespace visuVTKAdaptor
 {
+
+const ::fwServices::IService::KeyType SMeshNormals::s_MESH_INPUT = "mesh";
+
+//------------------------------------------------------------------------------
 
 std::map< std::string, SMeshNormals::NormalRepresentation >
 SMeshNormals::m_normalRepresentationConversion
@@ -81,7 +83,7 @@ void SMeshNormals::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>.");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     if(config.count("normal") )
     {
@@ -100,6 +102,7 @@ void SMeshNormals::starting()
     this->initialize();
     this->updating();
     this->addToRenderer(this->getActor());
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -107,6 +110,7 @@ void SMeshNormals::starting()
 void SMeshNormals::updating()
 {
     this->updateMeshNormals();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -184,6 +188,7 @@ void SMeshNormals::updateMeshNormals()
 void SMeshNormals::stopping()
 {
     this->removeAllPropFromRenderer();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

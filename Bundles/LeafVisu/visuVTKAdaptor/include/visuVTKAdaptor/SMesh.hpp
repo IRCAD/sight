@@ -42,8 +42,10 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
 /**
  * @brief   Display a ::fwData::Mesh in the generic scene
  *
+ * @section Signals Signals
+ * - \b textureApplied(SPTR(::fwData::Material)) : emitted when a texture was applied.
+ *
  * @section Slots Slots
- * - \b textureApplied() : a texture was applied.
  * - \b updateVisibility(bool) : change the visibility of the mesh.
  * - \b updatePointColors() : the mesh points colors were modified.
  * - \b updateCellColors() : the mesh cells colors were modified.
@@ -55,6 +57,7 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * - \b showCellColors() : display the cells colors (instead of point colors).
  * - \b hideColors() : hide the cells colors.
  * - \b updateColorMode(std::uint8_t) : update the color mode (0 : hide, 1 : points colors, 2 : cells colors).
+ * - \b updateNormalMode(std::uint8_t) : updates the normal mode (0: hidden, 1: point normals, 2: cell normals)
 
  * @section XML XML Configuration
  *
@@ -67,6 +70,7 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer(mandatory) : renderer where the mesh is displayed
+ *    - \b picker(optional) : picker used to pick on the mesh
  *    - \b transform(optional) : transform visually applied on the mesh
  *    - \b color : hexadecimal color code of the diffuse material (i.e RGB "#ff00ff" or RGBA "#ff224508"). This
  *    overrides the current diffuse color of the mesh material.
@@ -86,6 +90,8 @@ public:
     VISUVTKADAPTOR_API SMesh() noexcept;
     VISUVTKADAPTOR_API virtual ~SMesh() noexcept;
 
+    static const ::fwServices::IService::KeyType s_MESH_INPUT;
+
     /**
      * @name Signals API
      * @{
@@ -99,40 +105,18 @@ public:
      * @{
      */
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_COLORS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdatePointColorsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CELL_COLORS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdateCellColorsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VERTEX_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdateVertexSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_NORMALS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdatePointNormalsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CELL_NORMALS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdateCellNormalsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINT_TEX_COORDS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdatePointTexCoordsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CELL_TEX_COORDS_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdateCellTexCoordsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SHOW_POINT_COLORS_SLOT;
-    typedef ::fwCom::Slot<void ()> ShowPointColorsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SHOW_CELL_COLORS_SLOT;
-    typedef ::fwCom::Slot<void ()> ShowCellColorsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_HIDE_COLORS_SLOT;
-    typedef ::fwCom::Slot<void ()> HideColorsSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COLOR_MODE_SLOT;
-    typedef ::fwCom::Slot<void (std::uint8_t)> UpdateColorModeSlotType; ///< color mode (0: none, 1: point, 2: cell)
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
 
     /// Slot: update mesh visibility (true = visible)
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );

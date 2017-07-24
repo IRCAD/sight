@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_MODELSERIES_HPP__
-#define __VISUVTKADAPTOR_MODELSERIES_HPP__
+#ifndef __VISUVTKADAPTOR_SMODELSERIES_HPP__
+#define __VISUVTKADAPTOR_SMODELSERIES_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -13,18 +13,49 @@
 
 #include <vector>
 
+namespace fwData
+{
+class Material;
+}
+
 namespace visuVTKAdaptor
 {
 
 /**
  * @brief This adaptor shows ModelSeries. Creates adaptors for each reconstruction in model.
+ *
+ * @section Signals Signals
+ * - \b textureApplied(SPTR(::fwData::Material)) : emitted when a texture was applied.
+ *
+ * @section Slots Slots
+ * - \b updateNormalMode(std::uint8_t) : updates the normal mode (0: hidden, 1: point normals, 2: cell normals)
+ * - \b showReconstructions(bool) : shows/hides all the reconstructions
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SModelSeries">
+       <in key="model" uid="..." />
+       <config renderer="default" transform="..." picker="" />
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b input [::fwMedData::ModelSeries]: model series to display.
+ * @subsection Configuration Configuration
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer(mandatory) : renderer where the reconstruction is displayed
+ *    - \b picker(optional) : picker used to pick on the reconstruction
+ *    - \b autoresetcamera(optional) : reset the camera point of view when the mesh is modified ("yes" or "no",
+ *      default: "yes") .
+ *    - \b clippingplanes(optional) : identifier of the vtk clipping plane object
+ *    - \b texture(optional) : id of the texture adaptor, used to map a texture on the mesh. The mesh needs a valid UV
  */
-class VISUVTKADAPTOR_CLASS_API ModelSeries : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SModelSeries : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ModelSeries)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeries)(::fwRenderVTK::IAdaptor) );
 
     /**
      * @name Signals API
@@ -39,18 +70,14 @@ public:
      * @{
      */
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
-    /// normal mode (0: none, 1: point, 2: cell), reconstruction fwID
-    typedef ::fwCom::Slot<void (std::uint8_t, std::string)> UpdateNormalModeSlotType;
-
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
-    typedef ::fwCom::Slot<void (bool)> ShowReconstructionsSlotType;
     /**
      * @}
      */
 
-    VISUVTKADAPTOR_API ModelSeries() noexcept;
+    VISUVTKADAPTOR_API SModelSeries() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ModelSeries() noexcept;
+    VISUVTKADAPTOR_API virtual ~SModelSeries() noexcept;
 
     //------------------------------------------------------------------------------
 
@@ -67,18 +94,14 @@ public:
      * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
      * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    /// redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate();
-    VISUVTKADAPTOR_API void doStop();
-
-    ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanes;
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     /**
      * @name Slots methods
@@ -98,26 +121,16 @@ protected:
      */
 
 private:
+
+    ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanes;
     bool m_autoResetCamera;
+
     std::string m_textureAdaptorUID;
 
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;
-
-    /**
-     * @name Slots attributes
-     * @{
-     */
-    /// Slot to update normal diplay (0: none, 1: point, 2: cell)
-    UpdateNormalModeSlotType::sptr m_slotUpdateNormalMode;
-
-    /// Slot to show(or hide) reconstructions
-    ShowReconstructionsSlotType::sptr m_slotShowReconstructions;
-    /**
-     * @}
-     */
 };
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_MODELSERIES_HPP__
+#endif // __VISUVTKADAPTOR_SMODELSERIES_HPP__
