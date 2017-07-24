@@ -83,36 +83,17 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
-    const std::string defaultPointSize         = config.get_optional<std::string>("size").get_value_or("10.0");
-    const std::string defaultPointTransparency = config.get_optional<std::string>("transparency").get_value_or("1.0");
-    const std::string advancedMode             = config.get_optional<std::string>("advanced").get_value_or("no");
+    m_defaultLandmarkSize         = config.get_optional<float>("size").get_value_or(10.0);
+    m_defaultLandmarkTransparency = config.get_optional<float>("transparency").get_value_or(1.0);
+
+    OSLM_FATAL_IF(
+        "'transparency' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkTransparency << ")",
+        m_defaultLandmarkTransparency < 0.f || m_defaultLandmarkTransparency > 1.f);
+
+    const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
 
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
-    try
-    {
-        m_defaultPointSize = std::stof(defaultPointSize);
-    }
-    catch(const std::invalid_argument& ia)
-    {
-        OSLM_FATAL("'size' conversion to float failed : " << ia.what());
-    }
-
-    OSLM_FATAL_IF("'size' value must be a positive number greater than 0 (current value: " << m_defaultPointSize << ")",
-                  m_defaultPointSize <= 0.f);
-
-    try
-    {
-        m_defaultPointTransparency = std::stof(defaultPointTransparency);
-    }
-    catch(const std::invalid_argument& ia)
-    {
-        OSLM_FATAL("'transparency' conversion to float failed : " << ia.what());
-    }
-
-    OSLM_FATAL_IF(
-        "'transparency' value must be a number between 0.0 and 1.0 (current value: " << m_defaultPointTransparency << ")",
-        m_defaultPointTransparency < 0.f || m_defaultPointTransparency > 1.f);
 
     m_advancedMode = (advancedMode == "yes");
 }
@@ -236,11 +217,9 @@ void SLandmarks::onColorButton()
     SLM_ASSERT("container not instanced", container);
 
     const QColor oldColor = sender->property("color").value<QColor>();
-    const QColor colorQt  = QColorDialog::getColor(oldColor, container);
+    const QColor colorQt  = QColorDialog::getColor(oldColor, container, "Select Color", QColorDialog::ShowAlphaChannel);
     if(colorQt.isValid())
     {
-        const QString key = sender->property("key").toString();
-
         QPushButton* colorButton = dynamic_cast<QPushButton*>(sender);
         colorButton->setProperty("color", colorQt);
 
@@ -253,6 +232,8 @@ void SLandmarks::onColorButton()
         auto& group = landmarks->getGroup(groupName);
         ::fwData::Landmarks::ColorType color = {{colorQt.red()/255.f, colorQt.green()/255.f, colorQt.blue()/255.f,
                                                                       colorQt.alpha()/255.f}};
+
+        m_transparencySlider->setValue(static_cast<int>(color[3] * m_transparencySlider->maximum()));
 
         group.m_color = color;
 
@@ -453,6 +434,15 @@ void SLandmarks::onTransparencyChanged(int newTransparency)
 
         landmarks->setGroupColor(groupName, newGroupColor);
 
+        QTreeWidgetItem* item    = getGroupItem(groupName);
+        QPushButton* colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+
+        QColor currentColor = colorButton->property("color").value<QColor>();
+        currentColor.setAlphaF(realTransparency);
+        colorButton->setProperty("color", currentColor);
+
+        setColorButtonIcon(colorButton, currentColor);
+
         auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
 
@@ -513,7 +503,7 @@ void SLandmarks::onAddNewGroup()
     ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
     const std::string groupName = this->generateNewGroupName();
-    landmarks->addGroup(groupName, this->generateNewColor(), m_defaultPointSize);
+    landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
 
     this->addGroup(groupName);
 
@@ -598,7 +588,7 @@ void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo pickingInfo)
         if(item == nullptr || !m_advancedMode) // No selection or simple mode, create a new group.
         {
             groupName = this->generateNewGroupName();
-            landmarks->addGroup(groupName, this->generateNewColor(), m_defaultPointSize);
+            landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
 
             this->addGroup(groupName);
 
@@ -881,7 +871,7 @@ std::string SLandmarks::generateNewGroupName() const
 std::array<float, 4> SLandmarks::generateNewColor()
 {
     const std::array<float,
-                     4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultPointTransparency}};
+                     4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultLandmarkTransparency}};
     return color;
 }
 

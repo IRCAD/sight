@@ -199,11 +199,11 @@ private:
     /// Used to disable/enable advanced mode.
     bool m_advancedMode;
 
-    /// Used to set the default landmarks size
-    float m_defaultPointSize;
+    /// Used to set the default landmark size
+    float m_defaultLandmarkSize;
 
-    /// Used to set the default landmarks transparency
-    float m_defaultPointTransparency;
+    /// Used to set the default landmark transparency
+    float m_defaultLandmarkTransparency;
 
 };
 } // namespace editor
