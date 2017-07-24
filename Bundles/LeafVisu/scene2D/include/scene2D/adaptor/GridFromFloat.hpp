@@ -102,12 +102,13 @@ protected:
 private:
 
     /// Remove the lines from the scene, clear the lines vector, calculate the x/y start/end values, create the lines,
-    // set'em m_pen, push'em back in the m_lines vector, add'em to the layer, set the layer position and zValue and add
-    // it to the scene.
+    /// set'em m_pen, push'em back in the m_lines vector, add'em to the layer, set the layer position and zValue and add
+    /// it to the scene.
     void draw();
 
     float m_xMin, m_xMax, m_yMin, m_yMax, m_xSpacing, m_ySpacing;
-    // The type of the lines.
+
+    /// The type of the lines.
     LineType m_lineType;
     /// The pen.
     QPen m_pen;

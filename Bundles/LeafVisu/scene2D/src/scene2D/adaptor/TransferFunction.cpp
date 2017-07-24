@@ -165,7 +165,7 @@ QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransferFunction::
 {
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
     Point2DType valColor(value, color.a );
-    Point2DType coord = this->mapAdaptorToScene(valColor, *m_xAxis, *m_yAxis);
+    Point2DType coord = this->mapAdaptorToScene(valColor, m_xAxis, m_yAxis);
 
     // Build a circle item, set its color, pen and zValue
     QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(
@@ -752,7 +752,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType previousValues;
     Point2DType previousXY(previousXCircleRealPos, previousYRealNewPos );
-    previousValues = this->mapSceneToAdaptor(previousXY, *m_xAxis, *m_yAxis);
+    previousValues = this->mapSceneToAdaptor(previousXY, m_xAxis, m_yAxis);
 
     // Calculate the real coordinates of the next circle
     double nextXCircleRealPos = (*nextCircle)->rect().x() + (*nextCircle)->pos().x();
@@ -760,7 +760,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType nextValues;
     Point2DType nextXY(nextXCircleRealPos, nextYRealNewPos);
-    nextValues = this->mapSceneToAdaptor(nextXY, *m_xAxis, *m_yAxis);
+    nextValues = this->mapSceneToAdaptor(nextXY, m_xAxis, m_yAxis);
 
     // Calculate the real coordinates of the selected circle
     double circleXRealNewPos = circle->rect().x() + circle->pos().x() + newCoord.getX() - m_oldCoord.getX();
@@ -768,15 +768,15 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType realValues;
     Point2DType circleXY( circleXRealNewPos, circleYRealNewPos );
-    realValues = this->mapSceneToAdaptor(circleXY, *m_xAxis, *m_yAxis);
+    realValues = this->mapSceneToAdaptor(circleXY, m_xAxis, m_yAxis);
 
     Point2DType oldCoordPair;
     Point2DType oldCoordXY( m_oldCoord.getX(), m_oldCoord.getY() );
-    oldCoordPair = this->mapSceneToAdaptor(oldCoordXY, *m_xAxis, *m_yAxis);
+    oldCoordPair = this->mapSceneToAdaptor(oldCoordXY, m_xAxis, m_yAxis);
 
     Point2DType newCoordPair;
     Point2DType newCoordXY( newCoord.getX(), newCoord.getY() );
-    newCoordPair = this->mapSceneToAdaptor(newCoordXY, *m_xAxis, *m_yAxis);
+    newCoordPair = this->mapSceneToAdaptor(newCoordXY, m_xAxis, m_yAxis);
 
     // Check if the mouse isn't out of bounds vertically and horizontally
     if (   (circle == m_circles.front() || realValues.first > previousValues.first)
@@ -800,7 +800,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
         {
             // new abscissa of the moving TF point
             double x = (newCoordPair.first > oldCoordPair.first) ? (nextValues.first - 1) : (previousValues.first + 1);
-            x = this->mapAdaptorToScene(Point2DType( x, 0 ), *m_xAxis, *m_yAxis).first;
+            x = this->mapAdaptorToScene(Point2DType( x, 0 ), m_xAxis, m_yAxis).first;
 
             QRectF rect        = circle->rect();
             const double width = rect.width();
@@ -829,7 +829,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
                 // Mouse's move goes toward (and outside) the top of the scene: the ordinate of the circle must be set
                 // to 1,
                 // which is the highest value for opacity
-                y = this->mapAdaptorToScene(Point2DType( 0, 1 ), *m_xAxis, *m_yAxis).second;
+                y = this->mapAdaptorToScene(Point2DType( 0, 1 ), m_xAxis, m_yAxis).second;
             }
 
             QRectF rect         = circle->rect();
@@ -854,7 +854,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType point(this->pointValue(circle), circle->rect().y() + circle->pos().y() + m_circleHeight / 2 );
     // Create a new tf point with the right value (key) and alpha
-    Point2DType pair = this->mapSceneToAdaptor(point, *m_xAxis, *m_yAxis);
+    Point2DType pair = this->mapSceneToAdaptor(point, m_xAxis, m_yAxis);
 
     m_TFPoints[pair.first] = ::fwData::TransferFunction::TFColor(
         circle->brush().color().redF(),
@@ -902,7 +902,7 @@ void TransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
 
     // Transform the x and y coordinates with axis scaling and type
     Point2DType _xy(x, y );
-    Point2DType values = this->mapSceneToAdaptor(_xy, *m_xAxis, *m_yAxis);
+    Point2DType values = this->mapSceneToAdaptor(_xy, m_xAxis, m_yAxis);
 
     ::fwData::TransferFunction::TFDataType::iterator nextTFPointIt         = m_TFPoints.begin();
     ::fwData::TransferFunction::TFDataType::reverse_iterator lastTFPointIt = m_TFPoints.rbegin();

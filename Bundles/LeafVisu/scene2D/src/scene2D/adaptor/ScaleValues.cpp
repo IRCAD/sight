@@ -292,7 +292,7 @@ void ScaleValues::rescaleValues()
 
             size = this->mapAdaptorToScene(
                 std::pair<double, double>(m_values[i]->boundingRect().width(), valueSize),
-                *m_xAxis, *m_yAxis);
+                m_xAxis, m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
@@ -303,7 +303,7 @@ void ScaleValues::rescaleValues()
             }
 
             coord = this->mapAdaptorToScene(
-                std::pair<double, double>(textPosX, val), *m_xAxis, *m_yAxis);
+                std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
 
             m_values[i]->setTransform( transform );
 
@@ -317,7 +317,7 @@ void ScaleValues::rescaleValues()
         val = viewportHeight * 0.8;
 
         coord = this->mapAdaptorToScene(
-            std::pair<double, double>(textPosX, val), *m_xAxis, *m_yAxis);
+            std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
@@ -341,7 +341,7 @@ void ScaleValues::rescaleValues()
 
             size = this->mapAdaptorToScene(
                 std::pair<double, double>(valueSize, m_values[i]->boundingRect().height()),
-                *m_xAxis, *m_yAxis);
+                m_xAxis, m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
@@ -352,7 +352,7 @@ void ScaleValues::rescaleValues()
             }
 
             coord = this->mapAdaptorToScene(Point2DType(val, textPosY),
-                                            *m_xAxis, *m_yAxis);
+                                            m_xAxis, m_yAxis);
 
             m_values[i]->setTransform( transform );
 
@@ -367,12 +367,12 @@ void ScaleValues::rescaleValues()
 
         size = this->mapAdaptorToScene(
             std::pair<double, double>(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
-            *m_xAxis, *m_yAxis);
+            m_xAxis, m_yAxis);
 
         coord = this->mapAdaptorToScene(
             std::pair<double, double>(
                 viewportX + viewportWidth / 2, textPosY),
-            *m_xAxis, *m_yAxis);
+            m_xAxis, m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 

@@ -96,8 +96,8 @@ void Grid2D::draw()
     // Draw the horizontal lines
     for ( float yVal = yStartVal; yVal <= yEndVal; yVal += m_ySpacing )
     {
-        coord1 = this->mapAdaptorToScene(Point2DType( xStartVal, yVal), *m_xAxis, *m_yAxis );
-        coord2 = this->mapAdaptorToScene(Point2DType( xEndVal, yVal), *m_xAxis, *m_yAxis );
+        coord1 = this->mapAdaptorToScene(Point2DType( xStartVal, yVal), m_xAxis, m_yAxis );
+        coord2 = this->mapAdaptorToScene(Point2DType( xEndVal, yVal), m_xAxis, m_yAxis );
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 
@@ -109,8 +109,8 @@ void Grid2D::draw()
     // Draw the vertical lines
     for ( float xVal = xStartVal; xVal <= xEndVal; xVal += m_xSpacing )
     {
-        coord1 = this->mapAdaptorToScene(Point2DType( xVal, yStartVal), *m_xAxis, *m_yAxis);
-        coord2 = this->mapAdaptorToScene(Point2DType( xVal, yEndVal), *m_xAxis, *m_yAxis);
+        coord1 = this->mapAdaptorToScene(Point2DType( xVal, yStartVal), m_xAxis, m_yAxis);
+        coord2 = this->mapAdaptorToScene(Point2DType( xVal, yEndVal), m_xAxis, m_yAxis);
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 

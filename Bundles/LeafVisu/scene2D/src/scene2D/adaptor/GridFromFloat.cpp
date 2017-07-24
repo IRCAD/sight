@@ -24,8 +24,14 @@ namespace adaptor
 //------------------------------------------------------------------------------
 
 GridFromFloat::GridFromFloat() noexcept :
+    m_xMin(0.f),
+    m_xMax(10.f),
+    m_yMin(0.f),
+    m_yMax(10.f),
     m_xSpacing(10.f),
-    m_ySpacing(10.f)
+    m_ySpacing(10.f),
+    m_lineType(PLAIN),
+    m_layer(nullptr)
 {
 }
 
@@ -39,33 +45,29 @@ GridFromFloat::~GridFromFloat() noexcept
 
 void GridFromFloat::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();
 
-    SLM_TRACE("IAdaptor configuring ok");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    SLM_ASSERT("Attribute 'xMin' is missing", config.count("xMin"));
+    SLM_ASSERT("Attribute 'xMax' is missing", config.count("xMax"));
+    SLM_ASSERT("Attribute 'yMin' is missing", config.count("yMin"));
+    SLM_ASSERT("Attribute 'yMax' is missing", config.count("yMax"));
 
     // Set the x/y min/max values
-    m_xMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xMin") );
-    m_xMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xMax") );
-    m_yMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMin") );
-    m_yMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMax") );
+    m_xMin = config.get<float>("xMin");
+    m_xMax = config.get<float>("xMax");
+    m_yMin = config.get<float>("yMin");
+    m_yMax = config.get<float>("yMax");
 
     // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between the lines and color
     // of the lines
-    if (!m_configuration->getAttributeValue("xSpacing").empty())
+    m_xSpacing = config.get<float>("xSpacing", 10.f);
+    m_ySpacing = config.get<float>("ySpacing", 10.f);
+
+    if (config.count("color"))
     {
-        m_xSpacing = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xSpacing") );
-    }
-    if (!m_configuration->getAttributeValue("ySpacing").empty())
-    {
-        m_ySpacing = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("ySpacing") );
-    }
-    if (!m_configuration->getAttributeValue("color").empty())
-    {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"));
     }
 }
 
@@ -73,8 +75,6 @@ void GridFromFloat::configuring()
 
 void GridFromFloat::draw()
 {
-    SLM_TRACE_FUNC();
-
     SLM_ASSERT("m_xSpacing can not equal 0", m_xSpacing != 0);
     SLM_ASSERT("m_ySpacing can not equal 0", m_ySpacing != 0);
 
@@ -100,9 +100,9 @@ void GridFromFloat::draw()
     for ( float yVal = yStartVal; yVal <= yEndVal; yVal += yStep )
     {
         const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( xStartVal, yVal),
-                                                        *m_xAxis, *m_yAxis);
+                                                        m_xAxis, m_yAxis);
         const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( xEndVal, yVal),
-                                                        *m_xAxis, *m_yAxis);
+                                                        m_xAxis, m_yAxis);
         QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,
                                                         pt2.first, pt2.second);
         // Set the line the pen and push it back in to the lines vector
@@ -113,8 +113,8 @@ void GridFromFloat::draw()
     // Draw the vertical lines
     for ( float xVal = xStartVal; xVal <= xEndVal; xVal += xStep )
     {
-        const Point2DType pt1   = this->mapAdaptorToScene(Point2DType( xVal, yStartVal), *m_xAxis, *m_yAxis);
-        const Point2DType pt2   = this->mapAdaptorToScene(Point2DType( xVal, yEndVal), *m_xAxis, *m_yAxis);
+        const Point2DType pt1   = this->mapAdaptorToScene(Point2DType( xVal, yStartVal), m_xAxis, m_yAxis);
+        const Point2DType pt2   = this->mapAdaptorToScene(Point2DType( xVal, yEndVal), m_xAxis, m_yAxis);
         QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,
                                                         pt2.first, pt2.second);
         // Set the line the pen and push it back in to the lines vector
@@ -139,8 +139,6 @@ void GridFromFloat::draw()
 
 void GridFromFloat::doStart()
 {
-    SLM_TRACE_FUNC();
-
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
     // Set the pen a style
@@ -153,11 +151,12 @@ void GridFromFloat::doStart()
 
 void GridFromFloat::doUpdate()
 {
+    const float value = this->getObject< ::fwData::Float >()->getValue();
     // Check if the float object isn't negative
-    if (this->getObject< ::fwData::Float >()->getValue() > 0)
+    if ( value > 0)
     {
         // Set the xSpacing the float object value
-        m_xSpacing = this->getObject< ::fwData::Float >()->getValue();
+        m_xSpacing = value;
     }
 
     this->draw();
@@ -167,15 +166,12 @@ void GridFromFloat::doUpdate()
 
 void GridFromFloat::doSwap()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void GridFromFloat::doStop()
 {
-    SLM_TRACE_FUNC();
-
     // Clear the lines vector
     m_lines.clear();
     // Remove the layer (and therefore all its related items) from the scene

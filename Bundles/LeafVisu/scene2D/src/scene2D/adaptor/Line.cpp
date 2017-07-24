@@ -14,7 +14,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Line, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Line);
 
 namespace scene2D
 {
@@ -41,24 +41,25 @@ Line::~Line() noexcept
 
 void Line::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     this->IAdaptor::configuring();
 
-    SLM_TRACE("IAdaptor configuring ok");
+    SLM_ASSERT("Attribute 'x1' is missing", config.count("x1"));
+    SLM_ASSERT("Attribute 'x2' is missing", config.count("x2"));
+    SLM_ASSERT("Attribute 'y1' is missing", config.count("y1"));
+    SLM_ASSERT("Attribute 'y2' is missing", config.count("y2"));
 
     // Set the beginning and ending coordinates values
-    m_x1 = std::stof( m_configuration->getAttributeValue("x1") );
-    m_x2 = std::stof( m_configuration->getAttributeValue("x2") );
-    m_y1 = std::stof( m_configuration->getAttributeValue("y1") );
-    m_y2 = std::stof( m_configuration->getAttributeValue("y2") );
+    m_x1 = config.get<float>("x1");
+    m_x2 = config.get<float>("x2");
+    m_y1 = config.get<float>("y1");
+    m_y2 = config.get<float>("y2");
 
     // If the corresponding attributes are present in the config, set the color of the line
-    if (!m_configuration->getAttributeValue("color").empty())
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"));
     }
 }
 
@@ -66,8 +67,8 @@ void Line::configuring()
 
 void Line::draw()
 {
-    const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( m_x1, m_y1), *m_xAxis, *m_yAxis);
-    const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( m_x2, m_y2), *m_xAxis, *m_yAxis);
+    const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( m_x1, m_y1), m_xAxis, m_yAxis);
+    const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( m_x2, m_y2), m_xAxis, m_yAxis);
 
     // Draw the line
     QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,

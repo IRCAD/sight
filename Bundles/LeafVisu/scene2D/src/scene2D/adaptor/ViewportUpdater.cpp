@@ -62,11 +62,11 @@ void ViewportUpdater::doUpdate()
 
     Point2DType pairCoord = this->mapAdaptorToScene(
         Point2DType( viewportObject->getX(), viewportObject->getY() ),
-        *m_xAxis, *m_yAxis );
+        m_xAxis, m_yAxis );
 
     Point2DType pairSize = this->mapAdaptorToScene(
         Point2DType( viewportObject->getWidth(), viewportObject->getHeight() ),
-        *m_xAxis, *m_yAxis );
+        m_xAxis, m_yAxis );
 
     sceneViewport->setX( pairCoord.first );
     sceneViewport->setY( pairCoord.second );

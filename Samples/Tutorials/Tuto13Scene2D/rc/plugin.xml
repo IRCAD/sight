@@ -8,7 +8,7 @@
         <id>tutoScene2DConfig</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
-            <object uid="Float" type="::fwData::Float" />
+            <object uid="float" type="::fwData::Float" />
             <!-- ***************************************** End Objects declaration ******************************************* -->
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
@@ -43,36 +43,44 @@
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
             <service uid="FloatEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
-                <inout key="float" uid="Float" />
+                <inout key="float" uid="float" />
             </service>
 
             <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
-            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
-                <inout key="floatID" uid="Float" />
+            <service uid="Scene2D" type="::fwRenderQt::SRender" autoConnect="yes">
                 <scene>
-                    <viewport id="view1" x="-100" y="-100" width="200" height="200" />
+                    <viewport x="-100" y="-100" width="200" height="200" />
                     <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                    <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="floatID">
-                        <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
-                    </adaptor>
 
-                    <adaptor id="square1" class="::scene2D::adaptor::Square" objectId="self">
-                        <config x="0" y="0" size="15" color="red" zValue="4" />
-                    </adaptor>
-
-                    <adaptor id="square2" class="::scene2D::adaptor::Square" objectId="self">
-                        <config x="20" y="20" size="30" color="blue" zValue="3" />
-                    </adaptor>
-
-                    <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-100" x2="100" y1="0" y2="0" color="red" zValue="5" />
-                    </adaptor>
-
-                    <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
-                    </adaptor>
+                    <adaptor uid="gridFromFloat" />
+                    <adaptor uid="square1" />
+                    <adaptor uid="square2" />
+                    <adaptor uid="abscissa" />
+                    <adaptor uid="ordinate"/>
                 </scene>
             </service>
+            
+            <service uid="gridFromFloat" type="::scene2D::adaptor::GridFromFloat" >
+                <in key="object" uid="float" />
+                <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
+            </service>
+
+            <service uid="square1" type="::scene2D::adaptor::Square" >
+                <config x="0" y="0" size="15" color="red" zValue="4" />
+            </service>
+
+            <service uid="square2" type="::scene2D::adaptor::Square" >
+                <config x="20" y="20" size="30" color="blue" zValue="3" />
+            </service>
+
+            <service uid="abscissa" type="::scene2D::adaptor::Line" >
+                <config x1="-100" x2="100" y1="0" y2="0" color="red" zValue="5" />
+            </service>
+
+            <service uid="ordinate" type="::scene2D::adaptor::Line" >
+                <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
+            </service>
+                    
             <!-- ***************************************** End render scenes declaration ***************************************** -->
 
             <!-- ***************************************** End services declarations  ************************************************ -->
@@ -80,6 +88,13 @@
             <start uid="mainFrame" />
             <start uid="Scene2D" />
             <start uid="FloatEditor" />
+
+            <start uid="gridFromFloat" />
+            <start uid="square1" />
+            <start uid="square2" />
+            <start uid="abscissa" />
+            <start uid="ordinate" />
+
         </config>
     </extension>
 </plugin>

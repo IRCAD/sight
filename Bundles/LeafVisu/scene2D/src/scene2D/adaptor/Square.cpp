@@ -12,7 +12,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Square, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Square);
 
 namespace scene2D
 {
@@ -39,18 +39,21 @@ Square::~Square() noexcept
 
 void Square::configuring()
 {
-    SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();
 
-    SLM_TRACE("IAdaptor configuring ok");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    m_coord.setX( std::stod( m_configuration->getAttributeValue("x") ) );
-    m_coord.setY( std::stod( m_configuration->getAttributeValue("y") ) );
-    m_size = std::stoi( m_configuration->getAttributeValue("size") );
-    if ( m_configuration->hasAttribute("color") )
+    SLM_ASSERT("Attribute 'x' is missing", config.count("x"));
+    SLM_ASSERT("Attribute 'y' is missing", config.count("y"));
+    SLM_ASSERT("Attribute 'size' is missing", config.count("size"));
+
+    m_coord.setX( config.get<double>("x") );
+    m_coord.setY( config.get<double>("y") );
+    m_size = config.get<std::uint32_t>("size");
+
+    if ( config.count("color") )
     {
-        this->setColor(m_configuration->getAttributeValue("color"));
+        this->setColor(config.get<std::string>("color"));
     }
 }
 
@@ -83,7 +86,6 @@ void Square::doUpdate()
 
 void Square::doSwap()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +97,7 @@ void Square::doStop()
 
 //-----------------------------------------------------------------------------
 
-void Square::setColor( std::string _color )
+void Square::setColor(const std::string& _color )
 {
     if (_color == "red")
     {

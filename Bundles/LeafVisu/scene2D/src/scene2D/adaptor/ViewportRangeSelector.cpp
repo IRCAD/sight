@@ -97,7 +97,7 @@ void ViewportRangeSelector::doStart()
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
     Point2DType pair = this->mapAdaptorToScene(
-        Point2DType( m_initialX, viewport->getHeight() ), *m_xAxis, *m_yAxis );
+        Point2DType( m_initialX, viewport->getHeight() ), m_xAxis, m_yAxis );
     m_shutter = new QGraphicsRectItem(
         pair.first, 0, m_initialWidth * m_xAxis->getScale(), pair.second );
     m_shutter->setBrush( QBrush(QColor(127, 127, 127, 127)) );
@@ -155,7 +155,7 @@ void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _even
     // Shutter coordinates in scene
     Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
-        *m_xAxis, *m_yAxis);
+        m_xAxis, m_yAxis);
     double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
@@ -325,11 +325,11 @@ void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, dou
 
     ::fwRenderQt::data::Viewport::sptr viewport = this->getObject< ::fwRenderQt::data::Viewport>();
 
-    Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), *m_xAxis, *m_yAxis );
+    Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
     viewport->setX( fromSceneCoord.first );
     viewport->setY( fromSceneCoord.second );
 
-    Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), *m_xAxis, *m_yAxis);
+    Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
     viewport->setWidth( pair.first );
     viewport->setHeight( this->getScene2DRender()->getViewport()->getHeight() );
 }
@@ -340,7 +340,7 @@ bool ViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coo
 {
     Point2DType shutterCoordPair;
     shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
-                                                *m_xAxis, *m_yAxis );
+                                                m_xAxis, m_yAxis );
 
     return ( _coord.getX() > m_shutter->rect().x() + m_clickCatchRange )
            && ( _coord.getX() < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange );
@@ -351,7 +351,7 @@ bool ViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coo
 bool ViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord)
 {
     Point2DType shutterCoordPair = this->mapAdaptorToScene(
-        Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), *m_xAxis, *m_yAxis );
+        Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
 
     return ( _coord.getX() >= shutterCoordPair.first - m_clickCatchRange )
            && ( _coord.getX() <= shutterCoordPair.first + m_clickCatchRange );
@@ -363,7 +363,7 @@ bool ViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coor
 {
     const Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
-        *m_xAxis, *m_yAxis );
+        m_xAxis, m_yAxis );
 
     const double shutterRightPos = shutterCoordPair.first + m_shutter->rect().width() * m_xAxis->getScale();
 

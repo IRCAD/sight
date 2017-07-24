@@ -42,7 +42,7 @@ protected:
 
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
-    SCENE2D_API void setColor( std::string _color );
+    SCENE2D_API void setColor(const std::string& _color );
     SCENE2D_API bool coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item );
     SCENE2D_API ::fwRenderQt::data::Coord coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord,
                                                                 QGraphicsItem* item );

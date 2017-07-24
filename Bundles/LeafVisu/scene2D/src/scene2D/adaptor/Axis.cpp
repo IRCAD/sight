@@ -202,18 +202,18 @@ void Axis::doUpdate()
     std::pair<double, double> tickPos;
 
     const std::pair<double, double> viewportSize = this->mapAdaptorToScene(
-        std::pair<double, double>(viewportWidth, viewportHeight), *m_xAxis, *m_yAxis);
+        std::pair<double, double>(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
 
     if(m_align == "bottom")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), *m_xAxis, *m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
 
         const double tickPosY = m_viewport->getY();
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), *m_xAxis, *m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
             m_ticks.at(i)->setLine(
                 tickPos.first, tickPos.second,
                 tickPos.first, tickPos.second - tickSize.second * scaleY);
@@ -223,14 +223,14 @@ void Axis::doUpdate()
     }
     else if(m_align == "top")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), *m_xAxis, *m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
 
         const double tickPosY = m_viewport->getHeight() * 0.9;
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), *m_xAxis, *m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
                 tickPos.first, tickPos.second,
@@ -241,14 +241,14 @@ void Axis::doUpdate()
     }
     else if(m_align == "left")
     {
-        tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), *m_xAxis, *m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), m_xAxis, m_yAxis);
 
         const double tickPosX = m_viewport->getX();
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), *m_xAxis, *m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
             m_ticks.at(i)->setLine(
                 tickPos.first, tickPos.second,
                 tickPos.first + tickSize.first * scaleX, tickPos.second);
@@ -259,7 +259,7 @@ void Axis::doUpdate()
     else if(m_align == "right")
     {
         tickSize = this->mapAdaptorToScene(
-            std::pair<double, double>(m_tickSize, 0), *m_xAxis, *m_yAxis);
+            std::pair<double, double>(m_tickSize, 0), m_xAxis, m_yAxis);
 
         const double tickPosX = m_viewport->getX() + m_viewport->getWidth();
 
@@ -268,7 +268,7 @@ void Axis::doUpdate()
             pos = min + i * m_interval;
 
             tickPos = this->mapAdaptorToScene(
-                std::pair<double, double>(tickPosX, pos), *m_xAxis, *m_yAxis);
+                std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
                 tickPos.first - tickSize.first * scaleX, tickPos.second,

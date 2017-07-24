@@ -217,7 +217,7 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points& _bSp
     {
         Point p;
 
-        p = this->mapAdaptorToScene( *it, *m_xAxis, *m_yAxis );
+        p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
         QPointF prevPt = QPointF(p.first,  p.second);
         m_painterPath->lineTo( p.first, p.second );
         qreal len = m_painterPath->length();
@@ -225,7 +225,7 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points& _bSp
 
         for(; it != _bSplinePoints.end(); ++it)
         {
-            p = this->mapAdaptorToScene( *it, *m_xAxis, *m_yAxis );
+            p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
 
             m_painterPath->lineTo( p.first, p.second );
 
@@ -289,7 +289,7 @@ void CurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
     const bool useInnerColor  = (m_innerColor.color() != Qt::transparent);
 
     Point currentPoint = this->mapAdaptorToScene( Point(histogram->getMinValue(), _bSplinePoints[0].second),
-                                                  *m_xAxis, *m_yAxis );
+                                                  m_xAxis, m_yAxis );
     Point previousPoint = currentPoint;
     Points::iterator it;
 
@@ -307,7 +307,7 @@ void CurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
     // Build the path with the B-Spline points
     for(it = _bSplinePoints.begin() + 1; it != _bSplinePoints.end(); ++it)
     {
-        currentPoint = this->mapAdaptorToScene(*it, *m_xAxis, *m_yAxis );
+        currentPoint = this->mapAdaptorToScene(*it, m_xAxis, m_yAxis );
 
         path.lineTo( currentPoint.first, currentPoint.second );
     }

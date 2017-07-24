@@ -104,7 +104,7 @@ void Histogram::doUpdate()
 
         // Initialize the path with a start point:
         // The value preceding the current value that we'll use to build the arcs of the path
-        Point2DType startPoint = this->mapAdaptorToScene(Point2DType(min, values[0]), *m_xAxis, *m_yAxis);
+        Point2DType startPoint = this->mapAdaptorToScene(Point2DType(min, values[0]), m_xAxis, m_yAxis);
 
         std::pair<double, double> pair;
 
@@ -115,7 +115,7 @@ void Histogram::doUpdate()
         for(int i = 1; i < nbValues; ++i)
         {
             pair = this->mapAdaptorToScene(
-                std::pair<double, double>(min + i * binsWidth, values[i]), *m_xAxis, *m_yAxis);
+                std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
 
             QPainterPath painter( QPointF(startPoint.first, 0) );
             painter.lineTo( startPoint.first, startPoint.second );
