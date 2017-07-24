@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,6 @@ public:
             ::boost::bimaps::multiset_of< ::fwServices::IService::sptr >
             > ServiceContainerType;
 
-
     typedef std::set< CSPTR( ::fwData::Object ) >      ObjectVectorType;
     typedef std::set< SPTR( ::fwServices::IService ) > ServiceVectorType;
 
@@ -106,6 +105,15 @@ public:
                                         ::fwServices::IService::sptr service);
 
     /**
+     * @brief Register the service (service) for the input object (obj) at the given service key.
+     * It also updates IService::m_associatedObject of service to point to obj
+     * removal at obj destruction.
+     */
+    FWSERVICES_API void registerServiceInput(const ::fwData::Object::csptr& obj,
+                                             const ::fwServices::IService::KeyType& objKey,
+                                             const ::fwServices::IService::sptr& service);
+
+    /**
      * @brief Emit the signal 'registered'
      */
     FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr object,
@@ -136,7 +144,6 @@ public:
      */
     FWSERVICES_API void unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
                                                  ::fwServices::IService::sptr service );
-
 
     /**
      * @brief Remove the service (service) from the m_container
@@ -192,7 +199,6 @@ public:
     template<class SERVICE>
     ObjectVectorType getObjects() const;
 
-
     /**
      * @brief Return a container with all objects registered in m_container
      */
@@ -217,7 +223,6 @@ public:
     FWSERVICES_API bool hasKey( ::fwCore::LogicStamp::csptr key ) const;
 
     //@}
-
 
     /**
      * @name Misc.
@@ -264,6 +269,15 @@ private:
                                   ::fwServices::IService::AccessType access);
 
     /**
+     * @brief Register the service (service) for the input object (obj)
+     * It also updates IService::m_associatedObject of service to point to obj
+     * removal at obj destruction.
+     * @warning not thread-safe
+     */
+    void internalRegisterServiceInput( const ::fwData::Object::csptr& obj, const ::fwServices::IService::sptr& service,
+                                       const ::fwServices::IService::KeyType& objKey);
+
+    /**
      * @brief container manipulator (Helper)
      * remove service from ObjectService containers, do not perform any "semantic action" like stopping service
      * @note (internal use) use with care
@@ -272,8 +286,6 @@ private:
 };
 
 } // namespace registry
-
-
 
 /**
  * @brief OSR wraps main Object-Service registry access
@@ -340,6 +352,11 @@ FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::I
 FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                                     ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service);
 
+/**
+ * @brief Wraps ObjectService::registerServiceInput
+ */
+FWSERVICES_API void registerServiceInput(::fwData::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
+                                         ::fwServices::IService::sptr service);
 
 /**
  * @brief Wraps ObjectService::registerServiceOutput
@@ -387,5 +404,4 @@ FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType )
 #include "fwServices/registry/ObjectService.hxx"
 
 #endif // __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
-
 

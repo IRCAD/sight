@@ -157,8 +157,39 @@ protected:
         return m_subServices;
     }
 
+    /**
+     * @brief Create the service and register it in the OSR
+     * @param type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)
+     * @param obj main object used by the service, if the service works on several objects, you will need to call
+     *        ::fwServices::OSR::registerServiceInput() with the other objects
+     * @param key key of the object in the new adaptor
+     * @return Returns the created adaptor
+     * @throw fwCore::Exception if the service cannot be created
+     */
+    FWRENDERVTK_API fwRenderVTK::IAdaptor::sptr createAndRegisterServiceInput(
+        const std::string& type,
+        const ::fwData::Object::csptr& obj,
+        const std::string& key);
+
+    /**
+     * @brief Create the service and register it in the OSR
+     * @param type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)
+     * @param obj main object used by the service, if the service works on several objects, you will need to call
+     *        ::fwServices::OSR::registerService() with the other objects
+     * @param key key of the object in the new adaptor
+     * @return Returns the created adaptor
+     * @throw fwCore::Exception if the service cannot be created
+     */
+    FWRENDERVTK_API fwRenderVTK::IAdaptor::sptr createAndRegisterServiceInOut(
+        const std::string& type,
+        const ::fwData::Object::sptr& obj,
+        const std::string& key);
+
     /// Stores the service in the subServices list
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IAdaptor::sptr service );
+
+    /// Unregiters the sub-adaptor from the OSR and the subServices list
+    FWRENDERVTK_API void unregisterService(::fwRenderVTK::IAdaptor::sptr service);
 
     /// Unregiters all the sub-adaptor from the OSR and clear the subServices list
     FWRENDERVTK_API void unregisterServices();

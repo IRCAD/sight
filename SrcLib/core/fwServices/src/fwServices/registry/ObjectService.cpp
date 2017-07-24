@@ -98,6 +98,14 @@ void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::
 
 //------------------------------------------------------------------------------
 
+void registerServiceInput( ::fwData::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
+                           ::fwServices::IService::sptr service )
+{
+    ::fwServices::OSR::get()->registerServiceInput(obj, objKey, service);
+}
+
+//------------------------------------------------------------------------------
+
 void registerServiceOutput( ::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                             ::fwServices::IService::sptr service )
 {
@@ -202,6 +210,17 @@ void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwSe
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, access);
+
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
+                                          const ::fwServices::IService::KeyType& objKey,
+                                          const ::fwServices::IService::sptr& service)
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    this->internalRegisterServiceInput(object, service, objKey);
 
 }
 
@@ -396,6 +415,20 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
             service->m_outputsMap[objKey] = object;
         }
     }
+    m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& object, const IService::sptr& service,
+                                                 const ::fwServices::IService::KeyType& objKey)
+{
+    SLM_ASSERT("Can't register a null service in OSR.", service);
+    SLM_ASSERT("Can't register a null object in OSR.", object);
+    SLM_ASSERT("Can't register an input object without key.", !objKey.empty());
+
+    service->m_inputsMap[objKey] = object;
+
     m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
 }
 

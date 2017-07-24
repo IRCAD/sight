@@ -274,9 +274,68 @@ vtkRenderWindowInteractor* IAdaptor::getInteractor()
 
 //------------------------------------------------------------------------------
 
+::fwRenderVTK::IAdaptor::sptr IAdaptor::createAndRegisterServiceInput(
+    const std::string& type,
+    const ::fwData::Object::csptr& obj,
+    const std::string& key)
+{
+    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+
+    ::fwServices::IService::sptr srv = srvFactory->create("::visuVTKAdaptor::SMaterial");
+    FW_RAISE_IF("Service of type '" + type + "' cannot be instantiated.", !srv);
+
+    ::fwRenderVTK::IAdaptor::sptr adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
+    FW_RAISE_IF("Service of type '"+ type + "' is not an adaptor", !adaptor);
+
+    ::fwServices::OSR::registerServiceInput(obj, key, srv);
+
+    m_subServices.push_back(adaptor);
+    return adaptor;
+}
+
+//------------------------------------------------------------------------------
+
+::fwRenderVTK::IAdaptor::sptr IAdaptor::createAndRegisterServiceInOut(
+    const std::string& type,
+    const ::fwData::Object::sptr& obj,
+    const std::string& key)
+{
+    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+
+    ::fwServices::IService::sptr srv = srvFactory->create("::visuVTKAdaptor::SMaterial");
+    FW_RAISE_IF("Service of type '" + type + "' cannot be instantiated.", !srv);
+
+    ::fwRenderVTK::IAdaptor::sptr adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
+    FW_RAISE_IF("Service of type '"+ type + "' is not an adaptor", !adaptor);
+
+    ::fwServices::OSR::registerService(obj, key, ::fwServices::IService::AccessType::INOUT, srv);
+
+    m_subServices.push_back(adaptor);
+    return adaptor;
+}
+
+//------------------------------------------------------------------------------
+
 void IAdaptor::registerService( ::fwRenderVTK::IAdaptor::sptr service)
 {
     m_subServices.push_back(service);
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::unregisterService( ::fwRenderVTK::IAdaptor::sptr service)
+{
+    auto iter = std::find_if(m_subServices.begin(), m_subServices.end(),
+                             [ = ](const ::fwRenderVTK::IAdaptor::wptr& adaptor)
+        {
+            return adaptor.lock() == service;
+        });
+
+    SLM_ASSERT("service '" + service->getID() + "' is not registered", iter != m_subServices.end());
+    m_subServices.erase(iter);
+
+    service->stop();
+    ::fwServices::OSR::unregisterService(service);
 }
 
 //------------------------------------------------------------------------------
