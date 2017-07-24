@@ -10,8 +10,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwCore/base.hpp>
-
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/Mesh.hpp>
@@ -101,7 +99,7 @@ void MeshReaderService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >("mesh" );
         SLM_ASSERT("mesh not instanced", mesh);
 
         ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();

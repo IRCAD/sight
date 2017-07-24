@@ -23,8 +23,18 @@ namespace ioData
  * @li Use setConfiguration(cfg) and configure() methods to configure the mesh filename.
  * @li Use update() to read the mesh and notify observers.
  *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh )
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ioData::MeshReaderService">
+       <inout key="mesh" uid="..." />
+       <file>....</file>
+   </service>
+   @endcode
+ * @subsection InOut InOut
+ * - \b mesh [::fwData::Mesh]: mesh.
+ * @subsubsection Configuration Configuration
+ * - \b file : .trian file to read
  */
 class IODATA_CLASS_API MeshReaderService : public ::io::IReader
 {
