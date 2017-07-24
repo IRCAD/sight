@@ -658,11 +658,7 @@ void SMesh::setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv, ::fwData::M
 {
     if (!srv)
     {
-        ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-        srv                                                     = ::fwRenderVTK::IAdaptor::dynamicCast(srvFactory->create(
-                                                                                                           "::visuVTKAdaptor::SMaterial"));
-        SLM_ASSERT("srv not instanced", srv);
-        ::fwServices::OSR::registerService(material, "material", ::fwServices::IService::AccessType::INPUT, srv);
+        srv = this->createAndRegisterServiceInput("::visuVTKAdaptor::SMaterial", material, "material");
 
         srv->setRenderService(this->getRenderService());
         srv->setAutoRender( this->getAutoRender() );
@@ -709,18 +705,14 @@ void SMesh::createNormalsService()
         ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
         SLM_ASSERT("Missing mesh", mesh);
 
-        ::fwRenderVTK::IAdaptor::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IAdaptor >(
-                mesh,
-                "::visuVTKAdaptor::MeshNormals"
-                );
-        SLM_ASSERT("service not instanced", service);
+        ::fwRenderVTK::IAdaptor::sptr service = this->createAndRegisterServiceInput( "::visuVTKAdaptor::SMeshNormals",
+                                                                                     mesh, "mesh");
 
         service->setRenderService( this->getRenderService() );
         service->setRendererId( this->getRendererId()      );
         service->setPickerId( this->getPickerId()      );
         service->setAutoRender( this->getAutoRender()    );
-        ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
+        ::visuVTKAdaptor::SMeshNormals::dynamicCast(service)->setPolyData( m_polyData );
         service->start();
 
         m_normalsService = service;
@@ -733,8 +725,7 @@ void SMesh::removeNormalsService()
 {
     if ( !m_normalsService.expired() )
     {
-        m_normalsService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_normalsService.lock());
+        this->unregisterService(m_normalsService.lock());
         m_normalsService.reset();
     }
 }
@@ -1119,8 +1110,8 @@ void SMesh::updateNormalMode(std::uint8_t mode)
     this->updateOptionsMode();
     if (!m_normalsService.expired())
     {
-        ::visuVTKAdaptor::MeshNormals::sptr normalsAdaptor =
-            ::visuVTKAdaptor::MeshNormals::dynamicCast(m_normalsService.lock());
+        ::visuVTKAdaptor::SMeshNormals::sptr normalsAdaptor =
+            ::visuVTKAdaptor::SMeshNormals::dynamicCast(m_normalsService.lock());
         normalsAdaptor->updateNormalMode(mode);
     }
 }

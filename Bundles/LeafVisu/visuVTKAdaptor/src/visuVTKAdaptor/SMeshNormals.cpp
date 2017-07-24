@@ -28,57 +28,48 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMeshNormals);
+
+const ::fwServices::IService::KeyType s_MESH_INPUT = "mesh";
 
 namespace visuVTKAdaptor
 {
 
-std::map< std::string, MeshNormals::NormalRepresentation >
-MeshNormals::m_normalRepresentationConversion
+std::map< std::string, SMeshNormals::NormalRepresentation >
+SMeshNormals::m_normalRepresentationConversion
     = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
           (std::string("CELL"), CELL_NORMAL)
           (std::string("NONE"), NONE);
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_VERTEX_SLOT        = "updateVertex";
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_POINT_NORMALS_SLOT = "updatePointNormals";
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_CELL_NORMALS_SLOT  = "updateCellNormals";
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_SHOW_POINT_NORMALS_SLOT   = "showPointNormals";
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_SHOW_CELL_NORMALS_SLOT    = "showCellNormals";
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_HIDE_NORMALS_SLOT         = "hideNormals";
-const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_NORMAL_MODE_SLOT   = "updateNormalMode";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_UPDATE_VERTEX_SLOT        = "updateVertex";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_UPDATE_POINT_NORMALS_SLOT = "updatePointNormals";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_UPDATE_CELL_NORMALS_SLOT  = "updateCellNormals";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_SHOW_POINT_NORMALS_SLOT   = "showPointNormals";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_SHOW_CELL_NORMALS_SLOT    = "showCellNormals";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_HIDE_NORMALS_SLOT         = "hideNormals";
+const ::fwCom::Slots::SlotKeyType SMeshNormals::s_UPDATE_NORMAL_MODE_SLOT   = "updateNormalMode";
 
 //------------------------------------------------------------------------------
 
-MeshNormals::MeshNormals() noexcept :
+SMeshNormals::SMeshNormals() noexcept :
     m_normalRepresentation(CELL_NORMAL)
 {
     m_actor = vtkActor::New();
 
-    m_slotUpdateVertex       = ::fwCom::newSlot(&MeshNormals::updateVertex, this);
-    m_slotUpdatePointNormals = ::fwCom::newSlot(&MeshNormals::updatePointNormals, this);
-    m_slotUpdateCellNormals  = ::fwCom::newSlot(&MeshNormals::updateCellNormals, this);
-    m_slotShowPointNormals   = ::fwCom::newSlot(&MeshNormals::showPointNormals, this);
-    m_slotShowCellNormals    = ::fwCom::newSlot(&MeshNormals::showCellNormals, this);
-    m_slotHideNormals        = ::fwCom::newSlot(&MeshNormals::hideNormals, this);
-    m_slotUpdateNormalMode   = ::fwCom::newSlot(&MeshNormals::updateNormalMode, this);
-
-    ::fwCom::HasSlots::m_slots(s_UPDATE_VERTEX_SLOT, m_slotUpdateVertex)
-        (s_UPDATE_POINT_NORMALS_SLOT, m_slotUpdatePointNormals)
-        (s_UPDATE_CELL_NORMALS_SLOT, m_slotUpdateCellNormals)
-        (s_SHOW_POINT_NORMALS_SLOT, m_slotShowPointNormals)
-        (s_SHOW_CELL_NORMALS_SLOT, m_slotShowCellNormals)
-        (s_HIDE_NORMALS_SLOT, m_slotHideNormals)
-        (s_UPDATE_NORMAL_MODE_SLOT, m_slotUpdateNormalMode)
-    ;
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot(s_UPDATE_VERTEX_SLOT, &SMeshNormals::updateVertex, this);
+    newSlot(s_UPDATE_POINT_NORMALS_SLOT, &SMeshNormals::updatePointNormals, this);
+    newSlot(s_UPDATE_CELL_NORMALS_SLOT, &SMeshNormals::updateCellNormals, this);
+    newSlot(s_SHOW_POINT_NORMALS_SLOT, &SMeshNormals::showPointNormals, this);
+    newSlot(s_SHOW_CELL_NORMALS_SLOT, &SMeshNormals::showCellNormals, this);
+    newSlot(s_HIDE_NORMALS_SLOT, &SMeshNormals::hideNormals, this);
+    newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SMeshNormals::updateNormalMode, this);
 }
 
 //------------------------------------------------------------------------------
 
-MeshNormals::~MeshNormals() noexcept
+SMeshNormals::~SMeshNormals() noexcept
 {
     m_actor->Delete();
     m_actor = 0;
@@ -86,15 +77,16 @@ MeshNormals::~MeshNormals() noexcept
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doConfigure()
+void SMeshNormals::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
-    if(m_configuration->hasAttribute("normal") )
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>.");
+
+    if(config.count("normal") )
     {
-        std::string normal = m_configuration->getExistingAttributeValue("normal");
-        SLM_ASSERT("Wrong normal representation '"<<normal << "' (required POINT, CELL or NONE)",
+        std::string normal = config.get<std::string>("normal");
+        SLM_ASSERT("Wrong normal representation '" + normal + "' (required POINT, CELL or NONE)",
                    m_normalRepresentationConversion.find(normal) != m_normalRepresentationConversion.end());
 
         m_normalRepresentation = m_normalRepresentationConversion[normal];
@@ -103,38 +95,30 @@ void MeshNormals::doConfigure()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doStart()
+void SMeshNormals::starting()
 {
-    SLM_TRACE_FUNC();
-    this->doUpdate();
+    this->initialize();
+    this->updating();
     this->addToRenderer(this->getActor());
 }
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doSwap()
-{
-    SLM_TRACE_FUNC();
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void MeshNormals::doUpdate()
+void SMeshNormals::updating()
 {
     this->updateMeshNormals();
 }
 
 //------------------------------------------------------------------------------
 
-vtkActor* MeshNormals::getActor() const
+vtkActor* SMeshNormals::getActor() const
 {
     return m_actor;
 }
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::setPolyData(vtkSmartPointer< vtkPolyData > polydata)
+void SMeshNormals::setPolyData(vtkSmartPointer< vtkPolyData > polydata)
 {
     if (polydata)
     {
@@ -144,9 +128,10 @@ void MeshNormals::setPolyData(vtkSmartPointer< vtkPolyData > polydata)
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::updateMeshNormals()
+void SMeshNormals::updateMeshNormals()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_INPUT);
+    SLM_ASSERT("Missing mesh", mesh);
 
     if(m_normalRepresentation == NONE)
     {
@@ -167,7 +152,7 @@ void MeshNormals::updateMeshNormals()
             vtkSmartPointer<vtkMaskPoints> ptMask = vtkSmartPointer<vtkMaskPoints>::New();
             ptMask->SetOnRatio(1);
             ptMask->RandomModeOn();
-            ptMask->SetMaximumNumberOfPoints(mesh->getNumberOfPoints());
+            ptMask->SetMaximumNumberOfPoints(static_cast<vtkIdType>(mesh->getNumberOfPoints()));
             algo = ptMask;
         }
 
@@ -196,30 +181,27 @@ void MeshNormals::updateMeshNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doStop()
+void SMeshNormals::stopping()
 {
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType MeshNormals::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SMeshNormals::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG,
-                                           s_UPDATE_VERTEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_NORMALS_MODIFIED_SIG,
-                                           s_UPDATE_POINT_NORMALS_SLOT) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG,
-                                           s_UPDATE_CELL_NORMALS_SLOT) );
+    KeyConnectionsMap connections;
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_VERTEX_SLOT);
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_POINT_NORMALS_MODIFIED_SIG, s_UPDATE_POINT_NORMALS_SLOT);
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG, s_UPDATE_CELL_NORMALS_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::updateVertex()
+void SMeshNormals::updateVertex()
 {
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
     ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
@@ -231,7 +213,7 @@ void MeshNormals::updateVertex()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::updatePointNormals()
+void SMeshNormals::updatePointNormals()
 {
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
     ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
@@ -241,7 +223,7 @@ void MeshNormals::updatePointNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::updateCellNormals()
+void SMeshNormals::updateCellNormals()
 {
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
     ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
@@ -251,7 +233,7 @@ void MeshNormals::updateCellNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::showPointNormals()
+void SMeshNormals::showPointNormals()
 {
     m_normalRepresentation = POINT_NORMAL;
     this->updateMeshNormals();
@@ -259,7 +241,7 @@ void MeshNormals::showPointNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::showCellNormals()
+void SMeshNormals::showCellNormals()
 {
     m_normalRepresentation = CELL_NORMAL;
     this->updateMeshNormals();
@@ -267,7 +249,7 @@ void MeshNormals::showCellNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::hideNormals()
+void SMeshNormals::hideNormals()
 {
     m_normalRepresentation = NONE;
     this->updateMeshNormals();
@@ -275,7 +257,7 @@ void MeshNormals::hideNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::updateNormalMode(std::uint8_t mode)
+void SMeshNormals::updateNormalMode(std::uint8_t mode)
 {
     switch (mode)
     {

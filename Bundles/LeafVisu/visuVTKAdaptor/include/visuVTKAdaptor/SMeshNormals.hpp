@@ -22,7 +22,34 @@ class vtkActor;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API MeshNormals : public ::fwRenderVTK::IAdaptor
+/**
+ * @brief This adaptor displays mesh normals
+ *
+ * @section Slots Slots
+ * - \b updateVertex() : updates the normals according to the new vertex positions
+ * - \b updatePointNormals() : updates the point normals
+ * - \b updateCellNormals() : updates the cell normals
+ * - \b showPointNormals() : displays the point normals
+ * - \b showCellNormals() : displays the cell normals
+ * - \b hideNormals() : hides the point normals
+ * - \b updateNormalMode(std::uint8_t) : updates the normal mode (0: hidden, 1: point normals, 2: cell normals)
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SMeshNormals">
+       <in key="mesh" uid="..." />
+       <config renderer="..." transform="..." />
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b mesh [::fwData::Mesh]: mesh to display the normals.
+ * @subsection Configuration Configuration
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer(mandatory) : renderer where the mesh is displayed
+ *    - \b transform(optional) : transform visually applied on the mesh
+ */
+class VISUVTKADAPTOR_CLASS_API SMeshNormals : public ::fwRenderVTK::IAdaptor
 {
 
 public:
@@ -34,11 +61,11 @@ public:
         CELL_NORMAL
     } NormalRepresentation;
 
-    fwCoreServiceClassDefinitionsMacro( (MeshNormals)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMeshNormals)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API MeshNormals() noexcept;
+    VISUVTKADAPTOR_API SMeshNormals() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~MeshNormals() noexcept;
+    VISUVTKADAPTOR_API virtual ~SMeshNormals() noexcept;
 
     VISUVTKADAPTOR_API void setPolyData(vtkSmartPointer< vtkPolyData > polydata);
 
@@ -80,15 +107,14 @@ public:
      * Connect mesh::s_POINT_NORMALS_MODIFIED_SIG to this::s_UPDATE_POINT_NORMALS_SLOT
      * Connect mesh::s_CELL_NORMALS_MODIFIED_SIG to this::s_UPDATE_CELL_NORMALS_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
-    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     vtkActor* getActor() const;
     void updateMeshNormals();
@@ -126,22 +152,6 @@ private:
     vtkSmartPointer< vtkPolyData > m_polyData;
     vtkSmartPointer< vtkActor >    m_actor;
     static std::map< std::string, NormalRepresentation > m_normalRepresentationConversion;
-
-    /**
-     * @name Slots attributes
-     * @{
-     */
-    UpdateVertexSlotType::sptr m_slotUpdateVertex; ///< slot used to update mesh vertex
-    UpdatePointNormalsSlotType::sptr m_slotUpdatePointNormals; ///< slot used to update point normals
-    UpdateCellNormalsSlotType::sptr m_slotUpdateCellNormals; ///< slot used to update cell normals
-    ShowPointNormalsSlotType::sptr m_slotShowPointNormals; ///< slot used to show point normals
-    ShowCellNormalsSlotType::sptr m_slotShowCellNormals; ///< slot used to show cell normals
-    HideNormalsSlotType::sptr m_slotHideNormals; ///< slot used to hide normals
-    /// slot used to update normal mode (0: none, 1: point, 2: cell)
-    UpdateNormalModeSlotType::sptr m_slotUpdateNormalMode;
-    /**
-     * @}
-     */
 };
 
 } //namespace visuVTKAdaptor

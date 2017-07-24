@@ -61,18 +61,21 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * @code{.xml}
    <service type="::visuVTKAdaptor::SMesh">
        <in key="mesh" uid="..." />
-       <config renderer="default" picker="" texture="TextureAdaptor" />
+       <config renderer="default" transform="..." picker="" texture="TextureAdaptor" />
    </service>
    @endcode
  * @subsection Configuration Configuration:
- * - \b color : hexadecimal color code of the diffuse material (i.e RGB "#ff00ff" or RGBA "#ff224508"). This overrides
- * the current diffuse color of the mesh material.
- * - \b unclippedcolor : hexadecimal color code of the diffuse material of the unclipped part.
- * - \b autoresetcamera : reset the camera point of view when the mesh is modified ("yes" or "no", default: "yes") .
- * - \b uvgen : generate UV coordinates ("sphere", "cylinder" or "plane").
- * - \b texture : id of the optional texture adaptor, used to map a texture on the mesh. The mesh needs a valid UV
- * coordinates layer, or to generate uv on-the-fly with the \b uvgen parameter.
- * - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer(mandatory) : renderer where the mesh is displayed
+ *    - \b transform(optional) : transform visually applied on the mesh
+ *    - \b color : hexadecimal color code of the diffuse material (i.e RGB "#ff00ff" or RGBA "#ff224508"). This
+ *    overrides the current diffuse color of the mesh material.
+ *    - \b unclippedcolor : hexadecimal color code of the diffuse material of the unclipped part.
+ *    - \b autoresetcamera : reset the camera point of view when the mesh is modified ("yes" or "no", default: "yes") .
+ *    - \b uvgen : generate UV coordinates ("sphere", "cylinder" or "plane").
+ *    - \b texture : id of the optional texture adaptor, used to map a texture on the mesh. The mesh needs a valid UV
+ *    coordinates layer, or to generate uv on-the-fly with the \b uvgen parameter.
+ *    - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
  */
 class VISUVTKADAPTOR_CLASS_API SMesh : public ::fwRenderVTK::IAdaptor
 {
