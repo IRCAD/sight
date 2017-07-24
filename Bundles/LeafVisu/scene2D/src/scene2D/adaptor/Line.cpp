@@ -6,15 +6,15 @@
 
 #include "scene2D/adaptor/Line.hpp"
 
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Composite.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Line, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Line, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -58,7 +58,7 @@ void Line::configuring()
     // If the corresponding attributes are present in the config, set the color of the line
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
     }
 }
 
@@ -66,15 +66,12 @@ void Line::configuring()
 
 void Line::draw()
 {
-    SLM_TRACE_FUNC();
+    const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( m_x1, m_y1), *m_xAxis, *m_yAxis);
+    const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( m_x2, m_y2), *m_xAxis, *m_yAxis);
 
     // Draw the line
-    QGraphicsLineItem* line = new QGraphicsLineItem(
-        this->mapAdaptorToScene(std::pair< double, double >( m_x1, m_y1), m_xAxis, m_yAxis).first,
-        this->mapAdaptorToScene(std::pair< double, double >( m_x1, m_y1), m_xAxis, m_yAxis).second,
-        this->mapAdaptorToScene(std::pair< double, double >( m_x2, m_y2), m_xAxis, m_yAxis).first,
-        this->mapAdaptorToScene(std::pair< double, double >( m_x2, m_y2), m_xAxis, m_yAxis).second
-        );
+    QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,
+                                                    pt2.first, pt2.second);
     // Set the line the pen
     line->setPen(m_pen);
 

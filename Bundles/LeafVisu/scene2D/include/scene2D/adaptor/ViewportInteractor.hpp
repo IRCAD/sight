@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,23 +7,24 @@
 #ifndef __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
 #define __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
 /**
  * @brief Adaptor implementation that manages the camera on the view.
  */
-class ViewportInteractor : public ::scene2D::adaptor::IAdaptor
+class ViewportInteractor : public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ViewportInteractor)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (ViewportInteractor)(::fwRenderQt::IAdaptor) );
 
     ViewportInteractor() noexcept;
 
@@ -41,14 +42,13 @@ protected:
 
     SCENE2D_API void doStop();
 
-    SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     SCENE2D_API void zoom( bool zoomIn );
 
     bool m_viewportIsTranslated;
-    ::scene2D::data::Coord m_lastCoordEvent;
+    ::fwRenderQt::data::Coord m_lastCoordEvent;
 };
-
 
 }   // namespace adaptor
 }   // namespace scene2D

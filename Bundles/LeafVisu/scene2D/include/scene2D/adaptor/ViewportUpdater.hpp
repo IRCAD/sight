@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,20 @@
 #ifndef __SCENE2D_ADAPTOR_VIEWPORTUPDATER_HPP__
 #define __SCENE2D_ADAPTOR_VIEWPORTUPDATER_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
 /**
  * @brief Adaptor implementation that manages the camera on the view (by updating the viewport object).
  *
  * The ViewportUpdater updates the viewport of the scene it is attached to, by picking values from the
- * managed ::scene2D::data::Viewport object.
+ * managed ::fwRenderQt::data::Viewport object.
  *
  * Configuration example:
    @code{.xml}
@@ -30,19 +31,19 @@ namespace adaptor
  *
  * \b objectID  : the viewport object this updater takes values from.
  *
- * \b xAxis     : see ::scene2D::adaptor::IAdaptor
+ * \b xAxis     : see ::fwRenderQt::IAdaptor
  *
- * \b yAxis     : see ::scene2D::adaptor::IAdaptor
+ * \b yAxis     : see ::fwRenderQt::IAdaptor
  *
- * \b zValue    : see ::scene2D::adaptor::IAdaptor
+ * \b zValue    : see ::fwRenderQt::IAdaptor
  *
  * This adaptor is intended to be used with a ::scene2D::adaptor::ViewportRangeSelector adaptor.
  */
-class ViewportUpdater : public ::scene2D::adaptor::IAdaptor
+class ViewportUpdater : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ViewportUpdater)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (ViewportUpdater)(::fwRenderQt::IAdaptor) );
     ViewportUpdater() noexcept;
     ~ViewportUpdater() noexcept;
 
@@ -53,9 +54,8 @@ protected:
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
 
-    SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 };
-
 
 }   // namespace adaptor
 }   // namespace scene2D

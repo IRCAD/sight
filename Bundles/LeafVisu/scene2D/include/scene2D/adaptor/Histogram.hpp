@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,9 @@
 #ifndef __SCENE2D_ADAPTOR_HISTOGRAM_HPP__
 #define __SCENE2D_ADAPTOR_HISTOGRAM_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
 
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
@@ -31,16 +32,16 @@ namespace adaptor
  *
  * \b opacity (mandatory)   : the opacity of the histogram (from 0.0 to 1.0)
  *
- * \b xAxis                 : see ::scene2D::adaptor::IAdaptor
+ * \b xAxis                 : see ::fwRenderQt::IAdaptor
  *
- * \b yAxis                 : see ::scene2D::adaptor::IAdaptor
+ * \b yAxis                 : see ::fwRenderQt::IAdaptor
  *
  * \b zValue                : see ::scene1D::adaptor::IAdaptor
  */
-class SCENE2D_CLASS_API Histogram : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API Histogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (Histogram)( ::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (Histogram)( ::fwRenderQt::IAdaptor) );
 
     SCENE2D_API Histogram() noexcept;
     SCENE2D_API virtual ~Histogram() noexcept;
@@ -52,14 +53,14 @@ protected:
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
 
-    SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;
 
 private:
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint( ::scene2D::data::Event::sptr _event );
+    void updateCurrentPoint( ::fwRenderQt::data::Event& _event );
 
     /// Color used for graphic item's inner and border color
     QPen m_color;
@@ -80,7 +81,6 @@ private:
     // histogram is informed into the object this UID is all about.
     std::string m_histogramPointUID;
 };
-
 
 }   // namespace adaptor
 

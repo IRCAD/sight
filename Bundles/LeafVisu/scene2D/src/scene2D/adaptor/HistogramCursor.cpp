@@ -6,18 +6,18 @@
 
 #include "scene2D/adaptor/HistogramCursor.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::HistogramCursor, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::HistogramCursor, ::fwData::Histogram);
 
 namespace scene2D
 {
@@ -50,7 +50,7 @@ void HistogramCursor::configuring()
 
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
     }
 
     if (!m_configuration->getAttributeValue("opacity").empty())
@@ -60,7 +60,7 @@ void HistogramCursor::configuring()
 
     if (!m_configuration->getAttributeValue("borderColor").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_borderColor, m_configuration->getAttributeValue("borderColor"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_borderColor, m_configuration->getAttributeValue("borderColor"));
     }
 
     if (!m_configuration->getAttributeValue("pointSize").empty())
@@ -101,7 +101,7 @@ void HistogramCursor::doStart()
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 
-    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
+    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -130,14 +130,14 @@ void HistogramCursor::doUpdate()
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
+    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
 
     int histIndex = (int) sceneCoord.getX();
     int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
     if(index >= 0 && index < (int)values.size()) // avoid std out_of_range on MS Windows
     {
-        ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+        ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
         const double viewportWidth  = viewport->getWidth();
 
@@ -176,14 +176,14 @@ void HistogramCursor::doSwap()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::processInteraction( ::scene2D::data::Event::sptr _event )
+void HistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    if( _event->getType() == ::scene2D::data::Event::MouseMove )
+    if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
-        m_coord = _event->getCoord();
+        m_coord = _event.getCoord();
     }
 
     doUpdate();

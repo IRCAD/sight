@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/ViewportInteractor.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-
-#include <fwServices/macros.hpp>
 
 #include <fwData/Composite.hpp>
 
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportInteractor,  ::fwData::Composite );
+#include <fwServices/macros.hpp>
+
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportInteractor,  ::fwData::Composite );
 
 namespace scene2D
 {
@@ -65,31 +65,31 @@ void ViewportInteractor::doSwap()
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::processInteraction( ::scene2D::data::Event::sptr _event )
+void ViewportInteractor::processInteraction( ::fwRenderQt::data::Event& _event )
 {
-    if ( _event->getType() == ::scene2D::data::Event::MouseWheelUp
-         && _event->getModifier() == ::scene2D::data::Event::ShiftModifier )
+    if ( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp
+         && _event.getModifier() == ::fwRenderQt::data::Event::ShiftModifier )
     {
         this->zoom(true);
     }
-    else if ( _event->getType() == ::scene2D::data::Event::MouseWheelDown
-              && _event->getModifier() == ::scene2D::data::Event::ShiftModifier )
+    else if ( _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown
+              && _event.getModifier() == ::fwRenderQt::data::Event::ShiftModifier )
     {
         this->zoom(false);
     }
-    else if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
-              && _event->getButton() == ::scene2D::data::Event::LeftButton
-              && _event->getModifier() == ::scene2D::data::Event::ShiftModifier )
+    else if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress
+              && _event.getButton() == ::fwRenderQt::data::Event::LeftButton
+              && _event.getModifier() == ::fwRenderQt::data::Event::ShiftModifier )
     {
         m_viewportIsTranslated = true;
-        m_lastCoordEvent       = _event->getCoord();
+        m_lastCoordEvent       = _event.getCoord();
     }
     else if ( m_viewportIsTranslated )
     {
-        if ( _event->getType() == ::scene2D::data::Event::MouseMove )
+        if ( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
         {
-            ::scene2D::data::Coord coord                  = _event->getCoord();
-            ::scene2D::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+            ::fwRenderQt::data::Coord coord                  = _event.getCoord();
+            ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
             float dx     = coord.getX() - m_lastCoordEvent.getX();
             float xTrans = dx * sceneViewport->getWidth() / (float) this->getScene2DRender()->getView()->width();
@@ -103,7 +103,7 @@ void ViewportInteractor::processInteraction( ::scene2D::data::Event::sptr _event
 
             m_lastCoordEvent = coord;
         }
-        else if ( _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+        else if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
         {
             m_viewportIsTranslated = false;
         }
@@ -114,7 +114,7 @@ void ViewportInteractor::processInteraction( ::scene2D::data::Event::sptr _event
 
 void ViewportInteractor::zoom( bool zoomIn )
 {
-    ::scene2D::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
     float zoomPercent = 10.f / 100.0f;
     float y           = sceneViewport->getY();

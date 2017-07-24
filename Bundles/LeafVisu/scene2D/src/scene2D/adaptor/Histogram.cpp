@@ -6,18 +6,18 @@
 
 #include "scene2D/adaptor/Histogram.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
 
 namespace scene2D
 {
@@ -57,7 +57,7 @@ void Histogram::configuring()
 
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
     }
 
     if (!m_configuration->getAttributeValue("opacity").empty())
@@ -104,8 +104,7 @@ void Histogram::doUpdate()
 
         // Initialize the path with a start point:
         // The value preceding the current value that we'll use to build the arcs of the path
-        std::pair< double, double > startPoint = this->mapAdaptorToScene(
-            std::pair<double, double>(min, values[0]), m_xAxis, m_yAxis);
+        Point2DType startPoint = this->mapAdaptorToScene(Point2DType(min, values[0]), *m_xAxis, *m_yAxis);
 
         std::pair<double, double> pair;
 
@@ -116,7 +115,7 @@ void Histogram::doUpdate()
         for(int i = 1; i < nbValues; ++i)
         {
             pair = this->mapAdaptorToScene(
-                std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
+                std::pair<double, double>(min + i * binsWidth, values[i]), *m_xAxis, *m_yAxis);
 
             QPainterPath painter( QPointF(startPoint.first, 0) );
             painter.lineTo( startPoint.first, startPoint.second );
@@ -145,7 +144,7 @@ void Histogram::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
+void Histogram::updateCurrentPoint( ::fwRenderQt::data::Event& _event )
 {
     SLM_TRACE_FUNC();
 
@@ -158,7 +157,7 @@ void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event->getCoord() );
+    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     const int histIndex = (int) sceneCoord.getX();
     const int index     = histIndex - histogramMinValue;
@@ -195,34 +194,34 @@ void Histogram::doStop()
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::processInteraction( ::scene2D::data::Event::sptr _event)
+void Histogram::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     SLM_TRACE_FUNC();
 
     bool updatePointedPos = false;
 
     // Vertical scaling
-    if( _event->getType() == ::scene2D::data::Event::MouseWheelUp )
+    if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
 
-        //_event->setAccepted( true );
+        //_event.setAccepted( true );
         m_yAxis->setScale( m_scale );
 
         updatePointedPos = true;
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseWheelDown )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
 
-        //_event->setAccepted( true );
+        //_event.setAccepted( true );
         m_yAxis->setScale( m_scale );
 
         updatePointedPos = true;
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseMove )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
         updatePointedPos = true;
     }

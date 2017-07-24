@@ -6,15 +6,15 @@
 
 #include "scene2D/adaptor/Axis.hpp"
 
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Composite.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -40,7 +40,7 @@ Axis::~Axis() noexcept
 
 void Axis::doStart()
 {
-    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
+    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -78,7 +78,7 @@ void Axis::configuring()
     // 'color'
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
     }
 
     // 'align' attribute configuration
@@ -175,7 +175,7 @@ void Axis::doUpdate()
 
     Scene2DRatio ratio = this->getRatio();
 
-    ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
@@ -202,18 +202,18 @@ void Axis::doUpdate()
     std::pair<double, double> tickPos;
 
     const std::pair<double, double> viewportSize = this->mapAdaptorToScene(
-        std::pair<double, double>(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
+        std::pair<double, double>(viewportWidth, viewportHeight), *m_xAxis, *m_yAxis);
 
     if(m_align == "bottom")
     {
-        tickSize = this->mapAdaptorToScene(std::pair<double, double>(0, m_tickSize), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), *m_xAxis, *m_yAxis);
 
         const double tickPosY = m_viewport->getY();
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(std::pair<double, double>(pos, tickPosY), m_xAxis, m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), *m_xAxis, *m_yAxis);
             m_ticks.at(i)->setLine(
                 tickPos.first, tickPos.second,
                 tickPos.first, tickPos.second - tickSize.second * scaleY);
@@ -223,14 +223,14 @@ void Axis::doUpdate()
     }
     else if(m_align == "top")
     {
-        tickSize = this->mapAdaptorToScene(std::pair<double, double>(0, m_tickSize), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), *m_xAxis, *m_yAxis);
 
         const double tickPosY = m_viewport->getHeight() * 0.9;
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(std::pair<double, double>(pos, tickPosY), m_xAxis, m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(pos, tickPosY), *m_xAxis, *m_yAxis);
 
             m_ticks.at(i)->setLine(
                 tickPos.first, tickPos.second,
@@ -241,14 +241,14 @@ void Axis::doUpdate()
     }
     else if(m_align == "left")
     {
-        tickSize = this->mapAdaptorToScene(std::pair<double, double>(m_tickSize, 0), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), *m_xAxis, *m_yAxis);
 
         const double tickPosX = m_viewport->getX();
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos     = min + i * m_interval;
-            tickPos = this->mapAdaptorToScene(std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), *m_xAxis, *m_yAxis);
             m_ticks.at(i)->setLine(
                 tickPos.first, tickPos.second,
                 tickPos.first + tickSize.first * scaleX, tickPos.second);
@@ -259,7 +259,7 @@ void Axis::doUpdate()
     else if(m_align == "right")
     {
         tickSize = this->mapAdaptorToScene(
-            std::pair<double, double>(m_tickSize, 0), m_xAxis, m_yAxis);
+            std::pair<double, double>(m_tickSize, 0), *m_xAxis, *m_yAxis);
 
         const double tickPosX = m_viewport->getX() + m_viewport->getWidth();
 
@@ -268,7 +268,7 @@ void Axis::doUpdate()
             pos = min + i * m_interval;
 
             tickPos = this->mapAdaptorToScene(
-                std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
+                std::pair<double, double>(tickPosX, pos), *m_xAxis, *m_yAxis);
 
             m_ticks.at(i)->setLine(
                 tickPos.first - tickSize.first * scaleX, tickPos.second,
@@ -281,9 +281,9 @@ void Axis::doUpdate()
 
 //---------------------------------------------------------------------------------------
 
-void Axis::processInteraction( ::scene2D::data::Event::sptr _event)
+void Axis::processInteraction( ::fwRenderQt::data::Event& _event)
 {
-    if( _event->getType() == ::scene2D::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
         doUpdate();
     }

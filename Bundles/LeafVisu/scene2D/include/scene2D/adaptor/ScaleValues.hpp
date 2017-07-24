@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,20 +7,20 @@
 #ifndef __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
 #define __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
-
-class SCENE2D_CLASS_API ScaleValues : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API ScaleValues : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ScaleValues)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (ScaleValues)(::fwRenderQt::IAdaptor) );
 
     /// Constructor, set the x and y spacing to 10
     SCENE2D_API ScaleValues() noexcept;
@@ -56,10 +56,12 @@ protected:
      *
      * \b color : no mandatory (default value : white) : Set the foreground color of the values.
      *
-     * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) :
+     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) :
      * Set the X axis of this adaptor.
      *
-     * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) :
+     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) :
      * Set the Y axis of this adaptor.
      *
      * \b zValue : no mandatory (default value : 0) : Set the zValue of this adaptor
@@ -87,7 +89,7 @@ protected:
     SCENE2D_API void doStop();
 
     /// Manage the given events
-    SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
 private:
 
@@ -143,7 +145,7 @@ private:
     std::string m_viewportID;
 
     /// The viewport that help us to scale the graphic items which represent axis values.
-    ::scene2D::data::Viewport::sptr m_viewport;
+    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     /// The pen.
     QPen m_pen;
@@ -155,8 +157,6 @@ private:
     /// Size of the font used for rendering grid values.
     float m_fontSize;
 };
-
-
 
 } // namespace adaptor
 } // namespace scene2D

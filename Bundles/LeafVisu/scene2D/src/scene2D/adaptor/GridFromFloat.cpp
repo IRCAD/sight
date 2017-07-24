@@ -1,20 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/GridFromFloat.hpp"
-#include "scene2D/data/InitQtPen.hpp"
+
+#include <fwData/Float.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwData/Float.hpp>
 
 #include <QGraphicsItemGroup>
 
-
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::GridFromFloat, ::fwData::Float );
-
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::GridFromFloat, ::fwData::Float );
 
 namespace scene2D
 {
@@ -23,8 +23,9 @@ namespace adaptor
 
 //------------------------------------------------------------------------------
 
-GridFromFloat::GridFromFloat() noexcept : m_xSpacing (10.f),
-                                         m_ySpacing (10.f)
+GridFromFloat::GridFromFloat() noexcept :
+    m_xSpacing(10.f),
+    m_ySpacing(10.f)
 {
 }
 
@@ -52,7 +53,8 @@ void GridFromFloat::configuring()
     m_yMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMin") );
     m_yMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMax") );
 
-    // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between the lines and color of the lines
+    // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between the lines and color
+    // of the lines
     if (!m_configuration->getAttributeValue("xSpacing").empty())
     {
         m_xSpacing = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xSpacing") );
@@ -63,7 +65,7 @@ void GridFromFloat::configuring()
     }
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
     }
 }
 
@@ -97,12 +99,12 @@ void GridFromFloat::draw()
     // Draw the horizontal lines
     for ( float yVal = yStartVal; yVal <= yEndVal; yVal += yStep )
     {
-        QGraphicsLineItem* line = new QGraphicsLineItem(
-            this->mapAdaptorToScene(std::pair< double, double >( xStartVal, yVal), m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double, double >( xStartVal, yVal), m_xAxis, m_yAxis).second,
-            this->mapAdaptorToScene(std::pair< double, double >( xEndVal, yVal), m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double, double >( xEndVal, yVal), m_xAxis, m_yAxis).second
-            );
+        const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( xStartVal, yVal),
+                                                        *m_xAxis, *m_yAxis);
+        const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( xEndVal, yVal),
+                                                        *m_xAxis, *m_yAxis);
+        QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,
+                                                        pt2.first, pt2.second);
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
         m_lines.push_back(line);
@@ -111,12 +113,10 @@ void GridFromFloat::draw()
     // Draw the vertical lines
     for ( float xVal = xStartVal; xVal <= xEndVal; xVal += xStep )
     {
-        QGraphicsLineItem* line = new QGraphicsLineItem(
-            this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal), m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal), m_xAxis, m_yAxis).second,
-            this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal), m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal), m_xAxis, m_yAxis).second
-            );
+        const Point2DType pt1   = this->mapAdaptorToScene(Point2DType( xVal, yStartVal), *m_xAxis, *m_yAxis);
+        const Point2DType pt2   = this->mapAdaptorToScene(Point2DType( xVal, yEndVal), *m_xAxis, *m_yAxis);
+        QGraphicsLineItem* line = new QGraphicsLineItem(pt1.first, pt1.second,
+                                                        pt2.first, pt2.second);
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
         m_lines.push_back(line);
@@ -182,7 +182,6 @@ void GridFromFloat::doStop()
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
-
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::KeyConnectionsType GridFromFloat::getObjSrvConnections() const
@@ -197,6 +196,4 @@ void GridFromFloat::doStop()
 
 } // namespace adaptor
 } // namespace scene2D
-
-
 

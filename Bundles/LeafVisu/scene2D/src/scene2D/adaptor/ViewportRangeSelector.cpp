@@ -6,18 +6,18 @@
 
 #include "scene2D/adaptor/ViewportRangeSelector.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/Viewport.hpp"
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+
+#include <fwRenderQt/data/Viewport.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsRectItem>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector,
-                         ::scene2D::data::Viewport);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector,
+                         ::fwRenderQt::data::Viewport);
 
 namespace scene2D
 {
@@ -48,7 +48,7 @@ void ViewportRangeSelector::configuring()
 {
     SLM_TRACE_FUNC();
 
-    ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     this->IAdaptor::configuring();
 
@@ -92,12 +92,12 @@ void ViewportRangeSelector::configuring()
 
 void ViewportRangeSelector::doStart()
 {
-    ::scene2D::data::Viewport::sptr viewport = this->getObject< ::scene2D::data::Viewport>();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getObject< ::fwRenderQt::data::Viewport>();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
-    std::pair< double, double > pair = this->mapAdaptorToScene(
-        std::pair< double, double >( m_initialX, viewport->getHeight() ), m_xAxis, m_yAxis );
+    Point2DType pair = this->mapAdaptorToScene(
+        Point2DType( m_initialX, viewport->getHeight() ), *m_xAxis, *m_yAxis );
     m_shutter = new QGraphicsRectItem(
         pair.first, 0, m_initialWidth * m_xAxis->getScale(), pair.second );
     m_shutter->setBrush( QBrush(QColor(127, 127, 127, 127)) );
@@ -146,16 +146,16 @@ void ViewportRangeSelector::doSwap()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _event )
+void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     // Event coordinates in scene
-    ::scene2D::data::Coord coord;
-    coord = this->getScene2DRender()->mapToScene( _event->getCoord() );
+    ::fwRenderQt::data::Coord coord;
+    coord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     // Shutter coordinates in scene
-    std::pair< double, double > shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene(
-        std::pair< double, double >( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis);
+    Point2DType shutterCoordPair = this->mapAdaptorToScene(
+        Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
+        *m_xAxis, *m_yAxis);
     double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
@@ -166,7 +166,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
 
     QRectF rect = m_shutter->rect();
 
-    if( _event->getType() == ::scene2D::data::Event::MouseButtonPress )
+    if( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress )
     {
         if( onShutterLeft )
         {
@@ -187,7 +187,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             m_dragStartShutterPos.setY( shutterCoordPair.second );
         }
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
     {
         m_isInteracting      = false;
         m_isLeftInteracting  = false;
@@ -203,7 +203,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             this->getScene2DRender()->getView()->setCursor( Qt::ArrowCursor );
         }
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseMove )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
         // If the mouse is moving onto the shutter, without interactions, the cursor is changed to an other cursor
         // that symbolize the available interactions
@@ -307,7 +307,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
 
             ::fwData::Object::ModifiedSignalType::sptr sig;
-            sig = this->getObject< ::scene2D::data::Viewport>()->signal< ::fwData::Object::ModifiedSignalType >(
+            sig = this->getObject< ::fwRenderQt::data::Viewport>()->signal< ::fwData::Object::ModifiedSignalType >(
                 ::fwData::Object::s_MODIFIED_SIG);
             {
                 ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -323,24 +323,24 @@ void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, dou
 {
     SLM_TRACE_FUNC();
 
-    ::scene2D::data::Viewport::sptr viewport = this->getObject< ::scene2D::data::Viewport>();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getObject< ::fwRenderQt::data::Viewport>();
 
-    Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
+    Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), *m_xAxis, *m_yAxis );
     viewport->setX( fromSceneCoord.first );
     viewport->setY( fromSceneCoord.second );
 
-    Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
+    Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), *m_xAxis, *m_yAxis);
     viewport->setWidth( pair.first );
     viewport->setHeight( this->getScene2DRender()->getViewport()->getHeight() );
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool ViewportRangeSelector::mouseOnShutterMiddle( ::scene2D::data::Coord _coord)
+bool ViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coord)
 {
     Point2DType shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(),
-                                                             m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
+                                                *m_xAxis, *m_yAxis );
 
     return ( _coord.getX() > m_shutter->rect().x() + m_clickCatchRange )
            && ( _coord.getX() < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange );
@@ -348,12 +348,10 @@ bool ViewportRangeSelector::mouseOnShutterMiddle( ::scene2D::data::Coord _coord)
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool ViewportRangeSelector::mouseOnShutterLeft( ::scene2D::data::Coord _coord)
+bool ViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord)
 {
-    std::pair< double, double > shutterCoordPair;
-    shutterCoordPair =
-        this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(),
-                                                              m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    Point2DType shutterCoordPair = this->mapAdaptorToScene(
+        Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), *m_xAxis, *m_yAxis );
 
     return ( _coord.getX() >= shutterCoordPair.first - m_clickCatchRange )
            && ( _coord.getX() <= shutterCoordPair.first + m_clickCatchRange );
@@ -361,14 +359,13 @@ bool ViewportRangeSelector::mouseOnShutterLeft( ::scene2D::data::Coord _coord)
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool ViewportRangeSelector::mouseOnShutterRight( ::scene2D::data::Coord _coord)
+bool ViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coord)
 {
-    std::pair< double, double > shutterCoordPair;
-    shutterCoordPair =
-        this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(),
-                                                              m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    const Point2DType shutterCoordPair = this->mapAdaptorToScene(
+        Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
+        *m_xAxis, *m_yAxis );
 
-    double shutterRightPos = shutterCoordPair.first + m_shutter->rect().width() * m_xAxis->getScale();
+    const double shutterRightPos = shutterCoordPair.first + m_shutter->rect().width() * m_xAxis->getScale();
 
     return ( _coord.getX() >= shutterRightPos - m_clickCatchRange )
            && ( _coord.getX() <= shutterRightPos + m_clickCatchRange );

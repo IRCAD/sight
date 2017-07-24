@@ -6,16 +6,16 @@
 
 #include "scene2D/adaptor/ScaleValues.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Composite.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -71,11 +71,11 @@ void ScaleValues::configuring()
     const std::string color = m_configuration->getAttributeValue("color");
     if (!color.empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_pen, color, m_opacity);
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, color, m_opacity);
     }
     else
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_pen, "white", m_opacity);
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, "white", m_opacity);
     }
 
     // Font size configuratiion
@@ -198,7 +198,7 @@ void ScaleValues::doStart()
     m_font.setKerning( true );
     m_font.setFixedPitch( true );
 
-    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
+    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
     SLM_ASSERT("Viewport '" + m_viewportID + "' is not found", m_viewport);
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
@@ -292,7 +292,7 @@ void ScaleValues::rescaleValues()
 
             size = this->mapAdaptorToScene(
                 std::pair<double, double>(m_values[i]->boundingRect().width(), valueSize),
-                m_xAxis, m_yAxis);
+                *m_xAxis, *m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
@@ -303,7 +303,7 @@ void ScaleValues::rescaleValues()
             }
 
             coord = this->mapAdaptorToScene(
-                std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
+                std::pair<double, double>(textPosX, val), *m_xAxis, *m_yAxis);
 
             m_values[i]->setTransform( transform );
 
@@ -317,7 +317,7 @@ void ScaleValues::rescaleValues()
         val = viewportHeight * 0.8;
 
         coord = this->mapAdaptorToScene(
-            std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
+            std::pair<double, double>(textPosX, val), *m_xAxis, *m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
@@ -341,7 +341,7 @@ void ScaleValues::rescaleValues()
 
             size = this->mapAdaptorToScene(
                 std::pair<double, double>(valueSize, m_values[i]->boundingRect().height()),
-                m_xAxis, m_yAxis);
+                *m_xAxis, *m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
@@ -351,8 +351,8 @@ void ScaleValues::rescaleValues()
                 suggestResampling = true;
             }
 
-            coord = this->mapAdaptorToScene(std::pair<double, double>(val, textPosY),
-                                            m_xAxis, m_yAxis);
+            coord = this->mapAdaptorToScene(Point2DType(val, textPosY),
+                                            *m_xAxis, *m_yAxis);
 
             m_values[i]->setTransform( transform );
 
@@ -367,12 +367,12 @@ void ScaleValues::rescaleValues()
 
         size = this->mapAdaptorToScene(
             std::pair<double, double>(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
-            m_xAxis, m_yAxis);
+            *m_xAxis, *m_yAxis);
 
         coord = this->mapAdaptorToScene(
             std::pair<double, double>(
                 viewportX + viewportWidth / 2, textPosY),
-            m_xAxis, m_yAxis);
+            *m_xAxis, *m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
@@ -412,9 +412,9 @@ void ScaleValues::showHideScaleValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::processInteraction( ::scene2D::data::Event::sptr _event)
+void ScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
 {
-    if( _event->getType() == ::scene2D::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
         doUpdate();
     }

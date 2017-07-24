@@ -1,18 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Sin.hpp"
-#include "scene2D/data/InitQtPen.hpp"
+
+#include <fwRenderQt/data/InitQtPen.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwData/Composite.hpp>
 
-
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Sin, ::fwData::Composite );
-
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Sin );
 
 namespace scene2D
 {
@@ -75,6 +73,4 @@ void Sin::doStop()
 
 } // namespace adaptor
 } // namespace scene2D
-
-
 

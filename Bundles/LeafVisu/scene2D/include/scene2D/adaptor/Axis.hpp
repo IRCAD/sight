@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,8 @@
 #define __SCENE2D_ADAPTOR_AXIS_HPP__
 
 #include "scene2D/config.hpp"
-#include "scene2D/adaptor/IAdaptor.hpp"
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
@@ -16,12 +17,11 @@ namespace scene2D
 namespace adaptor
 {
 
-
-class SCENE2D_CLASS_API Axis : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API Axis : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Axis)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (Axis)(::fwRenderQt::IAdaptor) );
 
     SCENE2D_API Axis() noexcept;
     SCENE2D_API virtual ~Axis() noexcept;
@@ -35,7 +35,7 @@ protected:
     void configuring();
 
     /// Manage the given events
-    SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
 private:
 
@@ -80,7 +80,7 @@ private:
     std::vector< QGraphicsLineItem* > m_ticks;
 
     /// The viewport that help us to scale the axis.
-    ::scene2D::data::Viewport::sptr m_viewport;
+    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     /// fWID of the viewport
     std::string m_viewportID;

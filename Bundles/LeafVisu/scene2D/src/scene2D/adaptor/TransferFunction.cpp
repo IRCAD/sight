@@ -1,14 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/TransferFunction.hpp"
-
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/data/Viewport.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -23,15 +19,17 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/Image.hpp>
 
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/data/Viewport.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <QColorDialog>
 #include <QGraphicsItemGroup>
 #include <QPoint>
 
-
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
-
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
 
 namespace scene2D
 {
@@ -66,12 +64,12 @@ void TransferFunction::configuring()
     // Set the line and circle pens color if the respective attribute are present in the config
     if (!m_configuration->getAttributeValue("lineColor").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_linePen, m_configuration->getAttributeValue("lineColor"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_linePen, m_configuration->getAttributeValue("lineColor"));
     }
 
     if (!m_configuration->getAttributeValue("circleColor").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_circlePen, m_configuration->getAttributeValue("circleColor"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_circlePen, m_configuration->getAttributeValue("circleColor"));
     }
 
     if (!m_configuration->getAttributeValue("pointSize").empty())
@@ -121,7 +119,7 @@ void TransferFunction::buildCircles()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
@@ -167,7 +165,7 @@ QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransferFunction::
 {
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
     Point2DType valColor(value, color.a );
-    Point2DType coord = this->mapAdaptorToScene(valColor, m_xAxis, m_yAxis);
+    Point2DType coord = this->mapAdaptorToScene(valColor, *m_xAxis, *m_yAxis);
 
     // Build a circle item, set its color, pen and zValue
     QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(
@@ -218,7 +216,7 @@ void TransferFunction::buildLinesAndPolygons()
 
 void TransferFunction::buildBounds()
 {
-    ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     const QGraphicsEllipseItem* beginCircle = m_circles.front();
     const QGraphicsEllipseItem* endCircle   = m_circles.back();
@@ -291,7 +289,7 @@ void TransferFunction::buildLinearLinesAndPolygons()
     SLM_ASSERT("Circles must not be empty", !m_circles.empty());
 
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
-    ::scene2D::data::Viewport::sptr viewport    = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     QVector<QPointF> vect;
     QLinearGradient grad;
@@ -358,8 +356,6 @@ void TransferFunction::buildLinearLinesAndPolygons()
     }
     vect.append(QPointF(xEnd, 0));
     grad.setColorAt(1, lastCircle->brush().color());
-
-
 
     QGraphicsPolygonItem* poly = new QGraphicsPolygonItem( QPolygonF( vect ) );
     // Set gradient, opacity and pen to the polygon
@@ -513,7 +509,7 @@ void TransferFunction::doStart()
     m_circlePen.setCosmetic( true );
     m_circlePen.setWidthF( 0 );
 
-    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
+    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -533,7 +529,8 @@ void TransferFunction::doUpdate()
     this->updateImageInfos(image);
     this->updateTransferFunction(image);
 
-    // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it to the scene
+    // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it
+    // to the scene
     this->buildTFPoints();
     this->buildCircles();
     this->buildLinesAndPolygons();
@@ -590,11 +587,11 @@ void TransferFunction::doStop()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
+void TransferFunction::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     SLM_ASSERT("Sizes of circles vector and tf points map are different", m_TFPoints.size() == m_circles.size());
 
-    QPoint scenePos = QPoint(_event->getCoord().getX(), _event->getCoord().getY());
+    QPoint scenePos = QPoint(_event.getCoord().getX(), _event.getCoord().getY());
 
     QList<QGraphicsItem*> items = this->getScene2DRender()->getView()->items(scenePos);
 
@@ -602,24 +599,24 @@ void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
     ::fwData::TransferFunction::TFDataType::iterator TFPointIt = m_TFPoints.begin();
     for(QGraphicsEllipseItem* circle : m_circles)
     {
-        if ( items.indexOf(circle) >=0)
+        if ( items.indexOf(circle) >= 0)
         {
             // If there is a double click
-            if ( _event->getType() == ::scene2D::data::Event::MouseButtonDoubleClick )
+            if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonDoubleClick )
             {
                 this->doubleClickEvent(circle, TFPointIt->second);
                 return;
             }
             // If left button is pressed
-            else if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
-                      && _event->getButton() == ::scene2D::data::Event::LeftButton )
+            else if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress
+                      && _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
             {
 
                 this->leftButtonEvent(circle, _event);
                 return;
             }
-            else if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
-                      && _event->getButton() == ::scene2D::data::Event::RightButton
+            else if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress
+                      && _event.getButton() == ::fwRenderQt::data::Event::RightButton
                       && m_circles.size() > 2  )
             {
                 this->rightButtonEvent(TFPointIt->first, _event);
@@ -628,14 +625,14 @@ void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
         }
         // If a point is captured, this is the good one, and the mouse move
         if ( m_pointIsCaptured && m_capturedCircle == circle
-             && _event->getType() == ::scene2D::data::Event::MouseMove )
+             && _event.getType() == ::fwRenderQt::data::Event::MouseMove )
         {
             this->mouseMoveEvent(circle, TFPointIt->first, _event);
             return;
         }
         // If a point is captured, this is the good one, and the button is released
         else if ( m_pointIsCaptured && m_capturedCircle == circle
-                  && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+                  && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
         {
             this->mouseButtonReleaseEvent(circle, _event);
             return;
@@ -643,19 +640,18 @@ void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
         ++TFPointIt;
     }
 
-
     // After iteration, due to return instruction in it, the events caught aren't on circles
-    if ( _event->getType() == ::scene2D::data::Event::MouseButtonDoubleClick &&
-         _event->getButton() == ::scene2D::data::Event::LeftButton )
+    if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonDoubleClick &&
+         _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
     {
         // If no other event has been catched, a left click means a point creation
         this->doubleClickEvent(_event);
     }
 
-    if( _event->getType() == ::scene2D::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
-        ::scene2D::data::Size oldSize = _event->getOldSize();
-        ::scene2D::data::Size newSize = _event->getSize();
+        ::fwRenderQt::data::Size oldSize = _event.getOldSize();
+        ::fwRenderQt::data::Size newSize = _event.getSize();
 
         if( oldSize.getWidth() == -1.0f )
         {
@@ -704,7 +700,7 @@ void TransferFunction::doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event)
+void TransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event)
 {
     m_pointIsCaptured = true;
 
@@ -712,21 +708,21 @@ void TransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::scene2D::
     m_capturedCircle = circle;
 
     //Store the circle coordinates in case it's moved
-    m_oldCoord = this->coordViewToCoordItem( _event->getCoord() );
+    m_oldCoord = this->coordViewToCoordItem( _event.getCoord() );
 
     // Set the selected circle pen to yellow to get a visual feedback that the selected circle is selected
     QPen circlePen(Qt::yellow);
     circlePen.setCosmetic(true);
     circle->setPen( circlePen );
 
-    _event->setAccepted(true);
+    _event.setAccepted(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
                                       ::fwData::TransferFunction::TFValueType tfPoint,
-                                      ::scene2D::data::Event::sptr _event)
+                                      ::fwRenderQt::data::Event& _event)
 {
     QGraphicsEllipseItem* lastPoint = m_circles.back();
 
@@ -748,7 +744,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
     }
 
     // Get the actual selected circle coordinates
-    ::scene2D::data::Coord newCoord = this->coordViewToCoordItem( _event->getCoord() );
+    ::fwRenderQt::data::Coord newCoord = this->coordViewToCoordItem( _event.getCoord() );
 
     // Calculate the real coordinates of the previous circle
     double previousXCircleRealPos = (*previousCircle)->rect().x() + (*previousCircle)->pos().x();
@@ -756,8 +752,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType previousValues;
     Point2DType previousXY(previousXCircleRealPos, previousYRealNewPos );
-    previousValues = this->mapSceneToAdaptor(previousXY, m_xAxis, m_yAxis);
-
+    previousValues = this->mapSceneToAdaptor(previousXY, *m_xAxis, *m_yAxis);
 
     // Calculate the real coordinates of the next circle
     double nextXCircleRealPos = (*nextCircle)->rect().x() + (*nextCircle)->pos().x();
@@ -765,8 +760,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType nextValues;
     Point2DType nextXY(nextXCircleRealPos, nextYRealNewPos);
-    nextValues = this->mapSceneToAdaptor(nextXY, m_xAxis, m_yAxis);
-
+    nextValues = this->mapSceneToAdaptor(nextXY, *m_xAxis, *m_yAxis);
 
     // Calculate the real coordinates of the selected circle
     double circleXRealNewPos = circle->rect().x() + circle->pos().x() + newCoord.getX() - m_oldCoord.getX();
@@ -774,16 +768,15 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType realValues;
     Point2DType circleXY( circleXRealNewPos, circleYRealNewPos );
-    realValues = this->mapSceneToAdaptor(circleXY, m_xAxis, m_yAxis);
+    realValues = this->mapSceneToAdaptor(circleXY, *m_xAxis, *m_yAxis);
 
     Point2DType oldCoordPair;
     Point2DType oldCoordXY( m_oldCoord.getX(), m_oldCoord.getY() );
-    oldCoordPair = this->mapSceneToAdaptor(oldCoordXY, m_xAxis, m_yAxis);
+    oldCoordPair = this->mapSceneToAdaptor(oldCoordXY, *m_xAxis, *m_yAxis);
 
     Point2DType newCoordPair;
     Point2DType newCoordXY( newCoord.getX(), newCoord.getY() );
-    newCoordPair = this->mapSceneToAdaptor(newCoordXY, m_xAxis, m_yAxis);
-
+    newCoordPair = this->mapSceneToAdaptor(newCoordXY, *m_xAxis, *m_yAxis);
 
     // Check if the mouse isn't out of bounds vertically and horizontally
     if (   (circle == m_circles.front() || realValues.first > previousValues.first)
@@ -807,7 +800,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
         {
             // new abscissa of the moving TF point
             double x = (newCoordPair.first > oldCoordPair.first) ? (nextValues.first - 1) : (previousValues.first + 1);
-            x = this->mapAdaptorToScene(Point2DType( x, 0 ), m_xAxis, m_yAxis).first;
+            x = this->mapAdaptorToScene(Point2DType( x, 0 ), *m_xAxis, *m_yAxis).first;
 
             QRectF rect        = circle->rect();
             const double width = rect.width();
@@ -826,15 +819,17 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
               && (circle == lastPoint || realValues.first < nextValues.first)
               && ((realValues.second - m_circleHeight/2) < 0 || (realValues.second - m_circleHeight/2) > 1) )   // opacity
         {
-            // If the mouse is vertically out of bounds, the TF point is moved to fit the nearest vertical bound (0 or 1).
+            // If the mouse is vertically out of bounds, the TF point is moved to fit the nearest vertical bound (0 or
+            // 1).
 
             double y = 0;   // new ordinate of the moving TF point
 
             if( newCoordPair.second > oldCoordPair.second )
             {
-                // Mouse's move goes toward (and outside) the top of the scene: the ordinate of the circle must be set to 1,
+                // Mouse's move goes toward (and outside) the top of the scene: the ordinate of the circle must be set
+                // to 1,
                 // which is the highest value for opacity
-                y = this->mapAdaptorToScene(Point2DType( 0, 1 ), m_xAxis, m_yAxis).second;
+                y = this->mapAdaptorToScene(Point2DType( 0, 1 ), *m_xAxis, *m_yAxis).second;
             }
 
             QRectF rect         = circle->rect();
@@ -843,7 +838,8 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
             rect.setHeight( height );
             circle->setRect( rect );
 
-            circle->setPos( circle->pos().x() + (newCoord.getX() - m_oldCoord.getX()), 0);  // position within item's rect
+            circle->setPos( circle->pos().x() + (newCoord.getX() - m_oldCoord.getX()), 0);  // position within item's
+                                                                                            // rect
 
             m_oldCoord.setX(newCoord.getX());
             m_oldCoord.setY( y );
@@ -858,7 +854,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
     Point2DType point(this->pointValue(circle), circle->rect().y() + circle->pos().y() + m_circleHeight / 2 );
     // Create a new tf point with the right value (key) and alpha
-    Point2DType pair = this->mapSceneToAdaptor(point, m_xAxis, m_yAxis);
+    Point2DType pair = this->mapSceneToAdaptor(point, *m_xAxis, *m_yAxis);
 
     m_TFPoints[pair.first] = ::fwData::TransferFunction::TFColor(
         circle->brush().color().redF(),
@@ -872,20 +868,20 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event)
+void TransferFunction::mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event)
 {
     // Reset the circle pen to the selected circle to get a visual feedback that the circle is no more selected
     circle->setPen(m_circlePen);
     m_pointIsCaptured = false;
-    _event->setAccepted(true);
+    _event.setAccepted(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void TransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
-                                        ::scene2D::data::Event::sptr _event)
+                                        ::fwRenderQt::data::Event& _event)
 {
-    _event->setAccepted(true);
+    _event.setAccepted(true);
 
     // Erase the selected tf point
     m_TFPoints.erase(tfPoint);
@@ -896,17 +892,17 @@ void TransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType 
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doubleClickEvent( ::scene2D::data::Event::sptr _event)
+void TransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
 {
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
 
     // Get the x and y position in the scene coordinates
-    double x = this->getScene2DRender()->mapToScene(_event->getCoord()).getX();
-    double y = this->getScene2DRender()->mapToScene(_event->getCoord()).getY();
+    double x = this->getScene2DRender()->mapToScene(_event.getCoord()).getX();
+    double y = this->getScene2DRender()->mapToScene(_event.getCoord()).getY();
 
     // Transform the x and y coordinates with axis scaling and type
     Point2DType _xy(x, y );
-    Point2DType values = this->mapSceneToAdaptor(_xy, m_xAxis, m_yAxis);
+    Point2DType values = this->mapSceneToAdaptor(_xy, *m_xAxis, *m_yAxis);
 
     ::fwData::TransferFunction::TFDataType::iterator nextTFPointIt         = m_TFPoints.begin();
     ::fwData::TransferFunction::TFDataType::reverse_iterator lastTFPointIt = m_TFPoints.rbegin();
@@ -974,9 +970,9 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord TransferFunction::coordViewToCoordItem( const ::scene2D::data::Coord& _coord )
+::fwRenderQt::data::Coord TransferFunction::coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord )
 {
-    ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( _coord );
+    ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( _coord );
     return scenePoint;
 }
 
@@ -993,9 +989,6 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 //------------------------------------------------------------------------------
 
-
 } // namespace adaptor
 } // namespace scene2D
-
-
 

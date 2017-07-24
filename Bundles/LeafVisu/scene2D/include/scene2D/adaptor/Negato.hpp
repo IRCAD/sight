@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,12 @@
 #ifndef __SCENE2D_ADAPTOR_NEGATO_HPP__
 #define __SCENE2D_ADAPTOR_NEGATO_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
-#include "scene2D/data/Coord.hpp"
+#include "scene2D/config.hpp"
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
+#include <fwRenderQt/data/Coord.hpp>
+#include <fwRenderQt/IAdaptor.hpp>
 
 #include <QGraphicsItemGroup>
 #include <QImage>
@@ -22,12 +24,12 @@ namespace adaptor
 {
 
 class SCENE2D_CLASS_API Negato : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                 public ::scene2D::adaptor::IAdaptor
+                                 public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Negato)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (Negato)(::fwRenderQt::IAdaptor) );
 
     SCENE2D_API Negato() noexcept;
     SCENE2D_API virtual ~Negato() noexcept;
@@ -51,8 +53,7 @@ protected:
     SCENE2D_API void doUpdate();
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
-    SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
-
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     /// Called when transfer function points are modified.
     SCENE2D_API virtual void updatingTFPoints();
@@ -83,7 +84,7 @@ private:
 
     QImage* createQImage();
     void updateBufferFromImage( QImage* qimg );
-    void changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D::data::Coord& newCoord );
+    void changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord );
 
     static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
                              double tfWin, const ::fwData::TransferFunction::sptr& tf);
@@ -99,17 +100,14 @@ private:
     bool m_pointIsCaptured;
 
     /// Ref. position when changing image window/level
-    scene2D::data::Coord m_oldCoord;
+    ::fwRenderQt::data::Coord m_oldCoord;
 
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
 };
 
-
-
 } // namespace adaptor
 } // namespace scene2D
-
 
 #endif // __SCENE2D_ADAPTOR_NEGATO_HPP__
 

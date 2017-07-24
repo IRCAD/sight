@@ -12,7 +12,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Square, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Square, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -39,8 +39,6 @@ Square::~Square() noexcept
 
 void Square::configuring()
 {
-    SLM_TRACE_FUNC();
-
     SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
 
     this->IAdaptor::configuring();
@@ -60,8 +58,6 @@ void Square::configuring()
 
 void Square::doStart()
 {
-    SLM_TRACE_FUNC();
-
     m_layer = new QGraphicsItemGroup();
 
     m_rec = new QGraphicsRectItem( m_coord.getX(), m_coord.getY(), m_size, m_size );
@@ -81,7 +77,6 @@ void Square::doStart()
 
 void Square::doUpdate()
 {
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +90,6 @@ void Square::doSwap()
 
 void Square::doStop()
 {
-    SLM_TRACE_FUNC();
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
@@ -119,42 +113,41 @@ void Square::setColor( std::string _color )
 
 //-----------------------------------------------------------------------------
 
-void Square::processInteraction( ::scene2D::data::Event::sptr _event )
+void Square::processInteraction( ::fwRenderQt::data::Event& _event )
 {
-    SLM_TRACE_FUNC();
-    if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress &&
-         _event->getButton() == ::scene2D::data::Event::LeftButton )
+    if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress &&
+         _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
     {
-        if ( this->coordViewIsInItem( _event->getCoord(), m_rec ) )
+        if ( this->coordViewIsInItem( _event.getCoord(), m_rec ) )
         {
             SLM_TRACE("Point is captured");
             m_pointIsCaptured = true;
-            m_oldCoord        = this->coordViewToCoordItem( _event->getCoord(), m_rec );
+            m_oldCoord        = this->coordViewToCoordItem( _event.getCoord(), m_rec );
             m_rec->setBrush( Qt::yellow );
-            _event->setAccepted(true);
+            _event.setAccepted(true);
         }
     }
-    else if ( m_pointIsCaptured && _event->getType() == ::scene2D::data::Event::MouseMove )
+    else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
-        ::scene2D::data::Coord newCoord = this->coordViewToCoordItem( _event->getCoord(), m_rec );
+        ::fwRenderQt::data::Coord newCoord = this->coordViewToCoordItem( _event.getCoord(), m_rec );
         m_rec->moveBy( newCoord.getX() - m_oldCoord.getX(), newCoord.getY() - m_oldCoord.getY() );
         m_oldCoord = newCoord;
-        _event->setAccepted(true);
+        _event.setAccepted(true);
     }
-    else if ( m_pointIsCaptured && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+    else if ( m_pointIsCaptured && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
     {
         m_rec->setBrush( m_color );
         m_pointIsCaptured = false;
-        _event->setAccepted(true);
+        _event.setAccepted(true);
     }
 
 }
 
 //-----------------------------------------------------------------------------
 
-bool Square::coordViewIsInItem( const ::scene2D::data::Coord& coord, QGraphicsItem* item )
+bool Square::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
 {
-    ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
+    ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     QPointF sp( scenePoint.getX(), scenePoint.getY() );
     QPointF ip = item->mapFromScene( sp );
     return item->contains( ip );
@@ -162,12 +155,12 @@ bool Square::coordViewIsInItem( const ::scene2D::data::Coord& coord, QGraphicsIt
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord Square::coordViewToCoordItem( const ::scene2D::data::Coord& coord, QGraphicsItem* item )
+::fwRenderQt::data::Coord Square::coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
 {
-    ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
+    ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     //QPointF sp ( scenePoint.getX(), scenePoint.getY() );
     //QPointF ip = item->mapFromScene( sp );
-    //return ::scene2D::data::Coord( ip.x(), ip.y() );
+    //return ::fwRenderQt::data::Coord( ip.x(), ip.y() );
     return scenePoint;
 }
 //-----------------------------------------------------------------------------

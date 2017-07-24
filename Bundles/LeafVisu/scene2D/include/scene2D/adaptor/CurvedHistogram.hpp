@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,11 @@
 #ifndef __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
 #define __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
 
 #include <fwData/Histogram.hpp>
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
@@ -35,16 +37,16 @@ namespace adaptor
  * - \b histogramPointUID  : the fwId of the histogram point. It is used with HistogramCursor and/or HistogramValue
  *      adaptor to show information at the current histogram index pointed by the mouse.
  * - \b opacity            : the opacity of the histogram (from 0.0 to 1.0)
- * - \b xAxis              : see ::scene2D::adaptor::IAdaptor
- * - \b yAxis              : see ::scene2D::adaptor::IAdaptor
- * - \b zValue             : see ::scene2D::adaptor::IAdaptor
+ * - \b xAxis              : see ::fwRenderQt::IAdaptor
+ * - \b yAxis              : see ::fwRenderQt::IAdaptor
+ * - \b zValue             : see ::fwRenderQt::IAdaptor
  */
-class SCENE2D_CLASS_API CurvedHistogram : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API CurvedHistogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (CurvedHistogram)( ::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (CurvedHistogram)( ::fwRenderQt::IAdaptor) );
 
-    typedef ::scene2D::adaptor::IAdaptor::Point2DType Point;
+    typedef ::fwRenderQt::IAdaptor::Point2DType Point;
     typedef std::vector< Point > Points;
 
     SCENE2D_API CurvedHistogram() noexcept;
@@ -57,7 +59,7 @@ protected:
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
 
-    SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;
@@ -69,23 +71,22 @@ private:
 
     Points getControlPoints(const ::fwData::Histogram::sptr& _histogram ) const;
 
-    Points getBSplinePoints( const Points & _controlPoints ) const;
+    Points getBSplinePoints( const Points& _controlPoints ) const;
 
-    Points getResampledBSplinePoints( const Points & _bSplinePoints ) const;
+    Points getResampledBSplinePoints( const Points& _bSplinePoints ) const;
 
-    void buildBSplineFromPoints( Points & _bSplinePoints );
+    void buildBSplineFromPoints( Points& _bSplinePoints );
 
-    void computePointToPathLengthMapFromBSplinePoints( Points & _bSplinePoints );
+    void computePointToPathLengthMapFromBSplinePoints( Points& _bSplinePoints );
 
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint( const ::scene2D::data::Event::sptr& _event );
+    void updateCurrentPoint(const ::fwRenderQt::data::Event& _event );
 
     /// Build and add a part of histogram's border, according to the given path.
-    void addBorderItem( const QPainterPath & _path );
+    void addBorderItem( const QPainterPath& _path );
 
     /// Build and add a part of the histogram, according to the given path.
-    void addInnerItem( const QPainterPath & _path );
-
+    void addInnerItem( const QPainterPath& _path );
 
     Points linearInterpolation( const Point _p1, const Point _p2 );
 
@@ -93,9 +94,7 @@ private:
 
     Points quadraticInterpolation( const Point _p0, const Point _p1, const Point _p2 );
 
-    Points cubicInterpolation(
-        const Point _p0, const Point _p1, const Point _p2, const Point _p3 );
-
+    Points cubicInterpolation(const Point _p0, const Point _p1, const Point _p2, const Point _p3 );
 
     // Map the absciss of the points to the corresponding length within the path.
     std::map<double, double> m_positionsToPathLength;
@@ -117,7 +116,7 @@ private:
     // build thanks to painters like this one, because it improves significantly the rendering performance.
     // This painter path will be used to provide information about the hsitogram: for instance, it will help
     // to retrieve the coordinates of path's points.
-    QPainterPath * m_painterPath;
+    QPainterPath* m_painterPath;
 
     /// Width of histram's border
     float m_borderWidth;
@@ -135,7 +134,6 @@ private:
     // histogram is informed into the object this UID is all about.
     std::string m_histogramPointUID;
 };
-
 
 }   // namespace adaptor
 

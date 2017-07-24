@@ -6,18 +6,18 @@
 
 #include "scene2D/adaptor/HistogramValue.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::HistogramValue, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::HistogramValue, ::fwData::Histogram);
 
 namespace scene2D
 {
@@ -49,7 +49,7 @@ void HistogramValue::configuring()
 
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
     }
 
     if (!m_configuration->getAttributeValue("fontSize").empty())
@@ -95,7 +95,7 @@ void HistogramValue::doStart()
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 
-    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
+    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -124,14 +124,14 @@ void HistogramValue::doUpdate()
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
+    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
 
     int histIndex = (int) sceneCoord.getX();
     int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
     if(index >= 0 && index < (int)values.size() && m_isInteracting) // avoid std out_of_range on Windows
     {
-        ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+        ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
         const double viewportWidth  = viewport->getWidth();
 
@@ -184,20 +184,20 @@ void HistogramValue::doSwap()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::processInteraction( ::scene2D::data::Event::sptr _event )
+void HistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    if( _event->getType() == ::scene2D::data::Event::MouseMove )
+    if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
-        m_coord = _event->getCoord();
+        m_coord = _event.getCoord();
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseButtonPress )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress )
     {
         m_isInteracting = true;
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
     {
         m_isInteracting = false;
     }

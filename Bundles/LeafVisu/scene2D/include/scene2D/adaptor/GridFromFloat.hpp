@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,23 +7,23 @@
 #ifndef __SCENE2D_ADAPTOR_GRIDFROMFLOAT_HPP__
 #define __SCENE2D_ADAPTOR_GRIDFROMFLOAT_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
-
 /**
  * @brief Create a Grid in the scen2D with float min/max values
  */
-class SCENE2D_CLASS_API GridFromFloat : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API GridFromFloat : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (GridFromFloat)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (GridFromFloat)(::fwRenderQt::IAdaptor) );
 
     enum LineType
     {
@@ -52,7 +52,8 @@ protected:
      * Example of configuration
      * @code{.xml}
        <adaptor id="grid1" class="::scene2D::adaptor::GridFromFloat" objectId="myData">
-        <config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+        <config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray"
+     * xAxis="xAxis" yAxis="yAxis" zValue="1"/>
        </adaptor>
        @endcode
      *
@@ -75,11 +76,14 @@ protected:
      *
      * \b color : no mandatory (default value : black) : Set the color of the lines.
      *
-     * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the x Axis of the grid layer.
+     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) : Set the x Axis of the grid layer.
      *
-     * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the y Axis of the grid layer.
+     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) : Set the y Axis of the grid layer.
      *
-     * \b zValue : no mandatory (default value : 0) : Set the zValue of the grid layer (the higher the zValue, the higher the layer is).
+     * \b zValue : no mandatory (default value : 0) : Set the zValue of the grid layer (the higher the zValue, the
+     * higher the layer is).
      */
     SCENE2D_API void configuring();
 
@@ -97,7 +101,9 @@ protected:
 
 private:
 
-    /// Remove the lines from the scene, clear the lines vector, calculate the x/y start/end values, create the lines, set'em m_pen, push'em back in the m_lines vector, add'em to the layer, set the layer position and zValue and add it to the scene.
+    /// Remove the lines from the scene, clear the lines vector, calculate the x/y start/end values, create the lines,
+    // set'em m_pen, push'em back in the m_lines vector, add'em to the layer, set the layer position and zValue and add
+    // it to the scene.
     void draw();
 
     float m_xMin, m_xMax, m_yMin, m_yMax, m_xSpacing, m_ySpacing;
@@ -111,11 +117,8 @@ private:
     QGraphicsItemGroup* m_layer;
 };
 
-
-
 } // namespace adaptor
 } // namespace scene2D
-
 
 #endif // __SCENE2D_ADAPTOR_GRIDFROMFLOAT_HPP__
 

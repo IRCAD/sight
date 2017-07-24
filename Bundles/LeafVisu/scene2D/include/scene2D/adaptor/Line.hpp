@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,22 +7,23 @@
 #ifndef __SCENE2D_ADAPTOR_LINE_HPP__
 #define __SCENE2D_ADAPTOR_LINE_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
+
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
 /**
  * @brief line adaptor. Draw a line on the scene2D
  */
-class SCENE2D_CLASS_API Line : public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API Line : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Line)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (Line)(::fwRenderQt::IAdaptor) );
 
     enum LineType
     {
@@ -46,7 +47,8 @@ protected:
         <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
        </adaptor>
        @endcode
-     * - \<config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" /\> : Set the config.
+     * - \<config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" /\> : Set the
+     * config.
      *
      * \b x1 : mandatory : Set the line begining coordinate x value.
      *
@@ -58,11 +60,14 @@ protected:
      *
      * \b color : no mandatory (default value : black) : Set the color of the line.
      *
-     * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the x Axis of the line layer.
+     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) : Set the x Axis of the line layer.
      *
-     * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the y Axis of the line layer.
+     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) : Set the y Axis of the line layer.
      *
-     * \b zValue : no mandatory (default value : 0) : Set the zValue of the line layer (the higher the zValue, the higher the layer is).
+     * \b zValue : no mandatory (default value : 0) : Set the zValue of the line layer (the higher the zValue, the
+     * higher the layer is).
      */
     SCENE2D_API void configuring();
 
@@ -93,11 +98,8 @@ private:
     QGraphicsItemGroup* m_layer;
 };
 
-
-
 } // namespace adaptor
 } // namespace scene2D
-
 
 #endif // __SCENE2D_ADAPTOR_LINE_HPP__
 

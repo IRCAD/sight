@@ -1,31 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/bspline.h"
-
 #include "scene2D/adaptor/CurvedHistogram.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-
-#include <fwServices/macros.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Histogram.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/Point.hpp>
+
+#include <fwRenderQt/bspline.hpp>
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::CurvedHistogram, ::fwData::Histogram);
-
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::CurvedHistogram, ::fwData::Histogram);
 
 #define PI 3.14159265
-
 
 namespace scene2D
 {
@@ -38,7 +35,9 @@ const float CurvedHistogram::NB_POINTS_BEZIER = 100.0f;
 
 //-----------------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::CurvedHistogram() noexcept : m_borderWidth(1.75f), m_scale(1.0)
+CurvedHistogram::CurvedHistogram() noexcept :
+    m_borderWidth(1.75f),
+    m_scale(1.0)
 {
     m_layer       = NULL;
     m_painterPath = NULL;
@@ -66,13 +65,13 @@ void CurvedHistogram::configuring()
 
     if (!m_configuration->getAttributeValue("borderColor").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(
+        ::fwRenderQt::data::InitQtPen::setPenColor(
             m_borderColor, m_configuration->getAttributeValue("borderColor"), m_opacity );
     }
 
     if (!m_configuration->getAttributeValue("innerColor").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(
+        ::fwRenderQt::data::InitQtPen::setPenColor(
             m_innerColor, m_configuration->getAttributeValue("innerColor"), m_opacity );
     }
 
@@ -132,7 +131,7 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histog
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points & _points ) const
+CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points& _points ) const
 {
     Points bSplinePoints;
     point_list list;        // see bspline.h
@@ -159,7 +158,6 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points & _point
             (float) _points.back().first,
             (float) _points.back().second / 2 ) );
 
-
     // Commpute the points of the B-Spline with external code from AHO (to be integrated here later).
     cat_curve curve( list );
     curve.m_precision = static_cast<int>(_points.size() * 5);
@@ -175,7 +173,7 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points & _point
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points & _bSplinePoints ) const
+CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points& _bSplinePoints ) const
 {
     Points points;
     Point point = _bSplinePoints.front();
@@ -211,7 +209,7 @@ CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points 
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points & _bSplinePoints )
+void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points& _bSplinePoints )
 {
     Points::iterator it = _bSplinePoints.begin();
 
@@ -219,7 +217,7 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points & _bS
     {
         Point p;
 
-        p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
+        p = this->mapAdaptorToScene( *it, *m_xAxis, *m_yAxis );
         QPointF prevPt = QPointF(p.first,  p.second);
         m_painterPath->lineTo( p.first, p.second );
         qreal len = m_painterPath->length();
@@ -227,7 +225,7 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points & _bS
 
         for(; it != _bSplinePoints.end(); ++it)
         {
-            p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
+            p = this->mapAdaptorToScene( *it, *m_xAxis, *m_yAxis );
 
             m_painterPath->lineTo( p.first, p.second );
 
@@ -283,20 +281,20 @@ void CurvedHistogram::doUpdate()
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::buildBSplineFromPoints(Points & _bSplinePoints )
+void CurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
 {
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
 
     const bool useBorderColor = (m_borderColor.color() != Qt::transparent);
     const bool useInnerColor  = (m_innerColor.color() != Qt::transparent);
 
-    Point currentPoint = this->mapAdaptorToScene( Point(
-                                                      histogram->getMinValue(), _bSplinePoints[0].second), m_xAxis,
-                                                  m_yAxis );
+    Point currentPoint = this->mapAdaptorToScene( Point(histogram->getMinValue(), _bSplinePoints[0].second),
+                                                  *m_xAxis, *m_yAxis );
     Point previousPoint = currentPoint;
     Points::iterator it;
 
-    const QPointF startPoint( currentPoint.first, currentPoint.second / 10 );   // divide by 10 to cut meaningless values
+    const QPointF startPoint( currentPoint.first, currentPoint.second / 10 );   // divide by 10 to cut meaningless
+                                                                                // values
     QPainterPath path( QPointF(startPoint.x(), 0.0) );
     path.lineTo( startPoint );
 
@@ -309,7 +307,7 @@ void CurvedHistogram::buildBSplineFromPoints(Points & _bSplinePoints )
     // Build the path with the B-Spline points
     for(it = _bSplinePoints.begin() + 1; it != _bSplinePoints.end(); ++it)
     {
-        currentPoint = this->mapAdaptorToScene(*it, m_xAxis, m_yAxis );
+        currentPoint = this->mapAdaptorToScene(*it, *m_xAxis, *m_yAxis );
 
         path.lineTo( currentPoint.first, currentPoint.second );
     }
@@ -332,7 +330,7 @@ void CurvedHistogram::buildBSplineFromPoints(Points & _bSplinePoints )
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::addInnerItem( const QPainterPath & _path )
+void CurvedHistogram::addInnerItem( const QPainterPath& _path )
 {
     QGraphicsPathItem* item = new QGraphicsPathItem( _path );
     item->setPen( Qt::NoPen );
@@ -346,7 +344,7 @@ void CurvedHistogram::addInnerItem( const QPainterPath & _path )
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::addBorderItem( const QPainterPath & _path )
+void CurvedHistogram::addBorderItem( const QPainterPath& _path )
 {
     QGraphicsPathItem* item = new QGraphicsPathItem( _path );
     item->setPen( m_borderColor );
@@ -446,7 +444,7 @@ CurvedHistogram::Points CurvedHistogram::cubicInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::updateCurrentPoint(const ::scene2D::data::Event::sptr& _event )
+void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event )
 {
     SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
                !m_histogramPointUID.empty());
@@ -457,7 +455,7 @@ void CurvedHistogram::updateCurrentPoint(const ::scene2D::data::Event::sptr& _ev
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event->getCoord() );
+    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     const int histIndex = (int) sceneCoord.getX();
     const int index     = histIndex - histogramMinValue;
@@ -525,28 +523,26 @@ void CurvedHistogram::doStop()
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::processInteraction( ::scene2D::data::Event::sptr _event)
+void CurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 {
-    SLM_TRACE_FUNC();
-
     bool updatePointedPos = false;
 
     // Vertical scaling
-    if( _event->getType() == ::scene2D::data::Event::MouseWheelUp )
+    if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
 
         updatePointedPos = true;
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseWheelDown )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
         m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
 
         updatePointedPos = true;
     }
-    else if( _event->getType() == ::scene2D::data::Event::MouseMove )
+    else if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
         updatePointedPos = true;
     }
@@ -556,7 +552,6 @@ void CurvedHistogram::processInteraction( ::scene2D::data::Event::sptr _event)
         updateCurrentPoint( _event );
     }
 }
-
 
 }   // namespace adaptor
 

@@ -6,16 +6,16 @@
 
 #include "scene2D/adaptor/Grid2D.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-
 #include <fwData/Composite.hpp>
+
+#include <fwRenderQt/data/InitQtPen.hpp>
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Grid2D, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Grid2D, ::fwData::Composite );
 
 namespace scene2D
 {
@@ -66,7 +66,7 @@ void Grid2D::configuring()
 
     if (!m_configuration->getAttributeValue("color").empty())
     {
-        ::scene2D::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"), m_opacity);
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"), m_opacity);
     }
 }
 
@@ -91,13 +91,13 @@ void Grid2D::draw()
     const float yEndVal   = getYEndVal();      // Allows to start drawing the grid from 0 with the correct step
 
     // Holds the current computed coordinates:
-    std::pair< double, double > coord1, coord2;
+    Point2DType coord1, coord2;
 
     // Draw the horizontal lines
     for ( float yVal = yStartVal; yVal <= yEndVal; yVal += m_ySpacing )
     {
-        coord1 = this->mapAdaptorToScene( std::pair< double, double >( xStartVal, yVal), m_xAxis, m_yAxis );
-        coord2 = this->mapAdaptorToScene( std::pair< double, double >( xEndVal, yVal), m_xAxis, m_yAxis );
+        coord1 = this->mapAdaptorToScene(Point2DType( xStartVal, yVal), *m_xAxis, *m_yAxis );
+        coord2 = this->mapAdaptorToScene(Point2DType( xEndVal, yVal), *m_xAxis, *m_yAxis );
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 
@@ -109,8 +109,8 @@ void Grid2D::draw()
     // Draw the vertical lines
     for ( float xVal = xStartVal; xVal <= xEndVal; xVal += m_xSpacing )
     {
-        coord1 = this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal), m_xAxis, m_yAxis);
-        coord2 = this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal), m_xAxis, m_yAxis);
+        coord1 = this->mapAdaptorToScene(Point2DType( xVal, yStartVal), *m_xAxis, *m_yAxis);
+        coord2 = this->mapAdaptorToScene(Point2DType( xVal, yEndVal), *m_xAxis, *m_yAxis);
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 
@@ -187,9 +187,9 @@ void Grid2D::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::processInteraction( ::scene2D::data::Event::sptr _event)
+void Grid2D::processInteraction( ::fwRenderQt::data::Event& _event)
 {
-    if( _event->getType() == ::scene2D::data::Event::Resize)
+    if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
         doUpdate();
     }

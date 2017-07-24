@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,25 +7,25 @@
 #ifndef __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
 #define __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
 
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
 
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
+#include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
 class SCENE2D_CLASS_API TransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                           public ::scene2D::adaptor::IAdaptor
+                                           public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TransferFunction)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (TransferFunction)(::fwRenderQt::IAdaptor) );
 
     /// Enumeration of authorized line types
     enum LineType
@@ -59,17 +59,22 @@ protected:
         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/>
        </adaptor>
        @endcode
-     * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the config.
+     * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the
+     * config.
      *
      * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.
      *
-     * \b circleColor : no mandatory (default value : black) : Set the outline color of the circles representing the TF points.
+     * \b circleColor : no mandatory (default value : black) : Set the outline color of the circles representing the TF
+     * points.
      *
-     * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the x Axis of the TF layer.
+     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) : Set the x Axis of the TF layer.
      *
-     * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the y Axis of the TF layer.
+     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
+     *(LINEAR)) : Set the y Axis of the TF layer.
      *
-     * \b zValue : no mandatory (default value : 0) : Set the zValue of the TF layer (the higher the zValue, the higher the layer is).
+     * \b zValue : no mandatory (default value : 0) : Set the zValue of the TF layer (the higher the zValue, the higher
+     * the layer is).
      */
     SCENE2D_API void configuring();
 
@@ -90,8 +95,7 @@ protected:
 
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.
-    SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
-
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     /// Called when transfer function points are modified.
     SCENE2D_API virtual void updatingTFPoints();
@@ -102,7 +106,7 @@ protected:
 private:
 
     /// Convert the view coordinates to item coordinates.
-    SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord& _coord );
+    SCENE2D_API ::fwRenderQt::data::Coord coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord );
 
     /// Get the selected tf of the image, calculate the window and the level, clear the m_TFPoints map and fill
     ///  it with the tf points of the selected tf.
@@ -142,25 +146,25 @@ private:
     SCENE2D_API void doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor);
 
     /// Store the circle selected and its coordinates, and set its outline yellow
-    SCENE2D_API void leftButtonEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
+    SCENE2D_API void leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
 
     /// Check if the mouse is out of bounds, as the case, move the circle on x and y, x or y, destroy the related
     /// point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
     /// to 0-1 and update the image tf.
     SCENE2D_API void mouseMoveEvent(QGraphicsEllipseItem* circle,
                                     ::fwData::TransferFunction::TFValueType tfPoint,
-                                    ::scene2D::data::Event::sptr _event);
+                                    ::fwRenderQt::data::Event& _event);
 
     /// Reset the circle pen to the selected circle
-    SCENE2D_API void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
+    SCENE2D_API void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
 
     /// Erase the selected point
     SCENE2D_API void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
-                                      ::scene2D::data::Event::sptr _event);
+                                      ::fwRenderQt::data::Event& _event);
 
     /// Create a new point without modifying the TF (placed between the 2 encompassing points with linear
     /// interpolation)
-    SCENE2D_API void doubleClickEvent( ::scene2D::data::Event::sptr _event);
+    SCENE2D_API void doubleClickEvent( ::fwRenderQt::data::Event& _event);
 
     /// Return the x coordinate of the center of the circle in a 0-1 scale (for storage in m_TFPoints).
     SCENE2D_API double pointValue(QGraphicsEllipseItem* circle);
@@ -185,7 +189,7 @@ private:
     ::fwData::TransferFunction::TFDataType m_TFPoints;
 
     /// Coordinates saved to calculate circles moves.
-    ::scene2D::data::Coord m_oldCoord;
+    ::fwRenderQt::data::Coord m_oldCoord;
 
     /// Is a point captured by a mouse click?
     bool m_pointIsCaptured;
@@ -199,16 +203,13 @@ private:
     /// Connection to the viewport
     ::fwCom::Connection m_connection;
 
-    ::scene2D::data::Viewport::sptr m_viewport;
+    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     float m_pointSize;
 };
 
-
-
 } // namespace adaptor
 } // namespace scene2D
-
 
 #endif // __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
 

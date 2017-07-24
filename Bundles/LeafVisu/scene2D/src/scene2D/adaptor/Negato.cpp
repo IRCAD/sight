@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Negato.hpp"
-
-#include "scene2D/Scene2DGraphicsView.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -26,6 +24,8 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/Image.hpp>
 
+#include <fwRenderQt/Scene2DGraphicsView.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <QBitmap>
@@ -33,8 +33,7 @@
 #include <QPixmap>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
-
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
 
 namespace scene2D
 {
@@ -55,7 +54,7 @@ Negato::Negato() noexcept :
     m_pixmapItem(nullptr),
     m_layer(nullptr),
     m_orientation(MedicalImageAdaptor::Z_AXIS),
-    m_pointIsCaptured (false),
+    m_pointIsCaptured(false),
     m_changeSliceTypeAllowed(true)
 {
     this->installTFSlots(this);
@@ -433,20 +432,20 @@ void Negato::doStop()
 
 //-----------------------------------------------------------------------------
 
-void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
+void Negato::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     SLM_TRACE_FUNC();
 
     // if a key is pressed
-    if(_event->getType() == ::scene2D::data::Event::KeyRelease)
+    if(_event.getType() == ::fwRenderQt::data::Event::KeyRelease)
     {
         // if pressed key is 'R'
-        if ( _event->getKey() == Qt::Key_R )
+        if ( _event.getKey() == Qt::Key_R )
         {
             // get image origin
             QRectF recImage = m_pixmapItem->sceneBoundingRect();
 
-            ::scene2D::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+            ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
             float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
             float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());
@@ -485,53 +484,53 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
         }
 
         //image pixel
-        if ( _event->getKey() == Qt::Key_F )
+        if ( _event.getKey() == Qt::Key_F )
         {
             m_pixmapItem->setTransformationMode(Qt::FastTransformation);
             this->doUpdate();
         }
 
         //image smooth
-        if ( _event->getKey() == Qt::Key_S )
+        if ( _event.getKey() == Qt::Key_S )
         {
             m_pixmapItem->setTransformationMode(Qt::SmoothTransformation);
             this->doUpdate();
         }
     }
 
-    ::scene2D::data::Coord coord = this->getScene2DRender()->mapToScene( _event->getCoord() );
+    ::fwRenderQt::data::Coord coord = this->getScene2DRender()->mapToScene( _event.getCoord() );
     coord.setX( coord.getX() / m_layer->scale());
     coord.setY( coord.getY() / m_layer->scale());
 
-    if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
-         && _event->getButton() == ::scene2D::data::Event::RightButton
-         && _event->getModifier() == ::scene2D::data::Event::NoModifier )
+    if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress
+         && _event.getButton() == ::fwRenderQt::data::Event::RightButton
+         && _event.getModifier() == ::fwRenderQt::data::Event::NoModifier )
     {
         m_pointIsCaptured = true;
-        m_oldCoord        = _event->getCoord();
-        _event->setAccepted(true);
+        m_oldCoord        = _event.getCoord();
+        _event.setAccepted(true);
     }
     else if ( m_pointIsCaptured )
     {
-        if( _event->getType() == ::scene2D::data::Event::MouseMove )
+        if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
         {
-            ::scene2D::data::Coord newCoord = _event->getCoord();
+            ::fwRenderQt::data::Coord newCoord = _event.getCoord();
             this->changeImageMinMaxFromCoord( m_oldCoord, newCoord );
             m_oldCoord = newCoord;
-            _event->setAccepted(true);
+            _event.setAccepted(true);
         }
-        else if( _event->getButton() == ::scene2D::data::Event::RightButton
-                 && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+        else if( _event.getButton() == ::fwRenderQt::data::Event::RightButton
+                 && _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
         {
             m_pointIsCaptured = false;
-            _event->setAccepted(true);
+            _event.setAccepted(true);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D::data::Coord& newCoord )
+void Negato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
 {
     ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
@@ -544,7 +543,6 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D
 
     double imgWindow = max - min;
     double imgLevel  = min + imgWindow/2.0;
-
 
     double newImgLevel  = imgLevel + level;
     double newImgWindow = imgWindow + imgWindow * window/100.0;
@@ -580,6 +578,4 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D
 
 } // namespace adaptor
 } // namespace scene2D
-
-
 

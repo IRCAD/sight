@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,27 +7,27 @@
 #ifndef __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
 #define __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
 
-#include "scene2D/data/Viewport.hpp"
-#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/config.hpp"
+
+#include <fwRenderQt/data/Viewport.hpp>
+#include <fwRenderQt/IAdaptor.hpp>
 
 #include <QGraphicsTextItem>
-
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-
 /**
  * @brief IAdaptor implementation to show the histogram values clicked by mouse.
  *
  *
- * \b xAxis     : see ::scene2D::adaptor::IAdaptor
+ * \b xAxis     : see ::fwRenderQt::IAdaptor
  *
- * \b yAxis     : see ::scene2D::adaptor::IAdaptor
+ * \b yAxis     : see ::fwRenderQt::IAdaptor
  *
- * \b zValue    : see ::scene2D::adaptor::IAdaptor
+ * \b zValue    : see ::fwRenderQt::IAdaptor
  *
  * \b color     : inner color
  *
@@ -38,11 +38,11 @@ namespace adaptor
  * \b viewportUID : a viewport that help us to manage the scaling of the graphic object
  *
  */
-class HistogramValue : public ::scene2D::adaptor::IAdaptor
+class HistogramValue : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (HistogramValue)(::scene2D::adaptor::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (HistogramValue)(::fwRenderQt::IAdaptor) );
     SCENE2D_API HistogramValue() noexcept;
     SCENE2D_API virtual ~HistogramValue() noexcept;
 
@@ -53,7 +53,7 @@ protected:
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
 
-    SCENE2D_API void processInteraction( ::scene2D::data::Event::sptr _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     /// Color used for graphic item's inner color
     QPen m_color;
@@ -68,7 +68,7 @@ protected:
     QFont m_font;
 
     /// Coordinates of the current event.
-    ::scene2D::data::Coord m_coord;
+    ::fwRenderQt::data::Coord m_coord;
 
     /// Size of the font used for rendering the current value of this tracker.
     float m_fontSize;
@@ -81,7 +81,7 @@ protected:
 
 private:
 
-    ::scene2D::data::Viewport::sptr m_viewport;
+    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     /// fWID of the viewport
     std::string m_viewportID;
@@ -89,7 +89,6 @@ private:
     /// Connection to the viewport
     ::fwCom::Connection m_connection;
 };
-
 
 }   // namespace adaptor
 }   // namespace scene2D
