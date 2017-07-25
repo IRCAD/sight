@@ -6,10 +6,10 @@
 
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
-#include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 #include "visuVTKAdaptor/SlicesCursor.hpp"
+#include "visuVTKAdaptor/SNegatoOneSlice.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -132,13 +132,13 @@ void SNegatoMPR::updating()
         {
             if(this->getSliceMode() == ONE_SLICE)
             {
-                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", m_orientation);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", m_orientation);
             }
             else if(this->getSliceMode() == THREE_SLICES)
             {
-                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", X_AXIS);
-                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Y_AXIS);
-                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Z_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", X_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", Y_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::SNegatoOneSlice", Z_AXIS);
             }
 
             ::fwRenderVTK::IAdaptor::sptr sliceCursor;
@@ -386,8 +386,8 @@ void SNegatoMPR::set3dMode( bool enabled )
         adaptorSrv->setOrientation((Orientation) axis);
     }
 
-    ::visuVTKAdaptor::NegatoOneSlice::sptr negatoAdaptor;
-    negatoAdaptor = ::visuVTKAdaptor::NegatoOneSlice::dynamicCast(service);
+    ::visuVTKAdaptor::SNegatoOneSlice::sptr negatoAdaptor;
+    negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
 
     ::visuVTKAdaptor::NegatoWindowingInteractor::sptr negatoWindowingAdaptor;
     negatoWindowingAdaptor = ::visuVTKAdaptor::NegatoWindowingInteractor::dynamicCast(service);
