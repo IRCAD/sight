@@ -6,8 +6,8 @@
 
 #include "visuVTKAdaptor/SNegatoOneSlice.hpp"
 
-#include "visuVTKAdaptor/ImageSlice.hpp"
 #include "visuVTKAdaptor/SImage.hpp"
+#include "visuVTKAdaptor/SImageSlice.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -104,7 +104,7 @@ void SNegatoOneSlice::cleanImageSource()
 
     if (m_imageSliceAdaptor.expired())
     {
-        OSLM_TRACE(this->getID() << ": Create ImageSlice Adaptor Service");
+        OSLM_TRACE(this->getID() << ": Create SImageSlice Adaptor Service");
         ::fwData::Image::sptr image;
         ::fwData::Composite::sptr sceneComposite;
 
@@ -113,7 +113,7 @@ void SNegatoOneSlice::cleanImageSource()
 
         // create the srv configuration for objects auto-connection
         IService::Config srvConfig;
-        adaptor = this->createSubAdaptor("::visuVTKAdaptor::ImageSlice", srvConfig);
+        adaptor = this->createSubAdaptor("::visuVTKAdaptor::SImageSlice", srvConfig);
         this->registerServiceInOut(image, s_IMAGE_INOUT, adaptor, true, srvConfig);
 
         adaptor->setConfiguration(srvConfig);
@@ -123,10 +123,9 @@ void SNegatoOneSlice::cleanImageSource()
         adaptor->setTransformId( this->getTransformId() );
         adaptor->setAutoRender( this->getAutoRender() );
 
-        ::visuVTKAdaptor::ImageSlice::sptr imgSliceAdaptor;
-        imgSliceAdaptor = ::visuVTKAdaptor::ImageSlice::dynamicCast(adaptor);
+        ::visuVTKAdaptor::SImageSlice::sptr imgSliceAdaptor;
+        imgSliceAdaptor = ::visuVTKAdaptor::SImageSlice::dynamicCast(adaptor);
         imgSliceAdaptor->setVtkImageSource(this->getImageSource());
-        imgSliceAdaptor->setCtrlImage(image);
         imgSliceAdaptor->setInterpolation(m_interpolation);
         imgSliceAdaptor->setActorOpacity(m_actorOpacity);
         imgSliceAdaptor->setOrientation((Orientation) m_orientation);

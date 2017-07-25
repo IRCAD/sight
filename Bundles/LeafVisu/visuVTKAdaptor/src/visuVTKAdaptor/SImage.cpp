@@ -110,6 +110,7 @@ void SImage::updating()
     {
         this->updateTransferFunction(image);
     }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

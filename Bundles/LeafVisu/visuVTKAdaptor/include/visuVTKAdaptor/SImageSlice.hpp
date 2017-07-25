@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_IMAGESLICE_HPP__
-#define __VISUVTKADAPTOR_IMAGESLICE_HPP__
+#ifndef __VISUVTKADAPTOR_SIMAGESLICE_HPP__
+#define __VISUVTKADAPTOR_SIMAGESLICE_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -35,57 +35,48 @@ namespace visuVTKAdaptor
  *
  *
  * @section Slots Slots
- * - \b checkCtrlImage() : Check if ctrl image changed and update scene
  * - \b updateSliceIndex() : update image slice index
  * - \b updateSliceType() : update image slice type
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <adaptor id="imageSlice" class="::visuVTKAdaptor::ImageSlice" objectId="self">
+   <service type="::visuVTKAdaptor::SNegatoOneSlice" autoConnect="yes">
+       <inout key="image" uid="..." />
        <config renderer="default" picker="negatodefault" sliceIndex="axial"
                transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"
                actorOpacity="1.0" />
-   </adaptor>
+   </service>
    @endcode
  *
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image to display.
+ *
  * @subsection Configuration Configuration
- *
- * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
- * - \b picker (mandatory): identifier of the picker
- * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
- * - \b transform (optional): the vtkTransform to associate to the adaptor
- * - \b ctrlimage (mandatory): image to show
- * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
- * - \b vtkimagesource (optional): source image, used for blend
- * - \b actorOpacity (optional, default=1.0): actor opacity (float)
- *
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
+ *         renderer.
+ *    - \b picker (mandatory): identifier of the picker
+ *    - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+ *    - \b transform (optional): the vtkTransform to associate to the adaptor
+ *    - \b ctrlimage (mandatory): image to show
+ *    - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+ *    - \b vtkimagesource (optional): source image, used for blend
+ *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
  */
 
-class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                            public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImageSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                             public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ImageSlice)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSlice)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API ImageSlice() noexcept;
+    VISUVTKADAPTOR_API SImageSlice() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ImageSlice() noexcept;
+    VISUVTKADAPTOR_API virtual ~SImageSlice() noexcept;
 
-    //------------------------------------------------------------------------------
-
-    void setCtrlImageId(std::string id)
-    {
-        m_ctrlImageId = id;
-    }
-    //------------------------------------------------------------------------------
-
-    void setCtrlImage(::fwData::Image::sptr image)
-    {
-        m_ctrlImage = image;
-    }
     //------------------------------------------------------------------------------
 
     void setVtkImageSourceId(std::string id)
@@ -112,32 +103,23 @@ public:
         m_actorOpacity = actorOpacity;
     }
 
-    //------------------------------------------------------------------------------
+protected:
 
-    void setUseImageTF(bool use)
-    {
-        m_useImageTF = use;
-    }
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     * Connect ::fwData::Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     * Connect ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-protected:
-
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-
-    VISUVTKADAPTOR_API void doUpdate();
-
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     virtual void buildPipeline();
     virtual void buildOutline();
@@ -147,14 +129,10 @@ protected:
     ::fwData::Image::sptr getCtrlImage();
 
     void updateOutline();
-    void updateImage( ::fwData::Image::sptr ImageSlice  );
-    void updateImageSliceIndex( ::fwData::Image::sptr ImageSlice );
-
-    std::string m_ctrlImageId;
-    ::fwData::Image::wptr m_ctrlImage;
+    void updateImage( ::fwData::Image::sptr SImageSlice  );
+    void updateSImageSliceIndex( ::fwData::Image::sptr SImageSlice );
 
     bool m_interpolation;
-    bool m_useImageTF;
     double m_actorOpacity;
 
     std::string m_imageSourceId;
@@ -166,16 +144,12 @@ protected:
     vtkPolyDataMapper* m_planeOutlineMapper;
     vtkActor* m_planeOutlineActor;
 
-    ::fwCom::helper::SigSlotConnection m_connections;
-
 private:
 
     /**
      * @name Slots
      * @{
      */
-    /// Slot: Check if ctrl image changed and update scene
-    void checkCtrlImage();
 
     /// Slot: update image slice index
     void updateSliceIndex(int axial, int frontal, int sagittal);
@@ -190,4 +164,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_IMAGESLICE_HPP__
+#endif // __VISUVTKADAPTOR_SIMAGESLICE_HPP__
