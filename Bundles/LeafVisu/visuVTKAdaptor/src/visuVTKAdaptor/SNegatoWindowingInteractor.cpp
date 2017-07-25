@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
+#include "visuVTKAdaptor/SNegatoWindowingInteractor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -26,14 +26,18 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoWindowingInteractor,
-                         ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoWindowingInteractor);
 
 #define START_WINDOWING_EVENT vtkCommand::RightButtonPressEvent
 #define STOP_WINDOWING_EVENT  vtkCommand::RightButtonReleaseEvent
 
 namespace visuVTKAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+
+//------------------------------------------------------------------------------
 
 class NegatoWindowingCallback : public vtkCommand
 {
@@ -133,7 +137,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( NegatoWindowingInteractor::sptr adaptor)
+    void setAdaptor( SNegatoWindowingInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
@@ -146,7 +150,7 @@ public:
     }
 
 protected:
-    NegatoWindowingInteractor::sptr m_adaptor;
+    SNegatoWindowingInteractor::sptr m_adaptor;
     vtkAbstractPropPicker* m_picker;
 
     int m_x;
@@ -161,7 +165,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-NegatoWindowingInteractor::NegatoWindowingInteractor() noexcept :
+SNegatoWindowingInteractor::SNegatoWindowingInteractor() noexcept :
     m_vtkObserver(nullptr),
     m_initialWindow(0.),
     m_initialLevel(0.),
@@ -171,30 +175,32 @@ NegatoWindowingInteractor::NegatoWindowingInteractor() noexcept :
 
 //------------------------------------------------------------------------------
 
-NegatoWindowingInteractor::~NegatoWindowingInteractor() noexcept
+SNegatoWindowingInteractor::~SNegatoWindowingInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doConfigure()
+void SNegatoWindowingInteractor::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    this->parseTFConfig( m_configuration );
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doStart()
+void SNegatoWindowingInteractor::starting()
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->initialize();
+
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
     NegatoWindowingCallback* observer = NegatoWindowingCallback::New();
-    observer->setAdaptor( NegatoWindowingInteractor::dynamicCast(this->getSptr()) );
+    observer->setAdaptor( SNegatoWindowingInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
 
     m_vtkObserver = observer;
@@ -203,29 +209,24 @@ void NegatoWindowingInteractor::doStart()
     this->getInteractor()->AddObserver(STOP_WINDOWING_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent, m_vtkObserver, m_priority);
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doUpdate()
+void SNegatoWindowingInteractor::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
     this->updateTransferFunction(image);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::doSwap()
-{
-    SLM_TRACE_FUNC();
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void NegatoWindowingInteractor::doStop()
+void SNegatoWindowingInteractor::stopping()
 {
     this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_WINDOWING_EVENT, m_vtkObserver);
@@ -237,10 +238,12 @@ void NegatoWindowingInteractor::doStop()
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::startWindowing( )
+void SNegatoWindowingInteractor::startWindowing( )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->doUpdate();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
+    this->updating();
 
     m_initialLevel  = this->getLevel();
     m_initialWindow = this->getWindow();
@@ -248,15 +251,16 @@ void NegatoWindowingInteractor::startWindowing( )
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::stopWindowing( )
+void SNegatoWindowingInteractor::stopWindowing( )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
+void SNegatoWindowingInteractor::updateWindowing( double dw, double dl )
 {
-    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double newWindow = m_initialWindow + dw;
@@ -277,9 +281,10 @@ void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::resetWindowing()
+void SNegatoWindowingInteractor::resetWindowing()
 {
-    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double newWindow = image->getWindowWidth();
@@ -300,11 +305,11 @@ void NegatoWindowingInteractor::resetWindowing()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType NegatoWindowingInteractor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SNegatoWindowingInteractor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

@@ -7,9 +7,9 @@
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
-#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 #include "visuVTKAdaptor/SlicesCursor.hpp"
 #include "visuVTKAdaptor/SNegatoOneSlice.hpp"
+#include "visuVTKAdaptor/SNegatoWindowingInteractor.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -143,7 +143,7 @@ void SNegatoMPR::updating()
 
             ::fwRenderVTK::IAdaptor::sptr sliceCursor;
             ::fwRenderVTK::IAdaptor::sptr negatoSlicingInteractor;
-            this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
+            this->addAdaptor("::visuVTKAdaptor::SNegatoWindowingInteractor");
             negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
             sliceCursor             = this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
             this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
@@ -389,8 +389,8 @@ void SNegatoMPR::set3dMode( bool enabled )
     ::visuVTKAdaptor::SNegatoOneSlice::sptr negatoAdaptor;
     negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
 
-    ::visuVTKAdaptor::NegatoWindowingInteractor::sptr negatoWindowingAdaptor;
-    negatoWindowingAdaptor = ::visuVTKAdaptor::NegatoWindowingInteractor::dynamicCast(service);
+    ::visuVTKAdaptor::SNegatoWindowingInteractor::sptr negatoWindowingAdaptor;
+    negatoWindowingAdaptor = ::visuVTKAdaptor::SNegatoWindowingInteractor::dynamicCast(service);
 
     if (negatoAdaptor)
     {
