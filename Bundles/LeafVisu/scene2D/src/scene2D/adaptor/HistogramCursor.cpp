@@ -24,8 +24,11 @@ namespace scene2D
 namespace adaptor
 {
 
+static const ::fwServices::IService::KeyType s_POINT_INPUT     = "point";
+static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+
 HistogramCursor::HistogramCursor() noexcept :
-    m_color("red"),
+    m_color(Qt::red),
     m_borderColor(Qt::gray),
     m_opacity(0.8f),
     m_index(nullptr),
@@ -44,41 +47,29 @@ HistogramCursor::~HistogramCursor() noexcept
 
 void HistogramCursor::configuring()
 {
-    SLM_TRACE_FUNC();
-
     this->IAdaptor::configuring();
 
-    if (!m_configuration->getAttributeValue("color").empty())
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
-    if (!m_configuration->getAttributeValue("opacity").empty())
+    if (config.count("opacity"))
     {
-        m_opacity = std::stof( m_configuration->getAttributeValue("opacity") );
+        m_opacity = config.get<float>("opacity");
     }
 
-    if (!m_configuration->getAttributeValue("borderColor").empty())
+    if (config.count("borderColor"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_borderColor, m_configuration->getAttributeValue("borderColor"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_borderColor, config.get<std::string>("borderColor"));
     }
 
-    if (!m_configuration->getAttributeValue("pointSize").empty())
+    if (config.count("pointSize"))
     {
-        m_pointSize = std::stof( m_configuration->getAttributeValue("pointSize") );
+        m_pointSize = config.get<float>("pointSize");
     }
-
-    SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-               !m_configuration->getAttributeValue("viewportUID").empty());
-
-    if( !m_configuration->getAttributeValue("viewportUID").empty() )
-    {
-        m_viewportID = m_configuration->getAttributeValue("viewportUID");
-    }
-
-    SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue(
-                   "histogramPointUID").empty());
-    m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -101,11 +92,6 @@ void HistogramCursor::doStart()
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 
-    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
-
-    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_UPDATE_SLOT));
-
     // Add the layer containing grid's lines to the scene
     this->getScene2DRender()->getScene()->addItem(m_layer);
 }
@@ -114,7 +100,6 @@ void HistogramCursor::doStart()
 
 void HistogramCursor::doStop()
 {
-    m_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -124,7 +109,7 @@ void HistogramCursor::doUpdate()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
@@ -158,11 +143,10 @@ void HistogramCursor::doUpdate()
         diameterH *= ratio.first;
         diameterV *= ratio.second;
 
-        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
-        SLM_ASSERT("[inout] Point '" + m_histogramPointUID + "' is not found", point);
+        ::fwData::Point::csptr point = this->getInput< ::fwData::Point>(s_POINT_INPUT);
 
-        double x = point->getRefCoord()[0] - diameterH / 2;
-        double y = point->getRefCoord()[1] - diameterV / 2;
+        const double x = point->getCRefCoord()[0] - diameterH / 2;
+        const double y = point->getCRefCoord()[1] - diameterV / 2;
 
         m_index->setRect( x, y, diameterH, diameterV );
     }
@@ -187,6 +171,16 @@ void HistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
     }
 
     doUpdate();
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap HistogramCursor::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_POINT_INPUT, ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //---------------------------------------------------------------------------------------------------------------

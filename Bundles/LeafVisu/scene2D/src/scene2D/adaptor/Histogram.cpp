@@ -24,17 +24,19 @@ namespace scene2D
 
 namespace adaptor
 {
+static const ::fwServices::IService::KeyType s_POINT_INOUT     = "point";
+static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 const float Histogram::SCALE = 1.1f; // vertical scaling factor applied at each mouse scroll
 
 //---------------------------------------------------------------------------------------------------------
 
 Histogram::Histogram() noexcept :
-    m_color("green"),
     m_opacity( 0.80f ),
-    m_scale(1.0)
+    m_scale(1.0f),
+    m_layer(nullptr),
+    m_color(Qt::green)
 {
-    m_layer = NULL;
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -47,36 +49,27 @@ Histogram::~Histogram() noexcept
 
 void Histogram::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag is missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis' and 'zValue'
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     m_scale = m_yAxis->getScale();
 
-    if (!m_configuration->getAttributeValue("color").empty())
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
-    if (!m_configuration->getAttributeValue("opacity").empty())
+    if (config.count("opacity"))
     {
-        m_opacity = std::stof( m_configuration->getAttributeValue("opacity") );
+        m_opacity = config.get<float>("opacity");
     }
-
-    m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
-
-    OSLM_WARN_IF("If an histogram cursor is used with this histogram, m_histogramPointUID must be set in order to "
-                 << "inform about the position that the cursor should use.", m_histogramPointUID.empty());
 }
 
 //---------------------------------------------------------------------------------------------------------
 
 void Histogram::doStart()
 {
-    SLM_TRACE_FUNC();
-
     doUpdate();
 }
 
@@ -84,11 +77,9 @@ void Histogram::doStart()
 
 void Histogram::doUpdate()
 {
-    SLM_TRACE_FUNC();
-
     this->doStop();
 
-    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
 
     if (!values.empty())
@@ -106,7 +97,7 @@ void Histogram::doUpdate()
         // The value preceding the current value that we'll use to build the arcs of the path
         Point2DType startPoint = this->mapAdaptorToScene(Point2DType(min, values[0]), m_xAxis, m_yAxis);
 
-        std::pair<double, double> pair;
+        Point2DType pair;
 
         QBrush brush = QBrush(m_color.color());
 
@@ -114,8 +105,7 @@ void Histogram::doUpdate()
         const int nbValues = (int)values.size();
         for(int i = 1; i < nbValues; ++i)
         {
-            pair = this->mapAdaptorToScene(
-                std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
+            pair = this->mapAdaptorToScene(Point2DType(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
 
             QPainterPath painter( QPointF(startPoint.first, 0) );
             painter.lineTo( startPoint.first, startPoint.second );
@@ -144,14 +134,9 @@ void Histogram::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::updateCurrentPoint( ::fwRenderQt::data::Event& _event )
+void Histogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point)
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
-               !m_histogramPointUID.empty());
-
-    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram >(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
@@ -165,9 +150,6 @@ void Histogram::updateCurrentPoint( ::fwRenderQt::data::Event& _event )
 
     if(index >= 0 && index < nbValues)
     {
-        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
-        SLM_ASSERT("m_histogramPointUID can't be null here.", point);
-
         point->getRefCoord()[0] = sceneCoord.getX();
         point->getRefCoord()[1] = values.at( index / histogramBinsWidth ) * m_scale;
     }
@@ -177,7 +159,6 @@ void Histogram::updateCurrentPoint( ::fwRenderQt::data::Event& _event )
 
 void Histogram::doSwap()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -188,7 +169,7 @@ void Histogram::doStop()
     {
         this->getScene2DRender()->getScene()->removeItem(m_layer);
         delete m_layer;
-        m_layer = NULL;
+        m_layer = nullptr;
     }
 }
 
@@ -196,8 +177,6 @@ void Histogram::doStop()
 
 void Histogram::processInteraction( ::fwRenderQt::data::Event& _event)
 {
-    SLM_TRACE_FUNC();
-
     bool updatePointedPos = false;
 
     // Vertical scaling
@@ -226,10 +205,20 @@ void Histogram::processInteraction( ::fwRenderQt::data::Event& _event)
         updatePointedPos = true;
     }
 
-    if( !m_histogramPointUID.empty() && updatePointedPos )
+    ::fwData::Point::sptr point = this->getInOut< ::fwData::Point>(s_POINT_INOUT);
+    if( point && updatePointedPos )
     {
-        updateCurrentPoint( _event );
+        this->updateCurrentPoint(_event, point);
     }
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap Histogram::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 }   // namespace adaptor

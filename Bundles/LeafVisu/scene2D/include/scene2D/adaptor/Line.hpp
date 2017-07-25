@@ -43,9 +43,9 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+       <service id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
         <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-       </adaptor>
+       </service>
        @endcode
      * - \<config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" /\> : Set the
      * config.

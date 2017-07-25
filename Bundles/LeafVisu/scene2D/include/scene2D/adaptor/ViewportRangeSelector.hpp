@@ -73,6 +73,8 @@ protected:
     /// mapped from the scene).
     SCENE2D_API void updateViewportFromShutter( double x, double y, double width, double height );
 
+private:
+
     QGraphicsRectItem* m_shutter;
     bool m_isLeftInteracting;                       // interaction onto shutter's left border
     bool m_isRightInteracting;                      // interaction onto shutter's right border
@@ -91,8 +93,6 @@ protected:
 
     /// Initial width of the shutter
     float m_initialWidth;
-
-private:
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border
     bool mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord);

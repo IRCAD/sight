@@ -10,6 +10,7 @@
 #include "scene2D/config.hpp"
 
 #include <fwData/Histogram.hpp>
+#include <fwData/Point.hpp>
 
 #include <fwRenderQt/IAdaptor.hpp>
 
@@ -25,10 +26,12 @@ namespace adaptor
  * Configuration example:
  *
    @code{.xml}
-   <adaptor id="histogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myCurvedHistogram">
+   <service uid="histogram" type="::scene2D::adaptor::CurvedHistogram">
+       <in key="histogram" uid="histogramUID" />
+       <inout key="point" uid="pointUID" optional="yes" />
        <config xAxis="xAxis" yAxis="axeCurvedHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25"
                zValue="6" histogramPointUID="HistogramPointID" borderWidth="2.0" />
-   </adaptor>
+   </service>
    @endcode
  *
  * - \b innerColor         : the background color of the histogram
@@ -61,6 +64,14 @@ protected:
 
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Histogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;
 
@@ -69,7 +80,7 @@ protected:
 
 private:
 
-    Points getControlPoints(const ::fwData::Histogram::sptr& _histogram ) const;
+    Points getControlPoints(const ::fwData::Histogram::csptr& _histogram ) const;
 
     Points getBSplinePoints( const Points& _controlPoints ) const;
 
@@ -80,7 +91,7 @@ private:
     void computePointToPathLengthMapFromBSplinePoints( Points& _bSplinePoints );
 
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint(const ::fwRenderQt::data::Event& _event );
+    void updateCurrentPoint(const ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point );
 
     /// Build and add a part of histogram's border, according to the given path.
     void addBorderItem( const QPainterPath& _path );
@@ -128,11 +139,6 @@ private:
     // which is then added to the scene.
     // (This is the only graphic item which has to be added into the scene).
     QGraphicsItemGroup* m_layer;
-
-    // Curve point at the current index of the histogram pointed by the mouse. This adaptor looks for
-    // mouse move events: when the mouse cursor is onto the histogram, the corresponding point of the
-    // histogram is informed into the object this UID is all about.
-    std::string m_histogramPointUID;
 };
 
 }   // namespace adaptor

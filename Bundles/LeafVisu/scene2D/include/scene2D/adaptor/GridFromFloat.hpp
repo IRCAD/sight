@@ -41,9 +41,9 @@ public:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Float::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 protected:
     /**
@@ -51,10 +51,11 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <adaptor id="grid1" class="::scene2D::adaptor::GridFromFloat" objectId="myData">
+       <service uid="grid1" type="::scene2D::adaptor::GridFromFloat">
+        <in key="float" uid="floatUID" />
         <config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray"
-     * xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-       </adaptor>
+                xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+       </service>
        @endcode
      *
      * - objectId : ::fwData::Float

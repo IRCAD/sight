@@ -23,19 +23,26 @@ namespace adaptor
  * @brief IAdaptor implementation to show the histogram values clicked by mouse.
  *
  *
+ * Configuration example:
+ *
+   @code{.xml}
+   <service uid="histogram" type="::scene2D::adaptor::HistogramValue">
+       <in key="histogram" uid="histogramUID" />
+       <in key="point" uid="pointUID" />
+       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5"/>
+   </service>
+   @endcode
  * \b xAxis     : see ::fwRenderQt::IAdaptor
  *
  * \b yAxis     : see ::fwRenderQt::IAdaptor
  *
  * \b zValue    : see ::fwRenderQt::IAdaptor
  *
- * \b color     : inner color
+ * \b color     : inner color, default value is white
  *
- * \b fontSize  : size of the font used to display the current value
+ * \b fontSize  : size of the font used to display the current value, default value is 8
  *
  * \b opacity   : from 0.0 to 1.0, default value is 0.8
- *
- * \b viewportUID : a viewport that help us to manage the scaling of the graphic object
  *
  */
 class HistogramValue : public ::fwRenderQt::IAdaptor
@@ -43,8 +50,11 @@ class HistogramValue : public ::fwRenderQt::IAdaptor
 
 public:
     fwCoreServiceClassDefinitionsMacro( (HistogramValue)(::fwRenderQt::IAdaptor) );
+
     SCENE2D_API HistogramValue() noexcept;
     SCENE2D_API virtual ~HistogramValue() noexcept;
+
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 protected:
     SCENE2D_API void configuring();
@@ -76,18 +86,6 @@ protected:
     /// The layer.
     QGraphicsItemGroup* m_layer;
 
-    /// Curve point value at the current index of the histogram pointed by the mouse.
-    std::string m_histogramPointUID;
-
-private:
-
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
-
-    /// fWID of the viewport
-    std::string m_viewportID;
-
-    /// Connection to the viewport
-    ::fwCom::Connection m_connection;
 };
 
 }   // namespace adaptor

@@ -12,7 +12,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportInteractor,  ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportInteractor);
 
 namespace scene2D
 {
@@ -116,13 +116,15 @@ void ViewportInteractor::zoom( bool zoomIn )
 {
     ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
-    float zoomPercent = 10.f / 100.0f;
-    float y           = sceneViewport->getY();
-    float x           = sceneViewport->getX();
-    float width       = sceneViewport->getWidth();
-    float height      = sceneViewport->getHeight();
-    float centerX     = x + width/2.0f;
-    float centerY     = y + height/2.0f;
+    float y = sceneViewport->getY();
+    float x = sceneViewport->getX();
+
+    float width  = sceneViewport->getWidth();
+    float height = sceneViewport->getHeight();
+
+    const float zoomPercent = 10.f / 100.0f;
+    const float centerX     = x + width/2.0f;
+    const float centerY     = y + height/2.0f;
 
     float newWidth;
     float newHeight;

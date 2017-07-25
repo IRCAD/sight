@@ -46,6 +46,8 @@ protected:
 
     SCENE2D_API void zoom( bool zoomIn );
 
+private:
+
     bool m_viewportIsTranslated;
     ::fwRenderQt::data::Coord m_lastCoordEvent;
 };

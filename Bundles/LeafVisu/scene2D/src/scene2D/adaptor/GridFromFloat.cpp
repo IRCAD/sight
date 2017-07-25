@@ -21,7 +21,7 @@ namespace scene2D
 namespace adaptor
 {
 
-//------------------------------------------------------------------------------
+static const ::fwServices::IService::KeyType S_FLOAT_INPUT = "float";
 
 GridFromFloat::GridFromFloat() noexcept :
     m_xMin(0.f),
@@ -151,7 +151,7 @@ void GridFromFloat::doStart()
 
 void GridFromFloat::doUpdate()
 {
-    const float value = this->getObject< ::fwData::Float >()->getValue();
+    const float value = this->getInput< ::fwData::Float >(S_FLOAT_INPUT)->getValue();
     // Check if the float object isn't negative
     if ( value > 0)
     {
@@ -180,11 +180,10 @@ void GridFromFloat::doStop()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType GridFromFloat::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap GridFromFloat::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-
+    KeyConnectionsMap connections;
+    connections.push( S_FLOAT_INPUT, ::fwData::Float::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

@@ -9,6 +9,8 @@
 
 #include "scene2D/config.hpp"
 
+#include <fwData/Point.hpp>
+
 #include <fwRenderQt/IAdaptor.hpp>
 
 namespace scene2D
@@ -23,9 +25,11 @@ namespace adaptor
  * Configuration example:
  *
    @code{.xml}
-   <adaptor id="histogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram">
+   <service uid="histogram" type="::scene2D::adaptor::Histogram">
+       <in key="histogram" uid="histogramUID" />
+       <inout key="point" uid="pointUID" optional="yes" />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5"/>
-   </adaptor>
+   </service>
    @endcode
  *
  * \b color (mandatory)     : the background color of the histogram
@@ -55,12 +59,20 @@ protected:
 
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Histogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;
 
 private:
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint( ::fwRenderQt::data::Event& _event );
+    void updateCurrentPoint( ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point );
 
     /// Color used for graphic item's inner and border color
     QPen m_color;
@@ -75,11 +87,6 @@ private:
     // which is then added to the scene.
     // (This is the only graphic item which has to be added into the scene).
     QGraphicsItemGroup* m_layer;
-
-    // Curve point at the current index of the histogram pointed by the mouse. This adaptor looks for
-    // mouse move events: when the mouse cursor is onto the histogram, the corresponding point of the
-    // histogram is informed into the object this UID is all about.
-    std::string m_histogramPointUID;
 };
 
 }   // namespace adaptor

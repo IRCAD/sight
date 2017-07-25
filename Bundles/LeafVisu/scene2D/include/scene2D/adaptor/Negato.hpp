@@ -23,6 +23,19 @@ namespace scene2D
 namespace adaptor
 {
 
+/**
+ * @brief   IAdaptor implementation for histogram data.
+ *
+ * Configuration example:
+ *
+   @code{.xml}
+   <service uid="negato" type="::scene2D::adaptor::Negato">
+       <inout key="image" uid="..." />
+       <inout key="tfSelection" uid="..." />
+       <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5" selectedTFKey="tkKey"/>
+   </service>
+   @endcode
+ */
 class SCENE2D_CLASS_API Negato : public ::fwDataTools::helper::MedicalImageAdaptor,
                                  public ::fwRenderQt::IAdaptor
 {
@@ -44,7 +57,7 @@ public:
      * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_VISIBILITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 protected:
 

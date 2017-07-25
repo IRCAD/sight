@@ -8,7 +8,7 @@
         <id>tutoScene2DConfig</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
-            <object uid="float" type="::fwData::Float" />
+            <object uid="floatData" type="::fwData::Float" />
             <!-- ***************************************** End Objects declaration ******************************************* -->
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
@@ -43,7 +43,7 @@
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
             <service uid="FloatEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
-                <inout key="float" uid="float" />
+                <inout key="float" uid="floatData" />
             </service>
 
             <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
@@ -60,8 +60,8 @@
                 </scene>
             </service>
             
-            <service uid="gridFromFloat" type="::scene2D::adaptor::GridFromFloat" >
-                <in key="object" uid="float" />
+            <service uid="gridFromFloat" type="::scene2D::adaptor::GridFromFloat" autoConnect="yes" >
+                <in key="float" uid="floatData" />
                 <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
             </service>
 

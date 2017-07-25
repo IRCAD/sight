@@ -33,12 +33,15 @@
 #include <QPixmap>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Negato );
 
 namespace scene2D
 {
 namespace adaptor
 {
+
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
@@ -74,17 +77,13 @@ Negato::~Negato() noexcept
 
 void Negato::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();
 
-    SLM_TRACE("IAdaptor configuring ok");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if( !m_configuration->getAttributeValue("orientation").empty() )
+    if( config.count("orientation") )
     {
-        const std::string orientationValue = m_configuration->getAttributeValue("orientation");
+        const std::string orientationValue = config.get<std::string>("orientation");
 
         if ( orientationValue == "axial" )
         {
@@ -100,9 +99,9 @@ void Negato::configuring()
         }
     }
 
-    if(!m_configuration->getAttributeValue("changeSliceType").empty())
+    if(config.count("changeSliceType"))
     {
-        const std::string changeValue = m_configuration->getAttributeValue(("changeSliceType"));
+        const std::string changeValue = config.get<std::string>("changeSliceType");
 
         if(changeValue == "true" || changeValue == "yes")
         {
@@ -113,7 +112,8 @@ void Negato::configuring()
             m_changeSliceTypeAllowed = false;
         }
     }
-    this->parseTFConfig( m_configuration );
+    SLM_ASSERT("'selectedTFKey' attribute is missing.", config.count("selectedTFKey"));
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey"));
 }
 
 //-----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ void Negato::updateBufferFromImage( QImage* qimg )
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     ::fwDataTools::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
     const short* imgBuff                 = static_cast<const short*>(imgHelper.getBuffer());
@@ -225,7 +225,7 @@ QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin,
 
 QImage* Negato::createQImage()
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
     {
@@ -297,10 +297,10 @@ QImage* Negato::createQImage()
 
 void Negato::doStart()
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateImageInfos( image );
     this->updateTransferFunction( image );
 
@@ -326,8 +326,6 @@ void Negato::doStart()
 
 void Negato::doUpdate()
 {
-    SLM_TRACE_FUNC();
-
     m_qimg = this->createQImage();
     this->updateBufferFromImage( m_qimg );
 }
@@ -340,7 +338,7 @@ void Negato::updateSliceIndex(int axial, int frontal, int sagittal)
     m_frontalIndex->value()  = frontal;
     m_sagittalIndex->value() = sagittal;
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateImageInfos( image );
     this->updateBufferFromImage( m_qimg );
 }
@@ -434,8 +432,6 @@ void Negato::doStop()
 
 void Negato::processInteraction( ::fwRenderQt::data::Event& _event )
 {
-    SLM_TRACE_FUNC();
-
     // if a key is pressed
     if(_event.getType() == ::fwRenderQt::data::Event::KeyRelease)
     {
@@ -532,20 +528,20 @@ void Negato::processInteraction( ::fwRenderQt::data::Event& _event )
 
 void Negato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
 {
-    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    double min = tf->getWLMinMax().first;
-    double max = tf->getWLMinMax().second;
+    const double min = tf->getWLMinMax().first;
+    const double max = tf->getWLMinMax().second;
 
-    double window = newCoord.getX() - m_oldCoord.getX();
-    double level  = newCoord.getY() - m_oldCoord.getY();
+    const double window = newCoord.getX() - m_oldCoord.getX();
+    const double level  = newCoord.getY() - m_oldCoord.getY();
 
-    double imgWindow = max - min;
-    double imgLevel  = min + imgWindow/2.0;
+    const double imgWindow = max - min;
+    const double imgLevel  = min + imgWindow/2.0;
 
-    double newImgLevel  = imgLevel + level;
-    double newImgWindow = imgWindow + imgWindow * window/100.0;
+    const double newImgLevel  = imgLevel + level;
+    const double newImgWindow = imgWindow + imgWindow * window/100.0;
 
     this->doUpdate();
 
@@ -562,15 +558,14 @@ void Negato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Negato::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap Negato::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT ) );
-
+    KeyConnectionsMap connections;
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
     return connections;
 }
 

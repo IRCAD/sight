@@ -40,10 +40,10 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
+       <service uid="grid1" type="::scene2D::adaptor::Grid2D">
         <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-       </adaptor>
+       </service>
        @endcode
      * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
      *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.

@@ -256,7 +256,9 @@ void IAdaptor::initializeViewportSize()
 
 void IAdaptor::starting()
 {
-    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    m_connection                                = viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     doStart();
 }
@@ -272,8 +274,6 @@ void IAdaptor::updating()
 
 void IAdaptor::swapping()
 {
-    m_connections.disconnect();
-    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -281,7 +281,7 @@ void IAdaptor::swapping()
 
 void IAdaptor::stopping()
 {
-    m_connections.disconnect();
+    m_connection.disconnect();
     doStop();
 }
 

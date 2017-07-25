@@ -16,8 +16,7 @@
 
 #include <QGraphicsRectItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector,
-                         ::fwRenderQt::data::Viewport);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector);
 
 namespace scene2D
 {
@@ -46,22 +45,22 @@ ViewportRangeSelector::~ViewportRangeSelector() noexcept
 
 void ViewportRangeSelector::configuring()
 {
-    SLM_TRACE_FUNC();
-
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     this->IAdaptor::configuring();
 
-    const double viewportWidth = viewport->getWidth();
-    const double defaultWidth  = 2 * viewportWidth / 4;
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if (!m_configuration->getAttributeValue("initialWidth").empty())
+    const double viewportWidth = viewport->getWidth();
+    const double defaultWidth  = 2. * viewportWidth / 4.;
+
+    if (config.count("initialWidth"))
     {
-        m_initialWidth = std::stof( m_configuration->getAttributeValue("initialWidth") );
+        m_initialWidth = config.get<float>("initialWidth");
 
         if( m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange )
         {
-            OSLM_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
+            SLM_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
             m_initialWidth = defaultWidth;
         }
     }
@@ -70,15 +69,15 @@ void ViewportRangeSelector::configuring()
         m_initialWidth = defaultWidth;
     }
 
-    const double defaultPos = (viewportWidth - m_initialWidth) / 2;
+    const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
 
-    if (!m_configuration->getAttributeValue("initialPos").empty())
+    if (config.count("initialPos"))
     {
-        m_initialX = std::stof( m_configuration->getAttributeValue("initialPos") );
+        m_initialX = config.get<float>("initialPos");
 
         if( m_initialX < viewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
         {
-            OSLM_WARN("Set viewport position to a default value since the given one is not correct.");
+            SLM_WARN("Set viewport position to a default value since the given one is not correct.");
             m_initialX = defaultPos;
         }
     }
@@ -92,7 +91,7 @@ void ViewportRangeSelector::configuring()
 
 void ViewportRangeSelector::doStart()
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getObject< ::fwRenderQt::data::Viewport>();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
@@ -127,21 +126,18 @@ void ViewportRangeSelector::doStart()
 
 void ViewportRangeSelector::doStop()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void ViewportRangeSelector::doUpdate()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void ViewportRangeSelector::doSwap()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -156,13 +152,13 @@ void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _even
     Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
         m_xAxis, m_yAxis);
-    double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
+    const double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
-    bool onShutterLeft   = mouseOnShutterLeft( coord );
-    bool onShutterRight  = mouseOnShutterRight( coord );
-    bool onShutterMiddle = mouseOnShutterMiddle( coord );
+    const bool onShutterLeft   = mouseOnShutterLeft( coord );
+    const bool onShutterRight  = mouseOnShutterRight( coord );
+    const bool onShutterMiddle = mouseOnShutterMiddle( coord );
 
     QRectF rect = m_shutter->rect();
 
@@ -307,7 +303,8 @@ void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _even
             updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
 
             ::fwData::Object::ModifiedSignalType::sptr sig;
-            sig = this->getObject< ::fwRenderQt::data::Viewport>()->signal< ::fwData::Object::ModifiedSignalType >(
+            ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+            sig                                         = viewport->signal< ::fwData::Object::ModifiedSignalType >(
                 ::fwData::Object::s_MODIFIED_SIG);
             {
                 ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
@@ -321,15 +318,13 @@ void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _even
 
 void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, double _width, double _height )
 {
-    SLM_TRACE_FUNC();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getObject< ::fwRenderQt::data::Viewport>();
-
-    Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
+    const Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
     viewport->setX( fromSceneCoord.first );
     viewport->setY( fromSceneCoord.second );
 
-    Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
+    const Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
     viewport->setWidth( pair.first );
     viewport->setHeight( this->getScene2DRender()->getViewport()->getHeight() );
 }

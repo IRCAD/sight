@@ -15,7 +15,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ScaleValues);
 
 namespace scene2D
 {
@@ -44,34 +44,27 @@ ScaleValues::~ScaleValues() noexcept
 
 void ScaleValues::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();  // xAxis, yAxis, zValue, opacity
 
-    SLM_TRACE("IAdaptor configuring ok");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     // Set the min/max values
-    const std::string min = m_configuration->getAttributeValue("min");
-    const std::string max = m_configuration->getAttributeValue("max");
-    SLM_ASSERT("'min' atttribute is missing.", !min.empty());
-    SLM_ASSERT("'min' atttribute is missing.", !max.empty());
+    SLM_ASSERT("'min' atttribute is missing.", config.count("min"));
+    SLM_ASSERT("'min' atttribute is missing.", config.count("max"));
 
-    m_min = std::stod( min );
-    m_max = std::stod( max );
+    m_min = config.get<double>("min");
+    m_max = config.get<double>("max");
 
     // Interval configuration
-    if (!m_configuration->getAttributeValue("interval").empty())
+    if (config.count("interval"))
     {
         m_interval = std::stof( m_configuration->getAttributeValue("interval") );
     }
 
     // Color configuration
-    const std::string color = m_configuration->getAttributeValue("color");
-    if (!color.empty())
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, color, m_opacity);
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
     }
     else
     {
@@ -79,36 +72,27 @@ void ScaleValues::configuring()
     }
 
     // Font size configuratiion
-    if (!m_configuration->getAttributeValue("fontSize").empty())
+    if (config.count("fontSize"))
     {
-        m_fontSize = std::stof( m_configuration->getAttributeValue("fontSize") );
-    }
-
-    // Viewport configuratiion
-    SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-               !m_configuration->getAttributeValue("viewportUID").empty());
-
-    if( !m_configuration->getAttributeValue("viewportUID").empty() )
-    {
-        m_viewportID = m_configuration->getAttributeValue("viewportUID");
+        m_fontSize = config.get<float>("fontSize");
     }
 
     // Show unit
-    const std::string showUnit = m_configuration->getAttributeValue("showUnit");
+    const std::string showUnit = config.get<std::string>("showUnit");
     if(showUnit == "true" || showUnit == "false")
     {
         m_showUnit = (showUnit == "true");
     }
 
     // Unit text configuration
-    m_displayedUnit = m_configuration->getAttributeValue("unit");
+    m_displayedUnit = config.get<std::string>("unit", "");
+
+    SLM_ASSERT("'align' attribute is missing. "
+               "Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
+               config.count("align"));
 
     // 'align' attribute configuration
-    m_align = m_configuration->getAttributeValue("align");
-
-    SLM_ASSERT(
-        "'align' attribute is missing. Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
-        !m_align.empty());
+    m_align = config.get<std::string>("align");
 
     SLM_ASSERT("Unsupported value for 'align' attribute.",
                m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
@@ -118,7 +102,6 @@ void ScaleValues::configuring()
 
 void ScaleValues::buildValues()
 {
-    SLM_TRACE_FUNC();
     SLM_ASSERT("m_interval can not be equal to 0", m_interval != 0);
 
     m_values.clear();
@@ -185,8 +168,6 @@ void ScaleValues::buildValues()
 
 void ScaleValues::doStart()
 {
-    SLM_TRACE_FUNC();
-
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
 
@@ -197,12 +178,6 @@ void ScaleValues::doStart()
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.25 );
     m_font.setKerning( true );
     m_font.setFixedPitch( true );
-
-    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
-    SLM_ASSERT("Viewport '" + m_viewportID + "' is not found", m_viewport);
-
-    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     this->buildValues();
     this->doUpdate();
@@ -225,27 +200,27 @@ double ScaleValues::getEndVal()
 
 void ScaleValues::doUpdate()
 {
-    SLM_TRACE_FUNC();
-
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    rescaleValues();
+    this->rescaleValues();
 }
 
 //---------------------------------------------------------------------------------------
 
 void ScaleValues::rescaleValues()
 {
-    const double viewportX      = m_viewport->getX();
-    const double viewportWidth  = m_viewport->getWidth();
-    const double viewportHeight = m_viewport->getHeight();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+
+    const double viewportX      = viewport->getX();
+    const double viewportWidth  = viewport->getWidth();
+    const double viewportHeight = viewport->getHeight();
 
     const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-    Scene2DRatio ratio        = this->getRatio(); // Total ratio
-    double viewportWidthRatio = this->getViewportSizeRatio().first;
+    const Scene2DRatio ratio        = this->getRatio(); // Total ratio
+    const double viewportWidthRatio = this->getViewportSizeRatio().first;
 
     double scaleX = m_fontSize;
     double scaleY = m_fontSize * viewportSizeRatio;
@@ -260,8 +235,8 @@ void ScaleValues::rescaleValues()
 
     int step = 0;
     double valueSize;                   // the size (width or height) of the current value
-    std::pair<double, double> coord;    // coordinates of the current scale value item
-    std::pair<double, double> size;     // size of the current scale value item
+    Point2DType coord;    // coordinates of the current scale value item
+    Point2DType size;     // size of the current scale value item
     bool suggestResampling = false;     /* scale value items resampling is suggested because of
                                            a lack of sufficient width to display all of them */
 
@@ -272,7 +247,7 @@ void ScaleValues::rescaleValues()
     {
         const double valueSizeRatio = m_interval / scaleY;
 
-        float coeff = 0;
+        float coeff = 0.f;
 
         double textPosX;
 
@@ -282,7 +257,7 @@ void ScaleValues::rescaleValues()
         }
         else
         {
-            coeff    = -1;
+            coeff    = -1.f;
             textPosX = viewportX + viewportWidth;
         }
 
@@ -302,8 +277,7 @@ void ScaleValues::rescaleValues()
                 suggestResampling = true;
             }
 
-            coord = this->mapAdaptorToScene(
-                std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
+            coord = this->mapAdaptorToScene(Point2DType(textPosX, val), m_xAxis, m_yAxis);
 
             m_values[i]->setTransform( transform );
 
@@ -314,10 +288,9 @@ void ScaleValues::rescaleValues()
 
         m_unit->setTransform( transform );
 
-        val = viewportHeight * 0.8;
+        val = viewportHeight * 0.8f;
 
-        coord = this->mapAdaptorToScene(
-            std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
+        coord = this->mapAdaptorToScene(Point2DType(textPosX, val), m_xAxis, m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
@@ -329,19 +302,18 @@ void ScaleValues::rescaleValues()
     {
         const double valueSizeRatio = m_interval / scaleX;
 
-        float coeff = 0.5;
+        float coeff = 0.5f;
 
-        double textPosY = (m_align == "bottom")
-                          ? m_viewport->getY()
-                          : viewportHeight * 0.9;
+        const double textPosY = (m_align == "bottom")
+                                ? viewport->getY()
+                                : viewportHeight * 0.9;
 
         for(int i = 0; i < valuesSize; ++i, val += m_interval)
         {
             valueSize = m_values[i]->boundingRect().width();
 
-            size = this->mapAdaptorToScene(
-                std::pair<double, double>(valueSize, m_values[i]->boundingRect().height()),
-                m_xAxis, m_yAxis);
+            size = this->mapAdaptorToScene(Point2DType(valueSize, m_values[i]->boundingRect().height()),
+                                           m_xAxis, m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
@@ -365,14 +337,11 @@ void ScaleValues::rescaleValues()
 
         val = viewportHeight * 0.8;
 
-        size = this->mapAdaptorToScene(
-            std::pair<double, double>(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
-            m_xAxis, m_yAxis);
+        size = this->mapAdaptorToScene(Point2DType(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
+                                       m_xAxis, m_yAxis);
 
-        coord = this->mapAdaptorToScene(
-            std::pair<double, double>(
-                viewportX + viewportWidth / 2, textPosY),
-            m_xAxis, m_yAxis);
+        coord = this->mapAdaptorToScene(Point2DType(viewportX + viewportWidth / 2, textPosY),
+                                        m_xAxis, m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
@@ -383,12 +352,12 @@ void ScaleValues::rescaleValues()
 
     if( suggestResampling )
     {
-        showHideScaleValues();
+        this->showHideScaleValues();
     }
     else if( !suggestResampling && step != m_step )
     {
         m_step = step;
-        showHideScaleValues();
+        this->showHideScaleValues();
     }
 }
 
@@ -432,8 +401,6 @@ void ScaleValues::doStop()
 {
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);
-
-    m_connection.disconnect();
 }
 
 } // namespace adaptor

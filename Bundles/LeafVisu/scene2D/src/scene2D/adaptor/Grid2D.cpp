@@ -15,7 +15,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Grid2D, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Grid2D);
 
 namespace scene2D
 {
@@ -23,8 +23,14 @@ namespace adaptor
 {
 
 Grid2D::Grid2D() noexcept :
-    m_xSpacing(10),
-    m_ySpacing(10)
+    m_xMin(0.f),
+    m_xMax(0.f),
+    m_yMin(0.f),
+    m_yMax(0.f),
+    m_xSpacing(10.f),
+    m_ySpacing(10.f),
+    m_lineType(PLAIN),
+    m_layer(nullptr)
 {
 }
 
@@ -38,35 +44,36 @@ Grid2D::~Grid2D() noexcept
 
 void Grid2D::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();
 
-    SLM_TRACE("IAdaptor configuring ok");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    SLM_ASSERT("Attribute 'xMin' is missing", config.count("xMin"));
+    SLM_ASSERT("Attribute 'xMax' is missing", config.count("xMax"));
+    SLM_ASSERT("Attribute 'yMin' is missing", config.count("yMin"));
+    SLM_ASSERT("Attribute 'yMax' is missing", config.count("yMax"));
 
     // Set the x/y min/max values
-    m_xMin = std::stof( m_configuration->getAttributeValue("xMin") );
-    m_xMax = std::stof( m_configuration->getAttributeValue("xMax") );
-    m_yMin = std::stof( m_configuration->getAttributeValue("yMin") );
-    m_yMax = std::stof( m_configuration->getAttributeValue("yMax") );
+    m_xMin = config.get<float>("xMin");
+    m_xMax = config.get<float>("xMax");
+    m_yMin = config.get<float>("yMin");
+    m_yMax = config.get<float>("yMax");
 
     // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between
     // the lines and color of the lines:
-    if (!m_configuration->getAttributeValue("xSpacing").empty())
+    if (config.count("xSpacing"))
     {
-        m_xSpacing = std::stof( m_configuration->getAttributeValue("xSpacing") );
+        m_xSpacing = config.get<float>("xSpacing");
     }
 
-    if (!m_configuration->getAttributeValue("ySpacing").empty())
+    if (config.count("ySpacing"))
     {
-        m_ySpacing = std::stof( m_configuration->getAttributeValue("ySpacing") );
+        m_ySpacing = config.get<float>("ySpacing");
     }
 
-    if (!m_configuration->getAttributeValue("color").empty())
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"), m_opacity);
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
     }
 }
 
@@ -74,10 +81,8 @@ void Grid2D::configuring()
 
 void Grid2D::draw()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0);
-    SLM_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0);
+    SLM_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.f);
+    SLM_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.f);
 
     this->getScene2DRender()->getScene()->removeItem( m_layer );
     m_layer = new QGraphicsItemGroup();
@@ -137,8 +142,6 @@ void Grid2D::draw()
 
 void Grid2D::doStart()
 {
-    SLM_TRACE_FUNC();
-
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
 
@@ -182,7 +185,6 @@ float Grid2D::getYEndVal()
 
 void Grid2D::doUpdate()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -199,15 +201,12 @@ void Grid2D::processInteraction( ::fwRenderQt::data::Event& _event)
 
 void Grid2D::doSwap()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void Grid2D::doStop()
 {
-    SLM_TRACE_FUNC();
-
     // Clear the lines vector
     m_lines.clear();
 

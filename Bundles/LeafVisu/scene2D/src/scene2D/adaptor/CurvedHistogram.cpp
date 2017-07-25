@@ -20,7 +20,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::CurvedHistogram, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::CurvedHistogram);
 
 #define PI 3.14159265
 
@@ -30,17 +30,20 @@ namespace scene2D
 namespace adaptor
 {
 
+static const ::fwServices::IService::KeyType s_POINT_INOUT     = "point";
+static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+
 const float CurvedHistogram::SCALE            = 1.1f; // vertical scaling factor applied at each mouse scroll
 const float CurvedHistogram::NB_POINTS_BEZIER = 100.0f;
 
 //-----------------------------------------------------------------------------------------------------------------
 
 CurvedHistogram::CurvedHistogram() noexcept :
+    m_painterPath(nullptr),
     m_borderWidth(1.75f),
-    m_scale(1.0)
+    m_scale(1.0f),
+    m_layer(nullptr)
 {
-    m_layer       = NULL;
-    m_painterPath = NULL;
 }
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -53,45 +56,36 @@ CurvedHistogram::~CurvedHistogram() noexcept
 
 void CurvedHistogram::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag is missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     m_innerColor  = QPen( Qt::transparent );
     m_borderColor = QPen( Qt::transparent );
     m_brush       = QBrush( Qt::NoBrush );
 
-    if (!m_configuration->getAttributeValue("borderColor").empty())
+    if (config.count("borderColor"))
     {
         ::fwRenderQt::data::InitQtPen::setPenColor(
-            m_borderColor, m_configuration->getAttributeValue("borderColor"), m_opacity );
+            m_borderColor, config.get<std::string>("borderColor"), m_opacity );
     }
 
-    if (!m_configuration->getAttributeValue("innerColor").empty())
+    if (config.count("innerColor"))
     {
         ::fwRenderQt::data::InitQtPen::setPenColor(
-            m_innerColor, m_configuration->getAttributeValue("innerColor"), m_opacity );
+            m_innerColor, config.get<std::string>("innerColor"), m_opacity );
     }
 
-    if (!m_configuration->getAttributeValue("borderWidth").empty())
+    if (config.count("borderWidth"))
     {
-        m_borderWidth = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("borderWidth") );
+        m_borderWidth = config.get<float>("borderWidth");
     }
-
-    m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
-
-    OSLM_WARN_IF("If an histogram cursor is used with this histogram, m_histogramPointUID must be set in order to "
-                 << "inform about the position that the cursor should use.", m_histogramPointUID.empty());
 }
 
 //----------------------------------------------------------------------------------------------------------
 
 void CurvedHistogram::doStart()
 {
-    SLM_TRACE_FUNC();
-
     // Init border style
     m_borderColor.setCosmetic( true );
     m_borderColor.setWidthF( m_borderWidth );
@@ -106,7 +100,7 @@ void CurvedHistogram::doStart()
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histogram::sptr& _histogram) const
+CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histogram::csptr& _histogram) const
 {
     ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
     const float binsWidth    = _histogram->getBinsWidth();
@@ -114,11 +108,11 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histog
 
     Point p;
     Points controlPoints;
-    const unsigned int nbValues = (int) histogramValues.size();
+    const size_t nbValues = histogramValues.size();
 
     // WARNING: we shouldn't add all the points of the histogram into the vector of controlPoints
     // (testing...)
-    for(unsigned int i = 0; i < nbValues; ++i)
+    for(size_t i = 0; i < nbValues; ++i)
     {
         p.first  = (double)(histogramMin + i * binsWidth);
         p.second = histogramValues[i];
@@ -138,25 +132,16 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points& _points
 
     // Add again the first point with a higher value in order to prevent B-Spline algorithm from removing
     // the first value.
-    list.add_point(
-        new point(
-            (float) _points[0].first,
-            (float) _points[0].second * 2) );
+    list.add_point(new point((float) _points[0].first, (float) _points[0].second * 2) );
 
     // Add all the points
     for(const auto& pt : _points )
     {
-        list.add_point(
-            new point(
-                (float)(pt.first),
-                (float)(pt.second)) );
+        list.add_point(new point((float)(pt.first), (float)(pt.second)) );
     }
 
     // Add again the last point
-    list.add_point(
-        new point(
-            (float) _points.back().first,
-            (float) _points.back().second / 2 ) );
+    list.add_point(new point((float) _points.back().first, (float) _points.back().second / 2 ) );
 
     // Commpute the points of the B-Spline with external code from AHO (to be integrated here later).
     cat_curve curve( list );
@@ -209,7 +194,7 @@ CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points&
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points& _bSplinePoints )
+void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSplinePoints )
 {
     Points::iterator it = _bSplinePoints.begin();
 
@@ -245,11 +230,9 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points& _bSp
 
 void CurvedHistogram::doUpdate()
 {
-    SLM_TRACE_FUNC();
-
     this->doStop();
 
-    ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
+    const ::fwData::Histogram::csptr histogram = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
 
     ::fwData::mt::ObjectReadLock lock(histogram);
 
@@ -283,7 +266,7 @@ void CurvedHistogram::doUpdate()
 
 void CurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
 {
-    ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
+    const ::fwData::Histogram::csptr histogram = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
 
     const bool useBorderColor = (m_borderColor.color() != Qt::transparent);
     const bool useInnerColor  = (m_innerColor.color() != Qt::transparent);
@@ -392,7 +375,7 @@ CurvedHistogram::Points CurvedHistogram::cosinusInterpolation(const Point _p0, c
     Points points;
     Point p;
     double mu2;
-    double deltaX = _p1.first - _p0.first;
+    const double deltaX = _p1.first - _p0.first;
 
     for(double mu = 0.0; mu < 1.0; mu += 0.05)
     {
@@ -415,7 +398,7 @@ CurvedHistogram::Points CurvedHistogram::cubicInterpolation(
     Points points;
     Point p;
     double a0, a1, a2, a3, mu2;
-    const double deltaX = _p2.first - _p1.first;
+    const const double deltaX = _p2.first - _p1.first;
     for(double mu = 0.0; mu < 1.0; mu += 0.01)
     {
         mu2 = mu * mu;
@@ -444,18 +427,16 @@ CurvedHistogram::Points CurvedHistogram::cubicInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event )
+void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point )
 {
-    SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
-               !m_histogramPointUID.empty());
+    const::fwData::Histogram::csptr histogram           = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
+    const ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
 
-    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
-    ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
-    ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
+    const ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     const int histIndex = (int) sceneCoord.getX();
     const int index     = histIndex - histogramMinValue;
@@ -463,12 +444,9 @@ void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event
 
     if(index >= 0 && index < nbValues && m_positionsToPathLength.find( histIndex ) != m_positionsToPathLength.end())
     {
-        double key           = m_positionsToPathLength[ histIndex ];
+        const double key     = m_positionsToPathLength[ histIndex ];
         const double percent = m_painterPath->percentAtLength( key );
-        QPointF qPoint       = m_painterPath->pointAtPercent( percent );
-
-        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
-        SLM_ASSERT("m_histogramPointUID can't be null here.", point);
+        const QPointF qPoint = m_painterPath->pointAtPercent( percent );
 
         point->getRefCoord()[0] = sceneCoord.getX();
         point->getRefCoord()[1] = qPoint.y() * m_scale;
@@ -479,11 +457,9 @@ void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event
 
 CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, const Point _p2 )
 {
-
     Points points;
-    float t = 0;
+    float t = 0.f;
     Point p;
-
     for(int i = 0; i < 100; ++i)
     {
         t = i / 100;
@@ -511,13 +487,13 @@ void CurvedHistogram::doStop()
     {
         this->getScene2DRender()->getScene()->removeItem(m_layer);
         delete m_layer;
-        m_layer = NULL;
+        m_layer = nullptr;
     }
     m_positionsToPathLength.clear();
     if (m_painterPath)
     {
         delete m_painterPath;
-        m_painterPath = NULL;
+        m_painterPath = nullptr;
     }
 }
 
@@ -547,13 +523,22 @@ void CurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
         updatePointedPos = true;
     }
 
-    if( !m_histogramPointUID.empty() )
+    ::fwData::Point::sptr point = this->getInOut< ::fwData::Point>( s_POINT_INOUT );
+    if( point )
     {
-        updateCurrentPoint( _event );
+        this->updateCurrentPoint( _event, point );
     }
 }
 
-}   // namespace adaptor
+//----------------------------------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap CurvedHistogram::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "histogram", ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
+}
+
+}   // namespace adaptor
 }   // namespace scene2D
 

@@ -14,7 +14,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Axis);
 
 namespace scene2D
 {
@@ -23,8 +23,13 @@ namespace adaptor
 {
 
 Axis::Axis() noexcept :
+    m_interval(1.f),
+    m_min(0.f),
+    m_max(0.f),
+    m_tickSize(1.0f),
     m_showLine(true),
-    m_tickSize(0.02f),
+    m_layer(nullptr),
+    m_line(nullptr),
     m_color(Qt::white)
 {
 }
@@ -33,18 +38,12 @@ Axis::Axis() noexcept :
 
 Axis::~Axis() noexcept
 {
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Axis::doStart()
 {
-    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
-
-    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_UPDATE_SLOT));
-
     this->buildAxis();
     this->doUpdate();
 }
@@ -53,8 +52,6 @@ void Axis::doStart()
 
 void Axis::doStop()
 {
-    m_connection.disconnect();
-
     delete m_layer;
 }
 
@@ -62,59 +59,40 @@ void Axis::doStop()
 
 void Axis::doSwap()
 {
-
 }
 
 //--------------------------------------------------------------------------------------------------
 
 void Axis::configuring()
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("\"config\" tag is missing", m_configuration->getName() == "config");
-
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis' and 'zValue'
 
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
     // 'color'
-    if (!m_configuration->getAttributeValue("color").empty())
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
     // 'align' attribute configuration
-    m_align = m_configuration->getAttributeValue("align");
-    SLM_ASSERT(
-        "'align' attribute is missing. Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
-        !m_align.empty());
+    m_align = config.get<std::string>("align");
+    SLM_ASSERT("'align' attribute is missing. Please add an 'align' attribute "
+               "with value 'left', 'right', 'top' or 'bottom'", !m_align.empty());
     SLM_ASSERT("Unsupported value for 'align' attribute.",
                m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 
     // Axis bounds
-    const std::string min = m_configuration->getAttributeValue("min");
-    const std::string max = m_configuration->getAttributeValue("max");
-
-    SLM_ASSERT("'min' attribute is missing.", !min.empty());
-    SLM_ASSERT("'max' attribute is missing.", !max.empty());
-
-    m_min = std::stof( min );
-    m_max = std::stof( max );
+    SLM_ASSERT("'min' attribute is missing.", config.count("min"));
+    SLM_ASSERT("'max' attribute is missing.", config.count("max"));
+    m_min = config.get<float>("min");
+    m_max = config.get<float>("max");
 
     // Ticks size
-    const std::string tickSize = m_configuration->getAttributeValue("tickSize");
-    m_tickSize = ( tickSize.empty() ) ? 1.0 : std::stof( tickSize );
-
-    // Viewport
-    SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-               !m_configuration->getAttributeValue("viewportUID").empty());
-
-    if( !m_configuration->getAttributeValue("viewportUID").empty() )
-    {
-        m_viewportID = m_configuration->getAttributeValue("viewportUID");
-    }
+    m_tickSize = config.get<float>("tickSize", 1.0f);
 
     // Step
-    const std::string interval = m_configuration->getAttributeValue("interval");
-    m_interval = ( interval.empty() ) ? 1.0f : std::stof( interval );
+    m_interval = config.get<float>("interval", 1.0f);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -173,7 +151,7 @@ void Axis::doUpdate()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    Scene2DRatio ratio = this->getRatio();
+    const Scene2DRatio ratio = this->getRatio();
 
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
@@ -182,7 +160,7 @@ void Axis::doUpdate()
     const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-    double viewportWidthRatio = this->getViewportSizeRatio().first;
+    const double viewportWidthRatio = this->getViewportSizeRatio().first;
 
     double scaleX = m_tickSize;
     double scaleY = m_tickSize * viewportSizeRatio;
@@ -198,17 +176,17 @@ void Axis::doUpdate()
     const double max = this->getEndVal();
 
     float pos;
-    std::pair<double, double> tickSize;
-    std::pair<double, double> tickPos;
+    Point2DType tickSize;
+    Point2DType tickPos;
 
-    const std::pair<double, double> viewportSize = this->mapAdaptorToScene(
-        std::pair<double, double>(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
+    const Point2DType viewportSize =
+        this->mapAdaptorToScene(Point2DType(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
 
     if(m_align == "bottom")
     {
         tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
 
-        const double tickPosY = m_viewport->getY();
+        const double tickPosY = viewport->getY();
 
         for(int i = 0; i < nbValues; ++i)
         {
@@ -225,7 +203,7 @@ void Axis::doUpdate()
     {
         tickSize = this->mapAdaptorToScene(Point2DType(0, m_tickSize), m_xAxis, m_yAxis);
 
-        const double tickPosY = m_viewport->getHeight() * 0.9;
+        const double tickPosY = viewport->getHeight() * 0.9;
 
         for(int i = 0; i < nbValues; ++i)
         {
@@ -243,7 +221,7 @@ void Axis::doUpdate()
     {
         tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), m_xAxis, m_yAxis);
 
-        const double tickPosX = m_viewport->getX();
+        const double tickPosX = viewport->getX();
 
         for(int i = 0; i < nbValues; ++i)
         {
@@ -258,17 +236,15 @@ void Axis::doUpdate()
     }
     else if(m_align == "right")
     {
-        tickSize = this->mapAdaptorToScene(
-            std::pair<double, double>(m_tickSize, 0), m_xAxis, m_yAxis);
+        tickSize = this->mapAdaptorToScene(Point2DType(m_tickSize, 0), m_xAxis, m_yAxis);
 
-        const double tickPosX = m_viewport->getX() + m_viewport->getWidth();
+        const double tickPosX = viewport->getX() + viewport->getWidth();
 
         for(int i = 0; i < nbValues; ++i)
         {
             pos = min + i * m_interval;
 
-            tickPos = this->mapAdaptorToScene(
-                std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
+            tickPos = this->mapAdaptorToScene(Point2DType(tickPosX, pos), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
                 tickPos.first - tickSize.first * scaleX, tickPos.second,
@@ -292,6 +268,5 @@ void Axis::processInteraction( ::fwRenderQt::data::Event& _event)
 //--------------------------------------------------------------------------------------------------
 
 }   // namespace adaptor
-
 }   // namespace scene2D
 

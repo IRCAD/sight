@@ -41,9 +41,9 @@ Line::~Line() noexcept
 
 void Line::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
-
     this->IAdaptor::configuring();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     SLM_ASSERT("Attribute 'x1' is missing", config.count("x1"));
     SLM_ASSERT("Attribute 'x2' is missing", config.count("x2"));
@@ -90,8 +90,6 @@ void Line::draw()
 
 void Line::doStart()
 {
-    SLM_TRACE_FUNC();
-
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
     m_pen.setCosmetic(true);
@@ -103,21 +101,18 @@ void Line::doStart()
 
 void Line::doUpdate()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void Line::doSwap()
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void Line::doStop()
 {
-    SLM_TRACE_FUNC();
     // Remove the layer (and therefore its related line item) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }

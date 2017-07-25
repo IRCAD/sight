@@ -15,11 +15,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderQt::IAdaptor</type>
-        <service>::scene2D::adaptor::Sin</service>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderQt::IAdaptor</type>
         <service>::scene2D::adaptor::Grid2D</service>
     </extension>
 
@@ -67,13 +62,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderQt::IAdaptor</type>
         <service>::scene2D::adaptor::ViewportRangeSelector</service>
-        <object>::fwRenderQt::data::Viewport</object>
-    </extension>
- 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderQt::IAdaptor</type>
-        <service>::scene2D::adaptor::ViewportUpdater</service>
-        <object>::fwRenderQt::data::Viewport</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

@@ -17,17 +17,20 @@
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::HistogramValue, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::HistogramValue);
 
 namespace scene2D
 {
 namespace adaptor
 {
 
+static const ::fwServices::IService::KeyType s_POINT_INPUT     = "point";
+static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+
 HistogramValue::HistogramValue() noexcept :
     m_color(Qt::white),
-    m_isInteracting(false),
     m_text(nullptr),
+    m_isInteracting(false),
     m_fontSize(8.f),
     m_layer(nullptr)
 {
@@ -43,39 +46,25 @@ HistogramValue::~HistogramValue() noexcept
 
 void HistogramValue::configuring()
 {
-    SLM_TRACE_FUNC();
-
     this->IAdaptor::configuring();
 
-    if (!m_configuration->getAttributeValue("color").empty())
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if (config.count("color"))
     {
-        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
+        ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
     }
 
-    if (!m_configuration->getAttributeValue("fontSize").empty())
+    if (config.count("fontSize"))
     {
-        m_fontSize = std::stof( m_configuration->getAttributeValue("fontSize") );
+        m_fontSize = config.get<float>("fontSize");
     }
-
-    SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-               !m_configuration->getAttributeValue("viewportUID").empty());
-
-    if( !m_configuration->getAttributeValue("viewportUID").empty() )
-    {
-        m_viewportID = m_configuration->getAttributeValue("viewportUID");
-    }
-
-    SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue(
-                   "histogramPointUID").empty());
-    m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void HistogramValue::doStart()
 {
-    SLM_TRACE_FUNC();
-
     m_font.setPointSize(m_fontSize);
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.2 );
     m_font.setKerning( true );
@@ -95,11 +84,6 @@ void HistogramValue::doStart()
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 
-    m_viewport = this->getSafeInOut< ::fwRenderQt::data::Viewport>( m_viewportID );
-
-    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_UPDATE_SLOT));
-
     // Add the layer containing grid's lines to the scene
     this->getScene2DRender()->getScene()->addItem(m_layer);
 }
@@ -108,7 +92,6 @@ void HistogramValue::doStart()
 
 void HistogramValue::doStop()
 {
-    m_connection.disconnect();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -118,7 +101,7 @@ void HistogramValue::doUpdate()
     this->initializeViewSize();
     this->initializeViewportSize();
 
-    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
     const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
@@ -164,10 +147,10 @@ void HistogramValue::doUpdate()
         QTransform transform;
         transform.scale(scaleX, scaleY);
 
-        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
+        ::fwData::Point::csptr point = this->getInput< ::fwData::Point>(s_POINT_INPUT);
 
         m_text->setTransform( transform );
-        m_text->setPos( point->getRefCoord()[0] + diameterH * 2, point->getRefCoord()[1] - diameterV * 2 );
+        m_text->setPos( point->getCRefCoord()[0] + diameterH * 2, point->getCRefCoord()[1] - diameterV * 2 );
         m_text->setVisible( true );
     }
     else
@@ -203,6 +186,16 @@ void HistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
     }
 
     doUpdate();
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap HistogramValue::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_POINT_INPUT, ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //---------------------------------------------------------------------------------------------------------------

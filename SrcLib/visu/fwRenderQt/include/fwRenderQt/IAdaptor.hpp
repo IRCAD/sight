@@ -152,32 +152,14 @@ protected:
     /// Unregister all adaptors
     FWRENDERQT_API void unregisterServices();
 
-    template< class DATATYPE >
-    SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
-
 private:
 
-    /// Register automatic connection on object
-    ::fwCom::helper::SigSlotConnection m_connections;
+    /// Connection to the viewport
+    ::fwCom::Connection m_connection;
 
     /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;
 };
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
-SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
-{
-    if( ::fwServices::IService::isVersion2() )
-    {
-        return this->getScene2DRender()->getInOut<DATATYPE>(key);
-    }
-    else
-    {
-        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
-    }
-}
 
 //------------------------------------------------------------------------------
 

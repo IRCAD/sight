@@ -99,17 +99,12 @@ void Square::doStop()
 
 void Square::setColor(const std::string& _color )
 {
-    if (_color == "red")
+    m_color = QColor(QString::fromStdString(_color));
+    if (!m_color.isValid())
     {
-        m_color = Qt::GlobalColor(Qt::red);
-    }
-    else if (_color == "green")
-    {
-        m_color = Qt::GlobalColor(Qt::green);
-    }
-    else if (_color == "blue")
-    {
-        m_color = Qt::GlobalColor(Qt::blue);
+        // Default value: black (if the color id cannot be parsed)
+        m_color = Qt::GlobalColor(Qt::white);
+        SLM_WARN("Color "+_color+" unknown, default value used.");
     }
 }
 
@@ -142,7 +137,6 @@ void Square::processInteraction( ::fwRenderQt::data::Event& _event )
         m_pointIsCaptured = false;
         _event.setAccepted(true);
     }
-
 }
 
 //-----------------------------------------------------------------------------

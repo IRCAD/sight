@@ -47,7 +47,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
+    SCENE2D_API KeyConnectionsMap getAutoConnections() const;
 
 protected:
     /**
@@ -55,9 +55,12 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
-        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/>
-       </adaptor>
+       <service uid="tf2" type="::scene2D::adaptor::TransferFunction" >
+        <inout key="image" uid="..." />
+        <inout key="tfSelection" uid="..." />
+        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"
+     * selectedTFKey="tkKey" />
+       </service>
        @endcode
      * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the
      * config.
@@ -106,68 +109,68 @@ protected:
 private:
 
     /// Convert the view coordinates to item coordinates.
-    SCENE2D_API ::fwRenderQt::data::Coord coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord );
+    ::fwRenderQt::data::Coord coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord );
 
     /// Get the selected tf of the image, calculate the window and the level, clear the m_TFPoints map and fill
     ///  it with the tf points of the selected tf.
-    SCENE2D_API void buildTFPoints();
+    void buildTFPoints();
 
     /// Remove all circle items from the scene, clear the m_circles vector and push it back circles generated
     ///  from m_TFPoints.
-    SCENE2D_API void buildCircles();
+    void buildCircles();
 
     /// From an iterator on the m_TFPoints map, create a QGraphicsEllipseItem, give it the appropriated color
     ///  and pen, and return it.
-    SCENE2D_API QGraphicsEllipseItem* buildCircle(::fwData::TransferFunction::TFValueType value,
-                                                  ::fwData::TransferFunction::TFColor color);
+    QGraphicsEllipseItem* buildCircle(::fwData::TransferFunction::TFValueType value,
+                                      ::fwData::TransferFunction::TFColor color);
 
     /// Remove all line and polygon items from the scene, clear the m_linesAndPolygons vector, and push it back
     ///  lines and gradient polygons generated from m_circles.
-    SCENE2D_API void buildLinesAndPolygons();
+    void buildLinesAndPolygons();
 
     /// Create lines and gradient polygons generated from m_circles
-    SCENE2D_API void buildLinearLinesAndPolygons();
+    void buildLinearLinesAndPolygons();
 
     /// Create lines and polygons generated from m_circles
-    SCENE2D_API void buildNearestLinesAndPolygons();
+    void buildNearestLinesAndPolygons();
 
     /// Build lines on TF bounds with color of first/last point (use when TF is not clamped)
-    SCENE2D_API void buildBounds();
+    void buildBounds();
 
     /// Add the items from m_circles and m_linesAndPolygons to m_layer, set its position and its zValue and add
     /// it to the scene.
-    SCENE2D_API void buildLayer();
+    void buildLayer();
 
     /// Clear the selected tf, rebuilt it from m_TFPoints (building TransferFunctionPoints and inserting'em),
     ///  update image min and max, and notify the image with a TRANSFERFUNCTION message.
-    SCENE2D_API void updateImageTF();
+    void updateImageTF();
 
     /// Open a color dialog and change the selected tf point color
-    SCENE2D_API void doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor);
+    void doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor);
 
     /// Store the circle selected and its coordinates, and set its outline yellow
-    SCENE2D_API void leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
+    void leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
 
     /// Check if the mouse is out of bounds, as the case, move the circle on x and y, x or y, destroy the related
     /// point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
     /// to 0-1 and update the image tf.
-    SCENE2D_API void mouseMoveEvent(QGraphicsEllipseItem* circle,
-                                    ::fwData::TransferFunction::TFValueType tfPoint,
-                                    ::fwRenderQt::data::Event& _event);
+    void mouseMoveEvent(QGraphicsEllipseItem* circle,
+                        ::fwData::TransferFunction::TFValueType tfPoint,
+                        ::fwRenderQt::data::Event& _event);
 
     /// Reset the circle pen to the selected circle
-    SCENE2D_API void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
+    void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event);
 
     /// Erase the selected point
-    SCENE2D_API void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
-                                      ::fwRenderQt::data::Event& _event);
+    void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
+                          ::fwRenderQt::data::Event& _event);
 
     /// Create a new point without modifying the TF (placed between the 2 encompassing points with linear
     /// interpolation)
-    SCENE2D_API void doubleClickEvent( ::fwRenderQt::data::Event& _event);
+    void doubleClickEvent( ::fwRenderQt::data::Event& _event);
 
     /// Return the x coordinate of the center of the circle in a 0-1 scale (for storage in m_TFPoints).
-    SCENE2D_API double pointValue(QGraphicsEllipseItem* circle);
+    double pointValue(QGraphicsEllipseItem* circle);
 
     /// The line pen (see "lineColor" config attribute) and circle pen (see "circleColor" config attribute).
     QPen m_linePen, m_circlePen;
@@ -196,14 +199,6 @@ private:
 
     /// The captured circle.
     QGraphicsEllipseItem* m_capturedCircle;
-
-    /// fWID of the viewport
-    std::string m_viewportID;
-
-    /// Connection to the viewport
-    ::fwCom::Connection m_connection;
-
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     float m_pointSize;
 };

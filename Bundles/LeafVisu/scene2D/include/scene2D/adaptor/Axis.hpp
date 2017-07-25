@@ -78,15 +78,6 @@ private:
 
     /// The graphic items that refer to ticks of the axis.
     std::vector< QGraphicsLineItem* > m_ticks;
-
-    /// The viewport that help us to scale the axis.
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
-
-    /// fWID of the viewport
-    std::string m_viewportID;
-
-    /// Connection to the viewport
-    ::fwCom::Connection m_connection;
 };
 
 }   // namespace adaptor

@@ -34,13 +34,11 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <adaptor id="scaleValues" class="::scene2D::adaptor::ScaleValues" objectId="self">
+       <service id="scaleValues" class="::scene2D::adaptor::ScaleValues" objectId="self">
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-       </adaptor>
+       </service>
        @endcode
-     * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
-     *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
      *
      * \b xMin : mandatory : Set the minimum X value to display.
      *
@@ -66,8 +64,6 @@ protected:
      *
      * \b zValue : no mandatory (default value : 0) : Set the zValue of this adaptor
      * (the higher the zValue, the higher the layer is).
-     *
-     * \b viewportUID : mandatory : a viewport that help us to manage the scaling of the graphic object
      *
      * \b showXScale : no mandatory : tells if the scale on the X axis has to be shown (value: "true" or "false")
      *
@@ -137,15 +133,6 @@ private:
 
     /// A vector containing QGraphicsItem-s representing the scale values of the axis.
     std::vector<QGraphicsItem*> m_values;
-
-    /// Communication channel between this adaptor and the viewport.
-    ::fwCom::Connection m_connection;
-
-    /// fWID of the viewport
-    std::string m_viewportID;
-
-    /// The viewport that help us to scale the graphic items which represent axis values.
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     /// The pen.
     QPen m_pen;
