@@ -376,7 +376,7 @@
 
             <!-- Generic Scene (Negato) for the Third tab -->
             <service uid="negato3" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="imageResultID" uid="imageResult" optional="yes" />
+                <inout key="imageResultID" uid="imageResult" />
                 <scene>
 
                     <picker id="negato3default" vtkclass="fwVtkCellPicker" />
@@ -425,6 +425,7 @@
             <start uid="medicalImageSrv2" />
             <start uid="slider_negato1" />
             <start uid="slider_negato2" />
+            <start uid="slider_negato3" />
 
         </config>
     </extension>
