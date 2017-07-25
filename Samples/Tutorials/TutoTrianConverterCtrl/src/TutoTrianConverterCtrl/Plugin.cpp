@@ -84,7 +84,7 @@ void Plugin::initialize()
 
     m_mesh      = ::fwData::Mesh::New();
     m_readerSrv = ::fwServices::add(m_mesh, "::io::IReader",
-                                    "::ioData::MeshReaderService");
+                                    "::ioData::STrianMeshReader");
     ::fwRuntime::EConfigurationElement::sptr readerCfg         = ::fwRuntime::EConfigurationElement::New( "service" );
     ::fwRuntime::EConfigurationElement::sptr readerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     readerFilenameCfg->setValue(trianMeshPath);

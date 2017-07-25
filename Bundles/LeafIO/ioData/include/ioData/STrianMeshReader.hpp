@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_MESHREADERSERVICE_HPP__
-#define __IODATA_MESHREADERSERVICE_HPP__
+#ifndef __IODATA_STRIANMESHREADER_HPP__
+#define __IODATA_STRIANMESHREADER_HPP__
 
 #include "ioData/config.hpp"
 
@@ -26,7 +26,7 @@ namespace ioData
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::ioData::MeshReaderService">
+   <service type="::ioData::STrianMeshReader">
        <inout key="mesh" uid="..." />
        <file>....</file>
    </service>
@@ -36,12 +36,12 @@ namespace ioData
  * @subsubsection Configuration Configuration
  * - \b file : .trian file to read
  */
-class IODATA_CLASS_API MeshReaderService : public ::io::IReader
+class IODATA_CLASS_API STrianMeshReader : public ::io::IReader
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (MeshReaderService)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (STrianMeshReader)(::io::IReader) );
 
     /// Super class of reader services
     typedef ::io::IReader SuperClass;
@@ -120,4 +120,4 @@ protected:
 
 }
 
-#endif /*__IODATA_MESHREADERSERVICE_HPP__*/
+#endif /*__IODATA_STRIANMESHREADER_HPP__*/
