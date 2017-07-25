@@ -68,7 +68,7 @@ void SReconstruction::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
+    const std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
     SLM_ASSERT("'autoresetcamera' value must be 'yes' or 'no', actual: " + autoresetcamera,
                autoresetcamera == "yes" || autoresetcamera == "no");
     m_autoResetCamera = (autoresetcamera == "yes");

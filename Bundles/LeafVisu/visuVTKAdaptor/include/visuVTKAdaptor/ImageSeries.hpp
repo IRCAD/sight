@@ -8,7 +8,7 @@
 #define __VISUVTKADAPTOR_IMAGESERIES_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/NegatoMPR.hpp"
+#include "visuVTKAdaptor/SNegatoMPR.hpp"
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
@@ -71,10 +71,10 @@ protected:
     VISUVTKADAPTOR_API void doStop();
 
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
-    void setSliceMode(NegatoMPR::SliceMode sliceMode);
+    void setSliceMode(SNegatoMPR::SliceMode sliceMode);
 
     /// Gets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
-    NegatoMPR::SliceMode getSliceMode();
+    SNegatoMPR::SliceMode getSliceMode();
 
     /// Returns true if 3d mode is enabled, false if it is not and indeterminate if it is not defined
     ::boost::logic::tribool is3dModeEnabled();
@@ -89,7 +89,7 @@ private:
     std::string m_imageSourceId;
 
     ::boost::logic::tribool m_3dModeEnabled;
-    NegatoMPR::SliceMode m_sliceMode;
+    SNegatoMPR::SliceMode m_sliceMode;
 
 };
 

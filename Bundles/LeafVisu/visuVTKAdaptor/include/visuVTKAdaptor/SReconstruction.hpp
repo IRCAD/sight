@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SReconstruction">
+   <service type="::visuVTKAdaptor::SReconstruction"  autoConnect="yes">
        <in key="reconstruction" uid="..." />
        <config renderer="default" transform="..." picker="" />
    </service>

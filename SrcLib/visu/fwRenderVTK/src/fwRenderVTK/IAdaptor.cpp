@@ -59,6 +59,7 @@ void IAdaptor::configureParams()
 void IAdaptor::configuring()
 {
     SLM_ERROR("configuring() method must be implemented for '" + this->getClassname() + "'");
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
@@ -66,6 +67,7 @@ void IAdaptor::configuring()
 void IAdaptor::starting()
 {
     SLM_ERROR("starting() method must be implemented for '" + this->getClassname() + "'");
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------

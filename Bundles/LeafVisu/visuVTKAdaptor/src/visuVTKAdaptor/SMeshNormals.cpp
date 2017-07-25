@@ -87,7 +87,7 @@ void SMeshNormals::configuring()
 
     if(config.count("normal") )
     {
-        std::string normal = config.get<std::string>("normal");
+        const std::string normal = config.get<std::string>("normal");
         SLM_ASSERT("Wrong normal representation '" + normal + "' (required POINT, CELL or NONE)",
                    m_normalRepresentationConversion.find(normal) != m_normalRepresentationConversion.end());
 

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/NegatoMPR.hpp"
+#include "visuVTKAdaptor/SNegatoMPR.hpp"
 
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
@@ -32,7 +32,7 @@
 
 #include <string>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoMPR);
 
 namespace visuVTKAdaptor
 {
@@ -45,9 +45,12 @@ static const ::fwCom::Slots::SlotKeyType S_CHANGE_IMAGE_SOURCE_SLOT = "changeIma
 static const std::string s_slicingStartingProxy = "slicingStartingProxy";
 static const std::string s_slicingStoppingProxy = "slicingStoppingProxy";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+
 //------------------------------------------------------------------------------
 
-NegatoMPR::NegatoMPR() noexcept :
+SNegatoMPR::SNegatoMPR() noexcept :
     m_allowAlphaInTF(false),
     m_interpolation(false),
     m_actorOpacity(1.0),
@@ -55,32 +58,34 @@ NegatoMPR::NegatoMPR() noexcept :
     m_sliceMode(THREE_SLICES),
     m_backupedSliceMode(THREE_SLICES)
 {
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &NegatoMPR::updateSliceType, this);
-    newSlot(s_UPDATE_SLICE_MODE_SLOT, &NegatoMPR::updateSliceMode, this);
-    newSlot(s_SHOW_SLICE_SLOT, &NegatoMPR::showSlice, this);
-    newSlot(s_SET_CROSS_SCALE_SLOT, &NegatoMPR::setCrossScale, this);
-    newSlot(S_CHANGE_IMAGE_SOURCE_SLOT, &NegatoMPR::changeImageSource, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegatoMPR::updateSliceType, this);
+    newSlot(s_UPDATE_SLICE_MODE_SLOT, &SNegatoMPR::updateSliceMode, this);
+    newSlot(s_SHOW_SLICE_SLOT, &SNegatoMPR::showSlice, this);
+    newSlot(s_SET_CROSS_SCALE_SLOT, &SNegatoMPR::setCrossScale, this);
+    newSlot(S_CHANGE_IMAGE_SOURCE_SLOT, &SNegatoMPR::changeImageSource, this);
 }
 
 //------------------------------------------------------------------------------
 
-NegatoMPR::~NegatoMPR() noexcept
+SNegatoMPR::~SNegatoMPR() noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doStart()
+void SNegatoMPR::starting()
 {
-    this->doUpdate();
+    this->initialize();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doStop()
+void SNegatoMPR::stopping()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     //disconnect proxy
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
@@ -107,44 +112,18 @@ void NegatoMPR::doStop()
     }
 
     this->unregisterServices();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doSwap()
+void SNegatoMPR::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->stopping();
 
-    if ( imageIsValid)
-    {
-        if(m_subServices.empty())
-        {
-            doStart();
-        }
-        else
-        {
-            for( ServiceVector::value_type service :  m_subServices)
-            {
-                OSLM_ASSERT("sub services expired in service : " << this->getSptr()->getID(), !service.expired());
-                service.lock()->swap(image);
-                service.lock()->update();
-            }
-        }
-    }
-    else
-    {
-        doStop();
-    }
-}
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
-//------------------------------------------------------------------------------
-
-void NegatoMPR::doUpdate()
-{
-    this->doStop();
-
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
@@ -197,13 +176,13 @@ void NegatoMPR::doUpdate()
             SLM_TRACE("No 2D/3D mode specified.");
         }
         this->setVtkPipelineModified();
+        this->requestRender();
     }
-
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoMPR::updateSliceType(int from, int to)
+void SNegatoMPR::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
@@ -217,7 +196,7 @@ void NegatoMPR::updateSliceType(int from, int to)
 
 //-----------------------------------------------------------------------------
 
-void NegatoMPR::updateSliceMode(int mode)
+void SNegatoMPR::updateSliceMode(int mode)
 {
     switch(mode)
     {
@@ -242,11 +221,11 @@ void NegatoMPR::updateSliceMode(int mode)
         }
     }
     m_backupedSliceMode = this->getSliceMode();
-    this->doUpdate();
+    this->updating();
 }
 //-----------------------------------------------------------------------------
 
-void NegatoMPR::showSlice(bool isShown)
+void SNegatoMPR::showSlice(bool isShown)
 {
     if(isShown)
     {
@@ -257,12 +236,12 @@ void NegatoMPR::showSlice(bool isShown)
         m_backupedSliceMode = this->getSliceMode();
         this->setSliceMode(NO_SLICE);
     }
-    this->doUpdate();
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoMPR::setCrossScale(double scale)
+void SNegatoMPR::setCrossScale(double scale)
 {
     if (!m_sliceCursor.expired())
     {
@@ -273,35 +252,36 @@ void NegatoMPR::setCrossScale(double scale)
 
 //-----------------------------------------------------------------------------
 
-void NegatoMPR::changeImageSource(std::string _value, std::string _key)
+void SNegatoMPR::changeImageSource(std::string _value, std::string _key)
 {
     if( _key == "ImageSource" )
     {
         // Select the right algorithm
         m_imageSourceId = _value;
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::doConfigure()
+void SNegatoMPR::configuring()
 {
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if (m_configuration->hasAttribute("mode"))
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if (config.count("mode"))
     {
-        std::string value(m_configuration->getAttributeValue("mode"));
+        std::string value = config.get<std::string>("mode");
         std::transform(value.begin(), value.end(), value.begin(), tolower);
-        OSLM_ASSERT("Bad value "<<value<<" for attribute mode, it should either be '2d' or '3d'.",
-                    value == "3d" || value == "2d");
+        SLM_ASSERT("Bad value '" + value + "' for attribute mode, it should either be '2d' or '3d'.",
+                   value == "3d" || value == "2d");
         this->set3dMode(value == "3d");
     }
-    if (m_configuration->hasAttribute("slices"))
+    if (config.count("slices"))
     {
-        std::string value(m_configuration->getAttributeValue("slices"));
-        std::transform(value.begin(), value.end(), value.begin(), tolower);
+        const std::string value = config.get<std::string>("slices");
 
         if(value == "0")
         {
@@ -315,46 +295,46 @@ void NegatoMPR::doConfigure()
         {
             this->setSliceMode(THREE_SLICES);
         }
+        else
+        {
+            SLM_FATAL("'slice' value must be '0', '1' or '3', actual: " + value);
+        }
         m_backupedSliceMode = this->getSliceMode();
     }
-    if(m_configuration->hasAttribute("sliceIndex"))
+
+    const std::string orientation = config.get<std::string>("sliceIndex", "axial");
+    if(orientation == "axial" )
     {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
-        if(orientation == "axial" )
-        {
-            m_orientation = Z_AXIS;
-        }
-        else if(orientation == "frontal" )
-        {
-            m_orientation = Y_AXIS;
-        }
-        else if(orientation == "sagittal" )
-        {
-            m_orientation = X_AXIS;
-        }
+        m_orientation = Z_AXIS;
     }
-    if(m_configuration->hasAttribute("tfalpha") )
+    else if(orientation == "frontal" )
     {
-        this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
+        m_orientation = Y_AXIS;
     }
-    if (m_configuration->hasAttribute("interpolation"))
+    else if(orientation == "sagittal" )
     {
-        this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
+        m_orientation = X_AXIS;
     }
-    if (m_configuration->hasAttribute("vtkimagesource"))
-    {
-        this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
-    }
-    if(m_configuration->hasAttribute("actorOpacity") )
-    {
-        m_actorOpacity = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("actorOpacity"));
-    }
-    this->parseTFConfig( m_configuration );
+
+    const std::string tfalpha = config.get<std::string>("tfalpha", "no");
+    SLM_ASSERT("'tfalpha' value must be 'yes' or 'no', actual: " + tfalpha, tfalpha == "yes" || tfalpha == "no");
+    this->setAllowAlphaInTF(tfalpha == "yes");
+
+    const std::string interpolation = config.get<std::string>("interpolation", "off");
+    SLM_ASSERT("'interpolation' value must be 'on' or 'off', actual: " + interpolation,
+               interpolation == "on" || interpolation == "off");
+    this->setInterpolation(interpolation == "yes");
+
+    this->setVtkImageSourceId( config.get<std::string>("vtkimagesource", ""));
+
+    m_actorOpacity = config.get<double>("actorOpacity", 1.);
+
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::setSliceMode(SliceMode sliceMode)
+void SNegatoMPR::setSliceMode(SliceMode sliceMode)
 {
     if(m_sliceMode != sliceMode)
     {
@@ -364,45 +344,46 @@ void NegatoMPR::setSliceMode(SliceMode sliceMode)
 
 //------------------------------------------------------------------------------
 
-NegatoMPR::SliceMode NegatoMPR::getSliceMode() const
+SNegatoMPR::SliceMode SNegatoMPR::getSliceMode() const
 {
     return m_sliceMode;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::logic::tribool NegatoMPR::is3dModeEnabled() const
+::boost::logic::tribool SNegatoMPR::is3dModeEnabled() const
 {
     return m_3dModeEnabled;
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::set3dMode( bool enabled )
+void SNegatoMPR::set3dMode( bool enabled )
 {
     m_3dModeEnabled = enabled;
 }
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IAdaptor::sptr NegatoMPR::addAdaptor(std::string adaptor, int axis)
+::fwRenderVTK::IAdaptor::sptr SNegatoMPR::addAdaptor(const std::string& adaptor, int axis)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     ::fwRenderVTK::IAdaptor::sptr service;
+
+    // create the srv configuration for objects auto-connection
+    IService::Config srvConfig;
+    service = this->createSubAdaptor(adaptor, srvConfig);
+    // register image
+    this->registerServiceInOut(image, s_IMAGE_INOUT, service, true, srvConfig);
 
     if(axis >= 0)
     {
-        service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, adaptor );
-        SLM_ASSERT("service not instanced", service);
         ::fwDataTools::helper::MedicalImageAdaptor::sptr adaptorSrv =
             ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
-    }
-    else
-    {
-        service = ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, adaptor );
-        SLM_ASSERT("service not instanced", service);
     }
 
     ::visuVTKAdaptor::NegatoOneSlice::sptr negatoAdaptor;
@@ -419,16 +400,28 @@ void NegatoMPR::set3dMode( bool enabled )
         {
             negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
         }
-        negatoAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
-        negatoAdaptor->setTFSelectionFwID( this->getTFSelectionFwID() );
         negatoAdaptor->setActorOpacity(m_actorOpacity);
+
+        negatoAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
+
+        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
+        if (tfSelection)
+        {
+            this->registerServiceInOut(tfSelection, s_TF_SELECTION_INOUT, negatoAdaptor, true, srvConfig);
+        }
     }
     else if (negatoWindowingAdaptor)
     {
         negatoWindowingAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
-        negatoWindowingAdaptor->setTFSelectionFwID( this->getTFSelectionFwID() );
+
+        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
+        if (tfSelection)
+        {
+            this->registerServiceInOut(tfSelection, s_TF_SELECTION_INOUT, negatoWindowingAdaptor, true, srvConfig);
+        }
     }
 
+    service->setConfiguration(srvConfig);
     service->setRenderService(this->getRenderService());
     service->setRendererId( this->getRendererId() );
     service->setPickerId( this->getPickerId() );
@@ -437,18 +430,17 @@ void NegatoMPR::set3dMode( bool enabled )
 
     service->start();
     service->update();
-    this->registerService(service);
 
     return service;
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType NegatoMPR::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SNegatoMPR::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
 
     return connections;
 }

@@ -62,11 +62,14 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SMesh">
+   <service type="::visuVTKAdaptor::SMesh"  autoConnect="yes">
        <in key="mesh" uid="..." />
        <config renderer="default" transform="..." picker="" texture="TextureAdaptor" />
    </service>
    @endcode
+ * @subsection Input Input
+ * - \b mesh [::fwData::Mesh]: mesh to display.
+ *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer(mandatory) : renderer where the mesh is displayed

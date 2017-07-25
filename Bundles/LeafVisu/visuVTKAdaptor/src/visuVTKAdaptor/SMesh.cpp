@@ -461,18 +461,18 @@ void SMesh::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    std::string color          = config.get<std::string>("color", "#ffffffff");
-    std::string unclippedColor = config.get<std::string>("unclippedcolor", "#aaaaff44");
+    const std::string color          = config.get<std::string>("color", "#ffffffff");
+    const std::string unclippedColor = config.get<std::string>("unclippedcolor", "#aaaaff44");
 
     m_material->diffuse()->setRGBA(color);
 
     m_unclippedPartMaterial->diffuse()->setRGBA(unclippedColor);
 
-    std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
+    const std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
     SLM_ASSERT("'autoresetcamera' must be 'yes' or 'no'", autoresetcamera == "yes" || autoresetcamera == "no");
     m_autoResetCamera = (autoresetcamera == "yes");
 
-    std::string uvGen = config.get<std::string>("uvgen", "none");
+    const std::string uvGen = config.get<std::string>("uvgen", "none");
 
     if(uvGen == "none")
     {

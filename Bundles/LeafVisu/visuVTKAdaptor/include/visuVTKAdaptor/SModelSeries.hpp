@@ -34,7 +34,7 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SModelSeries">
+   <service type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
        <in key="model" uid="..." />
        <config renderer="default" transform="..." picker="" />
    </service>

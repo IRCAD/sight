@@ -198,19 +198,6 @@ protected:
                                               const ::fwRenderVTK::IAdaptor::sptr& srv,
                                               const bool autoConnect,
                                               ::fwServices::IService::Config& config);
-    /**
-     * @brief Create the service and register it in the OSR
-     * @param type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)
-     * @param obj main object used by the service, if the service works on several objects, you will need to call
-     *        ::fwServices::OSR::registerService() with the other objects
-     * @param key key of the object in the new adaptor
-     * @return Returns the created adaptor
-     * @throw fwCore::Exception if the service cannot be created
-     */
-    FWRENDERVTK_API fwRenderVTK::IAdaptor::sptr createAndRegisterServiceInOut(
-        const std::string& type,
-        const ::fwData::Object::sptr& obj,
-        const std::string& key);
 
     /// Stores the service in the subServices list
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IAdaptor::sptr service );

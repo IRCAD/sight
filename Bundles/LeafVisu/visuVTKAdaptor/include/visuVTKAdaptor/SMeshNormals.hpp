@@ -37,7 +37,7 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SMeshNormals">
+   <service type="::visuVTKAdaptor::SMeshNormals"  autoConnect="yes">
        <in key="mesh" uid="..." />
        <config renderer="..." transform="..." />
    </service>

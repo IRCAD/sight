@@ -67,7 +67,7 @@ void SModelSeries::configuring()
 
     this->setClippingPlanes( config.get<std::string>("clippingplanes", "") );
 
-    std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
+    const std::string autoresetcamera = config.get<std::string>("autoresetcamera", "yes");
     SLM_ASSERT("'autoresetcamera' must be 'yes' or 'no'", autoresetcamera == "yes" || autoresetcamera == "no");
     m_autoResetCamera = (autoresetcamera == "yes");
 

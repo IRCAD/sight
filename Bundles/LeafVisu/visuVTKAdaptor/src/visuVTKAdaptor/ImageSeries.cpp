@@ -27,7 +27,7 @@ ImageSeries::ImageSeries() noexcept :
     m_allowAlphaInTF(false),
     m_interpolation(false),
     m_3dModeEnabled( ::boost::logic::indeterminate ),
-    m_sliceMode(NegatoMPR::THREE_SLICES)
+    m_sliceMode(SNegatoMPR::THREE_SLICES)
 
 {
 }
@@ -61,15 +61,15 @@ void ImageSeries::doConfigure()
 
         if(value == "0")
         {
-            this->setSliceMode(NegatoMPR::NO_SLICE);
+            this->setSliceMode(SNegatoMPR::NO_SLICE);
         }
         else if(value == "1")
         {
-            this->setSliceMode(NegatoMPR::ONE_SLICE);
+            this->setSliceMode(SNegatoMPR::ONE_SLICE);
         }
         else if(value == "3")
         {
-            this->setSliceMode(NegatoMPR::THREE_SLICES);
+            this->setSliceMode(SNegatoMPR::THREE_SLICES);
         }
     }
     if(m_configuration->hasAttribute("sliceIndex"))
@@ -121,7 +121,7 @@ void ImageSeries::doUpdate()
     ::fwData::Image::sptr image = series->getImage();
 
     ::fwRenderVTK::IAdaptor::sptr service =
-        ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, "::visuVTKAdaptor::NegatoMPR" );
+        ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, "::visuVTKAdaptor::SNegatoMPR" );
     SLM_ASSERT("service not instanced", service);
 
     service->setTransformId( this->getTransformId() );
@@ -129,7 +129,7 @@ void ImageSeries::doUpdate()
     service->setPickerId( this->getPickerId() );
     service->setRenderService(this->getRenderService());
     service->setAutoRender( this->getAutoRender() );
-    ::visuVTKAdaptor::NegatoMPR::sptr negato = ::visuVTKAdaptor::NegatoMPR::dynamicCast(service);
+    ::visuVTKAdaptor::SNegatoMPR::sptr negato = ::visuVTKAdaptor::SNegatoMPR::dynamicCast(service);
     negato->set3dMode(this->is3dModeEnabled());
     negato->setSliceMode(this->getSliceMode());
     negato->setOrientation(this->getOrientation());
@@ -158,7 +158,7 @@ void ImageSeries::doStop()
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setSliceMode(NegatoMPR::SliceMode sliceMode)
+void ImageSeries::setSliceMode(SNegatoMPR::SliceMode sliceMode)
 {
     if(m_sliceMode != sliceMode)
     {
@@ -168,7 +168,7 @@ void ImageSeries::setSliceMode(NegatoMPR::SliceMode sliceMode)
 
 //------------------------------------------------------------------------------
 
-NegatoMPR::SliceMode ImageSeries::getSliceMode()
+SNegatoMPR::SliceMode ImageSeries::getSliceMode()
 {
     return m_sliceMode;
 }

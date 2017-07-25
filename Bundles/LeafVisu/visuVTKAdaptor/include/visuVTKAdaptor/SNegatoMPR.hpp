@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_NEGATOMPR_HPP__
-#define __VISUVTKADAPTOR_NEGATOMPR_HPP__
+#ifndef __VISUVTKADAPTOR_SNEGATOMPR_HPP__
+#define __VISUVTKADAPTOR_SNEGATOMPR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -33,39 +33,46 @@ class SliceCursor;
  * - \b changeImageSource(std::string _value, std::string _key): set the VTK source image. The key must be "ImageSource"
  *
  * @code{.xml}
-   <adaptor id="negato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+   <service type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+       <inout key="image" uid="..." />
+       <inout key="tfSelection" uid="..." />
        <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"
                transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
                selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
-   </adaptor>
+   </service>
    @endcode
- * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- * renderer.
- * - \b picker (mandatory): identifier of the picker
- * - \b mode (optional, 2d or 3d): defines the scene mode. In 2d mode, the camera follow the negato in
- * axial/frontal/sagital orientation. In 3d mode, the camera is automatically reset when the image is modified. If
- * mode is not defined, the camera is free.
- * - \b slices (optional, default=3): number of slices shown in the adaptor
- * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
- * - \b transform (optional): the vtkTransform to associate to the adaptor
- * - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato.
- * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
- * - \b vtkimagesource (optional): source image, used for blend
- * - \b actorOpacity (optional, default=1.0): actor opacity (float)
- * - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
- * - \b selectedTFKey (optional): key of the transfer function to use in negato
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image to display.
+ * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
+ *    renderer.
+ *    - \b picker (mandatory): identifier of the picker
+ *    - \b mode (optional, 2d or 3d): defines the scene mode. In 2d mode, the camera follow the negato in
+ *    axial/frontal/sagital orientation. In 3d mode, the camera is automatically reset when the image is modified. If
+ *    mode is not defined, the camera is free.
+ *    - \b slices (optional, default=3): number of slices shown in the adaptor
+ *    - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+ *    - \b transform (optional): the vtkTransform to associate to the adaptor
+ *    - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato.
+ *    - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+ *    - \b vtkimagesource (optional): source image, used for blend
+ *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
+ *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
-class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                           public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                            public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (NegatoMPR)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegatoMPR)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API NegatoMPR() noexcept;
+    VISUVTKADAPTOR_API SNegatoMPR() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~NegatoMPR() noexcept;
+    VISUVTKADAPTOR_API virtual ~SNegatoMPR() noexcept;
 
     typedef enum
     {
@@ -104,6 +111,13 @@ public:
         m_actorOpacity = actorOpacity;
     }
 
+protected:
+
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
@@ -111,24 +125,9 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
-protected:
-
-    typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
-
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-
-    VISUVTKADAPTOR_API void doUpdate();
-
-    /**
-     * @brief Configures the service
-     */
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-
-    ::fwRenderVTK::IAdaptor::sptr addAdaptor(std::string adaptor, int axis = -1);
+    ::fwRenderVTK::IAdaptor::sptr addAdaptor(const std::string& adaptor, int axis = -1);
 
 private:
 
@@ -174,4 +173,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_NEGATOMPR_HPP__
+#endif // __VISUVTKADAPTOR_SNEGATOMPR_HPP__
