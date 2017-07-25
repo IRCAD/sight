@@ -828,6 +828,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(PLATFORM)
     unset(USE_PCH_FROM_TARGET)
     unset(DISABLE_PCH)
+    unset(BEFORE)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -1000,6 +1001,8 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
         if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
             set(${NAME}_START "${START}")
         endif()
+        
+        set(${NAME}_BEFORE "${BEFORE}")
 
         list(APPEND PROJECT_LIST ${NAME})
     endif()

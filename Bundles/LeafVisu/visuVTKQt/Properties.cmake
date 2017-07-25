@@ -17,3 +17,4 @@ set( REQUIREMENTS
     visuVTK
 )
 set( USE_PCH_FROM_TARGET fwRenderVTK )
+set( BEFORE guiQt )
