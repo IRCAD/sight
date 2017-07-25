@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Image.hpp"
+#include "visuVTKAdaptor/SImage.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -30,16 +30,19 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Image, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImage);
 
 namespace visuVTKAdaptor
 {
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+
 //------------------------------------------------------------------------------
 
-Image::Image() noexcept :
+SImage::SImage() noexcept :
     m_imageRegister(nullptr),
     m_imagePortId(-1),
     m_imageOpacity(0.),
@@ -49,14 +52,13 @@ Image::Image() noexcept :
     m_imageData(vtkImageData::New())
 {
     this->installTFSlots(this);
-    newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &Image::updateImageOpacity, this);
+    newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SImage::updateImageOpacity, this);
 }
 
 //------------------------------------------------------------------------------
 
-Image::~Image() noexcept
+SImage::~SImage() noexcept
 {
-    SLM_TRACE_FUNC();
     m_lut->Delete();
     m_lut = NULL;
 
@@ -69,18 +71,19 @@ Image::~Image() noexcept
 
 //------------------------------------------------------------------------------
 
-void Image::doStart()
+void SImage::starting()
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->initialize();
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
-    this->doUpdate();
+    this->updating();
     this->installTFConnections();
 }
 
 //------------------------------------------------------------------------------
 
-void Image::doStop()
+void SImage::stopping()
 {
     this->removeTFConnections();
     this->destroyPipeline();
@@ -88,18 +91,11 @@ void Image::doStop()
 
 //------------------------------------------------------------------------------
 
-void Image::doSwap()
+void SImage::updating()
 {
-    this->removeTFConnections();
-    this->doUpdate();
-    this->installTFConnections();
-}
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
-//------------------------------------------------------------------------------
-
-void Image::doUpdate()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
@@ -118,18 +114,22 @@ void Image::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void Image::updatingTFPoints()
+void SImage::updatingTFPoints()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageTransferFunction(image);
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Image::updatingTFWindowing(double window, double level)
+void SImage::updatingTFWindowing(double window, double level)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->setWindow(window);
     this->setLevel(level);
     this->updateWindowing();
@@ -138,28 +138,26 @@ void Image::updatingTFWindowing(double window, double level)
 
 //------------------------------------------------------------------------------
 
-void Image::doConfigure()
+void SImage::configuring()
 {
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
-    if(m_configuration->hasAttribute("vtkimageregister") )
-    {
-        this->setVtkImageRegisterId( m_configuration->getAttributeValue("vtkimageregister") );
-    }
-    if(m_configuration->hasAttribute("opacity") )
-    {
-        this->setImageOpacity(::boost::lexical_cast<double>(m_configuration->getAttributeValue("opacity")));
-    }
-    if(m_configuration->hasAttribute("tfalpha") )
-    {
-        this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
-    }
+    this->configureParams();
 
-    this->parseTFConfig( m_configuration );
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    this->setVtkImageRegisterId( config.get<std::string>("vtkimageregister", ""));
+
+    m_imageOpacity = config.get<double>("opacity", 0.);
+
+    const std::string tfalpha = config.get<std::string>("tfalpha", "no");
+    SLM_ASSERT("'tfalpha' value must be 'yes' or 'no', actual: " + tfalpha, tfalpha == "yes" || tfalpha == "no");
+    this->setAllowAlphaInTF(tfalpha == "yes");
+
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
 
-void Image::updateImage( ::fwData::Image::sptr image  )
+void SImage::updateImage( ::fwData::Image::sptr image  )
 {
     ::fwVtkIO::toVTKImage(image, m_imageData);
 
@@ -169,7 +167,7 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void Image::updateWindowing()
+void SImage::updateWindowing()
 {
     m_lut->SetWindow(this->getWindow());
     m_lut->SetLevel(this->getLevel());
@@ -179,7 +177,7 @@ void Image::updateWindowing()
 
 //------------------------------------------------------------------------------
 
-void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
+void SImage::updateImageTransferFunction( ::fwData::Image::sptr image )
 {
     this->updateTransferFunction(image);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
@@ -195,7 +193,7 @@ void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void Image::updateImageOpacity()
+void SImage::updateImageOpacity()
 {
     if (m_imagePortId >= 0)
     {
@@ -226,9 +224,8 @@ void Image::updateImageOpacity()
 
 //------------------------------------------------------------------------------
 
-void Image::buildPipeline( )
+void SImage::buildPipeline( )
 {
-    SLM_TRACE_FUNC();
     m_map2colors->SetInputData(m_imageData);
     m_map2colors->SetLookupTable(m_lut);
     m_map2colors->SetOutputFormatToRGBA();
@@ -281,7 +278,7 @@ void Image::buildPipeline( )
 
 //------------------------------------------------------------------------------
 
-void Image::destroyPipeline( )
+void SImage::destroyPipeline( )
 {
     vtkImageAlgorithm* algorithm       = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
     vtkImageData* imageData            = vtkImageData::SafeDownCast(m_imageRegister);
@@ -320,13 +317,13 @@ void Image::destroyPipeline( )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Image::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SImage::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair(::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT));
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

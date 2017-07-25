@@ -6,8 +6,8 @@
 
 #include "visuVTKAdaptor/SNegatoOneSlice.hpp"
 
-#include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImageSlice.hpp"
+#include "visuVTKAdaptor/SImage.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -32,7 +32,7 @@
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoOneSlice, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoOneSlice);
 
 namespace visuVTKAdaptor
 {
@@ -150,13 +150,12 @@ void SNegatoOneSlice::cleanImageSource()
     if (m_imageAdaptor.expired())
     {
         OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
-        ::fwData::Image::sptr image;
-        image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
         // create the srv configuration for objects auto-connection
         IService::Config srvConfig;
-        adaptor = this->createSubAdaptor("::visuVTKAdaptor::Image", srvConfig);
+        adaptor = this->createSubAdaptor("::visuVTKAdaptor::SImage", srvConfig);
         this->registerServiceInOut(image, s_IMAGE_INOUT, adaptor, true, srvConfig);
 
         adaptor->setConfiguration(srvConfig);
@@ -166,8 +165,8 @@ void SNegatoOneSlice::cleanImageSource()
         adaptor->setTransformId( this->getTransformId() );
         adaptor->setAutoRender( this->getAutoRender() );
 
-        ::visuVTKAdaptor::Image::sptr imgAdaptor;
-        imgAdaptor = ::visuVTKAdaptor::Image::dynamicCast(adaptor);
+        ::visuVTKAdaptor::SImage::sptr imgAdaptor;
+        imgAdaptor = ::visuVTKAdaptor::SImage::dynamicCast(adaptor);
         imgAdaptor->setVtkImageRegister(this->getImageSource());
         imgAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
 

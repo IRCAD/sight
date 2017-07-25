@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
        <inout key="tfSelection" uid="..." />
        <config renderer="default" picker="negatodefault" sliceIndex="axial"
                transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
-               selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
+               selectedTFKey="tkKey" />
    </service>
    @endcode
  * @subsection In-Out In-Out

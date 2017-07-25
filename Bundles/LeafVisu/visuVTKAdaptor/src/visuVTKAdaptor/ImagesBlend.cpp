@@ -6,7 +6,7 @@
 
 #include "visuVTKAdaptor/ImagesBlend.hpp"
 
-#include "visuVTKAdaptor/Image.hpp"
+#include "visuVTKAdaptor/SImage.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -368,7 +368,7 @@ void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
     imageAdaptorService->setTransformId( this->getTransformId() );
     imageAdaptorService->setAutoRender( this->getAutoRender() );
 
-    ::visuVTKAdaptor::Image::sptr imageAdaptor = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptorService);
+    ::visuVTKAdaptor::SImage::sptr imageAdaptor = ::visuVTKAdaptor::SImage::dynamicCast(imageAdaptorService);
 
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
     imageAdaptor->setImageOpacity(info->m_imageOpacity);

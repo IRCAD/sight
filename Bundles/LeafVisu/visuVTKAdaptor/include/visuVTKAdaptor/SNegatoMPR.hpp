@@ -38,7 +38,7 @@ class SliceCursor;
        <inout key="tfSelection" uid="..." />
        <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"
                transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
-               selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
+               selectedTFKey="tkKey" />
    </service>
    @endcode
  * @subsection In-Out In-Out
