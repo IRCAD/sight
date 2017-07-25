@@ -158,19 +158,46 @@ protected:
     }
 
     /**
-     * @brief Create the service and register it in the OSR
-     * @param type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)
-     * @param obj main object used by the service, if the service works on several objects, you will need to call
-     *        ::fwServices::OSR::registerServiceInput() with the other objects
-     * @param key key of the object in the new adaptor
+     * @brief Creates a new sub adaptor
+     * @param[in] type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)
+     * @param[out] config struct used to configure the service's objects and auto-connection
      * @return Returns the created adaptor
      * @throw fwCore::Exception if the service cannot be created
+     * @note if the service works on objects, you will need to call :registerServiceInput()  or registerServiceInOut()
+     * with the objects
      */
-    FWRENDERVTK_API fwRenderVTK::IAdaptor::sptr createAndRegisterServiceInput(
-        const std::string& type,
-        const ::fwData::Object::csptr& obj,
-        const std::string& key);
+    FWRENDERVTK_API ::fwRenderVTK::IAdaptor::sptr createSubAdaptor(const std::string& type,
+                                                                   ::fwServices::IService::Config& config);
 
+    /**
+     * @brief Registers the object of the service in the OSR
+     * @param[in] obj input object used by the service
+     * @param[in] key key of the object in the new adaptor
+     * @param[in] srv service to register with the object
+     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @param[in,out] config struct used to configure the service's objects and auto-connection
+     * @return
+     */
+    FWRENDERVTK_API void registerServiceInput(const ::fwData::Object::csptr& obj,
+                                              const std::string& key,
+                                              const ::fwRenderVTK::IAdaptor::sptr& srv,
+                                              const bool autoConnect,
+                                              ::fwServices::IService::Config& config);
+
+    /**
+     * @brief Registers the object of the service in the OSR
+     * @param[in] obj in-out object used by the service
+     * @param[in] key key of the object in the new adaptor
+     * @param[in] srv service to register with the object
+     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @param[in,out] config struct used to configure the service's objects and auto-connection
+     * @return
+     */
+    FWRENDERVTK_API void registerServiceInOut(const ::fwData::Object::sptr& obj,
+                                              const std::string& key,
+                                              const ::fwRenderVTK::IAdaptor::sptr& srv,
+                                              const bool autoConnect,
+                                              ::fwServices::IService::Config& config);
     /**
      * @brief Create the service and register it in the OSR
      * @param type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)

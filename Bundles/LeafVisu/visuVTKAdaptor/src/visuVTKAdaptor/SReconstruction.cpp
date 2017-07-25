@@ -96,10 +96,14 @@ void SReconstruction::createMeshService()
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
-        ::fwRenderVTK::IAdaptor::sptr meshService = this->createAndRegisterServiceInput("::visuVTKAdaptor::SMesh",
-                                                                                        mesh, SMesh::s_MESH_INPUT);
+        // create the srv configuration for objects auto-connection
+        IService::Config serviceConfig;
+        ::fwRenderVTK::IAdaptor::sptr meshService = this->createSubAdaptor("::visuVTKAdaptor::SMesh", serviceConfig);
+        this->registerServiceInput(mesh, SMesh::s_MESH_INPUT, meshService, true, serviceConfig);
+
         ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
+        meshService->setConfiguration(serviceConfig);
         meshService->setRenderService( this->getRenderService() );
         meshService->setRendererId( this->getRendererId() );
         meshService->setPickerId( this->getPickerId() );

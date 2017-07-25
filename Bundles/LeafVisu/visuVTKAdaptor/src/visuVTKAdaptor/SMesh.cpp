@@ -668,8 +668,12 @@ void SMesh::setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv, ::fwData::M
 {
     if (!srv)
     {
-        srv = this->createAndRegisterServiceInput("::visuVTKAdaptor::SMaterial", material, SMaterial::s_MATERIAL_INPUT);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvConfig;
+        srv = this->createSubAdaptor("::visuVTKAdaptor::SMaterial", srvConfig);
+        this->registerServiceInput(material, SMaterial::s_MATERIAL_INPUT, srv, true, srvConfig);
 
+        srv->setConfiguration(srvConfig);
         srv->setRenderService(this->getRenderService());
         srv->setAutoRender( this->getAutoRender() );
         srv->start();
@@ -714,9 +718,12 @@ void SMesh::createNormalsService()
         ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
         SLM_ASSERT("Missing mesh", mesh);
 
-        ::fwRenderVTK::IAdaptor::sptr service = this->createAndRegisterServiceInput( "::visuVTKAdaptor::SMeshNormals",
-                                                                                     mesh, SMeshNormals::s_MESH_INPUT);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvConfig;
+        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SMeshNormals", srvConfig);
+        this->registerServiceInput(mesh, SMeshNormals::s_MESH_INPUT, service, true, srvConfig);
 
+        service->setConfiguration(srvConfig);
         service->setRenderService( this->getRenderService() );
         service->setRendererId( this->getRendererId()      );
         service->setPickerId( this->getPickerId()      );

@@ -111,10 +111,12 @@ void SModelSeries::updating()
 
     for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
     {
-        ::fwRenderVTK::IAdaptor::sptr service =
-            this->createAndRegisterServiceInput("::visuVTKAdaptor::SReconstruction",
-                                                reconstruction, SReconstruction::s_RECONSTRUCTION_INPUT);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvConfig;
+        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SReconstruction", srvConfig);
+        this->registerServiceInput(reconstruction, SReconstruction::s_RECONSTRUCTION_INPUT, service, true, srvConfig);
 
+        service->setConfiguration(srvConfig);
         service->setTransformId( this->getTransformId() );
         service->setRendererId( this->getRendererId() );
         service->setPickerId( this->getPickerId() );

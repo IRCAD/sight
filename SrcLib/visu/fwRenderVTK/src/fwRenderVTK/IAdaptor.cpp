@@ -10,6 +10,8 @@
 
 #include <fwData/String.hpp>
 
+#include <fwRuntime/EConfigurationElement.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -274,10 +276,8 @@ vtkRenderWindowInteractor* IAdaptor::getInteractor()
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IAdaptor::sptr IAdaptor::createAndRegisterServiceInput(
-    const std::string& type,
-    const ::fwData::Object::csptr& obj,
-    const std::string& key)
+::fwRenderVTK::IAdaptor::sptr IAdaptor::createSubAdaptor(const std::string& type,
+                                                         ::fwServices::IService::Config& config)
 {
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
 
@@ -287,31 +287,51 @@ vtkRenderWindowInteractor* IAdaptor::getInteractor()
     ::fwRenderVTK::IAdaptor::sptr adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
     FW_RAISE_IF("Service of type '"+ type + "' is not an adaptor", !adaptor);
 
-    ::fwServices::OSR::registerServiceInput(obj, key, srv);
-
     m_subServices.push_back(adaptor);
+
+    config.m_type              = type;
+    config.m_globalAutoConnect = false;
+    config.m_config            = ::fwRuntime::EConfigurationElement::New("service");
+
     return adaptor;
 }
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IAdaptor::sptr IAdaptor::createAndRegisterServiceInOut(
-    const std::string& type,
-    const ::fwData::Object::sptr& obj,
-    const std::string& key)
+void IAdaptor::registerServiceInput(const ::fwData::Object::csptr& obj,
+                                    const std::string& key,
+                                    const ::fwRenderVTK::IAdaptor::sptr& srv,
+                                    const bool autoConnect,
+                                    ::fwServices::IService::Config& config)
 {
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+    ::fwServices::OSR::registerServiceInput(obj, key, srv);
 
-    ::fwServices::IService::sptr srv = srvFactory->create("::visuVTKAdaptor::SMaterial");
-    FW_RAISE_IF("Service of type '" + type + "' cannot be instantiated.", !srv);
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INPUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
 
-    ::fwRenderVTK::IAdaptor::sptr adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
-    FW_RAISE_IF("Service of type '"+ type + "' is not an adaptor", !adaptor);
+    config.m_objects.push_back(objConfig);
+}
 
-    ::fwServices::OSR::registerService(obj, key, ::fwServices::IService::AccessType::INOUT, srv);
+//------------------------------------------------------------------------------
 
-    m_subServices.push_back(adaptor);
-    return adaptor;
+void IAdaptor::registerServiceInOut(const ::fwData::Object::sptr& obj,
+                                    const std::string& key,
+                                    const ::fwRenderVTK::IAdaptor::sptr& srv,
+                                    const bool autoConnect,
+                                    ::fwServices::IService::Config& config)
+{
+    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, srv);
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INOUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    config.m_objects.push_back(objConfig);
 }
 
 //------------------------------------------------------------------------------
