@@ -74,6 +74,7 @@ SImage::~SImage() noexcept
 void SImage::starting()
 {
     this->initialize();
+
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
