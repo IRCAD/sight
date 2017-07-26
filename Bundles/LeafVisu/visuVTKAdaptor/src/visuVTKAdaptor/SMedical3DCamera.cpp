@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Medical3DCamera.hpp"
+#include "visuVTKAdaptor/SMedical3DCamera.hpp"
 
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
@@ -22,7 +22,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SMedical3DCamera, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -32,61 +32,51 @@ static const ::fwCom::Slots::SlotKeyType SET_SAGITTAL_SLOT = "setSagittal";
 static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
 std::map< std::string, ::fwDataTools::helper::MedicalImageAdaptor::Orientation >
-Medical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
-                                               (std::string("axial"), Z_AXIS)
-                                               (std::string("frontal"), Y_AXIS)
-                                               (std::string("sagittal"), X_AXIS);
+SMedical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
+                                                (std::string("axial"), Z_AXIS)
+                                                (std::string("frontal"), Y_AXIS)
+                                                (std::string("sagittal"), X_AXIS);
 
 //------------------------------------------------------------------------------
 
-Medical3DCamera::Medical3DCamera() noexcept :
+SMedical3DCamera::SMedical3DCamera() noexcept :
     m_resetAtStart(false)
 
 {
-    m_slotSetAxial    = ::fwCom::newSlot(&Medical3DCamera::setAxialView, this);
-    m_slotSetSagittal = ::fwCom::newSlot(&Medical3DCamera::setSagittalView, this);
-    m_slotSetFrontal  = ::fwCom::newSlot(&Medical3DCamera::setFrontalView, this);
-
-    ::fwCom::HasSlots::m_slots(SET_AXIAL_SLOT, m_slotSetAxial)
-        (SET_SAGITTAL_SLOT, m_slotSetSagittal)
-        (SET_FRONTAL_SLOT, m_slotSetFrontal);
-
-    this->setWorker(m_associatedWorker);
+    newSlot(SET_AXIAL_SLOT, &SMedical3DCamera::setAxialView, this);
+    newSlot(SET_SAGITTAL_SLOT, &SMedical3DCamera::setSagittalView, this);
+    newSlot(SET_FRONTAL_SLOT, &SMedical3DCamera::setFrontalView, this);
 }
 
 //------------------------------------------------------------------------------
 
-Medical3DCamera::~Medical3DCamera() noexcept
+SMedical3DCamera::~SMedical3DCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doConfigure()
+void SMedical3DCamera::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    assert(m_configuration->getName() == "config");
-    if(m_configuration->hasAttribute("sliceIndex"))
-    {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
-        SLM_ASSERT("Unknown orientation", m_orientationConversion.find(orientation) != m_orientationConversion.end());
-        m_orientation = m_orientationConversion[orientation];
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if(m_configuration->hasAttribute("resetAtStart"))
-    {
-        std::string reset = m_configuration->getAttributeValue("resetAtStart");
-        SLM_ASSERT("'resetAtStart' value must be 'yes' or 'no'",
-                   reset == "yes" || reset == "no");
-        m_resetAtStart = (reset == "yes");
-    }
+    const std::string orientation = config.get<std::string>("sliceIndex", "axial");
+    SLM_ASSERT("Unknown orientation", m_orientationConversion.find(orientation) != m_orientationConversion.end());
+    m_orientation = m_orientationConversion[orientation];
+
+    const std::string reset = config.get<std::string>("resetAtStart", "no");
+    SLM_ASSERT("'resetAtStart' value must be 'yes' or 'no'", reset == "yes" || reset == "no");
+    m_resetAtStart = (reset == "yes");
 }
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doStart()
+void SMedical3DCamera::starting()
 {
+    this->initialize();
+
     m_camera = this->getRenderer()->GetActiveCamera();
 
     if(m_resetAtStart)
@@ -97,29 +87,21 @@ void Medical3DCamera::doStart()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doUpdate()
+void SMedical3DCamera::updating()
 {
-    SLM_TRACE_FUNC();
     this->updateView();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doSwap()
+void SMedical3DCamera::stopping()
 {
-    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::doStop()
-{
-    this->unregisterServices();
-}
-
-//------------------------------------------------------------------------------
-
-void Medical3DCamera::setSagittalView()
+void SMedical3DCamera::setSagittalView()
 {
     m_orientation = X_AXIS;
     this->updating();
@@ -127,7 +109,7 @@ void Medical3DCamera::setSagittalView()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::setFrontalView()
+void SMedical3DCamera::setFrontalView()
 {
     m_orientation = Y_AXIS;
     this->updating();
@@ -135,7 +117,7 @@ void Medical3DCamera::setFrontalView()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::setAxialView()
+void SMedical3DCamera::setAxialView()
 {
     m_orientation = Z_AXIS;
     this->updating();
@@ -143,7 +125,7 @@ void Medical3DCamera::setAxialView()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::updateView()
+void SMedical3DCamera::updateView()
 {
     if(m_orientation == Z_AXIS )
     {
@@ -161,7 +143,7 @@ void Medical3DCamera::updateView()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::resetSagittalView()
+void SMedical3DCamera::resetSagittalView()
 {
     m_camera->SetPosition(-1, 0, 0);
     m_camera->SetFocalPoint(0, 0, 0);
@@ -172,7 +154,7 @@ void Medical3DCamera::resetSagittalView()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::resetFrontalView()
+void SMedical3DCamera::resetFrontalView()
 {
     m_camera->SetPosition(0, -1, 0);
     m_camera->SetFocalPoint(0, 0, 0);
@@ -184,7 +166,7 @@ void Medical3DCamera::resetFrontalView()
 
 //------------------------------------------------------------------------------
 
-void Medical3DCamera::resetAxialView()
+void SMedical3DCamera::resetAxialView()
 {
     m_camera->SetPosition(0, 0, -1);
     m_camera->SetFocalPoint(0, 0, 0);

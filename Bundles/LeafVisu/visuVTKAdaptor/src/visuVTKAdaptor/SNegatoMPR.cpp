@@ -165,7 +165,7 @@ void SNegatoMPR::updating()
         }
         if(this->is3dModeEnabled())
         {
-            this->addAdaptor("::visuVTKAdaptor::Medical3DCamera", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SMedical3DCamera", m_orientation);
         }
         else if(!this->is3dModeEnabled())
         {
