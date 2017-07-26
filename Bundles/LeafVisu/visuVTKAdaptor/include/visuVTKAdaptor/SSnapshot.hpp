@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SNAPSHOT_HPP__
-#define __VISUVTKADAPTOR_SNAPSHOT_HPP__
+#ifndef __VISUVTKADAPTOR_SSNAPSHOT_HPP__
+#define __VISUVTKADAPTOR_SSNAPSHOT_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -18,48 +18,47 @@ namespace visuVTKAdaptor
 {
 /**
  * @brief This service will snapshot the current generic scene.
+ *
  * It has two slots that can either snapshot into an ::fwData::Image or into a chosen image on the filesystem.
- * @section XML XML configuration
- * @code{.xml}
-    <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-        <config renderer="default" image="imageUID" />
-    </adaptor>
-   @endcode
- * - \b image(optional)     : Defines the UID of the fwData::Image to write into.
  *
  * @section Slots Slots
  * - \b snap(std::string filePath)    : This slot snaps onto the filesystem at a specified filepath.
  * - \b snapToImage()                 : This slot snaps into the configured image.
  *
+ * @section XML XML configuration
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SSnapshot" autoConnect="yes">
+       <out key="image" uid="..." />
+       <config renderer="default" />
+   </service>
+   @endcode
+ *
+ * @subsection Outpu Output
+ * - \b image [::fwData::Image] : Defines the fwData::Image to write into. Only used if snapToImage() is called.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
+ *    renderer.
  */
 
-class VISUVTKADAPTOR_CLASS_API Snapshot : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SSnapshot : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Snapshot)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SSnapshot)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API Snapshot() noexcept;
+    VISUVTKADAPTOR_API SSnapshot() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~Snapshot() noexcept;
+    VISUVTKADAPTOR_API virtual ~SSnapshot() noexcept;
 
 protected:
 
-    /// Does nothing.
-    VISUVTKADAPTOR_API void doStart();
-
-    /// Does nothing.
-    VISUVTKADAPTOR_API void doStop();
-
-    /// Gets the image object if any and stores its uid.
-    VISUVTKADAPTOR_API void doConfigure();
-
-    /// Does nothing.
-    VISUVTKADAPTOR_API void doSwap();
-
-    /// Does nothing.
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
 private:
 
@@ -88,4 +87,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_SNAPSHOT_HPP__
+#endif // __VISUVTKADAPTOR_SSNAPSHOT_HPP__

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Snapshot.hpp"
+#include "visuVTKAdaptor/SSnapshot.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -33,83 +33,59 @@
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Snapshot, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSnapshot);
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType Snapshot::s_SNAP_SLOT        = "snap";
-const ::fwCom::Slots::SlotKeyType Snapshot::s_SNAPTOIMAGE_SLOT = "snapToImage";
+const ::fwCom::Slots::SlotKeyType SSnapshot::s_SNAP_SLOT        = "snap";
+const ::fwCom::Slots::SlotKeyType SSnapshot::s_SNAPTOIMAGE_SLOT = "snapToImage";
 
-Snapshot::Snapshot() noexcept
+SSnapshot::SSnapshot() noexcept
 {
-    newSlot(s_SNAP_SLOT, &Snapshot::snap, this);
-    newSlot(s_SNAPTOIMAGE_SLOT, &Snapshot::snapToImage, this);
+    newSlot(s_SNAP_SLOT, &SSnapshot::snap, this);
+    newSlot(s_SNAPTOIMAGE_SLOT, &SSnapshot::snapToImage, this);
 }
 
 //------------------------------------------------------------------------------
 
-Snapshot::~Snapshot() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Snapshot::doConfigure()
-{
-    if(m_configuration->hasAttribute("image"))
-    {
-        m_imageUid = m_configuration->getAttributeValue("image");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Snapshot::doStart()
-{
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Snapshot::doUpdate()
+SSnapshot::~SSnapshot() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doSwap()
+void SSnapshot::configuring()
 {
-    this->doUpdate();
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::doStop()
+void SSnapshot::starting()
+{
+    this->initialize();
+}
+
+//------------------------------------------------------------------------------
+
+void SSnapshot::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::snapToImage()
+void SSnapshot::stopping()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SSnapshot::snapToImage()
 {
     if ( !m_imageUid.empty() )
     {
-        ::fwData::Image::sptr imageToSnap;
-
-        if (!this->isVersion2())
-        {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_imageUid);
-            SLM_ASSERT("Object '" + m_imageUid + "' is not found", obj);
-            imageToSnap = ::fwData::Image::dynamicCast(obj);
-            SLM_ASSERT("Object '" + m_imageUid + "' is not an ::fwData::Image (" + obj->getClassname() + ")",
-                       imageToSnap);
-        }
-        else
-        {
-            imageToSnap = this->getSafeInOut< ::fwData::Image>(m_imageUid);
-            SLM_ASSERT("The image \"" << m_imageUid << "\" is not valid.", imageToSnap);
-        }
+        ::fwData::Image::sptr imageToSnap = ::fwData::Image::New();
 
         vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
         snapper->SetMagnification( 1 );
@@ -119,13 +95,15 @@ void Snapshot::snapToImage()
         vtkImageData* vtkImage = snapper->GetOutput();
         ::fwVtkIO::fromVTKImage(vtkImage, imageToSnap);
 
+        this->setOutput("image", imageToSnap);
+
         snapper->Delete();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Snapshot::snap(std::string filePath)
+void SSnapshot::snap(std::string filePath)
 {
     SLM_ASSERT("filePath is empty", !filePath.empty());
     namespace fs = ::boost::filesystem;
