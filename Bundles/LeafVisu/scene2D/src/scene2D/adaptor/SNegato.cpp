@@ -14,10 +14,8 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>

@@ -6,8 +6,6 @@
 
 #include "scene2D/adaptor/SSquare.hpp"
 
-#include <fwData/Composite.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>

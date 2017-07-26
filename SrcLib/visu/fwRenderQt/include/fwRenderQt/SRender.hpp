@@ -15,8 +15,6 @@
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwData/Composite.hpp>
-
 #include <fwRender/IRender.hpp>
 
 #include <fwServices/helper/Config.hpp>

@@ -102,16 +102,6 @@ void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
                 adaptor->processInteraction( _event );
             }
         }
-        // TODO managed ZValue
-//        for(ZValue2AdaptorID::reverse_iterator rit = m_zValue2AdaptorID.rbegin(); rit != m_zValue2AdaptorID.rend();
-// ++rit )
-//        {
-//            const auto adaptor = m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock();
-//            if(adaptor != nullptr && adaptor->isStarted())
-//            {
-//                m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
-//            }
-//        }
     }
 }
 
@@ -235,19 +225,6 @@ Qt::AspectRatioMode SRender::getAspectRatioMode() const
 {
     return m_aspectRatioMode;
 }
-
-//-----------------------------------------------------------------------------
-
-//void SRender::ensureUniqueZValue( SceneAdaptor2D _adaptee )
-//{
-//    const float zValue = _adaptee.m_service.lock()->getZValue();
-//
-//    if( m_zValue2AdaptorID.find( zValue ) != m_zValue2AdaptorID.end() )
-//    {
-//        _adaptee.m_service.lock()->setZValue( zValue + 1 );
-//        ensureUniqueZValue( _adaptee );
-//    }
-//}
 
 //-----------------------------------------------------------------------------
 

@@ -6,8 +6,6 @@
 
 #include "scene2D/adaptor/SViewportInteractor.hpp"
 
-#include <fwData/Composite.hpp>
-
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
 #include <fwServices/macros.hpp>

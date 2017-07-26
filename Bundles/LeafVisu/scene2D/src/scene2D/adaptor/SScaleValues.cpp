@@ -6,8 +6,6 @@
 
 #include "scene2D/adaptor/SScaleValues.hpp"
 
-#include <fwData/Composite.hpp>
-
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 

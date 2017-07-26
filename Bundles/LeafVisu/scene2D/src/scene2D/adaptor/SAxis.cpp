@@ -6,8 +6,6 @@
 
 #include "scene2D/adaptor/SAxis.hpp"
 
-#include <fwData/Composite.hpp>
-
 #include <fwRenderQt/data/InitQtPen.hpp>
 
 #include <fwServices/macros.hpp>
