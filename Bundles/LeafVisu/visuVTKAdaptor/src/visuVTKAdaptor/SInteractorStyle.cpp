@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/InteractorStyle.hpp"
+#include "visuVTKAdaptor/SInteractorStyle.hpp"
 
 #include <fwRenderVTK/IInteractorStyle.hpp>
 
@@ -14,74 +14,66 @@
 #include <vtkInteractorStyleImage.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SInteractorStyle);
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-InteractorStyle::InteractorStyle() noexcept :
+SInteractorStyle::SInteractorStyle() noexcept :
     m_interactorStyle(nullptr)
 {
 }
 
 //------------------------------------------------------------------------------
 
-InteractorStyle::~InteractorStyle() noexcept
+SInteractorStyle::~SInteractorStyle() noexcept
 {
-    SLM_ASSERT("InteractorStyle should be NULL", !m_interactorStyle);
+    SLM_ASSERT("SInteractorStyle should be NULL", !m_interactorStyle);
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doConfigure()
+void SInteractorStyle::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
-    SLM_ASSERT("Missing attribute 'style'", m_configuration->hasAttribute("style"));
-    m_configuredStyle = m_configuration->getAttributeValue("style");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    SLM_ASSERT("Missing attribute 'style'", config.count("style"));
+    m_configuredStyle = config.get<std::string>("style");
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doStart()
+void SInteractorStyle::starting()
 {
+    this->initialize();
+
     vtkObject* objectStyle         = vtkInstantiator::CreateInstance(m_configuredStyle.c_str());
     vtkInteractorStyle* interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
-    OSLM_ASSERT(
-        "InsteractorStyle adaptor is waiting "
-        "for a vtkInteractorStyle object, but '"
-        << m_configuredStyle <<
-        "' has been given.", interactor);
-    this->setInteractorStyle(interactor);
-
+    SLM_ASSERT("InsteractorStyle adaptor is waiting for a vtkInteractorStyle object, but '"
+               + m_configuredStyle + "' has been given.", interactor);
+    this->setSInteractorStyle(interactor);
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doUpdate()
+void SInteractorStyle::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doSwap()
+void SInteractorStyle::stopping()
 {
-    SLM_TRACE_FUNC();
+    this->setSInteractorStyle(nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::doStop()
-{
-    this->setInteractorStyle(nullptr);
-}
-
-//------------------------------------------------------------------------------
-
-void InteractorStyle::setInteractorStyle(vtkInteractorStyle* interactor)
+void SInteractorStyle::setSInteractorStyle(vtkInteractorStyle* interactor)
 {
     if ( m_interactorStyle != nullptr )
     {
