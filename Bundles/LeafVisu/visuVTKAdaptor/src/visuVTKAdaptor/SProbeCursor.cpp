@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ProbeCursor.hpp"
+#include "visuVTKAdaptor/SProbeCursor.hpp"
 
 #include "visuVTKAdaptor/ImageText.hpp"
 
@@ -42,7 +42,7 @@
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SProbeCursor);
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_PROBE_EVENT  vtkCommand::LeftButtonReleaseEvent
@@ -74,7 +74,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
+    virtual void Execute( vtkObject* /*caller*/, unsigned long eventId, void*)
     {
         assert(m_priority >= 0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
@@ -94,7 +94,7 @@ public:
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
-                    m_adaptor->startProbeCursor();
+                    m_adaptor->startSProbeCursor();
                     process();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
@@ -140,7 +140,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( ProbeCursor::sptr adaptor)
+    void setAdaptor( SProbeCursor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
@@ -160,7 +160,7 @@ public:
     }
 
 protected:
-    ProbeCursor::sptr m_adaptor;
+    SProbeCursor::sptr m_adaptor;
     vtkAbstractPropPicker* m_picker;
     float m_priority;
 
@@ -170,10 +170,12 @@ protected:
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
-ProbeCursor::ProbeCursor() noexcept :
-    m_priority(.6),
+SProbeCursor::SProbeCursor() noexcept :
+    m_priority(.6f),
     m_vtkObserver(nullptr),
     m_textActor(vtkActor2D::New()),
     m_textMapper(vtkTextMapper::New()),
@@ -181,12 +183,12 @@ ProbeCursor::ProbeCursor() noexcept :
     m_cursorMapper(vtkPolyDataMapper::New() ),
     m_cursorActor(vtkActor::New() )
 {
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ProbeCursor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SProbeCursor::updateSliceIndex, this);
 }
 
 //------------------------------------------------------------------------------
 
-ProbeCursor::~ProbeCursor() noexcept
+SProbeCursor::~SProbeCursor() noexcept
 {
     m_textMapper->Delete();
     m_textActor->Delete();
@@ -199,7 +201,7 @@ ProbeCursor::~ProbeCursor() noexcept
 }
 
 //------------------------------------------------------------------------------
-void ProbeCursor::setVisibility( bool visibility )
+void SProbeCursor::setVisibility( bool visibility )
 {
     m_textActor->SetVisibility(visibility);
     m_cursorActor->SetVisibility(visibility);
@@ -209,13 +211,14 @@ void ProbeCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doConfigure()
+void SProbeCursor::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::buildTextActor()
+void SProbeCursor::buildTextActor()
 {
     vtkTextProperty* textprop = m_textMapper->GetTextProperty();
     textprop->SetColor(1, 1, 1);
@@ -237,8 +240,10 @@ void ProbeCursor::buildTextActor()
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doStart()
+void SProbeCursor::starting()
 {
+    this->initialize();
+
     this->buildTextActor();
     this->addToRenderer(m_textActor );
 
@@ -254,7 +259,7 @@ void ProbeCursor::doStart()
     this->addToRenderer(m_cursorActor);
 
     ProbingCallback* observer = ProbingCallback::New();
-    observer->setAdaptor( ProbeCursor::dynamicCast(this->getSptr()) );
+    observer->setAdaptor( SProbeCursor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
 
@@ -263,42 +268,41 @@ void ProbeCursor::doStart()
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_PROBE_EVENT, m_vtkObserver, m_priority);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
     this->setVisibility(false);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doUpdate()
+void SProbeCursor::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
     this->setVisibility(false);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::doSwap()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-}
-
-//------------------------------------------------------------------------------
-
-void ProbeCursor::doStop()
+void SProbeCursor::stopping()
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
     m_vtkObserver->Delete();
     m_vtkObserver = nullptr;
     this->removeAllPropFromRenderer();
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
-void ProbeCursor::updateSliceIndex(int axial, int frontal, int sagittal)
+void SProbeCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
@@ -307,15 +311,16 @@ void ProbeCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::startProbeCursor( )
+void SProbeCursor::startSProbeCursor( )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::updateView( double world[3] )
+void SProbeCursor::updateView( double world[3] )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
     int index[3];
     this->worldToImageSliceIndex( world, index );
@@ -325,9 +330,9 @@ void ProbeCursor::updateView( double world[3] )
 
     if ( world[0] < image->getOrigin()[0] || world[1] < image->getOrigin()[1] || world[2] < image->getOrigin()[2]  ||
          index[0] < 0 || index[1] < 0 || index[2] < 0 ||
-         index[0] >= image->getSize()[0] ||
-         index[1] >= image->getSize()[1] ||
-         index[2] >= image->getSize()[2]
+         index[0] >= static_cast<int>(image->getSize()[0]) ||
+         index[1] >= static_cast<int>(image->getSize()[1]) ||
+         index[2] >= static_cast<int>(image->getSize()[2])
          )
     {
         txt = "(---,---,---)";
@@ -336,8 +341,10 @@ void ProbeCursor::updateView( double world[3] )
     else
     {
         ::fwDataTools::helper::Image imageHelper(image);
-
-        std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
+        const size_t x              = static_cast<size_t>(index[0]);
+        const size_t y              = static_cast<size_t>(index[1]);
+        const size_t z              = static_cast<size_t>(index[2]);
+        const std::string greyLevel = imageHelper.getPixelAsString(x, y, z);
         txt = (::boost::format("(% 4li,% 4li, % 4li) : %s ") % index[0] % index[1] % index[2] % greyLevel ).str();
 
         m_textMapper->SetInput(txt.c_str());
@@ -360,38 +367,39 @@ void ProbeCursor::updateView( double world[3] )
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
+void SProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
-    unsigned int sliceIndex[3]; // the current sliceIndex
+    int sliceIndex[3]; // the current sliceIndex
 
     sliceIndex[2] = m_axialIndex->value();
     sliceIndex[1] = m_frontalIndex->value();
     sliceIndex[0] = m_sagittalIndex->value();
 
     double probeWorld[3]; // probe index in world positioning system
-    for (int dim = 0; dim < 3; ++dim )
+    for (unsigned int dim = 0; dim < 3; ++dim )
     {
         if ( probeSlice[dim] == sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
-            this->setOrientation(dim);
+            this->setOrientation(static_cast<int>(dim));
         }
         probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
 
-    for ( int p = 0; p < 2; ++p )
+    for (unsigned int p = 0; p < 2; ++p )
     {
-        for (int dim = 0; dim < 3; ++dim )
+        for (unsigned int dim = 0; dim < 3; ++dim )
         {
             worldCross[p][dim]   = probeWorld[dim];
             worldCross[p+2][dim] = probeWorld[dim];
             if ( (dim + p + 1)%3 == m_orientation )
             {
-                worldCross[p][dim]                               = image->getOrigin().at(dim);
-                ::fwData::Image::SizeType::value_type size       = image->getSize().at(dim)-1;
-                ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
-                worldCross[p+2][dim]                             = size * spacing + image->getOrigin().at(dim);
+                worldCross[p][dim] = image->getOrigin().at(dim);
+                const ::fwData::Image::SizeType::value_type size       = image->getSize().at(dim)-1;
+                const ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
+                worldCross[p+2][dim] = size * spacing + image->getOrigin().at(dim);
             }
         }
     }
@@ -399,7 +407,7 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCr
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::buildPolyData()
+void SProbeCursor::buildPolyData()
 {
     // point are stored Left,right,up,down
     int nbPoints      = 4;
@@ -429,12 +437,12 @@ void ProbeCursor::buildPolyData()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType ProbeCursor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SProbeCursor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

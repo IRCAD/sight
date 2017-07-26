@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_PROBECURSOR_HPP__
-#define __VISUVTKADAPTOR_PROBECURSOR_HPP__
+#ifndef __VISUVTKADAPTOR_SPROBECURSOR_HPP__
+#define __VISUVTKADAPTOR_SPROBECURSOR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -26,8 +26,7 @@ namespace visuVTKAdaptor
 {
 
 /**
- * @brief Cursor management
- *
+ * @brief Cursor management: displays a red cross representing the image picked point
  *
  * @section Slots Slots
  * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
@@ -35,35 +34,45 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <adaptor id="probeCursor" class="::visuVTKAdaptor::ProbeCursor" objectId="self">
+   <service type="::visuVTKAdaptor::SProbeCursor" autoConnect="yes">
+       <inout key="image" uid="..." />
        <config renderer="default" picker="negatodefault" transform="trf" />
-   </adaptor>
+   </service>
    @endcode
+ * * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image to display.
  *
  * @subsection Configuration Configuration
- *
- * - \b renderer (mandatory): defines the renderer to show the ProbeCursor.
- * - \b picker (mandatory): identifier of the picker
- * - \b transform (optional): the vtkTransform to associate to the adaptor
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer (mandatory): defines the renderer to show the SProbeCursor.
+ *    - \b picker (mandatory): identifier of the picker
+ *    - \b transform (optional): the vtkTransform to associate to the adaptor
  *
  */
 
-class VISUVTKADAPTOR_CLASS_API ProbeCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
-                                             public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SProbeCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
+                                              public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (ProbeCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SProbeCursor)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API ProbeCursor() noexcept;
+    VISUVTKADAPTOR_API SProbeCursor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~ProbeCursor() noexcept;
+    VISUVTKADAPTOR_API virtual ~SProbeCursor() noexcept;
 
     VISUVTKADAPTOR_API void updateView( double world[3] );
 
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
-    VISUVTKADAPTOR_API void startProbeCursor();
+    VISUVTKADAPTOR_API void startSProbeCursor();
+
+protected:
+
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -73,24 +82,14 @@ public:
      * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-protected:
-
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    // redraw all (stop then restart sub services)
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     void buildTextActor();
     void buildPolyData();
 
     void computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] );
 
-    double m_priority;
+    float m_priority;
 
     vtkCommand* m_vtkObserver;
 
@@ -116,4 +115,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_PROBECURSOR_HPP__
+#endif // __VISUVTKADAPTOR_SPROBECURSOR_HPP__

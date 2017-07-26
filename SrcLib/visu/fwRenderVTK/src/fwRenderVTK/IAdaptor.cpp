@@ -170,6 +170,8 @@ SRender::RendererIdType IAdaptor::getRendererId() const
 
 SRender::sptr IAdaptor:: getRenderService() const
 {
+    SLM_ASSERT("SRender service is not initialized, initialize() method must be called first",
+               !m_renderService.expired());
     return m_renderService.lock();
 }
 

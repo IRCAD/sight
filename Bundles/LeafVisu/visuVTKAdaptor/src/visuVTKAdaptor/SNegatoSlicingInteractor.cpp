@@ -336,6 +336,8 @@ void SNegatoSlicingInteractor::configuring()
 
 void SNegatoSlicingInteractor::starting()
 {
+    this->initialize();
+
     NegatoSlicingCallback* observer = NegatoSlicingCallback::New();
     observer->setAdaptor( SNegatoSlicingInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());

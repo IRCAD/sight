@@ -100,6 +100,8 @@ void SSlicesCursor::configuring()
 
 void SSlicesCursor::starting()
 {
+    this->initialize();
+
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
@@ -117,6 +119,7 @@ void SSlicesCursor::starting()
     }
     this->addToRenderer(m_cursorActor);
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -125,6 +128,7 @@ void SSlicesCursor::stopping()
 {
     m_isSelected = false;
     this->removeAllPropFromRenderer();
+    this->requestRender();
 }
 
 //////////////////////////////
@@ -299,6 +303,7 @@ void SSlicesCursor::updating()
     {
         this->updateImageSliceIndex(image);
         this->updateColors();
+        this->requestRender();
     }
 }
 

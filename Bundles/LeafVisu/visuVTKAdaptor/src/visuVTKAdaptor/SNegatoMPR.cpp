@@ -146,7 +146,7 @@ void SNegatoMPR::updating()
             this->addAdaptor("::visuVTKAdaptor::SNegatoWindowingInteractor");
             negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::SNegatoSlicingInteractor", m_orientation);
             sliceCursor             = this->addAdaptor("::visuVTKAdaptor::SSlicesCursor", m_orientation);
-            this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SProbeCursor", m_orientation);
 
             // Connect slicing signals/slots from NegatoSlicingInteractor to SlicesCursor using the image slicing proxy
             ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
