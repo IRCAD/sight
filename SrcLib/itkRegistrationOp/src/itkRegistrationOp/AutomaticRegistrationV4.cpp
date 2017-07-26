@@ -32,10 +32,10 @@
 #include <itkImage.h>
 #include <itkImageRegistrationMethodv4.h>
 #include <itkImageToImageMetricv4.h>
-#include <itkJointHistogramMutualInformationImageToImageMetricv4.h>
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkMattesMutualInformationImageToImageMetricv4.h>
 #include <itkMeanSquaresImageToImageMetricv4.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkRegularStepGradientDescentOptimizerv4.h>
 #include <itkTextOutput.h>
 #include <itkVersorRigid3DTransform.h>
@@ -105,7 +105,6 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
 
     typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
-    typedef typename ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType > InterpolatorType;
     typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
         RegistrationMethodType;
 
@@ -212,8 +211,9 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     optimizer->SetReturnBestParametersAndValue(true);
     optimizer->SetNumberOfIterations(_maxIterations);
 
-    auto fixedInterpolator  = InterpolatorType::New();
-    auto movingInterpolator = InterpolatorType::New();
+    // The fixed image isn't tranformed, nearest neighbor interpolation is enough.
+    auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction< RegisteredImageType, RealType >::New();
+    auto movingInterpolator = ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType >::New();
 
     metric->SetFixedInterpolator(fixedInterpolator.GetPointer());
     metric->SetMovingInterpolator(movingInterpolator.GetPointer());
