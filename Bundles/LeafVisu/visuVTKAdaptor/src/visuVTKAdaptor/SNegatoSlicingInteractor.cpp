@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
+#include "visuVTKAdaptor/SNegatoSlicingInteractor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -36,7 +36,7 @@
 #include <vtkProp3DCollection.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::NegatoSlicingInteractor,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoSlicingInteractor,
                          ::fwData::Image );
 
 namespace visuVTKAdaptor
@@ -263,7 +263,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( NegatoSlicingInteractor::sptr adaptor)
+    void setAdaptor( SNegatoSlicingInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
@@ -276,7 +276,7 @@ public:
     }
 
 protected:
-    NegatoSlicingInteractor::sptr m_adaptor;
+    SNegatoSlicingInteractor::sptr m_adaptor;
     vtkAbstractPropPicker* m_picker;
     vtkAbstractPropPicker* m_localPicker;
     vtkProp* m_pickedProp;
@@ -286,40 +286,59 @@ protected:
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-const ::fwCom::Signals::SignalKeyType NegatoSlicingInteractor::s_SLICING_STARTED_SIG = "slicingStarted";
-const ::fwCom::Signals::SignalKeyType NegatoSlicingInteractor::s_SLICING_STOPPED_SIG = "slicingStopped";
+const ::fwCom::Signals::SignalKeyType SNegatoSlicingInteractor::s_SLICING_STARTED_SIG = "slicingStarted";
+const ::fwCom::Signals::SignalKeyType SNegatoSlicingInteractor::s_SLICING_STOPPED_SIG = "slicingStopped";
+
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-NegatoSlicingInteractor::NegatoSlicingInteractor() noexcept :
+SNegatoSlicingInteractor::SNegatoSlicingInteractor() noexcept :
     m_vtkObserver(nullptr),
-    m_priority(.6)
+    m_priority(.6f)
 {
     m_sigSlicingStarted = newSignal< SlicingStartedSignalType >(s_SLICING_STARTED_SIG);
     m_sigSlicingStopped = newSignal< SlicingStoppedSignalType >(s_SLICING_STOPPED_SIG);
 
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &NegatoSlicingInteractor::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &NegatoSlicingInteractor::updateSliceType, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegatoSlicingInteractor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegatoSlicingInteractor::updateSliceType, this);
 }
 
 //-----------------------------------------------------------------------------
 
-NegatoSlicingInteractor::~NegatoSlicingInteractor() noexcept
+SNegatoSlicingInteractor::~SNegatoSlicingInteractor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doConfigure()
+void SNegatoSlicingInteractor::configuring()
 {
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    const std::string orientation = config.get<std::string>("sliceIndex", "axial");
+    if(orientation == "axial" )
+    {
+        m_orientation = Z_AXIS;
+    }
+    else if(orientation == "frontal" )
+    {
+        m_orientation = Y_AXIS;
+    }
+    else if(orientation == "sagittal" )
+    {
+        m_orientation = X_AXIS;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doStart()
+void SNegatoSlicingInteractor::starting()
 {
     NegatoSlicingCallback* observer = NegatoSlicingCallback::New();
-    observer->setAdaptor( NegatoSlicingInteractor::dynamicCast(this->getSptr()) );
+    observer->setAdaptor( SNegatoSlicingInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
 
     m_vtkObserver = observer;
@@ -331,29 +350,23 @@ void NegatoSlicingInteractor::doStart()
     this->getInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver, m_priority);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
     this->updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doUpdate()
+void SNegatoSlicingInteractor::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
     this->updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::doSwap()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-}
-
-//-----------------------------------------------------------------------------
-
-void NegatoSlicingInteractor::doStop()
+void SNegatoSlicingInteractor::stopping()
 {
     this->getInteractor()->RemoveObservers(START_SLICING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_SLICING_EVENT, m_vtkObserver);
@@ -363,12 +376,11 @@ void NegatoSlicingInteractor::doStop()
     this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
     m_vtkObserver->Delete();
     m_vtkObserver = nullptr;
-    this->removeAllPropFromRenderer();
 }
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::updateSliceIndex(int axial, int frontal, int sagittal)
+void SNegatoSlicingInteractor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
@@ -377,7 +389,7 @@ void NegatoSlicingInteractor::updateSliceIndex(int axial, int frontal, int sagit
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::updateSliceType(int from, int to)
+void SNegatoSlicingInteractor::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
@@ -391,7 +403,7 @@ void NegatoSlicingInteractor::updateSliceType(int from, int to)
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
+void SNegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
 {
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
@@ -418,9 +430,10 @@ void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::stopSlicing( )
+void SNegatoSlicingInteractor::stopSlicing()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
     m_sigSlicingStopped->asyncEmit();
 
     auto sig = image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
@@ -433,9 +446,10 @@ void NegatoSlicingInteractor::stopSlicing( )
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
+void SNegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
@@ -472,7 +486,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
 
 //-----------------------------------------------------------------------------
 
-void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
+void SNegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 {
     ::fwData::Integer::sptr sliceIndex[3];
     this->getSliceIndex(sliceIndex);
@@ -497,7 +511,8 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 
     if(setSliceIndex(index))
     {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
 
         m_sigSlicingStopped->asyncEmit();
 
@@ -512,13 +527,13 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType NegatoSlicingInteractor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SNegatoSlicingInteractor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT );
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT );
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

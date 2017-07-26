@@ -78,7 +78,7 @@ protected:
     vtkCommand* m_vtkObserver;
     double m_initialWindow;
     double m_initialLevel;
-    double m_priority;
+    float m_priority;
 };
 
 } //namespace visuVTKAdaptor

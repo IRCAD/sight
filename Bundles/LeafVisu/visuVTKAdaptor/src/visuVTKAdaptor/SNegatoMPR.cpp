@@ -6,9 +6,9 @@
 
 #include "visuVTKAdaptor/SNegatoMPR.hpp"
 
-#include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 #include "visuVTKAdaptor/SlicesCursor.hpp"
 #include "visuVTKAdaptor/SNegatoOneSlice.hpp"
+#include "visuVTKAdaptor/SNegatoSlicingInteractor.hpp"
 #include "visuVTKAdaptor/SNegatoWindowingInteractor.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -91,14 +91,14 @@ void SNegatoMPR::stopping()
 
     for (auto srv : this->getRegisteredServices())
     {
-        NegatoSlicingInteractor::sptr negatoSlicingInteractor = NegatoSlicingInteractor::dynamicCast(srv.lock());
-        SlicesCursor::sptr sliceCursor                        = SlicesCursor::dynamicCast(srv.lock());
+        SNegatoSlicingInteractor::sptr negatoSlicingInteractor = SNegatoSlicingInteractor::dynamicCast(srv.lock());
+        SlicesCursor::sptr sliceCursor                         = SlicesCursor::dynamicCast(srv.lock());
         if (negatoSlicingInteractor)
         {
             proxy->disconnect(m_slicingStartingProxy, negatoSlicingInteractor->signal(
-                                  NegatoSlicingInteractor::s_SLICING_STARTED_SIG));
+                                  SNegatoSlicingInteractor::s_SLICING_STARTED_SIG));
             proxy->disconnect(m_slicingStoppingProxy, negatoSlicingInteractor->signal(
-                                  NegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
+                                  SNegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
         }
 
         if (sliceCursor)
@@ -144,21 +144,21 @@ void SNegatoMPR::updating()
             ::fwRenderVTK::IAdaptor::sptr sliceCursor;
             ::fwRenderVTK::IAdaptor::sptr negatoSlicingInteractor;
             this->addAdaptor("::visuVTKAdaptor::SNegatoWindowingInteractor");
-            negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
+            negatoSlicingInteractor = this->addAdaptor("::visuVTKAdaptor::SNegatoSlicingInteractor", m_orientation);
             sliceCursor             = this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
             this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
 
-            /// Connect slicing signals/slots from NegatoSlicingInteractor to SlicesCursor using the image slicing proxy
+            // Connect slicing signals/slots from SNegatoSlicingInteractor to SlicesCursor using the image slicing proxy
             ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
             m_slicingStartingProxy                    = image->getID() + s_slicingStartingProxy;
             m_slicingStoppingProxy                    = image->getID() + s_slicingStoppingProxy;
             proxy->connect(m_slicingStartingProxy, negatoSlicingInteractor->signal(
-                               NegatoSlicingInteractor::s_SLICING_STARTED_SIG));
+                               SNegatoSlicingInteractor::s_SLICING_STARTED_SIG));
             proxy->connect(m_slicingStartingProxy, sliceCursor->slot(
                                SlicesCursor::s_SHOW_FULL_CROSS_SLOT));
 
             proxy->connect(m_slicingStoppingProxy, negatoSlicingInteractor->signal(
-                               NegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
+                               SNegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
             proxy->connect(m_slicingStoppingProxy, sliceCursor->slot(
                                SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT));
             m_sliceCursor = sliceCursor;

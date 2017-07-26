@@ -169,7 +169,7 @@ SNegatoWindowingInteractor::SNegatoWindowingInteractor() noexcept :
     m_vtkObserver(nullptr),
     m_initialWindow(0.),
     m_initialLevel(0.),
-    m_priority(.6)
+    m_priority(.6f)
 {
 }
 
