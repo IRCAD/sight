@@ -6,6 +6,8 @@
 
 #include "itkRegistrationOp/AutomaticRegistration.hpp"
 
+#include "itkRegistrationOp/RegistrationObserver.hxx"
+
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -40,88 +42,6 @@
 
 namespace itkRegistrationOp
 {
-
-/// Prints debug infos at each step of the optimizer.
-class IterationUpdateCommand : public ::itk::Command
-{
-public:
-    typedef  IterationUpdateCommand Self;
-    typedef ::itk::Command Superclass;
-    typedef ::itk::SmartPointer<Self>   Pointer;
-    itkNewMacro( Self );
-
-public:
-    typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
-
-    //------------------------------------------------------------------------------
-
-    void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
-    {
-        if(m_stop)
-        {
-            OptimizerType* optimizer = dynamic_cast< OptimizerType* >( caller );
-
-            // Force stop the optimizer by setting the minimum step to infinity.
-            optimizer->SetMinimumStepLength(std::numeric_limits<double>::max());
-        }
-
-        Execute( (const itk::Object*)caller, event);
-    }
-
-    //------------------------------------------------------------------------------
-
-    void Execute(const ::itk::Object* object, const ::itk::EventObject& event) override
-    {
-        if( ::itk::IterationEvent().CheckEvent( &event ) )
-        {
-            const OptimizerType* optimizer = dynamic_cast< const OptimizerType* >( object );
-
-            unsigned int itNum = optimizer->GetCurrentIteration();
-
-            std::string msg = "Number of iterations : " + std::to_string(itNum);
-            m_dialog(static_cast<float>(itNum)/static_cast<float>(m_maxIters), msg);
-            m_dialog.setMessage(msg);
-
-            OSLM_DEBUG("Number of iterations : " << itNum);
-            OSLM_DEBUG("Current value : " << optimizer->GetValue());
-            OSLM_DEBUG("Current parameters : " << optimizer->GetCurrentPosition() );
-        }
-    }
-
-    //------------------------------------------------------------------------------
-
-    void SetMaxIterations(unsigned long maxIters)
-    {
-        m_maxIters = maxIters;
-    }
-
-    //------------------------------------------------------------------------------
-
-    bool ForceStopped() const
-    {
-        return m_stop;
-    }
-
-    //------------------------------------------------------------------------------
-
-protected:
-
-    IterationUpdateCommand() :
-        m_dialog("Automatic Registration", "Registring, please be patient."),
-        m_stop(false)
-    {
-        m_dialog.setCancelCallback([this]()
-            {
-                this->m_stop = true;
-            });
-    }
-
-    ::fwGui::dialog::ProgressDialog m_dialog;
-
-    unsigned long m_maxIters;
-
-    bool m_stop;
-};
 
 //------------------------------------------------------------------------------
 
@@ -253,7 +173,7 @@ struct Registrator
         optimizer->SetMinimumStepLength( params.i_minStep );
         optimizer->SetNumberOfIterations( params.i_maxIters );
 
-        IterationUpdateCommand::Pointer observer = IterationUpdateCommand::New();
+        RegistrationObserver<OptimizerType>::Pointer observer = RegistrationObserver<OptimizerType>::New();
         observer->SetMaxIterations( params.i_maxIters );
         optimizer->AddObserver( itk::IterationEvent(), observer );
 
@@ -323,9 +243,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     // We don't handle int64, uint64 or double images to reduce compile times.
     typedef ::boost::mpl::vector<
-            /*signed char, unsigned char,
-               signed short, unsigned short,
-               signed int, unsigned int,*/float > RegistrationType;
+            signed char, unsigned char,
+            signed short, unsigned short,
+            signed int, unsigned int, float > RegistrationType;
 
     const ::fwTools::DynamicType targetType = _target->getPixelType();
     ::fwTools::Dispatcher< RegistrationType, RegistratorCaller>::invoke(targetType, params);
