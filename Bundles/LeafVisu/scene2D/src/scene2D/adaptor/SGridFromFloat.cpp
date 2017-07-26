@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/GridFromFloat.hpp"
+#include "scene2D/adaptor/SGridFromFloat.hpp"
 
 #include <fwData/Float.hpp>
 
@@ -14,7 +14,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::GridFromFloat, ::fwData::Float );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SGridFromFloat );
 
 namespace scene2D
 {
@@ -23,7 +23,7 @@ namespace adaptor
 
 static const ::fwServices::IService::KeyType S_FLOAT_INPUT = "float";
 
-GridFromFloat::GridFromFloat() noexcept :
+SGridFromFloat::SGridFromFloat() noexcept :
     m_xMin(0.f),
     m_xMax(10.f),
     m_yMin(0.f),
@@ -37,13 +37,13 @@ GridFromFloat::GridFromFloat() noexcept :
 
 //------------------------------------------------------------------------------
 
-GridFromFloat::~GridFromFloat() noexcept
+SGridFromFloat::~SGridFromFloat() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::configuring()
+void SGridFromFloat::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -73,7 +73,7 @@ void GridFromFloat::configuring()
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::draw()
+void SGridFromFloat::draw()
 {
     SLM_ASSERT("m_xSpacing can not equal 0", m_xSpacing != 0);
     SLM_ASSERT("m_ySpacing can not equal 0", m_ySpacing != 0);
@@ -137,7 +137,7 @@ void GridFromFloat::draw()
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doStart()
+void SGridFromFloat::doStart()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -149,7 +149,7 @@ void GridFromFloat::doStart()
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doUpdate()
+void SGridFromFloat::doUpdate()
 {
     const float value = this->getInput< ::fwData::Float >(S_FLOAT_INPUT)->getValue();
     // Check if the float object isn't negative
@@ -164,13 +164,13 @@ void GridFromFloat::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doSwap()
+void SGridFromFloat::doSwap()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void GridFromFloat::doStop()
+void SGridFromFloat::doStop()
 {
     // Clear the lines vector
     m_lines.clear();
@@ -180,7 +180,7 @@ void GridFromFloat::doStop()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap GridFromFloat::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SGridFromFloat::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( S_FLOAT_INPUT, ::fwData::Float::s_MODIFIED_SIG, s_UPDATE_SLOT );

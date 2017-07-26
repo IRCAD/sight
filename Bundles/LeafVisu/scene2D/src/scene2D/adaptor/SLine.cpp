@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/Line.hpp"
+#include "scene2D/adaptor/SLine.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -14,14 +14,14 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Line);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SLine);
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-Line::Line() noexcept :
+SLine::SLine() noexcept :
     m_x1(0.f),
     m_x2(0.f),
     m_y1(0.f),
@@ -33,13 +33,13 @@ Line::Line() noexcept :
 
 //---------------------------------------------------------------------------------------------------------------
 
-Line::~Line() noexcept
+SLine::~SLine() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::configuring()
+void SLine::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -65,7 +65,7 @@ void Line::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::draw()
+void SLine::draw()
 {
     const Point2DType pt1 = this->mapAdaptorToScene(Point2DType( m_x1, m_y1), m_xAxis, m_yAxis);
     const Point2DType pt2 = this->mapAdaptorToScene(Point2DType( m_x2, m_y2), m_xAxis, m_yAxis);
@@ -88,7 +88,7 @@ void Line::draw()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doStart()
+void SLine::doStart()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -99,19 +99,19 @@ void Line::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doUpdate()
+void SLine::doUpdate()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doSwap()
+void SLine::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Line::doStop()
+void SLine::doStop()
 {
     // Remove the layer (and therefore its related line item) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);

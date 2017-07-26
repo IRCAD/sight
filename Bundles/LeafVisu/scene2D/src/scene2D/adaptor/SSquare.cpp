@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/Square.hpp"
+#include "scene2D/adaptor/SSquare.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -12,7 +12,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Square);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SSquare);
 
 namespace scene2D
 {
@@ -21,7 +21,7 @@ namespace adaptor
 
 //-----------------------------------------------------------------------------
 
-Square::Square() noexcept :
+SSquare::SSquare() noexcept :
     m_size(0),
     m_layer(nullptr),
     m_rec(nullptr),
@@ -31,13 +31,13 @@ Square::Square() noexcept :
 
 //-----------------------------------------------------------------------------
 
-Square::~Square() noexcept
+SSquare::~SSquare() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::configuring()
+void SSquare::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -59,7 +59,7 @@ void Square::configuring()
 
 //-----------------------------------------------------------------------------
 
-void Square::doStart()
+void SSquare::doStart()
 {
     m_layer = new QGraphicsItemGroup();
 
@@ -78,26 +78,26 @@ void Square::doStart()
 
 //-----------------------------------------------------------------------------
 
-void Square::doUpdate()
+void SSquare::doUpdate()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::doSwap()
+void SSquare::doSwap()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::doStop()
+void SSquare::doStop()
 {
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
 //-----------------------------------------------------------------------------
 
-void Square::setColor(const std::string& _color )
+void SSquare::setColor(const std::string& _color )
 {
     m_color = QColor(QString::fromStdString(_color));
     if (!m_color.isValid())
@@ -110,7 +110,7 @@ void Square::setColor(const std::string& _color )
 
 //-----------------------------------------------------------------------------
 
-void Square::processInteraction( ::fwRenderQt::data::Event& _event )
+void SSquare::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonPress &&
          _event.getButton() == ::fwRenderQt::data::Event::LeftButton )
@@ -141,7 +141,7 @@ void Square::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-bool Square::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
+bool SSquare::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
 {
     ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     QPointF sp( scenePoint.getX(), scenePoint.getY() );
@@ -151,7 +151,7 @@ bool Square::coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphic
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Coord Square::coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
+::fwRenderQt::data::Coord SSquare::coordViewToCoordItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item )
 {
     ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     //QPointF sp ( scenePoint.getX(), scenePoint.getY() );

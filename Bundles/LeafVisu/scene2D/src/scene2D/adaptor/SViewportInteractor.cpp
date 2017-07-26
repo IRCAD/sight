@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/ViewportInteractor.hpp"
+#include "scene2D/adaptor/SViewportInteractor.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -12,7 +12,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportInteractor);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportInteractor);
 
 namespace scene2D
 {
@@ -21,51 +21,51 @@ namespace adaptor
 
 //-----------------------------------------------------------------------------
 
-ViewportInteractor::ViewportInteractor() noexcept :
+SViewportInteractor::SViewportInteractor() noexcept :
     m_viewportIsTranslated(false)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ViewportInteractor::~ViewportInteractor() noexcept
+SViewportInteractor::~SViewportInteractor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::configuring()
+void SViewportInteractor::configuring()
 {
     this->IAdaptor::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doStart()
+void SViewportInteractor::doStart()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doStop()
+void SViewportInteractor::doStop()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doUpdate()
+void SViewportInteractor::doUpdate()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::doSwap()
+void SViewportInteractor::doSwap()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::processInteraction( ::fwRenderQt::data::Event& _event )
+void SViewportInteractor::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     if ( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp
          && _event.getModifier() == ::fwRenderQt::data::Event::ShiftModifier )
@@ -112,7 +112,7 @@ void ViewportInteractor::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-void ViewportInteractor::zoom( bool zoomIn )
+void SViewportInteractor::zoom( bool zoomIn )
 {
     ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 

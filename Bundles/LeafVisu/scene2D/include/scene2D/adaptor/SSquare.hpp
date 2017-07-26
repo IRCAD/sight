@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_SQUARE_HPP__
-#define __SCENE2D_ADAPTOR_SQUARE_HPP__
+#ifndef __SCENE2D_ADAPTOR_SSQUARE_HPP__
+#define __SCENE2D_ADAPTOR_SSQUARE_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -22,15 +22,15 @@ namespace adaptor
 /**
  * @brief Create a square on the scene2D
  */
-class SCENE2D_CLASS_API Square : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Square)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SSquare)(::fwRenderQt::IAdaptor) );
 
-    SCENE2D_API Square() noexcept;
-    SCENE2D_API virtual ~Square() noexcept;
+    SCENE2D_API SSquare() noexcept;
+    SCENE2D_API virtual ~SSquare() noexcept;
 
 protected:
 
@@ -62,5 +62,5 @@ private:
 } // namespace adaptor
 } // namespace scene2D
 
-#endif // __SCENE2D_ADAPTOR_SQUARE_HPP__
+#endif // __SCENE2D_ADAPTOR_SSQUARE_HPP__
 

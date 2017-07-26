@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
-#define __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
+#ifndef __SCENE2D_ADAPTOR_SHISTOGRAMVALUE_HPP__
+#define __SCENE2D_ADAPTOR_SHISTOGRAMVALUE_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -26,7 +26,7 @@ namespace adaptor
  * Configuration example:
  *
    @code{.xml}
-   <service uid="histogram" type="::scene2D::adaptor::HistogramValue">
+   <service uid="histogram" type="::scene2D::adaptor::SHistogramValue">
        <in key="histogram" uid="histogramUID" />
        <in key="point" uid="pointUID" />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5"/>
@@ -45,14 +45,14 @@ namespace adaptor
  * \b opacity   : from 0.0 to 1.0, default value is 0.8
  *
  */
-class HistogramValue : public ::fwRenderQt::IAdaptor
+class SHistogramValue : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (HistogramValue)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SHistogramValue)(::fwRenderQt::IAdaptor) );
 
-    SCENE2D_API HistogramValue() noexcept;
-    SCENE2D_API virtual ~HistogramValue() noexcept;
+    SCENE2D_API SHistogramValue() noexcept;
+    SCENE2D_API virtual ~SHistogramValue() noexcept;
 
     SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
@@ -91,5 +91,5 @@ protected:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
+#endif  // __SCENE2D_ADAPTOR_SHISTOGRAMVALUE_HPP__
 

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/Negato.hpp"
+#include "scene2D/adaptor/SNegato.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -33,7 +33,7 @@
 #include <QPixmap>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Negato );
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SNegato );
 
 namespace scene2D
 {
@@ -52,7 +52,7 @@ typedef ::fwDataTools::helper::MedicalImageAdaptor MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
-Negato::Negato() noexcept :
+SNegato::SNegato() noexcept :
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
@@ -61,21 +61,21 @@ Negato::Negato() noexcept :
     m_changeSliceTypeAllowed(true)
 {
     this->installTFSlots(this);
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Negato::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &Negato::updateSliceType, this);
-    newSlot(s_UPDATE_BUFFER_SLOT, &Negato::updateBuffer, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &Negato::updateVisibility, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
+    newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
 
-Negato::~Negato() noexcept
+SNegato::~SNegato() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Negato::configuring()
+void SNegato::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -118,7 +118,7 @@ void Negato::configuring()
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateBufferFromImage( QImage* qimg )
+void SNegato::updateBufferFromImage( QImage* qimg )
 {
     if(!qimg)
     {
@@ -208,8 +208,8 @@ void Negato::updateBufferFromImage( QImage* qimg )
 
 //-----------------------------------------------------------------------------
 
-QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
-                          const fwData::TransferFunction::sptr& tf)
+QRgb SNegato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
+                           const fwData::TransferFunction::sptr& tf)
 {
     const short val16 = buffer[index];
 
@@ -223,7 +223,7 @@ QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin,
 
 //---------------------------------------------------------------------------
 
-QImage* Negato::createQImage()
+QImage* SNegato::createQImage()
 {
     ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
@@ -295,7 +295,7 @@ QImage* Negato::createQImage()
 
 //-----------------------------------------------------------------------------
 
-void Negato::doStart()
+void SNegato::doStart()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
@@ -324,7 +324,7 @@ void Negato::doStart()
 
 //-----------------------------------------------------------------------------
 
-void Negato::doUpdate()
+void SNegato::doUpdate()
 {
     m_qimg = this->createQImage();
     this->updateBufferFromImage( m_qimg );
@@ -332,7 +332,7 @@ void Negato::doUpdate()
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateSliceIndex(int axial, int frontal, int sagittal)
+void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
@@ -345,7 +345,7 @@ void Negato::updateSliceIndex(int axial, int frontal, int sagittal)
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateSliceType(int from, int to)
+void SNegato::updateSliceType(int from, int to)
 {
     if (m_changeSliceTypeAllowed)
     {
@@ -374,7 +374,7 @@ void Negato::updateSliceType(int from, int to)
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateVisibility(bool isVisible)
+void SNegato::updateVisibility(bool isVisible)
 {
     if( isVisible ) // display the scene
     {
@@ -388,28 +388,28 @@ void Negato::updateVisibility(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateBuffer()
+void SNegato::updateBuffer()
 {
     this->updateBufferFromImage(m_qimg);
 }
 
 //------------------------------------------------------------------------------
 
-void Negato::updatingTFPoints()
+void SNegato::updatingTFPoints()
 {
     this->updateBufferFromImage( m_qimg );
 }
 
 //------------------------------------------------------------------------------
 
-void Negato::updatingTFWindowing(double window, double level)
+void SNegato::updatingTFWindowing(double window, double level)
 {
     this->updateBufferFromImage( m_qimg );
 }
 
 //-----------------------------------------------------------------------------
 
-void Negato::doSwap()
+void SNegato::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -417,7 +417,7 @@ void Negato::doSwap()
 
 //-----------------------------------------------------------------------------
 
-void Negato::doStop()
+void SNegato::doStop()
 {
     this->removeTFConnections();
 
@@ -430,7 +430,7 @@ void Negato::doStop()
 
 //-----------------------------------------------------------------------------
 
-void Negato::processInteraction( ::fwRenderQt::data::Event& _event )
+void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     // if a key is pressed
     if(_event.getType() == ::fwRenderQt::data::Event::KeyRelease)
@@ -526,7 +526,7 @@ void Negato::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-void Negato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
+void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::fwRenderQt::data::Coord& newCoord )
 {
     ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
@@ -558,7 +558,7 @@ void Negato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, ::
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap Negato::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

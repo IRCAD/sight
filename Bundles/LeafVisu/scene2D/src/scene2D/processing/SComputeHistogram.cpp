@@ -21,7 +21,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram, ::fwData::Image );
+fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram);
 
 namespace scene2D
 {

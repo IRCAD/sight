@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/Grid2D.hpp"
+#include "scene2D/adaptor/SGrid2D.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -15,14 +15,14 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Grid2D);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SGrid2D);
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-Grid2D::Grid2D() noexcept :
+SGrid2D::SGrid2D() noexcept :
     m_xMin(0.f),
     m_xMax(0.f),
     m_yMin(0.f),
@@ -36,13 +36,13 @@ Grid2D::Grid2D() noexcept :
 
 //---------------------------------------------------------------------------------------------------------------
 
-Grid2D::~Grid2D() noexcept
+SGrid2D::~SGrid2D() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::configuring()
+void SGrid2D::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -79,7 +79,7 @@ void Grid2D::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::draw()
+void SGrid2D::draw()
 {
     SLM_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.f);
     SLM_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.f);
@@ -140,7 +140,7 @@ void Grid2D::draw()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doStart()
+void SGrid2D::doStart()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -155,41 +155,41 @@ void Grid2D::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-float Grid2D::getXStartVal()
+float SGrid2D::getXStartVal()
 {
     return (int)( m_xMin / m_xSpacing ) * m_xSpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-float Grid2D::getXEndVal()
+float SGrid2D::getXEndVal()
 {
     return (int)( m_xMax / m_xSpacing ) * m_xSpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-float Grid2D::getYStartVal()
+float SGrid2D::getYStartVal()
 {
     return (int)( m_yMin / m_ySpacing ) * m_ySpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-float Grid2D::getYEndVal()
+float SGrid2D::getYEndVal()
 {
     return (int)( m_yMax / m_ySpacing ) * m_ySpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doUpdate()
+void SGrid2D::doUpdate()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::processInteraction( ::fwRenderQt::data::Event& _event)
+void SGrid2D::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
@@ -199,13 +199,13 @@ void Grid2D::processInteraction( ::fwRenderQt::data::Event& _event)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doSwap()
+void SGrid2D::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Grid2D::doStop()
+void SGrid2D::doStop()
 {
     // Clear the lines vector
     m_lines.clear();

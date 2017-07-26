@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/HistogramValue.hpp"
+#include "scene2D/adaptor/SHistogramValue.hpp"
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
@@ -17,7 +17,7 @@
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::HistogramValue);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogramValue);
 
 namespace scene2D
 {
@@ -27,7 +27,7 @@ namespace adaptor
 static const ::fwServices::IService::KeyType s_POINT_INPUT     = "point";
 static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
-HistogramValue::HistogramValue() noexcept :
+SHistogramValue::SHistogramValue() noexcept :
     m_color(Qt::white),
     m_text(nullptr),
     m_isInteracting(false),
@@ -38,13 +38,13 @@ HistogramValue::HistogramValue() noexcept :
 
 //---------------------------------------------------------------------------------------------------------------
 
-HistogramValue::~HistogramValue() noexcept
+SHistogramValue::~SHistogramValue() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::configuring()
+void SHistogramValue::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -63,7 +63,7 @@ void HistogramValue::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doStart()
+void SHistogramValue::doStart()
 {
     m_font.setPointSize(m_fontSize);
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.2 );
@@ -90,13 +90,13 @@ void HistogramValue::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doStop()
+void SHistogramValue::doStop()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doUpdate()
+void SHistogramValue::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -161,13 +161,13 @@ void HistogramValue::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::doSwap()
+void SHistogramValue::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
+void SHistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -190,7 +190,7 @@ void HistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap HistogramValue::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SHistogramValue::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

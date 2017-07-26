@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/CurvedHistogram.hpp"
+#include "scene2D/adaptor/SCurvedHistogram.hpp"
 
 #include <fwData/Float.hpp>
 #include <fwData/Histogram.hpp>
@@ -20,7 +20,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::CurvedHistogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SCurvedHistogram);
 
 #define PI 3.14159265
 
@@ -33,12 +33,12 @@ namespace adaptor
 static const ::fwServices::IService::KeyType s_POINT_INOUT     = "point";
 static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
-const float CurvedHistogram::SCALE            = 1.1f; // vertical scaling factor applied at each mouse scroll
-const float CurvedHistogram::NB_POINTS_BEZIER = 100.0f;
+const float SCurvedHistogram::SCALE            = 1.1f; // vertical scaling factor applied at each mouse scroll
+const float SCurvedHistogram::NB_POINTS_BEZIER = 100.0f;
 
 //-----------------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::CurvedHistogram() noexcept :
+SCurvedHistogram::SCurvedHistogram() noexcept :
     m_painterPath(nullptr),
     m_borderWidth(1.75f),
     m_scale(1.0f),
@@ -48,13 +48,13 @@ CurvedHistogram::CurvedHistogram() noexcept :
 
 //-----------------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::~CurvedHistogram() noexcept
+SCurvedHistogram::~SCurvedHistogram() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::configuring()
+void SCurvedHistogram::configuring()
 {
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
 
@@ -84,7 +84,7 @@ void CurvedHistogram::configuring()
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doStart()
+void SCurvedHistogram::doStart()
 {
     // Init border style
     m_borderColor.setCosmetic( true );
@@ -100,7 +100,7 @@ void CurvedHistogram::doStart()
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histogram::csptr& _histogram) const
+SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const ::fwData::Histogram::csptr& _histogram) const
 {
     ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
     const float binsWidth    = _histogram->getBinsWidth();
@@ -125,7 +125,7 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histog
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points& _points ) const
+SCurvedHistogram::Points SCurvedHistogram::getBSplinePoints( const Points& _points ) const
 {
     Points bSplinePoints;
     point_list list;        // see bspline.h
@@ -158,7 +158,7 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points& _points
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points& _bSplinePoints ) const
+SCurvedHistogram::Points SCurvedHistogram::getResampledBSplinePoints(const Points& _bSplinePoints ) const
 {
     Points points;
     Point point = _bSplinePoints.front();
@@ -194,7 +194,7 @@ CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points&
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSplinePoints )
+void SCurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSplinePoints )
 {
     Points::iterator it = _bSplinePoints.begin();
 
@@ -228,7 +228,7 @@ void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSpl
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doUpdate()
+void SCurvedHistogram::doUpdate()
 {
     this->doStop();
 
@@ -264,7 +264,7 @@ void CurvedHistogram::doUpdate()
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
+void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
 {
     const ::fwData::Histogram::csptr histogram = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
 
@@ -313,7 +313,7 @@ void CurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::addInnerItem( const QPainterPath& _path )
+void SCurvedHistogram::addInnerItem( const QPainterPath& _path )
 {
     QGraphicsPathItem* item = new QGraphicsPathItem( _path );
     item->setPen( Qt::NoPen );
@@ -327,7 +327,7 @@ void CurvedHistogram::addInnerItem( const QPainterPath& _path )
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::addBorderItem( const QPainterPath& _path )
+void SCurvedHistogram::addBorderItem( const QPainterPath& _path )
 {
     QGraphicsPathItem* item = new QGraphicsPathItem( _path );
     item->setPen( m_borderColor );
@@ -341,7 +341,7 @@ void CurvedHistogram::addBorderItem( const QPainterPath& _path )
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::quadraticInterpolation(
+SCurvedHistogram::Points SCurvedHistogram::quadraticInterpolation(
     const Point _p0, const Point _p1, const Point _p2 )
 {
     Points points;
@@ -370,7 +370,7 @@ CurvedHistogram::Points CurvedHistogram::quadraticInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::cosinusInterpolation(const Point _p0, const Point _p1)
+SCurvedHistogram::Points SCurvedHistogram::cosinusInterpolation(const Point _p0, const Point _p1)
 {
     Points points;
     Point p;
@@ -392,7 +392,7 @@ CurvedHistogram::Points CurvedHistogram::cosinusInterpolation(const Point _p0, c
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::cubicInterpolation(
+SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
     const Point _p0, const Point _p1, const Point _p2, const Point _p3 )
 {
     Points points;
@@ -427,7 +427,7 @@ CurvedHistogram::Points CurvedHistogram::cubicInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point )
+void SCurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point )
 {
     const::fwData::Histogram::csptr histogram           = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     const ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
@@ -455,7 +455,7 @@ void CurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _event
 
 //---------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, const Point _p2 )
+SCurvedHistogram::Points SCurvedHistogram::linearInterpolation( const Point _p1, const Point _p2 )
 {
     Points points;
     float t = 0.f;
@@ -474,14 +474,14 @@ CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, c
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doSwap()
+void SCurvedHistogram::doSwap()
 {
     this->doUpdate();
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::doStop()
+void SCurvedHistogram::doStop()
 {
     if (m_layer)
     {
@@ -499,7 +499,7 @@ void CurvedHistogram::doStop()
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
+void SCurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     bool updatePointedPos = false;
 
@@ -532,7 +532,7 @@ void CurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap CurvedHistogram::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( "histogram", ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

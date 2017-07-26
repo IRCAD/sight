@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/ViewportRangeSelector.hpp"
+#include "scene2D/adaptor/SViewportRangeSelector.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -16,14 +16,14 @@
 
 #include <QGraphicsRectItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SViewportRangeSelector);
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-ViewportRangeSelector::ViewportRangeSelector() noexcept :
+SViewportRangeSelector::SViewportRangeSelector() noexcept :
     m_shutter(nullptr),
     m_isLeftInteracting( false ),
     m_isRightInteracting( false ),
@@ -37,13 +37,13 @@ ViewportRangeSelector::ViewportRangeSelector() noexcept :
 
 //---------------------------------------------------------------------------------------------------------------
 
-ViewportRangeSelector::~ViewportRangeSelector() noexcept
+SViewportRangeSelector::~SViewportRangeSelector() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::configuring()
+void SViewportRangeSelector::configuring()
 {
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
@@ -89,7 +89,7 @@ void ViewportRangeSelector::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doStart()
+void SViewportRangeSelector::doStart()
 {
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
@@ -124,25 +124,25 @@ void ViewportRangeSelector::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doStop()
+void SViewportRangeSelector::doStop()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doUpdate()
+void SViewportRangeSelector::doUpdate()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doSwap()
+void SViewportRangeSelector::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _event )
+void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     // Event coordinates in scene
     ::fwRenderQt::data::Coord coord;
@@ -316,7 +316,7 @@ void ViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _even
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, double _width, double _height )
+void SViewportRangeSelector::updateViewportFromShutter( double _x, double _y, double _width, double _height )
 {
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
@@ -331,7 +331,7 @@ void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, dou
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool ViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coord)
 {
     Point2DType shutterCoordPair;
     shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
@@ -343,7 +343,7 @@ bool ViewportRangeSelector::mouseOnShutterMiddle( ::fwRenderQt::data::Coord _coo
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool ViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord)
 {
     Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
@@ -354,7 +354,7 @@ bool ViewportRangeSelector::mouseOnShutterLeft( ::fwRenderQt::data::Coord _coord
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool ViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coord)
+bool SViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coord)
 {
     const Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),

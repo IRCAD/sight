@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_LINE_HPP__
-#define __SCENE2D_ADAPTOR_LINE_HPP__
+#ifndef __SCENE2D_ADAPTOR_SLINE_HPP__
+#define __SCENE2D_ADAPTOR_SLINE_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -19,11 +19,11 @@ namespace adaptor
 /**
  * @brief line adaptor. Draw a line on the scene2D
  */
-class SCENE2D_CLASS_API Line : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SLine : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (Line)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderQt::IAdaptor) );
 
     enum LineType
     {
@@ -32,18 +32,18 @@ public:
     };
 
     /// Basic constructor, do nothing.
-    SCENE2D_API Line() noexcept;
+    SCENE2D_API SLine() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~Line() noexcept;
+    SCENE2D_API virtual ~SLine() noexcept;
 
 protected:
     /**
-     * @brief Configuring the Line adaptor.
+     * @brief Configuring the SLine adaptor.
      *
      * Example of configuration
      * @code{.xml}
-       <service id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+       <service id="abscissa" class="::scene2D::adaptor::SLine" objectId="self">
         <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
        </service>
        @endcode
@@ -101,5 +101,5 @@ private:
 } // namespace adaptor
 } // namespace scene2D
 
-#endif // __SCENE2D_ADAPTOR_LINE_HPP__
+#endif // __SCENE2D_ADAPTOR_SLINE_HPP__
 

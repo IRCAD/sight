@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
-#define __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
+#ifndef __SCENE2D_ADAPTOR_SVIEWPORTINTERACTOR_HPP__
+#define __SCENE2D_ADAPTOR_SVIEWPORTINTERACTOR_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -19,16 +19,16 @@ namespace adaptor
 /**
  * @brief Adaptor implementation that manages the camera on the view.
  */
-class ViewportInteractor : public ::fwRenderQt::IAdaptor
+class SViewportInteractor : public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ViewportInteractor)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SViewportInteractor)(::fwRenderQt::IAdaptor) );
 
-    ViewportInteractor() noexcept;
+    SViewportInteractor() noexcept;
 
-    ~ViewportInteractor() noexcept;
+    ~SViewportInteractor() noexcept;
 
 protected:
 
@@ -55,4 +55,4 @@ private:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
+#endif  // __SCENE2D_ADAPTOR_SVIEWPORTINTERACTOR_HPP__

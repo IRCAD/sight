@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_VIEWPORTRANGESELECTOR_HPP__
-#define __SCENE2D_ADAPTOR_VIEWPORTRANGESELECTOR_HPP__
+#ifndef __SCENE2D_ADAPTOR_SVIEWPORTRANGESELECTOR_HPP__
+#define __SCENE2D_ADAPTOR_SVIEWPORTRANGESELECTOR_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -17,9 +17,9 @@ namespace adaptor
 {
 
 /**
- * @brief <p>The viewport range selector adaptor allows to select a delimited range of a viewport.
+ * @brief The viewport range selector adaptor allows to select a delimited range of a viewport.
  * It uses a graphical delimiter (called shutter) that can be moved from both left to right
- * and right to left directions (in those cases, shutter's width is changing).</p>
+ * and right to left directions (in those cases, shutter's width is changing).
  *
  * <p>Clicking onto the approximative center of the shutter allows the user to change its position,
  * according to mouse's cursor position (width won't change).</p>
@@ -33,7 +33,7 @@ namespace adaptor
  *
  * Configuration example:
    @code{.xml}
-   <adaptor id="viewSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="myViewport">
+   <adaptor id="viewSelector" class="::scene2D::adaptor::SViewportRangeSelector" objectId="myViewport">
        <config xAxis="xAxis" yAxis="yAxis" zValue="5" />
    </adaptor>
    @endcode
@@ -52,13 +52,13 @@ namespace adaptor
  *
  * This adaptor is intended to be used with a ::scene2D::adaptor::ViewportUpdater adaptor.
  */
-class ViewportRangeSelector : public ::fwRenderQt::IAdaptor
+class SViewportRangeSelector : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (ViewportRangeSelector)(::fwRenderQt::IAdaptor) );
-    ViewportRangeSelector() noexcept;
-    ~ViewportRangeSelector() noexcept;
+    fwCoreServiceClassDefinitionsMacro( (SViewportRangeSelector)(::fwRenderQt::IAdaptor) );
+    SViewportRangeSelector() noexcept;
+    ~SViewportRangeSelector() noexcept;
 
 protected:
     SCENE2D_API void configuring();
@@ -107,5 +107,5 @@ private:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // __SCENE2D_ADAPTOR_VIEWPORTRANGESELECTOR_HPP__
+#endif  // __SCENE2D_ADAPTOR_SVIEWPORTRANGESELECTOR_HPP__
 

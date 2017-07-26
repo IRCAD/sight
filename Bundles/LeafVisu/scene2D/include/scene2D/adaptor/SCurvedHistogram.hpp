@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
-#define __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
+#ifndef __SCENE2D_ADAPTOR_SCURVEDHISTOGRAM_HPP__
+#define __SCENE2D_ADAPTOR_SCURVEDHISTOGRAM_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -26,7 +26,7 @@ namespace adaptor
  * Configuration example:
  *
    @code{.xml}
-   <service uid="histogram" type="::scene2D::adaptor::CurvedHistogram">
+   <service uid="histogram" type="::scene2D::adaptor::SCurvedHistogram">
        <in key="histogram" uid="histogramUID" />
        <inout key="point" uid="pointUID" optional="yes" />
        <config xAxis="xAxis" yAxis="axeCurvedHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25"
@@ -44,16 +44,16 @@ namespace adaptor
  * - \b yAxis              : see ::fwRenderQt::IAdaptor
  * - \b zValue             : see ::fwRenderQt::IAdaptor
  */
-class SCENE2D_CLASS_API CurvedHistogram : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SCurvedHistogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (CurvedHistogram)( ::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SCurvedHistogram)( ::fwRenderQt::IAdaptor) );
 
     typedef ::fwRenderQt::IAdaptor::Point2DType Point;
     typedef std::vector< Point > Points;
 
-    SCENE2D_API CurvedHistogram() noexcept;
-    SCENE2D_API virtual ~CurvedHistogram() noexcept;
+    SCENE2D_API SCurvedHistogram() noexcept;
+    SCENE2D_API virtual ~SCurvedHistogram() noexcept;
 
 protected:
     SCENE2D_API void configuring();
@@ -145,5 +145,5 @@ private:
 
 }   // namespace scene2D
 
-#endif  // __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
+#endif  // __SCENE2D_ADAPTOR_SCURVEDHISTOGRAM_HPP__
 

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
-#define __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
+#ifndef __SCENE2D_ADAPTOR_SSCALEVALUES_HPP__
+#define __SCENE2D_ADAPTOR_SSCALEVALUES_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -16,25 +16,25 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API ScaleValues : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SScaleValues : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (ScaleValues)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SScaleValues)(::fwRenderQt::IAdaptor) );
 
     /// Constructor, set the x and y spacing to 10
-    SCENE2D_API ScaleValues() noexcept;
+    SCENE2D_API SScaleValues() noexcept;
 
     /// Basic destructor, do nothing
-    SCENE2D_API virtual ~ScaleValues() noexcept;
+    SCENE2D_API virtual ~SScaleValues() noexcept;
 
 protected:
     /**
-     * @brief Configuring the ScaleValues adaptor.
+     * @brief Configuring the SScaleValues adaptor.
      *
      * Example of configuration
      * @code{.xml}
-       <service id="scaleValues" class="::scene2D::adaptor::ScaleValues" objectId="self">
+       <service id="scaleValues" class="::scene2D::adaptor::SScaleValues" objectId="self">
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
        </service>
@@ -148,4 +148,4 @@ private:
 } // namespace adaptor
 } // namespace scene2D
 
-#endif // __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
+#endif // __SCENE2D_ADAPTOR_SSCALEVALUES_HPP__

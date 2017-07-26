@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/TransferFunction.hpp"
+#include "scene2D/adaptor/STransferFunction.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -29,7 +29,7 @@
 #include <QGraphicsItemGroup>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::TransferFunction);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::STransferFunction);
 
 namespace scene2D
 {
@@ -39,7 +39,7 @@ namespace adaptor
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
 static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
 
-TransferFunction::TransferFunction() noexcept :
+STransferFunction::STransferFunction() noexcept :
     m_layer(nullptr),
     m_circleWidth(0.),
     m_circleHeight(0.),
@@ -52,13 +52,13 @@ TransferFunction::TransferFunction() noexcept :
 
 //-----------------------------------------------------------------------------
 
-TransferFunction::~TransferFunction() noexcept
+STransferFunction::~STransferFunction() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::configuring()
+void STransferFunction::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -86,7 +86,7 @@ void TransferFunction::configuring()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildTFPoints()
+void STransferFunction::buildTFPoints()
 {
     // Get the selected tf of the image
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
@@ -111,7 +111,7 @@ void TransferFunction::buildTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildCircles()
+void STransferFunction::buildCircles()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -157,8 +157,8 @@ void TransferFunction::buildCircles()
 
 //-----------------------------------------------------------------------------
 
-QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransferFunction::TFValueType value,
-                                                    ::fwData::TransferFunction::TFColor color)
+QGraphicsEllipseItem* STransferFunction::buildCircle(::fwData::TransferFunction::TFValueType value,
+                                                     ::fwData::TransferFunction::TFColor color)
 {
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
     Point2DType valColor(value, color.a );
@@ -181,7 +181,7 @@ QGraphicsEllipseItem* TransferFunction::buildCircle(::fwData::TransferFunction::
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildLinesAndPolygons()
+void STransferFunction::buildLinesAndPolygons()
 {
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
 
@@ -211,7 +211,7 @@ void TransferFunction::buildLinesAndPolygons()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildBounds()
+void STransferFunction::buildBounds()
 {
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
@@ -281,7 +281,7 @@ void TransferFunction::buildBounds()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildLinearLinesAndPolygons()
+void STransferFunction::buildLinearLinesAndPolygons()
 {
     SLM_ASSERT("Circles must not be empty", !m_circles.empty());
 
@@ -368,7 +368,7 @@ void TransferFunction::buildLinearLinesAndPolygons()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildNearestLinesAndPolygons()
+void STransferFunction::buildNearestLinesAndPolygons()
 {
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
     for ( auto circleIt = m_circles.cbegin(); circleIt != m_circles.cend(); ++circleIt)
@@ -432,7 +432,7 @@ void TransferFunction::buildNearestLinesAndPolygons()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::buildLayer()
+void STransferFunction::buildLayer()
 {
     // Add graphics items vectors to the layer
     for ( unsigned int i = 0; i < m_linesAndPolygons.size(); i++)
@@ -455,7 +455,7 @@ void TransferFunction::buildLayer()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::updateImageTF()
+void STransferFunction::updateImageTF()
 {
     // Get the selected tf of the image
     ::fwData::TransferFunction::sptr selectedTF        = this->getTransferFunction();
@@ -495,7 +495,7 @@ void TransferFunction::updateImageTF()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doStart()
+void STransferFunction::doStart()
 {
     // Initialize the layer and the circle height and width
     m_layer = new QGraphicsItemGroup();
@@ -515,7 +515,7 @@ void TransferFunction::doStart()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doUpdate()
+void STransferFunction::doUpdate()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
@@ -534,21 +534,21 @@ void TransferFunction::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::updatingTFPoints()
+void STransferFunction::updatingTFPoints()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::updatingTFWindowing(double window, double level)
+void STransferFunction::updatingTFWindowing(double window, double level)
 {
     this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doSwap()
+void STransferFunction::doSwap()
 {
     this->removeTFConnections();
     this->doUpdate();
@@ -557,7 +557,7 @@ void TransferFunction::doSwap()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doStop()
+void STransferFunction::doStop()
 {
     this->removeTFConnections();
 
@@ -581,7 +581,7 @@ void TransferFunction::doStop()
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::processInteraction( ::fwRenderQt::data::Event& _event )
+void STransferFunction::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     SLM_ASSERT("Sizes of circles vector and tf points map are different", m_TFPoints.size() == m_circles.size());
 
@@ -663,7 +663,7 @@ void TransferFunction::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor)
+void STransferFunction::doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::TransferFunction::TFColor& tfColor)
 {
     // Open a QColorDialog with the selected circle color and the tf point alpha as default rgba color
     const QColor shapeColor = ((QAbstractGraphicsShapeItem*)circle)->brush().color();
@@ -694,7 +694,7 @@ void TransferFunction::doubleClickEvent(QGraphicsEllipseItem* circle, ::fwData::
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event)
+void STransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event)
 {
     m_pointIsCaptured = true;
 
@@ -714,9 +714,9 @@ void TransferFunction::leftButtonEvent(QGraphicsEllipseItem* circle, ::fwRenderQ
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
-                                      ::fwData::TransferFunction::TFValueType tfPoint,
-                                      ::fwRenderQt::data::Event& _event)
+void STransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
+                                       ::fwData::TransferFunction::TFValueType tfPoint,
+                                       ::fwRenderQt::data::Event& _event)
 {
     QGraphicsEllipseItem* lastPoint = m_circles.back();
 
@@ -862,7 +862,7 @@ void TransferFunction::mouseMoveEvent(QGraphicsEllipseItem* circle,
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event)
+void STransferFunction::mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::fwRenderQt::data::Event& _event)
 {
     // Reset the circle pen to the selected circle to get a visual feedback that the circle is no more selected
     circle->setPen(m_circlePen);
@@ -872,8 +872,8 @@ void TransferFunction::mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::f
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
-                                        ::fwRenderQt::data::Event& _event)
+void STransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
+                                         ::fwRenderQt::data::Event& _event)
 {
     _event.setAccepted(true);
 
@@ -886,7 +886,7 @@ void TransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType 
 
 //-----------------------------------------------------------------------------
 
-void TransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
+void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
 {
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
 
@@ -957,7 +957,7 @@ void TransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
+double STransferFunction::pointValue(QGraphicsEllipseItem* circle)
 {
     // Return the x coordinate of the center of a circle in a 0-1 scale
     return (circle->rect().x() + circle->pos().x() + m_circleWidth / 2);
@@ -965,7 +965,7 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Coord TransferFunction::coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord )
+::fwRenderQt::data::Coord STransferFunction::coordViewToCoordItem( const ::fwRenderQt::data::Coord& _coord )
 {
     ::fwRenderQt::data::Coord scenePoint = this->getScene2DRender()->mapToScene( _coord );
     return scenePoint;
@@ -973,7 +973,7 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap TransferFunction::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

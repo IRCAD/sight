@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/HistogramCursor.hpp"
+#include "scene2D/adaptor/SHistogramCursor.hpp"
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
@@ -17,7 +17,7 @@
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::HistogramCursor, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogramCursor);
 
 namespace scene2D
 {
@@ -27,7 +27,7 @@ namespace adaptor
 static const ::fwServices::IService::KeyType s_POINT_INPUT     = "point";
 static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
-HistogramCursor::HistogramCursor() noexcept :
+SHistogramCursor::SHistogramCursor() noexcept :
     m_color(Qt::red),
     m_borderColor(Qt::gray),
     m_opacity(0.8f),
@@ -39,13 +39,13 @@ HistogramCursor::HistogramCursor() noexcept :
 
 //---------------------------------------------------------------------------------------------------------------
 
-HistogramCursor::~HistogramCursor() noexcept
+SHistogramCursor::~SHistogramCursor() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::configuring()
+void SHistogramCursor::configuring()
 {
     this->IAdaptor::configuring();
 
@@ -74,7 +74,7 @@ void HistogramCursor::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doStart()
+void SHistogramCursor::doStart()
 {
     m_index = new QGraphicsEllipseItem();
     m_index->setBrush( m_color.color() );
@@ -98,13 +98,13 @@ void HistogramCursor::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doStop()
+void SHistogramCursor::doStop()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doUpdate()
+void SHistogramCursor::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -154,13 +154,13 @@ void HistogramCursor::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doSwap()
+void SHistogramCursor::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
+void SHistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -175,7 +175,7 @@ void HistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap HistogramCursor::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SHistogramCursor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

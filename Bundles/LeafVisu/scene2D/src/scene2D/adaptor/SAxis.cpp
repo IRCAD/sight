@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/Axis.hpp"
+#include "scene2D/adaptor/SAxis.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -14,7 +14,7 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Axis);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SAxis);
 
 namespace scene2D
 {
@@ -22,7 +22,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Axis::Axis() noexcept :
+SAxis::SAxis() noexcept :
     m_interval(1.f),
     m_min(0.f),
     m_max(0.f),
@@ -36,13 +36,13 @@ Axis::Axis() noexcept :
 
 //--------------------------------------------------------------------------------------------------
 
-Axis::~Axis() noexcept
+SAxis::~SAxis() noexcept
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doStart()
+void SAxis::doStart()
 {
     this->buildAxis();
     this->doUpdate();
@@ -50,20 +50,20 @@ void Axis::doStart()
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doStop()
+void SAxis::doStop()
 {
     delete m_layer;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::doSwap()
+void SAxis::doSwap()
 {
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Axis::configuring()
+void SAxis::configuring()
 {
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis' and 'zValue'
 
@@ -82,7 +82,7 @@ void Axis::configuring()
     SLM_ASSERT("Unsupported value for 'align' attribute.",
                m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 
-    // Axis bounds
+    // SAxis bounds
     SLM_ASSERT("'min' attribute is missing.", config.count("min"));
     SLM_ASSERT("'max' attribute is missing.", config.count("max"));
     m_min = config.get<float>("min");
@@ -97,7 +97,7 @@ void Axis::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Axis::buildAxis()
+void SAxis::buildAxis()
 {
     m_color.setCosmetic(true);
     const int nbValues = (m_max - m_min) / m_interval + 1;
@@ -132,21 +132,21 @@ void Axis::buildAxis()
 
 //---------------------------------------------------------------------------------------
 
-double Axis::getStartVal()
+double SAxis::getStartVal()
 {
     return (int)( m_min / m_interval ) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 
-double Axis::getEndVal()
+double SAxis::getEndVal()
 {
     return (int)( m_max / m_interval ) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void Axis::doUpdate()
+void SAxis::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -257,7 +257,7 @@ void Axis::doUpdate()
 
 //---------------------------------------------------------------------------------------
 
-void Axis::processInteraction( ::fwRenderQt::data::Event& _event)
+void SAxis::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {

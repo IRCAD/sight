@@ -25,8 +25,6 @@
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderQt::SRender );
-
 namespace fwRenderQt
 {
 

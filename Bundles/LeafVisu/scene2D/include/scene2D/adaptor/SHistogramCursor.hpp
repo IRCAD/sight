@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_HISTOGRAMCURSOR_HPP__
-#define __SCENE2D_ADAPTOR_HISTOGRAMCURSOR_HPP__
+#ifndef __SCENE2D_ADAPTOR_SHISTOGRAMCURSOR_HPP__
+#define __SCENE2D_ADAPTOR_SHISTOGRAMCURSOR_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -25,7 +25,7 @@ namespace adaptor
  * Configuration example:
  *
    @code{.xml}
-   <service uid="histogram" type="::scene2D::adaptor::HistogramCursor">
+   <service uid="histogram" type="::scene2D::adaptor::SHistogramCursor">
        <in key="histogram" uid="histogramUID" />
        <in key="point" uid="pointUID" />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5"/>
@@ -40,14 +40,14 @@ namespace adaptor
  * \b opacity   : from 0.0 to 1.0, default value is 0.8
  *
  */
-class HistogramCursor : public ::fwRenderQt::IAdaptor
+class SHistogramCursor : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (HistogramCursor)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SHistogramCursor)(::fwRenderQt::IAdaptor) );
 
-    SCENE2D_API HistogramCursor() noexcept;
-    SCENE2D_API virtual ~HistogramCursor() noexcept;
+    SCENE2D_API SHistogramCursor() noexcept;
+    SCENE2D_API virtual ~SHistogramCursor() noexcept;
 
     SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
@@ -87,5 +87,5 @@ protected:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // __SCENE2D_ADAPTOR_HISTOGRAMCURSOR_HPP__
+#endif  // __SCENE2D_ADAPTOR_SHISTOGRAMCURSOR_HPP__
 

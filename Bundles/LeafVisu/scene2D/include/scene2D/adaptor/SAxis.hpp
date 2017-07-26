@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_AXIS_HPP__
-#define __SCENE2D_ADAPTOR_AXIS_HPP__
+#ifndef __SCENE2D_ADAPTOR_SAXIS_HPP__
+#define __SCENE2D_ADAPTOR_SAXIS_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -17,14 +17,14 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API Axis : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SAxis : public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (Axis)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SAxis)(::fwRenderQt::IAdaptor) );
 
-    SCENE2D_API Axis() noexcept;
-    SCENE2D_API virtual ~Axis() noexcept;
+    SCENE2D_API SAxis() noexcept;
+    SCENE2D_API virtual ~SAxis() noexcept;
 
 protected:
 
@@ -83,5 +83,5 @@ private:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif //__SCENE2D_ADAPTOR_AXIS_HPP__
+#endif //__SCENE2D_ADAPTOR_SAXIS_HPP__
 

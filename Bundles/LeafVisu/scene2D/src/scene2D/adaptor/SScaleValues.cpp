@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/ScaleValues.hpp"
+#include "scene2D/adaptor/SScaleValues.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -15,14 +15,14 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::ScaleValues);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SScaleValues);
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-ScaleValues::ScaleValues() noexcept :
+SScaleValues::SScaleValues() noexcept :
     m_min(0.f),
     m_max(0.f),
     m_interval(10.),
@@ -36,13 +36,13 @@ ScaleValues::ScaleValues() noexcept :
 
 //---------------------------------------------------------------------------------------------------------------
 
-ScaleValues::~ScaleValues() noexcept
+SScaleValues::~SScaleValues() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ScaleValues::configuring()
+void SScaleValues::configuring()
 {
     this->IAdaptor::configuring();  // xAxis, yAxis, zValue, opacity
 
@@ -100,7 +100,7 @@ void ScaleValues::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ScaleValues::buildValues()
+void SScaleValues::buildValues()
 {
     SLM_ASSERT("m_interval can not be equal to 0", m_interval != 0);
 
@@ -166,7 +166,7 @@ void ScaleValues::buildValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doStart()
+void SScaleValues::doStart()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -185,20 +185,20 @@ void ScaleValues::doStart()
 
 //---------------------------------------------------------------------------------------
 
-double ScaleValues::getStartVal()
+double SScaleValues::getStartVal()
 {
     return (int)( m_min / m_interval ) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
-double ScaleValues::getEndVal()
+double SScaleValues::getEndVal()
 {
     return (int)( m_max / m_interval ) * m_interval;
 }
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doUpdate()
+void SScaleValues::doUpdate()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -208,7 +208,7 @@ void ScaleValues::doUpdate()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::rescaleValues()
+void SScaleValues::rescaleValues()
 {
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
@@ -363,7 +363,7 @@ void ScaleValues::rescaleValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::showHideScaleValues()
+void SScaleValues::showHideScaleValues()
 {
     double value;
     const int size        = (int)m_values.size();
@@ -381,7 +381,7 @@ void ScaleValues::showHideScaleValues()
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
+void SScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
@@ -391,13 +391,13 @@ void ScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
 
 //----------------------------------------------------------------------------------------
 
-void ScaleValues::doSwap()
+void SScaleValues::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------
 
-void ScaleValues::doStop()
+void SScaleValues::doStop()
 {
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/adaptor/Histogram.hpp"
+#include "scene2D/adaptor/SHistogram.hpp"
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
@@ -17,7 +17,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SHistogram);
 
 namespace scene2D
 {
@@ -27,11 +27,11 @@ namespace adaptor
 static const ::fwServices::IService::KeyType s_POINT_INOUT     = "point";
 static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
-const float Histogram::SCALE = 1.1f; // vertical scaling factor applied at each mouse scroll
+const float SHistogram::SCALE = 1.1f; // vertical scaling factor applied at each mouse scroll
 
 //---------------------------------------------------------------------------------------------------------
 
-Histogram::Histogram() noexcept :
+SHistogram::SHistogram() noexcept :
     m_opacity( 0.80f ),
     m_scale(1.0f),
     m_layer(nullptr),
@@ -41,13 +41,13 @@ Histogram::Histogram() noexcept :
 
 //---------------------------------------------------------------------------------------------------------
 
-Histogram::~Histogram() noexcept
+SHistogram::~SHistogram() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::configuring()
+void SHistogram::configuring()
 {
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis' and 'zValue'
 
@@ -68,14 +68,14 @@ void Histogram::configuring()
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doStart()
+void SHistogram::doStart()
 {
     doUpdate();
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doUpdate()
+void SHistogram::doUpdate()
 {
     this->doStop();
 
@@ -134,7 +134,7 @@ void Histogram::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point)
+void SHistogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::fwData::Point::sptr& point)
 {
     ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram >(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
@@ -157,13 +157,13 @@ void Histogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::fw
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doSwap()
+void SHistogram::doSwap()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::doStop()
+void SHistogram::doStop()
 {
     if (m_layer)
     {
@@ -175,7 +175,7 @@ void Histogram::doStop()
 
 //---------------------------------------------------------------------------------------------------------
 
-void Histogram::processInteraction( ::fwRenderQt::data::Event& _event)
+void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     bool updatePointedPos = false;
 
@@ -214,7 +214,7 @@ void Histogram::processInteraction( ::fwRenderQt::data::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap Histogram::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

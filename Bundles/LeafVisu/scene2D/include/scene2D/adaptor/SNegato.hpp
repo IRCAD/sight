@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_NEGATO_HPP__
-#define __SCENE2D_ADAPTOR_NEGATO_HPP__
+#ifndef __SCENE2D_ADAPTOR_SNEGATO_HPP__
+#define __SCENE2D_ADAPTOR_SNEGATO_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -24,28 +24,28 @@ namespace adaptor
 {
 
 /**
- * @brief   IAdaptor implementation for histogram data.
+ * @brief   IAdaptor implementation to display one slice of an image.
  *
  * Configuration example:
  *
    @code{.xml}
-   <service uid="negato" type="::scene2D::adaptor::Negato">
+   <service uid="negato" type="::scene2D::adaptor::SNegato">
        <inout key="image" uid="..." />
        <inout key="tfSelection" uid="..." />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5" selectedTFKey="tkKey"/>
    </service>
    @endcode
  */
-class SCENE2D_CLASS_API Negato : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                 public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                  public ::fwRenderQt::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Negato)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegato)(::fwRenderQt::IAdaptor) );
 
-    SCENE2D_API Negato() noexcept;
-    SCENE2D_API virtual ~Negato() noexcept;
+    SCENE2D_API SNegato() noexcept;
+    SCENE2D_API virtual ~SNegato() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -122,5 +122,5 @@ private:
 } // namespace adaptor
 } // namespace scene2D
 
-#endif // __SCENE2D_ADAPTOR_NEGATO_HPP__
+#endif // __SCENE2D_ADAPTOR_SNEGATO_HPP__
 

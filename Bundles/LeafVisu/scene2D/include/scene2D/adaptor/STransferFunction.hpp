@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
-#define __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
+#ifndef __SCENE2D_ADAPTOR_STRANSFERFUNCTION_HPP__
+#define __SCENE2D_ADAPTOR_STRANSFERFUNCTION_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -20,12 +20,12 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API TransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                           public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API STransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                            public ::fwRenderQt::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TransferFunction)(::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STransferFunction)(::fwRenderQt::IAdaptor) );
 
     /// Enumeration of authorized line types
     enum LineType
@@ -35,10 +35,10 @@ public:
     };
 
     /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
-    SCENE2D_API TransferFunction() noexcept;
+    SCENE2D_API STransferFunction() noexcept;
 
     /// Basic destructor, do nothing.
-    SCENE2D_API virtual ~TransferFunction() noexcept;
+    SCENE2D_API virtual ~STransferFunction() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -51,11 +51,11 @@ public:
 
 protected:
     /**
-     * @brief Configuring the TransferFunction adaptor.
+     * @brief Configuring the STransferFunction adaptor.
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="tf2" type="::scene2D::adaptor::TransferFunction" >
+       <service uid="tf2" type="::scene2D::adaptor::STransferFunction" >
         <inout key="image" uid="..." />
         <inout key="tfSelection" uid="..." />
         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"
@@ -206,5 +206,5 @@ private:
 } // namespace adaptor
 } // namespace scene2D
 
-#endif // __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
+#endif // __SCENE2D_ADAPTOR_STRANSFERFUNCTION_HPP__
 

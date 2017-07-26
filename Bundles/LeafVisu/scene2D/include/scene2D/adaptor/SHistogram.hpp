@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_HISTOGRAM_HPP__
-#define __SCENE2D_ADAPTOR_HISTOGRAM_HPP__
+#ifndef __SCENE2D_ADAPTOR_SHISTOGRAM_HPP__
+#define __SCENE2D_ADAPTOR_SHISTOGRAM_HPP__
 
 #include "scene2D/config.hpp"
 
@@ -25,7 +25,7 @@ namespace adaptor
  * Configuration example:
  *
    @code{.xml}
-   <service uid="histogram" type="::scene2D::adaptor::Histogram">
+   <service uid="histogram" type="::scene2D::adaptor::SHistogram">
        <in key="histogram" uid="histogramUID" />
        <inout key="point" uid="pointUID" optional="yes" />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5"/>
@@ -42,13 +42,13 @@ namespace adaptor
  *
  * \b zValue                : see ::scene1D::adaptor::IAdaptor
  */
-class SCENE2D_CLASS_API Histogram : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SHistogram : public ::fwRenderQt::IAdaptor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (Histogram)( ::fwRenderQt::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SHistogram)( ::fwRenderQt::IAdaptor) );
 
-    SCENE2D_API Histogram() noexcept;
-    SCENE2D_API virtual ~Histogram() noexcept;
+    SCENE2D_API SHistogram() noexcept;
+    SCENE2D_API virtual ~SHistogram() noexcept;
 
 protected:
     SCENE2D_API void configuring();
@@ -63,7 +63,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Histogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect SHistogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
@@ -93,5 +93,5 @@ private:
 
 }   // namespace scene2D
 
-#endif  // __SCENE2D_ADAPTOR_HISTOGRAM_HPP__
+#endif  // __SCENE2D_ADAPTOR_SHISTOGRAM_HPP__
 
