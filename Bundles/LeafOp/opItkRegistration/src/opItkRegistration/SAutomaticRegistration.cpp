@@ -58,8 +58,14 @@ void SAutomaticRegistration::configuring()
     OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("service.metric", "");
-
     setMetric(metric);
+
+    const std::string legacyMode = config.get_optional< std::string >("service.legacyMode").get_value_or("off");
+
+    OSLM_FATAL_IF("Invalid legacyMode, must be 'on' or 'off'. Here : " << legacyMode,
+                  legacyMode != "on" && legacyMode != "off");
+
+    m_legacyMode = (legacyMode == "on");
 }
 
 //------------------------------------------------------------------------------
@@ -88,8 +94,17 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::AutomaticRegistrationV4::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                                m_maxStep, m_maxIterations);
+    if(m_legacyMode)
+    {
+        ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                                  m_maxStep, m_maxIterations);
+
+    }
+    else
+    {
+        ::itkRegistrationOp::AutomaticRegistrationV4::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                                    m_maxIterations);
+    }
 
     m_sigComputed->asyncEmit();
 
@@ -145,6 +160,8 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     else if(key == "maxStep")
     {
         m_maxStep = val;
+
+        OSLM_WARN_IF("'maxStep' is useless in non-legacy (v4) mode.", !m_legacyMode);
     }
     else
     {

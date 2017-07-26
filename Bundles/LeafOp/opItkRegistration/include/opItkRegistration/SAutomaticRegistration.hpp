@@ -34,6 +34,7 @@ namespace opItkRegistration
        <maxStep>0.2</maxStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
+       <legacyMode>off</legacyMode>
    </service>
    @endcode
  * @subsection Input Input
@@ -55,6 +56,7 @@ namespace opItkRegistration
  * MeanSquares : fastest metric, only works when matching images with the same intensity values.
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
+ * - \b legacyMode (optional) (on|off) : use the legacy ITK framework (off by default).
  */
 class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::IOperator
 {
@@ -115,6 +117,9 @@ private:
 
     /// Metric used by the optimizer.
     ::itkRegistrationOp::MetricType m_metric;
+
+    /// If true, use legacy registration instead of v4 registration.
+    bool m_legacyMode;
 };
 
 } // namespace opItkRegistration
