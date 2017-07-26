@@ -44,6 +44,7 @@ function(plugin_setup ${PROJECT})
         set(HPP_FILE "${PRJ_INCLUDE_DIR}/${HPP_FILE}")
         file(TO_CMAKE_PATH ${HPP_FILE} HPP_FILE)
 
+        unset(SRV_DESC)
         if(EXISTS ${HPP_FILE})
             set(BRIEF_REGEX "[ /*]*@brief ([^\n]+)")
             file(STRINGS ${HPP_FILE} HPP_FILE_CONTENT NEWLINE_CONSUME)
