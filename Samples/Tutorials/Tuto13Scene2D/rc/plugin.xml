@@ -60,24 +60,24 @@
                 </scene>
             </service>
             
-            <service uid="gridFromFloat" type="::scene2D::adaptor::GridFromFloat" autoConnect="yes" >
+            <service uid="gridFromFloat" type="::scene2D::adaptor::SGridFromFloat" autoConnect="yes" >
                 <in key="float" uid="floatData" />
                 <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
             </service>
 
-            <service uid="square1" type="::scene2D::adaptor::Square" >
+            <service uid="square1" type="::scene2D::adaptor::SSquare" >
                 <config x="0" y="0" size="15" color="red" zValue="4" />
             </service>
 
-            <service uid="square2" type="::scene2D::adaptor::Square" >
+            <service uid="square2" type="::scene2D::adaptor::SSquare" >
                 <config x="20" y="20" size="30" color="blue" zValue="3" />
             </service>
 
-            <service uid="abscissa" type="::scene2D::adaptor::Line" >
+            <service uid="abscissa" type="::scene2D::adaptor::SLine" >
                 <config x1="-100" x2="100" y1="0" y2="0" color="red" zValue="5" />
             </service>
 
-            <service uid="ordinate" type="::scene2D::adaptor::Line" >
+            <service uid="ordinate" type="::scene2D::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
             </service>
                     
