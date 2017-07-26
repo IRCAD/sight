@@ -3,26 +3,22 @@
     To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
 -->
 <plugin id="Tuto08GenericScene" version="@DASH_VERSION@">
-
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-
     <extension implements="::fwServices::registry::AppConfig2">
         <id>Tuto08GenericScene</id>
         <config>
-
             <object uid="imageUID" type="::fwData::Image" />
             <object uid="meshUID" type="::fwData::Mesh" />
             <object uid="textureUID" type="::fwData::Image" />
-
             <service uid="ihm" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Tuto08GenericScene</name>
                         <icon>@BUNDLE_PREFIX@/Tuto08GenericScene_0-1/tuto.ico</icon>
                     </frame>
-                    <menuBar />
+                    <menuBar/>
                 </gui>
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
@@ -32,7 +28,6 @@
 
             <!-- Status bar used to display the progress bar for reading -->
             <service uid="progressBar" type="::gui::editor::SJobBar" />
-
             <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
                 <gui>
                     <layout>
@@ -50,7 +45,7 @@
                         <menuItem name="Open image" shortcut="Ctrl+I" />
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
                         <menuItem name="Open texture" shortcut="Ctrl+T" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -66,16 +61,17 @@
             <service uid="actionOpenImage" type="::gui::action::SStarter">
                 <start uid="imageReader" />
             </service>
+
             <service uid="actionOpenMesh" type="::gui::action::SStarter">
                 <start uid="meshReader" />
             </service>
+
             <service uid="actionOpenTexture" type="::gui::action::SStarter">
                 <start uid="textureReader" />
             </service>
 
             <!-- Quit action -->
             <service uid="actionQuit" type="::gui::action::SQuit" />
-
             <!-- main view -->
             <service uid="mainView" type="::gui::view::SDefaultView">
                 <gui>
@@ -114,85 +110,54 @@
                 It allows to select the snapshot filename and emits a "snapped" signal with this path.
             -->
             <service uid="snapshotScene1Editor" type="::uiVisu::SnapshotEditor" />
-
             <!--
                 Generic scene:
                 This scene display a 3D image and a textured mesh.
             -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="image" uid="imageUID" />
-                <inout key="mesh" uid="meshUID" />
-                <inout key="textureImage" uid="textureUID" />
                 <scene>
                     <!-- Image picker -->
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                     <!-- Renderer -->
                     <renderer id="default" background="0.0" />
 
-                    <!-- Mesh adaptor -->
-                    <adaptor id="meshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                        <config renderer="default" picker="" uvgen="sphere" texture="textureAdaptor" />
-                    </adaptor>
-
-                    <!-- Texture adaptor, used by mesh adaptor -->
-                    <adaptor id="textureAdaptor" class="::visuVTKAdaptor::Texture" objectId="textureImage">
-                        <config renderer="default" picker="" filtering="linear" wrapping="repeat" />
-                    </adaptor>
-
-                    <!-- 3D image negatoscope adaptor -->
-                    <adaptor id="imageAdaptor" uid="imageAdaptorUID" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                        <config renderer="default" picker="myPicker" mode="3d" slices="3" sliceIndex="axial" />
-                    </adaptor>
-
-                    <!-- Snapshot adaptor: create a snapshot of the scene. It has a slot "snap" that receives a path -->
-                    <adaptor id="snapshotAdaptor" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <!--
-                        Connection for snapshot:
-                        connect the editor signal "snapped" to the adaptor slot "snap"
-                    -->
-                    <connect>
-                        <signal>snapshotScene1Editor/snapped</signal>
-                        <slot>snapshotUID/snap</slot>
-                    </connect>
-
-                    <!--
-                        Connection for 3D image slice:
-                        Connect the button (showScanEditor) signal "toggled" to the image adaptor (MPRNegatoScene3D)
-                        slot "showSlice", this signals/slots contains a boolean.
-                        The image slices will be show or hide when the button is checked/unchecked.
-
-                        The "waitForKey" attribut means that the signal and slot are connected only if the key
-                        "image" is present in the scene composite. It is recommanded to used because the adaptors
-                        exists only if the object is present.
-
-                    -->
-                    <connect>
-                        <signal>showScanEditor/toggled</signal>
-                        <slot>imageAdaptorUID/showSlice</slot>
-                    </connect>
-
-                    <!--
-                        Connection for 3D image slice:
-                        Connect the menu button (sliceListEditor) signal "selected" to the image adaptor
-                        (MPRNegatoScene3D) slot "updateSliceMode", this signals/slots contains an integer.
-                        This integer defines the number of slice to show (0, 1 or 3).
-                    -->
-                    <connect>
-                        <signal>sliceListEditor/selected</signal>
-                        <slot>imageAdaptorUID/updateSliceMode</slot>
-                    </connect>
-
+                    <adaptor uid="meshAdaptor" start="yes" />
+                    <adaptor uid="textureAdaptor" start="yes" />
+                    <adaptor uid="imageAdaptor" start="yes" />
+                    <adaptor uid="snapshotAdaptor" start="yes" />
                 </scene>
             </service>
 
+            <!-- Mesh adaptor -->
+            <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="meshUID" />
+                <config renderer="default" picker="" uvgen="sphere" />
+            </service>
 
-            <!-- *************************************************
+            <!-- Texture adaptor, used by mesh adaptor -->
+            <service uid="textureAdaptor" type="::visuVTKAdaptor::STexture" autoConnect="yes">
+                <inout key="texture" uid="textureUID" />
+                <config renderer="default" picker="" filtering="linear" wrapping="repeat" />
+            </service>
+
+            <!-- 3D image negatoscope adaptor -->
+            <service uid="imageAdaptor" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="imageUID" />
+                <config renderer="default" picker="myPicker" mode="3d" slices="3" sliceIndex="axial" />
+            </service>
+
+            <!-- Snapshot adaptor: create a snapshot of the scene. It has a slot "snap" that receives a path -->
+            <service uid="snapshotAdaptor" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- ************************************************
                                 Displayed objects
                 ************************************************* -->
-
             <!-- Image displayed in the scene -->
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
                 <inout key="target" uid="imageUID" />
@@ -273,10 +238,52 @@
                 <slot>sliceListEditor/setEnabled</slot>
             </connect>
 
+            <!--
+                Connection for snapshot:
+                connect the editor signal "snapped" to the adaptor slot "snap"
+            -->
+            <connect>
+                <signal>snapshotScene1Editor/snapped</signal>
+                <slot>snapshotAdaptor/snap</slot>
+            </connect>
+
+            <!--
+                Connection for 3D image slice:
+                Connect the button (showScanEditor) signal "toggled" to the image adaptor (MPRNegatoScene3D)
+                slot "showSlice", this signals/slots contains a boolean.
+                The image slices will be show or hide when the button is checked/unchecked.
+
+                The "waitForKey" attribut means that the signal and slot are connected only if the key
+                "image" is present in the scene composite. It is recommanded to used because the adaptors
+                exists only if the object is present.
+            -->
+            <connect>
+                <signal>showScanEditor/toggled</signal>
+                <slot>imageAdaptor/showSlice</slot>
+            </connect>
+
+            <!--
+                Connection for 3D image slice:
+                Connect the menu button (sliceListEditor) signal "selected" to the image adaptor
+                (MPRNegatoScene3D) slot "updateSliceMode", this signals/slots contains an integer.
+                This integer defines the number of slice to show (0, 1 or 3).
+            -->
+            <connect>
+                <signal>sliceListEditor/selected</signal>
+                <slot>imageAdaptor/updateSliceMode</slot>
+            </connect>
+
+            <!--
+                Connection for texture:
+                The texture will be applied on the mesh when the mesh adaptor is started.
+            -->
+            <connect>
+                <signal>meshAdaptor/textureApplied</signal>
+                <slot>textureAdaptor/applySTexture</slot>
+            </connect>
+
             <start uid="ihm" />
             <start uid="progressBar" />
-
         </config>
     </extension>
-
 </plugin>
