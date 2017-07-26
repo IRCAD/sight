@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/SliceFollowerCamera.hpp"
+#include "visuVTKAdaptor/SSliceFollowerCamera.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -24,7 +24,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSliceFollowerCamera, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -32,94 +32,90 @@ namespace visuVTKAdaptor
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
-SliceFollowerCamera::SliceFollowerCamera() noexcept :
+SSliceFollowerCamera::SSliceFollowerCamera() noexcept :
     m_camera(nullptr)
 {
-    m_comChannelPriority = 0.49;
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceFollowerCamera::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceFollowerCamera::updateSliceType, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SSliceFollowerCamera::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SSliceFollowerCamera::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
 
-SliceFollowerCamera::~SliceFollowerCamera() noexcept
+SSliceFollowerCamera::~SSliceFollowerCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doConfigure()
+void SSliceFollowerCamera::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    assert(m_configuration->getName() == "config");
-    if(m_configuration->hasAttribute("sliceIndex"))
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    const std::string orientation = config.get<std::string>("sliceIndex", "axial");
+    if(orientation == "axial" )
     {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
-        if(orientation == "axial" )
-        {
-            m_orientation = Z_AXIS;
-        }
-        else if(orientation == "frontal" )
-        {
-            m_orientation = Y_AXIS;
-        }
-        else if(orientation == "sagittal" )
-        {
-            m_orientation = X_AXIS;
-        }
+        m_orientation = Z_AXIS;
+    }
+    else if(orientation == "frontal" )
+    {
+        m_orientation = Y_AXIS;
+    }
+    else if(orientation == "sagittal" )
+    {
+        m_orientation = X_AXIS;
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doStart()
+void SSliceFollowerCamera::starting()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->initialize();
+
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
 
     m_camera = this->getRenderer()->GetActiveCamera();
     this->initializeCamera();
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doUpdate()
+void SSliceFollowerCamera::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
     this->initializeCamera();
 }
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::doSwap()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-    this->initializeCamera();
-}
-
-//------------------------------------------------------------------------------
-
-void SliceFollowerCamera::doStop()
+void SSliceFollowerCamera::stopping()
 {
     this->unregisterServices();
 }
 
 //-----------------------------------------------------------------------------
 
-void SliceFollowerCamera::updateSliceIndex(int axial, int frontal, int sagittal)
+void SSliceFollowerCamera::updateSliceIndex(int /*axial*/, int /*frontal*/, int /*sagittal*/)
 {
     this->updateCamera();
 }
 
 //-----------------------------------------------------------------------------
 
-void SliceFollowerCamera::updateSliceType(int from, int to)
+void SSliceFollowerCamera::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
@@ -135,9 +131,11 @@ void SliceFollowerCamera::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::initializeCamera()
+void SSliceFollowerCamera::initializeCamera()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
@@ -160,7 +158,7 @@ void SliceFollowerCamera::initializeCamera()
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::updateCamera(double distance, double size)
+void SSliceFollowerCamera::updateCamera(double distance, double size)
 {
     SLM_ASSERT("No Camera", m_camera );
 
@@ -204,12 +202,12 @@ void SliceFollowerCamera::updateCamera(double distance, double size)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SliceFollowerCamera::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SSliceFollowerCamera::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
 
     return connections;
 }

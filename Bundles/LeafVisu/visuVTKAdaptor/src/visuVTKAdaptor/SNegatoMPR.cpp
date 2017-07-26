@@ -169,7 +169,7 @@ void SNegatoMPR::updating()
         }
         else if(!this->is3dModeEnabled())
         {
-            this->addAdaptor("::visuVTKAdaptor::SliceFollowerCamera", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SSliceFollowerCamera", m_orientation);
         }
         else
         {
