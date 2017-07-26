@@ -14,6 +14,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Resection, ::fwData::Resection );
 
 namespace visuVTKAdaptor

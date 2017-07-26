@@ -25,6 +25,8 @@ namespace visuVTKAdaptor
  * - \b updateSliceType(int from, int to): update image slice type
  * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
  *
+ * @section XML XML Configuration
+ *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SSliceFollowerCamera" autoConnect="yes">
        <inout key="image" uid="..." />

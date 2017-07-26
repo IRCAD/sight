@@ -30,7 +30,8 @@ namespace visuVTKAdaptor
  * @section Slots Slots
  * - \b updateSliceIndex(int axial, int frontal, int sagittal): update image slice index
  * - \b updateSliceType(int from, int to): update image slice type
-
+ *
+ * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">

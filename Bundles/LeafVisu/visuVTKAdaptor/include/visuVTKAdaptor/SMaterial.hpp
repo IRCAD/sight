@@ -23,6 +23,16 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Manage material representation of meshes
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SMaterial">
+       <in key="material" uid="..." />
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b input [::fwData::Material]: material applied on the mesh.
  */
 class VISUVTKADAPTOR_CLASS_API SMaterial : public ::fwRenderVTK::IAdaptor
 {

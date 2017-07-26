@@ -23,6 +23,8 @@ namespace visuVTKAdaptor
 /**
  * @brief Manage windowing interaction for image
  *
+ * @section XML XML Configuration
+ *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoWindowingInteractor" autoConnect="yes">
        <inout key="image" uid="..." />

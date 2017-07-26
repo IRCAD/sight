@@ -27,6 +27,8 @@ namespace visuVTKAdaptor
  * - \b updateSliceType(int from, int to): update image slice type
  * - \b updateImage(bool isShown): show/hide slice
  *
+ * @section XML XML Configuration
+ *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoOneSlice" autoConnect="yes">
        <inout key="image" uid="..." />

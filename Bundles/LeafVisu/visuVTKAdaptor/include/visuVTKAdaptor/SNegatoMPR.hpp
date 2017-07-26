@@ -32,6 +32,7 @@ class SliceCursor;
  * - \b setCrossScale(double scale): set the slice cross scale. Forward the information to SliceCursor sub-adaptor.
  * - \b changeImageSource(std::string _value, std::string _key): set the VTK source image. The key must be "ImageSource"
  *
+ * @section XML XML Configuration
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
        <inout key="image" uid="..." />

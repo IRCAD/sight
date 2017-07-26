@@ -83,6 +83,7 @@ vtkProperty* SMaterial::getVtkProperty() const
 
 void SMaterial::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
