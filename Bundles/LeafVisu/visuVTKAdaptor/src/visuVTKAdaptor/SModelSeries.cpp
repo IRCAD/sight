@@ -8,10 +8,12 @@
 
 #include "visuVTKAdaptor/SMesh.hpp"
 #include "visuVTKAdaptor/SReconstruction.hpp"
-#include "visuVTKAdaptor/Texture.hpp"
+#include "visuVTKAdaptor/STexture.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
@@ -71,7 +73,11 @@ void SModelSeries::configuring()
     SLM_ASSERT("'autoresetcamera' must be 'yes' or 'no'", autoresetcamera == "yes" || autoresetcamera == "no");
     m_autoResetCamera = (autoresetcamera == "yes");
 
-    m_textureAdaptorUID = config.get<std::string>("texture", "");
+    if (config.count("texture"))
+    {
+        SLM_FATAL("'texture' is deprecated, you need to connect manually the SModelSeries::textureApplied signal to "
+                  "the STexture::applySTexture slot.");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -98,17 +104,6 @@ void SModelSeries::updating()
         showRec = false;
     }
 
-    if(!m_textureAdaptorUID.empty())
-    {
-        ::fwRenderVTK::SRender::sptr renderService     = this->getRenderService();
-        ::fwRenderVTK::IAdaptor::sptr adaptor          = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
-
-        SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
-        m_connections.connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
-                              ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
-    }
-
     for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
     {
         // create the srv configuration for objects auto-connection
@@ -129,22 +124,7 @@ void SModelSeries::updating()
         service->start();
         renconstructionAdaptor->setForceHide( !showRec );
 
-        if(!m_textureAdaptorUID.empty())
-        {
-            ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
-            SLM_ASSERT("Missing mesh", mesh);
-
-            ::fwServices::registry::ObjectService::ServiceVectorType servicesVector;
-            servicesVector = ::fwServices::OSR::getServices(mesh, "::visuVTKAdaptor::SMesh");
-            SLM_ASSERT("Missing material adaptor", !servicesVector.empty());
-
-            ::visuVTKAdaptor::SMesh::sptr meshAdaptor = ::visuVTKAdaptor::SMesh::dynamicCast(*servicesVector.begin());
-
-            ::fwData::Material::sptr material = meshAdaptor->getMaterial();
-            SLM_ASSERT("Missing material", material);
-
-            m_sigTextureApplied->asyncEmit(material);
-        }
+        m_sigTextureApplied->asyncEmit(reconstruction->getMaterial());
     }
     this->requestRender();
 }

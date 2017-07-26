@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Texture.hpp"
+#include "visuVTKAdaptor/STexture.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -25,108 +25,96 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTexture.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Texture, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STexture);
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType Texture::s_APPLY_TEXTURE_SLOT = "applyTexture";
+const ::fwCom::Slots::SlotKeyType STexture::s_APPLY_TEXTURE_SLOT = "applySTexture";
+
+static const ::fwServices::IService::KeyType s_TEXTURE_INOUT = "texture";
 
 //------------------------------------------------------------------------------
 
-Texture::Texture() noexcept :
+STexture::STexture() noexcept :
     m_filtering("linear"),
     m_wrapping("repeat"),
     m_lighting(true)
 {
-    m_slotApplyTexture = ::fwCom::newSlot( &Texture::applyTexture, this );
-    ::fwCom::HasSlots::m_slots( s_APPLY_TEXTURE_SLOT, m_slotApplyTexture);
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot(s_APPLY_TEXTURE_SLOT, &STexture::applySTexture, this );
 }
 
 //------------------------------------------------------------------------------
 
-Texture::~Texture() noexcept
+STexture::~STexture() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doConfigure()
+void STexture::configuring()
 {
-    SLM_ASSERT("Missing configuration", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if ( m_configuration->hasAttribute( "autoRender" ) )
-    {
-        const std::string autoRender = m_configuration->getAttributeValue("autoRender");
-        const bool autoRenderValue   = (autoRender == "true");
-        this->setAutoRender(autoRenderValue);
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if ( m_configuration->hasAttribute( "filtering" ) )
-    {
-        m_filtering = m_configuration->getAttributeValue("filtering");
-    }
+    m_filtering = config.get<std::string>("filtering", "linear");
 
-    if ( m_configuration->hasAttribute( "wrapping" ) )
-    {
-        m_wrapping = m_configuration->getAttributeValue("wrapping");
-    }
-    if ( m_configuration->hasAttribute( "lighting" ) )
-    {
-        m_lighting = (m_configuration->getAttributeValue("lighting") == "yes");
-    }
+    m_wrapping = config.get<std::string>("wrapping", "repeat");
+
+    m_lighting = (config.get<std::string>("lighting", "yes") == "yes");
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doStart()
+void STexture::starting()
 {
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doUpdate()
+void STexture::updating()
 {
     for(::fwData::Material::sptr material :  m_materialSet)
     {
-        applyTexture(material);
+        applySTexture(material);
     }
 }
 
 //------------------------------------------------------------------------------
-void Texture::doSwap()
+
+void STexture::stopping()
 {
-    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void Texture::doStop()
-{
-    this->unregisterServices();
-}
-
-//------------------------------------------------------------------------------
-
-void Texture::applyTexture( SPTR(::fwData::Material)_material )
+void STexture::applySTexture( SPTR(::fwData::Material)_material )
 {
     if(m_materialSet.count(_material) == 0)
     {
         m_materialSet.insert(_material);
     }
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_TEXTURE_INOUT);
+    SLM_ASSERT("Texture image is missing.", image);
 
-    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
-    {
-        return;
-    }
+    ::fwData::mt::ObjectWriteLock matLock(_material);
 
-    _material->setDiffuseTexture(image);
-    if(m_lighting == false)
     {
-        _material->setShadingMode(::fwData::Material::AMBIENT);
+        ::fwData::mt::ObjectReadLock imLock(image);
+
+        if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        {
+            return;
+        }
+
+        _material->setDiffuseTexture(image);
+        if(m_lighting == false)
+        {
+            _material->setShadingMode(::fwData::Material::AMBIENT);
+        }
     }
 
     ::fwData::Material::FilteringType filtering = ::fwData::Material::LINEAR;
@@ -142,7 +130,7 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
     }
     else
     {
-        OSLM_WARN("Texture filtering type unknown or not supported : " << m_filtering);
+        OSLM_WARN("STexture filtering type unknown or not supported : " << m_filtering);
     }
     _material->setDiffuseTextureFiltering(filtering);
 
@@ -156,7 +144,7 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
     }
     else
     {
-        OSLM_WARN("Texture wrapping type unknown or not supported : " << m_wrapping);
+        OSLM_WARN("STexture wrapping type unknown or not supported : " << m_wrapping);
     }
     _material->setDiffuseTextureWrapping(wrapping);
 
@@ -170,11 +158,11 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Texture::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_TEXTURE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TEXTURE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

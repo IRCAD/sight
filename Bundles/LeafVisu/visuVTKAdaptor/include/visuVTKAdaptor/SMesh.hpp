@@ -80,8 +80,6 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  *    - \b unclippedcolor : hexadecimal color code of the diffuse material of the unclipped part.
  *    - \b autoresetcamera : reset the camera point of view when the mesh is modified ("yes" or "no", default: "yes") .
  *    - \b uvgen : generate UV coordinates ("sphere", "cylinder" or "plane").
- *    - \b texture : id of the optional texture adaptor, used to map a texture on the mesh. The mesh needs a valid UV
- *    coordinates layer, or to generate uv on-the-fly with the \b uvgen parameter.
  *    - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
  */
 class VISUVTKADAPTOR_CLASS_API SMesh : public ::fwRenderVTK::IAdaptor
@@ -262,7 +260,6 @@ protected:
     };
 
     UvGenType m_uvgen;
-    std::string m_textureAdaptorUID;
 
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;

@@ -48,7 +48,6 @@ namespace visuVTKAdaptor
  *    - \b autoresetcamera(optional) : reset the camera point of view when the mesh is modified ("yes" or "no",
  *      default: "yes") .
  *    - \b clippingplanes(optional) : identifier of the vtk clipping plane object
- *    - \b texture(optional) : id of the texture adaptor, used to map a texture on the mesh. The mesh needs a valid UV
  */
 class VISUVTKADAPTOR_CLASS_API SModelSeries : public ::fwRenderVTK::IAdaptor
 {
@@ -124,8 +123,6 @@ private:
 
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanes;
     bool m_autoResetCamera;
-
-    std::string m_textureAdaptorUID;
 
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;

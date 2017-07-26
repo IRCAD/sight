@@ -8,7 +8,7 @@
 
 #include "visuVTKAdaptor/SMaterial.hpp"
 #include "visuVTKAdaptor/SMeshNormals.hpp"
-#include "visuVTKAdaptor/Texture.hpp"
+#include "visuVTKAdaptor/STexture.hpp"
 #include "visuVTKAdaptor/Transform.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -495,7 +495,11 @@ void SMesh::configuring()
         SLM_FATAL("'uvgen' value must be 'none', 'sphere', 'cylinder' or 'plane', actual: " + uvGen);
     }
 
-    m_textureAdaptorUID = config.get<std::string>("texture", "");
+    if (config.count("texture"))
+    {
+        SLM_FATAL("'texture' is deprecated, you need to connect manually the SMesh::textureApplied signal to the "
+                  "STexture::applySTexture slot.");
+    }
 
     if (config.count("shadingMode"))
     {
@@ -523,17 +527,6 @@ void SMesh::updating()
 void SMesh::starting()
 {
     this->initialize();
-
-    if(!m_textureAdaptorUID.empty())
-    {
-        ::fwRenderVTK::SRender::sptr renderService     = this->getRenderService();
-        ::fwRenderVTK::IAdaptor::sptr adaptor          = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
-
-        SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
-        m_connections.connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
-                              ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
-    }
 
     this->buildPipeline();
 
@@ -834,13 +827,9 @@ void SMesh::updateMesh( ::fwData::Mesh::csptr mesh )
         m_mapper->SetInputData(m_polyData);
     }
 
-    if(!m_textureAdaptorUID.empty())
-    {
-        ::fwData::Material::sptr material = this->getMaterial();
-        SLM_ASSERT("Missing material", material);
-
-        m_sigTextureApplied->asyncEmit(material);
-    }
+    ::fwData::Material::sptr material = this->getMaterial();
+    SLM_ASSERT("Missing material", material);
+    m_sigTextureApplied->asyncEmit(material);
 
     if (m_autoResetCamera)
     {
