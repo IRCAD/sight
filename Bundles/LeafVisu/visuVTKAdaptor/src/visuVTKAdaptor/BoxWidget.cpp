@@ -173,7 +173,7 @@ void BoxWidget::updateFromVtk()
     {
         for(int ct = 0; ct < 4; ct++)
         {
-            trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
+            trf->setCoefficient(static_cast<size_t>(lt), static_cast<size_t>(ct), mat->GetElement(lt, ct));
         }
     }
 
@@ -200,7 +200,7 @@ void BoxWidget::doUpdate()
         {
             for(int ct = 0; ct < 4; ct++)
             {
-                mat->SetElement(lt, ct, transMat->getCoefficient(lt, ct));
+                mat->SetElement(lt, ct, transMat->getCoefficient(static_cast<size_t>(lt), static_cast<size_t>(ct)));
             }
         }
 

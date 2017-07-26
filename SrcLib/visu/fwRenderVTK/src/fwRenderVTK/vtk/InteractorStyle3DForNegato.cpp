@@ -1,22 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
-#include <vtkMath.h>
-#include <vtkCamera.h>
-#include <vtkCallbackCommand.h>
-#include <vtkCommand.h>
-#include <vtkRenderer.h>
-#include <vtkObjectFactory.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkRenderWindow.h>
 #include "vtkCellPicker.h"
 
-#include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
+#include <fwCore/base.hpp>
+
+#include <vtkCallbackCommand.h>
+#include <vtkCamera.h>
+#include <vtkCommand.h>
+#include <vtkMath.h>
+#include <vtkObjectFactory.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
 
 vtkStandardNewMacro(InteractorStyle3DForNegato);
 
@@ -42,7 +43,7 @@ void InteractorStyle3DForNegato::OnChar()
         return;
     }
 
-    vtkRenderWindowInteractor *rwi = this->Interactor;
+    vtkRenderWindowInteractor* rwi = this->Interactor;
 
     switch (rwi->GetKeyCode())
     {
@@ -60,14 +61,14 @@ void InteractorStyle3DForNegato::OnChar()
         case 'F':
         {
             this->AnimState = VTKIS_ANIM_ON;
-            vtkAssemblyPath *path = NULL;
+            vtkAssemblyPath* path = NULL;
             this->FindPokedRenderer(rwi->GetEventPosition()[0],
                                     rwi->GetEventPosition()[1]);
             rwi->GetPicker()->Pick(rwi->GetEventPosition()[0],
                                    rwi->GetEventPosition()[1],
                                    0.0,
                                    this->CurrentRenderer);
-            vtkAbstractPropPicker *picker;
+            vtkAbstractPropPicker* picker;
             if ((picker = vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker())))
             {
                 path = picker->GetPath();
@@ -87,7 +88,7 @@ void InteractorStyle3DForNegato::OnChar()
 
 void InteractorStyle3DForNegato::OnKeyUp()
 {
-    vtkRenderWindowInteractor *rwi = this->Interactor;
+    vtkRenderWindowInteractor* rwi = this->Interactor;
 
     switch (rwi->GetKeyCode())
     {
@@ -101,7 +102,7 @@ void InteractorStyle3DForNegato::OnKeyUp()
 
 void InteractorStyle3DForNegato::OnKeyDown()
 {
-    vtkRenderWindowInteractor *rwi = this->Interactor;
+    vtkRenderWindowInteractor* rwi = this->Interactor;
 
     switch (rwi->GetKeyCode())
     {
@@ -262,13 +263,13 @@ void InteractorStyle3DForNegato::Pan()
         return;
     }
 
-    vtkRenderWindowInteractor *rwi = this->Interactor;
+    vtkRenderWindowInteractor* rwi = this->Interactor;
     double viewFocus[4], focalDepth, viewPoint[3];
     double newPickPoint[4], oldPickPoint[4];
     double motionVector[3];
 
     // Calculate the focal depth since we'll be using it a lot
-    vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+    vtkCamera* camera = this->CurrentRenderer->GetActiveCamera();
     camera->GetFocalPoint(viewFocus);
     this->ComputeWorldToDisplay(viewFocus[0], viewFocus[1], viewFocus[2],
                                 viewFocus);
@@ -326,8 +327,8 @@ void InteractorStyle3DForNegato::Dolly()
     {
         return;
     }
-    double *center = this->CurrentRenderer->GetCenter();
-    int dy         = m_newPickPoint[1] - m_oldPickPoint[1];
+    double* center = this->CurrentRenderer->GetCenter();
+    int dy         = static_cast<int>(m_newPickPoint[1] - m_oldPickPoint[1]);
     double dyf     = this->MotionFactor * dy / center[1];
     this->Dolly(pow(1.1, dyf));
 }
@@ -341,7 +342,7 @@ void InteractorStyle3DForNegato::Dolly(double factor)
         return;
     }
 
-    vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+    vtkCamera* camera = this->CurrentRenderer->GetActiveCamera();
     if (camera->GetParallelProjection())
     {
         camera->SetParallelScale(camera->GetParallelScale() / factor);
@@ -374,16 +375,16 @@ void InteractorStyle3DForNegato::Rotate()
     {
         return;
     }
-    vtkRenderWindowInteractor *rwi = this->Interactor;
-    int dx                         = m_newPickPoint[0] - m_oldPickPoint[0];
-    int dy                         = m_newPickPoint[1] - m_oldPickPoint[1];
-    int *size                      = this->CurrentRenderer->GetRenderWindow()->GetSize();
+    vtkRenderWindowInteractor* rwi = this->Interactor;
+    int dx                         = static_cast<int>(m_newPickPoint[0] - m_oldPickPoint[0]);
+    int dy                         = static_cast<int>(m_newPickPoint[1] - m_oldPickPoint[1]);
+    int* size                      = this->CurrentRenderer->GetRenderWindow()->GetSize();
     double delta_elevation         = -20.0 / size[1];
     double delta_azimuth           = -20.0 / size[0];
     double rxf                     = dx * delta_azimuth * this->MotionFactor;
     double ryf                     = dy * delta_elevation * this->MotionFactor;
 
-    vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+    vtkCamera* camera = this->CurrentRenderer->GetActiveCamera();
     camera->Azimuth(rxf);
     camera->Elevation(ryf);
     camera->OrthogonalizeViewUp();
@@ -410,15 +411,15 @@ void InteractorStyle3DForNegato::Spin()
     {
         return;
     }
-    vtkRenderWindowInteractor *rwi = this->Interactor;
-    double *center                 = this->CurrentRenderer->GetCenter();
+    vtkRenderWindowInteractor* rwi = this->Interactor;
+    double* center                 = this->CurrentRenderer->GetCenter();
     double newAngle                =
         vtkMath::DegreesFromRadians( atan2( m_newPickPoint[1] - center[1],
                                             m_newPickPoint[0] - center[0] ) );
     double oldAngle =
         vtkMath::DegreesFromRadians( atan2( m_oldPickPoint[1] - center[1],
                                             m_oldPickPoint[0] - center[0] ) );
-    vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+    vtkCamera* camera = this->CurrentRenderer->GetActiveCamera();
     camera->Roll( newAngle - oldAngle );
     camera->OrthogonalizeViewUp();
 

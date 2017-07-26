@@ -1,19 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
+
 #include <fwCore/base.hpp>
 
-#include <vtkCamera.h>
 #include <vtkCallbackCommand.h>
+#include <vtkCamera.h>
 #include <vtkCommand.h>
-#include <vtkRenderer.h>
 #include <vtkObjectFactory.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
-
-#include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 
 vtkStandardNewMacro(InteractorStyle2DForNegato);
 
@@ -34,7 +34,7 @@ InteractorStyle2DForNegato::~InteractorStyle2DForNegato()
 
 void InteractorStyle2DForNegato::OnChar()
 {
-    vtkRenderWindowInteractor *rwi = this->Interactor;
+    vtkRenderWindowInteractor* rwi = this->Interactor;
 
     switch (rwi->GetKeyCode())
     {
@@ -182,13 +182,13 @@ void InteractorStyle2DForNegato::Pan()
         return;
     }
 
-    vtkRenderWindowInteractor *rwi = this->Interactor;
+    vtkRenderWindowInteractor* rwi = this->Interactor;
     double viewFocus[4], focalDepth, viewPoint[3];
     double newPickPoint[4], oldPickPoint[4];
     double motionVector[3];
 
     // Calculate the focal depth since we'll be using it a lot
-    vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+    vtkCamera* camera = this->CurrentRenderer->GetActiveCamera();
     camera->GetFocalPoint(viewFocus);
     this->ComputeWorldToDisplay(viewFocus[0], viewFocus[1], viewFocus[2],
                                 viewFocus);
@@ -246,8 +246,8 @@ void InteractorStyle2DForNegato::Dolly()
     {
         return;
     }
-    double *center = this->CurrentRenderer->GetCenter();
-    int dy         = m_newPickPoint[1] - m_oldPickPoint[1];
+    double* center = this->CurrentRenderer->GetCenter();
+    int dy         = static_cast<int>(m_newPickPoint[1] - m_oldPickPoint[1]);
     double dyf     = this->MotionFactor * dy / center[1];
     this->Dolly(pow(1.1, dyf));
 }
@@ -261,7 +261,7 @@ void InteractorStyle2DForNegato::Dolly(double factor)
         return;
     }
 
-    vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
+    vtkCamera* camera = this->CurrentRenderer->GetActiveCamera();
     if (camera->GetParallelProjection())
     {
         camera->SetParallelScale(camera->GetParallelScale() / factor);
