@@ -58,7 +58,7 @@ void SScaleValues::configuring()
     // Interval configuration
     if (config.count("interval"))
     {
-        m_interval = std::stof( m_configuration->getAttributeValue("interval") );
+        m_interval = config.get<float>("interval");
     }
 
     // Color configuration
@@ -78,9 +78,11 @@ void SScaleValues::configuring()
     }
 
     // Show unit
-    const std::string showUnit = config.get<std::string>("showUnit");
-    if(showUnit == "true" || showUnit == "false")
+    if (config.count("showUnit"))
     {
+        const std::string showUnit = config.get<std::string>("showUnit");
+        SLM_ASSERT("Unsupported value "+showUnit+" for 'showUnit' attribute (true or false expected).",
+                   showUnit == "true" || showUnit == "false");
         m_showUnit = (showUnit == "true");
     }
 
