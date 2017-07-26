@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/SlicesCursor.hpp"
+#include "visuVTKAdaptor/SSlicesCursor.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -34,39 +34,41 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SSlicesCursor);
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SlicesCursor::s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-const ::fwCom::Slots::SlotKeyType SlicesCursor::s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
-const ::fwCom::Slots::SlotKeyType SlicesCursor::s_UPDATE_IMAGE_SLOT       = "updateImage";
+const ::fwCom::Slots::SlotKeyType SSlicesCursor::s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+const ::fwCom::Slots::SlotKeyType SSlicesCursor::s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+const ::fwCom::Slots::SlotKeyType SSlicesCursor::s_UPDATE_IMAGE_SLOT       = "updateImage";
 
-const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SHOW_FULL_CROSS_SLOT   = "showFullCross";
-const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT = "showNormalCross";
-const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SET_CROSS_SCALE_SLOT   = "setCrossScale";
+const ::fwCom::Slots::SlotKeyType SSlicesCursor::s_SHOW_FULL_CROSS_SLOT   = "showFullCross";
+const ::fwCom::Slots::SlotKeyType SSlicesCursor::s_SHOW_NORMAL_CROSS_SLOT = "showNormalCross";
+const ::fwCom::Slots::SlotKeyType SSlicesCursor::s_SET_CROSS_SCALE_SLOT   = "setCrossScale";
+
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-SlicesCursor::SlicesCursor()  noexcept :
+SSlicesCursor::SSlicesCursor()  noexcept :
     m_cursorPolyData( vtkPolyData::New() ),
     m_cursorMapper( vtkPolyDataMapper::New() ),
     m_cursorActor( vtkActor::New() ),
     m_scale(0.5f),
     m_isSelected(false)
 {
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SlicesCursor::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SlicesCursor::updateSliceType, this);
-    newSlot(s_UPDATE_IMAGE_SLOT, &SlicesCursor::updateImage, this);
-    newSlot(s_SHOW_FULL_CROSS_SLOT, &SlicesCursor::showFullCross, this);
-    newSlot(s_SHOW_NORMAL_CROSS_SLOT, &SlicesCursor::showNormalCross, this);
-    newSlot(s_SET_CROSS_SCALE_SLOT, &SlicesCursor::setCrossScale, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SSlicesCursor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SSlicesCursor::updateSliceType, this);
+    newSlot(s_UPDATE_IMAGE_SLOT, &SSlicesCursor::updateImage, this);
+    newSlot(s_SHOW_FULL_CROSS_SLOT, &SSlicesCursor::showFullCross, this);
+    newSlot(s_SHOW_NORMAL_CROSS_SLOT, &SSlicesCursor::showNormalCross, this);
+    newSlot(s_SET_CROSS_SCALE_SLOT, &SSlicesCursor::setCrossScale, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SlicesCursor::~SlicesCursor()  noexcept
+SSlicesCursor::~SSlicesCursor()  noexcept
 {
     m_cursorActor->Delete();
     m_cursorActor = NULL;
@@ -77,31 +79,30 @@ SlicesCursor::~SlicesCursor()  noexcept
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::setCrossScale(double scale)
+void SSlicesCursor::setCrossScale(double scale)
 {
-    m_scale = scale;
+    m_scale = static_cast<float>(scale);
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doConfigure()
+void SSlicesCursor::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    std::string scaleStr = m_configuration->getAttributeValue("scale");
-    if ( !scaleStr.empty() )
-    {
-        SLM_ASSERT("scale attribute must be in a config", m_configuration->getName() == "config");
-        m_scale = ::boost::lexical_cast<double>(scaleStr);
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_scale = config.get<float>("scale", 0.5f);
 }
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doStart()
+void SSlicesCursor::starting()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->buildPolyData();
     this->buildColorAttribute();
     this->updateImageInfos(image);
@@ -120,7 +121,7 @@ void SlicesCursor::doStart()
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doStop()
+void SSlicesCursor::stopping()
 {
     m_isSelected = false;
     this->removeAllPropFromRenderer();
@@ -145,7 +146,7 @@ void SlicesCursor::doStop()
 // id point AB, BC, CD, AD  = 0,1,...,3
 // id point ABM, BCM, CDM, ADM = 4,..,7
 
-void SlicesCursor::buildPolyData()
+void SSlicesCursor::buildPolyData()
 {
     int nbPoints      = 8;
     vtkPoints* points = vtkPoints::New(VTK_DOUBLE);
@@ -177,7 +178,7 @@ void SlicesCursor::buildPolyData()
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::barycenter( double ptA[3], double ptB[3], float scale, double result[3] )
+void SSlicesCursor::barycenter( double ptA[3], double ptB[3], float scale, double result[3] )
 {
     for (int i = 0; i < 3; ++i )
     {
@@ -187,8 +188,8 @@ void SlicesCursor::barycenter( double ptA[3], double ptB[3], float scale, double
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale,
-                                       double _ptAprime[3], double _ptBprime[3] )
+void SSlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale,
+                                        double _ptAprime[3], double _ptBprime[3] )
 {
     double ptPBprime[3];
     double norm2PBprime = 0.0;
@@ -234,7 +235,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::buildColorAttribute()
+void SSlicesCursor::buildColorAttribute()
 {
     unsigned char red[3]   = {255, 0, 0};
     unsigned char green[3] = {0, 255, 0};
@@ -273,7 +274,7 @@ void SlicesCursor::buildColorAttribute()
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::updateColors()
+void SSlicesCursor::updateColors()
 {
     switch (m_orientation )
     {
@@ -287,18 +288,11 @@ void SlicesCursor::updateColors()
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doSwap()
+void SSlicesCursor::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-    this->updating();
-}
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
-//-----------------------------------------------------------------------------
-
-void SlicesCursor::doUpdate()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
@@ -310,7 +304,7 @@ void SlicesCursor::doUpdate()
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
+void SSlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
 {
     float scale = m_isSelected ? 1.0 : m_scale;
     if (scale <= 0)
@@ -321,7 +315,7 @@ void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
     {
         m_cursorActor->VisibilityOn();
 
-        unsigned int pos[3];
+        int pos[3];
 
         pos[2] = m_axialIndex->value();
         pos[1] = m_frontalIndex->value();
@@ -331,15 +325,15 @@ void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
         const ::fwData::Image::OriginType origin   = image->getOrigin();
         const ::fwData::Image::SizeType size       = image->getSize();
         double sliceWorld[3];
-        for (int dim = 0; dim < 3; ++dim )
+        for (unsigned int dim = 0; dim < 3; ++dim )
         {
             sliceWorld[dim] = pos[dim] * spacing[dim] + origin.at(dim);
         }
 
         double cursorPoints[8][3]; // point AB,BC,CD,AD,ABM,BCM,CDM,ADM
-        for ( int p = 0; p < 2; ++p )
+        for (unsigned int p = 0; p < 2; ++p )
         {
-            for (int dim = 0; dim < 3; ++dim )
+            for (unsigned int dim = 0; dim < 3; ++dim )
             {
                 if ( (dim + p + 1)%3 == m_orientation )
                 {
@@ -372,7 +366,7 @@ void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::updateSliceIndex(int axial, int frontal, int sagittal)
+void SSlicesCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
@@ -385,21 +379,21 @@ void SlicesCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 }
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::showFullCross()
+void SSlicesCursor::showFullCross()
 {
     m_isSelected = true;
 }
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::showNormalCross()
+void SSlicesCursor::showNormalCross()
 {
     m_isSelected = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::updateSliceType(int from, int to)
+void SSlicesCursor::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
@@ -414,22 +408,24 @@ void SlicesCursor::updateSliceType(int from, int to)
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::updateImage()
+void SSlicesCursor::updateImage()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SlicesCursor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SSlicesCursor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT);
 
     return connections;
 }

@@ -36,8 +36,7 @@
 #include <vtkProp3DCollection.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoSlicingInteractor,
-                         ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoSlicingInteractor);
 
 namespace visuVTKAdaptor
 {

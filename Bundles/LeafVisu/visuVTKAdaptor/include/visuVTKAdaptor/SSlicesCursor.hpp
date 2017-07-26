@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SLICESCURSOR_HPP__
-#define __VISUVTKADAPTOR_SLICESCURSOR_HPP__
+#ifndef __VISUVTKADAPTOR_SSLICESCURSOR_HPP__
+#define __VISUVTKADAPTOR_SSLICESCURSOR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -37,41 +37,33 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <adaptor id="slicesCursor" class="::visuVTKAdaptor::SlicesCursor" objectId="self">
-       <config renderer="default" picker="negatodefault" transform="trf" scale="0.5"/>
-   </adaptor>
+   <service type="::visuVTKAdaptor::SSlicesCursor" autoConnect="yes">
+       <inout key="image" uid="..." />
+       <config renderer="default" picker="negatodefault" transform="trf" scale="0.5" />
+   </service>
    @endcode
  *
- * @subsection Configuration Configuration
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image to display.
  *
- * - \b renderer (mandatory): defines the renderer to show the ProbeCursor.
- * - \b picker (mandatory): identifier of the picker
- * - \b scale (mandatory): scale for the cross: 1. means full cross, 0.5 half cross, 0. no cross
- * - \b transform (optional): the vtkTransform to associate to the adaptor
+ * @subsection Configuration Configuration
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer (mandatory): defines the renderer to show the ProbeCursor.
+ *    - \b picker (mandatory): identifier of the picker
+ *    - \b scale (mandatory): scale for the cross: 1. means full cross, 0.5 half cross, 0. no cross
+ *    - \b transform (optional): the vtkTransform to associate to the adaptor
  *
  */
-
-class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                              public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SSlicesCursor : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                               public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SlicesCursor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SSlicesCursor)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API SlicesCursor()  noexcept;
+    VISUVTKADAPTOR_API SSlicesCursor()  noexcept;
 
-    VISUVTKADAPTOR_API virtual ~SlicesCursor()  noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
-     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
-     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
-     */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKADAPTOR_API virtual ~SSlicesCursor()  noexcept;
 
     /**
      * @name Slots
@@ -89,12 +81,21 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
-    VISUVTKADAPTOR_API void doUpdate();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doConfigure();
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     /// Slot: set the scale for the cross : 1. means full cross, 0.5 half cross, 0. no cross
     void setCrossScale(double scale);
@@ -145,4 +146,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_SLICESCURSOR_HPP__
+#endif // __VISUVTKADAPTOR_SSLICESCURSOR_HPP__
