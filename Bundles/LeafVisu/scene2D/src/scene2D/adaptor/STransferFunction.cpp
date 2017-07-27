@@ -38,6 +38,7 @@ namespace adaptor
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
 static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT     = "viewport";
 
 STransferFunction::STransferFunction() noexcept :
     m_layer(nullptr),
@@ -113,17 +114,19 @@ void STransferFunction::buildTFPoints()
 
 void STransferFunction::buildCircles()
 {
-    this->initializeViewSize();
-    this->initializeViewportSize();
+    ::fwRenderQt::data::Viewport::csptr viewport =
+        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
 
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    this->initializeViewSize();
+    this->initializeViewportSize(viewport);
+
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
     // Total ratio
-    Scene2DRatio ratio = this->getRatio();
+    Scene2DRatio ratio = this->getRatio(viewport);
 
-    double viewportWidthRatio = this->getViewportSizeRatio().first;
+    double viewportWidthRatio = this->getViewportSizeRatio(viewport).first;
 
     // Initialize the width of the circle
     m_circleWidth = m_pointSize;
@@ -213,7 +216,8 @@ void STransferFunction::buildLinesAndPolygons()
 
 void STransferFunction::buildBounds()
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::csptr viewport =
+        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
 
     const QGraphicsEllipseItem* beginCircle = m_circles.front();
     const QGraphicsEllipseItem* endCircle   = m_circles.back();
@@ -285,8 +289,9 @@ void STransferFunction::buildLinearLinesAndPolygons()
 {
     SLM_ASSERT("Circles must not be empty", !m_circles.empty());
 
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwData::TransferFunction::sptr selectedTF  = this->getTransferFunction();
+    ::fwRenderQt::data::Viewport::csptr viewport =
+        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
 
     QVector<QPointF> vect;
     QLinearGradient grad;
@@ -978,7 +983,7 @@ double STransferFunction::pointValue(QGraphicsEllipseItem* circle)
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

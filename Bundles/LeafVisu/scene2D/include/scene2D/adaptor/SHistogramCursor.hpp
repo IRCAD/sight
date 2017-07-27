@@ -26,8 +26,9 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="histogram" type="::scene2D::adaptor::SHistogramCursor">
-       <in key="histogram" uid="histogramUID" />
-       <in key="point" uid="pointUID" />
+       <in key="histogram" uid="..." />
+       <in key="point"     uid="..." />
+       <in key="viewport"  uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5"/>
    </service>
    @endcode

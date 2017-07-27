@@ -9,8 +9,6 @@
 #include "fwRenderQt/registry/Adaptor.hpp"
 #include "fwRenderQt/Scene2DGraphicsView.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -76,19 +74,19 @@ IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio() const
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio() const
+IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio(const ::fwRenderQt::data::Viewport::csptr& viewport) const
 {
     return ViewportSizeRatio(
-        (float) ( m_viewportInitialSize.first / this->getScene2DRender()->getViewport()->getWidth() ),
-        (float) ( m_viewportInitialSize.second / this->getScene2DRender()->getViewport()->getHeight() ) );
+        (float) ( m_viewportInitialSize.first / viewport->getWidth() ),
+        (float) ( m_viewportInitialSize.second / viewport->getHeight() ) );
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Scene2DRatio IAdaptor::getRatio() const
+IAdaptor::Scene2DRatio IAdaptor::getRatio(const ::fwRenderQt::data::Viewport::csptr& viewport) const
 {
     const ViewSizeRatio ratioView         = this->getViewSizeRatio();
-    const ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
+    const ViewportSizeRatio ratioViewport = this->getViewportSizeRatio(viewport);
 
     return Scene2DRatio(    ratioView.first / ratioViewport.first,
                             ratioView.second / ratioViewport.second );
@@ -235,18 +233,18 @@ void IAdaptor::initializeViewSize()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::initializeViewportSize()
+void IAdaptor::initializeViewportSize(const ::fwRenderQt::data::Viewport::csptr& viewport)
 {
     // Initialize the initial width of the viewport
     if(m_viewportInitialSize.first == -1.0f)
     {
-        m_viewportInitialSize.first = this->getScene2DRender()->getViewport()->getWidth();
+        m_viewportInitialSize.first = viewport->getWidth();
     }
 
     // Initialize the initial height of the viewport
     if(m_viewportInitialSize.second == -1.0f)
     {
-        m_viewportInitialSize.second = this->getScene2DRender()->getViewport()->getHeight();
+        m_viewportInitialSize.second = viewport->getHeight();
     }
 }
 
@@ -254,10 +252,6 @@ void IAdaptor::initializeViewportSize()
 
 void IAdaptor::starting()
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-    m_connection                                = viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_UPDATE_SLOT));
-
     doStart();
 }
 
@@ -279,7 +273,6 @@ void IAdaptor::swapping()
 
 void IAdaptor::stopping()
 {
-    m_connection.disconnect();
     doStop();
 }
 

@@ -30,6 +30,7 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="negato" type="::scene2D::adaptor::SNegato">
+       <inout key="viewport" uid="..." />
        <inout key="image" uid="..." />
        <inout key="tfSelection" uid="..." />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5" selectedTFKey="tkKey"/>

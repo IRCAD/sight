@@ -23,6 +23,8 @@ namespace scene2D
 namespace adaptor
 {
 
+static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
+
 SViewportRangeSelector::SViewportRangeSelector() noexcept :
     m_shutter(nullptr),
     m_isLeftInteracting( false ),
@@ -45,9 +47,10 @@ SViewportRangeSelector::~SViewportRangeSelector() noexcept
 
 void SViewportRangeSelector::configuring()
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-
     this->IAdaptor::configuring();
+
+    ::fwRenderQt::data::Viewport::sptr viewport =
+        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
@@ -91,7 +94,8 @@ void SViewportRangeSelector::configuring()
 
 void SViewportRangeSelector::doStart()
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport =
+        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
@@ -300,12 +304,13 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
             m_layer->addToGroup( m_shutter );
 
             // Update object
-            updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
+            this->updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
 
-            ::fwData::Object::ModifiedSignalType::sptr sig;
-            ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
-            sig                                         = viewport->signal< ::fwData::Object::ModifiedSignalType >(
-                ::fwData::Object::s_MODIFIED_SIG);
+            ::fwRenderQt::data::Viewport::sptr viewport =
+                this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+
+            ::fwData::Object::ModifiedSignalType::sptr sig =
+                viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
             {
                 ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
@@ -318,7 +323,8 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
 
 void SViewportRangeSelector::updateViewportFromShutter( double _x, double _y, double _width, double _height )
 {
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
+    ::fwRenderQt::data::Viewport::sptr viewport =
+        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
 
     const Point2DType fromSceneCoord = this->mapSceneToAdaptor(Point2DType( _x, _y ), m_xAxis, m_yAxis );
     viewport->setX( fromSceneCoord.first );
@@ -326,7 +332,6 @@ void SViewportRangeSelector::updateViewportFromShutter( double _x, double _y, do
 
     const Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
     viewport->setWidth( pair.first );
-    viewport->setHeight( this->getScene2DRender()->getViewport()->getHeight() );
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -364,6 +369,15 @@ bool SViewportRangeSelector::mouseOnShutterRight( ::fwRenderQt::data::Coord _coo
 
     return ( _coord.getX() >= shutterRightPos - m_clickCatchRange )
            && ( _coord.getX() <= shutterRightPos + m_clickCatchRange );
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_VIEWPORT_INOUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //---------------------------------------------------------------------------------------------------------------

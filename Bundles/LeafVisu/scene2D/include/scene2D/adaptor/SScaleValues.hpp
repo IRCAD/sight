@@ -34,9 +34,10 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service id="scaleValues" class="::scene2D::adaptor::SScaleValues" objectId="self">
-        <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
-            color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+       <service uid="scaleValues" class="::scene2D::adaptor::SScaleValues">
+            <in key="viewport"  uid="..." />
+            <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
+                color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
        </service>
        @endcode
      *
@@ -86,6 +87,8 @@ protected:
 
     /// Manage the given events
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+
+    SCENE2D_API KeyConnectionsMap getAutoConnections() const;
 
 private:
 

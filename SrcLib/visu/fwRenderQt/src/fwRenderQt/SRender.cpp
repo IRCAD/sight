@@ -64,14 +64,6 @@ Scene2DGraphicsView* SRender::getView() const
 
 //-----------------------------------------------------------------------------
 
-::fwRenderQt::data::Viewport::sptr SRender::getViewport() const
-{
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
-    return viewport;
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwRenderQt::data::Axis::sptr SRender::getAxis(const std::string& id) const
 {
     ::fwRenderQt::data::Axis::sptr axis;
@@ -194,12 +186,14 @@ void SRender::startContext()
     SPTR(::fwGuiQt::container::QtContainer) qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
     m_scene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     m_scene->setFocus( Qt::MouseFocusReason );
 
     m_view = new Scene2DGraphicsView( m_scene, qtContainer->getQtContainer() );
-    m_view->setViewport( this->getViewport() );
+    m_view->setViewport( viewport );
     m_view->setSceneRender( ::fwRenderQt::SRender::dynamicCast( this->getSptr() ) );
     m_view->setRenderHint( QPainter::Antialiasing, m_antialiasing );
 

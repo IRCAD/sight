@@ -54,23 +54,23 @@ void SViewportUpdater::doStop()
 
 void SViewportUpdater::doUpdate()
 {
-    ::fwRenderQt::data::Viewport::csptr viewportObject =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
-    ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
-
-    Point2DType pairCoord = this->mapAdaptorToScene(Point2DType(viewportObject->getX(), viewportObject->getY()),
-                                                    m_xAxis, m_yAxis );
-
-    Point2DType pairSize =
-        this->mapAdaptorToScene(Point2DType(viewportObject->getWidth(), viewportObject->getHeight()),
-                                m_xAxis, m_yAxis );
-
-    sceneViewport->setX( pairCoord.first );
-    sceneViewport->setY( pairCoord.second );
-    sceneViewport->setWidth( pairSize.first );
-    sceneViewport->setHeight( viewportObject->getHeight() );
-
-    this->getScene2DRender()->getView()->updateFromViewport();
+//    ::fwRenderQt::data::Viewport::csptr viewportObject =
+//        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+//    ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+//
+//    Point2DType pairCoord = this->mapAdaptorToScene(Point2DType(viewportObject->getX(), viewportObject->getY()),
+//                                                    m_xAxis, m_yAxis );
+//
+//    Point2DType pairSize =
+//        this->mapAdaptorToScene(Point2DType(viewportObject->getWidth(), viewportObject->getHeight()),
+//                                m_xAxis, m_yAxis );
+//
+//    sceneViewport->setX( pairCoord.first );
+//    sceneViewport->setY( pairCoord.second );
+//    sceneViewport->setWidth( pairSize.first );
+//    sceneViewport->setHeight( viewportObject->getHeight() );
+//
+//    this->getScene2DRender()->getView()->updateFromViewport();
 }
 
 //-----------------------------------------------------------------------------

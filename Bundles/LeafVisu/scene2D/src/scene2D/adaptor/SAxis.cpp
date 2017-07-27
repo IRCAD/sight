@@ -20,6 +20,8 @@ namespace scene2D
 namespace adaptor
 {
 
+static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+
 SAxis::SAxis() noexcept :
     m_interval(1.f),
     m_min(0.f),
@@ -146,19 +148,21 @@ double SAxis::getEndVal()
 
 void SAxis::doUpdate()
 {
+    ::fwRenderQt::data::Viewport::csptr viewport =
+        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+
     this->initializeViewSize();
-    this->initializeViewportSize();
+    this->initializeViewportSize(viewport);
 
-    const Scene2DRatio ratio = this->getRatio();
+    const Scene2DRatio ratio = this->getRatio(viewport);
 
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
     const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-    const double viewportWidthRatio = this->getViewportSizeRatio().first;
+    const double viewportWidthRatio = this->getViewportSizeRatio(viewport).first;
 
     double scaleX = m_tickSize;
     double scaleY = m_tickSize * viewportSizeRatio;
@@ -261,6 +265,15 @@ void SAxis::processInteraction( ::fwRenderQt::data::Event& _event)
     {
         doUpdate();
     }
+}
+
+//----------------------------------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SAxis::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //--------------------------------------------------------------------------------------------------

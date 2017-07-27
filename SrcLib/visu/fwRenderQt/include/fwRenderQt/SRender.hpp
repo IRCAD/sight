@@ -66,9 +66,6 @@ public:
     /// Get the view.
     FWRENDERQT_API Scene2DGraphicsView* getView() const;
 
-    /// Get the viewport.
-    FWRENDERQT_API ::fwRenderQt::data::Viewport::sptr getViewport() const;
-
     /// Get the axis.
     FWRENDERQT_API ::fwRenderQt::data::Axis::sptr getAxis(const std::string& id) const;
 

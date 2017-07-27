@@ -33,9 +33,10 @@ namespace adaptor
  *
  * Configuration example:
    @code{.xml}
-   <adaptor id="viewSelector" class="::scene2D::adaptor::SViewportRangeSelector" objectId="myViewport">
+   <service uid="viewSelector" type="::scene2D::adaptor::SViewportRangeSelector">
+       <inout key="viewport"  uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="5" />
-   </adaptor>
+   </service>
    @endcode
  *
  * \b objectId  :   the viewport object that is updated by this adaptor
@@ -72,6 +73,8 @@ protected:
     /// Update the viewport object according to the current state of the shutter (coordinates are
     /// mapped from the scene).
     SCENE2D_API void updateViewportFromShutter( double x, double y, double width, double height );
+
+    SCENE2D_API KeyConnectionsMap getAutoConnections() const;
 
 private:
 

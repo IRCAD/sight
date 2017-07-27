@@ -106,15 +106,15 @@ protected:
     FWRENDERQT_API ViewSizeRatio getViewSizeRatio() const;
 
     /// Return the ratio between viewport's initial size and its current size
-    FWRENDERQT_API ViewportSizeRatio getViewportSizeRatio() const;
+    FWRENDERQT_API ViewportSizeRatio getViewportSizeRatio(const ::fwRenderQt::data::Viewport::csptr& viewport) const;
 
     /// Initialize the source values used for computing view's size ratio.
     FWRENDERQT_API void initializeViewSize();
 
     /// Initialize the source values used for computing viewport's size ratio.
-    FWRENDERQT_API void initializeViewportSize();
+    FWRENDERQT_API void initializeViewportSize(const ::fwRenderQt::data::Viewport::csptr& viewport);
 
-    FWRENDERQT_API Scene2DRatio getRatio() const;
+    FWRENDERQT_API Scene2DRatio getRatio(const ::fwRenderQt::data::Viewport::csptr& viewport) const;
 
     /// The x Axis.
     ::fwRenderQt::data::Axis::sptr m_xAxis;
@@ -153,9 +153,6 @@ protected:
     FWRENDERQT_API void unregisterServices();
 
 private:
-
-    /// Connection to the viewport
-    ::fwCom::Connection m_connection;
 
     /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;
