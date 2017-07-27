@@ -28,6 +28,8 @@
 namespace fwRenderQt
 {
 
+static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
+
 //-----------------------------------------------------------------------------
 
 SRender::SRender() noexcept :
@@ -64,7 +66,8 @@ Scene2DGraphicsView* SRender::getView() const
 
 ::fwRenderQt::data::Viewport::sptr SRender::getViewport() const
 {
-    return m_viewport;
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+    return viewport;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,10 +135,6 @@ void SRender::configuring()
         {
             this->configureAxis(*iter);
         }
-        else if ((*iter)->getName() == "viewport")
-        {
-            this->configureViewport(*iter);
-        }
         else if ((*iter)->getName() == "scene")
         {
             this->configureScene(*iter);
@@ -200,7 +199,7 @@ void SRender::startContext()
     m_scene->setFocus( Qt::MouseFocusReason );
 
     m_view = new Scene2DGraphicsView( m_scene, qtContainer->getQtContainer() );
-    m_view->setViewport( m_viewport );
+    m_view->setViewport( this->getViewport() );
     m_view->setSceneRender( ::fwRenderQt::SRender::dynamicCast( this->getSptr() ) );
     m_view->setRenderHint( QPainter::Antialiasing, m_antialiasing );
 
@@ -242,24 +241,6 @@ void SRender::configureAxis( ConfigurationType _conf )
     axis->setScale(std::stof( scale ));
     axis->setScaleType( scaleType == "LINEAR" ? ::fwRenderQt::data::Axis::LINEAR : ::fwRenderQt::data::Axis::LOG);
     m_axisMap[id] = axis;
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::configureViewport( ConfigurationType _conf )
-{
-    SLM_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
-
-    const std::string x      = _conf->getAttributeValue("x");
-    const std::string y      = _conf->getAttributeValue("y");
-    const std::string width  = _conf->getAttributeValue("width");
-    const std::string height = _conf->getAttributeValue("height");
-
-    m_viewport = ::fwRenderQt::data::Viewport::New();
-    m_viewport->setX(std::stof( x ));
-    m_viewport->setY(std::stof( y ));
-    m_viewport->setWidth(std::stof( width ));
-    m_viewport->setHeight(std::stof( height ));
 }
 
 //-----------------------------------------------------------------------------

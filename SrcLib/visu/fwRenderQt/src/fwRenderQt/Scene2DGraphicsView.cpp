@@ -9,9 +9,6 @@
 #include "fwRenderQt/data/Size.hpp"
 #include "fwRenderQt/SRender.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
 #include <QMouseEvent>
 
 namespace fwRenderQt
@@ -20,8 +17,7 @@ namespace fwRenderQt
 //-----------------------------------------------------------------------------
 
 Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget) :
-    QGraphicsView(scene, widget),
-    m_viewport(nullptr)
+    QGraphicsView(scene, widget)
 {
     if( !this->hasMouseTracking() )
     {
@@ -238,9 +234,6 @@ void Scene2DGraphicsView::updateFromViewport()
     this->fitInView(m_viewport->getX(), m_viewport->getY(),
                     m_viewport->getWidth(), m_viewport->getHeight(),
                     m_scene2DRender.lock()->getAspectRatioMode() );
-
-    auto sig = m_viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

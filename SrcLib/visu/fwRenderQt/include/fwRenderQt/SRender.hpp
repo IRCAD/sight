@@ -93,37 +93,16 @@ protected:
      * Example of configuration
      * @code{.xml}
        <service uid="GENERIC_UID_Scene2D" impl="::fwRenderQt::SRender" type="::fwRender::IRender" autoConnect="yes">
-
+        <inout key="viewport" uid="..." />
         <scene>
 
             <scene x="-1100" y="-1.1" width="2500" height="1.2" />
 
-            <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
             <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
             <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
             <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
 
-            <adaptor id="grid" class="::fwRenderQt::adaptor::GridFromFloat" objectId="myData">
-                <config xMin="-1200" xMax="1500" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
-                    color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-            </adaptor>
-
-            <connect>
-                <signal>adaptorUID/modified</signal>
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <connect waitForKey="myData">
-                <signal>adaptorUID/modified</signal>
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <connect waitForKey="myData">
-                <signal>modified</signal><!-- signal for object "myData" -->
-                <slot>serviceUid/updateTM</slot>
-            </connect>
+            <adaptor uid="grid" />
 
         </scene>
 
@@ -211,13 +190,8 @@ private:
     /// Delete m_scene and m_view;
     void stopContext();
 
-    /// Get the axis configuration specifications, create a new axis,
-    /// store it in the m_objectID2Object map and set its attributes.
+    /// Get the axis configuration specifications
     void configureAxis ( ConfigurationType _conf );
-
-    /// Get the viewport configuration specifications, create a new viewport, store it in the m_objectID2Object map and
-    /// set its attributes.
-    void configureViewport ( ConfigurationType _conf );
 
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
     void configureScene( ConfigurationType _conf );
@@ -242,8 +216,6 @@ private:
 
     /// Width and height of the scene.
     ::fwRenderQt::data::Coord m_sceneWidth;
-
-    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     /// The scene.
     QGraphicsScene* m_scene;

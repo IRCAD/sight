@@ -46,6 +46,7 @@
             <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="colors"  type="ColorType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="config" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='type' type='xs:string'/>
