@@ -53,7 +53,7 @@ protected:
     VISUVTKADAPTOR_API void updating();
     VISUVTKADAPTOR_API void stopping();
 
-    void setSInteractorStyle(vtkInteractorStyle* interactor);
+    void setInteractorStyle(vtkInteractorStyle* interactor);
 
     std::string m_configuredStyle;
     vtkInteractorStyle* m_interactorStyle;

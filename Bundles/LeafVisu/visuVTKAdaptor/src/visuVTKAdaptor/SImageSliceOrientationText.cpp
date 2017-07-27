@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImageSliceOrientationText.hpp"
+#include "visuVTKAdaptor/SImageSliceOrientationText.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -25,8 +25,7 @@
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSliceOrientationText,
-                         ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSliceOrientationText);
 
 namespace visuVTKAdaptor
 {
@@ -167,24 +166,28 @@ public:
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+
 //------------------------------------------------------------------------------
 
-ImageSliceOrientationText::ImageSliceOrientationText() noexcept :
+SImageSliceOrientationText::SImageSliceOrientationText() noexcept :
     m_pimpl( new ImageSliceOrientationTextPImpl )
 {
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &ImageSliceOrientationText::updateSliceType, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SImageSliceOrientationText::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
 
-ImageSliceOrientationText::~ImageSliceOrientationText() noexcept
+SImageSliceOrientationText::~SImageSliceOrientationText() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doStart()
+void SImageSliceOrientationText::starting()
 {
+    this->initialize();
+
     if(m_initialOrientation == "axial")
     {
         this->setOrientation(Z_AXIS);
@@ -206,35 +209,29 @@ void ImageSliceOrientationText::doStart()
         this->addToRenderer( m_pimpl->m_top );
         this->addToRenderer( m_pimpl->m_bottom );
     }
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doStop()
+void SImageSliceOrientationText::stopping()
 {
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doSwap()
-{
-    this->doStop();
-    this->doStart();
-}
-
-//------------------------------------------------------------------------------
-
-void ImageSliceOrientationText::doUpdate()
+void SImageSliceOrientationText::updating()
 {
     m_pimpl->setText(m_locations);
     m_pimpl->setOrientation(m_orientation);
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::setOrientation( Orientation orientation )
+void SImageSliceOrientationText::setOrientation( Orientation orientation )
 {
     this->::fwDataTools::helper::MedicalImageAdaptor::setOrientation(orientation);
     m_pimpl->setOrientation(orientation);
@@ -242,7 +239,7 @@ void ImageSliceOrientationText::setOrientation( Orientation orientation )
 
 //-----------------------------------------------------------------------------
 
-void ImageSliceOrientationText::updateSliceType(int from, int to)
+void SImageSliceOrientationText::updateSliceType(int from, int to)
 {
     if( to == static_cast<int>(m_orientation) )
     {
@@ -256,10 +253,11 @@ void ImageSliceOrientationText::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doConfigure()
+void SImageSliceOrientationText::configuring()
 {
+    this->configureParams();
 
-    ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("config");
+    const ConfigType srvconfig = this->getConfigTree().get_child("service.config");
 
     m_locations = srvconfig.get("locations", "");
 
@@ -273,12 +271,12 @@ void ImageSliceOrientationText::doConfigure()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType ImageSliceOrientationText::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SImageSliceOrientationText::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

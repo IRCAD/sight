@@ -55,7 +55,7 @@ void SInteractorStyle::starting()
     vtkInteractorStyle* interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
     SLM_ASSERT("InsteractorStyle adaptor is waiting for a vtkInteractorStyle object, but '"
                + m_configuredStyle + "' has been given.", interactor);
-    this->setSInteractorStyle(interactor);
+    this->setInteractorStyle(interactor);
 }
 
 //------------------------------------------------------------------------------
@@ -68,12 +68,12 @@ void SInteractorStyle::updating()
 
 void SInteractorStyle::stopping()
 {
-    this->setSInteractorStyle(nullptr);
+    this->setInteractorStyle(nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::setSInteractorStyle(vtkInteractorStyle* interactor)
+void SInteractorStyle::setInteractorStyle(vtkInteractorStyle* interactor)
 {
     if ( m_interactorStyle != nullptr )
     {

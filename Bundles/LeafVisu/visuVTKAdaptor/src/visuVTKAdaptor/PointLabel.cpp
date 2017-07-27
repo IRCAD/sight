@@ -31,7 +31,7 @@ namespace visuVTKAdaptor
 //------------------------------------------------------------------------------
 
 PointLabel::PointLabel() :
-    Text()
+    SText()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
@@ -41,7 +41,7 @@ PointLabel::PointLabel() :
 
 void PointLabel::starting()
 {
-    Text::starting();
+    SText::starting();
     doUpdate();
 }
 
@@ -49,7 +49,7 @@ void PointLabel::starting()
 
 void PointLabel::stopping()
 {
-    Text::stopping();
+    SText::stopping();
 }
 
 //------------------------------------------------------------------------------

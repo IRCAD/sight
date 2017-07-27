@@ -6,8 +6,6 @@
 
 #include "visuVTKAdaptor/SProbeCursor.hpp"
 
-#include "visuVTKAdaptor/ImageText.hpp"
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>

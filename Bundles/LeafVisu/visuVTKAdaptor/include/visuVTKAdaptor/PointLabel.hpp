@@ -8,7 +8,7 @@
 #define __VISUVTKADAPTOR_POINTLABEL_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/Text.hpp"
+#include "visuVTKAdaptor/SText.hpp"
 
 #include <fwRenderVTK/IAdaptor.hpp>
 
@@ -19,7 +19,7 @@ class VISUVTKADAPTOR_CLASS_API vtkTextActor;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PointLabel : public Text
+class VISUVTKADAPTOR_CLASS_API PointLabel : public SText
 {
 
 public:
