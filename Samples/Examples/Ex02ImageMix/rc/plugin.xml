@@ -129,7 +129,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="sliderIndexEditor" start="no" />
+                    <view sid="sliderIndexEditor" start="yes" />
                     <view sid="snapshotBlendSceneEditor" start="yes" />
                 </registry>
             </service>
