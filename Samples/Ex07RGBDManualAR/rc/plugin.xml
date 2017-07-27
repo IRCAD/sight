@@ -1,0 +1,331 @@
+<plugin id="Ex07RGBDManualAR" version="@DASH_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>Ex07RGBDManualARConfig</id>
+        <config>
+
+            <!-- objects declarations -->
+            <object uid="cameraSeries" type="::arData::CameraSeries" />
+
+            <object uid="cameraRGB" type="::arData::Camera" src="deferred" />
+            <object uid="cameraDepth" type="::arData::Camera" src="deferred" />
+
+            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+
+            <object uid="frameTL" type="::arData::FrameTL"/>
+            <object uid="tagTL" type="::arData::MarkerTL" />
+            <object uid="videoImage" type="::fwData::Image" />
+            <object uid="matrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="identity" type="::fwData::TransformationMatrix3D" />
+            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
+            <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="modelseries" type="::fwMedData::ModelSeries" src="deferred"/>
+
+            <!-- declaration of the views, menu and toolbar -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Ex07RGBDManualAR</name>
+                        <icon>@BUNDLE_PREFIX@/Ex07RGBDManualAR_0-1/app.ico</icon>
+                    </frame>
+                    <menuBar />
+                    <toolBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <toolBar sid="toolbar" start="yes" />
+                    <view sid="genericScene" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuPreferences" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferences" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Video directory" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionVideoDir" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Load Calibration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg"/>
+                        <separator/>
+                        <menuItem name="Load Transformation" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg"/>
+                        <separator/>
+                        <menuItem name="Load Model" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg"/>
+                        <separator/>
+                        <editor />
+                        <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
+                        <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalib" start="yes" />
+                    <menuItem sid="loadTrf" start="yes" />
+                    <menuItem sid="loadModel" start="yes" />
+                    <editor sid="CameraSelector" />
+                    <menuItem sid="startVideo" start="yes" />
+                    <menuItem sid="stopVideo" start="yes" />
+                    <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="organManager" start="no" />
+                </registry>
+            </service>
+
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+
+            <service uid="loadCalib" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>CalibrationReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="loadTrf" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>TransformReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="loadModel" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>ModelReader/update</slot>
+                </slots>
+            </service>
+
+            <service uid="startVideo" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideo" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>frameGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideo" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="organManager" type="::gui::action::SConfigLauncher">
+                <appConfig id="OrganManagerWithSeries" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/Ex07RGBDManualAR_0-1/app.ico" />
+                <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
+                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
+            </service>
+
+            <service uid="ModelReader" type="::uiIO::editor::SIOSelector">
+                <inout key="target" uid="seriesDB" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="extractModelSeries" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="seriesDB">
+                    <extract from="@values.0" />
+                </inout>
+               <out group="target">
+                   <key uid="modelseries"/>
+               </out>
+            </service>
+
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="target" uid="cameraSeries"/>
+            </service>
+
+            <!-- Matrix (trf format) reader -->
+            <!-- This matrix is used to staticaly register the model onto the video -->
+            <service uid="TransformReader" type="::uiIO::editor::SIOSelector">
+                <inout key="target" uid="matrix" />
+                <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
+                <selection mode="include" />
+                <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+            </service>
+
+            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
+            <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration" >
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
+
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::arData::CameraSeries -->
+            <service uid="Extractor" type="::ctrlCamp::SExtractObj" >
+               <inout key="source" uid="cameraSeries">
+
+                   <extract from="@cameras.0" /><!-- Camp path of the first camera in cameraSeries (Depth) -->
+                   <extract from="@cameras.1" /><!-- Camp path of the second camera in cameraSeries (RGB) -->
+                   <extract from="@extrinsic_matrices.1" /><!-- Camp path of the extrincis matrix in cameraSeries going from Depth to RGB coordinate system -->
+               </inout>
+               <!-- destination -->
+               <out group="target">
+                   <key uid="cameraDepth"/>
+                   <key uid="cameraRGB" />
+                   <key uid="extrinsic"/>
+               </out>
+            </service>
+
+            <!-- Scene in which the video and the 3D will be rendered -->
+            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="cameraD" uid="cameraDepth" />
+                <in key="cameraRGB" uid="cameraRGB" />
+                <in key="image" uid="videoImage" />
+                <in key="transform" uid="inverseMat" />
+                <in key="identity" uid="identity" />
+                <in key="modelseries" uid="modelseries" />
+
+                <scene>
+
+                    <renderer id="video" layer="0" background="0.0" />
+                    <renderer id="default" layer="1" background="0.0" />
+
+                    <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image">
+                        <config renderer="video" cameraUID="cameraRGB"/>
+                    </adaptor>
+
+                    <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="registrationTransform" class="::visuVTKAdaptor::Transform" objectId="transform">
+                        <config renderer="default" picker="" transform="registrationMatrix" />
+                    </adaptor>
+
+                    <adaptor id="modelseriesADP" uid="modelseriesADP" class="::visuVTKAdaptor::ModelSeries" objectId="modelseries">
+                        <config renderer="default" picker="default" autoresetcamera="no" color="" transform="registrationMatrix" />
+                    </adaptor>
+
+                    <adaptor id="cameraAdaptor" class="::visuVTKARAdaptor::SCamera" objectId="identity">
+                        <config renderer="default" cameraUID="cameraRGB"/>
+                    </adaptor>
+
+                    <proxy channel="ModelRepresentationChannel" waitForKey="modelseries">
+                        <slot>modelseriesADP/updateNormalMode</slot>
+                    </proxy>
+
+                    <proxy channel="ModelDisplayChannel" waitForKey="modelseries">
+                        <slot>modelseriesADP/showReconstructions</slot>
+                    </proxy>
+
+                </scene>
+
+            </service>
+
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
+                <inout key="camera" uid="cameraRGB" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber" >
+                <in key="camera" uid="cameraRGB" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <!-- Use the extrinsic matrix to get back in the RGB space -->
+            <service uid="concatenate" type="::maths::SConcatenateMatrices" >
+                <in group="matrix">
+                    <key uid="extrinsic" autoConnect="yes" />
+                    <key uid="matrix" autoConnect="yes" />
+                </in>
+                <inout key="output" uid="inverseMat" />
+            </service>
+
+            <!-- To synchronize matrix, frame and detection -->
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer"  worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="image">
+                    <key uid="videoImage" />
+                </inout>
+
+                <framerate>30</framerate>
+                <tolerance>100</tolerance>
+            </service>
+
+            <!-- signal/slot connection -->
+
+            <!-- Extract the model series when it is added to SDB -->
+            <connect>
+                <signal>seriesDB/modified</signal>
+                <signal>seriesDB/addedSeries</signal>
+                <slot>extractModelSeries/update</slot>
+            </connect>
+
+           <connect>
+                <signal>cameraSeries/addedCamera</signal>
+                <slot>Extractor/update</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraRGB/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+
+            <!-- start services -->
+            <start uid="mainFrame" />
+            <start uid="extractModelSeries" />
+            <start uid="frameGrabber" />
+            <start uid="CalibrationReader"/>
+            <start uid="TransformReader"/>
+            <start uid="ModelReader"/>
+            <start uid="CameraSelector" />
+            <start uid="synchronizer" />
+            <start uid="Extractor" />
+            <start uid="concatenate" />
+            <start uid="organManager" />
+            <start uid="genericScene" />
+
+        </config>
+    </extension>
+
+</plugin>
