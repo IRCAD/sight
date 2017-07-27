@@ -58,10 +58,10 @@ public:
 
     VISUVTKADAPTOR_API void setRadius(const double radius);
 
-    VISUVTKADAPTOR_API void setColor(const double red, const double green, const double blue, const double alpha = 1.0);
+    VISUVTKADAPTOR_API void setColor(const float red, const float green, const float blue, const float alpha = 1.0);
 
-    VISUVTKADAPTOR_API void setSelectedColor(const double red, const double green, const double blue,
-                                             const double alpha = 1.0);
+    VISUVTKADAPTOR_API void setSelectedColor(const float red, const float green, const float blue,
+                                             const float alpha = 1.0);
 
     VISUVTKADAPTOR_API void setInteraction(const bool interaction = true);
 

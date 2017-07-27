@@ -298,7 +298,7 @@ void Point::setRadius(const double radius)
 
 //------------------------------------------------------------------------------
 
-void Point::setColor(const double red, const double green, const double blue, const double alpha)
+void Point::setColor(const float red, const float green, const float blue, const float alpha)
 {
     m_ptColor->setRGBA(red, green, blue, alpha);
     doUpdate();
@@ -306,7 +306,7 @@ void Point::setColor(const double red, const double green, const double blue, co
 
 //------------------------------------------------------------------------------
 
-void Point::setSelectedColor(const double red, const double green, const double blue, const double alpha)
+void Point::setSelectedColor(const float red, const float green, const float blue, const float alpha)
 {
     m_ptSelectedColor->setRGBA(red, green, blue, alpha);
     doUpdate();
