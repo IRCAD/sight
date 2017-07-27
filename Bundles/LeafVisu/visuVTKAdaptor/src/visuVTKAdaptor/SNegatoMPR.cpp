@@ -45,8 +45,8 @@ static const ::fwCom::Slots::SlotKeyType S_CHANGE_IMAGE_SOURCE_SLOT = "changeIma
 static const std::string s_slicingStartingProxy = "slicingStartingProxy";
 static const std::string s_slicingStoppingProxy = "slicingStoppingProxy";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+const ::fwServices::IService::KeyType SNegatoMPR::s_IMAGE_INOUT        = "image";
+const ::fwServices::IService::KeyType SNegatoMPR::s_TF_SELECTION_INOUT = "tfSelection";
 
 //------------------------------------------------------------------------------
 

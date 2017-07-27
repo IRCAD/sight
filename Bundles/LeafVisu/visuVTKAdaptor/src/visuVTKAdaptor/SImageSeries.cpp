@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImageSeries.hpp"
+#include "visuVTKAdaptor/SImageSeries.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
@@ -18,12 +18,15 @@
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageSeries, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSeries);
+
+static const ::fwServices::IService::KeyType s_IMAGE_SERIES_INOUT = "imageSeries";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
 
 namespace visuVTKAdaptor
 {
 
-ImageSeries::ImageSeries() noexcept :
+SImageSeries::SImageSeries() noexcept :
     m_allowAlphaInTF(false),
     m_interpolation(false),
     m_3dModeEnabled( ::boost::logic::indeterminate ),
@@ -34,30 +37,29 @@ ImageSeries::ImageSeries() noexcept :
 
 //------------------------------------------------------------------------------
 
-ImageSeries::~ImageSeries() noexcept
+SImageSeries::~SImageSeries() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doConfigure()
+void SImageSeries::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if (m_configuration->hasAttribute("mode"))
+    if (config.count("mode"))
     {
-        std::string value(m_configuration->getAttributeValue("mode"));
+        std::string value = config.get<std::string>("mode");
         std::transform(value.begin(), value.end(), value.begin(), tolower);
-        OSLM_ASSERT("Bad value "<<value<<" for attribute mode, it should either be '3d' or '2d'.",
-                    value == "3d" || value == "2d");
+        SLM_ASSERT("Bad value '" + value + "' for attribute mode, it should either be '2d' or '3d'.",
+                   value == "3d" || value == "2d");
         this->set3dMode(value == "3d");
     }
-    if (m_configuration->hasAttribute("slices"))
+    if (config.count("slices"))
     {
-        std::string value(m_configuration->getAttributeValue("slices"));
-        std::transform(value.begin(), value.end(), value.begin(), tolower);
+        const std::string value = config.get<std::string>("slices");
 
         if(value == "0")
         {
@@ -71,58 +73,69 @@ void ImageSeries::doConfigure()
         {
             this->setSliceMode(SNegatoMPR::THREE_SLICES);
         }
-    }
-    if(m_configuration->hasAttribute("sliceIndex"))
-    {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
-        if(orientation == "axial" )
+        else
         {
-            m_orientation = Z_AXIS;
-        }
-        else if(orientation == "frontal" )
-        {
-            m_orientation = Y_AXIS;
-        }
-        else if(orientation == "sagittal" )
-        {
-            m_orientation = X_AXIS;
+            SLM_FATAL("'slice' value must be '0', '1' or '3', actual: " + value);
         }
     }
-    if(m_configuration->hasAttribute("tfalpha") )
+
+    const std::string orientation = config.get<std::string>("sliceIndex", "axial");
+    if(orientation == "axial" )
     {
-        this->setAllowAlphaInTF(m_configuration->getAttributeValue("tfalpha") == "yes");
+        m_orientation = Z_AXIS;
     }
-    if (m_configuration->hasAttribute("interpolation"))
+    else if(orientation == "frontal" )
     {
-        this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "off"));
+        m_orientation = Y_AXIS;
     }
-    if (m_configuration->hasAttribute("vtkimagesource"))
+    else if(orientation == "sagittal" )
     {
-        this->setVtkImageSourceId( m_configuration->getAttributeValue("vtkimagesource") );
+        m_orientation = X_AXIS;
     }
-    this->parseTFConfig( m_configuration );
+
+    const std::string tfalpha = config.get<std::string>("tfalpha", "no");
+    SLM_ASSERT("'tfalpha' value must be 'yes' or 'no', actual: " + tfalpha, tfalpha == "yes" || tfalpha == "no");
+    this->setAllowAlphaInTF(tfalpha == "yes");
+
+    const std::string interpolation = config.get<std::string>("interpolation", "off");
+    SLM_ASSERT("'interpolation' value must be 'on' or 'off', actual: " + interpolation,
+               interpolation == "on" || interpolation == "off");
+    this->setInterpolation(interpolation == "yes");
+
+    this->setVtkImageSourceId( config.get<std::string>("vtkimagesource", ""));
+
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doStart()
+void SImageSeries::starting()
 {
-    this->doUpdate();
+    this->initialize();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doUpdate()
+void SImageSeries::updating()
 {
-    ::fwMedData::ImageSeries::sptr series = this->getObject< ::fwMedData::ImageSeries >();
+    ::fwMedData::ImageSeries::sptr series = this->getInOut< ::fwMedData::ImageSeries >(s_IMAGE_SERIES_INOUT);
+    OSLM_ASSERT("Missing iamgeSeries", series);
 
-    doStop();
+    this->stopping();
 
     ::fwData::Image::sptr image = series->getImage();
 
-    ::fwRenderVTK::IAdaptor::sptr service =
-        ::fwServices::add< ::fwRenderVTK::IAdaptor >( image, "::visuVTKAdaptor::SNegatoMPR" );
-    SLM_ASSERT("service not instanced", service);
+    IService::Config srvConfig;
+    ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SNegatoMPR", srvConfig);
+    // register image
+    this->registerServiceInOut(image, SNegatoMPR::s_IMAGE_INOUT, service, true, srvConfig);
+
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
+    if (tfSelection)
+    {
+        this->registerServiceInOut(tfSelection, SNegatoMPR::s_TF_SELECTION_INOUT, service, true, srvConfig);
+    }
 
     service->setTransformId( this->getTransformId() );
     service->setRendererId( this->getRendererId() );
@@ -136,7 +149,7 @@ void ImageSeries::doUpdate()
     negato->setAllowAlphaInTF(m_allowAlphaInTF);
     negato->setInterpolation(m_interpolation);
     negato->setVtkImageSourceId(m_imageSourceId);
-    negato->parseTFConfig(m_configuration);
+    negato->setSelectedTFKey(this->getSelectedTFKey());
     service->start();
 
     this->registerService(service);
@@ -144,21 +157,14 @@ void ImageSeries::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doSwap()
-{
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void ImageSeries::doStop()
+void SImageSeries::stopping()
 {
     this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setSliceMode(SNegatoMPR::SliceMode sliceMode)
+void SImageSeries::setSliceMode(SNegatoMPR::SliceMode sliceMode)
 {
     if(m_sliceMode != sliceMode)
     {
@@ -168,21 +174,21 @@ void ImageSeries::setSliceMode(SNegatoMPR::SliceMode sliceMode)
 
 //------------------------------------------------------------------------------
 
-SNegatoMPR::SliceMode ImageSeries::getSliceMode()
+SNegatoMPR::SliceMode SImageSeries::getSliceMode()
 {
     return m_sliceMode;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::logic::tribool ImageSeries::is3dModeEnabled()
+::boost::logic::tribool SImageSeries::is3dModeEnabled()
 {
     return m_3dModeEnabled;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::set3dMode( bool enabled )
+void SImageSeries::set3dMode( bool enabled )
 {
     m_3dModeEnabled = enabled;
 }

@@ -75,6 +75,9 @@ public:
 
     VISUVTKADAPTOR_API virtual ~SNegatoMPR() noexcept;
 
+    static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
+
     typedef enum
     {
         NO_SLICE = 0,
