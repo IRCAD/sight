@@ -47,7 +47,7 @@
         <object>::fwMedData::ModelSeries</object>
         <desc>VTK files (VTK)</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::SModelSeriesReader</service>
@@ -60,6 +60,13 @@
         <service>::ioVTK::SModelSeriesObjWriter</service>
         <object>::fwMedData::ModelSeries</object>
         <desc>Wavefront OBJ files (VTK)</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::echoSimulation::SRasterImageReader</service>
+        <object>::fwData::Object</object>
+        <desc>Raster Image Reader (PNG, JPEG, TIFF, BMP)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
