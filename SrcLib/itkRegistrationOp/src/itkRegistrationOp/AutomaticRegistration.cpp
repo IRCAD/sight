@@ -174,13 +174,13 @@ struct Registrator
         optimizer->SetNumberOfIterations( params.i_maxIters );
 
         RegistrationObserver<OptimizerType>::Pointer observer = RegistrationObserver<OptimizerType>::New();
-        observer->SetMaxIterations( params.i_maxIters );
+        observer->setMaxIterations( params.i_maxIters );
         optimizer->AddObserver( itk::IterationEvent(), observer );
 
         registration->Update();
 
         // Set the new transform if the registration wasn't canceled by the user.
-        if(!observer->ForceStopped())
+        if(!observer->forceStopped())
         {
             auto parameters = registration->GetLastTransformParameters();
 

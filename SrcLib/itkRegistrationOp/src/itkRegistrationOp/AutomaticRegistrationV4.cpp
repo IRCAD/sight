@@ -27,7 +27,6 @@
 
 #include <itkCastImageFilter.h>
 #include <itkCenteredTransformInitializer.h>
-#include <itkCommand.h>
 #include <itkCorrelationImageToImageMetricv4.h>
 #include <itkImage.h>
 #include <itkImageRegistrationMethodv4.h>
@@ -37,7 +36,6 @@
 #include <itkMeanSquaresImageToImageMetricv4.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkRegularStepGradientDescentOptimizerv4.h>
-#include <itkTextOutput.h>
 #include <itkVersorRigid3DTransform.h>
 
 namespace itkRegistrationOp
@@ -101,7 +99,7 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
                                             double _minStep,
                                             unsigned long _maxIterations)
 {
-    typedef float RealType; // Numeric type used for internal computations.
+    typedef double RealType; // Numeric type used for internal computations.
     typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
 
     typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
@@ -111,10 +109,7 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
                                           RealType >::Pointer metric;
 
-    itk::OutputWindow::SetInstance(
-        itk::TextOutput::New().GetPointer());
-
-    // Convert input images to float.
+    // Convert input images to float. Integer images aren't supported yet.
     RegisteredImageType::Pointer target    = castToFloat(_target);
     RegisteredImageType::Pointer reference = castToFloat(_reference);
 
@@ -137,6 +132,8 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
                 ::itk::MattesMutualInformationImageToImageMetricv4< RegisteredImageType, RegisteredImageType,
                                                                     RegisteredImageType,
                                                                     RealType >::New();
+            // TODO: find a strategy to compute the appropriate number of bins or let the user set it.
+            // More bins means better precision but longer evaluation.
             mutInfoMetric->SetNumberOfHistogramBins(20);
             metric = mutInfoMetric;
         }
@@ -150,9 +147,23 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     typedef typename ::itk::CenteredTransformInitializer< TransformType, RegisteredImageType, RegisteredImageType >
         TransformInitializerType;
 
+    // This class initializes the transform by setting its center and translation.
+    // If our target and reference image don't change than this will always yield the same result.
     typename TransformInitializerType::Pointer initializer = TransformInitializerType::New();
 
     TransformType::Pointer itkTransform = TransformType::New();
+
+    ::itk::Matrix<RealType, 3, 3> m;
+    ::itk::Vector<RealType, 3> t;
+
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
+        t[i] = _trf->getCoefficient(i, 3);
+        for(std::uint8_t j = 0; j < 3; ++j)
+        {
+            m(i, j) = _trf->getCoefficient(i, j);
+        }
+    }
 
     initializer->SetTransform(itkTransform);
     initializer->SetFixedImage(target);
@@ -161,32 +172,10 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     initializer->MomentsOn();
     initializer->InitializeTransform();
 
-    // Initialize transform. Set the initial translation and rotation.
-    const ::glm::dmat4 initMat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(_trf);
-    const double scale         = std::pow(::glm::determinant(initMat), 1./3.);
-
-    const ::glm::dquat orientation = ::glm::toQuat(initMat / scale);
-
-    const ::glm::dvec3 translation = ::glm::dvec3(::glm::column(initMat, 3));
-    const ::glm::dvec3 axis        = ::glm::axis(orientation);
-
-    typedef TransformType::VersorType VersorType;
-    typedef VersorType::VectorType VectorType;
-    VectorType itkAxis;
-    itkAxis[0] = axis.x;
-    itkAxis[1] = axis.y;
-    itkAxis[2] = axis.z;
-
-    VectorType itkTrans;
-    itkTrans[0] = translation.x;
-    itkTrans[1] = translation.y;
-    itkTrans[2] = translation.z;
-
-    VersorType rotation;
-    rotation.Set(itkAxis, ::glm::angle(orientation));
-
-    itkTransform->SetRotation( rotation );
-    itkTransform->SetTranslation(itkTrans);
+    // Setting the offset also recomputes the translation using the offset, rotation and center
+    // so the matrix needs to be set first.
+    itkTransform->SetMatrix(m);
+    itkTransform->SetOffset(t);
 
     // Registration.
     auto registrator = RegistrationMethodType::New();
@@ -195,7 +184,7 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     registrator->SetMetric(metric);
     registrator->SetOptimizer(optimizer);
 
-    OptimizerType::ScalesType optimizerScales( static_cast<unsigned int>(itkTransform->GetNumberOfParameters()) );
+    OptimizerType::ScalesType optimizerScales(static_cast<unsigned int>(itkTransform->GetNumberOfParameters()));
     const double translationScale = 1.0 / 1000.0;
     optimizerScales[0] = 1.0;
     optimizerScales[1] = 1.0;
@@ -218,11 +207,12 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     metric->SetFixedInterpolator(fixedInterpolator.GetPointer());
     metric->SetMovingInterpolator(movingInterpolator.GetPointer());
 
-    const unsigned int numberOfLevels = 1;
-
     registrator->SetInitialTransform(itkTransform);
     registrator->SetFixedImage(target);
     registrator->SetMovingImage(reference);
+
+    // TODO: handle multi-resolution registration.
+    const unsigned int numberOfLevels = 1;
 
     RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
     shrinkFactorsPerLevel.SetSize( numberOfLevels );
@@ -235,7 +225,7 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
     registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
 
     RegistrationObserver<OptimizerType>::Pointer observer = RegistrationObserver<OptimizerType>::New();
-    observer->SetMaxIterations( _maxIterations );
+    observer->setMaxIterations( _maxIterations );
     optimizer->AddObserver( ::itk::IterationEvent(), observer );
 
     try
@@ -248,7 +238,7 @@ void AutomaticRegistrationV4::registerImage(const ::fwData::Image::csptr& _targe
         OSLM_FATAL("Error while registering : " << err);
     }
 
-    if(!observer->ForceStopped())
+    if(!observer->forceStopped())
     {
         // Get the last transform.
         const TransformType* finalTransform = registrator->GetTransform();

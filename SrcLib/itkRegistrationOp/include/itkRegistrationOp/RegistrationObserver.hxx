@@ -30,10 +30,10 @@ public:
     void Execute(const ::itk::Object* object, const ::itk::EventObject& event) override;
 
     /// Set the maximum number of steps allowed to the optimizer.
-    inline void SetMaxIterations(unsigned long maxIters);
+    inline void setMaxIterations(unsigned long maxIters);
 
     /// True if optimization canceled on user request.
-    inline bool ForceStopped() const;
+    inline bool forceStopped() const;
 
 private:
 
@@ -77,7 +77,7 @@ void RegistrationObserver<OptimizerType>::Execute(const itk::Object* object, con
         {
             const OptimizerType* optimizer = dynamic_cast< const OptimizerType* >( object );
 
-            unsigned int itNum = optimizer->GetCurrentIteration();
+            const unsigned int itNum = optimizer->GetCurrentIteration() + 1;
 
             std::string msg = "Number of iterations : " + std::to_string(itNum);
             m_dialog(static_cast<float>(itNum)/static_cast<float>(m_maxIters), msg);
@@ -93,7 +93,7 @@ void RegistrationObserver<OptimizerType>::Execute(const itk::Object* object, con
 //------------------------------------------------------------------------------
 
 template<typename OptimizerType>
-void RegistrationObserver<OptimizerType>::SetMaxIterations(unsigned long maxIters)
+void RegistrationObserver<OptimizerType>::setMaxIterations(unsigned long maxIters)
 {
     m_maxIters = maxIters;
 }
@@ -101,7 +101,7 @@ void RegistrationObserver<OptimizerType>::SetMaxIterations(unsigned long maxIter
 //------------------------------------------------------------------------------
 
 template<typename OptimizerType>
-bool RegistrationObserver<OptimizerType>::ForceStopped() const
+bool RegistrationObserver<OptimizerType>::forceStopped() const
 {
     return m_stop;
 }
