@@ -30,7 +30,7 @@ namespace uiVisu
         </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b output [::fwData::TransformationMatrix3D]: Output matrix.
+ * - \b matrix [::fwData::TransformationMatrix3D]: Output matrix.
  */
 
 class UIVISUQT_CLASS_API TransformationMatrixEditor : public QObject,

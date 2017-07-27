@@ -33,7 +33,7 @@ namespace action
      </service>
     @endcode
  * @subsection InOut InOut
- * - \b result [::fwData::Mesh]: mesh to modified.
+ * - \b mesh [::fwData::Mesh]: mesh to modify.
  * @subsection Configuration Configuration
  * - \b functor
  * Functor available :
