@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
-#define __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
+#ifndef __VISUVTKADAPTOR_SIMAGEMULTIDISTANCES_HPP__
+#define __VISUVTKADAPTOR_SIMAGEMULTIDISTANCES_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -20,21 +20,48 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Adaptor to display distance on an image
+ *
+ * @section Slots Slots
+ * - \b createDistance() : creates a new distance attached to this adaptor
+ * - \b removeDistance(::fwData::PointList::sptr) : remove the distance
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+       <inout key="image" uid="..." />
+       <config renderer="default" picker="negatodefault" />
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b inout [::fwData::Image]: image containing the distance field.
+ * @subsection Configuration Configuration
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
+ *    renderer.
+ *    - \b picker (mandatory): identifier of the picker
  */
-class VISUVTKADAPTOR_CLASS_API ImageMultiDistances : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SImageMultiDistances : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ImageMultiDistances)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SImageMultiDistances)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API ImageMultiDistances() noexcept;
+    VISUVTKADAPTOR_API SImageMultiDistances() noexcept;
 
-    VISUVTKADAPTOR_API ~ImageMultiDistances() noexcept;
+    VISUVTKADAPTOR_API ~SImageMultiDistances() noexcept;
 
     VISUVTKADAPTOR_API void setNeedSubservicesDeletion( bool _needSubservicesDeletion );
 
     VISUVTKADAPTOR_API virtual void show(bool showDistances = true);
+
+protected:
+
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -44,15 +71,7 @@ public:
      * Connect Image::s_DISTANCE_REMOVED_SIG to this::s_REMOVE_DISTANCE_SLOT
      * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-protected:
-
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
-    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     void installSubServices( ::fwData::PointList::sptr pl );
     ::fwData::Point::sptr screenToWorld(int X, int Y);
@@ -83,4 +102,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
+#endif // __VISUVTKADAPTOR_SIMAGEMULTIDISTANCES_HPP__

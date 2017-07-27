@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImageMultiDistances.hpp"
+#include "visuVTKAdaptor/SImageMultiDistances.hpp"
 
 #include "visuVTKAdaptor/Distance.hpp"
 
@@ -47,10 +47,12 @@
 #include <algorithm>
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageMultiDistances);
 
 namespace visuVTKAdaptor
 {
+
+const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -61,12 +63,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static vtkDistanceDeleteCallBack* New( ImageMultiDistances* service )
+    static vtkDistanceDeleteCallBack* New( SImageMultiDistances* service )
     {
         return new vtkDistanceDeleteCallBack(service);
     }
 
-    vtkDistanceDeleteCallBack( ImageMultiDistances* service ) :
+    vtkDistanceDeleteCallBack( SImageMultiDistances* service ) :
         m_service(service),
         m_picker( vtkCellPicker::New() ),
         m_propCollection( vtkPropCollection::New() )
@@ -98,7 +100,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
+    virtual void Execute( vtkObject* /*caller*/, unsigned long eventId, void*)
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
@@ -141,7 +143,7 @@ public:
 
 protected:
 
-    ImageMultiDistances* m_service;
+    SImageMultiDistances* m_service;
     vtkPicker* m_picker;
     vtkPropCollection* m_propCollection;
     double m_display[3];
@@ -154,58 +156,45 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_DISTANCE_SLOT = "removeDistanc
 
 //------------------------------------------------------------------------------
 
-ImageMultiDistances::ImageMultiDistances() noexcept :
+SImageMultiDistances::SImageMultiDistances() noexcept :
     m_rightButtonCommand(nullptr),
     m_needSubservicesDeletion(false)
 {
-    newSlot(s_CREATE_DISTANCE_SLOT, &ImageMultiDistances::createDistance, this);
-    newSlot(s_REMOVE_DISTANCE_SLOT, &ImageMultiDistances::removeDistance, this);
+    newSlot(s_CREATE_DISTANCE_SLOT, &SImageMultiDistances::createDistance, this);
+    newSlot(s_REMOVE_DISTANCE_SLOT, &SImageMultiDistances::removeDistance, this);
 }
 
 //------------------------------------------------------------------------------
 
-ImageMultiDistances::~ImageMultiDistances() noexcept
+SImageMultiDistances::~SImageMultiDistances() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doConfigure()
+void SImageMultiDistances::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doStart()
+void SImageMultiDistances::starting()
 {
-    SLM_TRACE_FUNC();
+    this->initialize();
 
     m_rightButtonCommand = vtkDistanceDeleteCallBack::New(this);
     this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );  // jamais reçu quand
-                                                                                               // TrackBallCameraStyle
-                                                                                               // activé (GrabFocus)
-    this->getInteractor()->AddObserver( "StartInteractionEvent", m_rightButtonCommand, 0);     // par contre ce style
-                                                                                               // lance un event
-                                                                                               // d'interaction
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "StartInteractionEvent", m_rightButtonCommand, 0);
 
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void ImageMultiDistances::doSwap()
-{
-    SLM_TRACE("SWAPPING ImageMultiDistances **TODO**");
-    this->doStop();
-    this->doStart();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::Color::sptr generateColor()
 {
-    //using namespace boost::assign; // bring 'operator+=()' for vector into scope
     using namespace fwData;
 
     static std::vector< Color::sptr > colors;
@@ -221,15 +210,15 @@ void ImageMultiDistances::doSwap()
         colors.push_back( cyan );
 
         Color::sptr orange = Color::New();
-        orange->setRGBA(  1, 0.647, 0);
+        orange->setRGBA(  1, 0.647f, 0);
         colors.push_back( orange );
 
         Color::sptr violet = Color::New();
-        violet->setRGBA( .5, 0.26, 1);
+        violet->setRGBA( .5f, 0.26f, 1);
         colors.push_back( violet );
 
         Color::sptr vertpomme = Color::New();
-        vertpomme->setRGBA( .65, 1, 0);
+        vertpomme->setRGBA( .65f, 1, 0);
         colors.push_back( vertpomme );
 
         Color::sptr jaune = Color::New();
@@ -251,16 +240,16 @@ void ImageMultiDistances::doSwap()
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
+void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 {
     if ( pl->getPoints().size() > 1 )
     {
-        // SERVICE DISTANCE
-        ::fwRenderVTK::IAdaptor::sptr serviceDistance;
-        serviceDistance =
-            ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                ( pl, "::visuVTKAdaptor::Distance");
-        SLM_ASSERT("serviceDistance not instanced", serviceDistance);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvDistConfig;
+        ::fwRenderVTK::IAdaptor::sptr serviceDistance = this->createSubAdaptor("::visuVTKAdaptor::Distance",
+                                                                               srvDistConfig);
+        // register image
+        this->registerServiceInOut(pl, "pointList", serviceDistance, true, srvDistConfig);
 
         // install  Color Field if none
         pl->setDefaultField( ::fwDataTools::fieldHelper::Image::m_colorId, generateColor() );
@@ -272,27 +261,24 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         serviceDistance->setAutoRender( this->getAutoRender() );
         serviceDistance->start();
 
-        // SERVICE POINT LIST
-        ::fwRenderVTK::IAdaptor::sptr servicePointList;
-        servicePointList =
-            ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                ( pl, "::visuVTKAdaptor::PointList");
-        SLM_ASSERT("servicePointList not instanced", servicePointList);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvPLConfig;
+        ::fwRenderVTK::IAdaptor::sptr servicePointList = this->createSubAdaptor("::visuVTKAdaptor::PointList",
+                                                                                srvPLConfig);
+        // register image
+        this->registerServiceInOut(pl, "pointList", servicePointList, true, srvPLConfig);
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRendererId( this->getRendererId() );
         servicePointList->setRenderService( this->getRenderService() );
         servicePointList->setAutoRender(m_autoRender);
         servicePointList->start();
-
-        this->registerService( serviceDistance );
-        this->registerService( servicePointList );
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Point::sptr ImageMultiDistances::screenToWorld(int X, int Y)
+::fwData::Point::sptr SImageMultiDistances::screenToWorld(int X, int Y)
 {
     double* world;
     double display[3];
@@ -310,18 +296,16 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         // set temporaly the clipping around the focal point : see (1)
         vtkCamera* camera         = this->getRenderer()->GetActiveCamera();
         double* clippingCamBackup = camera->GetClippingRange();
-        camera->SetClippingRange( camera->GetDistance() - 0.1, camera->GetDistance() + 0.1 );  // set the clipping
-                                                                                               // around the focal point
+        // set the clipping around the focal point
+        camera->SetClippingRange( camera->GetDistance() - 0.1, camera->GetDistance() + 0.1 );
 
         world = worldTmp;
         // (1) this function use the near clipping range to estimate the world point (by defaut 0.1 from camera view).
         // The clipping can be modified
         // by insertion of new object. By setting previously the clipping to the focal point we ensure to not place new
         // point a camera position
-        this->getInteractor()->GetInteractorStyle()->ComputeDisplayToWorld( this->getRenderer(), X, Y, 0, world);     // RETURN
-                                                                                                                      // HOMOGEN
-                                                                                                                      // COORD
-                                                                                                                      // !!!
+        // RETURN HOMOGEN COORD !!!
+        this->getInteractor()->GetInteractorStyle()->ComputeDisplayToWorld( this->getRenderer(), X, Y, 0, world);
 
         // restore initial clipping
         camera->SetClippingRange( clippingCamBackup );
@@ -335,10 +319,11 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doUpdate()
+void SImageMultiDistances::updating()
 {
     // get PointList in image Field then install distance service if required
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
 
     ::fwData::Vector::sptr distanceField;
     distanceField = image->getField< ::fwData::Vector >( ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
@@ -379,9 +364,11 @@ void ImageMultiDistances::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove )
+void SImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->unregisterServices();
 
     ::fwData::Vector::sptr distanceField;
@@ -393,12 +380,12 @@ void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove )
         distanceField->getContainer().erase(iter);
     }
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::createDistance()
+void SImageMultiDistances::createDistance()
 {
     std::string sceneId = getRenderService()->getID();
     this->createNewDistance(sceneId);
@@ -406,9 +393,11 @@ void ImageMultiDistances::createDistance()
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::createNewDistance( std::string sceneId )
+void SImageMultiDistances::createNewDistance( std::string sceneId )
 {
-    ::fwData::Image::sptr image     = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     ::fwData::PointList::sptr newPL = ::fwData::PointList::New();
 
     newPL->setField( ::fwDataTools::fieldHelper::Image::m_relatedServiceId, ::fwData::String::New( sceneId ) );
@@ -424,8 +413,8 @@ void ImageMultiDistances::createNewDistance( std::string sceneId )
     int sizeY = this->getRenderer()->GetRenderWindow()->GetSize()[1];
 
     SLM_ASSERT("invalid RenderWindow size",  sizeX > 0 && sizeY > 0 );
-    ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3.0, sizeY/2.0);
-    ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3.0, sizeY/2.0);
+    ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3, sizeY/2);
+    ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3, sizeY/2);
 
     newPL->getRefPoints().push_back( pt1 );
     newPL->getRefPoints().push_back( pt2 );
@@ -436,16 +425,16 @@ void ImageMultiDistances::createNewDistance( std::string sceneId )
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::setNeedSubservicesDeletion( bool _needSubservicesDeletion)
+void SImageMultiDistances::setNeedSubservicesDeletion( bool _needSubservicesDeletion)
 {
     m_needSubservicesDeletion = _needSubservicesDeletion; // to manage point deletion
 }
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::doStop()
+void SImageMultiDistances::stopping()
 {
-    if ( m_rightButtonCommand ) // can be not instantiated (use of ImageMultiDistances::show() )
+    if ( m_rightButtonCommand ) // can be not instantiated (use of SImageMultiDistances::show() )
     {
         this->getInteractor()->RemoveObserver(m_rightButtonCommand);
         m_rightButtonCommand->Delete();
@@ -457,26 +446,26 @@ void ImageMultiDistances::doStop()
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::show(bool showDistances)
+void SImageMultiDistances::show(bool showDistances)
 {
     if(showDistances)
     {
-        this->doStart();
+        this->starting();
     }
     else
     {
-        this->doStop();
+        this->stopping();
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType ImageMultiDistances::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_ADDED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
