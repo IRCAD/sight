@@ -49,7 +49,7 @@ namespace editor
         <service uid="..." type="::uiMeasurementQt::editor::SLandmarks" >
            <inout key="landmarks" uid="..." />
            <size>10.0</size>
-           <transparency>0.5</transparency>
+           <opacity>0.5</opacity>
            <advanced>yes</advanced>
         </service>
        @endcode
@@ -58,7 +58,7 @@ namespace editor
  *
  * @subsection Configuration Configuration
  * - \b size (optional, default="10.0") : default size of created landmarks
- * - \b transparency (optional, default="1.0") : default transparency of created landmarks
+ * - \b opacity (optional, default="1.0") : default opacity of created landmarks
  * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
  * and groups with multiple points.
  */
@@ -117,8 +117,8 @@ private:
     /// Called when a group's point size is modified.
     void onSizeChanged(int newSize);
 
-    /// Called when a group's transparency is modified.
-    void onTransparencyChanged(int newTransparency);
+    /// Called when a group's opacity is modified.
+    void onOpacityChanged(int newOpacity);
 
     /// Called when a group's visibility is turned on or off.
     void onVisibilityChanged(int visibility);
@@ -186,7 +186,7 @@ private:
 
     QPointer<QSlider> m_sizeSlider;
 
-    QPointer<QSlider> m_transparencySlider;
+    QPointer<QSlider> m_opacitySlider;
 
     QPointer<QCheckBox> m_visibilityCheckbox;
 
@@ -202,8 +202,8 @@ private:
     /// Used to set the default landmark size
     float m_defaultLandmarkSize;
 
-    /// Used to set the default landmark transparency
-    float m_defaultLandmarkTransparency;
+    /// Used to set the default landmark opacity
+    float m_defaultLandmarkOpacity;
 
 };
 } // namespace editor

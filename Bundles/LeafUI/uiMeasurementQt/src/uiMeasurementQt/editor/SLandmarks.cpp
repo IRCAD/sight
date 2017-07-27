@@ -88,10 +88,10 @@ void SLandmarks::configuring()
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
         m_defaultLandmarkSize <= 0.f);
 
-    m_defaultLandmarkTransparency = config.get_optional<float>("transparency").get_value_or(1.0);
+    m_defaultLandmarkOpacity = config.get_optional<float>("opacity").get_value_or(1.0);
     OSLM_FATAL_IF(
-        "'transparency' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkTransparency << ")",
-        m_defaultLandmarkTransparency < 0.f || m_defaultLandmarkTransparency > 1.f);
+        "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
+        m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
     const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
@@ -118,8 +118,8 @@ void SLandmarks::starting()
     m_sizeSlider->setMinimum(1);
     m_sizeSlider->setMaximum(100);
     QLabel* sizeLabel = new QLabel(QString("Size"));
-    m_transparencySlider = new QSlider(Qt::Horizontal);
-    QLabel* transparencyLabel = new QLabel("Opacity");
+    m_opacitySlider = new QSlider(Qt::Horizontal);
+    QLabel* opacityLabel = new QLabel("Opacity");
     m_shapeSelector = new QComboBox();
     m_shapeSelector->addItem(QString("Cube"));
     m_shapeSelector->addItem(QString("Sphere"));
@@ -134,8 +134,8 @@ void SLandmarks::starting()
     gridLayout->addWidget(m_visibilityCheckbox, 0, 1);
     gridLayout->addWidget(sizeLabel, 1, 0);
     gridLayout->addWidget(m_sizeSlider, 1, 1);
-    gridLayout->addWidget(transparencyLabel, 2, 0);
-    gridLayout->addWidget(m_transparencySlider, 2, 1);
+    gridLayout->addWidget(opacityLabel, 2, 0);
+    gridLayout->addWidget(m_opacitySlider, 2, 1);
     gridLayout->addWidget(shapeLabel, 3, 0);
     gridLayout->addWidget(m_shapeSelector, 3, 1);
     gridLayout->addWidget(m_removeButton, 4, 1);
@@ -191,7 +191,7 @@ void SLandmarks::updating()
     QObject::connect(m_treeWidget.data(), &QTreeWidget::itemChanged, this, &SLandmarks::onGroupNameEdited);
     QObject::connect(m_treeWidget.data(), &QTreeWidget::currentItemChanged, this, &SLandmarks::onSelectionChanged);
     QObject::connect(m_sizeSlider.data(), &QSlider::valueChanged, this, &SLandmarks::onSizeChanged);
-    QObject::connect(m_transparencySlider.data(), &QSlider::valueChanged, this, &SLandmarks::onTransparencyChanged);
+    QObject::connect(m_opacitySlider.data(), &QSlider::valueChanged, this, &SLandmarks::onOpacityChanged);
     QObject::connect(m_visibilityCheckbox.data(), &QCheckBox::stateChanged, this, &SLandmarks::onVisibilityChanged);
     QObject::connect(m_shapeSelector.data(), &QComboBox::currentTextChanged, this, &SLandmarks::onShapeChanged);
     QObject::connect(m_removeButton.data(), &QPushButton::clicked, this, &SLandmarks::onRemoveSelection);
@@ -235,7 +235,7 @@ void SLandmarks::onColorButton()
         ::fwData::Landmarks::ColorType color = {{colorQt.red()/255.f, colorQt.green()/255.f, colorQt.blue()/255.f,
                                                                       colorQt.alpha()/255.f}};
 
-        m_transparencySlider->setValue(static_cast<int>(color[3] * m_transparencySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(color[3] * m_opacitySlider->maximum()));
 
         group.m_color = color;
 
@@ -386,8 +386,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* p
         const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
         m_shapeSelector->setCurrentText(shapeText);
 
-        float transparency = group.m_color[3];
-        m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+        float opacity = group.m_color[3];
+        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     }
 
@@ -418,13 +418,13 @@ void SLandmarks::onSizeChanged(int newSize)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onTransparencyChanged(int newTransparency)
+void SLandmarks::onOpacityChanged(int newOpacity)
 {
     ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
-    const float sliderSize = static_cast<float>( m_transparencySlider->maximum() - m_transparencySlider->minimum());
+    const float sliderSize = static_cast<float>( m_opacitySlider->maximum() - m_opacitySlider->minimum());
 
-    const float realTransparency = static_cast<float>(newTransparency) / sliderSize;
+    const float realOpacity = static_cast<float>(newOpacity) / sliderSize;
 
     std::string groupName;
     if(currentSelection(groupName))
@@ -432,7 +432,7 @@ void SLandmarks::onTransparencyChanged(int newTransparency)
         const auto groupColor = landmarks->getGroup(groupName).m_color;
 
         ::fwData::Landmarks::ColorType newGroupColor
-            = {{groupColor[0], groupColor[1], groupColor[2], realTransparency}};
+            = {{groupColor[0], groupColor[1], groupColor[2], realOpacity}};
 
         landmarks->setGroupColor(groupName, newGroupColor);
 
@@ -440,7 +440,7 @@ void SLandmarks::onTransparencyChanged(int newTransparency)
         QPushButton* colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
 
         QColor currentColor = colorButton->property("color").value<QColor>();
-        currentColor.setAlphaF(realTransparency);
+        currentColor.setAlphaF(realOpacity);
         colorButton->setProperty("color", currentColor);
 
         setColorButtonIcon(colorButton, currentColor);
@@ -767,8 +767,8 @@ void SLandmarks::modifyGroup(std::string name)
         const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
         m_shapeSelector->setCurrentText(shapeText);
 
-        const float transparency = group.m_color[3];
-        m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+        const float opacity = group.m_color[3];
+        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
     }
 
 }
@@ -830,8 +830,8 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
     const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
     m_shapeSelector->setCurrentText(shapeText);
 
-    const float transparency = group.m_color[3];
-    m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+    const float opacity = group.m_color[3];
+    m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     m_groupEditorWidget->show();
     m_treeWidget->blockSignals(false);
@@ -873,7 +873,7 @@ std::string SLandmarks::generateNewGroupName() const
 std::array<float, 4> SLandmarks::generateNewColor()
 {
     const std::array<float,
-                     4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultLandmarkTransparency}};
+                     4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultLandmarkOpacity}};
     return color;
 }
 
