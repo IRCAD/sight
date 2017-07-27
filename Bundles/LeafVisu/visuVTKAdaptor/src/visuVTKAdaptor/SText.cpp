@@ -62,22 +62,9 @@ void SText::configuring()
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
     std::string text = config.get<std::string>("text", "");
-    if(!text.empty() && text[0] == '@')
-    {
-        OSLM_ASSERT("You shall set text attribute or <text> tag, not both", srvconfig.count("text") == 0);
-        ::fwData::Object::csptr obj            = this->getInOut< ::fwData::Object >("object");
-        ::fwData::GenericFieldBase::sptr field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, text);
-        SLM_ASSERT("Camp path can't be cast to generic field", field);
-        if(field)
-        {
-            text = field->toString();
-        }
-    }
-
     if(text.empty())
     {
-        SLM_ASSERT("<text> tag must be defined.", srvconfig.count("text"));
-        text = srvconfig.get<std::string>("text");
+        text = srvconfig.get<std::string>("text", "");
     }
 
     m_text = text;
@@ -105,6 +92,18 @@ void SText::configuring()
 void SText::starting()
 {
     this->initialize();
+
+    if(!m_text.empty() && m_text[0] == '@')
+    {
+        ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >("object");
+        SLM_ASSERT("No object input", obj);
+        ::fwData::GenericFieldBase::sptr field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, m_text);
+        SLM_ASSERT("Camp path can't be cast to generic field", field);
+        if(field)
+        {
+            m_text = field->toString();
+        }
+    }
 
     m_mapper->GetTextProperty()->SetFontSize( int(m_fontSize) );
 

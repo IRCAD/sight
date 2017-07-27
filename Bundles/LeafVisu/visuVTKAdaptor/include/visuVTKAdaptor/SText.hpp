@@ -33,10 +33,14 @@ namespace visuVTKAdaptor
  * or
  * @code{.xml}
    <service type="::visuVTKAdaptor::SText">
+        <in key="object" uid="..." />
         <config renderer="default" vAlign='top' hAlign='center'>
         <text>SText to display<text>
    </service>
    @endcode
+ *
+ * @subsection Input Input
+ * - \b object [::fwData::Object] (optional): object used to find the camp path if one is defined.
  *
  *  @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
