@@ -6,7 +6,7 @@
 
 #include "visuVTKAdaptor/SImageMultiDistances.hpp"
 
-#include "visuVTKAdaptor/Distance.hpp"
+#include "visuVTKAdaptor/SDistance.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -246,10 +246,10 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
     {
         // create the srv configuration for objects auto-connection
         IService::Config srvDistConfig;
-        ::fwRenderVTK::IAdaptor::sptr serviceDistance = this->createSubAdaptor("::visuVTKAdaptor::Distance",
+        ::fwRenderVTK::IAdaptor::sptr serviceDistance = this->createSubAdaptor("::visuVTKAdaptor::SDistance",
                                                                                srvDistConfig);
         // register image
-        this->registerServiceInOut(pl, "pointList", serviceDistance, true, srvDistConfig);
+        this->registerServiceInput(pl, SDistance::s_POINTLIST_INPUT, serviceDistance, true, srvDistConfig);
 
         // install  Color Field if none
         pl->setDefaultField( ::fwDataTools::fieldHelper::Image::m_colorId, generateColor() );

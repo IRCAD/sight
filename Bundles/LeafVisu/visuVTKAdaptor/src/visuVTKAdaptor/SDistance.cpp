@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/Distance.hpp"
+#include "visuVTKAdaptor/SDistance.hpp"
 
 #include <fwData/Material.hpp>
 #include <fwData/PointList.hpp>
@@ -28,12 +28,14 @@
 #include <vtkRenderer.h>
 #include <vtkTextProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Distance, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SDistance, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
 
-Distance::Distance() noexcept :
+const ::fwServices::IService::KeyType SDistance::s_POINTLIST_INPUT = "pointList";
+
+SDistance::SDistance() noexcept :
     m_distanceRepresentation( vtkDistanceRepresentation2D::New()),
     m_lineActor(vtkActor::New()),
     m_lineSource(vtkLineSource::New())
@@ -62,14 +64,14 @@ Distance::Distance() noexcept :
 
 //------------------------------------------------------------------------------
 
-Distance::~Distance() noexcept
+SDistance::~SDistance() noexcept
 {
     m_distanceRepresentation->Delete();
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::setAxisColor( ::fwData::Color::sptr newColor) noexcept
+void SDistance::setAxisColor( ::fwData::Color::sptr newColor) noexcept
 {
     SLM_ASSERT("newColor not instanced", newColor);
     m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(
@@ -85,15 +87,18 @@ void Distance::setAxisColor( ::fwData::Color::sptr newColor) noexcept
 
 //------------------------------------------------------------------------------
 
-void Distance::doConfigure()
+void SDistance::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::doStart()
+void SDistance::starting()
 {
-    ::fwData::PointList::sptr ptList = this->getObject< ::fwData::PointList >();
+    this->initialize();
+
+    ::fwData::PointList::csptr ptList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
 
     m_point1 = ptList->getPoints().front();
     m_point2 = ptList->getPoints().back();
@@ -114,15 +119,15 @@ void Distance::doStart()
     this->addToRenderer(m_lineActor);
     this->addToRenderer(m_distanceRepresentation);
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::doUpdate()
+void SDistance::updating()
 {
-    ::fwData::Point::sptr p1 = m_point1.lock();
-    ::fwData::Point::sptr p2 = m_point2.lock();
+    ::fwData::Point::csptr p1 = m_point1.lock();
+    ::fwData::Point::csptr p2 = m_point2.lock();
 
     double ps1[3];
     std::copy(p1->getCRefCoord().begin(), (p1)->getCRefCoord().end(), ps1 );
@@ -141,20 +146,12 @@ void Distance::doUpdate()
     m_lineSource->SetPoint1(ps1);
     m_lineSource->SetPoint2(ps2);
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::doSwap()
-{
-    this->doStop();
-    this->doStart();
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Distance::doStop()
+void SDistance::stopping()
 {
     m_point1Connection.disconnect();
     m_point2Connection.disconnect();
