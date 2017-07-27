@@ -66,6 +66,8 @@ static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT   = "selectPoint";
 static const ::fwCom::Slots::SlotKeyType s_DESELECT_POINT_SLOT = "deselectPoint";
 static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT           = "show";
 
+const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
+
 //------------------------------------------------------------------------------
 
 class vtkLandmarkUpdateCallBack : public vtkCommand
@@ -221,7 +223,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
+    virtual void Execute( vtkObject* /*caller*/, unsigned long /*eventId*/, void*)
     {
         m_adaptor->deselect();
     }
@@ -259,47 +261,43 @@ SLandmarks::~SLandmarks() noexcept
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doConfigure()
+void SLandmarks::configuring()
 {
-    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    this->configureParams();
 
-    if (!interaction.empty())
-    {
-        SLM_FATAL_IF("value for 'integration' must be 'on' or 'off', actual: " + interaction,
-                     interaction != "on" && interaction != "off");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-        m_interaction = (interaction == "on");
-    }
+    const std::string interaction = config.get<std::string>("interaction", "on");
+
+    SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
+                 interaction != "on" && interaction != "off");
+
+    m_interaction = (interaction == "on");
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doStart()
+void SLandmarks::starting()
 {
+    this->initialize();
+
     vtkDeselectLandmarksCallBack* callback = vtkDeselectLandmarksCallBack::New();
     callback->setAdaptor(this->getSptr());
     m_noSelectionCommand = callback;
     this->getInteractor()->AddObserver(vtkCommand::RightButtonPressEvent, m_noSelectionCommand);
     this->getInteractor()->AddObserver(vtkCommand::RightButtonReleaseEvent, m_noSelectionCommand);
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doSwap()
-{
-    this->doStop();
-    this->doStart();
-}
-
-//------------------------------------------------------------------------------
-
-void SLandmarks::doUpdate()
+void SLandmarks::updating()
 {
     this->clearLandmarks();
 
-    ::fwData::Landmarks::csptr landmarks = this->getObject< ::fwData::Landmarks >();
+    ::fwData::Landmarks::csptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
 
     ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
 
@@ -310,11 +308,12 @@ void SLandmarks::doUpdate()
 
     this->getRenderer()->ResetCameraClippingRange();
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::doStop()
+void SLandmarks::stopping()
 {
     this->clearLandmarks();
     if (m_noSelectionCommand)
@@ -323,14 +322,15 @@ void SLandmarks::doStop()
         m_noSelectionCommand->Delete();
         m_noSelectionCommand = nullptr;
     }
-
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
 void SLandmarks::addPoint(std::string groupName)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getObject< ::fwData::Landmarks >();
+    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
 
     for(size_t i = m_handles[groupName].size(); i < landmarks->getNumberOfPoints(groupName); ++i)
     {
@@ -347,7 +347,8 @@ void SLandmarks::addPoint(std::string groupName)
 
 void SLandmarks::insertPoint(std::string groupName, size_t index)
 {
-    ::fwData::Landmarks::sptr landmarks = this->getObject< ::fwData::Landmarks >();
+    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
 
     auto handle = this->newHandle(landmarks, groupName, index);
 
@@ -410,7 +411,9 @@ void SLandmarks::removePoint(std::string groupName, size_t index)
 
 void SLandmarks::modifyGroup(std::string groupName)
 {
-    ::fwData::Landmarks::csptr landmarks = this->getObject< ::fwData::Landmarks >();
+    ::fwData::Landmarks::csptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
+
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
 
     LandmarksWidgetContainerType& landmarkHandleGroup = m_handles[groupName];
@@ -472,8 +475,10 @@ void SLandmarks::removeGroup(std::string groupName)
 
 void SLandmarks::addGroup(std::string groupName)
 {
-    const ::fwData::Landmarks::sptr& landmarks = this->getObject< ::fwData::Landmarks >();
-    const size_t ptNumber                      = landmarks->getNumberOfPoints(groupName);
+    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
+
+    const size_t ptNumber = landmarks->getNumberOfPoints(groupName);
 
     for(size_t index = 0; index < ptNumber; ++index)
     {
@@ -490,7 +495,8 @@ void SLandmarks::addGroup(std::string groupName)
 
 void SLandmarks::modifyPoint(std::string groupName, size_t index)
 {
-    const ::fwData::Landmarks::sptr& landmarks = this->getObject< ::fwData::Landmarks >();
+    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
 
     ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, index);
     LandmarkWidgetType& widget = m_handles.at(groupName).at(index);
@@ -582,7 +588,8 @@ void SLandmarks::deselectPoint(std::string groupName, size_t index)
         m_timer.reset();
     }
 
-    const ::fwData::Landmarks::sptr& landmarks = this->getObject< ::fwData::Landmarks >();
+    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    SLM_ASSERT("'landmarks' inout is not defined", landmarks);
 
     LandmarkWidgetType& widget = m_handles.at(groupName).at(index);
 
@@ -606,7 +613,8 @@ void SLandmarks::deselect()
 {
     if (m_timer)
     {
-        const ::fwData::Landmarks::csptr& landmarks = this->getObject< ::fwData::Landmarks >();
+        ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+        SLM_ASSERT("'landmarks' inout is not defined", landmarks);
 
         this->deselectPoint(m_selectedPoint.first, m_selectedPoint.second);
         auto sig = landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >(
@@ -742,31 +750,31 @@ void SLandmarks::show(bool b)
 {
     if (b)
     {
-        this->doStart();
+        this->starting();
     }
     else
     {
-        this->doStop();
+        this->stopping();
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SLandmarks::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
-    KeyConnectionsType connections;
+    KeyConnectionsMap connections;
 
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_POINT_INSERTED_SIG, s_INSERT_POINT_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT ));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_GROUP_ADDED_SIG, s_ADD_GROUP_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT));
-    connections.push_back(std::make_pair(::fwData::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT));
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_INSERTED_SIG, s_INSERT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_ADDED_SIG, s_ADD_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, ::fwData::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
 
     return connections;
 }

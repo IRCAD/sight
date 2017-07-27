@@ -46,15 +46,20 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <adaptor id="..." class="::visuVTKAdaptor::Landmarks" objectId="imageKey">
+        <service uid="..." type="::visuVTKAdaptor::Landmarks" autoConnect="yes">
+            <inout key="landmarks" uid="..." />
             <config renderer="default" picker="default" interaction="on" />
         </adaptor>
    @endcode
  *
+ * @subsection In-Out In-Out
+ * - \b landmarks [::fwData::Landmarks]: landmarks to display and move.
+ *
  * @subsection Configuration Configuration
- * - \b renderer: renderer used to display the landmarks
- * - \b picker: landmarks picker
- * - \b interaction (optional, default: on): if "on" interactions are enabled
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer: renderer used to display the landmarks
+ *    - \b picker: landmarks picker
+ *    - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IAdaptor
 {
@@ -74,6 +79,16 @@ public:
 
     VISUVTKADAPTOR_API virtual void show(bool b = true);
 
+    /// Deselect the current point and emit the corresponding Landmarks signal
+    void deselect();
+
+protected:
+
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
@@ -82,19 +97,7 @@ public:
      * Connect Image::s_LANDMARK_REMOVED_SIG to this::s_UPDATE_LANDMARKS_SLOT
      * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_UPDATE_LANDMARKS_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-    /// Deselect the current point and emit the corresponding Landmarks signal
-    void deselect();
-
-protected:
-
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private:
 
