@@ -251,9 +251,6 @@ protected:
     template< class DATATYPE >
     SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
 
-    /// priority of comChannel observing related object (specified with objectId)
-    double m_comChannelPriority;
-
     /// state of the pipeline
     bool m_vtkPipelineModified;
     SRender::RendererIdType m_rendererId;

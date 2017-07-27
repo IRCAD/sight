@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
-#define __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
+#ifndef __VISUVTKADAPTOR_SPICKERINTERACTOR_HPP__
+#define __VISUVTKADAPTOR_SPICKERINTERACTOR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -23,16 +23,47 @@
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PickerInteractor : public ::fwRenderVTK::IAdaptor
+/**
+ * @brief brief description
+ *
+ * long description
+ *
+ *
+ * @section Signals Signals
+ * - \b picked(::fwDataTools::PickingInfo) : emitted when the user clicks in the scene
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKAdaptor::SPickerInteractor">
+        <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" />
+   </service>
+   @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer : the identifier of the renderer.
+ * - \b picker : the identifier of the picker.
+ * - \b event : the identifier(s) of the event on which the adaptor is picking.
+ *   Possible values are:
+ *   - MOUSE_LEFT_UP
+ *   - MOUSE_RIGHT_UP
+ *   - MOUSE_MIDDLE_UP
+ *   - MOUSE_WHEELFORWARD
+ *   - MOUSE_LEFT_DOWN
+ *   - MOUSE_RIGHT_DOWN
+ *   - MOUSE_MIDDLE_DOWN
+ *   - MOUSE_WHEELBACKWARD
+ *   - MOUSE_MOVE
+ */
+class VISUVTKADAPTOR_CLASS_API SPickerInteractor : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (PickerInteractor)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPickerInteractor)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API PickerInteractor() noexcept;
+    VISUVTKADAPTOR_API SPickerInteractor() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~PickerInteractor() noexcept;
+    VISUVTKADAPTOR_API virtual ~SPickerInteractor() noexcept;
 
     /**
      * @name Signals API
@@ -59,35 +90,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-
-    /**
-     * @brief Configure the adaptor
-     *
-     * Example :
-           @code{.xml}
-           <adaptor id="text" class="::visuVTKRDAdaptor::SCellPickerInteractor" objectId="self">
-            <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" />
-           </adaptor>
-           @endcode
-     * - renderer : the identifier of the renderer.
-     * - picker : the identifier of the picker.
-     * - event : the identifier(s) of the event on which the adaptor is picking.
-     *   Possible values are:
-     *   - MOUSE_LEFT_UP
-     *   - MOUSE_RIGHT_UP
-     *   - MOUSE_MIDDLE_UP
-     *   - MOUSE_WHEELFORWARD
-     *   - MOUSE_LEFT_DOWN
-     *   - MOUSE_RIGHT_DOWN
-     *   - MOUSE_MIDDLE_DOWN
-     *   - MOUSE_WHEELBACKWARD
-     *   - MOUSE_MOVE
-     */
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     typedef std::map< std::string, EventID > MapEventIdType; ///< typedef for the map (seen below).
     static MapEventIdType m_eventIdConversion; ///< map containing the association between 'event text' and 'event ID'.
@@ -98,4 +104,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
+#endif // __VISUVTKADAPTOR_SPICKERINTERACTOR_HPP__

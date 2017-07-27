@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/PickerInteractor.hpp"
+#include "visuVTKAdaptor/SPickerInteractor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -33,7 +33,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PickerInteractor, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPickerInteractor);
 
 namespace visuVTKAdaptor
 {
@@ -52,7 +52,7 @@ static const std::map< unsigned long, ::fwDataTools::PickingInfo::Event > s_vtkE
     { vtkCommand::KeyPressEvent, ::fwDataTools::PickingInfo::Event::KEY_PRESS }
 };
 
-PickerInteractor::MapEventIdType PickerInteractor::m_eventIdConversion
+SPickerInteractor::MapEventIdType SPickerInteractor::m_eventIdConversion
 {
     { std::string("MOUSE_LEFT_UP"), MOUSE_LEFT_UP },
     { std::string("MOUSE_RIGHT_UP"), MOUSE_RIGHT_UP },
@@ -66,28 +66,28 @@ PickerInteractor::MapEventIdType PickerInteractor::m_eventIdConversion
     { std::string("KEY_PRESS"), KEY_PRESS }
 };
 
-const ::fwCom::Signals::SignalKeyType PickerInteractor::s_PICKED_SIGNAL = "picked";
+const ::fwCom::Signals::SignalKeyType SPickerInteractor::s_PICKED_SIGNAL = "picked";
 
 //------------------------------------------------------------------------------
 
-class PickerInteractorCallback : public vtkCommand
+class SPickerInteractorCallback : public vtkCommand
 {
 public:
     //------------------------------------------------------------------------------
 
-    static PickerInteractorCallback* New()
+    static SPickerInteractorCallback* New()
     {
-        return new PickerInteractorCallback();
+        return new SPickerInteractorCallback();
     }
 
-    PickerInteractorCallback() :
+    SPickerInteractorCallback() :
         m_picker(nullptr),
         m_eventId(nullptr)
     {
         this->PassiveObserverOn();
     }
 
-    ~PickerInteractorCallback()
+    ~SPickerInteractorCallback()
     {
     }
 
@@ -121,12 +121,12 @@ public:
     void process(vtkRenderWindowInteractor* caller, unsigned long eventId) // from
     {
         SLM_ASSERT("bad vtk caller", caller);
-        if( m_eventId->find( static_cast< PickerInteractor::EventID>(eventId) ) != m_eventId->end() )
+        if( m_eventId->find( static_cast< SPickerInteractor::EventID>(eventId) ) != m_eventId->end() )
         {
 #ifdef __linux
             /// We receive way too many MOUSE_MOVE events on Linux
             /// HACK_FB: Skip some of them...
-            if(eventId == PickerInteractor::MOUSE_MOVE)
+            if(eventId == SPickerInteractor::MOUSE_MOVE)
             {
                 m_skipMove++;
                 if( m_skipMove % 10 )
@@ -163,8 +163,8 @@ public:
 
                 info.m_timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
-                auto sig = m_adaptor->signal<PickerInteractor::PickedSignalType>(
-                    PickerInteractor::s_PICKED_SIGNAL);
+                auto sig = m_adaptor->signal<SPickerInteractor::PickedSignalType>(
+                    SPickerInteractor::s_PICKED_SIGNAL);
                 sig->asyncEmit(info);
             }
         }
@@ -172,7 +172,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( PickerInteractor::sptr adaptor)
+    void setAdaptor( SPickerInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
@@ -186,14 +186,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setEventId(PickerInteractor::SetEventIdType* eventId)
+    void setEventId(SPickerInteractor::SetEventIdType* eventId)
     {
         m_eventId = eventId;
     }
 
 protected:
-    PickerInteractor::SetEventIdType* m_eventId;
-    PickerInteractor::sptr m_adaptor;
+    SPickerInteractor::SetEventIdType* m_eventId;
+    SPickerInteractor::sptr m_adaptor;
     vtkAbstractPropPicker* m_picker;
 #ifdef __linux
     unsigned int m_skipMove = 0u;
@@ -203,7 +203,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PickerInteractor::PickerInteractor() noexcept :
+SPickerInteractor::SPickerInteractor() noexcept :
     m_interactionCommand(nullptr)
 {
     newSignal<PickedSignalType>(s_PICKED_SIGNAL);
@@ -211,19 +211,21 @@ PickerInteractor::PickerInteractor() noexcept :
 
 //------------------------------------------------------------------------------
 
-PickerInteractor::~PickerInteractor() noexcept
+SPickerInteractor::~SPickerInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doConfigure()
+void SPickerInteractor::configuring()
 {
-    SLM_ASSERT("Required element 'config' is missing.", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if (m_configuration->hasAttribute("event"))
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if (config.count("event"))
     {
-        const std::string eventTxt = m_configuration->getAttributeValue("event");
+        const std::string eventTxt = config.get<std::string>("event");
 
         ::boost::char_separator<char> sep(", ;");
         ::boost::tokenizer< ::boost::char_separator<char> > tok(eventTxt, sep);
@@ -245,10 +247,12 @@ void PickerInteractor::doConfigure()
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doStart()
+void SPickerInteractor::starting()
 {
-    PickerInteractorCallback* observer = PickerInteractorCallback::New();
-    observer->setAdaptor( PickerInteractor::dynamicCast(this->getSptr()) );
+    this->initialize();
+
+    SPickerInteractorCallback* observer = SPickerInteractorCallback::New();
+    observer->setAdaptor( SPickerInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setEventId(&m_eventId);
 
@@ -271,19 +275,13 @@ void PickerInteractor::doStart()
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doUpdate()
+void SPickerInteractor::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::doSwap()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void PickerInteractor::doStop()
+void SPickerInteractor::stopping()
 {
     vtkRenderWindowInteractor* interactor = this->getInteractor();
     interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent, m_interactionCommand);
@@ -299,7 +297,6 @@ void PickerInteractor::doStop()
 
     m_interactionCommand->Delete();
     m_interactionCommand = nullptr;
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------

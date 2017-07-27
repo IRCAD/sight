@@ -27,7 +27,6 @@ namespace fwRenderVTK
 {
 
 IAdaptor::IAdaptor() noexcept :
-    m_comChannelPriority(0.5),
     m_vtkPipelineModified(true),
     m_rendererId("default"),
     m_pickerId(""),
