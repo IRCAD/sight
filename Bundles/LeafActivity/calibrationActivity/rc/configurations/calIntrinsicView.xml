@@ -152,11 +152,11 @@
         </service>
 
         <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="${camera}" />
+            <in key="camera" uid="${camera}" />
         </service>
 
         <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition"  >
-            <inout key="camera" uid="${camera}" />
+            <in key="camera" uid="${camera}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->

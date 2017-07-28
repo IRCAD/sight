@@ -312,16 +312,16 @@
         </service>
 
         <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
-            <inout key="cameraSeries" uid="${cameraSeries}" />
+            <in key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 
         <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="${camera1}" />
+            <in key="camera" uid="${camera1}" />
         </service>
 
         <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="${camera2}" />
+            <in key="camera" uid="${camera2}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
