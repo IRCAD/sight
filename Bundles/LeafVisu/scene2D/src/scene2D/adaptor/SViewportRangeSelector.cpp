@@ -324,6 +324,7 @@ void SViewportRangeSelector::updateViewportFromShutter( double _x, double _y, do
 
     const Point2DType pair = this->mapSceneToAdaptor(Point2DType(_width, _height), m_xAxis, m_yAxis);
     viewport->setWidth( pair.first );
+    viewport->setHeight( this->getScene2DRender()->getViewport()->getHeight() );
 }
 
 //---------------------------------------------------------------------------------------------------------------
