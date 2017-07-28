@@ -439,8 +439,7 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
             // get image origin
             QRectF recImage = m_pixmapItem->sceneBoundingRect();
 
-            ::fwRenderQt::data::Viewport::sptr sceneViewport =
-                this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+            ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
             float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
             float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());

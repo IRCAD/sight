@@ -66,6 +66,9 @@ public:
     /// Get the view.
     FWRENDERQT_API Scene2DGraphicsView* getView() const;
 
+    /// Get the viewport.
+    FWRENDERQT_API ::fwRenderQt::data::Viewport::sptr SRender::getViewport() const;
+
     /// Get the axis.
     FWRENDERQT_API ::fwRenderQt::data::Axis::sptr getAxis(const std::string& id) const;
 
@@ -90,11 +93,9 @@ protected:
      * Example of configuration
      * @code{.xml}
        <service uid="GENERIC_UID_Scene2D" impl="::fwRenderQt::SRender" type="::fwRender::IRender" autoConnect="yes">
-        <inout key="viewport" uid="..." />
         <scene>
-
             <scene x="-1100" y="-1.1" width="2500" height="1.2" />
-
+            <viewport x="-500" y="-1.1" width="500" height="1.2" />
             <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
             <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
             <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
@@ -190,6 +191,9 @@ private:
     /// Get the axis configuration specifications
     void configureAxis ( ConfigurationType _conf );
 
+    /// Get the viewport configuration specifications, create a new viewport.
+    void configureViewport ( ConfigurationType _conf );
+
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
     void configureScene( ConfigurationType _conf );
 
@@ -219,6 +223,8 @@ private:
 
     /// The view.
     Scene2DGraphicsView* m_view;
+
+    ::fwRenderQt::data::Viewport::sptr m_viewport;
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing;

@@ -148,21 +148,19 @@ double SAxis::getEndVal()
 
 void SAxis::doUpdate()
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
-
     this->initializeViewSize();
-    this->initializeViewportSize(viewport);
+    this->initializeViewportSize();
 
-    const Scene2DRatio ratio = this->getRatio(viewport);
+    const Scene2DRatio ratio = this->getRatio();
 
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
     const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-    const double viewportWidthRatio = this->getViewportSizeRatio(viewport).first;
+    const double viewportWidthRatio = this->getViewportSizeRatio().first;
 
     double scaleX = m_tickSize;
     double scaleY = m_tickSize * viewportSizeRatio;

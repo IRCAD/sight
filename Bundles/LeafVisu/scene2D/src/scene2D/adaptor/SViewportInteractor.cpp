@@ -17,8 +17,6 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
-
 SViewportInteractor::SViewportInteractor() noexcept :
     m_viewportIsTranslated(false)
 {
@@ -87,27 +85,20 @@ void SViewportInteractor::processInteraction( ::fwRenderQt::data::Event& _event 
         if ( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
         {
             ::fwRenderQt::data::Coord coord                  = _event.getCoord();
-            ::fwRenderQt::data::Viewport::sptr sceneViewport =
-                this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+            ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
-            float dx     = coord.getX() - m_lastCoordEvent.getX();
-            float xTrans = dx * sceneViewport->getWidth() / (float) this->getScene2DRender()->getView()->width();
+            const float dx     = coord.getX() - m_lastCoordEvent.getX();
+            const float xTrans = dx * sceneViewport->getWidth() / (float) this->getScene2DRender()->getView()->width();
 
-            float dy     = coord.getY() - m_lastCoordEvent.getY();
-            float yTrans = dy * sceneViewport->getHeight() / (float) this->getScene2DRender()->getView()->height();
+            const float dy     = coord.getY() - m_lastCoordEvent.getY();
+            const float yTrans = dy * sceneViewport->getHeight() /
+                                 (float) this->getScene2DRender()->getView()->height();
 
             sceneViewport->setX( sceneViewport->getX() - xTrans );
             sceneViewport->setY( sceneViewport->getY() - yTrans );
             this->getScene2DRender()->getView()->updateFromViewport();
 
             m_lastCoordEvent = coord;
-
-            ::fwData::Object::ModifiedSignalType::sptr sig =
-                sceneViewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                sig->asyncEmit();
-            }
         }
         else if ( _event.getType() == ::fwRenderQt::data::Event::MouseButtonRelease )
         {
@@ -120,8 +111,7 @@ void SViewportInteractor::processInteraction( ::fwRenderQt::data::Event& _event 
 
 void SViewportInteractor::zoom( bool zoomIn )
 {
-    ::fwRenderQt::data::Viewport::sptr sceneViewport =
-        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
+    ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
     float y = sceneViewport->getY();
     float x = sceneViewport->getX();

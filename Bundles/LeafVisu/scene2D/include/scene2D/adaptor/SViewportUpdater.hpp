@@ -56,6 +56,7 @@ protected:
     SCENE2D_API void doStop();
 
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API KeyConnectionsMap getAutoConnections() const;
 };
 
 }   // namespace adaptor

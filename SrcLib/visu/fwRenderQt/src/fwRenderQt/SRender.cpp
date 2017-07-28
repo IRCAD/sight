@@ -28,10 +28,6 @@
 namespace fwRenderQt
 {
 
-static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
-
-//-----------------------------------------------------------------------------
-
 SRender::SRender() noexcept :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
@@ -60,6 +56,13 @@ QGraphicsScene* SRender::getScene() const
 Scene2DGraphicsView* SRender::getView() const
 {
     return m_view;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwRenderQt::data::Viewport::sptr SRender::getViewport() const
+{
+    return m_viewport;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,6 +130,10 @@ void SRender::configuring()
         {
             this->configureAxis(*iter);
         }
+        else if ((*iter)->getName() == "viewport")
+        {
+            this->configureViewport(*iter);
+        }
         else if ((*iter)->getName() == "scene")
         {
             this->configureScene(*iter);
@@ -186,14 +193,12 @@ void SRender::startContext()
     SPTR(::fwGuiQt::container::QtContainer) qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
-    ::fwRenderQt::data::Viewport::sptr viewport = this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
-
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
     m_scene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     m_scene->setFocus( Qt::MouseFocusReason );
 
     m_view = new Scene2DGraphicsView( m_scene, qtContainer->getQtContainer() );
-    m_view->setViewport( viewport );
+    m_view->setViewport( m_viewport );
     m_view->setSceneRender( ::fwRenderQt::SRender::dynamicCast( this->getSptr() ) );
     m_view->setRenderHint( QPainter::Antialiasing, m_antialiasing );
 
@@ -239,9 +244,28 @@ void SRender::configureAxis( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
+void SRender::configureViewport( ConfigurationType _conf )
+{
+    SLM_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
+
+    const std::string id     = _conf->getAttributeValue("id");
+    const std::string x      = _conf->getAttributeValue("x");
+    const std::string y      = _conf->getAttributeValue("y");
+    const std::string width  = _conf->getAttributeValue("width");
+    const std::string height = _conf->getAttributeValue("height");
+
+    m_viewport = ::fwRenderQt::data::Viewport::New();
+    m_viewport->setX(std::stof( x ));
+    m_viewport->setY(std::stof( y ));
+    m_viewport->setWidth(std::stof( width ));
+    m_viewport->setHeight(std::stof( height ));
+}
+
+//-----------------------------------------------------------------------------
+
 void SRender::configureScene( ConfigurationType _conf )
 {
-    SLM_ASSERT("\"viewport\" tag required", _conf->getName() == "scene");
+    SLM_ASSERT("\"scene\" tag required", _conf->getName() == "scene");
 
     const std::string x      = _conf->getAttributeValue("x");
     const std::string y      = _conf->getAttributeValue("y");

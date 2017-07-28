@@ -99,11 +99,8 @@ void SHistogramValue::doStop()
 
 void SHistogramValue::doUpdate()
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
-
     this->initializeViewSize();
-    this->initializeViewportSize(viewport);
+    this->initializeViewportSize();
 
     ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
@@ -118,14 +115,15 @@ void SHistogramValue::doUpdate()
 
     if(index >= 0 && index < (int)values.size() && m_isInteracting) // avoid std out_of_range on Windows
     {
+        ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
         const double viewportWidth  = viewport->getWidth();
 
         const double viewportSizeRatio    = viewportHeight / viewportWidth;
         const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-        Scene2DRatio ratio        = this->getRatio(viewport); // Total ratio
-        double viewportWidthRatio = this->getViewportSizeRatio(viewport).first;
+        Scene2DRatio ratio        = this->getRatio(); // Total ratio
+        double viewportWidthRatio = this->getViewportSizeRatio().first;
 
         double diameterH = m_fontSize;
         double diameterV = m_fontSize * viewportSizeRatio;
@@ -172,11 +170,8 @@ void SHistogramValue::doSwap()
 
 void SHistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
-
     this->initializeViewSize();
-    this->initializeViewportSize(viewport);
+    this->initializeViewportSize();
 
     if( _event.getType() == ::fwRenderQt::data::Event::MouseMove )
     {
@@ -200,7 +195,6 @@ void SHistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, ::fwData::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_POINT_INPUT, ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }

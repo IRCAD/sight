@@ -114,19 +114,18 @@ void STransferFunction::buildTFPoints()
 
 void STransferFunction::buildCircles()
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     this->initializeViewSize();
-    this->initializeViewportSize(viewport);
+    this->initializeViewportSize();
 
     const double viewportHeight = viewport->getHeight();
     const double viewportWidth  = viewport->getWidth();
 
     // Total ratio
-    Scene2DRatio ratio = this->getRatio(viewport);
+    const Scene2DRatio ratio = this->getRatio();
 
-    double viewportWidthRatio = this->getViewportSizeRatio(viewport).first;
+    const double viewportWidthRatio = this->getViewportSizeRatio().first;
 
     // Initialize the width of the circle
     m_circleWidth = m_pointSize;
@@ -216,8 +215,7 @@ void STransferFunction::buildLinesAndPolygons()
 
 void STransferFunction::buildBounds()
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     const QGraphicsEllipseItem* beginCircle = m_circles.front();
     const QGraphicsEllipseItem* endCircle   = m_circles.back();
@@ -289,9 +287,8 @@ void STransferFunction::buildLinearLinesAndPolygons()
 {
     SLM_ASSERT("Circles must not be empty", !m_circles.empty());
 
-    ::fwData::TransferFunction::sptr selectedTF  = this->getTransferFunction();
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
+    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+    ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     QVector<QPointF> vect;
     QLinearGradient grad;

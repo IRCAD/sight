@@ -10,9 +10,6 @@
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
             <object uid="floatData" type="::fwData::Float" />
-            <object uid="viewportData" type="::fwRenderQt::data::Viewport" >
-                <config x="-100" y="-100" width="200" height="200" />
-            </object>
             <!-- ***************************************** End Objects declaration ******************************************* -->
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
@@ -52,8 +49,8 @@
 
             <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
             <service uid="Scene2D" type="::fwRenderQt::SRender" autoConnect="yes">
-                <inout key="viewport" uid="viewportData" />
                 <scene>
+                    <viewport x="-100" y="-100" width="200" height="200" />
                     <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
 
                     <adaptor uid="gridFromFloat" />

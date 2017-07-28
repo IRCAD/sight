@@ -25,6 +25,8 @@ namespace adaptor
 
 static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT = "viewport";
 
+//---------------------------------------------------------------------------------------------------------------
+
 SViewportRangeSelector::SViewportRangeSelector() noexcept :
     m_shutter(nullptr),
     m_isLeftInteracting( false ),
@@ -49,44 +51,15 @@ void SViewportRangeSelector::configuring()
 {
     this->IAdaptor::configuring();
 
-    ::fwRenderQt::data::Viewport::sptr viewport =
-        this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
-
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
-
-    const double viewportWidth = viewport->getWidth();
-    const double defaultWidth  = 2. * viewportWidth / 4.;
-
     if (config.count("initialWidth"))
     {
         m_initialWidth = config.get<float>("initialWidth");
-
-        if( m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange )
-        {
-            SLM_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
-            m_initialWidth = defaultWidth;
-        }
     }
-    else
-    {
-        m_initialWidth = defaultWidth;
-    }
-
-    const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
 
     if (config.count("initialPos"))
     {
         m_initialX = config.get<float>("initialPos");
-
-        if( m_initialX < viewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
-        {
-            SLM_WARN("Set viewport position to a default value since the given one is not correct.");
-            m_initialX = defaultPos;
-        }
-    }
-    else
-    {
-        m_initialX = defaultPos;
     }
 }
 
@@ -94,9 +67,28 @@ void SViewportRangeSelector::configuring()
 
 void SViewportRangeSelector::doStart()
 {
+    {
+        ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+
+        const double viewportWidth = sceneViewport->getWidth();
+        const double defaultWidth  = 2. * viewportWidth / 4.;
+
+        if( m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange )
+        {
+            SLM_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
+            m_initialWidth = defaultWidth;
+        }
+
+        const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
+        if( m_initialX < sceneViewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
+        {
+            SLM_WARN("Set viewport position to a default value since the given one is not correct.");
+            m_initialX = defaultPos;
+        }
+    }
+
     ::fwRenderQt::data::Viewport::sptr viewport =
         this->getInOut< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INOUT);
-
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
     Point2DType pair = this->mapAdaptorToScene(

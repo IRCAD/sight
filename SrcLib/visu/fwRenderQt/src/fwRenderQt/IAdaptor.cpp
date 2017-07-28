@@ -74,8 +74,9 @@ IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio() const
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio(const ::fwRenderQt::data::Viewport::csptr& viewport) const
+IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio() const
 {
+    const ::fwRenderQt::data::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
     return ViewportSizeRatio(
         (float) ( m_viewportInitialSize.first / viewport->getWidth() ),
         (float) ( m_viewportInitialSize.second / viewport->getHeight() ) );
@@ -83,10 +84,10 @@ IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio(const ::fwRenderQt::d
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Scene2DRatio IAdaptor::getRatio(const ::fwRenderQt::data::Viewport::csptr& viewport) const
+IAdaptor::Scene2DRatio IAdaptor::getRatio() const
 {
     const ViewSizeRatio ratioView         = this->getViewSizeRatio();
-    const ViewportSizeRatio ratioViewport = this->getViewportSizeRatio(viewport);
+    const ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
 
     return Scene2DRatio(    ratioView.first / ratioViewport.first,
                             ratioView.second / ratioViewport.second );
@@ -233,8 +234,9 @@ void IAdaptor::initializeViewSize()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::initializeViewportSize(const ::fwRenderQt::data::Viewport::csptr& viewport)
+void IAdaptor::initializeViewportSize()
 {
+    const ::fwRenderQt::data::Viewport::csptr& viewport = this->getScene2DRender()->getViewport();
     // Initialize the initial width of the viewport
     if(m_viewportInitialSize.first == -1.0f)
     {

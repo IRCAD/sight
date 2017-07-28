@@ -202,11 +202,8 @@ double SScaleValues::getEndVal()
 
 void SScaleValues::doUpdate()
 {
-    ::fwRenderQt::data::Viewport::csptr viewport =
-        this->getInput< ::fwRenderQt::data::Viewport>(s_VIEWPORT_INPUT);
-
     this->initializeViewSize();
-    this->initializeViewportSize(viewport);
+    this->initializeViewportSize();
 
     this->rescaleValues();
 }
@@ -225,8 +222,8 @@ void SScaleValues::rescaleValues()
     const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-    const Scene2DRatio ratio        = this->getRatio(viewport); // Total ratio
-    const double viewportWidthRatio = this->getViewportSizeRatio(viewport).first;
+    const Scene2DRatio ratio        = this->getRatio(); // Total ratio
+    const double viewportWidthRatio = this->getViewportSizeRatio().first;
 
     double scaleX = m_fontSize;
     double scaleY = m_fontSize * viewportSizeRatio;
@@ -271,9 +268,8 @@ void SScaleValues::rescaleValues()
         {
             valueSize = m_values[i]->boundingRect().height();
 
-            size = this->mapAdaptorToScene(
-                std::pair<double, double>(m_values[i]->boundingRect().width(), valueSize),
-                m_xAxis, m_yAxis);
+            size = this->mapAdaptorToScene(Point2DType(m_values[i]->boundingRect().width(), valueSize),
+                                           m_xAxis, m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
