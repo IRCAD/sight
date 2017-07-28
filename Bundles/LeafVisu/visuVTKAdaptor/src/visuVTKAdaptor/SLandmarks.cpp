@@ -6,9 +6,6 @@
 
 #include "visuVTKAdaptor/SLandmarks.hpp"
 
-#include "visuVTKAdaptor/PointLabel.hpp"
-#include "visuVTKAdaptor/PointList.hpp"
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>

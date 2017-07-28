@@ -7,7 +7,7 @@
 #include "visuVTKAdaptor/LabeledPointList.hpp"
 
 #include "visuVTKAdaptor/PointLabel.hpp"
-#include "visuVTKAdaptor/PointList.hpp"
+#include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Signal.hxx>
 
@@ -265,10 +265,11 @@ void LabeledPointList::doUpdate()
     {
         ::fwRenderVTK::IAdaptor::sptr servicePointList;
         servicePointList = ::fwServices::add< ::fwRenderVTK::IAdaptor >( landmarks,
-                                                                         "::visuVTKAdaptor::PointList");
+                                                                         "::visuVTKAdaptor::SPointList");
         SLM_ASSERT("servicePointList not instanced", servicePointList);
 
-        ::visuVTKAdaptor::PointList::sptr pointListAdaptor = ::visuVTKAdaptor::PointList::dynamicCast(servicePointList);
+        ::visuVTKAdaptor::SPointList::sptr pointListAdaptor =
+            ::visuVTKAdaptor::SPointList::dynamicCast(servicePointList);
 
         SLM_ASSERT("Bad cast of IAdaptor to servicePointList", pointListAdaptor);
 

@@ -7,6 +7,7 @@
 #include "visuVTKAdaptor/SImageMultiDistances.hpp"
 
 #include "visuVTKAdaptor/SDistance.hpp"
+#include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -263,10 +264,10 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
         // create the srv configuration for objects auto-connection
         IService::Config srvPLConfig;
-        ::fwRenderVTK::IAdaptor::sptr servicePointList = this->createSubAdaptor("::visuVTKAdaptor::PointList",
+        ::fwRenderVTK::IAdaptor::sptr servicePointList = this->createSubAdaptor("::visuVTKAdaptor::SPointList",
                                                                                 srvPLConfig);
         // register image
-        this->registerServiceInOut(pl, "pointList", servicePointList, true, srvPLConfig);
+        this->registerServiceInput(pl, SPointList::s_POINTLIST_INPUT, servicePointList, true, srvPLConfig);
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRendererId( this->getRendererId() );

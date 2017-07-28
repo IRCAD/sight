@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/PointList.hpp"
+#include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -30,7 +30,7 @@
 #include <functional>
 #include <iterator>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPointList);
 
 namespace visuVTKAdaptor
 {
@@ -38,43 +38,47 @@ namespace visuVTKAdaptor
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
+const ::fwServices::IService::KeyType SPointList::s_POINTLIST_INPUT = "pointList";
+
 //------------------------------------------------------------------------------
 
-PointList::PointList() noexcept :
+SPointList::SPointList() noexcept :
     m_radius(7.0),
     m_interaction(true)
 {
-    newSlot(s_ADD_POINT_SLOT, &PointList::addPoint, this);
-    newSlot(s_UPDATE_SPLINE_SLOT, &PointList::updateSpline, this);
+    newSlot(s_ADD_POINT_SLOT, &SPointList::addPoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &SPointList::updateSpline, this);
 
     m_ptColor = ::fwData::Color::New();
 }
 
 //------------------------------------------------------------------------------
 
-PointList::~PointList() noexcept
+SPointList::~SPointList() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-void PointList::doConfigure()
+void SPointList::configuring()
 {
-    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
+    this->configureParams();
 
-    std::string hexaColor = m_configuration->getAttributeValue("color");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    const std::string hexaColor = config.get<std::string>("color", "");
     m_ptColor = ::fwData::Color::New();
     if (!hexaColor.empty())
     {
         m_ptColor->setRGBA(hexaColor);
     }
 
-    std::string radius = m_configuration->getAttributeValue("radius");
+    const std::string radius = config.get<std::string>("radius", "");
     if(!radius.empty())
     {
         m_radius = std::stod(radius);
     }
 
-    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    const std::string interaction = config.get<std::string>("interaction", "");
 
     if (!interaction.empty())
     {
@@ -87,53 +91,48 @@ void PointList::doConfigure()
 
 //------------------------------------------------------------------------------
 
-void PointList::doStart()
+void SPointList::starting()
 {
+    this->initialize();
+
     m_oldWeakPointList.clear();
 
     m_weakPointList = this->getWeakPointList();
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::doUpdate()
+void SPointList::updating()
 {
     WeakPointListType points = this->getNewPoints();
     this->createServices( points );
+    this->requestRender();
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
-void PointList::addPoint(::fwData::Point::sptr /*point*/)
+void SPointList::addPoint(::fwData::Point::sptr /*point*/)
 {
     m_oldWeakPointList = m_weakPointList;
     m_weakPointList    = this->getWeakPointList();
-    this->doUpdate();
+    this->updating();
     this->setVtkPipelineModified();
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
-void PointList::updateSpline()
+void SPointList::updateSpline()
 {
-    this->doStop();
-    this->doUpdate();
+    this->stopping();
+    this->updating();
     this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::doSwap()
-{
-    this->doStop();
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void PointList::doStop()
+void SPointList::stopping()
 {
     m_oldWeakPointList.clear();
     m_weakPointList.clear();
@@ -142,7 +141,7 @@ void PointList::doStop()
 
 //------------------------------------------------------------------------------
 
-void PointList::createServices(WeakPointListType& wPtList)
+void SPointList::createServices(WeakPointListType& wPtList)
 {
     for( ::fwData::Point::wptr wpt :  wPtList )
     {
@@ -150,12 +149,13 @@ void PointList::createServices(WeakPointListType& wPtList)
 
         ::fwData::Point::sptr pt = wpt.lock();
 
-        ::fwRenderVTK::IAdaptor::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                ( pt, "::visuVTKAdaptor::Point" );
-        SLM_ASSERT("service not instanced", service);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvConfig;
+        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SPoint", srvConfig);
+        // register image
+        this->registerServiceInOut(pt, SPoint::s_POINT_INOUT, service, true, srvConfig);
 
-        ::visuVTKAdaptor::Point::sptr pointAdaptor = ::visuVTKAdaptor::Point::dynamicCast(service);
+        ::visuVTKAdaptor::SPoint::sptr pointAdaptor = ::visuVTKAdaptor::SPoint::dynamicCast(service);
 
         SLM_ASSERT("Bad cast of IAdaptor to Point", pointAdaptor);
 
@@ -175,27 +175,24 @@ void PointList::createServices(WeakPointListType& wPtList)
 
 //------------------------------------------------------------------------------
 
-PointList::WeakPointListType PointList::getWeakPointList()
+SPointList::WeakPointListType SPointList::getWeakPointList()
 {
-    ::fwData::PointList::sptr ptList = this->getObject< ::fwData::PointList >();
+    ::fwData::PointList::csptr ptList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    SLM_ASSERT("'pointList' is not defined.", ptList);
+
     WeakPointListType weakList;
 
-    std::copy(ptList->getRefPoints().begin(), ptList->getRefPoints().end(), std::back_inserter(weakList));
+    std::copy(ptList->getCRefPoints().begin(), ptList->getCRefPoints().end(), std::back_inserter(weakList));
 
     return weakList;
 }
 
 //------------------------------------------------------------------------------
 
-PointList::WeakPointListType PointList::getNewPoints()
+SPointList::WeakPointListType SPointList::getNewPoints()
 {
     WeakPointListType newPoints;
 
-//    std::set_difference (
-//            m_weakPointList.begin(), m_weakPointList.end(),
-//            m_oldWeakPointList.begin(), m_oldWeakPointList.end(),
-//            std::back_inserter(newPoints)
-//            );
     bool isFound;
     for(::fwData::Point::wptr point :  m_weakPointList)
     {
@@ -218,32 +215,32 @@ PointList::WeakPointListType PointList::getNewPoints()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType PointList::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT);
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::setRadius(const double radius)
+void SPointList::setRadius(const double radius)
 {
     m_radius = radius;
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::setColor(const fwData::Color::sptr ptColor)
+void SPointList::setColor(const fwData::Color::sptr ptColor)
 {
     m_ptColor = ptColor;
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::setInteraction(const bool interaction)
+void SPointList::setInteraction(const bool interaction)
 {
     m_interaction = interaction;
 }

@@ -8,7 +8,7 @@
 
 #include "visuVTKAdaptor/Plane.hpp"
 
-#include "visuVTKAdaptor/Point.hpp"
+#include "visuVTKAdaptor/SPoint.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -88,7 +88,7 @@ void Plane::doStart()
     {
         ::fwRenderVTK::IAdaptor::sptr servicePoint =
             ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                ( point, "::visuVTKAdaptor::Point" );
+                ( point, "::visuVTKAdaptor::SPoint" );
         SLM_ASSERT("servicePoint not instanced", servicePoint);
 
         servicePoint->setRenderService(this->getRenderService());
@@ -101,7 +101,7 @@ void Plane::doStart()
 
         m_connections.connect(point, ::fwData::Object::s_MODIFIED_SIG,
                               this->getSptr(), s_UPDATE_POINTS_SLOT);
-        m_connections.connect(servicePoint, ::visuVTKAdaptor::Point::s_INTERACTION_STARTED_SIG,
+        m_connections.connect(servicePoint, ::visuVTKAdaptor::SPoint::s_INTERACTION_STARTED_SIG,
                               this->getSptr(), s_START_INTERACTION_SLOT);
     }
 
@@ -223,7 +223,7 @@ void Plane::selectPlane(bool select)
     {
         if(!service.expired())
         {
-            ::visuVTKAdaptor::Point::sptr servicePoint = ::visuVTKAdaptor::Point::dynamicCast(service.lock());
+            ::visuVTKAdaptor::SPoint::sptr servicePoint = ::visuVTKAdaptor::SPoint::dynamicCast(service.lock());
             if(select)
             {
                 servicePoint->setColor(1., 0., 0.);

@@ -34,7 +34,7 @@ namespace visuVTKAdaptor
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b inout [::fwData::Image]: image containing the distance field.
+ * - \b image [::fwData::Image]: image containing the distance field.
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects

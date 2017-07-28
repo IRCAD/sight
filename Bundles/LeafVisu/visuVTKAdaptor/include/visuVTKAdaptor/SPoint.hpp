@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_POINT_HPP__
+#ifndef __VISUVTKADAPTOR_SPOINT_HPP__
 
-#ifndef __VISUVTKADAPTOR_POINT_HPP__
-#define __VISUVTKADAPTOR_POINT_HPP__
+#ifndef __VISUVTKADAPTOR_SPOINT_HPP__
+#define __VISUVTKADAPTOR_SPOINT_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -32,10 +32,15 @@ namespace visuVTKAdaptor
  * - interactionStarted : when point interaction is started.
  *
  * @code{.xml}
-      <adaptor id="..." class="::visuVTKAdaptor::Point" objectId="self">
+      <service uid="..." type="::visuVTKAdaptor::SPoint" autoConnect="yes">
+        <inout key="point" uid="..." />
         <config renderer="default" picker="..." color="#FFFFFF" selectedColor="#FFFFFF" radius="10" interaction="on"/>
-      </adaptor>
+      </service>
      @endcode
+ *
+ *  @subsection In-Out In-Out
+ * - \b pointList [::fwData::Point]: point to display
+ *
  * @subsection Configuration Configuration
  * - \b renderer : defines the renderer to show the point.
  * - \b picker : defines the picker of the point.
@@ -45,16 +50,18 @@ namespace visuVTKAdaptor
  * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 
-class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SPoint : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Point)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SPoint)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API Point() noexcept;
+    static const ::fwServices::IService::KeyType s_POINT_INOUT;
 
-    VISUVTKADAPTOR_API virtual ~Point() noexcept;
+    VISUVTKADAPTOR_API SPoint() noexcept;
+
+    VISUVTKADAPTOR_API virtual ~SPoint() noexcept;
 
     VISUVTKADAPTOR_API void setRadius(const double radius);
 
@@ -64,14 +71,6 @@ public:
                                              const float alpha = 1.0);
 
     VISUVTKADAPTOR_API void setInteraction(const bool interaction = true);
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Point::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
     /**
      * @Signals
@@ -86,11 +85,18 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
-    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Point::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private:
     vtkHandleWidget* m_handle;
@@ -107,6 +113,6 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_POINT_HPP__
+#endif // __VISUVTKADAPTOR_SPOINT_HPP__
 
-#endif // __VISUVTKADAPTOR_POINT_HPP__
+#endif // __VISUVTKADAPTOR_SPOINT_HPP__

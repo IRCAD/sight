@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_POINTLIST_HPP__
-#define __VISUVTKADAPTOR_POINTLIST_HPP__
+#ifndef __VISUVTKADAPTOR_SPOINTLIST_HPP__
+#define __VISUVTKADAPTOR_SPOINTLIST_HPP__
 
 #ifndef ANDROID
 
 #include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/Point.hpp"
+#include "visuVTKAdaptor/SPoint.hpp"
 
 #include <fwData/Color.hpp>
 #include <fwData/Point.hpp>
@@ -31,30 +31,38 @@ namespace visuVTKAdaptor
  * - updateSpline() : Updates the spline's points.
  *
  * @code{.xml}
-      <adaptor id="..." class="::visuVTKAdaptor::PointList" objectId="self">
+      <service uid="..." type="::visuVTKAdaptor::SPointList" autoConnect="yes">
+        <in key="pointList" uid="..." />
         <config renderer="default" picker="..." color="#FFFFFF" radius="10" interaction="on"/>
-      </adaptor>
+      </service>
      @endcode
+ *
+ * @subsection Input Input
+ * - \b pointList [::fwData::PointList]: point list to display
+ *
  * @subsection Configuration Configuration
- * - \b renderer : defines the renderer to show the point list.
- * - \b picker : defines the picker of the point list.
- * - \b color(#FFFFFF) : color of the point.
- * - \b radius(double) : point radius.
- * - \b interaction (optional, default: on): if "on" interactions are enabled
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer : defines the renderer to show the point list.
+ *    - \b picker : defines the picker of the point list.
+ *    - \b color(#FFFFFF) : color of the point.
+ *    - \b radius(double) : point radius.
+ *    - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 
-class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API SPointList : public ::fwRenderVTK::IAdaptor
 {
 
 public:
     typedef std::vector< WPTR(::fwData::Point) > WeakPointListType;
     typedef std::set< WPTR(::fwData::Point) > WeakPointSetType;
 
-    fwCoreServiceClassDefinitionsMacro( (PointList)(::fwRenderVTK::IAdaptor) );
+    static const ::fwServices::IService::KeyType s_POINTLIST_INPUT;
 
-    VISUVTKADAPTOR_API PointList() noexcept;
+    fwCoreServiceClassDefinitionsMacro( (SPointList)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API virtual ~PointList() noexcept;
+    VISUVTKADAPTOR_API SPointList() noexcept;
+
+    VISUVTKADAPTOR_API virtual ~SPointList() noexcept;
 
     VISUVTKADAPTOR_API void setRadius(const double);
 
@@ -62,24 +70,22 @@ public:
 
     VISUVTKADAPTOR_API void setInteraction(const bool);
 
+protected:
+
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect PointList::s_MODIFIED_SIG to this::s_UPDATE_SPLINE_SLOT
-     * Connect PointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
-     * Connect PointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
+     * Connect SPointList::s_MODIFIED_SIG to this::s_UPDATE_SPLINE_SLOT
+     * Connect SPointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
+     * Connect SPointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-protected:
-
-    VISUVTKADAPTOR_API void doStart();
-    VISUVTKADAPTOR_API void doStop();
-
-    VISUVTKADAPTOR_API void doConfigure();
-    VISUVTKADAPTOR_API void doSwap();
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     VISUVTKADAPTOR_API void createServices(WeakPointListType& wPtList);
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
@@ -116,4 +122,4 @@ private:
 
 #endif // ANDROID
 
-#endif // __VISUVTKADAPTOR_POINTLIST_HPP__
+#endif // __VISUVTKADAPTOR_SPOINTLIST_HPP__

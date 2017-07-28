@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/Point.hpp"
+#include "visuVTKAdaptor/SPoint.hpp"
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
@@ -32,12 +32,14 @@
 #include <vtkSphereSource.h>
 #include <vtkWidgetEventTranslator.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Point, ::fwData::Point );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPoint);
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType Point::s_INTERACTION_STARTED_SIG = "interactionStarted";
+const ::fwCom::Signals::SignalKeyType SPoint::s_INTERACTION_STARTED_SIG = "interactionStarted";
+
+const ::fwServices::IService::KeyType SPoint::s_POINT_INOUT = "point";
 
 //------------------------------------------------------------------------------
 
@@ -105,7 +107,7 @@ public:
         }
         else if (eventId == vtkCommand::StartInteractionEvent)
         {
-            auto sig = m_service->signal< Point::InteractionStartedSignalType >(Point::s_INTERACTION_STARTED_SIG);
+            auto sig = m_service->signal< SPoint::InteractionStartedSignalType >(SPoint::s_INTERACTION_STARTED_SIG);
             sig->asyncEmit();
         }
 
@@ -130,7 +132,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-Point::Point() noexcept :
+SPoint::SPoint() noexcept :
     m_handle( vtkHandleWidget::New() ),
     m_representation( ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::New() ),
     m_pointUpdateCommand(nullptr),
@@ -164,7 +166,7 @@ Point::Point() noexcept :
 
 //------------------------------------------------------------------------------
 
-Point::~Point() noexcept
+SPoint::~SPoint() noexcept
 {
     m_handle->SetRepresentation(0);
     m_handle->Delete();
@@ -176,31 +178,33 @@ Point::~Point() noexcept
 
 //------------------------------------------------------------------------------
 
-void Point::doConfigure()
+void SPoint::configuring()
 {
-    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
+    this->configureParams();
 
-    std::string hexaSelectedColor = m_configuration->getAttributeValue("selectedColor");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    const std::string hexaSelectedColor = config.get<std::string>("selectedColor", "");
     m_ptSelectedColor = ::fwData::Color::New();
     if (!hexaSelectedColor.empty())
     {
         m_ptSelectedColor->setRGBA(hexaSelectedColor);
     }
 
-    std::string hexaColor = m_configuration->getAttributeValue("color");
+    const std::string hexaColor = config.get<std::string>("color", "");
     m_ptColor = ::fwData::Color::New();
     if (!hexaColor.empty())
     {
         m_ptColor->setRGBA(hexaColor);
     }
 
-    std::string radius = m_configuration->getAttributeValue("radius");
+    const std::string radius = config.get<std::string>("radius", "");
     if(!radius.empty())
     {
         m_radius = std::stod(radius);
     }
 
-    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    const std::string interaction = config.get<std::string>("interaction", "");
     if(!interaction.empty())
     {
         SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
@@ -211,9 +215,10 @@ void Point::doConfigure()
 
 //------------------------------------------------------------------------------
 
-void Point::doStart()
+void SPoint::starting()
 {
-    SLM_TRACE_FUNC();
+    this->initialize();
+
     m_handle->SetInteractor(  this->getInteractor() );
     m_handle->KeyPressActivationOff();
 
@@ -227,20 +232,12 @@ void Point::doStart()
     // is already managing that.
     this->registerProp(m_representation);
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Point::doSwap()
-{
-    SLM_TRACE_FUNC();
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Point::doUpdate()
+void SPoint::updating()
 {
     ::fwData::Point::sptr point = this->getObject < ::fwData::Point >();
 
@@ -271,11 +268,12 @@ void Point::doUpdate()
     m_handle->SetManagesCursor(m_interaction);
 
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Point::doStop()
+void SPoint::stopping()
 {
     m_handle->Off();
     m_handle->RemoveObserver(m_pointUpdateCommand);
@@ -290,42 +288,42 @@ void Point::doStop()
 
 //------------------------------------------------------------------------------
 
-void Point::setRadius(const double radius)
+void SPoint::setRadius(const double radius)
 {
     m_radius = radius;
-    doUpdate();
+    updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Point::setColor(const float red, const float green, const float blue, const float alpha)
+void SPoint::setColor(const float red, const float green, const float blue, const float alpha)
 {
     m_ptColor->setRGBA(red, green, blue, alpha);
-    doUpdate();
+    updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Point::setSelectedColor(const float red, const float green, const float blue, const float alpha)
+void SPoint::setSelectedColor(const float red, const float green, const float blue, const float alpha)
 {
     m_ptSelectedColor->setRGBA(red, green, blue, alpha);
-    doUpdate();
+    updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Point::setInteraction(const bool interaction)
+void SPoint::setInteraction(const bool interaction)
 {
     m_interaction = interaction;
-    doUpdate();
+    updating();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Point::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SPoint::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_POINT_INOUT, ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
