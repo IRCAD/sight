@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/OrientationMarker.hpp"
+#include "visuVTKAdaptor/SOrientationMarker.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -20,20 +20,21 @@
 #include <vtkSmartPointer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SOrientationMarker);
 
 namespace visuVTKAdaptor
 {
 
-OrientationMarker::OrientationMarker() :
+SOrientationMarker::SOrientationMarker() :
     m_hAlign("left")
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::doStart()
+void SOrientationMarker::starting()
 {
+    this->initialize();
 
     std::string file = std::string(BUNDLE_PREFIX) +
                        "/visuVTKAdaptor_0-1/human.vtk";
@@ -67,26 +68,26 @@ void OrientationMarker::doStart()
     widget->SetEnabled( 1 );
     widget->InteractiveOff();
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::doStop()
+void SOrientationMarker::stopping()
 {
     this->removeAllPropFromRenderer();
 }
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::doConfigure()
+void SOrientationMarker::configuring()
 {
-    if(m_configuration->hasAttribute("hAlign"))
-    {
-        m_hAlign = m_configuration->getAttributeValue("hAlign");
-        SLM_ASSERT("'hAlign' value must be 'left', 'center' or 'right'",
-                   m_hAlign == "left"
-                   || m_hAlign == "right");
-    }
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_hAlign = config.get<std::string>("hAlign", "left");
+    SLM_ASSERT("'hAlign' value must be 'left' or 'right'", m_hAlign == "left" || m_hAlign == "right");
 }
 
 } //namespace visuVTKAdaptor
