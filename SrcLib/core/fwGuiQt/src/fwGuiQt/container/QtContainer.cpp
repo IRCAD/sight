@@ -37,7 +37,7 @@ QtContainer::~QtContainer() noexcept
 
 void QtContainer::setLayout( QLayout* const layout )
 {
-    SLM_ASSERT("The QWidget is not yet initialized, setting a layout is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking setLayout().", m_container);
 
     // Recursively delete all children
     QLayout* oldLayout = m_container->layout();
@@ -59,7 +59,7 @@ void QtContainer::setLayout( QLayout* const layout )
 
 void QtContainer::clean()
 {
-    SLM_ASSERT("The QWidget is not yet initialized, cleaning is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking clean().", m_container);
 
     // Recursively delete all children
     QLayout* oldLayout = m_container->layout();
@@ -83,7 +83,8 @@ void QtContainer::clean()
 
 void QtContainer::destroyContainer()
 {
-    SLM_ASSERT("The QWidget is not yet initialized", m_container);
+    SLM_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
+
     if(m_container)
     {
         delete m_container;
@@ -109,7 +110,7 @@ QWidget* QtContainer::getQtContainer()
 
 bool QtContainer::isShownOnScreen()
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, isShownOnScreen is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking isShownOnScreen().", m_container);
     return m_container->isVisible();
 }
 
@@ -117,7 +118,7 @@ bool QtContainer::isShownOnScreen()
 
 void QtContainer::setVisible(bool isVisible)
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, setVisible is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking setVisible().", m_container);
 
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
@@ -137,7 +138,7 @@ void QtContainer::setVisible(bool isVisible)
 
 void QtContainer::setEnabled(bool isEnabled)
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, setEnabled is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
 
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
