@@ -30,7 +30,7 @@ namespace visuVTKAdaptor
  * @code{.xml}
    <service type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
        <inout key="image" uid="..." />
-       <config renderer="default" picker="negatodefault" />
+       <config renderer="default" picker="negatodefault" filter="false" />
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -40,6 +40,8 @@ namespace visuVTKAdaptor
  *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
  *    renderer.
  *    - \b picker (mandatory): identifier of the picker
+ *    - \b filter (optional, default: false): if true, this adaptor only displays the distance associated to the scene
+ *         (it uses a field in the image containing the uid of the scene)
  */
 class VISUVTKADAPTOR_CLASS_API SImageMultiDistances : public ::fwRenderVTK::IAdaptor
 {
@@ -83,6 +85,8 @@ protected:
     vtkCommand* m_rightButtonCommand;
 
     bool m_needSubservicesDeletion;
+
+    bool m_filter;
 
 private:
 

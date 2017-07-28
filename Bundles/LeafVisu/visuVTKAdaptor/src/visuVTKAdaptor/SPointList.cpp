@@ -117,8 +117,8 @@ void SPointList::addPoint(::fwData::Point::sptr /*point*/)
 {
     m_oldWeakPointList = m_weakPointList;
     m_weakPointList    = this->getWeakPointList();
-    this->updating();
     this->setVtkPipelineModified();
+    this->updating();
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -152,13 +152,14 @@ void SPointList::createServices(WeakPointListType& wPtList)
         // create the srv configuration for objects auto-connection
         IService::Config srvConfig;
         ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SPoint", srvConfig);
-        // register image
+        // register point
         this->registerServiceInOut(pt, SPoint::s_POINT_INOUT, service, true, srvConfig);
 
         ::visuVTKAdaptor::SPoint::sptr pointAdaptor = ::visuVTKAdaptor::SPoint::dynamicCast(service);
 
         SLM_ASSERT("Bad cast of IAdaptor to Point", pointAdaptor);
 
+        service->setConfiguration(srvConfig);
         service->setRenderService(this->getRenderService());
         service->setRendererId( this->getRendererId() );
         service->setPickerId( this->getPickerId() );
@@ -168,8 +169,6 @@ void SPointList::createServices(WeakPointListType& wPtList)
         pointAdaptor->setColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue(), m_ptColor->alpha());
         pointAdaptor->setRadius(m_radius);
         pointAdaptor->setInteraction(m_interaction);
-
-        this->registerService(service);
     }
 }
 

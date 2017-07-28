@@ -82,17 +82,16 @@ public:
             handler->RemoveObservers("InteractionEvent", this );
         }
 
-        ::fwData::Point::sptr point = m_service->getObject< ::fwData::Point >();
+        ::fwData::Point::sptr point = m_service->getInOut< ::fwData::Point >(SPoint::s_POINT_INOUT);
+        SLM_ASSERT("inout 'point' is not defined", point);
 
         vtkHandleRepresentation* representation = vtkHandleRepresentation::SafeDownCast(handler->GetRepresentation());
         SLM_ASSERT("handler not instanced", handler);
         double* world = representation->GetWorldPosition();
 
-        if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent)
+        if ( (eventId == vtkCommand::InteractionEvent)
              || eventId == vtkCommand::EndInteractionEvent )
         {
-            m_pickLimiter = 2;
-
             double display[3];
             int x, y;
             handler->GetInteractor()->GetLastEventPosition(x, y);
@@ -104,23 +103,17 @@ public:
             {
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_service->getPicker(), m_service->getRenderer(), world);
             }
+
+            std::copy( world, world+3, point->getRefCoord().begin() );
+
+            auto sig = point->signal< ::fwData::Point::ModifiedSignalType >(::fwData::Point::s_MODIFIED_SIG);
+            sig->asyncEmit();
         }
         else if (eventId == vtkCommand::StartInteractionEvent)
         {
             auto sig = m_service->signal< SPoint::InteractionStartedSignalType >(SPoint::s_INTERACTION_STARTED_SIG);
             sig->asyncEmit();
         }
-
-        std::copy( world, world+3, point->getRefCoord().begin() );
-
-        auto sig = point->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        {
-            ::fwCom::SlotBase::sptr slot;
-            slot = m_service->slot(::fwServices::IService::s_UPDATE_SLOT );
-            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit();
-        }
-        m_service->update();
     }
 
 protected:
@@ -239,15 +232,14 @@ void SPoint::starting()
 
 void SPoint::updating()
 {
-    ::fwData::Point::sptr point = this->getObject < ::fwData::Point >();
-
+    ::fwData::Point::sptr point = this->getInOut< ::fwData::Point >(s_POINT_INOUT);
     SLM_ASSERT("point not instanced", point);
 
     double ps[3];
-    assert( point->getCRefCoord().size() == 3 );
+
     std::copy(point->getCRefCoord().begin(), point->getCRefCoord().end(), ps  );
     m_representation->SetWorldPosition( ps );
-    //getRenderService()->update();
+
     getRenderer()->ResetCameraClippingRange();
 
     ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
@@ -284,6 +276,8 @@ void SPoint::stopping()
     m_handle->SetInteractor(0);
 
     this->unregisterProps();
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

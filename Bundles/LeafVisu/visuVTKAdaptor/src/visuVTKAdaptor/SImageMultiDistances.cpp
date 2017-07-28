@@ -159,7 +159,8 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_DISTANCE_SLOT = "removeDistanc
 
 SImageMultiDistances::SImageMultiDistances() noexcept :
     m_rightButtonCommand(nullptr),
-    m_needSubservicesDeletion(false)
+    m_needSubservicesDeletion(false),
+    m_filter(false)
 {
     newSlot(s_CREATE_DISTANCE_SLOT, &SImageMultiDistances::createDistance, this);
     newSlot(s_REMOVE_DISTANCE_SLOT, &SImageMultiDistances::removeDistance, this);
@@ -176,6 +177,12 @@ SImageMultiDistances::~SImageMultiDistances() noexcept
 void SImageMultiDistances::configuring()
 {
     this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    const std::string filter = config.get<std::string>("filter", "false");
+    SLM_ASSERT("'filter' value must be 'true' or 'false'", filter == "true" || filter == "false");
+    m_filter = (filter == "true");
 }
 
 //------------------------------------------------------------------------------
@@ -256,6 +263,7 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         pl->setDefaultField( ::fwDataTools::fieldHelper::Image::m_colorId, generateColor() );
 
         // no mandatory to set picker id
+        serviceDistance->setConfiguration(srvDistConfig);
         serviceDistance->setPickerId( this->getPickerId() );
         serviceDistance->setRendererId( this->getRendererId() );
         serviceDistance->setRenderService( this->getRenderService() );
@@ -269,6 +277,7 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         // register image
         this->registerServiceInput(pl, SPointList::s_POINTLIST_INPUT, servicePointList, true, srvPLConfig);
 
+        servicePointList->setConfiguration(srvPLConfig);
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRendererId( this->getRendererId() );
         servicePointList->setRenderService( this->getRenderService() );
@@ -332,22 +341,17 @@ void SImageMultiDistances::updating()
     bool isShown;
     isShown = image->getField("ShowDistances", ::fwData::Boolean::New(true))->value();
 
-    if ( !isShown || !distanceField  )
-    {
-        this->unregisterServices();
-    }
+    this->unregisterServices();
 
     if( isShown && distanceField )
     {
-
-        bool filtering = m_configuration->getAttributeValue("filter") == "true";
         for(::fwData::Object::sptr object :  *distanceField)
         {
             ::fwData::PointList::sptr distance    = ::fwData::PointList::dynamicCast(object);
             ::fwData::String::sptr relatedService = distance->getField< ::fwData::String >(
                 ::fwDataTools::fieldHelper::Image::m_relatedServiceId);
 
-            if ( filtering && relatedService )
+            if ( m_filter && relatedService )
             {
                 std::string servId = relatedService->value();
                 if ( this->getRenderService()->getID() != servId )
