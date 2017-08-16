@@ -39,7 +39,7 @@ SLine::~SLine() noexcept
 
 void SLine::configuring()
 {
-    this->IAdaptor::configuring();
+    this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 

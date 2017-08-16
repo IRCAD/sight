@@ -60,11 +60,18 @@ protected:
     /// Basic destructor, do nothing.
     FWRENDERQT_API virtual ~IAdaptor() noexcept;
 
-    /// ToDo IM
-    FWRENDERQT_API virtual void info(std::ostream& _sstream );
-
-    /// Not implemented in IAdaptor but in its subclasses
-    FWRENDERQT_API void configuring();
+    /**
+     * @brief Parse the xml configuration for Axis, z value and opacity
+     * @code{.xml}
+       <config xAxis="x" yAxis="y" zValue="1" opacity="1.0" />
+       @endcode
+     * @subsection Configuration Configuration:
+     * - \b xAxis (optional): x axis associated to the adaptor
+     * - \b yAxis (optional): y axis associated to the adaptor
+     * - \b zValue (optional, default=0): z value of the layer
+     * - \b opacity (optional, default=1.0): adaptor opacity (float)
+     */
+    FWRENDERQT_API void configureParams();
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     /// coordinates to scene coordinates

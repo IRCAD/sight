@@ -45,7 +45,7 @@ SGridFromFloat::~SGridFromFloat() noexcept
 
 void SGridFromFloat::configuring()
 {
-    this->IAdaptor::configuring();
+    this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 

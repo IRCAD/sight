@@ -56,7 +56,7 @@ SCurvedHistogram::~SCurvedHistogram() noexcept
 
 void SCurvedHistogram::configuring()
 {
-    this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
+    this->configureParams();  // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 

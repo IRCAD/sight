@@ -32,7 +32,7 @@ SViewportInteractor::~SViewportInteractor() noexcept
 
 void SViewportInteractor::configuring()
 {
-    this->IAdaptor::configuring();
+    this->configureParams();
 }
 
 //-----------------------------------------------------------------------------

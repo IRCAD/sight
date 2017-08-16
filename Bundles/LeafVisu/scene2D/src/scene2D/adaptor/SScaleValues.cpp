@@ -44,7 +44,7 @@ SScaleValues::~SScaleValues() noexcept
 
 void SScaleValues::configuring()
 {
-    this->IAdaptor::configuring();  // xAxis, yAxis, zValue, opacity
+    this->configureParams();  // xAxis, yAxis, zValue, opacity
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 

@@ -34,7 +34,7 @@ SViewportUpdater::~SViewportUpdater() noexcept
 
 void SViewportUpdater::configuring()
 {
-    this->IAdaptor::configuring();
+    this->configureParams();
 }
 
 //-----------------------------------------------------------------------------

@@ -31,12 +31,6 @@ IAdaptor::~IAdaptor() noexcept
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::info(std::ostream& _sstream )
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void IAdaptor::setZValue(float _zValue)
 {
     m_zValue = _zValue;
@@ -173,7 +167,7 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::configuring()
+void IAdaptor::configureParams()
 {
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 

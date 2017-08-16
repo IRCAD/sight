@@ -42,7 +42,7 @@ SGrid2D::~SGrid2D() noexcept
 
 void SGrid2D::configuring()
 {
-    this->IAdaptor::configuring();
+    this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
