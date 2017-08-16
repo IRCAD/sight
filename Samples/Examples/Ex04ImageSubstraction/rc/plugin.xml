@@ -6,11 +6,11 @@
     =======================================================================
     | toolBar |
     |======================================================================|
-    || Point list 1 Tab || Point list 2 Tab| Registration Tab| |
+    || Point list 1 Tab || Point list 2 Tab| Substraction Tab| |
     |======================================================================|
     | |
     | |
-    | multiView_negato1 |
+    | multiViewNegato1 |
     | |
     ========================================================================
 
@@ -19,11 +19,11 @@
     =======================================================================
     | toolBar |
     |======================================================================|
-    | Point list 1 Tab || Point list 2 Tab || Registration Tab| |
+    | Point list 1 Tab || Point list 2 Tab || Substraction Tab| |
     |======================================================================|
     | |
     | |
-    | multiView_negato2 |
+    | multiViewNegato2 |
     | |
     ========================================================================
 
@@ -32,11 +32,11 @@
     =======================================================================
     | toolBar |
     |======================================================================|
-    | Point list 1 Tab | Point list 2 Tab || Registration Tab|| |
+    | Point list 1 Tab | Point list 2 Tab || Substraction Tab|| |
     |======================================================================|
     | |
     | |
-    | multiView_negato3 |
+    | multiViewNegato3 |
     | |
     ========================================================================
 
@@ -118,18 +118,18 @@
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Image 1" selected="yes" />
                         <view caption="Image 2" />
-                        <view caption="Registration" />
+                        <view caption="Substraction" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="multiView_negato1" start="yes" />
-                    <view sid="multiView_negato2" start="yes" />
-                    <view sid="registrationView" start="yes" />
+                    <view sid="multiViewNegato1" start="yes" />
+                    <view sid="multiViewNegato2" start="yes" />
+                    <view sid="substractionView" start="yes" />
                 </registry>
             </service>
 
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-            <service uid="multiView_negato1" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato1" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -139,11 +139,11 @@
                 </gui>
                 <registry>
                     <view sid="negato1" start="yes" />
-                    <view sid="multiView_negato1_bottom" start="yes" />
+                    <view sid="multiViewNegato1Bottom" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiView_negato1_bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato1Bottom" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -153,13 +153,13 @@
                 </gui>
                 <registry>
                     <view sid="snapshotNegato1Editor" start="yes" />
-                    <view sid="slider_negato1" start="no" />
+                    <view sid="sliderNegato1" start="no" />
                 </registry>
             </service>
 
 
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-            <service uid="multiView_negato2" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato2" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -169,11 +169,11 @@
                 </gui>
                 <registry>
                     <view sid="negato2" start="yes" />
-                    <view sid="multiView_negato2_bottom" start="yes" />
+                    <view sid="multiViewNegato2Bottom" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiView_negato2_bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato2Bottom" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -183,13 +183,13 @@
                 </gui>
                 <registry>
                     <view sid="snapshotNegato2Editor" start="yes" />
-                    <view sid="slider_negato2" start="no" />
+                    <view sid="sliderNegato2" start="no" />
                 </registry>
             </service>
 
 
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-            <service uid="registrationView" type="::gui::view::SDefaultView" >
+            <service uid="substractionView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -198,12 +198,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="multiView_negato3" start="yes" />
+                    <view sid="multiViewNegato3" start="yes" />
                     <view sid="paramEditor" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiView_negato3" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato3" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -213,11 +213,11 @@
                 </gui>
                 <registry>
                     <view sid="negato3" start="yes" />
-                    <view sid="multiView_negato3_bottom" start="yes" />
+                    <view sid="multiViewNegato3Bottom" start="yes" />
                 </registry>
             </service>
 
-            <service uid="multiView_negato3_bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato3Bottom" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -228,7 +228,7 @@
                 </gui>
                 <registry>
                     <view sid="snapshotNegato3Editor" />
-                    <view sid="slider_negato3" />
+                    <view sid="sliderNegato3" />
                 </registry>
             </service>
             <!-- ***************************************** End layouts declaration ***************************************** -->
@@ -264,7 +264,7 @@
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="slider_negato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image1" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -281,7 +281,7 @@
             </service>
 
             <!-- Editors for Negato2 -->
-            <service uid="slider_negato2" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato2" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image2" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -297,7 +297,7 @@
             </service>
 
             <!-- Editors for Negato3 -->
-            <service uid="slider_negato3" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato3" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="imageResult" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -423,9 +423,9 @@
             <start uid="mainFrame" />
             <start uid="medicalImageSrv1" />
             <start uid="medicalImageSrv2" />
-            <start uid="slider_negato1" />
-            <start uid="slider_negato2" />
-            <start uid="slider_negato3" />
+            <start uid="sliderNegato1" />
+            <start uid="sliderNegato2" />
+            <start uid="sliderNegato3" />
 
         </config>
     </extension>
