@@ -27,7 +27,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="ioData/action/SMeshModifier >
+     <service type="ioData/action/SMeshModifier" >
          <inout key="mesh" uid="..." />
          <config functor="ShakeMeshPoint" />
      </service>
