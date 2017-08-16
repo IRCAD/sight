@@ -22,7 +22,7 @@ namespace adaptor
 /**
  * @brief IAdaptor implementation to show a cursor on histogram pointed by mouse.
  *
- * Configuration example:
+ * @section XML XML Configuration
  *
    @code{.xml}
    <service uid="histogram" type="::scene2D::adaptor::SHistogramCursor">
@@ -33,12 +33,21 @@ namespace adaptor
    </service>
    @endcode
  *
- * \b xAxis     : see ::fwRenderQt::IAdaptor
- * \b yAxis     : see ::fwRenderQt::IAdaptor
- * \b zValue    : see ::fwRenderQt::IAdaptor
- * \b color     : inner color
- * \b borderColor : border color, default value is gray
- * \b opacity   : from 0.0 to 1.0, default value is 0.8
+ * @subsection In In
+ * - \b histogram [::fwData::Histogram]: histogram to display.
+ * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * mouse.
+ * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b color (optional, default black): inner color
+ *    - \b borderColor (optional, default black): border color
+ *    - \b pointSize (optional, default 6.0): point size
  *
  */
 class SHistogramCursor : public ::fwRenderQt::IAdaptor
@@ -66,9 +75,6 @@ protected:
     /// Color used for graphic item's border color
     QPen m_borderColor;
 
-    /// Opacity
-    float m_opacity;
-
     // A graphics item that is located onto hsitogram's upper border and moves along this border
     // according to the position of mouse's cursor. The goal of this graphical index is to show
     // the associated value within the histogram pointed buy this index.
@@ -77,7 +83,7 @@ protected:
     /// Coordinates of the current event.
     ::fwRenderQt::data::Coord m_coord;
 
-    ///
+    /// Point size
     float m_pointSize;
 
     /// The layer.

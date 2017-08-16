@@ -31,7 +31,6 @@ static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 SHistogramCursor::SHistogramCursor() noexcept :
     m_color(Qt::red),
     m_borderColor(Qt::gray),
-    m_opacity(0.8f),
     m_index(nullptr),
     m_pointSize(6.f),
     m_layer(nullptr)
@@ -55,11 +54,6 @@ void SHistogramCursor::configuring()
     if (config.count("color"))
     {
         ::fwRenderQt::data::InitQtPen::setPenColor(m_color, config.get<std::string>("color"));
-    }
-
-    if (config.count("opacity"))
-    {
-        m_opacity = config.get<float>("opacity");
     }
 
     if (config.count("borderColor"))

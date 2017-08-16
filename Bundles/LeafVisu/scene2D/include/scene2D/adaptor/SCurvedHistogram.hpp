@@ -23,26 +23,34 @@ namespace adaptor
 /**
  * @brief IAdaptor implementation for histogram data.
  *
- * Configuration example:
+ * @section XML XML Configuration
  *
    @code{.xml}
    <service uid="histogram" type="::scene2D::adaptor::SCurvedHistogram">
        <in key="histogram" uid="histogramUID" />
        <inout key="point" uid="pointUID" optional="yes" />
-       <config xAxis="xAxis" yAxis="axeCurvedHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25"
-               zValue="6" histogramPointUID="HistogramPointID" borderWidth="2.0" />
+       <config xAxis="xAxis" yAxis="yAxis" borderColor="lightGray" innerColor="gray"
+               opacity="0.25" zValue="6" borderWidth="2.0" />
    </service>
    @endcode
  *
- * - \b innerColor         : the background color of the histogram
- * - \b borderColor        : the color of the histogram border
- * - \b borderWidth        : the width of the histogram border
- * - \b histogramPointUID  : the fwId of the histogram point. It is used with HistogramCursor and/or HistogramValue
- *      adaptor to show information at the current histogram index pointed by the mouse.
- * - \b opacity            : the opacity of the histogram (from 0.0 to 1.0)
- * - \b xAxis              : see ::fwRenderQt::IAdaptor
- * - \b yAxis              : see ::fwRenderQt::IAdaptor
- * - \b zValue             : see ::fwRenderQt::IAdaptor
+ * @subsection In In
+ * - \b histogram [::fwData::Histogram]: histogram to display.
+ *
+ * @subsection In-Out In-Out
+ * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * mouse.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b innerColor (optional, default black): the background color of the histogram
+ *    - \b borderColor (optional, default black): the color of the histogram border
+ *    - \b borderWidth (optional, default 1.75): the width of the histogram border
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b color (optional, default black): color of the axis
  */
 class SCENE2D_CLASS_API SCurvedHistogram : public ::fwRenderQt::IAdaptor
 {
@@ -124,7 +132,7 @@ private:
     // In other words, this painter path won't be used to build a graphic item that will be added to
     // a Qt graphics scene. The graphic representation of the histogram will composed of multiple items
     // build thanks to painters like this one, because it improves significantly the rendering performance.
-    // This painter path will be used to provide information about the hsitogram: for instance, it will help
+    // This painter path will be used to provide information about the histogram: for instance, it will help
     // to retrieve the coordinates of path's points.
     QPainterPath* m_painterPath;
 
@@ -134,7 +142,7 @@ private:
     /// Current vertical scaling ratio
     float m_scale;
 
-    // Graphis items contained into m_items are also added to this group item,
+    // Graphics items contained into m_items are also added to this group item,
     // which is then added to the scene.
     // (This is the only graphic item which has to be added into the scene).
     QGraphicsItemGroup* m_layer;

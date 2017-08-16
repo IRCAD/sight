@@ -22,28 +22,31 @@ namespace adaptor
 /**
  * @brief IAdaptor implementation to show the histogram values clicked by mouse.
  *
- *
- * Configuration example:
+ * @section XML XML Configuration
  *
    @code{.xml}
    <service uid="histogram" type="::scene2D::adaptor::SHistogramValue">
        <in key="histogram" uid="..." />
        <in key="point" uid="..." />
        <in key="viewport"  uid="..." />
-       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5"/>
+       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" fontSize="8"/>
    </service>
    @endcode
- * \b xAxis     : see ::fwRenderQt::IAdaptor
  *
- * \b yAxis     : see ::fwRenderQt::IAdaptor
+ * @subsection In In
+ * - \b histogram [::fwData::Histogram]: histogram to display.
+ * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * mouse.
+ * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
  *
- * \b zValue    : see ::fwRenderQt::IAdaptor
- *
- * \b color     : inner color, default value is white
- *
- * \b fontSize  : size of the font used to display the current value, default value is 8
- *
- * \b opacity   : from 0.0 to 1.0, default value is 0.8
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b color (optional, default white): color of the text
+ *    - \b fontSize (optional, default 8): size of the font used to display the current value
  *
  */
 class SHistogramValue : public ::fwRenderQt::IAdaptor

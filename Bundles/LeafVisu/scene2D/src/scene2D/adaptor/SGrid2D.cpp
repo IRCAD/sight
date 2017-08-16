@@ -147,7 +147,6 @@ void SGrid2D::starting()
     m_pen.setStyle(Qt::DashLine);
     m_pen.setCosmetic(true);
 
-    this->draw();
     this->updating();
 }
 
@@ -183,6 +182,7 @@ float SGrid2D::getYEndVal()
 
 void SGrid2D::updating()
 {
+    this->draw();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ void SGrid2D::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
-        updating();
+        this->updating();
     }
 }
 

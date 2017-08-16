@@ -22,7 +22,7 @@ namespace adaptor
 /**
  * @brief   IAdaptor implementation for histogram data.
  *
- * Configuration example:
+ * @section XML XML Configuration
  *
    @code{.xml}
    <service uid="histogram" type="::scene2D::adaptor::SHistogram">
@@ -32,15 +32,20 @@ namespace adaptor
    </service>
    @endcode
  *
- * \b color (mandatory)     : the background color of the histogram
+ * @subsection In In
+ * - \b histogram [::fwData::Histogram]: histogram to display.
  *
- * \b opacity (mandatory)   : the opacity of the histogram (from 0.0 to 1.0)
+ * @subsection In-Out In-Out
+ * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * mouse.
  *
- * \b xAxis                 : see ::fwRenderQt::IAdaptor
- *
- * \b yAxis                 : see ::fwRenderQt::IAdaptor
- *
- * \b zValue                : see ::scene1D::adaptor::IAdaptor
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b color (optional, default black) : the background color of the histogram
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
  */
 class SCENE2D_CLASS_API SHistogram : public ::fwRenderQt::IAdaptor
 {
@@ -82,7 +87,7 @@ private:
     /// Current vertical scaling ratio
     float m_scale;
 
-    // Graphis items contained into m_items are also added to this group item,
+    // Graphics items contained into m_items are also added to this group item,
     // which is then added to the scene.
     // (This is the only graphic item which has to be added into the scene).
     QGraphicsItemGroup* m_layer;

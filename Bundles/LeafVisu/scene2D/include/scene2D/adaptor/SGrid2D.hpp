@@ -15,7 +15,32 @@ namespace scene2D
 {
 namespace adaptor
 {
-
+/**
+ * @brief Render grid on the scene2d.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="grid1" type="::scene2D::adaptor::SGrid2D">
+    <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
+        color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+   </service>
+   @endcode
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b color (optional, default black): color of the axis
+ *    - \b xMin (optional): Set the minimum x value of the grid.
+ *    - \b xMax (optional): Set the maximum x value of the grid.
+ *    - \b yMin (optional): Set the minimum y value of the grid.
+ *    - \b yMax (optional): Set the maximum y value of the grid.
+ *    - \b xSpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in x.
+ *    - \b ySpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in y.
+ */
 class SCENE2D_CLASS_API SGrid2D : public ::fwRenderQt::IAdaptor
 {
 
@@ -35,51 +60,12 @@ public:
     SCENE2D_API virtual ~SGrid2D() noexcept;
 
 protected:
-    /**
-     * @brief Configuring the SGrid2D adaptor.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="grid1" type="::scene2D::adaptor::SGrid2D">
-        <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
-            color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-       </service>
-       @endcode
-     * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
-     *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
-     *
-     * \b xMin : mandatory : Set the minimum x value of the grid.
-     *
-     * \b xMax : mandatory : Set the maximum x value of the grid.
-     *
-     * \b yMin : mandatory : Set the minimum y value of the grid.
-     *
-     * \b yMax : mandatory : Set the maximum y value of the grid.
-     *
-     * \b xSpacing : no mandatory (default value : 10) : Set the grid spacing (space between 2 consecutive lines) in x.
-     *
-     * \b ySpacing : no mandatory (default value : 10) : Set the grid spacing (space between 2 consecutive lines) in y.
-     *
-     * \b color : no mandatory (default value : black) : Set the color of the lines.
-     *
-     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
-     *(LINEAR)) :
-     * Set the x Axis of the grid layer.
-     *
-     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
-     *(LINEAR)) :
-     * Set the y Axis of the grid layer.
-     *
-     * \b zValue : no mandatory (default value : 0) : Set the zValue of the grid layer
-     * (the higher the zValue, the higher the layer is).
-     *
-     */
+
     SCENE2D_API void configuring();
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
     SCENE2D_API void starting();
 
-    /// Do nothing.
     SCENE2D_API void updating();
 
     /// Clean the lines vector and remove the layer from the scene.
@@ -95,22 +81,22 @@ private:
     /// to the scene.
     void draw();
 
-    ///
+    /// Returns x-axis starting value
     float getXStartVal();
 
-    ///
+    /// Returns x-axis ending value
     float getXEndVal();
 
-    ///
+    /// Returns y-axis starting value
     float getYStartVal();
 
-    ///
+    /// Returns y-axis ending value
     float getYEndVal();
 
     /// Bounds of the grid and spacing values for each axis.
     float m_xMin, m_xMax, m_yMin, m_yMax, m_xSpacing, m_ySpacing;
 
-    // The type of the lines.
+    /// The type of the lines.
     LineType m_lineType;
 
     /// The pen.

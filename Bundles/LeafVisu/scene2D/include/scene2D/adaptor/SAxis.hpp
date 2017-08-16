@@ -17,6 +17,34 @@ namespace scene2D
 namespace adaptor
 {
 
+/**
+ * @brief Render an axis on the scene2d.
+ *
+ * @section XML XML Configuration
+ *
+   @code{.xml}
+   <service uid="axis" type="::scene2D::adaptor::SAxis">
+      <in key="viewport" uid="..." />
+      <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" align="left" min="0" max="1" step="0.1" />
+   </service>
+   @endcode
+ *
+ * @subsection In In
+ * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update axis.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b align (mandatory): axis alignment, left', 'right', 'top' or 'bottom'
+ *    - \b min (mandatory): min axis bound
+ *    - \b max (mandatory): max axis bound
+ *    - \b tickSize (optional, default=1.0): axis tick size
+ *    - \b interval (optional, default=1.0): axis interval
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b color (optional, default black): color of the axis
+ */
 class SCENE2D_CLASS_API SAxis : public ::fwRenderQt::IAdaptor
 {
 

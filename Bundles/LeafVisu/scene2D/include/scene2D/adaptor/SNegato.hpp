@@ -26,16 +26,28 @@ namespace adaptor
 /**
  * @brief   IAdaptor implementation to display one slice of an image.
  *
- * Configuration example:
+ * @section XML XML Configuration
  *
    @code{.xml}
    <service uid="negato" type="::scene2D::adaptor::SNegato">
-       <inout key="viewport" uid="..." />
        <inout key="image" uid="..." />
        <inout key="tfSelection" uid="..." />
-       <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5" selectedTFKey="tkKey"/>
+       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" selectedTFKey="tkKey"/>
    </service>
    @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: histogram point, used to show information at the current histogram index pointed by the mouse.
+ * - \b tfSelection [::fwData::Composite]: histogram point, used to show information at the current histogram index pointed by the mouse.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b opacity (optional, default=1.0): adaptor opacity (float)
+ *    - \b orientation (optional, default axial):
+ *    - \b changeSliceType (optional, default true):
  */
 class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
                                   public ::fwRenderQt::IAdaptor

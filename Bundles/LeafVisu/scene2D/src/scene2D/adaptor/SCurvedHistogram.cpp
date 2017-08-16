@@ -398,7 +398,7 @@ SCurvedHistogram::Points SCurvedHistogram::cubicInterpolation(
     Points points;
     Point p;
     double a0, a1, a2, a3, mu2;
-    const const double deltaX = _p2.first - _p1.first;
+    const double deltaX = _p2.first - _p1.first;
     for(double mu = 0.0; mu < 1.0; mu += 0.01)
     {
         mu2 = mu * mu;
@@ -517,7 +517,7 @@ void SCurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
     }
 
     ::fwData::Point::sptr point = this->getInOut< ::fwData::Point>( s_POINT_INOUT );
-    if( point )
+    if( point && updatePointedPos )
     {
         this->updateCurrentPoint( _event, point );
     }
