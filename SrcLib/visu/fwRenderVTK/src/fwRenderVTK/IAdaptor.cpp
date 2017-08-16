@@ -279,6 +279,38 @@ vtkRenderWindowInteractor* IAdaptor::getInteractor()
 
 //------------------------------------------------------------------------------
 
+IAdaptor::sptr IAdaptor::getAssociatedAdaptor(vtkProp* prop, int depth)
+{
+    IAdaptor::sptr srv;
+
+    if (prop)
+    {
+        if ( m_propCollection->IsItemPresent(prop) )
+        {
+            srv = this->getSptr();
+        }
+        else
+        {
+            IAdaptor::sptr res;
+            for( ServiceVector::value_type service :  m_subServices)
+            {
+                if(!service.expired())
+                {
+                    res = service.lock()->getAssociatedAdaptor(prop, depth - 1 );
+                    if (res)
+                    {
+                        break;
+                    }
+                }
+            }
+            srv = ( res && depth == 0 ) ? this->getSptr() : res;
+        }
+    }
+    return srv;
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRenderVTK::IAdaptor::sptr IAdaptor::createSubAdaptor(const std::string& type,
                                                          ::fwServices::IService::Config& config)
 {

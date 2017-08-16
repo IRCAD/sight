@@ -33,6 +33,7 @@ class FWRENDERVTK_CLASS_API IAdaptor : public fwServices::IService
 friend class SRender;
 public:
     fwCoreServiceClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
+    fwCoreAllowSharedFromThis();
 
     typedef fwServices::IService SuperClass;
 
@@ -84,8 +85,16 @@ public:
      * @brief Returns the object associated to the vtkProp.
      * @param prop vtkProp to find the associated Object
      * @param depth depth of reseach in sub-adaptors, if depth == 0 it only search in current prop collection
+     * @deprecated use getAssociatedAdaptor instead
      */
     FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp* prop, int depth = 0);
+
+    /**
+     * @brief Returns the adaptor associated to the vtkProp.
+     * @param prop vtkProp to find the associated adaptor
+     * @param depth depth of reseach in sub-adaptors, if depth == 0 it only search in current prop collection
+     */
+    FWRENDERVTK_API IAdaptor::sptr getAssociatedAdaptor(vtkProp* prop, int depth);
 
     /**
      * @brief Gets all the vtkProp associated to this adaptor
