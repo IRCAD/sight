@@ -68,16 +68,16 @@ void SHistogram::configuring()
 
 //---------------------------------------------------------------------------------------------------------
 
-void SHistogram::doStart()
+void SHistogram::starting()
 {
-    doUpdate();
+    updating();
 }
 
 //---------------------------------------------------------------------------------------------------------
 
-void SHistogram::doUpdate()
+void SHistogram::updating()
 {
-    this->doStop();
+    this->stopping();
 
     ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
@@ -157,13 +157,7 @@ void SHistogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::f
 
 //---------------------------------------------------------------------------------------------------------
 
-void SHistogram::doSwap()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------
-
-void SHistogram::doStop()
+void SHistogram::stopping()
 {
     if (m_layer)
     {

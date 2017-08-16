@@ -168,7 +168,7 @@ void SScaleValues::buildValues()
 
 //---------------------------------------------------------------------------------------
 
-void SScaleValues::doStart()
+void SScaleValues::starting()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -182,7 +182,7 @@ void SScaleValues::doStart()
     m_font.setFixedPitch( true );
 
     this->buildValues();
-    this->doUpdate();
+    this->updating();
 }
 
 //---------------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ double SScaleValues::getEndVal()
 
 //---------------------------------------------------------------------------------------
 
-void SScaleValues::doUpdate()
+void SScaleValues::updating()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -387,19 +387,13 @@ void SScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
-        doUpdate();
+        updating();
     }
-}
-
-//----------------------------------------------------------------------------------------
-
-void SScaleValues::doSwap()
-{
 }
 
 //---------------------------------------------------------------------------------------
 
-void SScaleValues::doStop()
+void SScaleValues::stopping()
 {
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);

@@ -37,25 +37,19 @@ void SViewportInteractor::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SViewportInteractor::doStart()
+void SViewportInteractor::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SViewportInteractor::doStop()
+void SViewportInteractor::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SViewportInteractor::doUpdate()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void SViewportInteractor::doSwap()
+void SViewportInteractor::updating()
 {
 }
 

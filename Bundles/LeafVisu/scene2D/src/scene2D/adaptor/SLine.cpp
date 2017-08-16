@@ -86,7 +86,7 @@ void SLine::draw()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SLine::doStart()
+void SLine::starting()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -97,19 +97,13 @@ void SLine::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SLine::doUpdate()
+void SLine::updating()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SLine::doSwap()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-void SLine::doStop()
+void SLine::stopping()
 {
     // Remove the layer (and therefore its related line item) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);

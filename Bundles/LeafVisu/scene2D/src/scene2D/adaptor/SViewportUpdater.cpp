@@ -39,20 +39,20 @@ void SViewportUpdater::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SViewportUpdater::doStart()
+void SViewportUpdater::starting()
 {
-    doUpdate();
+    updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void SViewportUpdater::doStop()
+void SViewportUpdater::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SViewportUpdater::doUpdate()
+void SViewportUpdater::updating()
 {
     ::fwRenderQt::data::Viewport::sptr sceneViewport   = this->getScene2DRender()->getViewport();
     ::fwRenderQt::data::Viewport::csptr viewportObject =
@@ -70,12 +70,6 @@ void SViewportUpdater::doUpdate()
     sceneViewport->setHeight( viewportObject->getHeight() );
 
     this->getScene2DRender()->getView()->updateFromViewport();
-}
-
-//-----------------------------------------------------------------------------
-
-void SViewportUpdater::doSwap()
-{
 }
 
 //-----------------------------------------------------------------------------

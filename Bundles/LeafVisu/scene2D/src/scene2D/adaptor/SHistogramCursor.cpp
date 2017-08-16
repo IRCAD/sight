@@ -75,7 +75,7 @@ void SHistogramCursor::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramCursor::doStart()
+void SHistogramCursor::starting()
 {
     m_index = new QGraphicsEllipseItem();
     m_index->setBrush( m_color.color() );
@@ -99,13 +99,13 @@ void SHistogramCursor::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramCursor::doStop()
+void SHistogramCursor::stopping()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramCursor::doUpdate()
+void SHistogramCursor::updating()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -155,12 +155,6 @@ void SHistogramCursor::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramCursor::doSwap()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
 void SHistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     this->initializeViewSize();
@@ -171,7 +165,7 @@ void SHistogramCursor::processInteraction( ::fwRenderQt::data::Event& _event )
         m_coord = _event.getCoord();
     }
 
-    doUpdate();
+    updating();
 }
 
 //----------------------------------------------------------------------------------------------------------

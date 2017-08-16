@@ -28,10 +28,9 @@ public:
 
 protected:
 
-    void doStart();
-    void doStop();
-    void doSwap();
-    void doUpdate();
+    void starting();
+    void stopping();
+    void updating();
     void configuring();
 
     /// Manage the given events

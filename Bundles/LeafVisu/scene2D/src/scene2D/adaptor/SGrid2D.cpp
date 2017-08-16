@@ -138,7 +138,7 @@ void SGrid2D::draw()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SGrid2D::doStart()
+void SGrid2D::starting()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -148,7 +148,7 @@ void SGrid2D::doStart()
     m_pen.setCosmetic(true);
 
     this->draw();
-    this->doUpdate();
+    this->updating();
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ float SGrid2D::getYEndVal()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SGrid2D::doUpdate()
+void SGrid2D::updating()
 {
 }
 
@@ -191,19 +191,13 @@ void SGrid2D::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
-        doUpdate();
+        updating();
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SGrid2D::doSwap()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-void SGrid2D::doStop()
+void SGrid2D::stopping()
 {
     // Clear the lines vector
     m_lines.clear();

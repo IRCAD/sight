@@ -293,7 +293,7 @@ QImage* SNegato::createQImage()
 
 //-----------------------------------------------------------------------------
 
-void SNegato::doStart()
+void SNegato::starting()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
@@ -322,7 +322,7 @@ void SNegato::doStart()
 
 //-----------------------------------------------------------------------------
 
-void SNegato::doUpdate()
+void SNegato::updating()
 {
     m_qimg = this->createQImage();
     this->updateBufferFromImage( m_qimg );
@@ -366,7 +366,7 @@ void SNegato::updateSliceType(int from, int to)
             this->m_yAxis->setScale(-1);
         }
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -407,15 +407,7 @@ void SNegato::updatingTFWindowing(double window, double level)
 
 //-----------------------------------------------------------------------------
 
-void SNegato::doSwap()
-{
-    this->doStop();
-    this->doStart();
-}
-
-//-----------------------------------------------------------------------------
-
-void SNegato::doStop()
+void SNegato::stopping()
 {
     this->removeTFConnections();
 
@@ -481,14 +473,14 @@ void SNegato::processInteraction( ::fwRenderQt::data::Event& _event )
         if ( _event.getKey() == Qt::Key_F )
         {
             m_pixmapItem->setTransformationMode(Qt::FastTransformation);
-            this->doUpdate();
+            this->updating();
         }
 
         //image smooth
         if ( _event.getKey() == Qt::Key_S )
         {
             m_pixmapItem->setTransformationMode(Qt::SmoothTransformation);
-            this->doUpdate();
+            this->updating();
         }
     }
 
@@ -541,7 +533,7 @@ void SNegato::changeImageMinMaxFromCoord( ::fwRenderQt::data::Coord& oldCoord, :
     const double newImgLevel  = imgLevel + level;
     const double newImgWindow = imgWindow + imgWindow * window/100.0;
 
-    this->doUpdate();
+    this->updating();
 
     // Send signal
     tf->setWindow(newImgWindow);

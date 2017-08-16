@@ -65,7 +65,7 @@ void SViewportRangeSelector::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SViewportRangeSelector::doStart()
+void SViewportRangeSelector::starting()
 {
     {
         ::fwRenderQt::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
@@ -120,19 +120,13 @@ void SViewportRangeSelector::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SViewportRangeSelector::doStop()
+void SViewportRangeSelector::stopping()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SViewportRangeSelector::doUpdate()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-void SViewportRangeSelector::doSwap()
+void SViewportRangeSelector::updating()
 {
 }
 

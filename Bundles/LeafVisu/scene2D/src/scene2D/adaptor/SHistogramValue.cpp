@@ -64,7 +64,7 @@ void SHistogramValue::configuring()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramValue::doStart()
+void SHistogramValue::starting()
 {
     m_font.setPointSize(m_fontSize);
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.2 );
@@ -91,13 +91,13 @@ void SHistogramValue::doStart()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramValue::doStop()
+void SHistogramValue::stopping()
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramValue::doUpdate()
+void SHistogramValue::updating()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -162,12 +162,6 @@ void SHistogramValue::doUpdate()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SHistogramValue::doSwap()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
 void SHistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
 {
     this->initializeViewSize();
@@ -186,7 +180,7 @@ void SHistogramValue::processInteraction( ::fwRenderQt::data::Event& _event )
         m_isInteracting = false;
     }
 
-    doUpdate();
+    updating();
 }
 
 //----------------------------------------------------------------------------------------------------------

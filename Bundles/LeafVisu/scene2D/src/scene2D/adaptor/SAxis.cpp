@@ -42,23 +42,17 @@ SAxis::~SAxis() noexcept
 
 //--------------------------------------------------------------------------------------------------
 
-void SAxis::doStart()
+void SAxis::starting()
 {
     this->buildAxis();
-    this->doUpdate();
+    this->updating();
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void SAxis::doStop()
+void SAxis::stopping()
 {
     delete m_layer;
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void SAxis::doSwap()
-{
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -146,7 +140,7 @@ double SAxis::getEndVal()
 
 //---------------------------------------------------------------------------------------------------------------
 
-void SAxis::doUpdate()
+void SAxis::updating()
 {
     this->initializeViewSize();
     this->initializeViewportSize();
@@ -261,7 +255,7 @@ void SAxis::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
-        doUpdate();
+        updating();
     }
 }
 

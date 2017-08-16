@@ -57,7 +57,7 @@ void SSquare::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SSquare::doStart()
+void SSquare::starting()
 {
     m_layer = new QGraphicsItemGroup();
 
@@ -76,19 +76,13 @@ void SSquare::doStart()
 
 //-----------------------------------------------------------------------------
 
-void SSquare::doUpdate()
+void SSquare::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SSquare::doSwap()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void SSquare::doStop()
+void SSquare::stopping()
 {
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }

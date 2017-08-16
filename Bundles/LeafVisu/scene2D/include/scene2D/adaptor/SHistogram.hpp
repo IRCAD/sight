@@ -52,10 +52,9 @@ public:
 
 protected:
     SCENE2D_API void configuring();
-    SCENE2D_API void doStart();
-    SCENE2D_API void doUpdate();
-    SCENE2D_API void doSwap();
-    SCENE2D_API void doStop();
+    SCENE2D_API void starting();
+    SCENE2D_API void updating();
+    SCENE2D_API void stopping();
 
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 

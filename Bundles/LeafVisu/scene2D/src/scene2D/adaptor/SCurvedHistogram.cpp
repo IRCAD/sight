@@ -84,7 +84,7 @@ void SCurvedHistogram::configuring()
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::doStart()
+void SCurvedHistogram::starting()
 {
     // Init border style
     m_borderColor.setCosmetic( true );
@@ -95,7 +95,7 @@ void SCurvedHistogram::doStart()
 
     m_brush = QBrush( m_innerColor.color() );
 
-    this->doUpdate();
+    this->updating();
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -228,9 +228,9 @@ void SCurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSp
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::doUpdate()
+void SCurvedHistogram::updating()
 {
-    this->doStop();
+    this->stopping();
 
     const ::fwData::Histogram::csptr histogram = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
 
@@ -474,14 +474,7 @@ SCurvedHistogram::Points SCurvedHistogram::linearInterpolation( const Point _p1,
 
 //----------------------------------------------------------------------------------------------------------
 
-void SCurvedHistogram::doSwap()
-{
-    this->doUpdate();
-}
-
-//----------------------------------------------------------------------------------------------------------
-
-void SCurvedHistogram::doStop()
+void SCurvedHistogram::stopping()
 {
     if (m_layer)
     {

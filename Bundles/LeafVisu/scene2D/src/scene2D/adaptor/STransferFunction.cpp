@@ -497,7 +497,7 @@ void STransferFunction::updateImageTF()
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::doStart()
+void STransferFunction::starting()
 {
     // Initialize the layer and the circle height and width
     m_layer = new QGraphicsItemGroup();
@@ -511,13 +511,13 @@ void STransferFunction::doStart()
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
-    this->doUpdate();
+    this->updating();
     this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::doUpdate()
+void STransferFunction::updating()
 {
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
@@ -538,28 +538,19 @@ void STransferFunction::doUpdate()
 
 void STransferFunction::updatingTFPoints()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void STransferFunction::updatingTFWindowing(double window, double level)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void STransferFunction::doSwap()
-{
-    this->removeTFConnections();
-    this->doUpdate();
-    this->installTFConnections();
-}
-
-//-----------------------------------------------------------------------------
-
-void STransferFunction::doStop()
+void STransferFunction::stopping()
 {
     this->removeTFConnections();
 
@@ -659,7 +650,7 @@ void STransferFunction::processInteraction( ::fwRenderQt::data::Event& _event )
             m_viewInitialSize.second = newSize.getHeight();
         }
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -883,7 +874,7 @@ void STransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType
     m_TFPoints.erase(tfPoint);
 
     this->updateImageTF();
-    this->doUpdate();
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -910,7 +901,7 @@ void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
         m_TFPoints[values.first] = color;
 
         this->updateImageTF();
-        this->doUpdate();
+        this->updating();
     }
     else if (values.first > (*lastTFPointIt).first)
     {
@@ -919,7 +910,7 @@ void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
         m_TFPoints[values.first] = color;
 
         this->updateImageTF();
-        this->doUpdate();
+        this->updating();
     }
     else
     {
@@ -952,7 +943,7 @@ void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
             m_TFPoints[values.first] = ::fwData::TransferFunction::TFColor(newRed, newGreen, newBlue, newAlpha);
 
             this->updateImageTF();
-            this->doUpdate();
+            this->updating();
         }
     }
 }

@@ -137,7 +137,7 @@ void SGridFromFloat::draw()
 
 //------------------------------------------------------------------------------
 
-void SGridFromFloat::doStart()
+void SGridFromFloat::starting()
 {
     // Initialize the layer
     m_layer = new QGraphicsItemGroup();
@@ -149,7 +149,7 @@ void SGridFromFloat::doStart()
 
 //------------------------------------------------------------------------------
 
-void SGridFromFloat::doUpdate()
+void SGridFromFloat::updating()
 {
     const float value = this->getInput< ::fwData::Float >(S_FLOAT_INPUT)->getValue();
     // Check if the float object isn't negative
@@ -164,13 +164,7 @@ void SGridFromFloat::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void SGridFromFloat::doSwap()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SGridFromFloat::doStop()
+void SGridFromFloat::stopping()
 {
     // Clear the lines vector
     m_lines.clear();

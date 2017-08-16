@@ -83,18 +83,15 @@ protected:
 
     /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport
     ///  dimensions, and call DoUpdate().
-    SCENE2D_API void doStart();
+    SCENE2D_API void starting();
 
     /// Call buildTFPoints(), buildCircles(), buildLinesAndPolygons() and buildLayer() to build the tf points map,
     ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
-    SCENE2D_API void doUpdate();
-
-    /// @todo
-    SCENE2D_API void doSwap();
+    SCENE2D_API void updating();
 
     /// Clear the m_circles and m_linesAndPolygons vectors and remove the layer (and therefore all it's related
     ///  items) from the scene.
-    SCENE2D_API void doStop();
+    SCENE2D_API void stopping();
 
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.

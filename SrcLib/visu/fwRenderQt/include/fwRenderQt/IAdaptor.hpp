@@ -66,30 +66,6 @@ protected:
     /// Not implemented in IAdaptor but in its subclasses
     FWRENDERQT_API void configuring();
 
-    /// Call doStart() function.
-    FWRENDERQT_API void starting();
-
-    /// Call DoUpdate() function.
-    FWRENDERQT_API void updating();
-
-    /// Start and stop the IAdaptor.
-    FWRENDERQT_API void swapping();
-
-    /// Call doStop() function and reset the axis.
-    FWRENDERQT_API void stopping();
-
-    /// Pure virtual -> implemented in the subclasses
-    FWRENDERQT_API virtual void doStart() = 0;
-
-    /// Pure virtual -> implemented in the subclasses
-    FWRENDERQT_API virtual void doUpdate() = 0;
-
-    /// Pure virtual -> implemented in the subclasses
-    FWRENDERQT_API virtual void doSwap() = 0;
-
-    /// Pure virtual -> implemented in the subclasses
-    FWRENDERQT_API virtual void doStop() = 0;
-
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     /// coordinates to scene coordinates
     FWRENDERQT_API Point2DType mapAdaptorToScene(const Point2DType& _xy,

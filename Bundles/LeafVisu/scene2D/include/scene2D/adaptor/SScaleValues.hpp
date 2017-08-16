@@ -74,16 +74,13 @@ protected:
     SCENE2D_API void configuring();
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
-    SCENE2D_API void doStart();
+    SCENE2D_API void starting();
 
     /// Do nothing.
-    SCENE2D_API void doUpdate();
-
-    /// Do nothing.
-    SCENE2D_API void doSwap();
+    SCENE2D_API void updating();
 
     /// Clean the lines vector and remove the layer from the scene.
-    SCENE2D_API void doStop();
+    SCENE2D_API void stopping();
 
     /// Manage the given events
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
