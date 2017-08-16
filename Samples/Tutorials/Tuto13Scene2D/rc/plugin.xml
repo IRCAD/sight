@@ -30,19 +30,19 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view caption="Scene2D" />
-                        <view caption="FloatEditor" proportion="0" />
+                        <view caption="X Spacing" proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="Scene2D" start="no" />
-                    <view sid="FloatEditor" start="no" />
+                    <view sid="XSpacingEditor" start="no" />
                 </registry>
             </service>
             <!-- ***************************************** End layouts declaration ***************************************** -->
 
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
-            <service uid="FloatEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
+            <service uid="XSpacingEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
                 <inout key="float" uid="Float" />
             </service>
 
@@ -79,7 +79,7 @@
 
             <start uid="mainFrame" />
             <start uid="Scene2D" />
-            <start uid="FloatEditor" />
+            <start uid="XSpacingEditor" />
         </config>
     </extension>
 </plugin>
