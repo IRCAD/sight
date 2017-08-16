@@ -38,8 +38,7 @@ namespace visuVTKAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to show the image
  *    - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  */
 class VISUVTKADAPTOR_CLASS_API SSliceFollowerCamera : public ::fwDataTools::helper::MedicalImageAdaptor,

@@ -37,8 +37,7 @@ namespace visuVTKAdaptor
  * - \b image [::fwData::Image]: image containing the distance field.
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to show the distances
  *    - \b picker (mandatory): identifier of the picker
  *    - \b filter (optional, default: false): if true, this adaptor only displays the distance associated to the scene
  *         (it uses a field in the image containing the uid of the scene)

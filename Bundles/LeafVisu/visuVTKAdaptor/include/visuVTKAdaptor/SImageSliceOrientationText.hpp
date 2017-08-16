@@ -42,8 +42,7 @@ class ImageSliceOrientationTextPImpl;
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to show the image
  *    - b locations : comma-separated location terms to use, in this order :
  *        Right,Left,Anterior,Posterior,Superior,Inferior
  *        if 'default' is given, 'R,L,A,P,S,I' is used. If empty, nothing is displayed

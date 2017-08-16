@@ -31,8 +31,7 @@ namespace visuVTKAdaptor
    @endcode
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to add the interactor
  *    - \b style (mandatory): defines the vtkInteractorStyle to use (ex : InteractorStyle2DForNegato)
  */
 class VISUVTKADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderVTK::IAdaptor

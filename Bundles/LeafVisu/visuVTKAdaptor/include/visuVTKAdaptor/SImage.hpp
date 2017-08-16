@@ -46,8 +46,7 @@ namespace visuVTKAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to show the image
  *    - \b picker (mandatory): identifier of the picker
  *    - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  *    - \b transform (optional): the vtkTransform to associate to the adaptor
@@ -67,6 +66,9 @@ public:
     VISUVTKADAPTOR_API SImage() noexcept;
 
     VISUVTKADAPTOR_API virtual ~SImage() noexcept;
+
+    static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
 
     //------------------------------------------------------------------------------
 

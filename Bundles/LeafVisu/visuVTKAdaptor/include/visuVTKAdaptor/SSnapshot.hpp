@@ -38,8 +38,7 @@ namespace visuVTKAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to snapshot
  */
 
 class VISUVTKADAPTOR_CLASS_API SSnapshot : public ::fwRenderVTK::IAdaptor

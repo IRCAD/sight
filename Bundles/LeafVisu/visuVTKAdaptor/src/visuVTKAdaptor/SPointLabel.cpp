@@ -23,7 +23,7 @@
 
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPointLabel, ::fwData::Point );
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPointLabel);
 
 namespace visuVTKAdaptor
 {

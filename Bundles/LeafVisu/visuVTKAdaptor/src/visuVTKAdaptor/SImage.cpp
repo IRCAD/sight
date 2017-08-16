@@ -37,8 +37,8 @@ namespace visuVTKAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+const ::fwServices::IService::KeyType SImage::s_IMAGE_INOUT        = "image";
+const ::fwServices::IService::KeyType SImage::s_TF_SELECTION_INOUT = "tfSelection";
 
 //------------------------------------------------------------------------------
 

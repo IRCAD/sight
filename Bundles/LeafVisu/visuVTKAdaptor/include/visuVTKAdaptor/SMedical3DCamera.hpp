@@ -40,8 +40,7 @@ namespace visuVTKAdaptor
    @endcode
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to update the camera position
  *    - \b sliceIndex(optional, default: axial): defines view orientation. Available values are axial, frontal,
  *      sagittal.
  *    - \b resetAtStart(optional, default: no): if "yes", it updates the view when the adaptor is started.

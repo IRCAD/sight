@@ -38,8 +38,7 @@ namespace visuVTKAdaptor
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
- *    - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
- *    renderer.
+ *    - \b renderer (mandatory): defines the renderer to show the image
  *    - \b picker (mandatory): identifier of the picker
  *    - \b mode (optional, 2d or 3d): defines the scene mode. In 2d mode, the camera follow the negato in
  *    axial/frontal/sagital orientation. In 3d mode, the camera is automatically reset when the image is modified. If

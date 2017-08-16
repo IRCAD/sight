@@ -31,7 +31,7 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SLabeledPointList, ::fwData::PointList );
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SLabeledPointList);
 
 namespace visuVTKAdaptor
 {
