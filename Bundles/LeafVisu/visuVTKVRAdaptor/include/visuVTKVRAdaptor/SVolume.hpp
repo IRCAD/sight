@@ -38,16 +38,16 @@ namespace visuVTKVRAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-     <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
-         <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"
-                 reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" selectedTFKey="TFKey"
-                 tfSelectionFwID="tfComposite"/>
-     </adaptor>
+        <service type="::visuVTKVRAdaptor::SVolume">
+            <inout key="image" uid="..." />
+            <inout key="tfSelection" uid="..." />
+            <config renderer="default"  clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"
+                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" selectedTFKey="TFKey" />
+       </service
    @endcode
- * @subsection Input Input
- * - \b imageKey [::fwData::Image]: image to display.
  * @subsection In-Out In-Out
- * - \b tfSelectionFwID (optional) [::fwData::Composite]: composite containing the current transfer function.
+ * - \b image [::fwData::Image]: image to display.
+ * - \b tfSelection [::fwData::Composite] (optional): composite containing the current transfer function.
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use
  * - \b clippingplanes (optional) : id of VTK object for clipping planes
@@ -58,17 +58,20 @@ namespace visuVTKVRAdaptor
  * - \b transform (optional) : vtkTransform applied to the volume.
  * - \b selectedTFKey (optional) : key of the transfer funtion in the tf composite.
  */
-class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                          public ::fwRenderVTK::IAdaptor
+class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                           public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Volume)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVolume)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKVRADAPTOR_API Volume() noexcept;
+    VISUVTKVRADAPTOR_API SVolume() noexcept;
 
-    VISUVTKVRADAPTOR_API virtual ~Volume() noexcept;
+    VISUVTKVRADAPTOR_API virtual ~SVolume() noexcept;
+
+    static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
@@ -81,7 +84,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKVRADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     /// Apply the cropping on volume rendering
     VISUVTKVRADAPTOR_API void crop();
@@ -94,19 +97,11 @@ public:
 
 protected:
 
-    VISUVTKVRADAPTOR_API void doStart();
-
-    VISUVTKVRADAPTOR_API void doStop();
-
-    VISUVTKVRADAPTOR_API void doUpdate();
-
-    /**
-     * @brief Configures the service
-     * @throw fwTools::Failed
-     */
-    VISUVTKVRADAPTOR_API void doConfigure();
-
-    VISUVTKVRADAPTOR_API void doSwap();
+    VISUVTKVRADAPTOR_API void configuring();
+    VISUVTKVRADAPTOR_API void starting();
+    VISUVTKVRADAPTOR_API void stopping();
+    VISUVTKVRADAPTOR_API void updating();
+    VISUVTKVRADAPTOR_API void swapping();
 
     /// Called when transfer function points are modified.
     VISUVTKVRADAPTOR_API virtual void updatingTFPoints();

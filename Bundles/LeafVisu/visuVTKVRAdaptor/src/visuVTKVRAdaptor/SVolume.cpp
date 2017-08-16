@@ -4,11 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKVRAdaptor/Volume.hpp"
+#include "visuVTKVRAdaptor/SVolume.hpp"
 
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/TransferFunction.hpp>
@@ -26,7 +24,6 @@
 #include <vtkCommand.h>
 #include <vtkImageImport.h>
 #include <vtkImageResample.h>
-#include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPlaneCollection.h>
 #include <vtkRenderer.h>
@@ -37,7 +34,9 @@
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKVRAdaptor::Volume, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKVRAdaptor::SVolume);
+
+//-----------------------------------------------------------------------------
 
 namespace visuVTKVRAdaptor
 {
@@ -48,7 +47,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static TransformCallback* New(Volume* adaptor)
+    static TransformCallback* New(SVolume* adaptor)
     {
         TransformCallback* cb = new TransformCallback();
         cb->m_adaptor = adaptor;
@@ -64,7 +63,7 @@ public:
     }
 
 private:
-    Volume* m_adaptor;
+    SVolume* m_adaptor;
 };
 
 //------------------------------------------------------------------------------
@@ -103,7 +102,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static CroppingCallback* New(Volume* adaptor)
+    static CroppingCallback* New(SVolume* adaptor)
     {
         CroppingCallback* callback = new CroppingCallback();
         callback->m_adaptor = adaptor;
@@ -119,16 +118,19 @@ public:
     }
 
 private:
-    Volume* m_adaptor;
+    SVolume* m_adaptor;
 };
 
-static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBoxWidget";
-static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT = "activateBoxClipping";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
+static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT        = "resetBoxWidget";
+static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT   = "activateBoxClipping";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                    = "show";
+
+const ::fwServices::IService::KeyType SVolume::s_IMAGE_INOUT            = "image";
+const ::fwServices::IService::KeyType SVolume::s_TF_SELECTION_INOUT     = "tfSelection";
 
 //------------------------------------------------------------------------------
 
-Volume::Volume() noexcept :
+SVolume::SVolume() noexcept :
     ::fwDataTools::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IAdaptor(),
     m_clippingPlanes(nullptr),
@@ -152,16 +154,16 @@ Volume::Volume() noexcept :
     m_boxWidget->SetRepresentation(repr);
     repr->Delete();
 
-    newSlot(s_RESET_BOX_WIDGET_SLOT, &Volume::resetBoxWidget, this);
-    newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &Volume::activateBoxClipping, this);
-    newSlot(s_SHOW_SLOT, &Volume::show, this);
+    newSlot(s_RESET_BOX_WIDGET_SLOT, &SVolume::resetBoxWidget, this);
+    newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &SVolume::activateBoxClipping, this);
+    newSlot(s_SHOW_SLOT, &SVolume::show, this);
 
     this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
 
-Volume::~Volume() noexcept
+SVolume::~SVolume() noexcept
 {
     m_volumeMapper->Delete();
     m_volumeMapper = nullptr;
@@ -184,29 +186,54 @@ Volume::~Volume() noexcept
 
 //------------------------------------------------------------------------------
 
-void Volume::setClippingPlanesId(::fwRenderVTK::SRender::VtkObjectIdType id)
+void SVolume::setClippingPlanesId(::fwRenderVTK::SRender::VtkObjectIdType id)
 {
     m_clippingPlanesId = id;
 }
 
 //------------------------------------------------------------------------------
 
-void Volume::setVtkClippingPlanes(vtkPlaneCollection* planes)
+void SVolume::setVtkClippingPlanes(vtkPlaneCollection* planes)
 {
     m_clippingPlanes = planes;
 }
 
 //------------------------------------------------------------------------------
 
-void Volume::doStart()
+void SVolume::configuring()
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    this->setClippingPlanesId( config.get<std::string>("clippingplanes", "") );
+
+    m_autoResetCamera = config.get<std::string>("autoresetcamera", "yes") == "yes";
+
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
+
+    // Show croppingBox
+    m_croppingBoxDefaultState = config.get<std::string>("croppingBox", "yes") == "yes";
+
+    // Get the boundingBox transformation matrix
+    m_cropBoxTransformID = config.get<std::string>("cropBoxTransform", "");
+
+    m_reductionFactor = config.get<double>("reductionFactor", 1.);
+}
+
+//------------------------------------------------------------------------------
+
+void SVolume::starting()
+{
+    this->initialize();
+
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
-    this->doUpdate(); //TODO: remove me ?
+    this->updating(); //TODO: remove me ?
     this->installTFConnections();
 
     this->activateBoxClipping( m_croppingBoxDefaultState );
@@ -235,7 +262,7 @@ void Volume::doStart()
 
 //------------------------------------------------------------------------------
 
-void Volume::doStop()
+void SVolume::stopping()
 {
     this->removeTFConnections();
     this->removeAllPropFromRenderer();
@@ -255,18 +282,9 @@ void Volume::doStop()
 
 //------------------------------------------------------------------------------
 
-void Volume::doSwap()
+void SVolume::updating()
 {
-    this->removeTFConnections();
-    this->doUpdate();
-    this->installTFConnections();
-}
-
-//------------------------------------------------------------------------------
-
-void Volume::doUpdate()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
@@ -283,60 +301,34 @@ void Volume::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void Volume::updatingTFPoints()
+void SVolume::swapping()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->removeTFConnections();
+    this->updating();
+    this->installTFConnections();
+}
+
+//------------------------------------------------------------------------------
+
+void SVolume::updatingTFPoints()
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Volume::updatingTFWindowing(double window, double level)
+void SVolume::updatingTFWindowing(double window, double level)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Volume::doConfigure()
-{
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setClippingPlanesId( m_configuration->getAttributeValue("clippingplanes") );
-
-    if (m_configuration->hasAttribute("autoresetcamera") )
-    {
-        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoresetcamera == "yes");
-    }
-    this->parseTFConfig( m_configuration );
-
-    // Show croppingBox
-    if(m_configuration->hasAttribute("croppingBox") &&
-       m_configuration->getAttributeValue("croppingBox") == "no")
-    {
-        m_croppingBoxDefaultState = false;
-    }
-
-    // Get the boundingBox transformation matrix
-    if(m_configuration->hasAttribute("cropBoxTransform"))
-    {
-        m_cropBoxTransformID = m_configuration->getAttributeValue("cropBoxTransform");
-    }
-
-    if(m_configuration->hasAttribute("reductionFactor"))
-    {
-        m_reductionFactor = std::stod(m_configuration->getAttributeValue("reductionFactor"));
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Volume::updateImage( ::fwData::Image::sptr image  )
+void SVolume::updateImage( ::fwData::Image::sptr image  )
 {
     this->updateImageInfos(image);
 
@@ -383,7 +375,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
+void SVolume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 {
     this->updateTransferFunction(image);
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
@@ -445,7 +437,7 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void Volume::buildPipeline( )
+void SVolume::buildPipeline( )
 {
     if (!m_clippingPlanesId.empty())
     {
@@ -473,7 +465,7 @@ void Volume::buildPipeline( )
 
 //------------------------------------------------------------------------------
 
-void Volume::resetBoxWidget()
+void SVolume::resetBoxWidget()
 {
     m_boxWidget->GetRepresentation()->SetPlaceFactor(1.0);
     m_boxWidget->GetRepresentation()->PlaceWidget( m_volumeMapper->GetBounds() );
@@ -488,7 +480,7 @@ void Volume::resetBoxWidget()
 
 //------------------------------------------------------------------------------
 
-void Volume::activateBoxClipping( bool activate )
+void SVolume::activateBoxClipping( bool activate )
 {
     if ( activate )
     {
@@ -504,18 +496,18 @@ void Volume::activateBoxClipping( bool activate )
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Volume::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SVolume::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void Volume::crop()
+void SVolume::crop()
 {
     vtkVolumeMapper* mapper      = vtkVolumeMapper::SafeDownCast(m_volumeMapper);
     double* croppingRegionPlanes = m_boxWidget->GetRepresentation()->GetBounds();
@@ -535,7 +527,7 @@ void Volume::crop()
 
 //------------------------------------------------------------------------------
 
-void Volume::updateTransform()
+void SVolume::updateTransform()
 {
     if(m_cropBoxTransform)
     {
@@ -552,7 +544,7 @@ void Volume::updateTransform()
 
 //------------------------------------------------------------------------------
 
-void Volume::updateCropBoxTransform()
+void SVolume::updateCropBoxTransform()
 {
     if(m_cropBoxTransform)
     {
@@ -568,7 +560,7 @@ void Volume::updateCropBoxTransform()
 
 //------------------------------------------------------------------------------
 
-void Volume::show(bool isVisible)
+void SVolume::show(bool isVisible)
 {
     m_volume->SetVisibility(isVisible);
     this->setVtkPipelineModified();
