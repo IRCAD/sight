@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImagesProbeCursor.hpp"
+#include "visuVTKAdaptor/SImagesProbeCursor.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -18,6 +18,7 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 
 #include <vtkAbstractPropPicker.h>
@@ -35,13 +36,15 @@
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImagesProbeCursor, ::fwData::Composite );
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesProbeCursor);
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_PROBE_EVENT  vtkCommand::LeftButtonReleaseEvent
 
 namespace visuVTKAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_IMAGE_GROUP = "image";
 
 class ImagesProbingCallback : public vtkCommand
 {
@@ -87,7 +90,7 @@ public:
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
-                    m_adaptor->StartImagesProbeCursor();
+                    m_adaptor->StartSImagesProbeCursor();
                     process();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
@@ -133,7 +136,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( ImagesProbeCursor::sptr adaptor)
+    void setAdaptor( SImagesProbeCursor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
@@ -153,7 +156,7 @@ public:
     }
 
 protected:
-    ImagesProbeCursor::sptr m_adaptor;
+    SImagesProbeCursor::sptr m_adaptor;
     vtkAbstractPropPicker* m_picker;
     float m_priority;
 
@@ -163,7 +166,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-ImagesProbeCursor::ImagesProbeCursor() noexcept :
+SImagesProbeCursor::SImagesProbeCursor() noexcept :
     m_priority(.6),
     m_vtkObserver(nullptr),
     m_textActor(vtkActor2D::New()),
@@ -176,7 +179,7 @@ ImagesProbeCursor::ImagesProbeCursor() noexcept :
 
 //------------------------------------------------------------------------------
 
-ImagesProbeCursor::~ImagesProbeCursor() noexcept
+SImagesProbeCursor::~SImagesProbeCursor() noexcept
 {
     m_textMapper->Delete();
     m_textActor->Delete();
@@ -190,7 +193,7 @@ ImagesProbeCursor::~ImagesProbeCursor() noexcept
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::setVisibility( bool visibility )
+void SImagesProbeCursor::setVisibility( bool visibility )
 {
     m_textActor->SetVisibility(visibility);
     m_cursorActor->SetVisibility(visibility);
@@ -200,31 +203,27 @@ void ImagesProbeCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doConfigure()
+void SImagesProbeCursor::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    assert(m_configuration->getName() == "config");
+    const ConfigType config = this->getConfigTree().get_child("service.inout");
 
-    std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
-    SLM_ASSERT("Missing tag 'image' ", !configs.empty());
-    for(::fwRuntime::ConfigurationElement::sptr element :  configs)
+    SLM_ASSERT("configured group must be '" + s_IMAGE_GROUP + "'",
+               config.get<std::string>("<xmlattr>.group", "") == s_IMAGE_GROUP);
+
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, config.equal_range("key"))
     {
-        SLM_ASSERT("Missing attribute 'objectId'", element->hasAttribute("objectId"));
-        std::string objectId = element->getAttributeValue("objectId");
-        std::string name     = objectId;
-        if (element->hasAttribute("name"))
-        {
-            name = element->getAttributeValue("name");
-        }
-
-        m_imagesId.push_back(std::make_pair(objectId, name));
+        const ::fwServices::IService::ConfigType& specAssoc = v.second;
+        const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
+        const std::string name                              = attr.get("name", "");
+        m_imagesNames.push_back(name);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::buildTextActor()
+void SImagesProbeCursor::buildTextActor()
 {
     vtkTextProperty* textprop = m_textMapper->GetTextProperty();
     textprop->SetColor(1, 1, 1);
@@ -246,15 +245,18 @@ void ImagesProbeCursor::buildTextActor()
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doStart()
+void SImagesProbeCursor::starting()
 {
-    buildTextActor();
+    this->initialize();
+
+    this->buildTextActor();
     this->addToRenderer(m_textActor );
 
-    buildPolyData();
+    this->buildPolyData();
     m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1, 0, 0);
+
     if(!this->getTransformId().empty())
     {
         m_cursorActor->SetUserTransform(this->getTransform());
@@ -262,7 +264,7 @@ void ImagesProbeCursor::doStart()
     this->addToRenderer(m_cursorActor);
 
     ImagesProbingCallback* observer = ImagesProbingCallback::New();
-    observer->setAdaptor( ImagesProbeCursor::dynamicCast(this->getSptr()) );
+    observer->setAdaptor( SImagesProbeCursor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
 
@@ -270,72 +272,69 @@ void ImagesProbeCursor::doStart()
 
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_PROBE_EVENT, m_vtkObserver, m_priority);
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doUpdate()
+void SImagesProbeCursor::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::doSwap()
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void ImagesProbeCursor::doStop()
+void SImagesProbeCursor::stopping()
 {
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
     m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::StartImagesProbeCursor( )
+void SImagesProbeCursor::StartSImagesProbeCursor( )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::updateView( double world[3] )
+void SImagesProbeCursor::updateView( double world[3] )
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    const size_t nbImages = this->getKeyGroupSize(s_IMAGE_GROUP);
+    SLM_ASSERT("There must be as much images as names", nbImages == m_imagesNames.size());
+
     std::stringstream txt;
 
-    if (composite->find(m_imagesId.begin()->first) != composite->end())
+    ::fwData::Image::sptr firstImage = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, 0);
+    if (firstImage)
     {
-        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[m_imagesId.begin()->first]);
-        OSLM_ASSERT("Object '" << m_imagesId.begin()->first << "' must be an image", image);
-
-        if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(firstImage))
         {
-            this->updateImageInfos(image);
+            this->updateImageInfos(firstImage);
 
             int index[3];
             this->worldToImageSliceIndex( world, index );
             OSLM_TRACE("index=" << index[0] << "," << index[1] << "," << index[2] );
 
-            if (    world[0] < image->getOrigin()[0] ||
-                    world[1] < image->getOrigin()[1] ||
-                    world[2] < image->getOrigin()[2] ||
+            if (    world[0] < firstImage->getOrigin()[0] ||
+                    world[1] < firstImage->getOrigin()[1] ||
+                    world[2] < firstImage->getOrigin()[2] ||
                     index[0] < 0 || index[1] < 0 || index[2] < 0 ||
-                    index[0] >= image->getSize()[0] ||
-                    index[1] >= image->getSize()[1] ||
-                    index[2] >= image->getSize()[2]
+                    index[0] >= firstImage->getSize()[0] ||
+                    index[1] >= firstImage->getSize()[1] ||
+                    index[2] >= firstImage->getSize()[2]
                     )
             {
                 txt << "(---,---,---)" << std::endl;
             }
             else
             {
-                ::fwDataTools::helper::Image imageHelper(image);
+                ::fwDataTools::helper::Image imageHelper(firstImage);
                 txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
                 // update polyData
@@ -353,13 +352,11 @@ void ImagesProbeCursor::updateView( double world[3] )
         }
     }
 
-    for(ImagesIdPair element :  m_imagesId)
+    for(size_t i = 0; i < nbImages; ++i)
     {
-        if (composite->find(element.first) != composite->end())
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
+        if (image)
         {
-            ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[element.first]);
-            OSLM_ASSERT("Object '" << element.first << "' must be an image", image);
-
             if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
                 ::fwDataTools::helper::Image imageHelper(image);
@@ -379,7 +376,7 @@ void ImagesProbeCursor::updateView( double world[3] )
                      )
                 {
                     std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
-                    txt << element.second << " : " << greyLevel << std::endl;
+                    txt << m_imagesNames[i] << " : " << greyLevel << std::endl;
                 }
             }
         }
@@ -392,14 +389,11 @@ void ImagesProbeCursor::updateView( double world[3] )
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
+void SImagesProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    if (composite->find(m_imagesId.begin()->first) != composite->end())
+    ::fwData::Image::sptr firstImage = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, 0);
+    if (firstImage)
     {
-        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[m_imagesId.begin()->first]);
-        OSLM_ASSERT("Object '" << m_imagesId.begin()->first << "' must be an image", image);
-
         unsigned int sliceIndex[3]; // the current sliceIndex
 
         sliceIndex[2] = m_axialIndex->value();
@@ -414,7 +408,7 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3], double w
                 //setOrientation( (dim==2?2:(dim+1)%2) ); // KEEP Z but swap X,Y
                 this->setOrientation(dim);
             }
-            probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
+            probeWorld[dim] = probeSlice[dim]*firstImage->getSpacing()[dim] + firstImage->getOrigin().at(dim);
         }
 
         for ( int p = 0; p < 2; ++p )
@@ -425,10 +419,10 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3], double w
                 worldCross[p+2][dim] = probeWorld[dim];
                 if ( (dim + p + 1)%3 == m_orientation )
                 {
-                    worldCross[p][dim]              = image->getOrigin().at(dim);
-                    ::fwData::Image::IndexType size = image->getSize().at(dim)-1;
-                    double spacing = image->getSpacing().at(dim);
-                    worldCross[p+2][dim] = size * spacing + image->getOrigin().at(dim);
+                    worldCross[p][dim]              = firstImage->getOrigin().at(dim);
+                    ::fwData::Image::IndexType size = firstImage->getSize().at(dim)-1;
+                    double spacing = firstImage->getSpacing().at(dim);
+                    worldCross[p+2][dim] = size * spacing + firstImage->getOrigin().at(dim);
                 }
             }
         }
@@ -437,7 +431,7 @@ void ImagesProbeCursor::computeCrossExtremity( const int probeSlice[3], double w
 
 //------------------------------------------------------------------------------
 
-void ImagesProbeCursor::buildPolyData()
+void SImagesProbeCursor::buildPolyData()
 {
     // point are stored Left,right,up,down
     int nbPoints      = 4;

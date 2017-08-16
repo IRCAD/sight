@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImagesBlend.hpp"
+#include "visuVTKAdaptor/SImagesBlend.hpp"
 
 #include "visuVTKAdaptor/SImage.hpp"
 
@@ -40,36 +40,39 @@
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesBlend, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
-const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
+const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
+const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
+
+static const ::fwServices::IService::KeyType s_IMAGE_GROUP        = "image";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_GROUP = "tfSelection";
 
 //------------------------------------------------------------------------------
 
-ImagesBlend::ImagesBlend() noexcept :
+SImagesBlend::SImagesBlend() noexcept :
     m_imageAlgorithm(nullptr),
     m_checkerboardDivision(10)
 {
-    newSlot(s_CHANGE_MODE_SLOT, &ImagesBlend::changeMode, this);
-    newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &ImagesBlend::changeCheckerboardDivision, this);
+    newSlot(s_CHANGE_MODE_SLOT, &SImagesBlend::changeMode, this);
+    newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &SImagesBlend::changeCheckerboardDivision, this);
 }
 
 //------------------------------------------------------------------------------
 
-ImagesBlend::~ImagesBlend() noexcept
+SImagesBlend::~SImagesBlend() noexcept
 {
     m_imageAlgorithm = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doStart()
+void SImagesBlend::starting()
 {
-    SLM_TRACE_FUNC();
+    this->initialize();
 
     SLM_ASSERT("Image register is empty", !m_imageRegisterId.empty());
 
@@ -102,99 +105,89 @@ void ImagesBlend::doStart()
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doStop()
+void SImagesBlend::stopping()
 {
-    SLM_TRACE_FUNC();
     this->removeImageAdaptors();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doSwap()
+void SImagesBlend::updating()
 {
-    SLM_TRACE_FUNC();
-    doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void ImagesBlend::doUpdate()
-{
-    SLM_TRACE_FUNC();
     this->removeImageAdaptors();
     this->addImageAdaptors();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doConfigure()
+void SImagesBlend::configuring()
 {
-    assert(m_configuration->getName() == "config");
+    this->configureParams();
 
-    if(m_configuration->hasAttribute("vtkimageregister"))
+    const ConfigType srvConfig = this->getConfigTree().get_child("service");
+
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &cfg, srvConfig.equal_range("inout"))
     {
-        this->setVtkImageRegisterId(m_configuration->getAttributeValue("vtkimageregister"));
+        const ConfigType inoutConfig = cfg.second;
+        const std::string group      = inoutConfig.get<std::string>("<xmlattr>.group");
+        if (group == s_IMAGE_GROUP)
+        {
+            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, inoutConfig.equal_range("key"))
+            {
+                const ::fwServices::IService::ConfigType& specAssoc = v.second;
+                const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
+                const std::string tfalpha                           = attr.get("tfalpha", "no");
+                const double opacity                                = attr.get("tfalpha", 1.0);
+
+                ImageInfo info;
+                info.m_imageOpacity = opacity;
+                info.m_useTFAlfa    = (tfalpha == "yes");
+                m_imagesInfo.push_back(info);
+            }
+        }
+        else if (group == s_TF_SELECTION_GROUP)
+        {
+            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, inoutConfig.equal_range("key"))
+            {
+                const ::fwServices::IService::ConfigType& specAssoc = v.second;
+                const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
+                const std::string tfKey                             = attr.get("selectedTFKey", "");
+
+                m_tfSelectionKeys.push_back(tfKey);
+            }
+        }
+        else
+        {
+            OSLM_FATAL("group named '" + group + "' is not managed");
+        }
     }
+
+    const ConfigType config = srvConfig.get_child("config.<xmlattr>");
+
+    const std::string vtkimageregister = config.get("vtkimageregister", "");
+    SLM_ASSERT("'vtkimageregister' must be defined", !vtkimageregister.empty());
+    this->setVtkImageRegisterId(vtkimageregister);
 
     // Get the default division count for checkerboard algorithm
-    if(m_configuration->hasAttribute("checkerboardDivision") )
-    {
-        m_checkerboardDivision = std::stoi(m_configuration->getAttributeValue("checkerboardDivision"));
-    }
-
-    std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
-    SLM_ASSERT("Missing tag 'image' ", !configs.empty());
-    for(::fwRuntime::ConfigurationElement::sptr element :  configs)
-    {
-        SPTR(ImageInfo) info = std::shared_ptr< ImageInfo >(new ImageInfo());
-        SLM_ASSERT("Missing attribute 'objectId'", element->hasAttribute("objectId"));
-        std::string objectId = element->getAttributeValue("objectId");
-
-        if(element->hasAttribute("opacity") )
-        {
-            info->m_imageOpacity = ::boost::lexical_cast<double>(element->getAttributeValue("opacity"));
-        }
-        if(element->hasAttribute("tfalpha") )
-        {
-            info->m_useTFAlfa = element->getAttributeValue("tfalpha") == "yes";
-        }
-        if(element->hasAttribute("selectedTFKey") )
-        {
-            info->m_selectedTFKey = element->getAttributeValue("selectedTFKey");
-        }
-        if(element->hasAttribute("tfSelectionFwID") )
-        {
-            info->m_tfSelectionFwID = element->getAttributeValue("tfSelectionFwID");
-        }
-
-        m_imageIds.push_back(objectId);
-        m_imagesInfo[objectId] = info;
-    }
+    m_checkerboardDivision = config.get<int>("checkerboardDivision", 10);
 }
 
 //------------------------------------------------------------------------------
 
-bool ImagesBlend::checkImageInformations()
+bool SImagesBlend::checkImageInformations()
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
     ::fwData::Image::SizeType size;
     ::fwData::Image::SpacingType spacing;
     ::fwData::Image::OriginType origin;
 
     bool haveSameInfo = true;
 
-    for(std::string id :  m_imageIds)
+    const size_t nbImages = this->getKeyGroupSize(s_IMAGE_GROUP);
+
+    for(size_t i = 0; i < nbImages; ++i)
     {
-        ::fwData::Image::csptr img;
-        if (!this->isVersion2() && composite->find(id) != composite->end())
-        {
-            img = ::fwData::Image::dynamicCast((*composite)[id]);
-        }
-        else
-        {
-            img = this->getSafeInput< ::fwData::Image >(id);
-        }
+        ::fwData::Image::csptr img = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
+
         if (img && ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
         {
             if (size.empty() && spacing.empty() && origin.empty())
@@ -245,85 +238,66 @@ bool ImagesBlend::checkImageInformations()
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::addImageAdaptors()
+void SImagesBlend::addImageAdaptors()
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
     this->checkImageInformations();
 
-    int addedImageCount = 0;
-    ::fwData::Image::csptr lastValidImage;
-    SPTR(ImageInfo) lastValidInfo;
+    int addedImageCount   = 0;
+    size_t lastValidIndex = 0;
 
-    for(std::string id :  m_imageIds)
+    const size_t nbImages = this->getKeyGroupSize(s_IMAGE_GROUP);
+    for(size_t i = 0; i < nbImages; ++i)
     {
-        ::fwData::Image::csptr img;
-        if (!this->isVersion2() && composite->find(id) != composite->end())
+        ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
+        ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_GROUP, i);
+
+        if (img && composite)
         {
-            img = ::fwData::Image::dynamicCast((*composite)[id]);
-        }
-        else
-        {
-            img = this->getSafeInput< ::fwData::Image >(id);
-
-        }
-        if (img)
-        {
-            SPTR(ImageInfo) info = m_imagesInfo[id];
-
-            SLM_ASSERT("No image with the id '" << id << "' found", img);
-
-            info->m_connections.disconnect();
-
-            info->m_connections.connect(img, ::fwData::Image::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
-            info->m_connections.connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(),
-                                        s_UPDATE_SLOT);
+            const ImageInfo& info = m_imagesInfo[i];
 
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
-                this->addImage(img, info);
+                this->addImage(img, composite, info, m_tfSelectionKeys[i]);
 
                 ++addedImageCount;
-                lastValidImage = img;
-                lastValidInfo  = info;
+                lastValidIndex = i;
             }
         }
     }
 
+    // If Checkerboard is used and only one image is valid, we must duplicate the image adaptor to display the image
     if(addedImageCount == 1 && nullptr != vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId)))
     {
-        this->addImage(lastValidImage, lastValidInfo);
+        ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, lastValidIndex);
+        ::fwData::Composite::sptr composite =
+            this->getInOut< ::fwData::Composite >(s_TF_SELECTION_GROUP, lastValidIndex);
+        const ImageInfo& info = m_imagesInfo[lastValidIndex];
+        this->addImage(img, composite, info, m_tfSelectionKeys[lastValidIndex]);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::removeImageAdaptors()
+void SImagesBlend::removeImageAdaptors()
 {
-    BOOST_REVERSE_FOREACH(std::string id, m_imageIds)
-    {
-        SPTR(ImageInfo) info = m_imagesInfo[id];
-        info->m_connections.disconnect();
-    }
     this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType ImagesBlend::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SImagesBlend::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_GROUP, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_GROUP, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::changeMode(std::string _value, std::string _key)
+void SImagesBlend::changeMode(std::string _value, std::string _key)
 {
     if( _key == "ImageSource" )
     {
@@ -351,17 +325,23 @@ void ImagesBlend::changeMode(std::string _value, std::string _key)
         }
 
         // Update
-        this->doUpdate();
+        this->updating();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
+void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr tfSelection, const ImageInfo& info,
+                            const std::string& selectedTFKey)
 {
-    ::fwRenderVTK::IAdaptor::sptr imageAdaptorService
-        = ::fwServices::add< ::fwRenderVTK::IAdaptor >( img, "::visuVTKAdaptor::Image");
+    // create the srv configuration for objects auto-connection
+    IService::Config srvConfig;
+    ::fwRenderVTK::IAdaptor::sptr imageAdaptorService = this->createSubAdaptor("::visuVTKAdaptor::SImage", srvConfig);
+    // register image
+    this->registerServiceInOut(img, SImage::s_IMAGE_INOUT, imageAdaptorService, true, srvConfig);
+    this->registerServiceInOut(tfSelection, SImage::s_TF_SELECTION_INOUT, imageAdaptorService, false, srvConfig);
 
+    imageAdaptorService->setConfiguration(srvConfig);
     imageAdaptorService->setRenderService(this->getRenderService());
     imageAdaptorService->setRendererId( this->getRendererId() );
     imageAdaptorService->setPickerId( this->getPickerId() );
@@ -371,20 +351,18 @@ void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
     ::visuVTKAdaptor::SImage::sptr imageAdaptor = ::visuVTKAdaptor::SImage::dynamicCast(imageAdaptorService);
 
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
-    imageAdaptor->setImageOpacity(info->m_imageOpacity);
-    imageAdaptor->setAllowAlphaInTF(info->m_useTFAlfa);
-    imageAdaptor->setSelectedTFKey( info->m_selectedTFKey );
-    imageAdaptor->setTFSelectionFwID( info->m_tfSelectionFwID );
+    imageAdaptor->setImageOpacity(info.m_imageOpacity);
+    imageAdaptor->setAllowAlphaInTF(info.m_useTFAlfa);
+    imageAdaptor->setSelectedTFKey( selectedTFKey );
 
     m_registeredImages[img->getID()] = imageAdaptorService;
-    this->registerService(imageAdaptorService);
 
     imageAdaptorService->start();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::changeCheckerboardDivision(const int division)
+void SImagesBlend::changeCheckerboardDivision(const int division)
 {
     m_checkerboardDivision = division;
 
@@ -402,7 +380,7 @@ void ImagesBlend::changeCheckerboardDivision(const int division)
         m_imageAlgorithm = imageCheckerboard;
     }
 
-    this->doUpdate();
+    this->updating();
 }
 
 } //namespace visuVTKAdaptor
