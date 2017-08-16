@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/PointLabel.hpp"
+#include "visuVTKAdaptor/SPointLabel.hpp"
 
 #include <fwData/Point.hpp>
 #include <fwData/String.hpp>
@@ -23,14 +23,16 @@
 
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PointLabel, ::fwData::Point );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPointLabel, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
 
+const ::fwServices::IService::KeyType SPointLabel::s_POINT_INPUT = "point";
+
 //------------------------------------------------------------------------------
 
-PointLabel::PointLabel() :
+SPointLabel::SPointLabel() :
     SText()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
@@ -39,50 +41,50 @@ PointLabel::PointLabel() :
 
 //------------------------------------------------------------------------------
 
-void PointLabel::starting()
+void SPointLabel::starting()
 {
-    SText::starting();
-    doUpdate();
+    this->SText::starting();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void PointLabel::stopping()
+void SPointLabel::stopping()
 {
-    SText::stopping();
+    this->SText::stopping();
 }
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doUpdate()
+void SPointLabel::updating()
 {
-    ::fwData::Point::sptr point = this->getObject< ::fwData::Point >();
+    ::fwData::Point::csptr point = this->getInput< ::fwData::Point >(s_POINT_INPUT);
+    SLM_ASSERT("Missing point.", point);
 
-    std::string label = point->getField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New())->value();
+    ::fwData::String::sptr strField = point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId);
 
-    setText( label );
+    if (strField)
+    {
+        std::string label = strField->value();
 
-    double px = point->getCRefCoord()[0];
-    double py = point->getCRefCoord()[1];
-    double pz = point->getCRefCoord()[2];
+        this->setText( label );
 
-    m_actor->GetPositionCoordinate()->SetValue(px, py, pz);
-    this->setVtkPipelineModified();
+        const double px = point->getCRefCoord()[0];
+        const double py = point->getCRefCoord()[1];
+        const double pz = point->getCRefCoord()[2];
+
+        m_actor->GetPositionCoordinate()->SetValue(px, py, pz);
+        this->setVtkPipelineModified();
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doSwap()
+::fwServices::IService::KeyConnectionsMap SPointLabel::getAutoConnections() const
 {
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType PointLabel::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_POINT_INPUT, ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/LabeledPointList.hpp"
+#include "visuVTKAdaptor/SLabeledPointList.hpp"
 
-#include "visuVTKAdaptor/PointLabel.hpp"
+#include "visuVTKAdaptor/SPointLabel.hpp"
 #include "visuVTKAdaptor/SPointList.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -31,10 +31,12 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SLabeledPointList, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //------------------------------------------------------------------------------
 
@@ -105,9 +107,9 @@ public:
             this->fillPickList();
             if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
-                if(getSelectedPoint())
+                if(this->getSelectedPoint())
                 {
-                    SetAbortFlag(1);
+                    this->SetAbortFlag(1);
                 }
                 else
                 {
@@ -119,13 +121,13 @@ public:
         else if ( (eventId == vtkCommand::RightButtonReleaseEvent ) && !m_pickedPoint.expired() &&
                   !m_pickedPointList.expired() && std::equal(pos, pos+1, m_lastPos) )
         {
-            ::fwData::PointList::PointListContainer::iterator itr = std::find(
-                m_pickedPointList.lock()->getRefPoints().begin(),
-                m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock() );
-            if(itr != m_pickedPointList.lock()->getRefPoints().end())
+            ::fwData::PointList::PointListContainer& points       = m_pickedPointList.lock()->getRefPoints();
+            ::fwData::PointList::PointListContainer::iterator itr =
+                std::find( points.begin(), points.end(), m_pickedPoint.lock() );
+            if(itr != points.end())
             {
                 ::fwData::Point::sptr point = *itr;
-                m_pickedPointList.lock()->getRefPoints().erase(itr);
+                points.erase(itr);
                 auto sig = m_pickedPointList.lock()->signal< ::fwData::PointList::PointRemovedSignalType >(
                     ::fwData::PointList::s_POINT_REMOVED_SIG );
                 sig->asyncEmit(point);
@@ -143,18 +145,24 @@ public:
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
         {
-            m_pickedPoint     = ::fwData::Point::dynamicCast(m_service->getAssociatedObject(prop, 2));
-            m_pickedPointList = ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop, 1));
+            ::fwRenderVTK::IAdaptor::sptr pointSrv = m_service->getAssociatedAdaptor(prop, 2);
 
-            if( !m_pickedPoint.expired() && !m_pickedPointList.expired() )
+            if(pointSrv)
             {
-                ::fwData::PointList::PointListContainer::iterator itr = std::find(
-                    m_pickedPointList.lock()->getRefPoints().begin(),
-                    m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock());
-                if(itr != m_pickedPointList.lock()->getRefPoints().end() )
+
+                m_pickedPoint     = pointSrv->getInOut< ::fwData::Point >(SPoint::s_POINT_INOUT);
+                m_pickedPointList = m_service->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
+
+                if (!m_pickedPoint.expired() && !m_pickedPointList.expired())
                 {
-                    isFind = true;
-                    break;
+                    ::fwData::PointList::PointListContainer& points       = m_pickedPointList.lock()->getRefPoints();
+                    ::fwData::PointList::PointListContainer::iterator itr =
+                        std::find(points.begin(), points.end(), m_pickedPoint.lock());
+                    if(itr != points.end() )
+                    {
+                        isFind = true;
+                        break;
+                    }
                 }
             }
         }
@@ -174,7 +182,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-LabeledPointList::LabeledPointList() noexcept :
+SLabeledPointList::SLabeledPointList() noexcept :
     m_rightButtonCommand(nullptr),
     m_radius(7.0),
     m_interaction(true)
@@ -183,30 +191,32 @@ LabeledPointList::LabeledPointList() noexcept :
 
 //------------------------------------------------------------------------------
 
-LabeledPointList::~LabeledPointList() noexcept
+SLabeledPointList::~SLabeledPointList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doConfigure()
+void SLabeledPointList::configuring()
 {
-    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
+    this->configureParams();
 
-    std::string hexaColor = m_configuration->getAttributeValue("color");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    const std::string hexaColor = config.get< std::string >("color", "");
     m_ptColor = ::fwData::Color::New();
     if (!hexaColor.empty())
     {
         m_ptColor->setRGBA(hexaColor);
     }
 
-    std::string radius = m_configuration->getAttributeValue("radius");
+    const std::string radius = config.get< std::string >("radius", "");
     if(!radius.empty())
     {
         m_radius = std::stod(radius);
     }
 
-    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    const std::string interaction = config.get< std::string >("interaction", "");
     if(!interaction.empty())
     {
         SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
@@ -217,7 +227,7 @@ void LabeledPointList::doConfigure()
         {
             try
             {
-                this->doStop();
+                this->stopping();
             }
             catch(::fwTools::Failed& e)
             {
@@ -230,9 +240,10 @@ void LabeledPointList::doConfigure()
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doStart()
+void SLabeledPointList::starting()
 {
-    SLM_TRACE_FUNC();
+    this->initialize();
+
     if(m_interaction)
     {
         m_rightButtonCommand = vtkLabeledPointDeleteCallBack::New(this);
@@ -240,33 +251,26 @@ void LabeledPointList::doStart()
         this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
     }
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doSwap()
-{
-    SLM_TRACE("SWAPPING LabeledPointList **TODO**");
-    this->doStop();
-    this->doStart();
-}
-
-//------------------------------------------------------------------------------
-
-void LabeledPointList::doUpdate()
+void SLabeledPointList::updating()
 {
     // get PointList in image Field then install distance service if required
-    ::fwData::PointList::sptr landmarks = this->getObject< ::fwData::PointList >();
+    ::fwData::PointList::sptr landmarks = this->getInOut< ::fwData::PointList >(s_POINTLIST_INOUT);
 
     this->unregisterServices();
 
     if ( !landmarks->getPoints().empty() )
     {
         ::fwRenderVTK::IAdaptor::sptr servicePointList;
-        servicePointList = ::fwServices::add< ::fwRenderVTK::IAdaptor >( landmarks,
-                                                                         "::visuVTKAdaptor::SPointList");
-        SLM_ASSERT("servicePointList not instanced", servicePointList);
+        // create the srv configuration for objects auto-connection
+        IService::Config srvConfig;
+        servicePointList = this->createSubAdaptor("::visuVTKAdaptor::SPointList", srvConfig);
+        // register the point list
+        this->registerServiceInput(landmarks, SPointList::s_POINTLIST_INPUT, servicePointList, true, srvConfig);
 
         ::visuVTKAdaptor::SPointList::sptr pointListAdaptor =
             ::visuVTKAdaptor::SPointList::dynamicCast(servicePointList);
@@ -277,34 +281,36 @@ void LabeledPointList::doUpdate()
         pointListAdaptor->setRadius(m_radius);
         pointListAdaptor->setInteraction(m_interaction);
 
+        servicePointList->setConfiguration(srvConfig);
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderService( this->getRenderService() );
         servicePointList->setAutoRender( this->getAutoRender() );
         servicePointList->start();
 
-        this->registerService( servicePointList );
-
         for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
         {
             ::fwRenderVTK::IAdaptor::sptr serviceLabel;
-            serviceLabel =
-                ::fwServices::add< ::fwRenderVTK::IAdaptor >(point, "::visuVTKAdaptor::PointLabel");
-            SLM_ASSERT("serviceLabel not instanced", serviceLabel);
+            IService::Config labelSrvConfig;
+            serviceLabel = this->createSubAdaptor("::visuVTKAdaptor::SPointLabel", labelSrvConfig);
+            // register the point list
+            this->registerServiceInput(point, SPointLabel::s_POINT_INPUT, serviceLabel, true, labelSrvConfig);
+
+            serviceLabel->setConfiguration( labelSrvConfig );
             serviceLabel->setRenderService( this->getRenderService() );
             serviceLabel->setAutoRender( this->getAutoRender() );
             serviceLabel->start();
-            this->registerService( serviceLabel );
         }
     }
 
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doStop()
+void SLabeledPointList::stopping()
 {
-    if ( m_rightButtonCommand ) // can be not instanciated (use of LabeledPointList::show() )
+    if ( m_rightButtonCommand ) // can be not instanciated (use of SLabeledPointList::show() )
     {
         this->getInteractor()->RemoveObserver(m_rightButtonCommand);
         m_rightButtonCommand->Delete();
@@ -312,16 +318,17 @@ void LabeledPointList::doStop()
     }
 
     this->unregisterServices();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType LabeledPointList::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SLabeledPointList::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_INOUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_INOUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_INOUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
