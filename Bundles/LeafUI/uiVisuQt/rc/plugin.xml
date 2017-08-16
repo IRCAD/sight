@@ -12,13 +12,6 @@
         <object>::fwData::Object</object>
     </extension>
 
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
-        <service>::uiVisu::TransformationMatrixEditor</service>
-        <object>::fwData::TransformationMatrix3D</object>
-    </extension>
-
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisu::STransformEditor</service>

@@ -96,18 +96,18 @@
             <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
-                        <menuItem name="OpenFile" shortcut="Ctrl+O" />
+                        <menuItem name="Load Mesh" shortcut="Ctrl+O" />
                         <separator />
                         <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="actionOpenFile" start="yes" />
+                    <menuItem sid="actionLoadMesh" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
 
-            <service uid="actionOpenFile" type="::gui::action::SStarter">
+            <service uid="actionLoadMesh" type="::gui::action::SStarter">
                 <start uid="readerPathFile" />
             </service>
 
@@ -129,8 +129,10 @@
 
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
-            <service uid="matrixEditor" type="::uiVisu::TransformationMatrixEditor" >
+            <service uid="matrixEditor" type="::uiVisu::STransformEditor" >
                 <inout key="matrix" uid="matrixE" />
+                <translation enabled="no" />
+                <rotation enabled="y" min="0" max="360" />
             </service>
 
             <service uid="readerPathFile" type="::uiIO::editor::SIOSelector" >
