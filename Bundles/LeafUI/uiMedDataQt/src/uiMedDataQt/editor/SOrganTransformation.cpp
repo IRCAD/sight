@@ -352,12 +352,12 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SOrganTransformation::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push("modelSeries", ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push("modelSeries", ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT );
+    connections.push("modelSeries", ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

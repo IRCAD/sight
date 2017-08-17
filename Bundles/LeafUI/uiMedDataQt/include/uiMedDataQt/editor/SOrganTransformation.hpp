@@ -65,7 +65,7 @@ public:
      * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
      * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
