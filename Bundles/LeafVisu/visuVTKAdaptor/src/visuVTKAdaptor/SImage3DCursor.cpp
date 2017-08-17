@@ -4,64 +4,51 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Image3DCursor.hpp"
+#include "visuVTKAdaptor/SImage3DCursor.hpp"
 
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Color.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/TransferFunction.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <boost/format.hpp>
-
 #include <vtkActor.h>
-#include <vtkParametricBoy.h>
-#include <vtkParametricFunctionSource.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkSphereSource.h>
-#include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImage3DCursor );
 
 namespace visuVTKAdaptor
 {
 
+//------------------------------------------------------------------------------
+
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPHERE_SLOT      = "updateSphere";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
-Image3DCursor::Image3DCursor() noexcept :
-    m_priority(.6)
+SImage3DCursor::SImage3DCursor() noexcept
 {
-    ////handlingEventOff();
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Image3DCursor::updateSliceIndex, this);
-    newSlot(s_UPDATE_SPHERE_SLOT, &Image3DCursor::updateSphere, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SImage3DCursor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SPHERE_SLOT, &SImage3DCursor::updateSphere, this);
 }
 
 //------------------------------------------------------------------------------
 
-Image3DCursor::~Image3DCursor() noexcept
+SImage3DCursor::~SImage3DCursor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
-void Image3DCursor::setVisibility( bool visibility )
+void SImage3DCursor::setVisibility( bool visibility )
 {
     m_cursorActor->SetVisibility(visibility);
     this->setVtkPipelineModified();
@@ -70,19 +57,22 @@ void Image3DCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doConfigure()
+void SImage3DCursor::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doStart()
+void SImage3DCursor::starting()
 {
+    this->initialize();
+
     m_cursorPolyData = vtkSmartPointer<vtkPolyData>::New();
     m_cursorMapper   = vtkSmartPointer<vtkPolyDataMapper>::New();
     m_cursorActor    = vtkSmartPointer<vtkActor>::New();
 
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     if ( img->getField("IMAGE3DCURSOR_RADIUS") && img->getField("IMAGE3DCURSOR_COLOR") )
     {
@@ -95,7 +85,7 @@ void Image3DCursor::doStart()
     else
     {
         this->buildPolyData();
-        m_cursorActor->GetProperty()->SetColor(1, 1, 1);
+        m_cursorActor->GetProperty()->SetColor(.1, .6, 1.);
     }
 
     m_cursorMapper->SetInputData( m_cursorPolyData );
@@ -106,47 +96,44 @@ void Image3DCursor::doStart()
         m_cursorActor->SetUserTransform(this->getTransform());
     }
     this->addToRenderer(m_cursorActor);
-    doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doUpdate()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-    int index[3] = {
-        *m_sagittalIndex,
-        *m_frontalIndex,
-        *m_axialIndex
-    };
-    double center[3];
-    sliceIndexToWorld(index, center);
-    this->updateCursorPosition(center);
-}
-
-//------------------------------------------------------------------------------
-
-void Image3DCursor::doSwap()
-{
-    SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-}
-
-//------------------------------------------------------------------------------
-
-void Image3DCursor::doStop()
+void SImage3DCursor::stopping()
 {
     this->removeAllPropFromRenderer();
+    this->requestRender();
     m_cursorPolyData = 0;
     m_cursorMapper   = 0;
     m_cursorActor    = 0;
 }
 
+//------------------------------------------------------------------------------
+
+void SImage3DCursor::updating()
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    this->updateImageInfos(image);
+    int index[3] = { *m_sagittalIndex, *m_frontalIndex, *m_axialIndex };
+    double center[3];
+    this->sliceIndexToWorld(index, center);
+    this->updateCursorPosition(center);
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImage3DCursor::swapping()
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    this->updateImageInfos(image);
+}
+
 //-----------------------------------------------------------------------------
 
-void Image3DCursor::updateSliceIndex(int axial, int frontal, int sagittal)
+void SImage3DCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
@@ -161,9 +148,9 @@ void Image3DCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::updateSphere(::fwData::Color::sptr color, float radius)
+void SImage3DCursor::updateSphere(::fwData::Color::sptr color, float radius)
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
     this->buildPolyData(radius);
@@ -175,7 +162,7 @@ void Image3DCursor::updateSphere(::fwData::Color::sptr color, float radius)
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::updateCursorPosition( double world[3] )
+void SImage3DCursor::updateCursorPosition( double world[3] )
 {
     m_cursorActor->SetPosition(world);
     this->setVtkPipelineModified();
@@ -183,7 +170,7 @@ void Image3DCursor::updateCursorPosition( double world[3] )
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::buildPolyData(float radius)
+void SImage3DCursor::buildPolyData(float radius)
 {
     // point are stored Left,right,up,down
     vtkSmartPointer<vtkSphereSource> polySource = vtkSmartPointer<vtkSphereSource>::New();
@@ -192,21 +179,16 @@ void Image3DCursor::buildPolyData(float radius)
     polySource->SetPhiResolution(8);
     polySource->SetThetaResolution(8);
 
-    //vtkSmartPointer<vtkParametricBoy> boyFunc = vtkSmartPointer<vtkParametricBoy>::New();
-    //vtkSmartPointer<vtkParametricFunctionSource> polySource = vtkSmartPointer<vtkParametricFunctionSource>::New();
-    //polySource->SetParametricFunction(boyFunc);
-
     polySource->SetOutput(m_cursorPolyData);
     polySource->Update();
-    //this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Image3DCursor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SImage3DCursor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push("image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT );
 
     return connections;
 }
