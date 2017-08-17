@@ -215,8 +215,10 @@
 
             <!-- Service to forward signal from backgroundImage to front image -->
             <service uid="forwarderMsg" type="::ctrlSelection::wrapper::SImageSignalForwarder" >
-                <in key="target" uid="backgroundImageUID" />
-                <in key="source" uid="frontImageUID" />
+                <in key="target" uid="frontImageUID" />
+                <in key="source" uid="backgroundImageUID" />
+                <forward>sliceIndexModified</forward>
+                <forward>sliceTypeModified</forward>
             </service>
 
             <!-- Generic scene to show merging of backgroung and front images -->
@@ -337,6 +339,7 @@
             </connect>
 
             <start uid="mainFrame" />
+            <start uid="forwarderMsg" />
 
         </config>
     </extension>
