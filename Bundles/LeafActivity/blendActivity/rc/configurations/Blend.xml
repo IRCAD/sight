@@ -88,7 +88,7 @@
 
         <service uid="action_frontTFView" type="::gui::action::SConfigLauncher">
             <inout key="TF_COMPOSITE_ID" uid="TFComposite" />
-            <inout key="myImage" uid="${backgroundImageUid}" />
+            <inout key="myImage" uid="${frontImageUid}" />
             <appConfig id="TransferFunctionEditor" />
             <parameter replace="WID_PARENT" uid="subView" />
             <parameter replace="SELECTED_TF_KEY" by="tfFrontImage" />

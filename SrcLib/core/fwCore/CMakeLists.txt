@@ -7,8 +7,9 @@ else()
 endif()
 fwForwardInclude(${Boost_INCLUDE_DIRS})
 fwForwardLink(
-    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_CHRONO_LIBRARY}
     ${Boost_DATE_TIME_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
 )
