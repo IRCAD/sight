@@ -12,8 +12,7 @@
         <param name="patient_name" default="" />
         <param name="optionalModelSeriesComposite" />
     </parameters>
-
-        <!-- input image -->
+    <!-- input image -->
     <config>
         <!-- activity -->
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
@@ -32,19 +31,18 @@
         <!-- TF editor -->
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="landmarks" type="::fwData::Landmarks" />
-
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view caption="VR" align="center" />
                     <view align="right" minWidth="450" />
                 </layout>
-                <toolBar />
+                <toolBar/>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <toolBar sid="toolBar" start="yes" />
-                <view sid="vr" start="no" />
+                <view sid="vr" start="yes" />
                 <view wid="tfEditor" />
             </registry>
         </service>
@@ -55,16 +53,16 @@
                     <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
                     <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
                     <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
-                    <separator />
+                    <separator/>
                     <menuItem name="Show 3d slice cursor" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-landmark.png" style="check" />
                     <menuItem name="Show mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" style="check" />
                     <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
-                    <separator />
+                    <separator/>
                     <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
                     <menuItem name="Reset box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box-reset.png" />
-                    <separator />
+                    <separator/>
                     <menuItem name="Snapshot VR" icon="@BUNDLE_PREFIX@/media_0-1/icons/camera-photo.png" />
-                    <separator />
+                    <separator/>
                     <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                 </layout>
             </gui>
@@ -72,16 +70,12 @@
                 <menuItem sid="ActionHideCross" start="yes" />
                 <menuItem sid="ActionShowNormalCross" start="yes" />
                 <menuItem sid="ActionShowFullCross" start="yes" />
-
-                <menuItem sid="ActionShowSliceCursor" start="no" />
+                <menuItem sid="ActionShowSliceCursor" start="yes" />
                 <menuItem sid="ActionShowMesh" start="yes" />
                 <menuItem sid="action_organManager" start="no" />
-
                 <menuItem sid="ActionShowHideBoxWidget" start="yes" />
                 <menuItem sid="ActionResetBoxWidget" start="yes" />
-
                 <menuItem sid="ActionSnapshotVR" start="yes" />
-
                 <menuItem sid="ActionExportActivity" start="yes" />
             </registry>
         </service>
@@ -107,11 +101,9 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <!-- GENERIC SCENE DEFINITION -->
-
-<!--        <service uid="ActionShowSliceCursor" type="::gui::action::SPushObject" type="::fwGui::IActionSrv">
-            <push src="VisuComposite[imageKey]" key="imageKeyCursor" />
-        </service>-->
+        <service uid="ActionShowSliceCursor" type="::gui::action::SStarter" >
+            <start_or_stop uid="image3DCursorAdaptor" />
+        </service>
 
         <service uid="ActionShowMesh" type="::gui::action::SPushObject">
             <inout key="source" uid="${optionalModelSeriesComposite}" />
@@ -119,73 +111,69 @@
             <push srcKey="optionalModelSeriesKey" />
         </service>
 
-        <service uid="action_organManager" type="::gui::action::SConfigLauncher" >
+        <service uid="action_organManager" type="::gui::action::SConfigLauncher">
             <appConfig id="OrganManagerWithSeries" />
-            <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries"/>
+            <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
             <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
             <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
         </service>
 
         <service uid="ActionSnapshotVR" type="::uiVisu::action::SSnapshot" />
-
         <!-- Generic Scene VR -->
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="vr" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="imageKey" uid="${image}" />
-            <in key="modelSeries" uid="optionalModelSeries" optional="yes"/>
-            <inout key="TFSelections" uid="TFSelections" />
             <scene>
-
                 <picker id="negato1default" vtkclass="fwVtkCellPicker" />
-
                 <renderer id="default" background="0.0" />
 
-                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                    <config renderer="default" />
-                </adaptor>
-
-                <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle3DForNegato" />
-                </adaptor>
-
-                <adaptor id="Image3DCursor" class="::visuVTKAdaptor::Image3DCursor" objectId="imageKeyCursor">
-                    <config renderer="default" />
-                </adaptor>
-
-                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                    <config renderer="default" picker="negato1default" autoresetcamera="no" />
-                </adaptor>
-
-                <adaptor id="VolumeScene3DA" uid="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
-                    <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
-                    <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-
-                <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
-                    <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
-                </proxy>
-
-                <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
-                    <slot>modelSeriesAdaptorUid/showReconstructions</slot>
-                </proxy>
-
-                <connect>
-                    <signal>ActionSnapshotVR/snapped</signal>
-                    <slot>snapshotUID/snap</slot>
-                </connect>
-
+                <adaptor uid="snapshot1" start="yes" />
+                <adaptor uid="Interactor1" start="yes" />
+                <adaptor uid="modelSeriesAdaptor" start="no" />
+                <adaptor uid="VolumeScene3DA" start="yes" />
+                <adaptor uid="nameAdaptor" start="yes" />
+                <adaptor uid="image3DCursorAdaptor" start="no" />
             </scene>
         </service>
 
+        <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+            <config renderer="default" />
+        </service>
+
+        <service uid="Interactor1" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle3DForNegato" />
+        </service>
+
+        <service uid="modelSeriesAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="optionalModelSeries" />
+            <config renderer="default" picker="negato1default" autoresetcamera="no" />
+        </service>
+
+        <service uid="VolumeScene3DA" type="::visuVTKVRAdaptor::SVolume" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <inout key="tfSelection" uid="TFSelections" />
+            <config renderer="default" selectedTFKey="SelectedTF" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${image}" />
+            <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <service uid="image3DCursorAdaptor" type="::visuVTKAdaptor::SImage3DCursor" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <config renderer="default" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
         <!-- Services working on input image -->
-        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
+        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
             <in key="image" uid="${image}" />
         </service>
 
-        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" >
+        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${image}" />
         </service>
 
@@ -221,11 +209,11 @@
         <!-- Services working on TF -->
         <service uid="tfEditor" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWithNegatoEditor" />
-            <inout key="image" uid="${image}"/>
-            <inout key="histogram" uid="Histogram"/>
+            <inout key="image" uid="${image}" />
+            <inout key="histogram" uid="Histogram" />
             <inout key="landmarks" uid="landmarks" />
             <inout key="TFSelections" uid="TFSelections" />
-            <parameter replace="WID_PARENT" uid="tfEditor"/>
+            <parameter replace="WID_PARENT" uid="tfEditor" />
             <parameter replace="SelectedTFKey" by="SelectedTF" />
         </service>
 
@@ -236,26 +224,38 @@
         </service>
 
         <!-- If the image has landmarks, extract them and display them in the TF editor -->
-        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+        <service uid="extractLandmarks" type="::ctrlCamp::SCopy">
             <in key="source" uid="${image}">
                 <extract from="@fields.m_landmarksId" />
             </in>
-            <inout key="target" uid="landmarks"/>
+            <inout key="target" uid="landmarks" />
         </service>
 
         <!-- START AND STOP SERVICES -->
+        <connect>
+            <signal>ActionSnapshotVR/snapped</signal>
+            <slot>snapshot1/snap</slot>
+        </connect>
+
+        <connect channel="ModelRepresentationChannel">
+            <slot>modelSeriesAdaptor/updateNormalMode</slot>
+        </connect>
+
+        <connect channel="ModelDisplayChannel">
+            <slot>modelSeriesAdaptor/showReconstructions</slot>
+        </connect>
+
         <start uid="computeHistogram" />
         <start uid="LockImageSrv" />
         <start uid="MedicalImageSrv" />
         <start uid="mainView" />
         <start uid="tfEditor" />
-        <start uid="vr" />
         <start uid="extractLandmarks" />
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
+        <start uid="modelSeriesAdaptor" />
 
         <update uid="extractLandmarks" />
-
     </config>
 </extension>

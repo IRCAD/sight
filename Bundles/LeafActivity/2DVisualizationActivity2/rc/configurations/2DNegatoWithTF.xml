@@ -7,15 +7,14 @@
         <param name="selectedTFKey" />
         <param name="TFSelections" />
         <param name="patient_name" default="" />
-        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
-        <param name="CrossTypeChannel" default="crossTypeChannel"/>
+        <param name="orientation" default="axial" />
+        <!-- axial, frontal, sagittal -->
+        <param name="CrossTypeChannel" default="crossTypeChannel" />
     </parameters>
     <config>
-
         <object uid="${image}" type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
-
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -48,70 +47,71 @@
         </service>
 
         <service uid="snapshotNegatoEditor" type="::uiVisu::SnapshotEditor" />
-
         <!-- Generic Scene Negato -->
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="imageKey" uid="${image}" />
-            <in key="landmarksKey" uid="${landmarks}" />
-            <inout key="TFSelections" uid="${TFSelections}" />
             <scene>
-
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
                 <renderer id="default" background="0.0" />
 
-                <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                    <config renderer="default" />
-                </adaptor>
-
-                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-
-                <adaptor id="MPRNegato" uid="negatoMPRUID" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" selectedTFKey="${selectedTFKey}" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" text="" selectedTFKey="${selectedTFKey}" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-                <adaptor id="multiDistances"  uid="multiDistancesUID" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
-                    <config filter="true" renderer="default" picker="negatodefault" />
-                </adaptor>
-
-                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::SLandmarks" objectId="landmarksKey">
-                    <config renderer="default" picker="negatodefault" />
-                </adaptor>
-
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
-                    <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-
-                <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="imageKey">
-                    <config renderer="default">
-                        <locations>default</locations>
-                        <initialOrientation>${orientation}</initialOrientation>
-                    </config>
-                </adaptor>
-
-                <connect>
-                    <signal>snapshotNegatoEditor/snapped</signal>
-                    <slot>snapshotUID/snap</slot>
-                </connect>
-
-                <connect waitForKey="imageKey">
-                    <signal>distanceNegatoEditor/distanceRequested</signal>
-                    <slot>multiDistancesUID/createDistance</slot>
-                </connect>
-
-                <proxy channel="${CrossTypeChannel}" waitForKey="imageKey">
-                    <slot>negatoMPRUID/setCrossScale</slot>
-                </proxy>
+                <adaptor uid="snapshot" start="yes" />
+                <adaptor uid="interactor" start="yes" />
+                <adaptor uid="MPRNegato" start="yes" />
+                <adaptor uid="text" start="yes" />
+                <adaptor uid="multiDistances" start="yes" />
+                <adaptor uid="landmarksNegato" start="yes" />
+                <adaptor uid="nameAdaptor" start="yes" />
+                <adaptor uid="imageSliceOrientationText" start="yes" />
             </scene>
         </service>
 
-        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
+        <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+            <config renderer="default" />
+        </service>
+
+        <service uid="interactor" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <inout key="tfSelection" uid="${TFSelections}" />
+            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" selectedTFKey="${selectedTFKey}" />
+        </service>
+
+        <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <inout key="tfSelection" uid="${TFSelections}" />
+            <config renderer="default" picker="negatodefault" text="" selectedTFKey="${selectedTFKey}" />
+        </service>
+
+        <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <config filter="true" renderer="default" picker="negatodefault" />
+        </service>
+
+        <service uid="landmarksNegato" type="::visuVTKAdaptor::SLandmarks" autoConnect="yes">
+            <inout key="landmarks" uid="${landmarks}" />
+            <config renderer="default" picker="negatodefault" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${image}" />
+            <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <service uid="imageSliceOrientationText" type="::visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
+            <in key="image" uid="${image}" />
+            <config renderer="default">
+                <locations>default</locations>
+                <initialOrientation>${orientation}</initialOrientation>
+            </config>
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
             <in key="image" uid="${image}" />
         </service>
 
@@ -126,8 +126,21 @@
         </service>
 
         <!-- START AND STOP SERVICES -->
+        <connect>
+            <signal>snapshotNegatoEditor/snapped</signal>
+            <slot>snapshot/snap</slot>
+        </connect>
+
+        <connect>
+            <signal>distanceNegatoEditor/distanceRequested</signal>
+            <slot>multiDistances/createDistance</slot>
+        </connect>
+
+        <connect channel="${CrossTypeChannel}">
+            <slot>MPRNegato/setCrossScale</slot>
+        </connect>
+
         <start uid="LockImageSrv" />
         <start uid="mainView" />
-
     </config>
 </extension>
