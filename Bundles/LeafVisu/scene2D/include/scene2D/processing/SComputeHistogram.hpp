@@ -22,6 +22,25 @@ namespace processing
 
 /**
  * @brief The SComputeHistogram service computes the histogram of the image.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes">
+    <inout key="histogram" uid="..." />
+    <in key="image" uid="..." />
+    <binsWidth>5.0</binsWidth>
+   </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b histogram [::fwData::Histogram]: histogram to compute.
+ *
+ * @subsection In In
+ * - \b image [::fwData::Image]: image used to compute histogram.
+ *
+ * @subsection Configuration Configuration:
+ * - \b binsWidth (mandatory): desired bins width used to classified pixel.
  */
 class SCENE2D_CLASS_API SComputeHistogram : public ::fwServices::IController
 {
@@ -47,19 +66,6 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service.
-     * @code{.xml}
-       <service uid="computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram"
-     * autoConnect="yes">
-        <inout key="histograme" uid="..." />
-        <inout key="image" uid="..." />
-        <binsWidth>5.0</binsWidth>
-       </service>
-       @endcode
-     * - \b histogramId: Id of the histogram object.
-     * - \b binsWidth: desired bins width used to classified pixel.
-     */
     SCENE2D_API void configuring();
 
     /// Starts the service. Calls updating().

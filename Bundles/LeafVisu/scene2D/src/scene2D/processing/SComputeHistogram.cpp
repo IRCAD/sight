@@ -28,7 +28,7 @@ namespace scene2D
 namespace processing
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT     = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT     = "image";
 static const ::fwServices::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 SComputeHistogram::SComputeHistogram() noexcept :
@@ -46,10 +46,10 @@ SComputeHistogram::~SComputeHistogram() noexcept
 
 void SComputeHistogram::configuring()
 {
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > binsWidthCfg = m_configuration->find("binsWidth");
+    const std::vector < ::fwRuntime::ConfigurationElement::sptr > binsWidthCfg = m_configuration->find("binsWidth");
     SLM_ASSERT("Missing tag 'binsWidth'", !binsWidthCfg.empty());
 
-    std::string binsWidth = binsWidthCfg.front()->getValue();
+    const std::string binsWidth = binsWidthCfg.front()->getValue();
     SLM_ASSERT("'binsWidth' must not be empty", !binsWidth.empty());
     m_binsWidth = ::boost::lexical_cast<float>(binsWidth);
 }
@@ -65,7 +65,7 @@ void SComputeHistogram::starting()
 
 void SComputeHistogram::updating()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image>(s_IMAGE_INOUT);
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image>(s_IMAGE_INPUT);
 
     ::fwData::mt::ObjectReadLock imgLock(image);
 
@@ -109,8 +109,8 @@ void SComputeHistogram::stopping()
 ::fwServices::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

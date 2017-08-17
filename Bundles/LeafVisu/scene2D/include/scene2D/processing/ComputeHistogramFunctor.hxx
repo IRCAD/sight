@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 namespace scene2D
 {
@@ -26,18 +26,20 @@ struct ComputeHistogramFunctor
     /// Parameters of the functor.
     struct Parameter
     {
-        ::fwData::Image::sptr image;
+        ::fwData::Image::csptr image;
         ::fwData::Histogram::sptr histogram;
         float binsWidth;
     };
 
+    //------------------------------------------------------------------------------
+
     template<class IMAGETYPE>
     void operator()(Parameter& param)
     {
-        ::fwData::Image::sptr image         = param.image;
+        ::fwData::Image::csptr image        = param.image;
         ::fwData::Histogram::sptr histogram = param.histogram;
 
-        ::fwDataTools::helper::Image imgHelper(image);
+        ::fwDataTools::helper::ImageGetter imgHelper(image);
 
         IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
@@ -54,7 +56,7 @@ struct ComputeHistogramFunctor
             IMAGETYPE* itr    = arrayHelper.begin<IMAGETYPE>();
             IMAGETYPE* itrEnd = arrayHelper.end<IMAGETYPE>();
 
-            for(; itr!= itrEnd; ++itr)
+            for(; itr != itrEnd; ++itr)
             {
                 histogram->addPixel( static_cast< float >( *itr ) );
             }
