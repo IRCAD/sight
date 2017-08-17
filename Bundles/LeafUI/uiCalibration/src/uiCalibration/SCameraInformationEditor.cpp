@@ -10,8 +10,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwCore/base.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
@@ -19,20 +17,21 @@
 #include <QBoxLayout>
 #include <QGridLayout>
 
-#include <algorithm>
 #include <sstream>
 
 namespace uiCalibration
 {
+// -------------------------------------------------------------------------
+
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera);
+
 const ::fwCom::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
+
 // -------------------------------------------------------------------------
 
 SCameraInformationEditor::SCameraInformationEditor() noexcept
 {
     newSlot(s_UPDATE_INFOS_SLOT, &SCameraInformationEditor::updateInformations, this);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 // -------------------------------------------------------------------------
