@@ -20,19 +20,41 @@ namespace scene2D
 namespace adaptor
 {
 
+/**
+ * @brief IAdaptor implementation to display a transfer function.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="tf2" type="::scene2D::adaptor::STransferFunction" >
+    <inout key="image" uid="..." />
+    <inout key="tfSelection" uid="..." />
+    <inout key="viewport" uid="..." />
+    <config lineColor="lightGray" circleColor="gray" xAxis="xAxis" yAxis="yAxis" zValue="4" selectedTFKey="tfKey" />
+   </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image to display.
+ * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
+ * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update the adaptor.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b lineColor (optional, default black): Set the color of the lines between the TF points.
+ *    - \b circleColor (optional, default black): Set the outline color of the circles representing the TF points.
+ *    - \b pointSize (optional, default 10): specify point size.
+ *    - \b selectedTFKey: key of the transfer function used.
+ */
 class SCENE2D_CLASS_API STransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
                                             public ::fwRenderQt::IAdaptor
 {
 
 public:
     fwCoreServiceClassDefinitionsMacro( (STransferFunction)(::fwRenderQt::IAdaptor) );
-
-    /// Enumeration of authorized line types
-    enum LineType
-    {
-        PLAIN,
-        DOTTED
-    };
 
     /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
     SCENE2D_API STransferFunction() noexcept;
@@ -50,35 +72,7 @@ public:
     SCENE2D_API KeyConnectionsMap getAutoConnections() const;
 
 protected:
-    /**
-     * @brief Configuring the STransferFunction adaptor.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="tf2" type="::scene2D::adaptor::STransferFunction" >
-        <inout key="image" uid="..." />
-        <inout key="tfSelection" uid="..." />
-        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"
-     * selectedTFKey="tkKey" />
-       </service>
-       @endcode
-     * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the
-     * config.
-     *
-     * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.
-     *
-     * \b circleColor : no mandatory (default value : black) : Set the outline color of the circles representing the TF
-     * points.
-     *
-     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
-     *(LINEAR)) : Set the x Axis of the TF layer.
-     *
-     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
-     *(LINEAR)) : Set the y Axis of the TF layer.
-     *
-     * \b zValue : no mandatory (default value : 0) : Set the zValue of the TF layer (the higher the zValue, the higher
-     * the layer is).
-     */
+
     SCENE2D_API void configuring();
 
     /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport

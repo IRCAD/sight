@@ -208,7 +208,6 @@ void STransferFunction::buildLinesAndPolygons()
             this->buildBounds();
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------

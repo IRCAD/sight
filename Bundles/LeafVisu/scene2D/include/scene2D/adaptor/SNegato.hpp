@@ -24,7 +24,14 @@ namespace adaptor
 {
 
 /**
- * @brief   IAdaptor implementation to display one slice of an image.
+ * @brief IAdaptor implementation to display one slice of an image.
+ *
+ * @section Slots Slots
+ * - \b updateSliceIndex() : update image slice index
+ * - \b updateSliceType() : update image slice type
+ * - \b updateBuffer() : update image buffer
+ * - \b updateVisibility() : update image visibility
+ *
  *
  * @section XML XML Configuration
  *
@@ -32,13 +39,13 @@ namespace adaptor
    <service uid="negato" type="::scene2D::adaptor::SNegato">
        <inout key="image" uid="..." />
        <inout key="tfSelection" uid="..." />
-       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" selectedTFKey="tkKey"/>
+       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" selectedTFKey="tfKey"/>
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: histogram point, used to show information at the current histogram index pointed by the mouse.
- * - \b tfSelection [::fwData::Composite]: histogram point, used to show information at the current histogram index pointed by the mouse.
+ * - \b image [::fwData::Image]: image to display.
+ * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -46,8 +53,9 @@ namespace adaptor
  *    - \b yAxis (optional): y axis associated to the adaptor
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b opacity (optional, default=1.0): adaptor opacity (float)
- *    - \b orientation (optional, default axial):
- *    - \b changeSliceType (optional, default true):
+ *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
+ *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
+ *    - \b selectedTFKey: key of the transfer function to use in negato
  */
 class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
                                   public ::fwRenderQt::IAdaptor

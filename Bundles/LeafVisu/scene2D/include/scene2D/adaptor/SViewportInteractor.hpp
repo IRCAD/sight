@@ -18,17 +18,25 @@ namespace adaptor
 
 /**
  * @brief Adaptor implementation that manages the camera on the view.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="interactor" type="::scene2D::adaptor::SViewportInteractor">
+   </service>
+   @endcode
+ *
  */
-class SViewportInteractor : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SViewportInteractor : public ::fwRenderQt::IAdaptor
 {
 
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SViewportInteractor)(::fwRenderQt::IAdaptor) );
 
-    SViewportInteractor() noexcept;
+    SCENE2D_API SViewportInteractor() noexcept;
 
-    ~SViewportInteractor() noexcept;
+    SCENE2D_API ~SViewportInteractor() noexcept;
 
 protected:
 

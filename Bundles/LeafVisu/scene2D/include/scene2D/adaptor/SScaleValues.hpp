@@ -16,6 +16,38 @@ namespace scene2D
 namespace adaptor
 {
 
+/**
+ * @brief SScaleValues adaptor. Display values and units on the axis.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="scaleValues" class="::scene2D::adaptor::SScaleValues">
+        <in key="viewport"  uid="..." />
+        <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
+            color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+   </service>
+   @endcode
+ *
+ * @subsection In In
+ * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update adaptor.
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b color (optional, default white): specify text color
+ *    - \b xMin (mandatory): set the minimum X value to display.
+ *    - \b xMax (mandatory): set the maximum X value to display.
+ *    - \b yMin (mandatory): set the minimum Y value to display.
+ *    - \b yMax (mandatory): set the maximum Y value to display.
+ *    - \b interval (optional, default value 10): set the interval between 2 consecutive values.
+ *    - \b fontSize (optional, default value : 8.): specify font size.
+ *    - \b unit (optional): displayed unit.
+ *    - \b showUnit (optional, default true): tells if unit has to be shown (value: "true" or "false")
+ *    - \b align (mandatory): axis alignment, left', 'right', 'top' or 'bottom'
+ */
 class SCENE2D_CLASS_API SScaleValues : public ::fwRenderQt::IAdaptor
 {
 
@@ -29,48 +61,7 @@ public:
     SCENE2D_API virtual ~SScaleValues() noexcept;
 
 protected:
-    /**
-     * @brief Configuring the SScaleValues adaptor.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="scaleValues" class="::scene2D::adaptor::SScaleValues">
-            <in key="viewport"  uid="..." />
-            <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
-                color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-       </service>
-       @endcode
-     *
-     * \b xMin : mandatory : Set the minimum X value to display.
-     *
-     * \b xMax : mandatory : Set the maximum X value to display.
-     *
-     * \b yMin : mandatory : Set the minimum Y value to display.
-     *
-     * \b yMax : mandatory : Set the maximum Y value to display.
-     *
-     * \b xInterval : no mandatory (default value : 10) : Set the interval between 2 consecutive values on the X axis.
-     *
-     * \b yInterval : no mandatory (default value : 10) : Set the interval between 2 consecutive values on the Y axis.
-     *
-     * \b color : no mandatory (default value : white) : Set the foreground color of the values.
-     *
-     * \b xAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
-     *(LINEAR)) :
-     * Set the X axis of this adaptor.
-     *
-     * \b yAxis : no mandatory (default value : ::fwRenderQt::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType
-     *(LINEAR)) :
-     * Set the Y axis of this adaptor.
-     *
-     * \b zValue : no mandatory (default value : 0) : Set the zValue of this adaptor
-     * (the higher the zValue, the higher the layer is).
-     *
-     * \b showXScale : no mandatory : tells if the scale on the X axis has to be shown (value: "true" or "false")
-     *
-     * \b showYScale : no mandatory : tells if the scale on the Y axis has to be shown (value: "true" or "false")
-     *
-     */
+
     SCENE2D_API void configuring();
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
@@ -91,13 +82,10 @@ private:
 
     void buildValues();
 
-    ///
     void rescaleValues();
 
-    ///
     double getStartVal();
 
-    ///
     double getEndVal();
 
     /// Show or hide values which don't have enough space to be displayed correctly.
@@ -106,7 +94,7 @@ private:
     /// Bounds of the grid and spacing values for each axis.
     float m_min, m_max;
 
-    ///
+    /// Interval between 2 consecutive values
     double m_interval;
 
     /// Tells if the unit of the axis must be displayed.
@@ -121,8 +109,8 @@ private:
     /// The layer.
     QGraphicsItemGroup* m_layer;
 
-    // Specify where the axis must be aligned: left, right, top or bottom.
-    // Left and right side axis are aligned/floating relatively to the view.
+    /// Specify where the axis must be aligned: left, right, top or bottom.
+    /// Left and right side axis are aligned/floating relatively to the view.
     std::string m_align;
 
     /// The font applied to grid's values.
@@ -137,8 +125,8 @@ private:
     /// The pen.
     QPen m_pen;
 
-    // The step which defines when a value of the axis should be displayedn if there is not
-    // enough space to display all the values.
+    /// The step which defines when a value of the axis should be displayed if there is not
+    /// enough space to display all the values.
     int m_step;
 
     /// Size of the font used for rendering grid values.

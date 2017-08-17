@@ -21,6 +21,22 @@ namespace adaptor
 
 /**
  * @brief Create a square on the scene2D
+ *
+ * @section XML XML Configuration
+ *
+   @code{.xml}
+   <service uid="square" type="::scene2D::adaptor::SSquare">
+      <config x="20" y="20" size="30" color="blue" zValue="3" />
+   </service>
+   @endcode
+ *
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b x (mandatory): specify x square coordinate
+ *    - \b y (mandatory): specify y square coordinate
+ *    - \b size (mandatory): specify size of the square
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b color (optional, default black): color of the square
  */
 class SCENE2D_CLASS_API SSquare : public ::fwRenderQt::IAdaptor
 {

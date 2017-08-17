@@ -44,12 +44,6 @@ class SCENE2D_CLASS_API SLine : public ::fwRenderQt::IAdaptor
 public:
     fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderQt::IAdaptor) );
 
-    enum LineType
-    {
-        PLAIN,
-        DOTTED
-    };
-
     /// Basic constructor, do nothing.
     SCENE2D_API SLine() noexcept;
 
@@ -76,10 +70,10 @@ private:
 
     /// The coordinates of the line.
     float m_x1, m_x2, m_y1, m_y2;
-    // The type of the line.
-    LineType m_lineType;
+
     /// The pen.
     QPen m_pen;
+
     /// The layer.
     QGraphicsItemGroup* m_layer;
 };

@@ -24,7 +24,6 @@ SLine::SLine() noexcept :
     m_x2(0.f),
     m_y1(0.f),
     m_y2(0.f),
-    m_lineType(PLAIN),
     m_layer(nullptr)
 {
 }

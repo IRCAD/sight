@@ -27,7 +27,6 @@ SGrid2D::SGrid2D() noexcept :
     m_yMax(0.f),
     m_xSpacing(10.f),
     m_ySpacing(10.f),
-    m_lineType(PLAIN),
     m_layer(nullptr)
 {
 }

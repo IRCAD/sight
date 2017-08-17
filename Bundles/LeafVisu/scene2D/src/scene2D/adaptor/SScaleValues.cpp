@@ -387,7 +387,7 @@ void SScaleValues::processInteraction( ::fwRenderQt::data::Event& _event)
 {
     if( _event.getType() == ::fwRenderQt::data::Event::Resize)
     {
-        updating();
+        this->updating();
     }
 }
 

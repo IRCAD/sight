@@ -47,12 +47,6 @@ class SCENE2D_CLASS_API SGrid2D : public ::fwRenderQt::IAdaptor
 public:
     fwCoreServiceClassDefinitionsMacro( (SGrid2D)(::fwRenderQt::IAdaptor) );
 
-    enum LineType
-    {
-        PLAIN,
-        DOTTED
-    };
-
     /// Constructor, set the x and y spacing to 10
     SCENE2D_API SGrid2D() noexcept;
 
@@ -95,9 +89,6 @@ private:
 
     /// Bounds of the grid and spacing values for each axis.
     float m_xMin, m_xMax, m_yMin, m_yMax, m_xSpacing, m_ySpacing;
-
-    /// The type of the lines.
-    LineType m_lineType;
 
     /// The pen.
     QPen m_pen;

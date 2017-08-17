@@ -31,35 +31,35 @@ namespace adaptor
  * <p>Each change onto the shutter will cause this adaptor to update the managed
  * ::fwRenderQt::data::Viewport object.</p>
  *
- * Configuration example:
+ * @section XML XML Configuration
+ *
    @code{.xml}
-   <service uid="viewSelector" type="::scene2D::adaptor::SViewportRangeSelector">
+   <service uid="viewportRange" type="::scene2D::adaptor::SViewportRangeSelector">
        <inout key="viewport"  uid="..." />
-       <config xAxis="xAxis" yAxis="yAxis" zValue="5" />
+       <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1000" initialPos="-100" />
    </service>
    @endcode
  *
- * \b objectId  :   the viewport object that is updated by this adaptor
+ * @subsection In In
+ * - \b viewport [::fwRenderQt::data::Viewport]: the viewport object that is updated by this adaptor.
  *
- * \b xAxis     : see ::fwRenderQt::IAdaptor
- *
- * \b yAxis     : see ::fwRenderQt::IAdaptor
- *
- * \b zValue    : see ::fwRenderQt::IAdaptor
- *
- * \b initialX  : initial position of the shutter on the X axis
- *
- * \b initialWidth  : initial width of the shutter
+ * @subsection Configuration Configuration:
+ * - \b config (mandatory): contains the adaptor configuration
+ *    - \b xAxis (optional): x axis associated to the adaptor
+ *    - \b yAxis (optional): y axis associated to the adaptor
+ *    - \b zValue (optional, default=0): z value of the layer
+ *    - \b initialPos (optional, default 0.): initial position of the shutter on the X axis
+ *    - \b initialWidth (optional, default 0.): initial width of the shutter
  *
  * This adaptor is intended to be used with a ::scene2D::adaptor::ViewportUpdater adaptor.
  */
-class SViewportRangeSelector : public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API SViewportRangeSelector : public ::fwRenderQt::IAdaptor
 {
 
 public:
     fwCoreServiceClassDefinitionsMacro( (SViewportRangeSelector)(::fwRenderQt::IAdaptor) );
-    SViewportRangeSelector() noexcept;
-    ~SViewportRangeSelector() noexcept;
+    SCENE2D_API SViewportRangeSelector() noexcept;
+    SCENE2D_API ~SViewportRangeSelector() noexcept;
 
 protected:
     SCENE2D_API void configuring();

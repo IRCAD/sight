@@ -30,7 +30,6 @@ SGridFromFloat::SGridFromFloat() noexcept :
     m_yMax(10.f),
     m_xSpacing(10.f),
     m_ySpacing(10.f),
-    m_lineType(PLAIN),
     m_layer(nullptr)
 {
 }

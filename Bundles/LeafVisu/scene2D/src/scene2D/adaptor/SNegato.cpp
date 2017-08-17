@@ -37,7 +37,6 @@ namespace scene2D
 {
 namespace adaptor
 {
-static const ::fwServices::IService::KeyType s_VIEWPORT_INOUT     = "viewport";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
 static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
 
