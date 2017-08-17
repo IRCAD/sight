@@ -9,7 +9,7 @@
 #include "visuVTKAdaptor/SMaterial.hpp"
 #include "visuVTKAdaptor/SMeshNormals.hpp"
 #include "visuVTKAdaptor/STexture.hpp"
-#include "visuVTKAdaptor/Transform.hpp"
+#include "visuVTKAdaptor/STransform.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
@@ -583,14 +583,14 @@ void SMesh::createTransformService()
     {
         vtkTransform* vtkFieldTransform = vtkTransform::New();
         vtkFieldTransform->Identity();
-        m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
+        m_transformService = ::visuVTKAdaptor::STransform::dynamicCast(
             ::fwServices::add< ::fwRenderVTK::IAdaptor > (
                 fieldTransform,
                 "::visuVTKAdaptor::Transform"
                 )
             );
         SLM_ASSERT("Transform service NULL", m_transformService.lock());
-        ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
+        ::visuVTKAdaptor::STransform::sptr transformService = m_transformService.lock();
 
         transformService->setRenderService( this->getRenderService()  );
         transformService->setRendererId( this->getRendererId()       );

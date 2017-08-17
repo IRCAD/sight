@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_TRANSFORM_HPP__
-#define __VISUVTKADAPTOR_TRANSFORM_HPP__
+#ifndef __VISUVTKADAPTOR_STRANSFORM_HPP__
+#define __VISUVTKADAPTOR_STRANSFORM_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -22,19 +22,34 @@ namespace visuVTKAdaptor
 {
 
 /**
- * @brief Adaptor to manage a TransformationMatrix3D from a vtkTransform and vice versa
+ * @brief Adaptor binding a TransformationMatrix3D to a vtkTransform.
+ * @code{.xml}
+    <service type="::visuVTKAdaptor::STransform" >
+        <inout key="tm3d" uid="..." />
+        <config transform="transform" autoRender="true" parent="parentTransform" />
+    </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b tm3d [::fwData::TransformationMatrix3D]: f4s transform matrix.
+ *
+ * @subsection Configuration Configuration
+ *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor
+ *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
+ *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
+ *  - \b parent (optional): id of the parent vtkTransform, it will be concatenated with this current vtkTransform.
  */
-class VISUVTKADAPTOR_CLASS_API Transform : public ::fwRenderVTK::IAdaptor
+class VISUVTKADAPTOR_CLASS_API STransform : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Transform)(::fwRenderVTK::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STransform)(::fwRenderVTK::IAdaptor) );
 
     /// Constructor
-    VISUVTKADAPTOR_API Transform() noexcept;
+    VISUVTKADAPTOR_API STransform() noexcept;
+
     /// Destructor
-    VISUVTKADAPTOR_API virtual ~Transform() noexcept;
+    VISUVTKADAPTOR_API virtual ~STransform() noexcept;
 
     /// Set a new vtkTransform
     VISUVTKADAPTOR_API void setTransform(vtkTransform* t);
@@ -51,31 +66,18 @@ public:
 protected:
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doStart();
+    VISUVTKADAPTOR_API void starting();
 
-    /**
-     * @brief Configure the adaptor.
-     * @code{.xml}
-       <adaptor id="tmAdaptor" class="::visuVTKAdaptor::Transform" objectId="tm3dKey" >
-        <config transform="transform" autoRender="true" parent="parentTransform" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor
-     *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
-     *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
-     *  - \b parent (optional): id of the parent vtkTransform, it will be concatenated with this current vtkTransform.
-     */
-    VISUVTKADAPTOR_API void doConfigure();
+    VISUVTKADAPTOR_API void configuring();
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void doSwap();
+    VISUVTKADAPTOR_API void swapping();
 
     /// Updates the vtkTransform from the TransformationMatrix3D
-    VISUVTKADAPTOR_API void doUpdate();
+    VISUVTKADAPTOR_API void updating();
 
     /// Does nothing
-    VISUVTKADAPTOR_API void doStop();
+    VISUVTKADAPTOR_API void stopping();
 
     /// Current vtkTransform
     vtkTransform* m_transform;
@@ -92,4 +94,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_TRANSFORM_HPP__
+#endif // __VISUVTKADAPTOR_STRANSFORM_HPP__

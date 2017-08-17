@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Transform.hpp"
+#include "visuVTKAdaptor/STransform.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -29,7 +29,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static TransformCallback* New(::visuVTKAdaptor::Transform* adaptor)
+    static TransformCallback* New(::visuVTKAdaptor::STransform* adaptor)
     {
         TransformCallback* cb = new TransformCallback;
         cb->m_adaptor = adaptor;
@@ -51,18 +51,20 @@ public:
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::Transform* m_adaptor;
+    ::visuVTKAdaptor::STransform* m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Transform,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STransform,
                          ::fwData::TransformationMatrix3D );
 
 namespace visuVTKAdaptor
 {
 
+static ::fwServices::IService::KeyType s_TM3D_INOUT = "tm3d";
+
 //------------------------------------------------------------------------------
 
-Transform::Transform() noexcept :
+STransform::STransform() noexcept :
     m_transform(nullptr),
     m_transformCommand(TransformCallback::New(this))
 {
@@ -70,7 +72,7 @@ Transform::Transform() noexcept :
 
 //------------------------------------------------------------------------------
 
-Transform::~Transform() noexcept
+STransform::~STransform() noexcept
 {
     if( m_transformCommand )
     {
@@ -81,32 +83,24 @@ Transform::~Transform() noexcept
 
 //------------------------------------------------------------------------------
 
-void Transform::doConfigure()
+void STransform::configuring()
 {
-    assert(m_configuration->getName() == "config");
+    this->configureParams();
 
-    if ( m_configuration->hasAttribute( "autoRender" ) )
-    {
-        const std::string autoRender = m_configuration->getAttributeValue("autoRender");
-        const bool autoRenderValue   = (autoRender == "true");
-        this->setAutoRender(autoRenderValue);
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if ( m_configuration->hasAttribute( "parent" ) )
-    {
-        m_parentId = m_configuration->getAttributeValue("parent");
+    const bool autoRender = config.get<bool>("autoRender", true);
 
-        if(m_parentId.empty())
-        {
-            SLM_ERROR("Can't find vtkTransform '" + m_parentId + "'");
-        }
-    }
+    this->setAutoRender(autoRender);
+    m_parentId = config.get< std::string >("parent", "");
 }
 
 //------------------------------------------------------------------------------
 
-void Transform::doStart()
+void STransform::starting()
 {
+    this->initialize();
+
     if(!m_transformId.empty())
     {
         m_renderService.lock()->getOrAddVtkTransform(m_transformId);
@@ -116,13 +110,13 @@ void Transform::doStart()
         m_parentTransform = m_renderService.lock()->getOrAddVtkTransform(m_parentId);
     }
 
-    this->doUpdate();
-    getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+    this->updating();
+    this->getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
 }
 
 //------------------------------------------------------------------------------
 
-void Transform::updateFromVtk()
+void STransform::updateFromVtk()
 {
     vtkTransform* vtkTrf = this->getTransform();
 
@@ -163,19 +157,19 @@ void Transform::updateFromVtk()
 
 //------------------------------------------------------------------------------
 
-int Transform::getStartPriority()
+int STransform::getStartPriority()
 {
     return -10;
 }
 
 //------------------------------------------------------------------------------
 
-void Transform::doUpdate()
+void STransform::updating()
 {
     vtkTransform* vtkTrf = this->getTransform();
 
     vtkTrf->RemoveObserver( m_transformCommand );
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TM3D_INOUT);
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
     {
@@ -208,7 +202,7 @@ void Transform::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void Transform::setTransform(vtkTransform* t)
+void STransform::setTransform(vtkTransform* t)
 {
     if ( m_transform != t )
     {
@@ -226,7 +220,7 @@ void Transform::setTransform(vtkTransform* t)
 
 //------------------------------------------------------------------------------
 
-vtkTransform* Transform::getTransform()
+vtkTransform* STransform::getTransform()
 {
     vtkTransform* t = m_transform;
     if (t == 0)
@@ -238,14 +232,14 @@ vtkTransform* Transform::getTransform()
 
 //------------------------------------------------------------------------------
 
-void Transform::doSwap()
+void STransform::swapping()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Transform::doStop()
+void STransform::stopping()
 {
     this->getTransform()->RemoveObserver(m_transformCommand);
     this->unregisterServices();

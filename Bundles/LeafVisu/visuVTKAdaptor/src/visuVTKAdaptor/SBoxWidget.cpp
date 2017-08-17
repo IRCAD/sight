@@ -8,8 +8,6 @@
 
 #include "visuVTKAdaptor/SBoxWidget.hpp"
 
-#include "visuVTKAdaptor/Transform.hpp"
-
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>

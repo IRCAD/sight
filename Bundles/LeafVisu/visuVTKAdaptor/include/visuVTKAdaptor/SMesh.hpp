@@ -35,7 +35,7 @@ class Material;
 namespace visuVTKAdaptor
 {
 
-class Transform;
+class STransform;
 
 class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
 
@@ -246,7 +246,7 @@ protected:
     ::fwRenderVTK::IAdaptor::wptr m_normalsService;
 
     vtkTransform* m_transform;
-    WPTR(::visuVTKAdaptor::Transform) m_transformService;
+    WPTR(::visuVTKAdaptor::STransform) m_transformService;
 
     /**
      * @brief Type for generation of texture coordinates
