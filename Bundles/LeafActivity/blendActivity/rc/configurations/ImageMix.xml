@@ -196,10 +196,7 @@
                 <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYA}" />
                 <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYB}" />
             </inout>
-            <config vtkimageregister="imageBlend">
-                <image objectId="backgroundImage" tfalpha="no" selectedTFKey="${SELECTED_TF_KEYA}" tfSelectionFwID="TFSelections" />
-                <image objectId="frontImage" tfalpha="yes" selectedTFKey="${SELECTED_TF_KEYB}" tfSelectionFwID="TFSelections" />
-            </config>
+            <config vtkimageregister="imageBlend" />
         </service>
 
         <service uid="nameAdaptor" type="::visuVTKAdaptor::SText">
@@ -208,7 +205,7 @@
 
         <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
         <service uid="myImagesProbeCursor" type="::visuVTKAdaptor::SImagesProbeCursor">
-            <inout group="image">
+            <inout group="image" autoConnect="yes">
                 <key uid="${backgroundImageUid}" name="background" />
                 <key uid="${frontImageUid}" name="front" />
             </inout>
