@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/BoxWidget.hpp"
+#include "visuVTKAdaptor/SBoxWidget.hpp"
 
 #include "visuVTKAdaptor/Transform.hpp"
 
@@ -15,8 +15,6 @@
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <vtkBoxRepresentation.h>
 #include <vtkBoxWidget2.h>
@@ -37,7 +35,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor)
+    static BoxClallback* New(::visuVTKAdaptor::SBoxWidget* adaptor)
     {
         BoxClallback* cb = new BoxClallback;
         cb->m_adaptor = adaptor;
@@ -54,22 +52,23 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
+    virtual void Execute( ::vtkObject*, unsigned long, void* )
     {
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::BoxWidget* m_adaptor;
+    ::visuVTKAdaptor::SBoxWidget* m_adaptor;
 };
 
-// BoxWidget
+// SBoxWidget
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::BoxWidget,
-                         ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SBoxWidget);
+
+static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
-BoxWidget::BoxWidget() noexcept :
+SBoxWidget::SBoxWidget() noexcept :
     ::fwRenderVTK::IAdaptor(),
     m_transform(nullptr),
     m_vtkBoxWidget(nullptr),
@@ -82,34 +81,37 @@ BoxWidget::BoxWidget() noexcept :
 
 //------------------------------------------------------------------------------
 
-BoxWidget::~BoxWidget() noexcept
+SBoxWidget::~SBoxWidget() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doConfigure()
+void SBoxWidget::configuring()
 {
-    if (m_configuration->hasAttribute("scaleFactor"))
-    {
-        m_scaleFactor = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("scaleFactor"));
-    }
+    this->configureParams();
 
-    if (m_configuration->hasAttribute("enableScaling"))
-    {
-        SLM_ASSERT("Wrong value for 'enableScaling', must be 'true' or 'false'",
-                   m_configuration->getAttributeValue("enableScaling") == "yes" ||
-                   m_configuration->getAttributeValue("enableScaling") == "no");
-        m_enableScaling = (m_configuration->getAttributeValue("enableScaling") == "yes");
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_scaleFactor = config.get("scaleFactor", 1.);
+
+    const std::string enableScaling = config.get("enableScaling", "no");
+
+    SLM_ASSERT("Wrong value for 'enableScaling', must be 'yes' or 'no'",
+               enableScaling == "yes" || enableScaling == "no");
+
+    m_enableScaling = (enableScaling == "yes");
 }
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doStart()
+void SBoxWidget::starting()
 {
-    m_transform = getTransform();
-    SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
+    this->initialize();
+
+    SLM_ASSERT("vtk transform must be defined.", !this->getTransformId().empty());
+    m_transform = this->getRenderService()->getOrAddVtkTransform(this->getTransformId());
+
     fwVtkBoxRepresentation* boxRep = fwVtkBoxRepresentation::New();
     boxRep->SetPlaceFactor(m_scaleFactor);
 
@@ -129,33 +131,24 @@ void BoxWidget::doStart()
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doStop()
+void SBoxWidget::stopping()
 {
-    unregisterServices();
-
     m_transform->Delete();
     m_transform = 0;
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     m_vtkBoxWidget->Delete();
     m_vtkBoxWidget = 0;
-
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doSwap()
-{
-    doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void BoxWidget::updateFromVtk()
+void SBoxWidget::updateFromVtk()
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
 
@@ -166,7 +159,7 @@ void BoxWidget::updateFromVtk()
         m_transform->Modified();
     }
 
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     vtkMatrix4x4* mat = m_transform->GetMatrix();
 
     for(int lt = 0; lt < 4; lt++)
@@ -188,14 +181,15 @@ void BoxWidget::updateFromVtk()
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doUpdate()
+void SBoxWidget::updating()
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     if( repr )
     {
+        ::fwData::TransformationMatrix3D::sptr transMat =
+            this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
         vtkMatrix4x4* mat = m_transform->GetMatrix();
-        ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
         for(int lt = 0; lt < 4; lt++)
         {
             for(int ct = 0; ct < 4; ct++)
@@ -208,6 +202,17 @@ void BoxWidget::doUpdate()
         this->setVtkPipelineModified();
     }
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SBoxWidget::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
