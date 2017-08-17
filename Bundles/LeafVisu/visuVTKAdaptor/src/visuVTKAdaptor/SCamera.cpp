@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Camera2.hpp"
+#include "visuVTKAdaptor/SCamera.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -27,24 +27,24 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-class Camera2Clallback : public ::vtkCommand
+class CameraClallback : public ::vtkCommand
 {
 public:
 
     //------------------------------------------------------------------------------
 
-    static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor)
+    static CameraClallback* New(::visuVTKAdaptor::SCamera* adaptor)
     {
-        Camera2Clallback* cb = new Camera2Clallback;
+        CameraClallback* cb = new CameraClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-    Camera2Clallback() :
+    CameraClallback() :
         m_adaptor(nullptr)
     {
     }
-    ~Camera2Clallback()
+    ~CameraClallback()
     {
     }
 
@@ -55,39 +55,43 @@ public:
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::Camera2* m_adaptor;
+    ::visuVTKAdaptor::SCamera* m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Camera2,
-                         ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SCamera);
+
+static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-Camera2::Camera2() noexcept :
-    m_cameraCommand(Camera2Clallback::New(this)),
+SCamera::SCamera() noexcept :
+    m_cameraCommand(CameraClallback::New(this)),
     m_transOrig(nullptr)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Camera2::~Camera2() noexcept
+SCamera::~SCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doConfigure()
+void SCamera::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doStart()
+void SCamera::starting()
 {
+    this->initialize();
+
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
 
     double position[] = {0.0, 0.0, 0.0};
@@ -104,16 +108,18 @@ void Camera2::doStart()
     //camera->SetClippingRange(0.1, 10000);
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doUpdate()
+void SCamera::updating()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver( m_cameraCommand );
 
-    ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::csptr transMat =
+        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
@@ -123,7 +129,7 @@ void Camera2::doUpdate()
     {
         for(int ct = 0; ct < 4; ct++)
         {
-            mat->SetElement(lt, ct, transMat->getCoefficient(lt, ct));
+            mat->SetElement(lt, ct, transMat->getCoefficient(static_cast<size_t>(lt), static_cast<size_t>(ct)));
         }
     }
 
@@ -151,33 +157,28 @@ void Camera2::doUpdate()
     mat->Delete();
     oldTrans->Delete();
     trans->Delete();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::doSwap()
-{
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Camera2::doStop()
+void SCamera::stopping()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver( m_cameraCommand );
     this->unregisterServices();
     m_transOrig->Delete();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Camera2::updateFromVtk()
+void SCamera::updateFromVtk()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver( m_cameraCommand );
 
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
     ::fwData::mt::ObjectWriteLock lock(trf);
 
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
@@ -192,7 +193,7 @@ void Camera2::updateFromVtk()
     {
         for(int ct = 0; ct < 4; ct++)
         {
-            trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
+            trf->setCoefficient(static_cast<size_t>(lt), static_cast<size_t>(ct), mat->GetElement(lt, ct));
         }
     }
 
@@ -207,6 +208,16 @@ void Camera2::updateFromVtk()
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
 
     trans->Delete();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SCamera::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------
