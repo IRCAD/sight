@@ -99,7 +99,7 @@ void STrianMeshReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >("mesh" );
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::io::s_DATA_KEY);
         SLM_ASSERT("mesh not instanced", mesh);
 
         ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
