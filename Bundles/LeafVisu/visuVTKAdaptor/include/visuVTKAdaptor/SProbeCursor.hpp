@@ -57,11 +57,13 @@ class VISUVTKADAPTOR_CLASS_API SProbeCursor : public  ::fwDataTools::helper::Med
 public:
     fwCoreServiceClassDefinitionsMacro( (SProbeCursor)(::fwRenderVTK::IAdaptor) );
 
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT;
+
     VISUVTKADAPTOR_API SProbeCursor() noexcept;
 
     VISUVTKADAPTOR_API virtual ~SProbeCursor() noexcept;
 
-    VISUVTKADAPTOR_API void updateView( double world[3] );
+    VISUVTKADAPTOR_API virtual void updateView( double world[3] );
 
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
@@ -87,7 +89,7 @@ protected:
     void buildTextActor();
     void buildPolyData();
 
-    void computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] );
+    void computeCrossExtremity(fwData::Image::csptr image, const int probeSlice[3], double worldCross[4][3] );
 
     float m_priority;
 

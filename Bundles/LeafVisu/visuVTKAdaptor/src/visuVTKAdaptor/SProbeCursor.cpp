@@ -166,7 +166,7 @@ protected:
 
 };
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+const ::fwCom::Slots::SlotKeyType SProbeCursor::s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -266,12 +266,7 @@ void SProbeCursor::starting()
     this->getInteractor()->AddObserver(START_PROBE_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_PROBE_EVENT, m_vtkObserver, m_priority);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    this->updateImageInfos(image);
-    this->setVisibility(false);
-    this->requestRender();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -349,7 +344,7 @@ void SProbeCursor::updateView( double world[3] )
 
         // update polyData
         double worldCross[4][3];
-        this->computeCrossExtremity( index, worldCross);
+        this->computeCrossExtremity(image, index, worldCross);
 
         vtkPoints* points = m_cursorPolyData->GetPoints();
         for ( int i = 0; i < 4; ++i)
@@ -365,11 +360,9 @@ void SProbeCursor::updateView( double world[3] )
 
 //------------------------------------------------------------------------------
 
-void SProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
+void SProbeCursor::computeCrossExtremity(::fwData::Image::csptr image, const int probeSlice[3],
+                                         double worldCross[4][3] )
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
     int sliceIndex[3]; // the current sliceIndex
 
     sliceIndex[2] = m_axialIndex->value();
