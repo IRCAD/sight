@@ -6,9 +6,6 @@
     <extension implements="::fwServices::registry::AppConfig2">
     <id>tutoGuiConfig</id>
         <config>
-        <!-- ***************************************** Begin Objects declaration ***************************************** -->
-        <object uid="image" type="::fwData::Image" />
-        <!-- ***************************************** End Objects declaration ******************************************* -->
 
         <!-- ***************************************** Begin layouts declaration ***************************************** -->
         <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
