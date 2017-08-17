@@ -12,6 +12,8 @@
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -81,9 +83,15 @@ void Plugin::initialize()
         return;
     }
 
-    m_mesh      = ::fwData::Mesh::New();
-    m_readerSrv = ::fwServices::add(m_mesh, "::io::IReader",
-                                    "::ioData::STrianMeshReader");
+    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+
+    m_mesh = ::fwData::Mesh::New();
+
+    // create the service
+    m_readerSrv = srvFactory->create("::ioData::STrianMeshReader");
+    // register the mesh to the service
+    ::fwServices::OSR::registerService(m_mesh, "data", ::fwServices::IService::AccessType::INOUT, m_readerSrv);
+
     ::fwRuntime::EConfigurationElement::sptr readerCfg         = ::fwRuntime::EConfigurationElement::New( "service" );
     ::fwRuntime::EConfigurationElement::sptr readerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     readerFilenameCfg->setValue(trianMeshPath);
@@ -91,8 +99,11 @@ void Plugin::initialize()
     m_readerSrv->setConfiguration( readerCfg );
     m_readerSrv->configure();
 
-    m_writerSrv = ::fwServices::add(m_mesh, "::io::IWriter",
-                                    "::ioVTK::SMeshWriter");
+    // create the service
+    m_writerSrv = srvFactory->create("::ioVTK::SMeshWriter");
+    // register the mesh to the service
+    ::fwServices::OSR::registerService(m_mesh, "data", ::fwServices::IService::AccessType::INPUT, m_writerSrv);
+
     ::fwRuntime::EConfigurationElement::sptr writerCfg         = ::fwRuntime::EConfigurationElement::New( "service" );
     ::fwRuntime::EConfigurationElement::sptr writerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     writerFilenameCfg->setValue(vtkMeshPath);
