@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Cube.hpp"
+#include "visuVTKAdaptor/SCube.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -13,15 +13,38 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Cube, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SCube);
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-void Cube::doStart()
+SCube::SCube() noexcept
 {
+
+}
+
+//------------------------------------------------------------------------------
+
+SCube::~SCube() noexcept
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void SCube::configuring()
+{
+    this->configureParams();
+}
+
+//------------------------------------------------------------------------------
+
+void SCube::starting()
+{
+    this->initialize();
+
     vtkCubeSource* cube       = vtkCubeSource::New();
     vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
     mapper->SetInputConnection(cube->GetOutputPort());
@@ -29,13 +52,22 @@ void Cube::doStart()
     actor->SetMapper(mapper);
     this->addToRenderer(actor);
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Cube::doStop()
+void SCube::updating()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
+void SCube::stopping()
 {
     this->removeAllPropFromRenderer();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

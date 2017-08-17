@@ -50,7 +50,7 @@ namespace visuVTKAdaptor
             <key uid="..." selectedTFKey="selected2" />
         </inout>
         <config renderer="default" vtkimageregister="imageBlend" checkerboardDivision="10" />
-    </adaptor>
+    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: group containing the images to displays the information. (at least two images are
