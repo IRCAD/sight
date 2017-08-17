@@ -38,7 +38,7 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPickerInter
 namespace visuVTKAdaptor
 {
 
-static const std::map< unsigned long, ::fwDataTools::PickingInfo::Event > s_vtkEventIDConversion
+const std::map< unsigned long, ::fwDataTools::PickingInfo::Event > SPickerInteractor::s_vtkEventIDConversion
 {
     { vtkCommand::LeftButtonReleaseEvent, ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP },
     { vtkCommand::RightButtonReleaseEvent, ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP },
@@ -153,8 +153,8 @@ public:
                     info.m_closestPointId = picker->GetPointId();
                 }
 
-                const auto iter = s_vtkEventIDConversion.find(eventId);
-                SLM_ASSERT("Unknown eventId", iter != s_vtkEventIDConversion.end());
+                const auto iter = SPickerInteractor::s_vtkEventIDConversion.find(eventId);
+                SLM_ASSERT("Unknown eventId", iter != SPickerInteractor::s_vtkEventIDConversion.end());
                 info.m_eventId = iter->second;
 
                 info.m_keyPressed = caller->GetKeyCode();

@@ -24,10 +24,7 @@ namespace visuVTKAdaptor
 {
 
 /**
- * @brief brief description
- *
- * long description
- *
+ * @brief This service emits a signal when the user click on a actor in the scene
  *
  * @section Signals Signals
  * - \b picked(::fwDataTools::PickingInfo) : emitted when the user clicks in the scene
@@ -87,6 +84,8 @@ public:
         KEY_PRESS           = vtkCommand::KeyPressEvent
     } EventID;
     typedef std::set< EventID > SetEventIdType;
+
+    static const std::map< unsigned long, ::fwDataTools::PickingInfo::Event > s_vtkEventIDConversion;
 
 protected:
 

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImagePickerInteractor.hpp"
+#include "visuVTKAdaptor/SImagePickerInteractor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -33,38 +33,16 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image );
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagePickerInteractor);
 
 namespace visuVTKAdaptor
 {
 
-static const std::map< unsigned long, ::fwDataTools::PickingInfo::Event > s_vtkEventIDConversion
-{
-    { vtkCommand::LeftButtonReleaseEvent, ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP },
-    { vtkCommand::RightButtonReleaseEvent, ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP },
-    { vtkCommand::MiddleButtonReleaseEvent, ::fwDataTools::PickingInfo::Event::MOUSE_MIDDLE_UP },
-    { vtkCommand::MouseWheelForwardEvent, ::fwDataTools::PickingInfo::Event::MOUSE_WHEELFORWARD },
-    { vtkCommand::LeftButtonPressEvent, ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN },
-    { vtkCommand::RightButtonPressEvent, ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_DOWN },
-    { vtkCommand::MiddleButtonPressEvent, ::fwDataTools::PickingInfo::Event::MOUSE_MIDDLE_DOWN },
-    { vtkCommand::MouseWheelBackwardEvent, ::fwDataTools::PickingInfo::Event::MOUSE_WHEELBACKWARD },
-    { vtkCommand::MouseMoveEvent, ::fwDataTools::PickingInfo::Event::MOUSE_MOVE },
-    { vtkCommand::KeyPressEvent, ::fwDataTools::PickingInfo::Event::KEY_PRESS }
-};
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
-ImagePickerInteractor::MapEventIdType ImagePickerInteractor::m_eventIdConversion
-{
-    { std::string("MOUSE_LEFT_UP"), MOUSE_LEFT_UP },
-    { std::string("MOUSE_RIGHT_UP"), MOUSE_RIGHT_UP },
-    { std::string("MOUSE_MIDDLE_UP"), MOUSE_MIDDLE_UP },
-    { std::string("MOUSE_WHEELBACKWARD"), MOUSE_WHEELBACKWARD },
-    { std::string("MOUSE_LEFT_DOWN"), MOUSE_LEFT_DOWN },
-    { std::string("MOUSE_RIGHT_DOWN"), MOUSE_RIGHT_DOWN },
-    { std::string("MOUSE_MIDDLE_DOWN"), MOUSE_MIDDLE_DOWN },
-    { std::string("MOUSE_WHEELBACKWARD"), MOUSE_WHEELBACKWARD },
-    { std::string("MOUSE_MOVE"), MOUSE_MOVE },
-    { std::string("KEY_PRESS"), KEY_PRESS }
-};
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+
+//------------------------------------------------------------------------------
 
 class ImagePickerInteractorCallback : public vtkCommand
 {
@@ -121,12 +99,12 @@ public:
 
     void process(vtkRenderWindowInteractor* caller, unsigned long eventId) // from
     {
-        if( m_eventId->find( static_cast< ImagePickerInteractor::EventID>(eventId) ) != m_eventId->end() )
+        if( m_eventId->find( static_cast< SImagePickerInteractor::EventID>(eventId) ) != m_eventId->end() )
         {
 #ifdef __linux
             /// We receive way too many MOUSE_MOVE events on Linux
             /// HACK_FB: Skip some of them...
-            if(eventId == ImagePickerInteractor::MOUSE_MOVE)
+            if(eventId == SImagePickerInteractor::MOUSE_MOVE)
             {
                 m_skipMove++;
                 if( m_skipMove % 10 )
@@ -147,8 +125,8 @@ public:
 
                 m_adaptor->worldToImageSliceIndex(world, info.m_worldPos);
 
-                const auto iter = s_vtkEventIDConversion.find(eventId);
-                SLM_ASSERT("Unknown eventId", iter != s_vtkEventIDConversion.end());
+                const auto iter = SPickerInteractor::s_vtkEventIDConversion.find(eventId);
+                SLM_ASSERT("Unknown eventId", iter != SPickerInteractor::s_vtkEventIDConversion.end());
                 info.m_eventId = iter->second;
 
                 info.m_keyPressed = caller->GetKeyCode();
@@ -158,8 +136,8 @@ public:
                 info.m_modifierMask |=
                     caller->GetShiftKey() ? ::fwDataTools::PickingInfo::SHIFT : ::fwDataTools::PickingInfo::NONE;
 
-                auto sig = m_adaptor->signal<ImagePickerInteractor::PickedSignalType>(
-                    ImagePickerInteractor::s_PICKED_SIGNAL);
+                auto sig = m_adaptor->signal<SPickerInteractor::PickedSignalType>(
+                    SPickerInteractor::s_PICKED_SIGNAL);
                 sig->asyncEmit(info);
             }
         }
@@ -168,7 +146,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( ImagePickerInteractor::sptr adaptor)
+    void setAdaptor( SImagePickerInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
@@ -182,74 +160,49 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setEventId(ImagePickerInteractor::SetEventIdType* eventId)
+    void setEventId(SImagePickerInteractor::SetEventIdType* eventId)
     {
         m_eventId = eventId;
     }
 
 protected:
-    ImagePickerInteractor::sptr m_adaptor;
+    SImagePickerInteractor::sptr m_adaptor;
     vtkAbstractPropPicker* m_picker;
-    ImagePickerInteractor::SetEventIdType* m_eventId;
-    ImagePickerInteractor::PickedSignalType::sptr m_sigPickedCell; ///< signal to emit
+    SImagePickerInteractor::SetEventIdType* m_eventId;
+    SImagePickerInteractor::PickedSignalType::sptr m_sigPickedCell; ///< signal to emit
 #ifdef __linux
     unsigned int m_skipMove = 0u;
 #endif // __linux
 };
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-
-const ::fwCom::Signals::SignalKeyType ImagePickerInteractor::s_PICKED_SIGNAL = "picked";
-
 //------------------------------------------------------------------------------
 
-ImagePickerInteractor::ImagePickerInteractor() noexcept :
-    m_interactionCommand(nullptr)
+SImagePickerInteractor::SImagePickerInteractor() noexcept
 {
-    newSignal<PickedSignalType>(s_PICKED_SIGNAL);
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ImagePickerInteractor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SImagePickerInteractor::updateSliceIndex, this);
 }
 
 //------------------------------------------------------------------------------
 
-ImagePickerInteractor::~ImagePickerInteractor() noexcept
+SImagePickerInteractor::~SImagePickerInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doConfigure()
+void SImagePickerInteractor::configuring()
 {
-    SLM_ASSERT("Required element 'config' is missing.", m_configuration->getName() == "config");
-
-    if (m_configuration->hasAttribute("event"))
-    {
-        const std::string eventTxt = m_configuration->getAttributeValue("event");
-
-        ::boost::char_separator<char> sep(", ;");
-        ::boost::tokenizer< ::boost::char_separator<char> > tok(eventTxt, sep);
-        for( const auto it : tok)
-        {
-            const auto iter = m_eventIdConversion.find(it);
-            SLM_ASSERT("Unknown eventId '"+ it+"'.", iter != m_eventIdConversion.end());
-            m_eventId.insert(iter->second);
-        }
-    }
-    else
-    {
-        for(auto elt : m_eventIdConversion)
-        {
-            m_eventId.insert(elt.second);
-        }
-    }
+    this->SPickerInteractor::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doStart()
+void SImagePickerInteractor::starting()
 {
+    this->initialize();
+
     ImagePickerInteractorCallback* observer = ImagePickerInteractorCallback::New();
-    observer->setAdaptor( ImagePickerInteractor::dynamicCast(this->getSptr()) );
+    observer->setAdaptor( SImagePickerInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setEventId(&m_eventId);
 
@@ -268,21 +221,25 @@ void ImagePickerInteractor::doStart()
     interactor->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_interactionCommand, priority);
     interactor->AddObserver(vtkCommand::KeyPressEvent, m_interactionCommand, priority);
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doUpdate()
+void SImagePickerInteractor::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
     this->updateImageInfos(image);
 }
 
 //-----------------------------------------------------------------------------
 
-void ImagePickerInteractor::updateSliceIndex(int axial, int frontal, int sagittal)
+void SImagePickerInteractor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
     m_axialIndex->value()    = axial;
     m_frontalIndex->value()  = frontal;
@@ -291,15 +248,7 @@ void ImagePickerInteractor::updateSliceIndex(int axial, int frontal, int sagitta
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::doSwap()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->updateImageInfos(image);
-}
-
-//------------------------------------------------------------------------------
-
-void ImagePickerInteractor::doStop()
+void SImagePickerInteractor::stopping()
 {
     vtkRenderWindowInteractor* interactor = this->getInteractor();
     interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent, m_interactionCommand);
@@ -315,17 +264,16 @@ void ImagePickerInteractor::doStop()
 
     m_interactionCommand->Delete();
     m_interactionCommand = NULL;
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType ImagePickerInteractor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SImagePickerInteractor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
