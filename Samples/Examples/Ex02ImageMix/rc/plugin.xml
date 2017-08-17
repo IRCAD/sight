@@ -4,371 +4,339 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>Ex02ImageMix</id>
         <config>
 
-            <object type="::fwData::Composite">
-                <service uid="MainFrame" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
-                    <gui>
-                        <frame>
-                            <name>Ex02ImageMix</name>
-                            <icon>@BUNDLE_PREFIX@/Ex02ImageMix_0-1/tuto.ico</icon>
-                            <minSize width="800" height="600" />
-                        </frame>
-                        <menuBar />
-                    </gui>
-                    <registry>
-                        <menuBar sid="MenuBar" start="yes" />
-                        <view sid="mainView" start="yes" />
-                    </registry>
-                </service>
-                <service uid="MenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
-                    <gui>
-                        <layout>
-                            <menu name="File" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menu sid="menu_File" start="yes" />
-                    </registry>
-                </service>
-                <service uid="mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::CardinalLayoutManager">
-                            <view align="left" />
-                            <view align="center" />
-                            <view align="right" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="editorsView" start="yes" />
-                        <view sid="blendSceneView" start="yes" />
-                        <view sid="imagesView" start="yes" />
-                    </registry>
-                </service>
-                <service uid="editorsView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="vertical" />
-                            <view proportion="0" />
-                            <view proportion="0" />
-                            <spacer/>
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="bgImgEditorsView" />
-                        <view sid="frontImgEditorsView" />
-                    </registry>
-                </service>
+            <!-- backgroundImage description -->
+            <object uid="backgroundImageUID" type="::fwData::Image" />
+            <!-- frontImage description -->
+            <object uid="frontImageUID" type="::fwData::Image" />
+            <object uid="TFSelections" type="::fwData::Composite" />
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                    <gui>
-                        <layout>
-                            <menuItem name="Open Background Image" shortcut="Ctrl+O" />
-                            <menuItem name="Open Front Image" shortcut="Ctrl+I" />
-                            <separator />
-                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menuItem sid="action_openBackgroundFile" start="yes" />
-                        <menuItem sid="action_openFrontFile" start="yes" />
-                        <menuItem sid="action_quit" start="yes" />
-                    </registry>
-                </service>
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Ex02ImageMix</name>
+                        <icon>@BUNDLE_PREFIX@/Ex02ImageMix_0-1/tuto.ico</icon>
+                        <minSize width="1280" height="720" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                </registry>
+            </service>
+            <service uid="mainView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="left" />
+                        <view align="center" minWidth="400" />
+                        <view align="right" minWidth="400" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="editorsView" start="yes" />
+                    <view sid="blendSceneView" start="yes" />
+                    <view sid="imagesView" start="yes" />
+                </registry>
+            </service>
+            <service uid="editorsView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <spacer/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="bgImgEditorsView" start="yes" />
+                    <view sid="frontImgEditorsView" start="yes" />
+                </registry>
+            </service>
 
-                <service uid="action_openBackgroundFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                    <start uid="readerBackgroundImage" />
-                </service>
-                <service uid="action_openFrontFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                    <start uid="readerFrontImage" />
-                </service>
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open Background Image" shortcut="Ctrl+O" />
+                        <menuItem name="Open Front Image" shortcut="Ctrl+I" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionOpenBackgroundFile" start="yes" />
+                    <menuItem sid="actionOpenFrontFile" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
 
-                <service uid="imagesView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="vertical" />
-                            <view proportion="1" minWidth="300" />
-                            <view proportion="1" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="BgImgGenericScene" start="yes" />
-                        <view sid="FrontImgGenericScene" start="yes" />
-                    </registry>
-                </service>
+            <service uid="actionOpenBackgroundFile" type="::gui::action::SStarter" >
+                <start uid="readerBackgroundImage" />
+            </service>
+            <service uid="actionOpenFrontFile" type="::gui::action::SStarter" >
+                <start uid="readerFrontImage" />
+            </service>
+            <service uid="actionQuit" type="::gui::action::SQuit"  />
 
-                <service uid="blendSceneView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="vertical" />
-                            <view proportion="1" />
-                            <view proportion="0" minHeight="30" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="blendGenericScene" start="yes" />
-                        <view sid="blendSceneBottomView" start="yes" />
-                    </registry>
-                </service>
+            <service uid="imagesView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" minWidth="300" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="bgImgGenericScene" start="yes" />
+                    <view sid="fgImgGenericScene" start="yes" />
+                </registry>
+            </service>
 
-
-                <service uid="blendSceneBottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="horizontal" />
-                            <view proportion="1" />
-                            <view proportion="0" minWidth="30" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="sliderIndexEditor" start="no" />
-                        <view sid="snapshotBlendSceneEditor" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="snapshotBlendSceneEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
-
-                <!-- backgroundImage description -->
-                <item key="backgroundImage">
-                    <object uid="backgroundImageUID" type="::fwData::Image">
-                        <service uid="readerBackgroundImage" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
-                        </service>
-                    </object>
-                </item>
-
-                <!-- frontImage description -->
-                <item key="frontImage">
-                    <object uid="frontImageUID" type="::fwData::Image">
-                        <service uid="readerFrontImage" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
-                        </service>
-                    </object>
-                </item>
-
-                <!-- CompositeVisu description -->
-                <item key="compositeVisu">
-                    <object uid="compositeVisu" type="::fwData::Composite">
-
-                        <service uid="updaterBackImgUID" impl="::ctrlSelection::SManage" autoConnect="no">
-                            <uid>backgroundImageUID</uid>
-                            <compositeKey>backgroundImage</compositeKey>
-                        </service>
-                        <service uid="updaterFrontImgUID" impl="::ctrlSelection::SManage" autoConnect="no">
-                            <uid>frontImageUID</uid>
-                            <compositeKey>frontImage</compositeKey>
-                        </service>
-
-                        <!-- Manager to start/stop/swap services when background/front images are added/deleted/swapped -->
-                        <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                            <mode type="stop" />
-                            <config>
-                                <object id="backgroundImage" type="::fwData::Image">
-
-                                    <service uid="bgImgEditorsView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                                        <gui>
-                                            <layout type="::fwGui::LineLayoutManager">
-                                                <orientation value="vertical" />
-                                                <view proportion="0" caption="[background image] Pixel info" />
-                                                <view proportion="0" caption="[background image] Window Level" />
-                                            </layout>
-                                        </gui>
-                                        <registry>
-                                            <view sid="imageInfo" />
-                                            <view sid="windowLevel" />
-                                        </registry>
-                                    </service>
-                                    <!-- This service convert a simple fwData::Image to medical Image -->
-                                    <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-
-                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-                                        <sliceIndex>axial</sliceIndex>
-                                    </service>
-
-                                    <!-- Editors of background image -->
-                                    <service uid="imageInfo" type="::gui::editor::IEditor" impl="::uiImage::ImageInfo" autoConnect="yes" />
-                                    <service uid="windowLevel" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
-                                        <config selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
-                                    </service>
-
-                                    <proxy channel="interaction_channel">
-                                        <slot>imageInfo/getInteraction</slot>
-                                    </proxy>
-                                </object>
-
-                                <object id="frontImage" type="::fwData::Image">
-                                    <service uid="frontImgEditorsView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                                        <gui>
-                                            <layout type="::fwGui::LineLayoutManager">
-                                                <orientation value="vertical" />
-                                                <view proportion="0" caption="[front image] Pixel info" />
-                                                <view proportion="0" caption="[front image] Image transparency" />
-                                                <view proportion="0" caption="[front image] Window Level" />
-                                            </layout>
-                                        </gui>
-                                        <registry>
-                                            <view sid="imageInfo2" />
-                                            <view sid="imageTransparency2" />
-                                            <view sid="windowLevel2" />
-                                        </registry>
-                                    </service>
-                                    <!-- This service convert a simple fwData::Image to medical Image -->
-                                    <service uid="medicalImageConverter2" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-
-                                    <!-- Editors of front image -->
-                                    <service uid="imageInfo2" type="::gui::editor::IEditor" impl="::uiImage::ImageInfo" autoConnect="yes" />
-                                    <service uid="imageTransparency2" type="::gui::editor::IEditor" impl="::uiImage::ImageTransparency" autoConnect="yes">
-                                        <shortcut value="V" />
-                                    </service>
-                                    <service uid="windowLevel2" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes" >
-                                         <config selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
-                                    </service>
-
-                                    <!-- Service to forward signal from backgroundImage to front image -->
-                                    <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::SImageSignalForwarder" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
-                                        <fromKey>compositeVisu[backgroundImage]</fromKey>
-                                        <forward>sliceIndexModified</forward>
-                                        <forward>sliceTypeModified</forward>
-                                    </service>
-
-                                    <proxy channel="interaction_channel2">
-                                        <slot>imageInfo2/getInteraction</slot>
-                                    </proxy>
-
-                                </object>
-
-                            </config>
-                        </service>
-
-                        <!-- Generic scene to show merging of backgroung and front images -->
-                        <service uid="blendGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                            <scene>
-                                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                                <vtkObject id="imageBlend" class="vtkImageBlend" />
-                                <renderer id="default" background="0.0" />
-
-                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
-                                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
-                                </adaptor>
-                                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                                </adaptor>
-                                <adaptor id="bgImagePicker" uid="bgImagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
-                                    <config renderer="default" picker="picker" />
-                                </adaptor>
-                                <adaptor id="frontImagePicker" uid="frontImagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
-                                    <config renderer="default" picker="picker" />
-                                </adaptor>
-                                <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                    <config renderer="default" />
-                                </adaptor>
-
-                                <!-- Adaptor to show background and front image merge in the same view. -->
-                                <adaptor id="imagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
-                                    <config vtkimageregister="imageBlend">
-                                        <image objectId="backgroundImage" opacity="1.0" tfalpha="no"
-                                            selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
-                                        <image objectId="frontImage" opacity="1.0" tfalpha="yes"
-                                            selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
-                                    </config>
-                                </adaptor>
-
-                                <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
-                                <adaptor id="imagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
-                                    <config renderer="default" picker="picker">
-                                        <image objectId="backgroundImage" name="background" />
-                                        <image objectId="frontImage" name="front" />
-                                    </config>
-                                </adaptor>
-
-                                <connect>
-                                    <signal>snapshotBlendSceneEditor/snapped</signal>
-                                    <slot>snapshotUID/snap</slot>
-                                </connect>
-
-                                <proxy channel="interaction_channel" waitForKey="backgroundImage">
-                                    <signal>bgImagePickerUID/picked</signal>
-                                </proxy>
+            <service uid="blendSceneView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="blendGenericScene" start="yes" />
+                    <view sid="blendSceneBottomView" start="yes" />
+                </registry>
+            </service>
 
 
-                                <proxy channel="interaction_channel2" waitForKey="frontImage">
-                                    <signal>frontImagePickerUID/picked</signal>
-                                </proxy>
-                            </scene>
-                        </service>
+            <service uid="blendSceneBottomView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliderIndexEditor" start="yes" />
+                    <view sid="snapshotBlendSceneEditor" start="yes" />
+                </registry>
+            </service>
 
-                        <!-- Generic scene for background image -->
-                        <service uid="BgImgGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                            <scene>
-                                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                                <renderer id="default" background="0.0" />
+            <service uid="snapshotBlendSceneEditor" type="::uiVisu::SnapshotEditor" />
 
-                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
-                                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
-                                            selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
-                                </adaptor>
-                                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                                </adaptor>
-                                <adaptor id="imagePicker" uid="imagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
-                                    <config renderer="default" picker="picker" />
-                                </adaptor>
+            <service uid="readerBackgroundImage" type="::uiIO::editor::SIOSelector" >
+                <inout key="target" uid="backgroundImageUID" />
+                <type mode="reader" />
+            </service>
 
-                                <proxy channel="interaction_channel" waitForKey="backgroundImage">
-                                    <signal>imagePickerUID/picked</signal>
-                                </proxy>
-                            </scene>
-                        </service>
+            <service uid="readerFrontImage" type="::uiIO::editor::SIOSelector" >
+                <inout key="target" uid="frontImageUID" />
+                <type mode="reader" />
+            </service>
 
-                        <!-- Generic scene for front image -->
-                        <service uid="FrontImgGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                            <scene>
-                                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                                <renderer id="default" background="0.0" />
+            <service uid="bgImgEditorsView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" caption="[background image] Pixel info" />
+                        <view proportion="0" caption="[background image] Window Level" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="imageInfo" start="yes" />
+                    <view sid="windowLevel" start="yes" />
+                </registry>
+            </service>
 
-                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="frontImage">
-                                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
-                                            selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
-                                </adaptor>
-                                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                                </adaptor>
-                                <adaptor id="imagePicker2" uid="imagePickerUID2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
-                                    <config renderer="default" picker="picker" />
-                                </adaptor>
+            <!-- This service convert a simple fwData::Image to medical Image -->
+            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" >
+                <inout key="image" uid="backgroundImageUID"/>
+            </service>
 
-                                <proxy channel="interaction_channel2" waitForKey="frontImage">
-                                    <signal>imagePickerUID2/picked</signal>
-                                </proxy>
+            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="backgroundImageUID"/>
+                <sliceIndex>axial</sliceIndex>
+            </service>
 
-                            </scene>
-                        </service>
-                        <item key="TFSelectionsKey">
-                            <object uid="TFSelections" type="::fwData::Composite" />
-                        </item>
+            <!-- Editors of background image -->
+            <service uid="imageInfo" type="::uiImage::ImageInfo" autoConnect="yes">
+                <inout key="image" uid="backgroundImageUID" autoConnect="yes"/>
+            </service>
+            <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+                <inout key="image" uid="backgroundImageUID" autoConnect="yes"/>
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="BgSelectedTF" />
+            </service>
 
-                        <connect>
-                            <signal>backgroundImageUID/modified</signal>
-                            <slot>updaterBackImgUID/addOrSwap</slot>
-                        </connect>
-                        <connect>
-                            <signal>frontImageUID/modified</signal>
-                            <slot>updaterFrontImgUID/addOrSwap</slot>
-                        </connect>
+            <service uid="frontImgEditorsView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" caption="[front image] Pixel info" />
+                        <view proportion="0" caption="[front image] Image transparency" />
+                        <view proportion="0" caption="[front image] Window Level" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="imageInfo2" start="yes" />
+                    <view sid="imageTransparency2" start="yes" />
+                    <view sid="windowLevel2" start="yes" />
+                </registry>
+            </service>
+            <!-- This service convert a simple fwData::Image to medical Image -->
+            <service uid="medicalImageConverter2" type="::ctrlSelection::MedicalImageSrv" >
+                <inout key="image" uid="frontImageUID"/>
+            </service>
+            <!-- Editors of front image -->
+            <service uid="imageInfo2" type="::uiImage::ImageInfo" autoConnect="yes">
+                <inout key="image" uid="frontImageUID" autoConnect="yes"/>
+            </service>
+            <service uid="imageTransparency2" type="::uiImage::ImageTransparency" autoConnect="yes">
+                <inout key="image" uid="frontImageUID" autoConnect="yes"/>
+                <shortcut value="V" />
+            </service>
+            <service uid="windowLevel2" type="::uiImage::WindowLevel" autoConnect="yes" >
+                <inout key="image" uid="frontImageUID" autoConnect="yes"/>
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="FrontSelectedTF" />
+            </service>
 
-                    </object>
-                </item>
+            <!-- Service to forward signal from backgroundImage to front image -->
+            <service uid="forwarderMsg" type="::ctrlSelection::wrapper::SImageSignalForwarder" >
+                <in key="target" uid="backgroundImageUID" />
+                <in key="source" uid="frontImageUID" />
+            </service>
 
-                <start uid="MainFrame" />
-                <start uid="updaterBackImgUID" />
-                <start uid="updaterFrontImgUID" />
-                <start uid="manager" />
+            <!-- Generic scene to show merging of backgroung and front images -->
+            <service uid="blendGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="backgroundImage" uid="backgroundImageUID" />
+                <in key="frontImage" uid="frontImageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <vtkObject id="imageBlend" class="vtkImageBlend" />
+                    <renderer id="default" background="0.0" />
 
-            </object>
+                    <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
+                        <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
+                    </adaptor>
+                    <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+                    <adaptor id="bgImagePicker" uid="bgImagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
+                        <config renderer="default" picker="picker" />
+                    </adaptor>
+                    <adaptor id="frontImagePicker" uid="frontImagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
+                        <config renderer="default" picker="picker" />
+                    </adaptor>
+                    <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                        <config renderer="default" />
+                    </adaptor>
 
+                    <!-- Adaptor to show background and front image merge in the same view. -->
+                    <adaptor id="imagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
+                        <config vtkimageregister="imageBlend">
+                            <image objectId="backgroundImage" opacity="1.0" tfalpha="no"
+                                selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
+                            <image objectId="frontImage" opacity="1.0" tfalpha="yes"
+                                selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
+                        </config>
+                    </adaptor>
+
+                    <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
+                    <adaptor id="imagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
+                        <config renderer="default" picker="picker">
+                            <image objectId="backgroundImage" name="background" />
+                            <image objectId="frontImage" name="front" />
+                        </config>
+                    </adaptor>
+
+                    <connect>
+                        <signal>snapshotBlendSceneEditor/snapped</signal>
+                        <slot>snapshotUID/snap</slot>
+                    </connect>
+
+                    <proxy channel="interactionChannel" waitForKey="backgroundImage">
+                        <signal>bgImagePickerUID/picked</signal>
+                    </proxy>
+
+
+                    <proxy channel="interactionChannel2" waitForKey="frontImage">
+                        <signal>frontImagePickerUID/picked</signal>
+                    </proxy>
+                </scene>
+            </service>
+
+            <!-- Generic scene for background image -->
+            <service uid="bgImgGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="backgroundImage" uid="backgroundImageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
+                        <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
+                                selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+                    <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+                    <adaptor id="imagePicker" uid="imagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
+                        <config renderer="default" picker="picker" />
+                    </adaptor>
+
+                    <proxy channel="interactionChannel" waitForKey="backgroundImage">
+                        <signal>imagePickerUID/picked</signal>
+                    </proxy>
+                </scene>
+            </service>
+
+            <!-- Generic scene for front image -->
+            <service uid="fgImgGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="frontImage" uid="frontImageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="frontImage">
+                        <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial"
+                                selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+                    <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+                    <adaptor id="imagePicker2" uid="imagePickerUID2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
+                        <config renderer="default" picker="picker" />
+                    </adaptor>
+
+                    <proxy channel="interactionChannel2" waitForKey="frontImage">
+                        <signal>imagePickerUID2/picked</signal>
+                    </proxy>
+                </scene>
+            </service>
+
+            <connect channel="interactionChannel">
+                <slot>imageInfo/getInteraction</slot>
+            </connect>
+            <connect channel="interactionChannel2">
+                <slot>imageInfo2/getInteraction</slot>
+            </connect>
+
+            <start uid="mainFrame" />
 
         </config>
     </extension>

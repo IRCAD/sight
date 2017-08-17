@@ -9,7 +9,7 @@
         <id>tutoScene2DConfig</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
-            <object uid="floatData" type="::fwData::Float" />
+            <object uid="Float" type="::fwData::Float" />
             <!-- ***************************************** End Objects declaration ******************************************* -->
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
@@ -31,20 +31,20 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view caption="Scene2D" />
-                        <view caption="FloatEditor" proportion="0" />
+                        <view caption="X Spacing" proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="Scene2D" start="no" />
-                    <view sid="FloatEditor" start="no" />
+                    <view sid="XSpacingEditor" start="no" />
                 </registry>
             </service>
             <!-- ***************************************** End layouts declaration ***************************************** -->
 
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
-            <service uid="FloatEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
-                <inout key="float" uid="floatData" />
+            <service uid="XSpacingEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
+                <inout key="float" uid="Float" />
             </service>
 
             <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
@@ -62,7 +62,7 @@
             </service>
             
             <service uid="gridFromFloat" type="::scene2D::adaptor::SGridFromFloat" autoConnect="yes" >
-                <in key="float" uid="floatData" />
+                <in key="float" uid="Float" />
                 <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
             </service>
 
@@ -81,21 +81,19 @@
             <service uid="ordinate" type="::scene2D::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-100" y2="100" color="red" zValue="6" />
             </service>
-                    
             <!-- ***************************************** End render scenes declaration ***************************************** -->
-
+                    
             <!-- ***************************************** End services declarations  ************************************************ -->
 
             <start uid="mainFrame" />
             <start uid="Scene2D" />
-            <start uid="FloatEditor" />
+            <start uid="XSpacingEditor" />
 
             <start uid="gridFromFloat" />
             <start uid="square1" />
             <start uid="square2" />
             <start uid="abscissa" />
             <start uid="ordinate" />
-
         </config>
     </extension>
 </plugin>

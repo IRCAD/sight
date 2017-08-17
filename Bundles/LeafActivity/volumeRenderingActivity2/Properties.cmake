@@ -18,5 +18,6 @@ set( REQUIREMENTS
     uiTF
     uiIO
     media
+    imageConfig
 )
 
