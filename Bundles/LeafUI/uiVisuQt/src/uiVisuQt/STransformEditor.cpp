@@ -6,12 +6,6 @@
 
 #include "uiVisuQt/STransformEditor.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-#include <fwCore/base.hpp>
-
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -20,7 +14,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -68,80 +61,51 @@ void STransformEditor::configuring()
 
     this->initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr cfgRotation = m_configuration->findConfigurationElement("rotation");
-    if(cfgRotation)
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+
+    const std::string rotation = config.get< std::string >("service.rotation.<xmlattr>.enabled", "yes");
+
+    if(rotation == "no")
     {
-        std::string rotation = cfgRotation->getAttributeValue("enabled");
-        if (!rotation.empty())
-        {
-            if(rotation == "no")
-            {
-                m_rotation = "";
-            }
-            else if(rotation == "yes")
-            {
-                m_rotation = "xyz";
-            }
-            else if(boost::regex_match(rotation, s_REGEX))
-            {
-                m_rotation = rotation;
-            }
-            else
-            {
-                SLM_ERROR("Attribute 'rotation' can only has value 'yes', 'no' or a combination of [xyz]");
-            }
-        }
-
-        std::string min = cfgRotation->getAttributeValue("min");
-        if (!min.empty())
-        {
-            m_rotationRange[0] = std::stoi(min);
-        }
-
-        std::string max = cfgRotation->getAttributeValue("max");
-        if (!max.empty())
-        {
-            m_rotationRange[1] = std::stoi(max);
-        }
-
+        m_rotation = "";
+    }
+    else if(rotation == "yes")
+    {
+        m_rotation = "xyz";
+    }
+    else if( ::boost::regex_match(rotation, s_REGEX) )
+    {
+        m_rotation = rotation;
+    }
+    else
+    {
+        SLM_ERROR("Attribute 'rotation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
-    ::fwRuntime::ConfigurationElement::sptr cfgTranslation = m_configuration->findConfigurationElement("translation");
-    if(cfgTranslation)
+    m_rotationRange[0] = config.get< int >("service.rotation.<xmlattr>.min", m_rotationRange[0]);
+    m_rotationRange[1] = config.get< int >("service.rotation.<xmlattr>.max", m_rotationRange[1]);
+
+    const std::string translation = config.get< std::string >("service.translation.<xmlattr>.enabled", "yes");
+
+    if(translation == "no")
     {
-        std::string translation = cfgTranslation->getAttributeValue("enabled");
-        if (!translation.empty())
-        {
-            if(translation == "no")
-            {
-                m_translation = "";
-            }
-            else if(translation == "yes")
-            {
-                m_translation = "xyz";
-            }
-            else if(boost::regex_match(m_translation, s_REGEX))
-            {
-                m_translation = translation;
-            }
-            else
-            {
-                SLM_ERROR("Attribute 'translation' can only has value 'yes', 'no' or a combination of [xyz]");
-            }
-        }
-
-        std::string min = cfgTranslation->getAttributeValue("min");
-        if (!min.empty())
-        {
-            m_translationRange[0] = std::stoi(min);
-        }
-
-        std::string max = cfgTranslation->getAttributeValue("max");
-        if (!max.empty())
-        {
-            m_translationRange[1] = std::stoi(max);
-        }
+        m_translation = "";
     }
+    else if(translation == "yes")
+    {
+        m_translation = "xyz";
+    }
+    else if( ::boost::regex_match(translation, s_REGEX) )
+    {
+        m_translation = translation;
+    }
+    else
+    {
+        SLM_ERROR("Attribute 'translation' should be 'yes', 'no' or a combination of [xyz]");
+    }
+
+    m_translationRange[0] = config.get< int >("service.translation.<xmlattr>.min", m_translationRange[0]);
+    m_translationRange[1] = config.get< int >("service.translation.<xmlattr>.max", m_translationRange[1]);
 }
 
 //------------------------------------------------------------------------------
@@ -248,29 +212,20 @@ void STransformEditor::updating()
 void STransformEditor::onSliderChanged(int value)
 {
     ::fwData::TransformationMatrix3D::sptr matrix;
-    if (this->isVersion2())
-    {
-        matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
-    }
-    else
-    {
-        matrix = this->getObject< ::fwData::TransformationMatrix3D >();
-    }
 
-    double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
-    double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
-    double rz = ::glm::radians<double>(m_sliders[ROTATION_Z].m_slider->value());
+    matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
-    double tx = m_sliders[POSITION_X].m_slider->value();
-    double ty = m_sliders[POSITION_Y].m_slider->value();
-    double tz = m_sliders[POSITION_Z].m_slider->value();
+    const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
+    const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
+    const double rz = ::glm::radians<double>(m_sliders[ROTATION_Z].m_slider->value());
+
+    const double tx = m_sliders[POSITION_X].m_slider->value();
+    const double ty = m_sliders[POSITION_Y].m_slider->value();
+    const double tz = m_sliders[POSITION_Z].m_slider->value();
 
     ::glm::dmat4x4 mat;
-    mat                      = ::glm::translate(mat, ::glm::dvec3(tx, ty, tz));
-    ::glm::dvec4 translation = mat[3];
-    mat                      = ::glm::yawPitchRoll(ry, rx, rz) * mat;
-
-    translation = mat[3];
+    mat = ::glm::translate(mat, ::glm::dvec3(tx, ty, tz));
+    mat = ::glm::yawPitchRoll(ry, rx, rz) * mat;
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
@@ -302,27 +257,21 @@ void STransformEditor::onTextChanged()
 void STransformEditor::updateFromMatrix()
 {
     ::fwData::TransformationMatrix3D::sptr matrix;
-    if (this->isVersion2())
-    {
-        matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
-    }
-    else
-    {
-        matrix = this->getObject< ::fwData::TransformationMatrix3D >();
-    }
+    matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+
     SLM_ASSERT("Unable to get matrix", matrix);
-    ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
+    const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
 
-    ::glm::dquat quat(mat);
-    ::glm::dvec3 angles = ::glm::eulerAngles(quat);
+    const ::glm::dquat quat(mat);
+    const ::glm::dvec3 angles = ::glm::eulerAngles(quat);
 
-    ::glm::dvec4 translation = mat[3];
+    const ::glm::dvec4 translation = mat[3];
 
     // Block
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
     {
-        QObject::disconnect(m_sliders[i].m_slider, SIGNAL(valueChanged(int )), this, SLOT(onSliderChanged(int)));
-        QObject::disconnect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
+        m_sliders[i].m_slider->blockSignals(true);
+        m_sliders[i].m_sliderValue->blockSignals(true);
     }
 
     for (::glm::length_t i = POSITION_X, j = 0; i <= POSITION_Z; i++, ++j)
@@ -342,9 +291,8 @@ void STransformEditor::updateFromMatrix()
 
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
     {
-        QObject::connect(m_sliders[i].m_slider, SIGNAL(valueChanged(int )), this, SLOT(onSliderChanged(int)));
-        QObject::connect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
-
+        m_sliders[i].m_slider->blockSignals(false);
+        m_sliders[i].m_sliderValue->blockSignals(false);
     }
 }
 

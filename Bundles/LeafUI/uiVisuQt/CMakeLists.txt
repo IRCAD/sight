@@ -4,10 +4,6 @@ find_package (Boost COMPONENTS regex REQUIRED)
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(glm REQUIRED)
 
-#fwInclude(
-#    ${Boost_INCLUDE_DIRS}
-#)
-
 fwForwardInclude(
     ${Boost_INCLUDE_DIRS}
     ${Qt5Core_INCLUDE_DIRS}
