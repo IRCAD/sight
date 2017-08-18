@@ -574,7 +574,7 @@
             </scene>
         </service>
 
-        <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="yes">
+        <service uid="transformEditor" type="::uiVisuQt::STransformEditor" autoConnect="yes">
             <inout key="matrix" uid="manualTransform"/>
             <translation enabled="yes" min="-1500" max="1500"/>
             <rotation enabled="yes" min="-180" max="180" />
