@@ -30,11 +30,9 @@
 #include <vtkImageMapper3D.h>
 #include <vtkImageMapToColors.h>
 #include <vtkMatrix4x4.h>
-#include <vtkPlaneSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkTexture.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo, ::fwData::Image );
 

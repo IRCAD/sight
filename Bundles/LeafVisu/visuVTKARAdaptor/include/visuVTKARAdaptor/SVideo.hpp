@@ -19,11 +19,6 @@
 class vtkImageData;
 class vtkImageActor;
 
-namespace arData
-{
-class Camera;
-}
-
 namespace visuVTKARAdaptor
 {
 
@@ -55,7 +50,7 @@ namespace visuVTKARAdaptor
  * applied to the video.
  *
  * @subsection Configuration Configuration
- * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b renderer : ID of the renderer the adaptor must use
  * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
  * - \b selectedTFKey (optional) : key of the transfer function within the tfSelection applied to the image
  *      when rendering
