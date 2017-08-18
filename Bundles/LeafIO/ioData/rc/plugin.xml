@@ -11,7 +11,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioData::MeshReaderService</service>
+        <service>::ioData::STrianMeshReader</service>
         <object>::fwData::Mesh</object>
         <desc>Trian file reader</desc>
     </extension>

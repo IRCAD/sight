@@ -16,8 +16,9 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
+    maths
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto10MatrixTransformInGS)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Tuto10MatrixTransformInGS)

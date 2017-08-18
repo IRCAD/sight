@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include "ioData/action/SMeshModifier.hpp"
 
-#include <fwServices/macros.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwData/Mesh.hpp>
 
@@ -14,7 +14,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "ioData/action/SMeshModifier.hpp"
+#include <fwServices/macros.hpp>
 
 namespace ioData
 {
@@ -84,7 +84,7 @@ void SMeshModifier::stopping()
 void SMeshModifier::updating()
 {
     SLM_TRACE_FUNC();
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >("mesh");
     SLM_ASSERT("Mesh dynamicCast failed", mesh);
     try
     {
@@ -136,7 +136,6 @@ void SMeshModifier::updating()
         {
             ::fwDataTools::Mesh::shakeCellNormals(mesh);
 
-
             ::fwData::Mesh::CellNormalsModifiedSignalType::sptr sig;
             sig = mesh->signal< ::fwData::Mesh::CellNormalsModifiedSignalType >(
                 ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
@@ -162,7 +161,7 @@ void SMeshModifier::updating()
             }
         }
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during generating : " << e.what();
@@ -176,7 +175,7 @@ void SMeshModifier::updating()
 
 //-----------------------------------------------------------------------------
 
-void SMeshModifier::info(std::ostream &_sstream )
+void SMeshModifier::info(std::ostream& _sstream )
 {
     _sstream << "MeshGenerator Action" << std::endl;
 }

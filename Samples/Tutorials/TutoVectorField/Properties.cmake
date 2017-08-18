@@ -20,7 +20,7 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoVectorField)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES TutoVectorField)

@@ -8,125 +8,198 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="maths" />
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>Tuto10MatrixTransformInGS</id>
         <config>
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
+            <object uid="matrixA" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                        1 0 0 2
+                        0 1 0 0
+                        0 0 1 0
+                        0 0 0 1
+                ]]>
+                </matrix>
+            </object>
 
-            <object type="::fwData::Composite">
+            <object uid="matrixB" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    1 0 0 4
+                    0 1 0 0
+                    0 0 1 0
+                    0 0 0 1
+                ]]>
+                </matrix>
+            </object>
 
-                <service uid="myFrame" impl="::gui::frame::SDefaultFrame">
-                    <gui>
-                        <frame>
-                            <name>Tuto10MatrixTransformInGS</name>
-                            <icon>@BUNDLE_PREFIX@/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
-                            <minSize width="800" height="600" />
-                        </frame>
-                        <menuBar />
-                    </gui>
-                    <registry>
-                        <menuBar sid="myMenuBar" start="yes" />
-                        <view sid="mainView" start="yes" />
-                    </registry>
-                </service>
+            <object uid="matrixC" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    1 0 0 0
+                    0 1 0 0
+                    0 0 1 2
+                    0 0 0 1
+                ]]>
+                </matrix>
+            </object>
 
-                <service uid="myMenuBar" impl="::gui::aspect::SDefaultMenuBar">
-                    <gui>
-                        <layout>
-                            <menu name="File" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menu sid="menu_File" start="yes" />
-                    </registry>
-                </service>
+            <object uid="matrixD" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    0.75 0    0    0
+                    0    0.75 0    0
+                    0    0    0.75 0
+                    0    0    0    1
+                ]]>
+                </matrix>
+            </object>
 
-                <service uid="menu_File" impl="::gui::aspect::SDefaultMenu">
-                    <gui>
-                        <layout>
-                            <menuItem name="OpenFile" shortcut="Ctrl+O" />
-                            <separator />
-                            <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menuItem sid="action_openFile" start="yes" />
-                        <menuItem sid="action_quit" start="yes" />
-                    </registry>
-                </service>
+            <object uid="matrixE" type="::fwData::TransformationMatrix3D" />
+            <object uid="rotationMatrix1" type="::fwData::TransformationMatrix3D" />
+            <object uid="rotationMatrix2" type="::fwData::TransformationMatrix3D" />
+            <object uid="rotationMatrix3" type="::fwData::TransformationMatrix3D" />
 
-                <service uid="action_openFile" impl="::gui::action::SStarter">
-                    <start uid="myReaderPathFile" />
-                </service>
+            <object uid="mesh" type="::fwData::Mesh" />
+            <!-- ***************************************** End Objects declaration ******************************************* -->
 
-                <service uid="action_quit" impl="::gui::action::SQuit" />
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>Tuto10MatrixTransformInGS</name>
+                        <icon>@BUNDLE_PREFIX@/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
 
-                <service uid="mainView" impl="::gui::view::SDefaultView">
-                    <gui>
-                        <layout type="::fwGui::CardinalLayoutManager">
-                            <view align="center" />
-                            <view align="bottom" minHeight="40" position="0" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="genericScene" start="yes" />
-                        <view sid="matrixEditor" start="yes" />
-                    </registry>
-                </service>
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                </registry>
+            </service>
 
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Load Mesh" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionLoadMesh" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="actionLoadMesh" type="::gui::action::SStarter">
+                <start uid="readerPathFile" />
+            </service>
+
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" minHeight="40" position="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="matrixEditor" start="yes" />
+                </registry>
+            </service>
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+
+            <!-- ***************************************** Begin services declarations  ************************************ -->
+
+            <service uid="matrixEditor" type="::uiVisu::STransformEditor" >
+                <inout key="matrix" uid="matrixE" />
+                <translation enabled="no" />
+                <rotation enabled="y" min="0" max="360" />
+            </service>
+
+            <service uid="readerPathFile" type="::uiIO::editor::SIOSelector" >
+                <inout key="target" uid="mesh" />
+                <type mode="reader" />
+            </service>
+
+            <!--
+                Declare the rotationMatrix1 as the concatenation of matrixE, matrixA and matrixD
+                rotationMatrix1 = matrixE x matrixA x matrixD
+                autoConnect is needed to automatically update the concatenation
+            -->
+            <service uid="concat1" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="matrixE" autoConnect="yes" />
+                    <key uid="matrixA" />
+                    <key uid="matrixD" />
+                </in>
+                <inout key="output" uid="rotationMatrix1" />
+            </service>
+
+            <!-- rotationMatrix2 = matrixE x matrixB x matrixE x matrixE x matrixE x matrixD x matrixD -->
+            <service uid="concat2" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="matrixE" inverse="true" autoConnect="yes" />
+                    <key uid="matrixB" />
+                    <key uid="matrixE" />
+                    <key uid="matrixE" />
+                    <key uid="matrixE" />
+                    <key uid="matrixD" />
+                    <key uid="matrixD" />
+                </in>
+                <inout key="output" uid="rotationMatrix2" />
+            </service>
+
+            <!-- rotationMatrix3 = matrixC x matrixE x matrixD x matrixD x matrixD -->
+            <service uid="concat3" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="matrixC" />
+                    <key uid="matrixE" autoConnect="yes" />
+                    <key uid="matrixD" />
+                    <key uid="matrixD" />
+                    <key uid="matrixD" />
+                </in>
+                <inout key="output" uid="rotationMatrix3" />
+            </service>
+
+            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
                 <!--
                     Generic scene:
-                    This scene shows four times the same mesh but with a different matrix. It manages multiples
-                    transformation matrices.
+                    This scene shows four times the same mesh but with a different matrix. It manages multiples transformation matrices.
                 -->
-                <service uid="genericScene" impl="::fwRenderVTK::SRender" autoConnect="yes">
-                    <scene>
+                <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                    <in key="mesh" uid="mesh" />
+                    <in key="rotationMatrix1" uid="rotationMatrix1" />
+                    <in key="rotationMatrix2" uid="rotationMatrix2" />
+                    <in key="rotationMatrix3" uid="rotationMatrix3" />
 
-                        <renderer id="default" background="0.0" />
+                    <scene renderMode="auto">
+                        <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                        <renderer id="default" background="#052833" />
 
                         <!-- Declare the vtk transform to use (it is optional) -->
-                        <vtkObject id="mat1" class="vtkTransform" />
-                        <vtkObject id="mat2" class="vtkTransform" />
-                        <vtkObject id="mat3" class="vtkTransform" />
-                        <vtkObject id="mat4" class="vtkTransform" />
-                        <vtkObject id="mat5" class="vtkTransform" />
-
-                        <!--
-                            Declare the mat6 as the concatenation of mat5, mat1 and mat4
-                            mat6 = mat5 x mat1 x mat4
-                        -->
-                        <vtkObject id="mat6" class="vtkTransform">
-                            <vtkTransform>
-                                <concatenate>mat5</concatenate>
-                                <concatenate>mat1</concatenate>
-                                <concatenate>mat4</concatenate>
-                            </vtkTransform>
-                        </vtkObject>
-
-                        <!-- mat7 = inv(mat5) x mat2 x mat5 x mat5 x mat5 x mat4 x mat4 -->
-                        <vtkObject id="mat7" class="vtkTransform">
-                            <vtkTransform>
-                                <concatenate inverse="yes">mat5</concatenate>
-                                <concatenate>mat2</concatenate>
-                                <concatenate>mat5</concatenate>
-                                <concatenate>mat5</concatenate>
-                                <concatenate>mat5</concatenate>
-                                <concatenate>mat4</concatenate>
-                                <concatenate>mat4</concatenate>
-                            </vtkTransform>
-                        </vtkObject>
-
-                        <!-- mat8 = mat3 x mat5 x mat4 x mat4 x mat4 -->
-                        <vtkObject id="mat8" class="vtkTransform">
-                            <vtkTransform>
-                                <concatenate>mat3</concatenate>
-                                <concatenate>mat5</concatenate>
-                                <concatenate>mat4</concatenate>
-                                <concatenate>mat4</concatenate>
-                                <concatenate>mat4</concatenate>
-                            </vtkTransform>
-                        </vtkObject>
-
+                        <vtkObject id="rotationMatrixID1" class="vtkTransform" />
+                        <vtkObject id="rotationMatrixID2" class="vtkTransform" />
+                        <vtkObject id="rotationMatrixID3" class="vtkTransform" />
 
                         <!--
                             Defines transform adaptors:
@@ -134,24 +207,16 @@
                             the ::fwData::TransformationMatrix3D is modified, it updates the vtkTransform, and vice
                             versa.
                         -->
-                        <adaptor id="MatrixAdatorA" class="::visuVTKAdaptor::Transform" objectId="matrixA">
-                            <config renderer="default" picker="" transform="mat1" />
+                        <adaptor id="matrixAdaptor1" class="::visuVTKAdaptor::Transform" objectId="rotationMatrix1">
+                            <config renderer="default" picker="" transform="rotationMatrixID1" />
                         </adaptor>
 
-                        <adaptor id="MatrixAdatorB" class="::visuVTKAdaptor::Transform" objectId="matrixB">
-                            <config renderer="default" picker="" transform="mat2" />
+                        <adaptor id="matrixAdaptor2" class="::visuVTKAdaptor::Transform" objectId="rotationMatrix2">
+                            <config renderer="default" picker="" transform="rotationMatrixID2" />
                         </adaptor>
 
-                        <adaptor id="MatrixAdatorC" class="::visuVTKAdaptor::Transform" objectId="matrixC">
-                            <config renderer="default" picker="" transform="mat3" />
-                        </adaptor>
-
-                        <adaptor id="MatrixAdatorD" class="::visuVTKAdaptor::Transform" objectId="matrixD">
-                            <config renderer="default" picker="" transform="mat4" />
-                        </adaptor>
-
-                        <adaptor id="MatrixAdatorE" class="::visuVTKAdaptor::Transform" objectId="matrixE">
-                            <config renderer="default" picker="" transform="mat5" />
+                        <adaptor id="matrixAdaptor3" class="::visuVTKAdaptor::Transform" objectId="rotationMatrix3">
+                            <config renderer="default" picker="" transform="rotationMatrixID3" />
                         </adaptor>
 
                         <adaptor id="TMAdaptor1" class="::visuVTKAdaptor::Mesh" objectId="mesh">
@@ -159,87 +224,31 @@
                         </adaptor>
 
                         <adaptor id="TMAdaptor2" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                            <config renderer="default" picker="" transform="mat6" />
+                            <config renderer="default" picker="" transform="rotationMatrixID1" />
                         </adaptor>
 
                         <adaptor id="TMAdaptor3" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                            <config renderer="default" picker="" transform="mat7" />
+                            <config renderer="default" picker="" transform="rotationMatrixID2" />
                         </adaptor>
 
                         <adaptor id="TMAdaptor4" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                            <config renderer="default" picker="" transform="mat8" />
+                            <config renderer="default" picker="" transform="rotationMatrixID3" />
                         </adaptor>
 
                     </scene>
                 </service>
+                <!-- ***************************************** End render scenes declaration ***************************************** -->
 
-                <item key="matrixA">
-                    <object uid="matrixA" type="::fwData::TransformationMatrix3D">
-                        <matrix>
-                            <![CDATA[
-                                1 0 0 2
-                                0 1 0 0
-                                0 0 1 0
-                                0 0 0 1
-                            ]]>
-                        </matrix>
-                    </object>
-                </item>
+                <!-- ***************************************** End services declarations  ************************************************ -->
 
-                <item key="matrixB">
-                    <object uid="matrixB" type="::fwData::TransformationMatrix3D">
-                        <matrix>
-                            <![CDATA[
-                                1 0 0 4
-                                0 1 0 0
-                                0 0 1 0
-                                0 0 0 1
-                            ]]>
-                        </matrix>
-                    </object>
-                </item>
+                <start uid="mainFrame" />
+                <start uid="concat1" />
+                <start uid="concat2" />
+                <start uid="concat3" />
 
-                <item key="matrixC">
-                    <object uid="matrixC" type="::fwData::TransformationMatrix3D">
-                        <matrix>
-                            <![CDATA[
-                                1 0 0 0
-                                0 1 0 0
-                                0 0 1 2
-                                0 0 0 1
-                            ]]>
-                        </matrix>
-                    </object>
-                </item>
-
-                <item key="matrixD">
-                    <object uid="matrixD" type="::fwData::TransformationMatrix3D">
-                        <matrix>
-                            <![CDATA[
-                                0.75 0    0    0
-                                0    0.75 0    0
-                                0    0    0.75 0
-                                0    0    0    1
-                            ]]>
-                        </matrix>
-                    </object>
-                </item>
-
-                <item key="matrixE">
-                    <object uid="matrixE" type="::fwData::TransformationMatrix3D">
-                        <service uid="matrixEditor" impl="::uiVisu::TransformationMatrixEditor" autoConnect="yes" />
-                    </object>
-                </item>
-
-                <item key="mesh">
-                    <object uid="mesh" type="::fwData::Mesh">
-                        <service uid="myReaderPathFile" impl="::uiIO::editor::SIOSelector" />
-                    </object>
-                </item>
-
-                <start uid="myFrame" />
-
-            </object>
+                <update uid="concat1" />
+                <update uid="concat2" />
+                <update uid="concat3" />
 
         </config>
     </extension>

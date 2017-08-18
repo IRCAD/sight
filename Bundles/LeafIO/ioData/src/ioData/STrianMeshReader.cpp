@@ -4,13 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioData/MeshReaderService.hpp"
+#include "ioData/STrianMeshReader.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -30,14 +28,14 @@
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::io::IReader, ::ioData::MeshReaderService, ::fwData::Mesh );
+fwServicesRegisterMacro( ::io::IReader, ::ioData::STrianMeshReader, ::fwData::Mesh );
 
 namespace ioData
 {
 
 //-----------------------------------------------------------------------------
 
-void MeshReaderService::info(std::ostream& _sstream )
+void STrianMeshReader::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
     _sstream << std::endl << "Trian file reader";
@@ -45,7 +43,7 @@ void MeshReaderService::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > MeshReaderService::getSupportedExtensions()
+std::vector< std::string > STrianMeshReader::getSupportedExtensions()
 {
     std::vector< std::string > extensions;
     extensions.push_back(".trian");
@@ -54,21 +52,21 @@ std::vector< std::string > MeshReaderService::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType MeshReaderService::getIOPathType() const
+::io::IOPathType STrianMeshReader::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::configuring()
+void STrianMeshReader::configuring()
 {
     ::io::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::configureWithIHM()
+void STrianMeshReader::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
@@ -95,13 +93,13 @@ void MeshReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::updating()
+void STrianMeshReader::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >( );
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::io::s_DATA_KEY);
         SLM_ASSERT("mesh not instanced", mesh);
 
         ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
