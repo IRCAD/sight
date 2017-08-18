@@ -78,7 +78,7 @@ protected:
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-     UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private Q_SLOTS:
     void onReconstructionCheck(QListWidgetItem* currentItem);
@@ -93,6 +93,9 @@ private:
 
     void refresh();
     void notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
+
+    /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
+    void addMeshTransform();
 
     // ReconstructionMapType
     typedef ::std::map< ::std::string, ::fwData::Reconstruction::sptr > ReconstructionMapType;

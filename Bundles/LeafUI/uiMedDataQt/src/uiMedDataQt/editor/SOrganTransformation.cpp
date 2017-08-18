@@ -12,6 +12,7 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
+#include <fwDataTools/helper/Field.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -43,6 +44,8 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SOrganTran
 
 static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
+
+static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
 SOrganTransformation::SOrganTransformation() noexcept :
     m_saveButton( 0 ),
@@ -137,6 +140,7 @@ void SOrganTransformation::swapping()
 
 void SOrganTransformation::updating()
 {
+    this->addMeshTransform();
     this->refresh();
 }
 
@@ -243,7 +247,7 @@ void SOrganTransformation::onResetClick()
         ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
         ::fwData::TransformationMatrix3D::sptr pTmpMat =
-            pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
         if (pTmpMat)
         {
             ::fwDataTools::TransformationMatrix3D::identity(pTmpMat);
@@ -266,7 +270,7 @@ void SOrganTransformation::onSaveClick()
         {
             ::fwData::Mesh::sptr pTmpTrMesh                = rec->getMesh();
             ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
             if (pTmpMat)
             {
                 ::fwData::TransformationMatrix3D::sptr pCpyTmpMat;
@@ -300,7 +304,7 @@ void SOrganTransformation::onLoadClick()
             if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
             {
                 ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                    pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                    pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
                 if (pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
@@ -351,6 +355,25 @@ void SOrganTransformation::onSelectAllChanged(int state)
     }
     compositeHelper.notify();
 
+}
+
+//------------------------------------------------------------------------------
+
+void SOrganTransformation::addMeshTransform()
+{
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
+
+    for(const ::fwData::Reconstruction::sptr& rec :  series->getReconstructionDB())
+    {
+        ::fwData::Mesh::sptr mesh = rec->getMesh();
+
+        if (!mesh->getField( s_MATRIX_FIELD_NAME ))
+        {
+            ::fwDataTools::helper::Field fieldHelper(mesh);
+            fieldHelper.setField(s_MATRIX_FIELD_NAME, ::fwData::TransformationMatrix3D::New());
+            fieldHelper.notify();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
