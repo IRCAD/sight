@@ -93,7 +93,7 @@ protected:
 
 PlaneInteractor::PlaneInteractor() noexcept :
     m_vtkObserver(nullptr),
-    m_priority(1.)
+    m_priority(1.f)
 {
 }
 
@@ -199,8 +199,6 @@ void PlaneInteractor::pushPlane(double factor)
             fwVec3d vec0 = pt0->getCoord();
             fwVec3d vec1 = pt1->getCoord();
             fwVec3d vec2 = pt2->getCoord();
-
-            fwVec3d vector = normal*factor;
 
             vec0 = vec0 + normal*factor;
             vec1 = vec1 + normal*factor;

@@ -146,7 +146,7 @@ void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
 {
     ::fwData::Image::sptr image = this->getImage();
     double extent[6];
-    for (char i = 0; i < 3; ++i )
+    for (size_t i = 0; i < 3; ++i )
     {
         extent[2*i]   = 0;
         extent[2*i+1] = image->getSize()[i]*image->getSpacing()[i];

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,6 @@
 
 #include <vector>
 
-
 namespace fwDataTools
 {
 
@@ -39,7 +38,6 @@ class FWDATATOOLS_CLASS_API MedicalImageAdaptor
 
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (MedicalImageAdaptor) );
-
 
     /// Image orientation
     typedef enum
@@ -96,7 +94,6 @@ public:
 
 protected:
 
-
     /// Constructor. Do nothing.
     FWDATATOOLS_API MedicalImageAdaptor(); // this class VISUVTKADAPTOR_CLASS_API must be specialized
 
@@ -144,7 +141,7 @@ protected:
      * @param[in] world : coordinate in the world
      * @param[out] index : coordinate in the slice index
      */
-    FWDATATOOLS_API void worldToSliceIndex(const double world[3],int index[3] );
+    FWDATATOOLS_API void worldToSliceIndex(const double world[3], int index[3] );
 
     /**
      * @brief Convert coordinates in the world to coordinates in the image
@@ -180,7 +177,7 @@ protected:
      * @param[out] index : coordinate in the slice index
      */
     template< typename WORLD, typename INT_INDEX >
-    void worldToSliceIndex(const WORLD world, INT_INDEX index );
+    void worldToSliceIndex(const WORLD world, INT_INDEX* index );
 
     /**
      * @brief Convert coordinates in the world to coordinates in the image
@@ -188,10 +185,7 @@ protected:
      * @param[out] index : coordinate in the image
      */
     template< typename WORLD, typename INT_INDEX >
-    void worldToImageSliceIndex(const WORLD world, INT_INDEX index );
-
-
-
+    void worldToImageSliceIndex(const WORLD world, INT_INDEX* index );
 
     /**
      * @brief Return the 4 points of the image plane
@@ -335,7 +329,6 @@ class FWDATATOOLS_CLASS_API MedicalImageAdaptorTpl : public MedicalImageAdaptor
 typedef MedicalImageAdaptorTpl<Image0> MedicalImageAdaptorImg0;
 typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
 
-
 //------------------------------------------------------------------------------
 template< typename FLOAT_ARRAY_3 >
 void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
@@ -359,33 +352,33 @@ void MedicalImageAdaptor::getImageDataSize(INT_INDEX size)
 //------------------------------------------------------------------------------
 
 template< typename WORLD, typename INT_INDEX >
-void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX index )
+void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX* index )
 {
     double spacing[3];
     this->getImageSpacing(spacing);
     double origin[3];
     this->getImageOrigin(origin);
-    for ( int i = 0; i<3; ++i )
+    for ( int i = 0; i < 3; ++i )
     {
         index[i] =
-            static_cast< int >( ( (world[i] - origin[i])/spacing[i] ) +
-                                ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
+            static_cast< INT_INDEX >( ( (world[i] - origin[i])/spacing[i] ) +
+                                      ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
 //------------------------------------------------------------------------------
 
 template< typename WORLD, typename INT_INDEX >
-void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX index )
+void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX* index )
 {
-    int imageSize[3];
+    INT_INDEX imageSize[3];
     this->getImageDataSize(imageSize);
     this->worldToSliceIndex(world, index);
 
-    int idval;
+    INT_INDEX idval;
     for (int i = 0; i < 3; i++)
     {
-        int max = imageSize[i]-1;
+        INT_INDEX max = imageSize[i]-1;
         idval = index[i];
         if (idval < 0)
         {

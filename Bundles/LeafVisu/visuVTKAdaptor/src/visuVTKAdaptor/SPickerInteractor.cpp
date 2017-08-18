@@ -81,8 +81,8 @@ public:
     }
 
     SPickerInteractorCallback() :
-        m_picker(nullptr),
-        m_eventId(nullptr)
+        m_eventId(nullptr),
+        m_picker(nullptr)
     {
         this->PassiveObserverOn();
     }
@@ -149,8 +149,8 @@ public:
                 vtkCellPicker* picker = vtkCellPicker::SafeDownCast( m_picker );
                 if (picker)
                 {
-                    info.m_cellId         = picker->GetCellId();
-                    info.m_closestPointId = picker->GetPointId();
+                    info.m_cellId         = static_cast<int>(picker->GetCellId());
+                    info.m_closestPointId = static_cast<int>(picker->GetPointId());
                 }
 
                 const auto iter = SPickerInteractor::s_vtkEventIDConversion.find(eventId);

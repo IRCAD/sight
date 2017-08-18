@@ -51,7 +51,7 @@ protected:
     VISUVTKADAPTOR_API void doUpdate();
 
     vtkCommand* m_vtkObserver;
-    double m_priority;
+    float m_priority;
 };
 
 } //namespace visuVTKAdaptor
