@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #ifndef ANDROID
 
 #include "fwRenderVTK/config.hpp"
+
 #include <vtkAxesActor.h>
 
 class vtkPropCollection;
@@ -24,8 +25,8 @@ public:
 
     FWRENDERVTK_API static fwVtkAxesActor* New();
 
-    vtkTypeMacro(fwVtkAxesActor,vtkAxesActor);
-    void PrintSelf(ostream& os, vtkIndent indent);
+    vtkTypeMacro(fwVtkAxesActor, vtkAxesActor);
+    void PrintSelf(ostream& os, vtkIndent indent) override;
 
     /**
      * @brief Overload of GetBounds method :
@@ -36,8 +37,7 @@ public:
      * In this method we compute bounds as the min and max of each actors in each direction (X Y Z).
      *
      */
-    FWRENDERVTK_API double* GetBounds();
-
+    FWRENDERVTK_API double* GetBounds() override;
 
 protected:
     fwVtkAxesActor();

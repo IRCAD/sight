@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,17 @@
 #ifndef __FWRENDERVTK_VTK_FWVTKWINDOWLEVELLOOKUPTABLE_HPP__
 #define __FWRENDERVTK_VTK_FWVTKWINDOWLEVELLOOKUPTABLE_HPP__
 
-#include <vtkLookupTable.h>
-
 #include "fwRenderVTK/config.hpp"
+
+#include <vtkLookupTable.h>
 
 ///Reinplementation of vtkWindowLevelLookupTable : add specific out-of-bounds colors
 class FWRENDERVTK_API fwVtkWindowLevelLookupTable : public vtkLookupTable
 {
 public:
-    static fwVtkWindowLevelLookupTable *New();
-    vtkTypeMacro(fwVtkWindowLevelLookupTable,vtkLookupTable);
-    void PrintSelf(ostream& os, vtkIndent indent);
+    static fwVtkWindowLevelLookupTable* New();
+    vtkTypeMacro(fwVtkWindowLevelLookupTable, vtkLookupTable);
+    void PrintSelf(ostream& os, vtkIndent indent) override;
 
     // Description:
     // Set the window for the lookup table.  The window is the difference
@@ -37,7 +37,7 @@ public:
         this->SetTableRange(this->Level - this->Window/2.0,
                             this->Level + this->Window/2.0);
     }
-    vtkGetMacro(Window,double);
+    vtkGetMacro(Window, double);
 
     void BuildInvert();
 
@@ -50,39 +50,36 @@ public:
         this->SetTableRange(this->Level - this->Window/2.0,
                             this->Level + this->Window/2.0);
     }
-    vtkGetMacro(Level,double);
+    vtkGetMacro(Level, double);
 
     // Description:
     // Set  on or off.  You can achieve the same effect by
     // switching the LeftClampValue and the RightClampValue.
-    vtkSetMacro(Clamping,int);
-    vtkGetMacro(Clamping,int);
-    vtkBooleanMacro(Clamping,int);
+    vtkSetMacro(Clamping, int);
+    vtkGetMacro(Clamping, int);
+    vtkBooleanMacro(Clamping, int);
 
     // Description:
     // Set the minimum table value.  All lookup table entries below the
     // start of the ramp will be set to this color.  After you change
     // this value, you must re-build the lookup table.
-    vtkSetVector4Macro(LeftClampValue,double);
-    vtkGetVector4Macro(LeftClampValue,double);
+    vtkSetVector4Macro(LeftClampValue, double);
+    vtkGetVector4Macro(LeftClampValue, double);
 
     // Description:
     // Set the maximum table value. All lookup table entries above the
     // end of the ramp will be set to this color.  After you change
     // this value, you must re-build the lookup table.
-    vtkSetVector4Macro(RightClampValue,double);
-    vtkGetVector4Macro(RightClampValue,double);
+    vtkSetVector4Macro(RightClampValue, double);
+    vtkGetVector4Macro(RightClampValue, double);
 
-    unsigned char *GetCurrentPointer(const vtkIdType id);
-
+    unsigned char* GetCurrentPointer(const vtkIdType id);
 
     // Description:
     // map a set of scalars through the lookup table
-    void MapScalarsThroughTable2(void *input, unsigned char *output,
+    void MapScalarsThroughTable2(void* input, unsigned char* output,
                                  int inputDataType, int numberOfValues,
-                                 int inputIncrement, int outputIncrement);
-
-
+                                 int inputIncrement, int outputIncrement) override;
 
 protected:
     fwVtkWindowLevelLookupTable(int sze = 256, int ext = 256);
@@ -96,8 +93,7 @@ protected:
     double RightClampValue[4];
     double LeftClampValue[4];
 
-
-    vtkUnsignedCharArray *InvertTable;
+    vtkUnsignedCharArray* InvertTable;
     vtkTimeStamp InvertTime;
 
 private:
