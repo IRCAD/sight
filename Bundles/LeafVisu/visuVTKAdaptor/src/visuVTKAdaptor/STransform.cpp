@@ -54,13 +54,12 @@ public:
     ::visuVTKAdaptor::STransform* m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STransform,
-                         ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STransform);
 
 namespace visuVTKAdaptor
 {
 
-static ::fwServices::IService::KeyType s_TM3D_INOUT = "tm3d";
+const ::fwServices::IService::KeyType STransform::s_TM3D_INOUT = "tm3d";
 
 //------------------------------------------------------------------------------
 
@@ -198,6 +197,7 @@ void STransform::updating()
     vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
     mat->Delete();
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -242,7 +242,16 @@ void STransform::swapping()
 void STransform::stopping()
 {
     this->getTransform()->RemoveObserver(m_transformCommand);
-    this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap STransform::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_TM3D_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 } //namespace visuVTKAdaptor

@@ -583,20 +583,20 @@ void SMesh::createTransformService()
     {
         vtkTransform* vtkFieldTransform = vtkTransform::New();
         vtkFieldTransform->Identity();
-        m_transformService = ::visuVTKAdaptor::STransform::dynamicCast(
-            ::fwServices::add< ::fwRenderVTK::IAdaptor > (
-                fieldTransform,
-                "::visuVTKAdaptor::Transform"
-                )
-            );
-        SLM_ASSERT("Transform service NULL", m_transformService.lock());
-        ::visuVTKAdaptor::STransform::sptr transformService = m_transformService.lock();
 
+        // create the srv configuration for objects auto-connection
+        IService::Config srvConfig;
+        IAdaptor::sptr transformService =
+            this->createSubAdaptor( "::visuVTKAdaptor::STransform", srvConfig);
+        this->registerServiceInOut(fieldTransform, STransform::s_TM3D_INOUT, transformService, true, srvConfig);
+        m_transformService = ::visuVTKAdaptor::STransform::dynamicCast(transformService);
+
+        transformService->setConfiguration(srvConfig);
         transformService->setRenderService( this->getRenderService()  );
         transformService->setRendererId( this->getRendererId()       );
         transformService->setAutoRender( this->getAutoRender()     );
 
-        transformService->setTransform(vtkFieldTransform);
+        m_transformService.lock()->setTransform(vtkFieldTransform);
         m_transform->Concatenate(vtkFieldTransform);
         vtkFieldTransform->Delete();
     }

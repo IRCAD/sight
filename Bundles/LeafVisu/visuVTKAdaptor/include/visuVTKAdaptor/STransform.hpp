@@ -23,8 +23,11 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Adaptor binding a TransformationMatrix3D to a vtkTransform.
+ *
+ * @section XML XML Configuration
+ *
  * @code{.xml}
-    <service type="::visuVTKAdaptor::STransform" >
+    <service type="::visuVTKAdaptor::STransform" autoConnect="yes">
         <inout key="tm3d" uid="..." />
         <config transform="transform" autoRender="true" parent="parentTransform" />
     </service>
@@ -44,6 +47,8 @@ class VISUVTKADAPTOR_CLASS_API STransform : public ::fwRenderVTK::IAdaptor
 public:
 
     fwCoreServiceClassDefinitionsMacro( (STransform)(::fwRenderVTK::IAdaptor) );
+
+    static const ::fwServices::IService::KeyType s_TM3D_INOUT;
 
     /// Constructor
     VISUVTKADAPTOR_API STransform() noexcept;
@@ -78,6 +83,14 @@ protected:
 
     /// Does nothing
     VISUVTKADAPTOR_API void stopping();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect TransformationMatrix3D::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     /// Current vtkTransform
     vtkTransform* m_transform;
