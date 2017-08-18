@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/VectorField.hpp"
+#include "visuVTKAdaptor/SVectorField.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
@@ -33,21 +33,23 @@
 #include <vtkPointData.h>
 #include <vtkPolyDataMapper.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::VectorField, ::fwData::Image );
-
 namespace visuVTKAdaptor
 {
 
+fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SVectorField);
+
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+
 //------------------------------------------------------------------------------
 
-VectorField::VectorField() noexcept
+SVectorField::SVectorField() noexcept
 {
     m_imageData = vtkImageData::New();
 }
 
 //------------------------------------------------------------------------------
 
-VectorField::~VectorField() noexcept
+SVectorField::~SVectorField() noexcept
 {
     m_imageData->Delete();
     m_imageData = NULL;
@@ -55,30 +57,24 @@ VectorField::~VectorField() noexcept
 
 //------------------------------------------------------------------------------
 
-void VectorField::doStart()
+void SVectorField::starting()
 {
-    this->doUpdate();
+    this->initialize();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::doStop()
+void SVectorField::stopping()
 {
     this->destroyPipeline();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::doSwap()
+void SVectorField::updating()
 {
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void VectorField::doUpdate()
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid && image->getNumberOfComponents() == 3)
@@ -93,27 +89,20 @@ void VectorField::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void VectorField::doConfigure()
+void SVectorField::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::buildPipeline( )
+void SVectorField::buildPipeline( )
 {
-    SLM_TRACE_FUNC();
-
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
 
     ::fwVtkIO::toVTKImage(image, m_imageData);
 
-    // m_imageData->GetPointData()->SetActiveVectors("ImageScalars");
-
     vtkSmartPointer<vtkArrowSource> arrowSource = vtkSmartPointer<vtkArrowSource>::New();
-
-    // vtkSmartPointer<vtkGlyphSource2D> arrowSource = vtkSmartPointer<vtkGlyphSource2D>::New();
-    // arrowSource->SetGlyphTypeToArrow();
-    // arrowSource->FilledOff();
 
     m_arrowSource = arrowSource;
 
@@ -123,11 +112,6 @@ void VectorField::buildPipeline( )
     ptMask->SetOnRatio(1);
     ptMask->RandomModeOn();
 
-    // vtkSmartPointer<vtkAssignAttribute> assignAttr = vtkSmartPointer<vtkAssignAttribute>::New();
-    // assignAttr->SetInputConnection(ptMask->GetOutputPort());
-    // assignAttr->Assign( vtkDataSetAttributes::SCALARS, vtkDataSetAttributes::VECTORS, vtkAssignAttribute::POINT_DATA
-    // );
-
 // #define USE_GPU_GLYPH
 #ifndef USE_GPU_GLYPH
     ptMask->SetMaximumNumberOfPoints(5000);
@@ -135,7 +119,6 @@ void VectorField::buildPipeline( )
     vtkSmartPointer<vtkGlyph3D> glyphFilter = vtkSmartPointer<vtkGlyph3D>::New();
     glyphFilter->SetSourceConnection(m_arrowSource->GetOutputPort());
 
-    // glyphFilter->SetScaleModeToScaleByVector();
     glyphFilter->ScalingOn();
 
     glyphFilter->SetVectorModeToUseVector();
@@ -143,8 +126,6 @@ void VectorField::buildPipeline( )
     glyphFilter->OrientOn();
 
     glyphFilter->SetInputConnection(ptMask->GetOutputPort());
-    // glyphFilter->SetInputConnection(assignAttr->GetOutputPort());
-    // glyphFilter->SetInput(m_imageData);
 
     glyphFilter->SetInputArrayToProcess( 1, m_imageData->GetInformation());
 
@@ -159,7 +140,7 @@ void VectorField::buildPipeline( )
     vectorMapper->OrientOn();
     vectorMapper->SetInputConnection(ptMask->GetOutputPort());
 
-    SLM_WARN("USE_GPU");
+    SLM_DEBUG("USE_GPU");
 #endif
 
     vtkSmartPointer<vtkActor> vectorActor = vtkSmartPointer<vtkActor>::New();
@@ -168,23 +149,25 @@ void VectorField::buildPipeline( )
     this->addToRenderer(vectorActor);
 
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void VectorField::destroyPipeline( )
+void SVectorField::destroyPipeline( )
 {
     this->removeAllPropFromRenderer();
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType VectorField::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SVectorField::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
