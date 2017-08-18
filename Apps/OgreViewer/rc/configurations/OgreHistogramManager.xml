@@ -52,13 +52,13 @@
             <parameter replace="SelectedTFKey" by="SelectedTF" />
         </service>
 
-        <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+        <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TFSelections}" />
             <config selectedTFKey="SelectedTF" />
         </service>
 
-        <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
+        <service uid="transparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
             <inout key="image" uid="${imageUID}" />
         </service>
 

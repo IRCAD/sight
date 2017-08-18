@@ -110,18 +110,18 @@
                 <type mode="reader" />
             </service>
 
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
                 <in key="image" uid="imageUID" />
                 <sliceIndex>Sagittal</sliceIndex>
             </service>
 
-            <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+            <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
                 <inout key="image" uid="imageUID" autoConnect="yes"/>
                 <inout key="TFSelections" uid="TFSelections" />
                 <config selectedTFKey="SelectedTF" />
             </service>
 
-            <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
+            <service uid="transparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
                 <inout key="image" uid="imageUID" />
             </service>
 

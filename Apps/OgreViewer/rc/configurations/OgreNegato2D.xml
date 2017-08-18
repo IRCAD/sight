@@ -52,7 +52,7 @@
         <!-- End Generic Scene ***************************************** -->
 
         <!-- Slice editor service -->
-        <service uid="sliderIndexEditor2D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderIndexEditor2D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>

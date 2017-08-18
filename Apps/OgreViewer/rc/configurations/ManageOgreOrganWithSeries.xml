@@ -37,10 +37,10 @@
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="::uiReconstruction::OrganMaterialEditor" >
+        <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="representationEditor" type="::uiReconstruction::RepresentationEditor" >
+        <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
         <service uid="textureSelector" type="::uiVisuOgre::STextureSelector" >
@@ -53,7 +53,7 @@
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditor" type="::uiMedData::editor::SModelSeriesList" autoConnect="yes" >
+        <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
             <columns>
                 <organ_name>@organ_name</organ_name>

@@ -158,7 +158,7 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="sliderIndexEditor3D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderIndexEditor3D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
