@@ -57,16 +57,6 @@ public:
     /// destructor
     UIMEDDATAQT_API virtual ~SOrganTransformation() noexcept;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
-     */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
-
 protected:
 
     UIMEDDATAQT_API virtual void configuring();
@@ -75,6 +65,20 @@ protected:
     UIMEDDATAQT_API virtual void swapping();
     UIMEDDATAQT_API virtual void updating();
     UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+     UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private Q_SLOTS:
     void onReconstructionCheck(QListWidgetItem* currentItem);

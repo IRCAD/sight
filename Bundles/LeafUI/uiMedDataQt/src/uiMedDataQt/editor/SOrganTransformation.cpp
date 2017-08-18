@@ -41,6 +41,9 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SOrganTransformation );
 
+static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
+
 SOrganTransformation::SOrganTransformation() noexcept :
     m_saveButton( 0 ),
     m_loadButton( 0 ),
@@ -150,7 +153,7 @@ void SOrganTransformation::refresh()
     m_reconstructionMap.clear();
     m_reconstructionListBox->clear();
 
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -162,7 +165,7 @@ void SOrganTransformation::refresh()
 
     if(hasReconstructions)
     {
-        ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>("composite");
+        ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>(s_COMPOSITE_INOUT);
 
         for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
@@ -198,7 +201,7 @@ void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationM
 
 void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 {
-    ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>("composite");
+    ::fwData::Composite::sptr pComposite = this->getInOut< ::fwData::Composite>(s_COMPOSITE_INOUT);
     if (pComposite != nullptr)
     {
         ::std::string item_name                        = currentItem->text().toStdString();
@@ -232,7 +235,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 
 void SOrganTransformation::onResetClick()
 {
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     //search the corresponding triangular mesh
     for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -255,7 +258,7 @@ void SOrganTransformation::onSaveClick()
 {
     InnerMatMappingType matMap;
 
-    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+    ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     if(!series->getReconstructionDB().empty())
     {
@@ -288,7 +291,7 @@ void SOrganTransformation::onLoadClick()
     {
         InnerMatMappingType matMap = m_saveListing[m_saveSelectionComboBox->currentText().toStdString()];
 
-        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
         //search the corresponding triangular mesh
         for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -313,14 +316,14 @@ void SOrganTransformation::onLoadClick()
 void SOrganTransformation::onSelectAllChanged(int state)
 {
 
-    ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite>("composite");
+    ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite>(s_COMPOSITE_INOUT);
     ::fwDataTools::helper::Composite compositeHelper(composite);
 
     if(state == Qt::Checked)
     {
         m_reconstructionListBox->setEnabled(false);
 
-        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
+        ::fwMedData::ModelSeries::sptr series = this->getInOut< ::fwMedData::ModelSeries >(s_MODEL_SERIES_INOUT);
 
         for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
@@ -355,9 +358,13 @@ void SOrganTransformation::onSelectAllChanged(int state)
 ::fwServices::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push("modelSeries", ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push("modelSeries", ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT );
-    connections.push("modelSeries", ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES_INOUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_COMPOSITE_INOUT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -366,4 +373,3 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
 } // namespace editor
 } // namespace uiMedData
-
