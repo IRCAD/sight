@@ -12,12 +12,9 @@
 #include <fwCore/spyLog.hpp>
 
 // Service associated data
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -29,13 +26,7 @@
 
 #include <itkSubtractImageFilter.h>
 
-#ifndef M_PI
-#define M_PI           3.14159265358979323846
-#endif
-
-using fwTools::fwID;
-
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract, ::fwData::Composite );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract );
 
 namespace basicRegistration
 {
@@ -90,21 +81,13 @@ void SImagesSubstract::updating()
 {
     ::fwTools::Type REQUESTED_TYPE = ::fwTools::Type::create("int16");
 
-    const std::string image1Name("image1");
-    const std::string image2Name("image2");
-    const std::string imageResultName("imageResult");
-
-    ::fwData::Composite::sptr compositeVisu = this->getObject< ::fwData::Composite >();
-    ::fwData::Image::sptr image1            = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image1Name));
-    ::fwData::Image::sptr image2            = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image2Name));
-    ::fwData::Image::sptr imageResult       = ::fwData::Image::New();
-
-    OSLM_ASSERT("The object " << image1Name << " is not an image", image1);
-    OSLM_ASSERT("The object " << image2Name << " is not an image", image2);
+    ::fwData::Image::csptr image1     = this->getInput< ::fwData::Image>("image1");
+    ::fwData::Image::csptr image2     = this->getInput< ::fwData::Image>("image2");
+    ::fwData::Image::sptr imageResult = this->getInOut< ::fwData::Image>("result");
 
     // Test if the both images have the same type and it is signed short.
     bool isSameType =
-        ( ((image1->getDataArray())->getType() == (image1->getDataArray())->getType())&&
+        ( ((image1->getDataArray())->getType() == (image2->getDataArray())->getType())&&
           ((image1->getDataArray())->getType() == REQUESTED_TYPE));
 
     if(isSameType)
@@ -136,16 +119,8 @@ void SImagesSubstract::updating()
             assert(output->GetSource());
             ::fwItkIO::dataImageFactory< ImageType >( output, imageResult, true );
 
-            ::fwDataTools::helper::Composite compositeHelper(compositeVisu);
-            if ( compositeVisu->find(imageResultName) != compositeVisu->end() )
-            {
-                compositeHelper.swap(imageResultName, imageResult);
-            }
-            else
-            {
-                compositeHelper.add(imageResultName, imageResult);
-            }
-            compositeHelper.notify();
+            auto sig = imageResult->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
         }
         else
         {
@@ -167,10 +142,7 @@ void SImagesSubstract::updating()
 void SImagesSubstract::swapping()
 {
     // Classic default approach to update service when oject change
-//    this->stopping();
-//    this->starting();
     this->updating();
-
 }
 
 //------------------------------------------------------------------------------
@@ -179,6 +151,6 @@ void SImagesSubstract::OnCompute()
 {
     this->updating();
 }
-
+// -----------------------------------------------------------------------------
 } // namespace basicRegistration
 

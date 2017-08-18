@@ -1,0 +1,432 @@
+<!--
+    graphical application overview for each tab.
+
+
+    Point list 1 Tab selected
+    =======================================================================
+    | toolBar |
+    |======================================================================|
+    || Point list 1 Tab || Point list 2 Tab| Substraction Tab| |
+    |======================================================================|
+    | |
+    | |
+    | multiViewNegato1 |
+    | |
+    ========================================================================
+
+    Point list 2 Tab selected
+
+    =======================================================================
+    | toolBar |
+    |======================================================================|
+    | Point list 1 Tab || Point list 2 Tab || Substraction Tab| |
+    |======================================================================|
+    | |
+    | |
+    | multiViewNegato2 |
+    | |
+    ========================================================================
+
+    Regsitration Tab selected
+
+    =======================================================================
+    | toolBar |
+    |======================================================================|
+    | Point list 1 Tab | Point list 2 Tab || Substraction Tab|| |
+    |======================================================================|
+    | |
+    | |
+    | multiViewNegato3 |
+    | |
+    ========================================================================
+
+    Detail of the ToolBar
+    =======================================================================
+    | openFile | openFile2 | RegisterAction | Quit | |
+    =======================================================================
+
+
+    This application allows to do the substraction between two images.
+    Step 1 : The user loads an image in the first tab by using the button (openFile).
+    Step 2 : The user loads an image in the second Tab by using the button (openFile2).
+    Step 3 : The user goes to the third tab and click on compute to see the result of the subtract between the two images.
+-->
+<plugin id="Ex04ImageSubstraction" version="@DASH_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>Ex04ImageSubstractionConfig</id>
+        <config>
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
+            <object uid="image1" type="::fwData::Image" />
+            <object uid="image2" type="::fwData::Image" />
+            <object uid="imageResult" type="::fwData::Image" />
+            <!-- ***************************************** End Objects declaration ******************************************* -->
+
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Ex04ImageSubstraction</name>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Main view" align="center" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <toolBar sid="toolBar" start="yes" />
+                    <view sid="multiView" start="yes" />
+                </registry>
+            </service>
+
+            <!-- service which create a toolbar -->
+            <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Load Image" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/icon-load1.png" />
+                        <separator />
+                        <menuItem name="Load Image2" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/icon-load2.png" />
+                        <separator />
+                        <menuItem name="Save Image" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/save.png" />
+                        <menuItem name="Quit" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/unreadable.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openFile1" start="yes" />
+                    <menuItem sid="openFile2" start="yes" />
+                    <menuItem sid="saveFile" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <!-- service which create the three tabs of the application -->
+            <service uid="multiView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager">
+                        <view caption="Image 1" selected="yes" />
+                        <view caption="Image 2" />
+                        <view caption="Substraction" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="multiViewNegato1" start="yes" />
+                    <view sid="multiViewNegato2" start="yes" />
+                    <view sid="substractionView" start="yes" />
+                </registry>
+            </service>
+
+            <!-- NEGATO 1 VIEW (Content of the first Tab) -->
+            <service uid="multiViewNegato1" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="negato1" start="yes" />
+                    <view sid="multiViewNegato1Bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewNegato1Bottom" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="snapshotNegato1Editor" start="yes" />
+                    <view sid="sliderNegato1" start="no" />
+                </registry>
+            </service>
+
+
+            <!-- NEGATO 2 VIEW (Content of the second Tab) -->
+            <service uid="multiViewNegato2" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="negato2" start="yes" />
+                    <view sid="multiViewNegato2Bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewNegato2Bottom" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="snapshotNegato2Editor" start="yes" />
+                    <view sid="sliderNegato2" start="no" />
+                </registry>
+            </service>
+
+
+            <!-- NEGATO 3 VIEW (Content of the third Tab) -->
+            <service uid="substractionView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="multiViewNegato3" start="yes" />
+                    <view sid="paramEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewNegato3" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="negato3" start="yes" />
+                    <view sid="multiViewNegato3Bottom" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiViewNegato3Bottom" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="snapshotNegato3Editor" />
+                    <view sid="sliderNegato3" />
+                </registry>
+            </service>
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+
+            <!-- ***************************************** Begin services declarations  ************************************ -->
+            <!-- ACTIONS -->
+            <!-- Action to load an image in the Tab 1 -->
+            <service uid="openFile1" type="::gui::action::SStarter" >
+                <start uid="readerFile1" />
+            </service>
+
+            <!-- Action to load an image in the Tab 2 -->
+            <service uid="openFile2" type="::gui::action::SStarter" >
+                <start uid="readerFile2" />
+            </service>
+
+            <!-- Action to do Quit -->
+            <service uid="actionQuit" type="::gui::action::SQuit"  />
+
+            <service uid="snapshotNegato1Editor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotNegato2Editor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotNegato3Editor" type="::uiVisu::SnapshotEditor" />
+
+            <service uid="medicalImageSrv1" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+                <inout key="image" uid="image1" />
+            </service>
+
+            <service uid="readerFile1" type="::uiIO::editor::SIOSelector" >
+                <in key="image" uid="image1" />
+                <type mode="reader" />
+                <selection mode="exclude" />
+                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            </service>
+
+            <!-- Editors for Negato1 -->
+            <service uid="sliderNegato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="image1" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <service uid="medicalImageSrv2" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+                <inout key="image" uid="image2" />
+            </service>
+
+            <service uid="readerFile2" type="::uiIO::editor::SIOSelector" >
+                <in key="image" uid="image2" />
+                <type mode="reader" />
+                <selection mode="exclude" />
+                <addSelection service="::ioXML::FwXMLGenericReaderService" />
+            </service>
+
+            <!-- Editors for Negato2 -->
+            <service uid="sliderNegato2" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="image2" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <service uid="paramEditor" type="::basicRegistration::SImagesSubstract" >
+                <in key="image1" uid="image1" />
+                <in key="image2" uid="image2" />
+                <inout key="result" uid="imageResult" />
+            </service>
+
+            <service uid="MedicalImageSrv3" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+                <inout key="image" uid="imageResult" />
+            </service>
+
+            <!-- Editors for Negato3 -->
+            <service uid="sliderNegato3" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="imageResult" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+            <!-- Action to save an image in the Tab 3 -->
+            <service uid="saveFile" type="::gui::action::SStarter" >
+                <start uid="writerFile" />
+            </service>
+
+            <service uid="writerFile" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="imageResult" />
+                <type mode="writer" />
+            </service>
+
+            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- Generic Scene (Negato) for the first tab -->
+            <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <inout key="image1ID" uid="image1" />
+                <scene>
+                    <picker id="negato1default" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="snapshot1" uid="snapshot1UID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                        <config renderer="default" />
+                    </adaptor>
+
+                    <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle3DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="image1ID">
+                        <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" />
+                    </adaptor>
+
+                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image1ID">
+                        <config renderer="default" picker="negato1default" text="" />
+                    </adaptor>
+
+                    <proxy channel="snapNegato1">
+                        <slot>snapshot1UID/snap</slot>
+                    </proxy>
+
+                </scene>
+            </service>
+
+            <!-- Generic Scene (Negato) for the second tab -->
+            <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <inout key="image2ID" uid="image2" />
+                <scene>
+                    <picker id="negato2default" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="snapshot2" uid="snapshot2UID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                        <config renderer="default" />
+                    </adaptor>
+
+                    <adaptor id="Interactor2" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle3DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="image2ID">
+                        <config renderer="default" picker="negato2default" slices="3" sliceIndex="axial" />
+                    </adaptor>
+
+                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image2ID">
+                        <config renderer="default" picker="negato2default" text="" />
+                    </adaptor>
+
+                    <proxy channel="snapNegato2">
+                        <slot>snapshot2UID/snap</slot>
+                    </proxy>
+
+                </scene>
+            </service>
+
+            <!-- Generic Scene (Negato) for the Third tab -->
+            <service uid="negato3" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <inout key="imageResultID" uid="imageResult" />
+                <scene>
+
+                    <picker id="negato3default" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="snapshot3" uid="snapshot3UID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                        <config renderer="default" />
+                    </adaptor>
+
+                    <adaptor id="Interactor3" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle3DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="MPRNegato3" class="::visuVTKAdaptor::NegatoMPR" objectId="imageResultID">
+                        <config renderer="default" picker="negato3default" slices="3" sliceIndex="axial" />
+                    </adaptor>
+
+                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageResultID">
+                        <config renderer="default" picker="negato3default" text="" />
+                    </adaptor>
+
+                    <proxy channel="snapNegato3">
+                        <slot>snapshot3UID/snap</slot>
+                    </proxy>
+
+                </scene>
+            </service>
+            <!-- ***************************************** End render scenes declaration ***************************************** -->
+
+            <!-- ***************************************** End services declarations  ************************************************ -->
+            <connect channel="snapNegato1" >
+                <signal>snapshotNegato1Editor/snapped</signal>
+            </connect>
+
+            <connect channel="snapNegato2" >
+                <signal>snapshotNegato2Editor/snapped</signal>
+            </connect>
+
+            <connect channel="snapNegato3" >
+                <signal>snapshotNegato3Editor/snapped</signal>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="medicalImageSrv1" />
+            <start uid="medicalImageSrv2" />
+            <start uid="sliderNegato1" />
+            <start uid="sliderNegato2" />
+            <start uid="sliderNegato3" />
+
+        </config>
+    </extension>
+</plugin>

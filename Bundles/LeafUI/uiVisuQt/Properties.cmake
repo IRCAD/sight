@@ -6,6 +6,7 @@ set( DEPENDENCIES
     fwCom
     fwCore
     fwData
+    fwDataTools
     fwGui
     fwGuiQt
     fwMath
