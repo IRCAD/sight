@@ -70,19 +70,19 @@ public:
 
 protected:
 
-    /// Calls doUpdate()
-    VISUVTKADAPTOR_API void starting();
-
     VISUVTKADAPTOR_API void configuring();
 
-    /// Calls doUpdate()
-    VISUVTKADAPTOR_API void swapping();
+    /// Registers transforms and then updates
+    VISUVTKADAPTOR_API void starting();
 
     /// Updates the vtkTransform from the TransformationMatrix3D
     VISUVTKADAPTOR_API void updating();
 
-    /// Does nothing
+    /// Cleanup
     VISUVTKADAPTOR_API void stopping();
+
+    /// Updates
+    VISUVTKADAPTOR_API void swapping();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
