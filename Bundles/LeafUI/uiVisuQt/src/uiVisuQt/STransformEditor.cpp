@@ -6,6 +6,8 @@
 
 #include "uiVisuQt/STransformEditor.hpp"
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
