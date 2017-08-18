@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="OrganTransformation" type="::uiMedData::editor::SOrganTransformation" autoConnect="yes">
+        <service uid="OrganTransformation" type="::uiMedDataQt::editor::SOrganTransformation" autoConnect="yes">
             <inout key="modelSeries" uid="${modelSeriesUid}" />
             <inout key="composite" uid="${meshDBUid}" />
         </service>

@@ -124,7 +124,7 @@
 
             <item key="seriesDB">
                 <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
-                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
                         <seriesId>${AS_UID}</seriesId>
                     </service>
                 </object>
