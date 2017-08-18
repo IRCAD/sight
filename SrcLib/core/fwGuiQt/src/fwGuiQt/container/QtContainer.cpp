@@ -30,14 +30,14 @@ QtContainer::~QtContainer() noexcept
 {
     SLM_ASSERT(
         "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",
-        m_container == 0 );
+        m_container == nullptr );
 }
 
 //-----------------------------------------------------------------------------
 
 void QtContainer::setLayout( QLayout* const layout )
 {
-    SLM_ASSERT("The QWidget is not yet initialized, setting a layout is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking setLayout().", m_container);
 
     // Recursively delete all children
     QLayout* oldLayout = m_container->layout();
@@ -59,7 +59,7 @@ void QtContainer::setLayout( QLayout* const layout )
 
 void QtContainer::clean()
 {
-    SLM_ASSERT("The QWidget is not yet initialized, cleaning is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking clean().", m_container);
 
     // Recursively delete all children
     QLayout* oldLayout = m_container->layout();
@@ -83,11 +83,12 @@ void QtContainer::clean()
 
 void QtContainer::destroyContainer()
 {
-    SLM_ASSERT("The QWidget is not yet initialized", m_container);
+    SLM_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
+
     if(m_container)
     {
-        m_container->deleteLater();
-        m_container = NULL;
+        delete m_container;
+        m_container.clear();
     }
 }
 
@@ -109,7 +110,7 @@ QWidget* QtContainer::getQtContainer()
 
 bool QtContainer::isShownOnScreen()
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking isShownOnScreen().", m_container);
     return m_container->isVisible();
 }
 
@@ -117,28 +118,40 @@ bool QtContainer::isShownOnScreen()
 
 void QtContainer::setVisible(bool isVisible)
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking setVisible().", m_container);
+
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
-    if(dock)
+
+    if(dock && dock->isVisible() != isVisible)
     {
         dock->setVisible(isVisible);
     }
-    m_container->setVisible(isVisible);
+
+    if(m_container->isVisible() != isVisible)
+    {
+        m_container->setVisible(isVisible);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void QtContainer::setEnabled(bool isEnabled)
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
+    SLM_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
+
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
-    if(dock)
+
+    if(dock && dock->isEnabled() != isEnabled)
     {
         dock->setEnabled(isEnabled);
     }
-    m_container->setEnabled(isEnabled);
+
+    if(m_container->isEnabled() != isEnabled)
+    {
+        m_container->setEnabled(isEnabled);
+    }
 }
 
 //-----------------------------------------------------------------------------
