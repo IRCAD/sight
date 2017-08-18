@@ -58,7 +58,7 @@
                 <object type="::fwData::Image" uid="${imageID}" src="ref">
                     <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
                     <service uid="${GENERIC_UID}_medicalImgConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                    <service uid="${GENERIC_UID}_sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                         <sliceIndex>${orientation}</sliceIndex>
                     </service>
                 </object>

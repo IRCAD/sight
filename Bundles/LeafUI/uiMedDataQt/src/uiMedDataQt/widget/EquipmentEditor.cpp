@@ -1,8 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "uiMedDataQt/widget/EquipmentEditor.hpp"
+
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -10,19 +15,15 @@
 #include <QGroupBox>
 #include <QLineEdit>
 
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Series.hpp>
-
-#include "uiMedDataQt/widget/EquipmentEditor.hpp"
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace widget
 {
 
 //-----------------------------------------------------------------------------
 
-EquipmentEditor::EquipmentEditor(QWidget *parent) : QWidget(parent)
+EquipmentEditor::EquipmentEditor(QWidget* parent) :
+    QWidget(parent)
 {
     m_institutionName = new QLineEdit();
 
@@ -57,7 +58,6 @@ void EquipmentEditor::setSeries(SPTR(::fwMedData::Series)series)
 
 }
 
-
 SPTR(::fwMedData::Equipment) EquipmentEditor::getEquipment() const
 {
     ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
@@ -65,6 +65,8 @@ SPTR(::fwMedData::Equipment) EquipmentEditor::getEquipment() const
 
     return equipment;
 }
+
+//------------------------------------------------------------------------------
 
 bool EquipmentEditor::isValid() const
 {
@@ -75,5 +77,5 @@ bool EquipmentEditor::isValid() const
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 

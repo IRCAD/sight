@@ -32,14 +32,14 @@
 
 #include <QVBoxLayout>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 namespace editor
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSelector, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ void SSelector::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    m_selectorWidget = new ::uiMedData::widget::Selector();
+    m_selectorWidget = new ::uiMedDataQt::widget::Selector();
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
     m_selectorWidget->setAllowedRemove(m_allowedRemove);
@@ -273,7 +273,7 @@ void SSelector::onDoubleClick(const QModelIndex& index)
 
     ::fwData::Vector::sptr selectionVector = this->getSelection();
 
-    if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::STUDY)
+    if (m_selectorWidget->getItemType(index) == ::uiMedDataQt::widget::SelectorModel::STUDY)
     {
         std::stringstream str;
         str << "Selected study. TODO";
@@ -281,7 +281,7 @@ void SSelector::onDoubleClick(const QModelIndex& index)
         ::fwGui::dialog::MessageDialog::showMessageDialog("Double click",
                                                           str.str());
     }
-    else if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::SERIES)
+    else if (m_selectorWidget->getItemType(index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
         ::fwData::Object::sptr obj       = selectionVector->front();
@@ -390,4 +390,4 @@ void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt

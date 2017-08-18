@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,9 +14,9 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QPointer>
-#include <QObject>
 #include <QButtonGroup>
+#include <QObject>
+#include <QPointer>
 
 namespace activities
 {
@@ -29,7 +29,7 @@ namespace editor
  * This editor proposes all the available activities according to the given configuration.
  * It sends a signal with the activity identifier when a button is pushed.
  *
- * It should work with the ::uiMedData::editor::SActivityWizard that creates or updates the activitySeries.
+ * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
@@ -62,7 +62,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCreateActivity)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
@@ -132,6 +132,5 @@ private:
 
 } // namespace editor
 } // namespace activities
-
 
 #endif // __ACTIVITIES_EDITOR_SCREATEACTIVITY_HPP__

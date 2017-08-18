@@ -18,7 +18,7 @@ class QSlider;
 class QLabel;
 class QLineEdit;
 
-namespace uiVisu
+namespace uiVisuQt
 {
 /**
  * @brief   This editor regulates the position and rotation defined in a transformation matrix.
@@ -124,6 +124,6 @@ private:
     int m_rotationRange[2];
 };
 
-} // namespace uiVisu
+} // namespace uiVisuQt
 
 #endif // __UIVISUQT_STRANSFORMEDITOR_HPP__

@@ -30,14 +30,18 @@
 #include <QIcon>
 #include <QVBoxLayout>
 
-namespace uiMeasurement
+namespace uiMeasurementQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurement::editor::Distance, ::fwData::Image );
+//------------------------------------------------------------------------------
+
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::fwData::Image );
 
 const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
+
+//------------------------------------------------------------------------------
 
 Distance::Distance() noexcept
 {
@@ -148,5 +152,5 @@ void Distance::onDistanceButton()
 
 //------------------------------------------------------------------------------
 } // namespace editor
-} // namespace uiMeasurement
+} // namespace uiMeasurementQt
 

@@ -43,14 +43,14 @@
 #include <QObject>
 #include <QVBoxLayout>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SActivityWizard, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -503,4 +503,4 @@ void SActivityWizard::onBuildActivity()
 //------------------------------------------------------------------------------
 
 } //namespace editor
-} //namespace uiMedData
+} //namespace uiMedDataQt

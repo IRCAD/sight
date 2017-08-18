@@ -37,6 +37,8 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks );
 
+//------------------------------------------------------------------------------
+
 static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
 static const char* s_GROUP_PROPERTY_NAME                       = "group";
 static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
@@ -51,6 +53,8 @@ static const ::fwCom::Slots::SlotKeyType s_ADD_GROUP_SLOT        = "addGroup";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+
+//------------------------------------------------------------------------------
 
 SLandmarks::SLandmarks() noexcept :
     m_advancedMode(false)

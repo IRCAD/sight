@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,17 @@
 #include "uiGenericQt/action/ShowRevInfo.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <fstream>
-#include <iostream>
 
 #include <QApplication>
 #include <QDialog>
@@ -31,12 +32,15 @@
 #include <QTextTableFormat>
 #include <QVBoxLayout>
 
-namespace uiGeneric
+#include <fstream>
+#include <iostream>
+
+namespace uiGenericQt
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::ShowRevInfo, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowRevInfo, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +75,7 @@ void ShowRevInfo::updating( )
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Revision info"));
 
-    QTextBrowser* htmlView = new QTextBrowser (dialog);
+    QTextBrowser* htmlView = new QTextBrowser(dialog);
     htmlView->setDocument(this->generateReport());
     htmlView->setOpenExternalLinks(true);
     htmlView->setMinimumSize(800, 600);
@@ -82,7 +86,7 @@ void ShowRevInfo::updating( )
     hLayout->addStretch();
     hLayout->addWidget(genButton);
     hLayout->addWidget(okButton);
-    hLayout->setContentsMargins(5,5,5,5);
+    hLayout->setContentsMargins(5, 5, 5, 5);
 
     QFrame* line = new QFrame(dialog);
     line->setFrameShape(QFrame::HLine);
@@ -92,7 +96,7 @@ void ShowRevInfo::updating( )
     layout->addWidget(htmlView, 0);
     layout->addWidget(line, 0);
     layout->addLayout(hLayout, 0);
-    layout->setContentsMargins(0,0,0,0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     dialog->setLayout( layout );
 
@@ -183,7 +187,7 @@ QTextDocument* ShowRevInfo::generateReport()
 
     for(RevMapType::value_type val :  revMap)
     {
-        cursor.insertHtml(QString::fromStdString(val.first).replace("\n","<br/>"));
+        cursor.insertHtml(QString::fromStdString(val.first).replace("\n", "<br/>"));
         cursor.movePosition(QTextCursor::NextCell);
         cursor.setBlockFormat(centerFormat);
         for(std::string name :  val.second.first)
@@ -225,7 +229,6 @@ const ShowRevInfo::FindMapType ShowRevInfo::findRevInfo(const ::boost::filesyste
 
 //------------------------------------------------------------------------------
 
-
 void ShowRevInfo::getRevMap(const ShowRevInfo::FindMapType& findMap, ShowRevInfo::RevMapType& revMap, bool isBundle)
 {
     for(FindMapType::value_type val :  findMap)
@@ -241,13 +244,13 @@ void ShowRevInfo::getRevMap(const ShowRevInfo::FindMapType& findMap, ShowRevInfo
             throw std::ios_base::failure("Unable to open " + val.second.string());
         }
 
-        file.seekg (0, std::ios::end);
+        file.seekg(0, std::ios::end);
         length = file.tellg();
-        file.seekg (0, std::ios::beg);
+        file.seekg(0, std::ios::beg);
         buf.resize(length);
         char* buffer = &buf[0];
 
-        file.read (buffer, length);
+        file.read(buffer, length);
         file.close();
 
         if(isBundle)
@@ -269,8 +272,8 @@ void ShowRevInfo::saveReport()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a location to save revision info report");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("ODT","*.odt");
-    dialogFile.addFilter("HTML","*.html");
+    dialogFile.addFilter("ODT", "*.odt");
+    dialogFile.addFilter("HTML", "*.html");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -301,4 +304,4 @@ void ShowRevInfo::saveReport()
 
 } // namespace action
 
-} // namespace uiGeneric
+} // namespace uiGenericQt

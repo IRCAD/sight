@@ -104,7 +104,7 @@
             </registry>
         </service>
 
-        <service uid="snapshot" type="::uiVisu::SnapshotEditor" autoConnect="no">
+        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" autoConnect="no">
             <in key="object" uid="${myBlendSelectionComposite}" />
         </service>
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
@@ -114,11 +114,11 @@
         <service uid="bg_medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
-        <service uid="slider" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
-        <service uid="bg_windowLevel" type="::uiImage::WindowLevel">
+        <service uid="bg_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
             <config selectedTFKey="${SELECTED_TF_KEYA}" />
@@ -132,12 +132,12 @@
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="front_imageTransparency" type="::uiImage::ImageTransparency" autoConnect="yes">
+        <service uid="front_imageTransparency" type="::uiImageQt::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
             <shortcut value="V" />
         </service>
 
-        <service uid="front_windowLevel" type="::uiImage::WindowLevel">
+        <service uid="front_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
             <config selectedTFKey="${SELECTED_TF_KEYB}" />

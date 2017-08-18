@@ -26,7 +26,7 @@ class QListWidgetItem;
 class QComboBox;
 class QCheckBox;
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
@@ -35,7 +35,7 @@ namespace editor
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::uiMedData::editor::SOrganTransformation">
+   <service type="::uiMedDataQt::editor::SOrganTransformation">
        <inout key="modelSeries" uid="..." />
        <inout key="composite" uid="..." />
    </service>
@@ -78,7 +78,7 @@ protected:
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-     UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private Q_SLOTS:
     void onReconstructionCheck(QListWidgetItem* currentItem);
@@ -113,6 +113,6 @@ private:
 };
 
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__

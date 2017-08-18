@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,27 +7,25 @@
 #ifndef __UIIMAGEQT_IMAGETRANSPARENCY_HPP__
 #define __UIIMAGEQT_IMAGETRANSPARENCY_HPP__
 
-
-#include <QObject>
-#include <QSlider>
-#include <QCheckBox>
-#include <QPointer>
-#include <QAction>
-
-#include <fwTools/Failed.hpp>
+#include "uiImageQt/config.hpp"
 
 #include <fwData/Point.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include "uiImageQt/config.hpp"
+#include <QAction>
+#include <QCheckBox>
+#include <QObject>
+#include <QPointer>
+#include <QSlider>
 
-namespace uiImage
+namespace uiImageQt
 {
 
 /**
  * @brief   ImageTransparency service allows to change image transparency.
- * @class   ImageTransparency
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject,
                                               public ::gui::editor::IEditor
@@ -36,7 +34,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageTransparency)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (ImageTransparency)(::gui::editor::IEditor) );
 
     UIIMAGEQT_API ImageTransparency() noexcept;
 
@@ -66,7 +64,7 @@ protected:
 
     virtual void configuring();
 
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
 
@@ -97,6 +95,6 @@ private:
 
 };
 
-} // uiImage
+} // uiImageQt
 
 #endif /*__UIIMAGEQT_IMAGETRANSPARENCY_HPP__*/

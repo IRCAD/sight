@@ -40,14 +40,14 @@
             <item key="seriesDB">
                 <object uid="${GENERIC_UID}_newSeriesDB" type="::fwMedData::SeriesDB">
 
-                    <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_selector" impl="::uiMedDataQt::editor::SSelector" autoConnect="yes">
                         <selectionId>${GENERIC_UID}_selections</selectionId>
                         <selectionMode>single</selectionMode>
                         <allowedRemove>no</allowedRemove>
                         <insertMode>yes</insertMode>
                     </service>
 
-                    <service uid="${GENERIC_UID}_sdbInitializer" impl="::uiMedData::action::SInitNewSeries" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_sdbInitializer" impl="::uiMedDataQt::action::SInitNewSeries" autoConnect="yes">
                         <seriesDB>${SERIESDB_UID}</seriesDB>
                     </service>
 
@@ -57,7 +57,7 @@
             <item key="selections">
                 <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">
 
-                    <service uid="${GENERIC_UID}_selectedSeriesEditor" impl="::uiMedData::editor::SSeries" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_selectedSeriesEditor" impl="::uiMedDataQt::editor::SSeries" autoConnect="yes">
                         <seriesId>${SERIES_UID}</seriesId>
                         <seriesDBId>${SERIESDB_UID}</seriesDBId>
                     </service>

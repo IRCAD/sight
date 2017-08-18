@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
 #define __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
-
 
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/Selector.hpp"
@@ -21,12 +20,11 @@
 #include <gui/editor/IEditor.hpp>
 
 #include <QAbstractItemView>
-#include <QPointer>
 #include <QObject>
+#include <QPointer>
 #include <QVector>
 
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
@@ -37,7 +35,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::uiMedData::editor::SSelector">
+    <service uid="..." type="::uiMedDataQt::editor::SSelector">
         <inout key="seriesDB" uid="..." />
         <inout key="selection" uid="..." />
         <selectionMode>single|extended</selectionMode>
@@ -53,9 +51,10 @@ namespace editor
  * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB on which the editor operates.
  * - \b selection [::fwData::Vector]: defines the id of the ::fwData::Vector where the selection will be put or get.
  * @subsection Configuration Configuration
- * - \b selectionMode : defines the selection mode for the series, among {"single", "extended"}, where extended means "multiple"
+ * - \b selectionMode : defines the selection mode for the series, among {"single", "extended"}, where extended means
+ *"multiple"
  * - \b allowedRemove : allows user to remove series, among {"yes", "no"}
- * - \b insertMode : only allows selection of uiMedData::InsertSeries, among {"yes", "no"}
+ * - \b insertMode : only allows selection of uiMedDataQt::InsertSeries, among {"yes", "no"}
  * - \b icons : defines the icon to associate for a series
  *    - \b series : the series classname, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}
  *    - \b icon : the icon path
@@ -65,7 +64,7 @@ class UIMEDDATAQT_CLASS_API SSelector : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSelector)(::gui::editor::IEditor) );
 
     /// Constructor
     UIMEDDATAQT_API SSelector();
@@ -164,13 +163,13 @@ private:
     std::string m_selectionId;
 
     /// Selector widget.
-    QPointer< ::uiMedData::widget::Selector > m_selectorWidget;
+    QPointer< ::uiMedDataQt::widget::Selector > m_selectorWidget;
 
     /// Signal emitted when there is a double click on a series
     SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked;
 
     /// Map containing the specified icons for a series (map\<series classname, icon path\>)
-    ::uiMedData::widget::Selector::SeriesIconType m_seriesIcons;
+    ::uiMedDataQt::widget::Selector::SeriesIconType m_seriesIcons;
 
     /// Permits the user to remove series. Default is yes
     bool m_allowedRemove;
@@ -178,12 +177,12 @@ private:
     /// Change the behaviour of the treeview selection mode
     QAbstractItemView::SelectionMode m_selectionMode;
 
-    /// If true, allows selection of uiMedData::InsertSeries only
+    /// If true, allows selection of uiMedDataQt::InsertSeries only
     bool m_insertMode;
 
 };
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
 
