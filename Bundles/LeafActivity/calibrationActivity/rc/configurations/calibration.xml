@@ -115,7 +115,7 @@
             </preference>
         </service>
 
-        <service uid="ActionExport" type="::uiMedData::action::SExportSeries" autoConnect="yes">
+        <service uid="ActionExport" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
         </service>
