@@ -22,7 +22,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="scaleValues" class="::scene2D::adaptor::SScaleValues">
+   <service uid="scaleValues" class="::scene2D::adaptor::SScaleValues" autoConnect="yes">
         <in key="viewport"  uid="..." />
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>

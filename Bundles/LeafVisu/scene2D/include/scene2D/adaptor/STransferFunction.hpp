@@ -26,7 +26,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="tf2" type="::scene2D::adaptor::STransferFunction" >
+   <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
     <inout key="image" uid="..." />
     <inout key="tfSelection" uid="..." />
     <inout key="viewport" uid="..." />

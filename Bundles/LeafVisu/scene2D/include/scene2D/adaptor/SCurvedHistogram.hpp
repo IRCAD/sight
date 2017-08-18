@@ -26,9 +26,9 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="::scene2D::adaptor::SCurvedHistogram">
-       <in key="histogram" uid="histogramUID" />
-       <inout key="point" uid="pointUID" optional="yes" />
+   <service uid="histogram" type="::scene2D::adaptor::SCurvedHistogram" autoConnect="yes">
+       <in key="histogram" uid="..." />
+       <inout key="point" uid="..." optional="yes" />
        <config xAxis="xAxis" yAxis="yAxis" borderColor="lightGray" innerColor="gray"
                opacity="0.25" zValue="6" borderWidth="2.0" />
    </service>

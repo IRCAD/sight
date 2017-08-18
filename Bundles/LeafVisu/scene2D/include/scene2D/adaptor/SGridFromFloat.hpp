@@ -22,7 +22,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="grid1" type="::scene2D::adaptor::SGridFromFloat">
+   <service uid="grid1" type="::scene2D::adaptor::SGridFromFloat" autoConnect="yes">
     <in key="float" uid="floatUID" />
     <config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray"
             xAxis="xAxis" yAxis="yAxis" zValue="1" />

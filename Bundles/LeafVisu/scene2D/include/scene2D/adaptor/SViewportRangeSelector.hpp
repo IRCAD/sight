@@ -34,7 +34,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="viewportRange" type="::scene2D::adaptor::SViewportRangeSelector">
+   <service uid="viewportRange" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes">
        <inout key="viewport"  uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1000" initialPos="-100" />
    </service>

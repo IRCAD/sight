@@ -25,7 +25,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="viewportUpdater" type="::scene2D::adaptor::SViewportUpdater">
+   <service uid="viewportUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes">
        <in key="viewport" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="7" />
    </service>

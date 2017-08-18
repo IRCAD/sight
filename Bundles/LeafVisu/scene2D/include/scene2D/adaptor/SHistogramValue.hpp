@@ -25,7 +25,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="::scene2D::adaptor::SHistogramValue">
+   <service uid="histogram" type="::scene2D::adaptor::SHistogramValue" autoConnect="yes">
        <in key="histogram" uid="..." />
        <in key="point" uid="..." />
        <in key="viewport"  uid="..." />
