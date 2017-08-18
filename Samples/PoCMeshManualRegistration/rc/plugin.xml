@@ -249,13 +249,13 @@
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-            <service uid="cam2ReaderFile" type="::ioData::MeshReaderService" >
-                <inout key="mesh" uid="cam2Mesh" />
+            <service uid="cam2ReaderFile" type="::ioData::STrianMeshReader" >
+                <inout key="data" uid="cam2Mesh" />
                 <file>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/cam.trian</file>
             </service>
 
-            <service uid="cam1ReaderFile" type="::ioData::MeshReaderService" >
-                <inout key="mesh" uid="cam1Mesh" />
+            <service uid="cam1ReaderFile" type="::ioData::STrianMeshReader" >
+                <inout key="data" uid="cam1Mesh" />
                 <file>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/cam.trian</file>
             </service>
 

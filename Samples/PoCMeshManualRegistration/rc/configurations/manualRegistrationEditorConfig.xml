@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="OrganTransformation" type="::uiMedData::editor::SOrganTransformation">
+        <service uid="OrganTransformation" type="::uiMedData::editor::SOrganTransformation" autoConnect="yes">
             <inout key="modelSeries" uid="${modelSeriesUid}" />
             <inout key="composite" uid="${meshDBUid}" />
         </service>
@@ -41,7 +41,7 @@
             <signal>registrationEditorFrame/closed</signal>
         </connect>
         <!-- ***************************************** End connections declarations  ***************************************** -->
-        <start uid="IHM" />
+
         <!-- START AND STOP SERVICES -->
         <start uid="registrationEditorFrame" />
 
