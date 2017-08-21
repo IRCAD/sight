@@ -40,8 +40,6 @@ SCameraSeriesEditor::SCameraSeriesEditor() noexcept :
     m_camIndex(1)
 {
     newSlot(s_UPDATE_INFOS_SLOT, &SCameraSeriesEditor::updateInformations, this);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 // -------------------------------------------------------------------------
