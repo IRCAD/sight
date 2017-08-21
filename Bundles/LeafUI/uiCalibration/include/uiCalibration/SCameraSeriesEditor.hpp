@@ -98,7 +98,7 @@ protected:
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /**
-     * @brief Updates the informations of the intrinsic calibration.
+     * @brief Slot: Updates the informations of the intrinsic calibration.
      */
     void updateInformations();
 
