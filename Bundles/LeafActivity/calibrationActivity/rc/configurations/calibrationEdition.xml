@@ -103,7 +103,7 @@
             </slots>
         </service>
 
-        <service uid="ActionExport" type="::uiMedData::action::SExportSeries" autoConnect="yes">
+        <service uid="ActionExport" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="newCameraSeries" />
         </service>
@@ -188,18 +188,18 @@
             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
 
-        
+
         <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor">
-            <inout key="cameraSeries" uid="${cameraSeries}" autoConnect="yes" />
-            <inout key="notUsed" uid="camera1" /><!-- Not used, it allows to start this service only if we have a stereo calibration -->
+            <in key="cameraSeries" uid="${cameraSeries}" autoConnect="yes" />
+            <in key="notUsed" uid="camera1" /><!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>
 
         <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="camera0" />
+            <in key="camera" uid="camera0" />
         </service>
 
         <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="camera1" />
+            <in key="camera" uid="camera1" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->

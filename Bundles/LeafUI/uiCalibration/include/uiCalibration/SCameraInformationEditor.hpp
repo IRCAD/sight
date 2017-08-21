@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,30 +7,36 @@
 #ifndef __UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP__
 #define __UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP__
 
-#include <list>
-
-#include <QPointer>
-#include <QComboBox>
-#include <QLabel>
+#include "uiCalibration/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/List.hpp>
-
 #include <gui/editor/IEditor.hpp>
 
-#include "uiCalibration/config.hpp"
+#include <QComboBox>
+#include <QLabel>
+#include <QPointer>
+
+#include <list>
 
 namespace uiCalibration
 {
 /**
  * @brief   SCameraInformationEditor service is used to display the intrinsic calibration of a camera.
- * @class   SCameraInformationEditor
  *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera)
+ * @subsection Configuration XML
+ * @code
+    <service uid="..." type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <in key="camera" uid="..." />
+    </service>
+   @endcode
+ *
+ * @subsection Inputs Inputs
+ * - \b camera [::arData::Camera]: camera's information that will be displayed.
+ *
+ * @subsection Slots Slots
+ * - \b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class UICALIBRATION_CLASS_API SCameraInformationEditor : public QObject,
                                                          public ::gui::editor::IEditor
@@ -69,7 +75,6 @@ public:
      * @brief Stopping method : This method is used to stop the service.
      */
     UICALIBRATION_API void stopping();
-
     /**
      * @brief Updating method : This method is used to update the service.
      */
@@ -82,27 +87,19 @@ public:
      */
     UICALIBRATION_API void swapping();
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     */
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
-
 protected:
 
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
     /**
-     * @brief Updates the informations of the intrinsic calibration.
+     * @brief Slot: Updates the informations of the intrinsic calibration.
      */
-    UICALIBRATION_API void updateInformations();
+    void updateInformations();
 
     /**
      * @brief Clear all the labels.
      */
-    UICALIBRATION_API void clearLabels();
-
-    /// Slots used when the camera is intrinsically calibrated
-    UpdateInfosSlotType::sptr m_slotUpdateInfos;
-
+    void clearLabels();
 
     /**
      * @brief Label that displays the camera description

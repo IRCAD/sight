@@ -39,10 +39,7 @@ const ::fwCom::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "up
 SCameraSeriesEditor::SCameraSeriesEditor() noexcept :
     m_camIndex(1)
 {
-    m_slotUpdateInfos = ::fwCom::newSlot(&SCameraSeriesEditor::updateInformations, this);
-    ::fwCom::HasSlots::m_slots(s_UPDATE_INFOS_SLOT, m_slotUpdateInfos);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot(s_UPDATE_INFOS_SLOT, &SCameraSeriesEditor::updateInformations, this);
 }
 
 // -------------------------------------------------------------------------
@@ -51,13 +48,8 @@ void SCameraSeriesEditor::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
-    if(cfgIdx)
-    {
-        std::string idxStr = cfgIdx->getValue();
-        SLM_ASSERT("'camIndex' is empty.", !idxStr.empty());
-        m_camIndex = std::stoul(idxStr);
-    }
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    m_camIndex                                = config.get<size_t>("index", 1);
 }
 
 // -------------------------------------------------------------------------
@@ -76,9 +68,9 @@ void SCameraSeriesEditor::starting()
 
     QGridLayout* gridLayout = new QGridLayout();
 
-    for (unsigned int i = 0; i < 4; ++i)
+    for (std::uint8_t i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j < 4; ++j)
+        for (std::uint8_t j = 0; j < 4; ++j)
         {
             QLabel* label = new QLabel("");
             m_matrixLabels.push_back(label);
@@ -112,10 +104,10 @@ void SCameraSeriesEditor::swapping()
 
 void SCameraSeriesEditor::updateInformations()
 {
-    ::arData::CameraSeries::sptr cameraSeries = this->getObject< ::arData::CameraSeries >();
+    ::arData::CameraSeries::csptr cameraSeries = this->getInput< ::arData::CameraSeries >("cameraSeries");
 
     //IS CALIBRATED
-    ::fwData::TransformationMatrix3D::sptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
+    ::fwData::TransformationMatrix3D::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
     if(matrix)
     {
         m_description->setText("<b>The cameras are calibrated.</b>");
@@ -127,9 +119,9 @@ void SCameraSeriesEditor::updateInformations()
         return;
     }
 
-    for (unsigned int i = 0; i < 4; ++i)
+    for (std::uint8_t i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j < 4; ++j)
+        for (std::uint8_t j = 0; j < 4; ++j)
         {
             m_matrixLabels[i*4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
         }
@@ -151,13 +143,15 @@ void SCameraSeriesEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SCameraSeriesEditor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::arData::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT ) );
-    connections.push_back( std::make_pair( ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT ) );
-    connections.push_back( std::make_pair( ::arData::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "cameraSeries", ::arData::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
+    connections.push( "cameraSeries", ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT  );
+    connections.push( "cameraSeries", ::arData::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
     return connections;
 }
+
+// ----------------------------------------------------------------------------
 
 } // uiCalibration

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,18 +9,35 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <QPointer>
+#include <gui/editor/IEditor.hpp>
+
 #include <QComboBox>
 #include <QLabel>
+#include <QPointer>
 #include <QVector>
-
-#include <gui/editor/IEditor.hpp>
 
 namespace uiCalibration
 {
 /**
  * @brief   SCameraSeriesEditor service is used to display the extrinsic calibration of a camera series.
- * @class   SCameraSeriesEditor
+ *
+ * @subsection Configuration XML
+
+ * @code{.xml}
+    <service uid="..." type="::uiCalibration::SCameraSeriesEditor" >
+        <in key="cameraSeries" uid="..." />
+        <index>...</index>
+    </service>
+   @endcode
+
+ * @subsection Configuration Configuration
+ * - \b index (optional, default: 1): index of the camera in cameraSeries used to display extrinsic matrix
+ *
+ * @subsection Inputs Inputs
+ * - \b cameraSeries [::arData::CameraSeries]: input cameraSeries.
+ *
+ * @subsection Slots Slots
+ * -\b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class UICALIBRATION_CLASS_API SCameraSeriesEditor : public QObject,
                                                     public ::gui::editor::IEditor
@@ -47,12 +64,6 @@ public:
 
     /**
      * @brief Configuring method : This method is used to configure the service.
-     * @code{.xml}
-       <service impl="::uiCalibration::SCameraSeriesEditor" >
-            <camIndex>...</camIndex>
-       </service>
-       @endcode
-     * - \b camIndex (optional, default: 1): index of the camera in cameraSeries used to display extrinsic matrix
      */
     UICALIBRATION_API void configuring();
 
@@ -78,26 +89,23 @@ public:
      */
     UICALIBRATION_API void swapping();
 
+protected:
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
-
-protected:
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /**
-     * @brief Updates the informations of the intrinsic calibration.
+     * @brief Slot: Updates the informations of the intrinsic calibration.
      */
-    UICALIBRATION_API void updateInformations();
+    void updateInformations();
 
     /**
      * @brief Clear all the labels.
      */
-    UICALIBRATION_API void clearLabels();
-
-    /// Slots used when the camera is intrinsically calibrated
-    UpdateInfosSlotType::sptr m_slotUpdateInfos;
+    void clearLabels();
 
     QPointer< QLabel > m_description; ///< description of camera series
 
