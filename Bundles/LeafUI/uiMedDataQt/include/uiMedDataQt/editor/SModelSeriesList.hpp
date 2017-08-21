@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,6 @@
 #define __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
 
 #include "uiMedDataQt/config.hpp"
-
-#include <gui/editor/IEditor.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -20,29 +18,26 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <gui/editor/IEditor.hpp>
 
-#include <QPointer>
 #include <QObject>
+#include <QPointer>
 #include <QPushButton>
-
 
 class QTreeWidget;
 class QCheckBox;
 class QListWidgetItem;
 class QTreeWidgetItem;
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
-
 
 class ValueView;
 
 /**
  * @brief   SModelSeriesList service.
- * @class   SModelSeriesList
- * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
                                                 public ::gui::editor::IEditor
@@ -50,7 +45,7 @@ class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesList)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SModelSeriesList() noexcept;
@@ -105,7 +100,7 @@ protected:
     virtual void configuring();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
     typedef std::map< std::string, ValueView* > DisplayedInformation;
 
@@ -122,17 +117,16 @@ protected:
     static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
     typedef ::fwCom::Slot< void (bool) > ShowReconstructionsSlotType;
 
-
 protected Q_SLOTS:
 
     /// Slot called when new current item is setted in m_organChoice
-    void onCurrentItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous );
+    void onCurrentItemChanged ( QTreeWidgetItem* current, QTreeWidgetItem* previous );
 
-    void onCurrentItemChanged ( QTreeWidgetItem * current, int column );
+    void onCurrentItemChanged ( QTreeWidgetItem* current, int column );
 
     void onShowReconstructions(int state);
 
-    void onOrganChoiceVisibility(QTreeWidgetItem * item, int column);
+    void onOrganChoiceVisibility(QTreeWidgetItem* item, int column);
 
     void onCheckAllCheckBox();
     void onUnCheckAllCheckBox();
@@ -169,8 +163,7 @@ private:
 };
 
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif /*__UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__*/
-
 

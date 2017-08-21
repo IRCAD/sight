@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,7 @@
 #include <QObject>
 #include <QPointer>
 
-
-namespace uiImage
+namespace uiImageQt
 {
 
 /**
@@ -35,7 +34,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (ImageInfo)(::gui::editor::IEditor) );
 
     UIIMAGEQT_API ImageInfo() noexcept;
 
@@ -57,7 +56,6 @@ protected:
 
     virtual void info( std::ostream& _sstream );
 
-
 private:
 
     /// Slot: get the picking information
@@ -67,6 +65,6 @@ private:
 
 };
 
-} // uiImage
+} // uiImageQt
 
 #endif /*__UIIMAGEQT_IMAGEINFO_HPP__*/

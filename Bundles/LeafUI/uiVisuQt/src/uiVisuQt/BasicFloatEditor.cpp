@@ -24,10 +24,10 @@
 #include <QDoubleValidator>
 #include <QHBoxLayout>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::BasicFloatEditor );
 
 BasicFloatEditor::BasicFloatEditor() noexcept
 {
@@ -164,5 +164,4 @@ void BasicFloatEditor::onModifyValue(QString value)
 
 //------------------------------------------------------------------------------
 
-}
-
+} // namespace uiVisuQt

@@ -46,7 +46,7 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
@@ -122,7 +122,7 @@ public:
     }
 };
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SModelSeriesList, ::fwMedData::ModelSeries);
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries);
 
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_REC_DISPLAY_MODIFIED__SIG   = "recDisplayModified";
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
@@ -460,4 +460,4 @@ void SModelSeriesList::onCheckAllBoxes( bool visible )
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt

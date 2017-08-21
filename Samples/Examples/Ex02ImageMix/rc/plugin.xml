@@ -134,7 +134,7 @@
                 </registry>
             </service>
 
-            <service uid="snapshotBlendSceneEditor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotBlendSceneEditor" type="::uiVisuQt::SnapshotEditor" />
 
             <service uid="readerBackgroundImage" type="::uiIO::editor::SIOSelector" >
                 <inout key="target" uid="backgroundImageUID" />
@@ -165,16 +165,16 @@
                 <inout key="image" uid="backgroundImageUID"/>
             </service>
 
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="backgroundImageUID"/>
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <!-- Editors of background image -->
-            <service uid="imageInfo" type="::uiImage::ImageInfo" autoConnect="yes">
+            <service uid="imageInfo" type="::uiImageQt::ImageInfo" autoConnect="yes">
                 <inout key="image" uid="backgroundImageUID" autoConnect="yes"/>
             </service>
-            <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+            <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
                 <inout key="image" uid="backgroundImageUID" autoConnect="yes"/>
                 <inout key="TFSelections" uid="TFSelections" />
                 <config selectedTFKey="BgSelectedTF" />
@@ -200,14 +200,14 @@
                 <inout key="image" uid="frontImageUID"/>
             </service>
             <!-- Editors of front image -->
-            <service uid="imageInfo2" type="::uiImage::ImageInfo" autoConnect="yes">
+            <service uid="imageInfo2" type="::uiImageQt::ImageInfo" autoConnect="yes">
                 <inout key="image" uid="frontImageUID" autoConnect="yes"/>
             </service>
-            <service uid="imageTransparency2" type="::uiImage::ImageTransparency" autoConnect="yes">
+            <service uid="imageTransparency2" type="::uiImageQt::ImageTransparency" autoConnect="yes">
                 <inout key="image" uid="frontImageUID" autoConnect="yes"/>
                 <shortcut value="V" />
             </service>
-            <service uid="windowLevel2" type="::uiImage::WindowLevel" autoConnect="yes" >
+            <service uid="windowLevel2" type="::uiImageQt::WindowLevel" autoConnect="yes" >
                 <inout key="image" uid="frontImageUID" autoConnect="yes"/>
                 <inout key="TFSelections" uid="TFSelections" />
                 <config selectedTFKey="FrontSelectedTF" />

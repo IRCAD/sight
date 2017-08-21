@@ -24,12 +24,12 @@
 
 #include "uiGenericQt/action/SShowAbout.hpp"
 
-namespace uiGeneric
+namespace uiGenericQt
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::SShowAbout, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -166,4 +166,4 @@ void SShowAbout::onUrlClicked(const QUrl& url )
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace uiGeneric
+} // namespace uiGenericQt

@@ -10,49 +10,49 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
-        <service>::uiMedData::editor::SSelector</service>
+        <service>::uiMedDataQt::editor::SSelector</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
-        <service>::uiMedData::editor::SSeries</service>
+        <service>::uiMedDataQt::editor::SSeries</service>
         <object>::fwData::Vector</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
-        <service>::uiMedData::SSeriesViewer</service>
+        <service>::uiMedDataQt::SSeriesViewer</service>
         <object>::fwData::Vector</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::uiMedData::action::SExportSeries</service>
+        <service>::uiMedDataQt::action::SExportSeries</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::uiMedData::action::SInitNewSeries</service>
+        <service>::uiMedDataQt::action::SInitNewSeries</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
-        <service>::uiMedData::editor::SModelSeriesList</service>
+        <service>::uiMedDataQt::editor::SModelSeriesList</service>
         <object>::fwMedData::ModelSeries</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
-        <service>::uiMedData::editor::SOrganTransformation</service>
+        <service>::uiMedDataQt::editor::SOrganTransformation</service>
         <object>::fwMedData::ModelSeries</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
-        <service>::uiMedData::editor::SActivityWizard</service>
+        <service>::uiMedDataQt::editor::SActivityWizard</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
 
@@ -69,7 +69,7 @@
             <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
             <object uid="${objectID}" type="::fwMedData::ActivitySeries" src="ref" />
 
-            <service uid="activityCreator" type="::uiMedData::editor::SActivityWizard">
+            <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard">
                 <inout key="seriesDB" uid="${SERIESDB}" />
                 <inout key="activitySeries" uid="${objectID}" />
                 <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>

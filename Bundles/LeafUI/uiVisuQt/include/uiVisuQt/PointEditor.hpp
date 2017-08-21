@@ -1,13 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __UIVISUQT_POINTEDITOR_HPP__
 #define __UIVISUQT_POINTEDITOR_HPP__
-
-
 
 #include "uiVisuQt/config.hpp"
 
@@ -23,8 +21,7 @@
 #include <QObject>
 #include <QPointer>
 
-
-namespace uiVisu
+namespace uiVisuQt
 {
 
 /**
@@ -37,7 +34,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (PointEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIVISUQT_API PointEditor() noexcept;
@@ -46,7 +43,6 @@ public:
     UIVISUQT_API virtual ~PointEditor() noexcept;
 
 protected:
-
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
@@ -64,7 +60,6 @@ protected:
 
     /// Overrides
     virtual void info( std::ostream& _sstream );
-
 
 private:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,16 +26,14 @@
 
 #include <fwTools/Os.hpp>
 
-
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedData::action::SExportSeries, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::fwMedData::SeriesDB );
 
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
@@ -225,4 +223,4 @@ void SExportSeries::checkRemovedSeries(::fwMedData::SeriesDB::ContainerType remo
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace uiMedData
+} // namespace uiMedDataQt

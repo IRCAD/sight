@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,13 +9,10 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace uiImage
+namespace uiImageQt
 {
 /**
- * @namespace uiImage
  * @brief   Contains editors attached to image.
- *
- * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -32,6 +29,6 @@ struct Plugin : public ::fwRuntime::Plugin
 
 };
 
-} // namespace uiImage
+} // namespace uiImageQt
 
 #endif //__UIIMAGEQT_PLUGIN_HPP__

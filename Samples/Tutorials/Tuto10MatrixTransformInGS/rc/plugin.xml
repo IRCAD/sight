@@ -129,7 +129,7 @@
 
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
-            <service uid="matrixEditor" type="::uiVisu::STransformEditor" >
+            <service uid="matrixEditor" type="::uiVisuQt::STransformEditor" >
                 <inout key="matrix" uid="matrixE" />
                 <translation enabled="no" />
                 <rotation enabled="y" min="0" max="360" />

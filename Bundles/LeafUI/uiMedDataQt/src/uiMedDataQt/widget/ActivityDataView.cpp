@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace widget
 {
@@ -53,7 +53,7 @@ const int ActivityDataView::s_UID_ROLE = Qt::UserRole + 1;
 
 //-----------------------------------------------------------------------------
 
-ActivityDataView::ActivityDataView(QWidget *parent) :
+ActivityDataView::ActivityDataView(QWidget* parent) :
     QTabWidget(parent)
 {
 }
@@ -75,12 +75,12 @@ void ActivityDataView::clear()
 
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::eventFilter(QObject *obj, QEvent *event)
+bool ActivityDataView::eventFilter(QObject* obj, QEvent* event)
 {
     // get dropped data in tree widget
     if (event->type() == QEvent::Drop)
     {
-        QDropEvent *dropEvent = static_cast<QDropEvent *>(event);
+        QDropEvent* dropEvent = static_cast<QDropEvent*>(event);
 
         size_t index = static_cast<size_t>(this->currentIndex());
         ::fwActivities::registry::ActivityRequirement requirement = m_activityInfo.requirements[index];
@@ -92,8 +92,8 @@ bool ActivityDataView::eventFilter(QObject *obj, QEvent *event)
         QByteArray encoded = qMimeData->data("application/x-qabstractitemmodeldatalist");
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 
-        QList<QTreeWidgetItem * > itemList;
-        QTreeWidgetItem *item;
+        QList<QTreeWidgetItem* > itemList;
+        QTreeWidgetItem* item;
 
         // Get the dropped item
         while (!stream.atEnd())
@@ -127,7 +127,7 @@ bool ActivityDataView::eventFilter(QObject *obj, QEvent *event)
         else
         {
             // add the dropped item in the tree
-            for (QTreeWidgetItem * itemToAdd: itemList)
+            for (QTreeWidgetItem* itemToAdd: itemList)
             {
                 itemToAdd->setFlags(itemToAdd->flags() & ~Qt::ItemIsDropEnabled);
                 std::string uid = itemToAdd->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
@@ -147,7 +147,7 @@ bool ActivityDataView::eventFilter(QObject *obj, QEvent *event)
     }
     else if (event->type() == QEvent::KeyPress)
     {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Delete)
         {
             this->removeSelectedObjects();
@@ -162,7 +162,7 @@ bool ActivityDataView::eventFilter(QObject *obj, QEvent *event)
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityInfo & info)
+void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityInfo& info)
 {
     namespace ActReg = ::fwActivities::registry;
 
@@ -172,15 +172,15 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
     ActReg::ActivityInfo::RequirementsType reqVect = m_activityInfo.requirements;
     for(const ActReg::ActivityRequirement& req :  reqVect)
     {
-        QVBoxLayout * layout = new QVBoxLayout();
-        QWidget * widget     = new QWidget();
+        QVBoxLayout* layout = new QVBoxLayout();
+        QWidget* widget     = new QWidget();
         widget->setLayout(layout);
 
-        QHBoxLayout * infoLayout = new QHBoxLayout();
+        QHBoxLayout* infoLayout = new QHBoxLayout();
         layout->addLayout(infoLayout);
 
-        QVBoxLayout * typeLayout = new QVBoxLayout();
-        QVBoxLayout * txtLayout  = new QVBoxLayout();
+        QVBoxLayout* typeLayout = new QVBoxLayout();
+        QVBoxLayout* txtLayout  = new QVBoxLayout();
         infoLayout->addLayout(typeLayout);
         infoLayout->addSpacerItem(new QSpacerItem(20, 0));
         infoLayout->addLayout(txtLayout, 1);
@@ -191,7 +191,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             QString filename = QString::fromStdString(iter->second);
 
             this->addTab(widget, QIcon(filename), QString::fromStdString(req.name));
-            QLabel * icon = new QLabel();
+            QLabel* icon = new QLabel();
             icon->setAlignment(Qt::AlignHCenter);
             QPixmap pixmap(filename);
             icon->setPixmap(pixmap.scaled(100, 100));
@@ -202,21 +202,21 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             this->addTab(widget, QString::fromStdString(req.name));
         }
 
-        QLabel * type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
+        QLabel* type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
         type->setAlignment(Qt::AlignHCenter);
         typeLayout->addWidget(type);
 
-        QLabel * name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
+        QLabel* name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
         name->setStyleSheet("QLabel { font: bold; }");
         txtLayout->addWidget(name);
 
-        QLabel * description = new QLabel(QString::fromStdString(req.description));
+        QLabel* description = new QLabel(QString::fromStdString(req.description));
         description->setStyleSheet("QLabel { font: italic; }");
         txtLayout->addWidget(description);
 
         txtLayout->addStretch();
 
-        QLabel * nb = new QLabel();
+        QLabel* nb = new QLabel();
         nb->setStyleSheet("QLabel { font: bold; }");
         layout->addWidget(nb);
 
@@ -245,20 +245,20 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
             nb->setText(nbObj);
         }
 
-        QHBoxLayout * treeLayout   = new QHBoxLayout();
-        QVBoxLayout * buttonLayout = new QVBoxLayout();
+        QHBoxLayout* treeLayout   = new QHBoxLayout();
+        QVBoxLayout* buttonLayout = new QVBoxLayout();
         if (req.type == "::fwData::String" || req.type == "::fwData::Boolean"
             || req.type == "::fwData::Integer" || req.type == "::fwData::Float"
             || req.type == "::fwData::TransformationMatrix3D")
         {
-            QPushButton * buttonNew = new QPushButton("New");
+            QPushButton* buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
             buttonLayout->addWidget(buttonNew);
             QObject::connect(buttonNew, &QPushButton::clicked, this, &ActivityDataView::createNewObject);
         }
-        QPushButton * buttonAdd    = new QPushButton("Import");
-        QPushButton * buttonRemove = new QPushButton("Remove");
-        QPushButton * buttonClear  = new QPushButton("Clear");
+        QPushButton* buttonAdd    = new QPushButton("Import");
+        QPushButton* buttonRemove = new QPushButton("Remove");
+        QPushButton* buttonClear  = new QPushButton("Clear");
         buttonLayout->addWidget(buttonAdd);
         buttonAdd->setToolTip(QString("Import a new object of type '%1'").arg(QString::fromStdString(req.type)));
         buttonLayout->addWidget(buttonRemove);
@@ -290,7 +290,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
         //TODO better management of composite container
     }
 
-    for (int i = 1; i< this->count(); ++i)
+    for (int i = 1; i < this->count(); ++i)
     {
         this->setTabEnabled(i, false);
     }
@@ -298,7 +298,7 @@ void ActivityDataView::fillInformation(const ::fwActivities::registry::ActivityI
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr & activitySeries)
+void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& activitySeries)
 {
     namespace ActReg = ::fwActivities::registry;
     ::fwActivities::registry::ActivityInfo info;
@@ -308,7 +308,6 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
     ::fwData::Composite::sptr data = activitySeries->getData();
 
     this->fillInformation(info);
-
 
     for (size_t i = 0; i < m_activityInfo.requirements.size(); ++i)
     {
@@ -363,7 +362,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr ActivityDataView::checkData(size_t index, std::string & errorMsg)
+::fwData::Object::sptr ActivityDataView::checkData(size_t index, std::string& errorMsg)
 {
     ::fwData::Object::sptr data;
 
@@ -377,7 +376,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
     {
         if (tree->topLevelItemCount() == 1)
         {
-            QTreeWidgetItem * item = tree->topLevelItem(0);
+            QTreeWidgetItem* item = tree->topLevelItem(0);
 
             std::string uid =
                 item->data(int(ColumnType::NAME), ActivityDataView::s_UID_ROLE).toString().toStdString();
@@ -428,10 +427,10 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
             {
                 ::fwData::Vector::sptr vector = ::fwData::Vector::New();
 
-                for (unsigned int i = 0; i<nbObj; ++i)
+                for (unsigned int i = 0; i < nbObj; ++i)
                 {
-                    QTreeWidgetItem * itemData = tree->topLevelItem(int(i));
-                    std::string uid            =
+                    QTreeWidgetItem* itemData = tree->topLevelItem(int(i));
+                    std::string uid           =
                         itemData->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
 
                     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
@@ -454,10 +453,10 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
             {
                 ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
-                for (unsigned int i = 0; i<nbObj; ++i)
+                for (unsigned int i = 0; i < nbObj; ++i)
                 {
-                    QTreeWidgetItem * itemData = tree->topLevelItem(int(i));
-                    std::string uid            =
+                    QTreeWidgetItem* itemData = tree->topLevelItem(int(i));
+                    std::string uid           =
                         itemData->data(int(ColumnType::NAME), s_UID_ROLE).toString().toStdString();
 
                     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
@@ -507,10 +506,9 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
     return data;
 }
 
-
 //-----------------------------------------------------------------------------
 
-bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sptr & actSeries, std::string & errorMsg)
+bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sptr& actSeries, std::string& errorMsg)
 {
     namespace ActReg = ::fwActivities::registry;
 
@@ -520,7 +518,7 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
     errorMsg += "The required data are not correct:";
 
     // Check if all required data are present
-    for (size_t i = 0; i< m_activityInfo.requirements.size(); ++i)
+    for (size_t i = 0; i < m_activityInfo.requirements.size(); ++i)
     {
         ::fwActivities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
         std::string msg;
@@ -560,15 +558,15 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
 
 void ActivityDataView::removeSelectedObjects()
 {
-    size_t tabIndex                = static_cast<size_t>(this->currentIndex());
-    QPointer<QTreeWidget> tree     = m_treeWidgets[tabIndex];
-    QList<QTreeWidgetItem *> items = tree->selectedItems();
-    for (QTreeWidgetItem * item: items)
+    size_t tabIndex               = static_cast<size_t>(this->currentIndex());
+    QPointer<QTreeWidget> tree    = m_treeWidgets[tabIndex];
+    QList<QTreeWidgetItem*> items = tree->selectedItems();
+    for (QTreeWidgetItem* item: items)
     {
         if (item)
         {
             int itemIndex                 = tree->indexOfTopLevelItem(item);
-            QTreeWidgetItem *itemToRemove = tree->takeTopLevelItem(itemIndex);
+            QTreeWidgetItem* itemToRemove = tree->takeTopLevelItem(itemIndex);
             if (itemToRemove)
             {
                 delete itemToRemove;
@@ -646,7 +644,7 @@ void ActivityDataView::importObject()
             if (this->readObject(seriesDB))
             {
                 unsigned int nbImportedObj = 0;
-                for (const ::fwMedData::Series::sptr &series : *seriesDB)
+                for (const ::fwMedData::Series::sptr& series : * seriesDB)
                 {
                     if (series->isA(type))
                     {
@@ -719,7 +717,7 @@ bool ActivityDataView::readObject(::fwData::Object::sptr obj)
             }
         }
     }
-    catch(std::exception &e)
+    catch(std::exception& e)
     {
         std::stringstream msg;
         msg << "The object can not be imported: " << e.what();
@@ -738,11 +736,11 @@ bool ActivityDataView::readObject(::fwData::Object::sptr obj)
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr &obj)
+void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr& obj)
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    QTreeWidgetItem * newItem = new QTreeWidgetItem();
+    QTreeWidgetItem* newItem = new QTreeWidgetItem();
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
     newItem->setData(int(ColumnType::NAME), s_UID_ROLE, QVariant(QString::fromStdString(obj->getID())));
     newItem->setText(int(ColumnType::TYPE), QString::fromStdString(obj->getClassname()));
@@ -792,7 +790,7 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr 
     }
 
     tree->addTopLevelItem(newItem);
-    for (int i = 0; i<tree->columnCount(); ++i)
+    for (int i = 0; i < tree->columnCount(); ++i)
     {
         tree->resizeColumnToContents(i);
     }
@@ -800,7 +798,7 @@ void ActivityDataView::addObjectItem(size_t index, const ::fwData::Object::sptr 
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem *item, int column)
+void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* item, int column)
 {
     if (item)
     {
@@ -877,7 +875,7 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem *item, int column
                         ::fwData::TransformationMatrix3D::TMCoefArray coeffs;
 
                         bool conversionOK = false;
-                        for (int i = 0; i< 16; ++i)
+                        for (int i = 0; i < 16; ++i)
                         {
                             coeffs[size_t(i)] = coeffList[i].toDouble(&conversionOK);
                             if (!conversionOK)
@@ -910,4 +908,4 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem *item, int column
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt

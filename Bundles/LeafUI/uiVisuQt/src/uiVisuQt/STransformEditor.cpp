@@ -31,10 +31,10 @@
 #include <QString>
 #include <QVBoxLayout>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::STransformEditor, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
 
 //------------------------------------------------------------------------------
 
@@ -297,4 +297,4 @@ void STransformEditor::updateFromMatrix()
 
 //------------------------------------------------------------------------------
 
-} // namespace uiVisu
+} // namespace uiVisuQt
