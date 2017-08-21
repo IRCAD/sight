@@ -33,7 +33,7 @@ void Viewport::shallowCopy(const ::fwData::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-inline void Viewport::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache )
+void Viewport::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache )
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

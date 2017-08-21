@@ -7,6 +7,8 @@
 #ifndef __FWRENDERQT_DATA_VIEWPORT_HPP__
 #define __FWRENDERQT_DATA_VIEWPORT_HPP__
 
+#include "fwRenderQt/config.hpp"
+
 #include <fwData/Exception.hpp>
 #include <fwData/Object.hpp>
 
@@ -18,7 +20,7 @@ namespace data
 /**
  * @brief Manage the current viewport of the fwRenderQt.
  */
-class Viewport : public ::fwData::Object
+class FWRENDERQT_CLASS_API Viewport : public ::fwData::Object
 {
 
 public:
@@ -37,10 +39,10 @@ public:
     }
 
     /// Defines shallow copy
-    void shallowCopy( const ::fwData::Object::csptr& _source );
+    FWRENDERQT_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
     /// Defines deep copy
-    void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    FWRENDERQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
 
     float getX() const;
     void setX (float _x);
