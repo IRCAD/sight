@@ -123,15 +123,12 @@ void QtContainer::setVisible(bool isVisible)
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
 
-    if(dock && dock->isVisible() != isVisible)
+    if(dock)
     {
         dock->setVisible(isVisible);
     }
 
-    if(m_container->isVisible() != isVisible)
-    {
-        m_container->setVisible(isVisible);
-    }
+    m_container->setVisible(isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,15 +140,12 @@ void QtContainer::setEnabled(bool isEnabled)
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
 
-    if(dock && dock->isEnabled() != isEnabled)
+    if(dock)
     {
         dock->setEnabled(isEnabled);
     }
 
-    if(m_container->isEnabled() != isEnabled)
-    {
-        m_container->setEnabled(isEnabled);
-    }
+    m_container->setEnabled(isEnabled);
 }
 
 //-----------------------------------------------------------------------------
