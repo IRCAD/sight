@@ -130,7 +130,7 @@
             </config>
         </service>
 
-        <service uid="snapshot_scene_editor"  type="::uiVisu::SnapshotEditor" autoConnect="no">
+        <service uid="snapshot_scene_editor"  type="::uiVisuQt::SnapshotEditor" autoConnect="no">
             <snap>
                  <scene uid="generic_scene" />
             </snap>
@@ -153,11 +153,11 @@
             <tooltip>CGoGN website</tooltip>
         </service>
 
-        <service uid="action_open_vp_website" type="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+        <service uid="action_open_vp_website" type="::uiGenericQt::action::LaunchBrowserActionService" autoConnect="no">
             <url>http://cgogn.unistra.fr/</url>
         </service>
 
-        <service uid="action_acknowledgments" type="::uiGeneric::action::SShowAbout">
+        <service uid="action_acknowledgments" type="::uiGenericQt::action::SShowAbout">
             <filename id="@BUNDLE_PREFIX@/mesherActivity_0-1/documentations/cgogn.html"/>
             <title>Acknowledgments</title>
             <size width="500" height="400" />
@@ -207,10 +207,10 @@
              <out key="object" uid="reconstructionUID" />
         </service>
 
-        <service uid="organ_material_editor" type="::uiReconstruction::OrganMaterialEditor" autoConnect="yes">
+        <service uid="organ_material_editor" type="::uiReconstructionQt::OrganMaterialEditor" autoConnect="yes">
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
-        <service uid="representation_editor" type="::uiReconstruction::RepresentationEditor" autoConnect="yes">
+        <service uid="representation_editor" type="::uiReconstructionQt::RepresentationEditor" autoConnect="yes">
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
@@ -256,12 +256,12 @@
             <start_if_exists uid="mesher2" />
         </service>
 
-        <service uid="slider_index_editor"  type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider_index_editor"  type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
         
-        <service uid="list_organ_editor" type="::uiMedData::editor::SModelSeriesList" autoConnect="yes" >
+        <service uid="list_organ_editor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="modelSeriesUID" />
             <columns>
                 <organ_name>@organ_name</organ_name>

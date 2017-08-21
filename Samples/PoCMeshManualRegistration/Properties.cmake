@@ -23,9 +23,9 @@ set( REQUIREMENTS
     ctrlSelection
     uiReconstructionQt
     uiMedDataQt
-    appXml
+    appXml2
     opVTKMesh
     media
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCMeshManualRegistration)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES PoCMeshManualRegistration)

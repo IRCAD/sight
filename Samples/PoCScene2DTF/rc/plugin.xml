@@ -128,7 +128,7 @@
                     </registry>
                 </service>
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisuQt::SnapshotEditor" autoConnect="no" />
 
                 <!-- image description -->
                 <item key="image">
@@ -313,7 +313,7 @@
                                             <item text="three slices" value="3" />
                                         </items>
                                     </service>
-                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
 

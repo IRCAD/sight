@@ -24,7 +24,7 @@
             </registry>
         </service>
 
-        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>
