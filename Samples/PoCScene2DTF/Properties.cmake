@@ -26,4 +26,4 @@ set( REQUIREMENTS
     uiTF
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoScene2DTFConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES pocScene2DTFConfig)
