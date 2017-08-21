@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/Plane.hpp"
+#include "visuVTKAdaptor/SPlane.hpp"
 
 #include "visuVTKAdaptor/SPoint.hpp"
 
@@ -37,7 +37,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::Plane, ::fwData::Plane );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPlane, ::fwData::Plane );
 
 namespace visuVTKAdaptor
 {
@@ -46,63 +46,74 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINTS_SLOT     = "updatePoint
 static const ::fwCom::Slots::SlotKeyType s_START_INTERACTION_SLOT = "startInteraction";
 static const ::fwCom::Slots::SlotKeyType s_SELECT_PLANE_SLOT      = "selectPlane";
 
-const ::fwCom::Signals::SignalKeyType Plane::s_INTERACTION_STARTED_SIG = "interactionStarted";
+const ::fwCom::Signals::SignalKeyType SPlane::s_INTERACTION_STARTED_SIG = "interactionStarted";
+
+const ::fwServices::IService::KeyType SPlane::s_PLANE_INOUT = "plane";
 
 //------------------------------------------------------------------------------
 
-Plane::Plane() noexcept :
+SPlane::SPlane() noexcept :
     m_vtkPlane(nullptr),
     m_actorPlan(nullptr),
     m_vtkImplicitPlane(nullptr),
     m_vtkPlaneCollection(nullptr)
 {
-    newSlot(s_UPDATE_POINTS_SLOT, &Plane::updatePoints, this);
-    newSlot(s_START_INTERACTION_SLOT, &Plane::startInteraction, this);
-    newSlot(s_SELECT_PLANE_SLOT, &Plane::selectPlane, this);
+    newSlot(s_UPDATE_POINTS_SLOT, &SPlane::updatePoints, this);
+    newSlot(s_START_INTERACTION_SLOT, &SPlane::startInteraction, this);
+    newSlot(s_SELECT_PLANE_SLOT, &SPlane::selectPlane, this);
 
     newSignal< InteractionStartedSignalType >(s_INTERACTION_STARTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-Plane::~Plane() noexcept
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void Plane::doConfigure()
+SPlane::~SPlane() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::doStart()
+void SPlane::configuring()
 {
-    SLM_TRACE_FUNC();
+    this->configureParams();
 
-    m_pPlane = this->getObject< ::fwData::Plane >();
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    for( ::fwData::Point::sptr point :  m_pPlane.lock()->getPoints() )
+    m_planeCollectionId = config.get("planecollection", "");
+}
+
+//------------------------------------------------------------------------------
+
+void SPlane::starting()
+{
+    this->initialize();
+
+    ::fwData::Plane::csptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
+    SLM_ASSERT("Plane is missing", plane);
+
+    for( const ::fwData::Point::sptr& point :  plane->getCRefPoints() )
     {
-        ::fwRenderVTK::IAdaptor::sptr servicePoint =
-            ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                ( point, "::visuVTKAdaptor::SPoint" );
-        SLM_ASSERT("servicePoint not instanced", servicePoint);
+        // create the srv configuration for objects auto-connection
+        IService::Config serviceConfig;
+        ::fwRenderVTK::IAdaptor::sptr servicePoint = this->createSubAdaptor("::visuVTKAdaptor::SPoint", serviceConfig);
+        this->registerServiceInOut(point, SPoint::s_POINT_INOUT, servicePoint, true, serviceConfig);
 
+        servicePoint->setConfiguration(serviceConfig);
         servicePoint->setRenderService(this->getRenderService());
         servicePoint->setRendererId( this->getRendererId() );
         servicePoint->setPickerId( this->getPickerId() );
         servicePoint->setAutoRender( this->getAutoRender() );
         servicePoint->start();
 
-        this->registerService(servicePoint);
-
         m_connections.connect(point, ::fwData::Object::s_MODIFIED_SIG,
                               this->getSptr(), s_UPDATE_POINTS_SLOT);
         m_connections.connect(servicePoint, ::visuVTKAdaptor::SPoint::s_INTERACTION_STARTED_SIG,
                               this->getSptr(), s_START_INTERACTION_SLOT);
+    }
+
+    if (!m_planeCollectionId.empty())
+    {
+        m_vtkPlaneCollection = vtkPlaneCollection::SafeDownCast(this->getVtkObject(m_planeCollectionId));
     }
 
     if (m_vtkPlaneCollection)
@@ -111,29 +122,20 @@ void Plane::doStart()
         m_vtkPlaneCollection->AddItem(m_vtkImplicitPlane);
     }
 
-    setVtkPipelineModified();
-    this->doUpdate();
+    this->setVtkPipelineModified();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::doSwap()
+void SPlane::updating()
 {
-    SLM_TRACE("SWAPPING Plane");
-    m_pPlane = this->getObject< ::fwData::Plane >();
-    this->doUpdate();
-}
+    ::fwData::Plane::csptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
+    SLM_ASSERT("Plane is missing", plane);
 
-//------------------------------------------------------------------------------
-
-void Plane::doUpdate()
-{
-    assert(!m_pPlane.expired());
-    ::fwData::Plane::sptr plane = m_pPlane.lock();
-
-    ::fwData::Point::sptr pt0 = plane->getPoints()[0];
-    ::fwData::Point::sptr pt1 = plane->getPoints()[1];
-    ::fwData::Point::sptr pt2 = plane->getPoints()[2];
+    ::fwData::Point::csptr pt0 = plane->getPoints()[0];
+    ::fwData::Point::csptr pt1 = plane->getPoints()[1];
+    ::fwData::Point::csptr pt2 = plane->getPoints()[2];
 
     fwPlane planeDesc;
     ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
@@ -147,16 +149,19 @@ void Plane::doUpdate()
         m_vtkImplicitPlane->Modified();
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::updatePoints()
+void SPlane::updatePoints()
 {
     this->updating();
 
-    auto sig = m_pPlane.lock()->signal< ::fwData::Object::ModifiedSignalType >(
-        ::fwData::Object::s_MODIFIED_SIG);
+    ::fwData::Plane::csptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
+    SLM_ASSERT("Plane is missing", plane);
+
+    auto sig = plane->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -165,15 +170,18 @@ void Plane::updatePoints()
 
 //------------------------------------------------------------------------------
 
-void Plane::startInteraction()
+void SPlane::startInteraction()
 {
-    auto sig = m_pPlane.lock()->signal< InteractionStartedSignalType >( s_INTERACTION_STARTED_SIG);
-    sig->asyncEmit( m_pPlane.lock() );
+    ::fwData::Plane::sptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
+    SLM_ASSERT("Plane is missing", plane);
+
+    auto sig = this->signal< InteractionStartedSignalType >( s_INTERACTION_STARTED_SIG);
+    sig->asyncEmit(plane);
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::doStop()
+void SPlane::stopping()
 {
     if (m_vtkPlaneCollection && m_vtkImplicitPlane)
     {
@@ -186,11 +194,12 @@ void Plane::doStop()
 
     this->unregisterServices();
     this->removeAllPropFromRenderer();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::setVtkPlaneCollection( vtkObject* col )
+void SPlane::setVtkPlaneCollection( vtkObject* col )
 {
     if (m_vtkPlaneCollection != col)
     {
@@ -213,13 +222,14 @@ void Plane::setVtkPlaneCollection( vtkObject* col )
         }
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::selectPlane(bool select)
+void SPlane::selectPlane(bool select)
 {
-    for( ServiceVector::value_type service :  m_subServices )
+    for( const ServiceVector::value_type& service :  m_subServices )
     {
         if(!service.expired())
         {
@@ -240,11 +250,11 @@ void Plane::selectPlane(bool select)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType Plane::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SPlane::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Plane::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Plane::s_SELECTED_SIG, s_SELECT_PLANE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_PLANE_INOUT, ::fwData::Plane::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_PLANE_INOUT, ::fwData::Plane::s_SELECTED_SIG, s_SELECT_PLANE_SLOT);
 
     return connections;
 }

@@ -6,9 +6,9 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/PlaneList.hpp"
+#include "visuVTKAdaptor/SPlaneList.hpp"
 
-#include "visuVTKAdaptor/Plane.hpp"
+#include "visuVTKAdaptor/SPlane.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -22,7 +22,6 @@
 #include <fwData/PlaneList.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -33,16 +32,18 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPlaneList);
 
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG = "selected";
+static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 
-const ::fwCom::Slots::SlotKeyType s_UPDATE_SELECTION_SLOT = "updateSelection";
-const ::fwCom::Slots::SlotKeyType s_UPDATE_PLANES_SLOT    = "updatePlanes";
-const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SELECTION_SLOT = "updateSelection";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_PLANES_SLOT    = "updatePlanes";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
+
+static const ::fwServices::IService::KeyType s_PLANES_INOUT = "planes";
 
 //------------------------------------------------------------------------------
 
@@ -135,7 +136,9 @@ public:
             // backup of plane
             ::fwData::Plane::sptr planeBackup(m_pickedPlane);
 
-            ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
+            ::fwData::PlaneList::sptr planeList = m_service->getInOut< ::fwData::PlaneList >(s_PLANES_INOUT);
+            SLM_ASSERT("PlaneList '" + s_PLANES_INOUT + "' is missing", planeList);
+
             planeList->getRefPlanes().erase
             (
                 std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
@@ -157,7 +160,9 @@ public:
             m_pickedPlane = ::fwData::Plane::dynamicCast(m_service->getAssociatedObject(prop, 1));
             if( !m_pickedPlane.expired() )
             {
-                ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
+                ::fwData::PlaneList::sptr planeList = m_service->getInOut< ::fwData::PlaneList >(s_PLANES_INOUT);
+                SLM_ASSERT("PlaneList '" + s_PLANES_INOUT + "' is missing", planeList);
+
                 if(!planeList->getRefPlanes().empty())
                 {
                     ::fwData::PlaneList::PlaneListContainer::iterator itr = std::find(
@@ -185,60 +190,66 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList() noexcept  :
+SPlaneList::SPlaneList() noexcept  :
     m_rightButtonCommand(nullptr),
     m_planeCollectionId("")
 {
-    newSlot(s_UPDATE_SELECTION_SLOT, &PlaneList::updateSelection, this);
-    newSlot(s_UPDATE_PLANES_SLOT, &PlaneList::updatePlanes, this);
-    newSlot(s_SHOW_PLANES_SLOT, &PlaneList::showPlanes, this);
+    newSlot(s_UPDATE_SELECTION_SLOT, &SPlaneList::updateSelection, this);
+    newSlot(s_UPDATE_PLANES_SLOT, &SPlaneList::updatePlanes, this);
+    newSlot(s_SHOW_PLANES_SLOT, &SPlaneList::showPlanes, this);
 
     newSignal< SelectedignalType >(s_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-PlaneList::~PlaneList() noexcept
+SPlaneList::~SPlaneList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doConfigure()
+void SPlaneList::configuring()
 {
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
-    this->setPlaneCollectionId( m_configuration->getAttributeValue("planecollection") );
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    this->setPlaneCollectionId( config.get("planecollection", "") );
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doStart()
+void SPlaneList::starting()
 {
+    this->initialize();
+
     m_rightButtonCommand = vtkPlaneDeleteCallBack::New(this);
     this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
     this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doUpdate()
+void SPlaneList::updating()
 {
-    SLM_TRACE_FUNC();
-    ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
+    ::fwData::PlaneList::sptr planeList = this->getInOut< ::fwData::PlaneList >(s_PLANES_INOUT);
+    SLM_ASSERT("PlaneList '" + s_PLANES_INOUT + "' is missing", planeList);
 
-    bool showPlanes;
-    showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
+    bool showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
-        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
+        for(const ::fwData::Plane::sptr& plane :  planeList->getPlanes())
         {
+            // create the srv configuration for objects auto-connection
+            IService::Config serviceConfig;
             ::fwRenderVTK::IAdaptor::sptr servicePlane =
-                ::fwServices::add< ::fwRenderVTK::IAdaptor >
-                    ( plane, "::visuVTKAdaptor::Plane" );
-            SLM_ASSERT("servicePlane not instanced", servicePlane);
+                this->createSubAdaptor("::visuVTKAdaptor::SPlane", serviceConfig);
+            this->registerServiceInOut(plane, SPlane::s_PLANE_INOUT, servicePlane, true, serviceConfig);
 
+            servicePlane->setConfiguration(serviceConfig);
             servicePlane->setRenderService(this->getRenderService());
             servicePlane->setRendererId( this->getRendererId() );
             servicePlane->setPickerId( this->getPickerId() );
@@ -246,38 +257,34 @@ void PlaneList::doUpdate()
 
             if (!m_planeCollectionId.empty())
             {
-                Plane::dynamicCast(servicePlane)->setVtkPlaneCollection( this->getVtkObject(m_planeCollectionId) );
+                SPlane::dynamicCast(servicePlane)->setVtkPlaneCollection( this->getVtkObject(m_planeCollectionId) );
             }
             servicePlane->start();
 
-            m_planeConnections.connect(servicePlane, Plane::s_INTERACTION_STARTED_SIG, this->getSptr(),
+            m_planeConnections.connect(servicePlane, SPlane::s_INTERACTION_STARTED_SIG, this->getSptr(),
                                        s_UPDATE_SELECTION_SLOT);
-
-            this->registerService(servicePlane);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::updatePlanes()
+void SPlaneList::updatePlanes()
 {
-    this->doStop();
-    this->doStart();
+    this->stopping();
+    this->starting();
     this->setVtkPipelineModified();
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::showPlanes(bool visible)
+void SPlaneList::showPlanes(bool visible)
 {
-    ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
-
-    this->doStop();
+    this->stopping();
     if(visible)
     {
-        this->doStart();
+        this->starting();
     }
     this->setVtkPipelineModified();
     this->requestRender();
@@ -285,22 +292,7 @@ void PlaneList::showPlanes(bool visible)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doSwap()
-{
-    this->doStop();
-
-    ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
-    bool showPlanes;
-    showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
-    if(showPlanes)
-    {
-        this->doStart();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void PlaneList::updateSelection(::fwData::Plane::sptr plane)
+void SPlaneList::updateSelection(::fwData::Plane::sptr plane)
 {
     auto sig = this->signal< SelectedignalType >(s_SELECTED_SIG);
     sig->asyncEmit(plane);
@@ -308,7 +300,7 @@ void PlaneList::updateSelection(::fwData::Plane::sptr plane)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doStop()
+void SPlaneList::stopping()
 {
     if ( m_rightButtonCommand ) // can be not instanciated
     {
@@ -319,6 +311,17 @@ void PlaneList::doStop()
     m_planeConnections.disconnect();
 
     this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+SPlaneList::KeyConnectionsMap SPlaneList::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_PLANES_INOUT, ::fwData::PlaneList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 } //namespace visuVTKAdaptor

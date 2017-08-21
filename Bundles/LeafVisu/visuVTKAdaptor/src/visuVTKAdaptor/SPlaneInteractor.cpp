@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/PlaneInteractor.hpp"
+#include "visuVTKAdaptor/SPlaneInteractor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -21,26 +21,28 @@
 #include <vtkCommand.h>
 #include <vtkRenderWindowInteractor.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SPlaneInteractor, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 
-class PlaneInteractorCallback : public vtkCommand
+static const ::fwServices::IService::KeyType s_PLANE_INOUT = "plane";
+
+class SPlaneInteractorCallback : public vtkCommand
 {
 public:
     //------------------------------------------------------------------------------
 
-    static PlaneInteractorCallback* New()
+    static SPlaneInteractorCallback* New()
     {
-        return new PlaneInteractorCallback();
+        return new SPlaneInteractorCallback();
     }
 
-    PlaneInteractorCallback()
+    SPlaneInteractorCallback()
     {
     }
 
-    ~PlaneInteractorCallback()
+    ~SPlaneInteractorCallback()
     {
     }
 
@@ -79,19 +81,19 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setAdaptor( PlaneInteractor::sptr adaptor)
+    void setAdaptor( SPlaneInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
 
 protected:
-    PlaneInteractor::sptr m_adaptor;
+    SPlaneInteractor::sptr m_adaptor;
 
 };
 
 //------------------------------------------------------------------------------
 
-PlaneInteractor::PlaneInteractor() noexcept :
+SPlaneInteractor::SPlaneInteractor() noexcept :
     m_vtkObserver(nullptr),
     m_priority(1.f)
 {
@@ -99,24 +101,27 @@ PlaneInteractor::PlaneInteractor() noexcept :
 
 //------------------------------------------------------------------------------
 
-PlaneInteractor::~PlaneInteractor() noexcept
+SPlaneInteractor::~SPlaneInteractor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doConfigure()
+void SPlaneInteractor::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doStart()
+void SPlaneInteractor::starting()
 {
-    if (::fwData::Plane::dynamicCast(this->getObject()))
+    this->initialize();
+
+    if (this->getInOut< ::fwData::Plane >(s_PLANE_INOUT))
     {
-        PlaneInteractorCallback* observer = PlaneInteractorCallback::New();
-        observer->setAdaptor( PlaneInteractor::dynamicCast(this->getSptr()) );
+        SPlaneInteractorCallback* observer = SPlaneInteractorCallback::New();
+        observer->setAdaptor( SPlaneInteractor::dynamicCast(this->getSptr()) );
 
         m_vtkObserver = observer;
 
@@ -129,22 +134,13 @@ void PlaneInteractor::doStart()
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doUpdate()
+void SPlaneInteractor::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::doSwap()
-{
-    SLM_TRACE_FUNC();
-    this->doStop();
-    this->doStart();
-}
-
-//------------------------------------------------------------------------------
-
-void PlaneInteractor::doStop()
+void SPlaneInteractor::stopping()
 {
     if(m_vtkObserver)
     {
@@ -159,9 +155,9 @@ void PlaneInteractor::doStop()
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::switchPlaneNormal()
+void SPlaneInteractor::switchPlaneNormal()
 {
-    ::fwData::Plane::sptr plane( ::fwData::Plane::dynamicCast( this->getObject() ) );
+    ::fwData::Plane::sptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
 
     if (plane)
     {
@@ -181,9 +177,9 @@ void PlaneInteractor::switchPlaneNormal()
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::pushPlane(double factor)
+void SPlaneInteractor::pushPlane(double factor)
 {
-    ::fwData::Plane::sptr plane( ::fwData::Plane::dynamicCast( this->getObject() ) );
+    ::fwData::Plane::sptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
     if (plane)
     {
         ::fwData::Point::sptr pt0 = plane->getPoints()[0];
@@ -229,9 +225,9 @@ void PlaneInteractor::pushPlane(double factor)
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::deselectPlane()
+void SPlaneInteractor::deselectPlane()
 {
-    ::fwData::Plane::sptr plane( ::fwData::Plane::dynamicCast( this->getObject() ) );
+    ::fwData::Plane::csptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
     if (plane)
     {
         auto sig = plane->signal< ::fwData::Plane::SelectedSignalType >(::fwData::Plane::s_SELECTED_SIG);

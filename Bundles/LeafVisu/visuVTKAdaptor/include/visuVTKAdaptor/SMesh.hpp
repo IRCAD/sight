@@ -81,6 +81,7 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  *    - \b autoresetcamera : reset the camera point of view when the mesh is modified ("yes" or "no", default: "yes") .
  *    - \b uvgen : generate UV coordinates ("sphere", "cylinder" or "plane").
  *    - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
+ *    - \b clippingplane(optional) : identifier of the planes collection used for clipping
  */
 class VISUVTKADAPTOR_CLASS_API SMesh : public ::fwRenderVTK::IAdaptor
 {
@@ -217,7 +218,6 @@ protected:
     void setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr &srv,
                               SPTR(::fwData::Material) material);
 
-    void removePlaneCollectionShifterCommand();
     void removeServicesStarterCommand();
     void createServicesStarterCommand();
 
@@ -235,7 +235,6 @@ protected:
     vtkPlaneCollection* m_clippingPlanes;
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
-    MeshVtkCommand* m_planeCollectionShifterCallback;
     MeshVtkCommand* m_servicesStarterCallback;
 
     SPTR(::fwData::Material)       m_material;

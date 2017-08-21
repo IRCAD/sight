@@ -21,6 +21,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
+#include <fwRuntime/EConfigurationElement.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -148,90 +150,6 @@ protected:
     double m_factor;
 };
 
-class PlaneCollectionShifterCallback : public MeshVtkCommand
-{
-public:
-
-    //------------------------------------------------------------------------------
-
-    static PlaneCollectionShifterCallback* New(
-        vtkPlaneCollection* src,
-        vtkPlaneCollection* dst,
-        double factor = 1. )
-    {
-        return new PlaneCollectionShifterCallback( src, dst, factor );
-    }
-
-    //--------------------------------------------------------------------------
-    PlaneCollectionShifterCallback( vtkPlaneCollection* src,
-                                    vtkPlaneCollection* dst,
-                                    double factor) :
-        m_planeCollectionSrc(src),
-        m_planeCollectionDst(dst),
-        m_factor(factor)
-    {
-        m_planeCollectionSrc->Register(this);
-        m_planeCollectionDst->Register(this);
-        m_planeCollectionSrc->AddObserver(vtkCommand::ModifiedEvent, this);
-
-        this->Execute( 0, vtkCommand::ModifiedEvent, 0);
-    }
-
-    //------------------------------------------------------------------------------
-
-    void Stop()
-    {
-        this->Clear();
-        m_planeCollectionSrc->RemoveObserver(this);
-        m_planeCollectionSrc->UnRegister(this);
-        m_planeCollectionDst->UnRegister(this);
-    }
-
-    //------------------------------------------------------------------------------
-
-    void Clear()
-    {
-        m_planeCollectionDst->RemoveAllItems();
-
-        for( PlaneShifterCallback* psc :  m_planeCallbacks )
-        {
-            psc->Stop();
-            psc->Delete();
-            psc = 0;
-        }
-        m_planeCallbacks.clear();
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void Execute( vtkObject* caller, unsigned long eventId, void* )
-    {
-        if (eventId == vtkCommand::ModifiedEvent)
-        {
-            this->Clear();
-
-            vtkPlane* plane = NULL;
-            for (  m_planeCollectionSrc->InitTraversal();
-                   (plane = m_planeCollectionSrc->GetNextItem());
-                   )
-            {
-                vtkPlane* newPlane = vtkPlane::New();
-                m_planeCollectionDst->AddItem(newPlane);
-                m_planeCallbacks.push_back(PlaneShifterCallback::New(plane, newPlane, m_factor));
-                newPlane->Modified();
-                newPlane->Delete();
-            }
-        }
-    }
-
-protected:
-    vtkPlaneCollection* m_planeCollectionSrc;
-    vtkPlaneCollection* m_planeCollectionDst;
-
-    std::vector< PlaneShifterCallback* > m_planeCallbacks;
-    double m_factor;
-};
-
 class PlaneCollectionAdaptorStarter : public MeshVtkCommand
 {
 public:
@@ -346,20 +264,34 @@ public:
 
                 ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 
-                meshAdaptor->setRenderService( service->getRenderService()  );
-                meshAdaptor->setRendererId( service->getRendererId()       );
-                meshAdaptor->setPickerId( service->getPickerId()       );
-                meshAdaptor->setMaterial( service->getMaterial()       );
-                meshAdaptor->setVtkClippingPlanes( newCollection );
+                // Create the config to auto-connect the mesh to the new adaptor
+                ::fwServices::IService::Config config;
+                config.m_type              = "::visuVTKAdaptor::SMesh";
+                config.m_globalAutoConnect = false;
+                config.m_config            = ::fwRuntime::EConfigurationElement::New("service");
+                ::fwServices::IService::ObjectServiceConfig objConfig;
+                objConfig.m_key         = SMesh::s_MESH_INPUT;
+                objConfig.m_access      = ::fwServices::IService::AccessType::INPUT;
+                objConfig.m_autoConnect = true;
+                objConfig.m_optional    = false;
+                config.m_objects.push_back(objConfig);
+
+                meshAdaptor->setConfiguration(config);
+                meshAdaptor->setRenderService(service->getRenderService());
+                meshAdaptor->setRendererId(service->getRendererId());
+                meshAdaptor->setPickerId(service->getPickerId());
+                meshAdaptor->setMaterial(service->getMaterial());
+                meshAdaptor->setVtkClippingPlanes(newCollection);
+                meshAdaptor->setShowClippedPart(false);
                 meshAdaptor->setAutoRender( service->getAutoRender() );
 
-                meshAdaptor->start();
-                meshAdaptor->updateVisibility( service->getVisibility()     );
-
-                newPlane->Delete();
+                meshAdaptor->start().wait();
+                meshAdaptor->updateVisibility(service->getVisibility());
 
                 m_planeCollections.push_back(newCollection);
                 m_meshServices.push_back(meshAdaptor);
+
+                newPlane->Delete();
             }
 
             bool hasItems = !m_meshServices.empty();
@@ -395,13 +327,12 @@ protected:
 //------------------------------------------------------------------------------
 
 SMesh::SMesh() noexcept :
-    m_showClippedPart(false),
+    m_showClippedPart(true),
     m_autoResetCamera(true),
     m_polyData(nullptr),
     m_mapper(vtkPolyDataMapper::New()),
     m_actor(nullptr),
     m_clippingPlanes(nullptr),
-    m_planeCollectionShifterCallback(nullptr),
     m_servicesStarterCallback(nullptr),
     m_transform(vtkTransform::New()),
     m_uvgen(NONE)
@@ -510,6 +441,8 @@ void SMesh::configuring()
                                                             ::fwData::Material::PHONG;
         m_material->setShadingMode(shadingMode);
     }
+
+    this->setClippingPlanesId(config.get<std::string>("clippingplane", ""));
 }
 
 //------------------------------------------------------------------------------
@@ -554,7 +487,6 @@ void SMesh::stopping()
     }
 
     this->removeNormalsService();
-    this->removePlaneCollectionShifterCommand();
     this->removeServicesStarterCommand();
 
     this->unregisterServices();
@@ -777,13 +709,13 @@ void SMesh::buildPipeline()
     this->updateMesh( mesh );
     this->updateOptionsMode();
 
-    setActorPropertyToUnclippedMaterial(false);
+    this->setActorPropertyToUnclippedMaterial(false);
 
-    removeServicesStarterCommand();
+    this->removeServicesStarterCommand();
 
     if( m_clippingPlanes && m_showClippedPart )
     {
-        createServicesStarterCommand();
+        this->createServicesStarterCommand();
     }
     this->setVtkPipelineModified();
 }
@@ -848,15 +780,7 @@ vtkActor* SMesh::newActor()
 
     if (m_clippingPlanes)
     {
-        vtkPlaneCollection* newClippingPlanes = vtkPlaneCollection::New();
-
-        removePlaneCollectionShifterCommand();
-
-        m_planeCollectionShifterCallback =
-            PlaneCollectionShifterCallback::New(m_clippingPlanes, newClippingPlanes, 2.);
-
-        m_mapper->SetClippingPlanes(newClippingPlanes);
-        newClippingPlanes->Delete();
+        m_mapper->SetClippingPlanes(m_clippingPlanes);
     }
 
     actor->SetMapper(m_mapper);
@@ -902,27 +826,12 @@ void SMesh::setVtkClippingPlanes(vtkPlaneCollection* planes)
 
 //------------------------------------------------------------------------------
 
-void SMesh::removePlaneCollectionShifterCommand()
-{
-    if (m_planeCollectionShifterCallback)
-    {
-        m_planeCollectionShifterCallback->Stop();
-        m_planeCollectionShifterCallback->Delete();
-        m_planeCollectionShifterCallback = 0;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SMesh::createServicesStarterCommand()
 {
     if(!m_servicesStarterCallback)
     {
-        ::visuVTKAdaptor::SMesh::sptr srv =
-            ::visuVTKAdaptor::SMesh::dynamicCast(
-                this->getSptr()
-                );
-        m_servicesStarterCallback = PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
+        ::visuVTKAdaptor::SMesh::sptr srv = ::visuVTKAdaptor::SMesh::dynamicCast(this->getSptr());
+        m_servicesStarterCallback         = PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
     }
 }
 
