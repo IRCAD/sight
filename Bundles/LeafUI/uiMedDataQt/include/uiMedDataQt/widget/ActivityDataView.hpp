@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,7 @@
 #include <QTabWidget>
 #include <QTreeWidget>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace widget
 {
@@ -36,7 +36,7 @@ public:
 
     typedef std::map< std::string, std::string > ObjectIconMapType;
 
-    UIMEDDATAQT_API ActivityDataView(QWidget *parent = 0);
+    UIMEDDATAQT_API ActivityDataView(QWidget* parent = 0);
 
     UIMEDDATAQT_API virtual ~ActivityDataView();
 
@@ -53,10 +53,10 @@ public:
     };
 
     /// Fill tab widget with activity info (create on item by activity parameter)
-    UIMEDDATAQT_API void fillInformation(const ::fwActivities::registry::ActivityInfo & info);
+    UIMEDDATAQT_API void fillInformation(const ::fwActivities::registry::ActivityInfo& info);
 
     /// Fill widget from existing activity info (create on item by activity parameter)
-    UIMEDDATAQT_API void fillInformation(const ::fwMedData::ActivitySeries::sptr & actSeries);
+    UIMEDDATAQT_API void fillInformation(const ::fwMedData::ActivitySeries::sptr& actSeries);
 
     /**
      * @brief Check if all the required data are selected and fill activity data composite.
@@ -68,8 +68,8 @@ public:
      * Then it checks if the activity parameters are accessible from the composite of data (it checks if the object are
      * accessible from the sesh@ paths.
      */
-    UIMEDDATAQT_API bool checkAndComputeData(const ::fwMedData::ActivitySeries::sptr & actSeries,
-                                             std::string & errorMsg);
+    UIMEDDATAQT_API bool checkAndComputeData(const ::fwMedData::ActivitySeries::sptr& actSeries,
+                                             std::string& errorMsg);
 
     /**
      * @brief Check if the current required data are selected And return this data.
@@ -77,10 +77,10 @@ public:
      * @param[in] index index of the requirement to check (this index also correspond to a tab).
      * @param[out] errorMsg it will contain the error information if the data are not correct.
      */
-    UIMEDDATAQT_API ::fwData::Object::sptr checkData(size_t index, std::string & errorMsg);
+    UIMEDDATAQT_API ::fwData::Object::sptr checkData(size_t index, std::string& errorMsg);
 
     /// Set io selector configuration used to import data
-    void setIOSelectorConfig(const std::string & ioSelectorSrvConfig)
+    void setIOSelectorConfig(const std::string& ioSelectorSrvConfig)
     {
         m_ioSelectorSrvConfig = ioSelectorSrvConfig;
     }
@@ -89,7 +89,7 @@ public:
     UIMEDDATAQT_API virtual void clear();
 
     /// Set the map that defines the icon associated to an object.
-    void setObjectIconAssociation(const ObjectIconMapType & objectIcons)
+    void setObjectIconAssociation(const ObjectIconMapType& objectIcons)
     {
         m_objectIcons = objectIcons;
     }
@@ -97,7 +97,7 @@ public:
 protected:
 
     /// Catch KeyEvent and DropEvent from tree widgets
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject* obj, QEvent* event);
 
 private:
 
@@ -123,14 +123,14 @@ private:
      * @brief Called on tree item double click : allows to edit the current data.
      * @note Currently it is only available for simple types (ie ::fwData::String)
      */
-    void onTreeItemDoubleClicked(QTreeWidgetItem *item, int column);
+    void onTreeItemDoubleClicked(QTreeWidgetItem* item, int column);
 
     /**
      * @brief Add the current item in the tree.
      * @param index index used to find the associated tree widget
      * @param obj object to add in the tree
      */
-    void addObjectItem(size_t index, const ::fwData::Object::sptr &obj);
+    void addObjectItem(size_t index, const ::fwData::Object::sptr& obj);
 
     ::fwActivities::registry::ActivityInfo m_activityInfo; ///< activity information
 
@@ -142,8 +142,7 @@ private:
     ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
 };
 
-
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_WIDGET_ACTIVITYDATAVIEW_HPP__

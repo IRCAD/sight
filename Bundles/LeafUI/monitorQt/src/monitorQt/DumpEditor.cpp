@@ -41,10 +41,12 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-namespace monitor
+namespace monitorQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::monitor::DumpEditor, ::fwData::Object );
+//------------------------------------------------------------------------------
+
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::monitorQt::DumpEditor, ::fwData::Object );
 
 ::fwMemory::BufferManager::BufferInfoMapType m_bufferInfos;
 ::fwMemory::BufferManager::BufferStats m_bufferStats = {0, 0};

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __UIMEDDATAQT_SSERIESVIEWER_HPP__
 #define __UIMEDDATAQT_SSERIESVIEWER_HPP__
 
-#include <map>
-
-#include <fwServices/IController.hpp>
-#include <fwServices/IAppConfigManager.hpp>
-
 #include "uiMedDataQt/config.hpp"
 
-namespace uiMedData
+#include <fwServices/IAppConfigManager.hpp>
+#include <fwServices/IController.hpp>
+
+#include <map>
+
+namespace uiMedDataQt
 {
 /**
  * @brief  This Service allows to preview the selected series in the Vector. For the moment, it works only on a
@@ -24,7 +24,7 @@ class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesViewer)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesViewer)(::fwServices::IController) );
 
     /// Constructor
     UIMEDDATAQT_API SSeriesViewer();
@@ -52,7 +52,8 @@ protected:
     /**
      * @brief Configures the service.
      * @code{.xml}
-       <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
+       <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedDataQt::SSeriesViewer"
+     * autoConnect="yes">
         <parentView>preview</parentView>
         <configs>
             <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
@@ -116,7 +117,7 @@ private:
     /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
 };
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_SSERIESVIEWER_HPP__
 

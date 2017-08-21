@@ -113,7 +113,7 @@
                 Editor used for scene snapshot:
                 It allows to select the snapshot filename and emits a "snapped" signal with this path.
             -->
-            <service uid="snapshotScene1Editor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
 
             <!--
                 Generic scene:
@@ -231,7 +231,7 @@
             </service>
 
             <!-- Editor representing a slider to navigate into image slices -->
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="imageUID" />
                 <sliceIndex>axial</sliceIndex>
             </service>

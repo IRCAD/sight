@@ -28,10 +28,10 @@
 #include <QLabel>
 #include <QWidget>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageTransparency, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::ImageTransparency, ::fwData::Image );
 
 ImageTransparency::ImageTransparency() noexcept
 {

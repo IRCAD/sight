@@ -140,16 +140,16 @@
                 <inout key="series" uid="seriesDB" />
             </service>
 
-            <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
                 <inout key="seriesDB" uid="seriesDB" />
                 <inout key="selection" uid="selections" />
             </service>
 
             <!-- This editor allows to change the dump policy, and displays the managed buffer. -->
-            <service uid="dumpEditor" type="::monitor::DumpEditor" />
+            <service uid="dumpEditor" type="::monitorQt::DumpEditor" />
 
             <!-- Service to display the preview when an image or an mesh is selected -->
-            <service uid="seriesViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <service uid="seriesViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
                 <in key="series" uid="selections" />
                 <parentView wid="preview" />
                 <configs>
@@ -169,8 +169,8 @@
                 <config mode="decrease" />
             </service>
 
-            <service uid="action_ClassFactoryRegistryInfo" type="::monitor::action::ClassFactoryRegistryInfo" />
-            <service uid="action_ComponentsTree" type="::monitor::action::ComponentsTree" />
+            <service uid="action_ClassFactoryRegistryInfo" type="::monitorQt::action::ClassFactoryRegistryInfo" />
+            <service uid="action_ComponentsTree" type="::monitorQt::action::ComponentsTree" />
             <service uid="dumpAll" type="::monitor::action::SDumpAll"/>
 
             <start uid="mainFrame" />

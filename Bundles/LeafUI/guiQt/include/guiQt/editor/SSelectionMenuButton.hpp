@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,16 +10,16 @@
 #include "guiQt/config.hpp"
 
 #include <fwTools/Failed.hpp>
-#include <gui/editor/IEditor.hpp>
-#include <QAction>
 
+#include <gui/editor/IEditor.hpp>
+
+#include <QAction>
 #include <QObject>
 #include <QPointer>
 
 class QMenu;
 class QActionGroup;
 class QPushButton;
-
 
 namespace guiQt
 {
@@ -37,7 +37,7 @@ namespace editor
  *
  * @section XML Example of configuration
  * @code{.xml}
-    <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SSelectionMenuButton">
+    <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImageQt::SSelectionMenuButton">
         <text>...</text>
         <toolTip>...</toolTip>
         <items>
@@ -73,7 +73,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSelectionMenuButton)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSelectionMenuButton)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     GUIQT_API SSelectionMenuButton() noexcept;
@@ -105,7 +105,7 @@ protected:
     virtual void configuring();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
     /// This method is called when the popup menu is clicked. Notify the selection changed.

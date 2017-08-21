@@ -125,9 +125,9 @@
                 </config>
             </service>
 
-            <service uid="snapshotScene1Editor" type="::uiVisu::SnapshotEditor"  />
+            <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor"  />
 
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>

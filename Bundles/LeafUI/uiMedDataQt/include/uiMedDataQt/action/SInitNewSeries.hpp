@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,26 +7,24 @@
 #ifndef __UIMEDDATAQT_ACTION_SINITNEWSERIES_HPP__
 #define __UIMEDDATAQT_ACTION_SINITNEWSERIES_HPP__
 
-#include <fwMedData/Series.hpp>
+#include "uiMedDataQt/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "uiMedDataQt/config.hpp"
+#include <fwMedData/Series.hpp>
 
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace action
 {
 /**
- * @brief   This action allows to update ::uiMedData::editor::SSelector UI in order to add new series.
- * @class   SInitNewSeries
+ * @brief   This action allows to update ::uiMedDataQt::editor::SSelector UI in order to add new series.
  * @note The action adds an empty series in each patient/study group to select where the series must be added.
  */
 class UIMEDDATAQT_CLASS_API SInitNewSeries : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SInitNewSeries)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SInitNewSeries)(::fwGui::IActionSrv) );
 
     /// Constructor
     UIMEDDATAQT_API SInitNewSeries();
@@ -45,7 +43,8 @@ protected:
     /**
      *
      * @code{.xml}
-       <service uid="initSeriesUid" impl="::uiMedData::action::SInitNewSeries" type="::fwGui::IActionSrv" autoConnect="yes">
+       <service uid="initSeriesUid" impl="::uiMedDataQt::action::SInitNewSeries" type="::fwGui::IActionSrv"
+     * autoConnect="yes">
          <seriesDB>seriesDB_UID</seriesDB>
          <institution>My great company</institution>
        </service>
@@ -58,7 +57,7 @@ protected:
     /// Adds the fake series in series DB.
     virtual void updating();
 
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 private:
 
@@ -70,7 +69,7 @@ private:
 };
 
 } // namespace action
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_ACTION_SINITNEWSERIES_HPP__
 

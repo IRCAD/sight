@@ -13,11 +13,12 @@
 
 #include <fwMedData/Series.hpp>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 /**
- * @brief Used as a placeholder in ::uiMedData::editor::SSelector UI to insert create and insert new series in a series
+ * @brief Used as a placeholder in ::uiMedDataQt::editor::SSelector UI to insert create and insert new series in a
+ * series
  * DB.
  */
 class UIMEDDATAQT_CLASS_API InsertSeries : public ::fwMedData::Series
@@ -44,7 +45,7 @@ public:
 
 };
 
-}   //end namespace uiMedData
+}   //end namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_INSERTSERIES_HPP__
 

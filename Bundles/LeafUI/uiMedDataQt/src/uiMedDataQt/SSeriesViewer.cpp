@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,12 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiMedData::SSeriesViewer, ::fwData::Vector);
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector);
 
 //------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ SSeriesViewer::~SSeriesViewer() noexcept
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::info(std::ostream &_sstream )
+void SSeriesViewer::info(std::ostream& _sstream )
 {
     // Update message
     _sstream << std::string("SSeriesViewer");
@@ -93,14 +93,14 @@ void SSeriesViewer::updating()
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
 
-            for(const ReplaceValuesMapType::value_type &elt :  info.extractValues)
+            for(const ReplaceValuesMapType::value_type& elt :  info.extractValues)
             {
                 ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
                 OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }
 
-            for(const ReplaceValuesMapType::value_type &elt :  info.parameters)
+            for(const ReplaceValuesMapType::value_type& elt :  info.parameters)
             {
                 SLM_ASSERT("Value '" << elt.first << "' already used in extracted values.",
                            replaceMap.find(elt.first) == replaceMap.end());
@@ -141,7 +141,7 @@ void SSeriesViewer::configuring()
     std::vector < ::fwRuntime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
     SLM_ASSERT("Missing tag 'config'", !config.empty());
 
-    for(const ::fwRuntime::ConfigurationElement::sptr &elt :  config)
+    for(const ::fwRuntime::ConfigurationElement::sptr& elt :  config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
@@ -149,9 +149,9 @@ void SSeriesViewer::configuring()
         std::string seriesType = elt->getAttributeValue("type");
         SLM_ASSERT("'type' attribute must not be empty", !seriesType.empty());
         OSLM_ASSERT("Type " << seriesType << " is already defined.",
-                    m_seriesConfigs.find(seriesType)== m_seriesConfigs.end() );
+                    m_seriesConfigs.find(seriesType) == m_seriesConfigs.end() );
 
-        for(const ::fwRuntime::ConfigurationElement::sptr &extractElt :  elt->find("extract"))
+        for(const ::fwRuntime::ConfigurationElement::sptr& extractElt :  elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SLM_ASSERT("'path' attribute must not be empty", !path.empty());
@@ -160,7 +160,7 @@ void SSeriesViewer::configuring()
             info.extractValues[pattern] = path;
         }
 
-        for(const ::fwRuntime::ConfigurationElement::sptr &param :  elt->find("parameter"))
+        for(const ::fwRuntime::ConfigurationElement::sptr& param :  elt->find("parameter"))
         {
             std::string replace = param->getAttributeValue("replace");
             SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());
@@ -191,4 +191,4 @@ void SSeriesViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-} // namespace uiMedData
+} // namespace uiMedDataQt

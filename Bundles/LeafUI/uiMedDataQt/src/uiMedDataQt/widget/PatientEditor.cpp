@@ -1,16 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string.hpp>
+#include "uiMedDataQt/widget/PatientEditor.hpp"
 
-#include <QFormLayout>
-#include <QPalette>
-#include <QGroupBox>
-#include <QComboBox>
-#include <QLineEdit>
+#include "uiMedDataQt/constants.hpp"
 
 #include <fwData/String.hpp>
 
@@ -19,17 +15,23 @@
 
 #include <fwMedDataTools/functions.hpp>
 
-#include "uiMedDataQt/constants.hpp"
-#include "uiMedDataQt/widget/PatientEditor.hpp"
+#include <boost/algorithm/string.hpp>
 
-namespace uiMedData
+#include <QComboBox>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QPalette>
+
+namespace uiMedDataQt
 {
 namespace widget
 {
 
 //-----------------------------------------------------------------------------
 
-PatientEditor::PatientEditor(QWidget *parent) : QWidget(parent)
+PatientEditor::PatientEditor(QWidget* parent) :
+    QWidget(parent)
 {
     m_txtName = new QLineEdit();
 
@@ -192,5 +194,5 @@ void PatientEditor::setSeries(SPTR(::fwMedData::Series)series)
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 

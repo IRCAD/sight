@@ -6,6 +6,8 @@
 
 #include "uiVisuQt/STransformEditor.hpp"
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -29,10 +31,10 @@
 #include <QString>
 #include <QVBoxLayout>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::STransformEditor, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
 
 //------------------------------------------------------------------------------
 
@@ -211,9 +213,7 @@ void STransformEditor::updating()
 
 void STransformEditor::onSliderChanged(int value)
 {
-    ::fwData::TransformationMatrix3D::sptr matrix;
-
-    matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
     const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
@@ -256,8 +256,7 @@ void STransformEditor::onTextChanged()
 
 void STransformEditor::updateFromMatrix()
 {
-    ::fwData::TransformationMatrix3D::sptr matrix;
-    matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
+    ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     SLM_ASSERT("Unable to get matrix", matrix);
     const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
@@ -298,4 +297,4 @@ void STransformEditor::updateFromMatrix()
 
 //------------------------------------------------------------------------------
 
-} // namespace uiVisu
+} // namespace uiVisuQt

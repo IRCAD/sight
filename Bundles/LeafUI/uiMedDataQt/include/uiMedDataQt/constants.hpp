@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef __UIMEDDATAQT_CONSTANTS_HPP__
 #define __UIMEDDATAQT_CONSTANTS_HPP__
 
-#include <string>
-
 #include "uiMedDataQt/config.hpp"
 
-namespace uiMedData
+#include <string>
+
+namespace uiMedDataQt
 {
 
 /// Placeholder text used to identify a new patient that must be initialized within the series selector widget.
@@ -29,7 +29,7 @@ static const std::string s_NEW_PATIENT_FIELD_NAME = "NEW_PATIENT";
 /// Field name used to identify a ::fwMedData::Study to be initialized.
 static const std::string s_NEW_STUDY_FIELD_NAME = "NEW_STUDY";
 
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_CONSTANTS_HPP__
 

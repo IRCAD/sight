@@ -1,8 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "uiMedDataQt/widget/StudyEditor.hpp"
+
+#include "uiMedDataQt/constants.hpp"
+#include "uiMedDataQt/InsertSeries.hpp"
+
+#include <fwData/String.hpp>
+
+#include <fwMedData/Series.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwMedDataTools/functions.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -10,25 +22,15 @@
 #include <QGroupBox>
 #include <QLineEdit>
 
-#include <fwData/String.hpp>
-
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Series.hpp>
-
-#include <fwMedDataTools/functions.hpp>
-
-#include "uiMedDataQt/constants.hpp"
-#include "uiMedDataQt/InsertSeries.hpp"
-#include "uiMedDataQt/widget/StudyEditor.hpp"
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace widget
 {
 
 //-----------------------------------------------------------------------------
 
-StudyEditor::StudyEditor(QWidget *parent) : QWidget(parent)
+StudyEditor::StudyEditor(QWidget* parent) :
+    QWidget(parent)
 {
     m_date                   = new QLineEdit();
     m_time                   = new QLineEdit();
@@ -185,5 +187,5 @@ void StudyEditor::setSeries(SPTR(::fwMedData::Series)series)
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 

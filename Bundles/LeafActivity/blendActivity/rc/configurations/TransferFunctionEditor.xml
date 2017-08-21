@@ -60,7 +60,7 @@
             </registry>
         </service>
 
-        <service uid="snapshotEditor" type="::uiVisu::SnapshotEditor" />
+        <service uid="snapshotEditor" type="::uiVisuQt::SnapshotEditor" />
 
         <service uid="tfView" type="::gui::view::SDefaultView">
             <gui>
@@ -136,7 +136,7 @@
         </service>
 
         <!-- Editors for Negato2 -->
-        <service uid="slider" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${myImage}" />
             <sliceIndex>axial</sliceIndex>
         </service>

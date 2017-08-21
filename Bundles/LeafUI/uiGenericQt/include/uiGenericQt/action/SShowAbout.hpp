@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,17 @@
 #ifndef __UIGENERICQT_ACTION_SSHOWABOUT_HPP__
 #define __UIGENERICQT_ACTION_SSHOWABOUT_HPP__
 
+#include "uiGenericQt/config.hpp"
+
+#include <fwGui/IActionSrv.hpp>
+
+#include <boost/filesystem/path.hpp>
+
 #include <QObject>
 #include <QSize>
 #include <QUrl>
 
-#include <boost/filesystem/path.hpp>
-
-#include <fwGui/IActionSrv.hpp>
-
-#include "uiGenericQt/config.hpp"
-
-namespace uiGeneric
+namespace uiGenericQt
 {
 
 namespace action
@@ -25,7 +25,6 @@ namespace action
 
 /**
  * @brief   This action show the about frame.
- * @class   SShowAbout
  */
 class UIGENERICQT_CLASS_API SShowAbout : public QObject,
                                          public ::fwGui::IActionSrv
@@ -33,7 +32,7 @@ class UIGENERICQT_CLASS_API SShowAbout : public QObject,
 
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SShowAbout)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SShowAbout)( ::fwGui::IActionSrv) );
 
     /**
      * @name Constructor/Destructor
@@ -48,7 +47,7 @@ protected:
      *
      * XML configuration sample:
        @code{.xml}
-       <service impl="::uiGeneric::action::SShowAbout" type="::fwGui::IActionSrv">
+       <service impl="::uiGenericQt::action::SShowAbout" type="::fwGui::IActionSrv">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />
@@ -68,7 +67,7 @@ protected:
     void stopping();
 
     /// Prints service info
-    void info(std::ostream &_sstream);
+    void info(std::ostream& _sstream);
 
 protected Q_SLOTS:
 
@@ -77,7 +76,7 @@ protected Q_SLOTS:
      *
      * @param url clicked URL
      */
-    void onUrlClicked(const QUrl & url);
+    void onUrlClicked(const QUrl& url);
 
 private:
     /// Set to 'true' if the about file path is known.
@@ -97,7 +96,7 @@ private:
 
 } // namespace action
 
-} // namespace uiGeneric
+} // namespace uiGenericQt
 
 #endif // __UIGENERICQT_ACTION_SSHOWABOUT_HPP__
 

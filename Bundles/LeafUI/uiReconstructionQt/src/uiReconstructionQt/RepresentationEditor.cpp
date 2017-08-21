@@ -32,10 +32,10 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 
-namespace uiReconstruction
+namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::RepresentationEditor, ::fwData::Reconstruction );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstructionQt::RepresentationEditor, ::fwData::Reconstruction );
 
 //------------------------------------------------------------------------------
 

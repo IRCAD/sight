@@ -248,9 +248,9 @@
             <!-- Action to do Quit -->
             <service uid="actionQuit" type="::gui::action::SQuit"  />
 
-            <service uid="snapshotNegato1Editor" type="::uiVisu::SnapshotEditor" />
-            <service uid="snapshotNegato2Editor" type="::uiVisu::SnapshotEditor" />
-            <service uid="snapshotNegato3Editor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotNegato1Editor" type="::uiVisuQt::SnapshotEditor" />
+            <service uid="snapshotNegato2Editor" type="::uiVisuQt::SnapshotEditor" />
+            <service uid="snapshotNegato3Editor" type="::uiVisuQt::SnapshotEditor" />
 
             <service uid="medicalImageSrv1" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image1" />
@@ -264,7 +264,7 @@
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato1" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image1" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -281,7 +281,7 @@
             </service>
 
             <!-- Editors for Negato2 -->
-            <service uid="sliderNegato2" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato2" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image2" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -297,7 +297,7 @@
             </service>
 
             <!-- Editors for Negato3 -->
-            <service uid="sliderNegato3" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato3" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="imageResult" />
                 <sliceIndex>axial</sliceIndex>
             </service>

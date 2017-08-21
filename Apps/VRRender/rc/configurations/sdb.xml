@@ -66,12 +66,12 @@
             <in key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
-        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="activityCreator" type="::uiMedData::editor::SActivityWizard">
+        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <ioSelectorConfig>FullSDBReaderIOSelectorConfig</ioSelectorConfig>
             <icons>
@@ -80,7 +80,7 @@
             </icons>
         </service>
 
-        <service uid="seriesViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="seriesViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,22 +7,24 @@
 #ifndef __MONITORQT_DUMPEDITOR_HPP__
 #define __MONITORQT_DUMPEDITOR_HPP__
 
-#include <vector>
+#include "monitorQt/config.hpp"
 
+#include <fwCom/Connection.hpp>
+
+#include <fwMemory/BufferManager.hpp>
+
+#include <fwTools/Failed.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
+#include <QFutureWatcher>
 #include <QPointer>
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTableView>
 #include <QTableWidget>
-#include <QFutureWatcher>
 
-#include <fwTools/Failed.hpp>
-#include <fwCom/Connection.hpp>
-#include <fwMemory/BufferManager.hpp>
-
-#include <gui/editor/IEditor.hpp>
-
-#include "monitorQt/config.hpp"
+#include <vector>
 
 class QTimer;
 
@@ -32,13 +34,11 @@ template< typename F >
 struct Slot;
 }
 
-namespace monitor
+namespace monitorQt
 {
 
 /**
- * @class   DumpEditor
  * @brief   Editor to dump or restore selected buffer.
- * @date    2010-2013
  */
 class MONITORQT_CLASS_API DumpEditor : public QObject,
                                        public ::gui::editor::IEditor
@@ -47,7 +47,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DumpEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (DumpEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Does nothing.
     MONITORQT_API DumpEditor() noexcept;
@@ -56,7 +56,6 @@ public:
     MONITORQT_API virtual ~DumpEditor() noexcept;
 
 protected:
-
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
@@ -76,7 +75,7 @@ protected:
     virtual void configuring();
 
     /// Overrides. Does nothing.
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
     /// Start m_updateTimer, call on buffManager signal emit ( see m_refreshSignal )
     void onUpdate();
@@ -98,7 +97,7 @@ private:
     QFutureWatcher< ::fwMemory::BufferManager::BufferInfoMapType > m_watcher;
 
     // Managed buffers
-    std::vector< const void * const * > m_objectsUID;
+    std::vector< const void* const* > m_objectsUID;
 
     /// Widget to print some information on managed buffer by system
     QTableWidget* m_list;
@@ -124,7 +123,7 @@ private:
     QPointer<QTimer> m_updateTimer;
 };
 
-} // monitor
+} // monitorQt
 
 #endif //__MONITORQT_DUMPEDITOR_HPP__
 

@@ -31,12 +31,16 @@
 #include <QString>
 #include <QWidget>
 
-namespace uiVisu
+namespace uiVisuQt
 {
+
+//------------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwData::Object );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::SnapshotEditor );
+
+//------------------------------------------------------------------------------
 
 SnapshotEditor::SnapshotEditor() noexcept
 {
@@ -53,7 +57,6 @@ SnapshotEditor::~SnapshotEditor() noexcept
 
 void SnapshotEditor::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer
@@ -79,8 +82,6 @@ void SnapshotEditor::starting()
 
 void SnapshotEditor::stopping()
 {
-    SLM_TRACE_FUNC();
-
     this->destroy();
 }
 
@@ -168,4 +169,4 @@ std::string SnapshotEditor::requestFileName()
 }
 //------------------------------------------------------------------------------
 
-}// namespace uiVisu
+} // namespace uiVisuQt

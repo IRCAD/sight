@@ -39,10 +39,10 @@
 
 #include <functional>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::SliceIndexPositionEditor, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::fwData::Image );
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -83,12 +83,12 @@ void SliceIndexPositionEditor::starting()
     m_sliceSelectorPanel->setEnable(false);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = std::bind( &::uiImage::SliceIndexPositionEditor::sliceIndexNotification, this,
+    changeIndexCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceIndexNotification, this,
                                      std::placeholders::_1);
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeTypeCallback;
-    changeTypeCallback = std::bind( &::uiImage::SliceIndexPositionEditor::sliceTypeNotification, this,
+    changeTypeCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceTypeNotification, this,
                                     std::placeholders::_1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     layout->addWidget( m_sliceSelectorPanel );
