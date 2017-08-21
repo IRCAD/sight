@@ -304,17 +304,17 @@
             <inout key="image" uid="${imageUid}"/>
         </service>
 
-        <service uid="slider_negato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider_negato1" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUid}"/>
             <sliceIndex>axial</sliceIndex>
         </service> 
 
-        <service uid="slider_negato2" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider_negato2" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUid}"/>
             <sliceIndex>frontal</sliceIndex>
         </service>
 
-        <service uid="slider_negato3" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider_negato3" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUid}"/>
             <sliceIndex>sagittal</sliceIndex>
         </service>      

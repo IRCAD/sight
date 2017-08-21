@@ -460,7 +460,7 @@
             <parameter replace="ADAPTOR_NEGATO" uid="mixedNegatoMPR" />
         </service>
 
-        <service uid="transformedTransparencySlider" type="::uiImage::ImageTransparency" autoConnect="yes">
+        <service uid="transformedTransparencySlider" type="::uiImageQt::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="transformedImage" />
             <shortcut value="V" />
         </service>
@@ -471,7 +471,7 @@
             <config selectedTFKey="transformedTF" />
         </service>
 
-        <service uid="transformedWindowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+        <service uid="transformedWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
             <inout key="image" uid="transformedImage"/>
             <inout key="TFSelections" uid="TFSelectionComposite"/>
             <config selectedTFKey="transformedTF" autoWindowing="yes"/>
@@ -483,7 +483,7 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="yes">
+        <service uid="transformEditor" type="::uiVisuQt::STransformEditor" autoConnect="yes">
             <inout key="matrix" uid="manualTransform"/>
             <translation enabled="yes" min="-1500" max="1500"/>
             <rotation enabled="yes" min="-180" max="180" />

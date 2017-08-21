@@ -9,7 +9,6 @@ set( REQUIREMENTS
     guiQt
     ctrlSelection
     ctrlCamp
-    uiData
     uiMeasurement
     uiVisu
     uiVisuQt
