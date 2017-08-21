@@ -13,8 +13,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <vtkActor2D.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
@@ -23,6 +21,8 @@ fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SText, ::fw
 
 namespace visuVTKARAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_OBJECT_IN = "object";
 
 SText::SText() :
     m_actor(vtkActor2D::New()),
@@ -46,163 +46,119 @@ SText::~SText() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SText::doConfigure()
+void SText::configuring()
 {
-    SLM_ASSERT("Required 'config' element is missing.", m_configuration->getName() == "config");
-    this->setRendererId( m_configuration->getAttributeValue("renderer") );
+    this->configureParams();
 
-    m_seshatPath = m_configuration->getAttributeValue("seshat");
+    m_seshatPath = this->getConfigTree().get<std::string>("service.config.<xmlattr>.seshat", "");
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    std::vector < ConfigurationType > vectStyle = m_configuration->find("style");
-    if(!vectStyle.empty())
+    const ConfigType style = this->getConfigTree().get_child("service.config.style");
+
+    m_textProperty.m_fontSize = style.get<size_t>("fontSize");
+
+    const std::string fontFamily = style.get<std::string>("fontFamily");
+    SLM_ASSERT("'fontFamily' value must be 'ARIAL', 'COURIER' or 'TIMES'",
+               fontFamily == "ARIAL" ||
+               fontFamily == "COURIER" ||
+               fontFamily == "TIMES");
+
+    if(fontFamily == "TIMES")
     {
-        ConfigurationType styleConfiguration = vectStyle.at(0);
-
-        if(styleConfiguration->hasConfigurationElement("fontSize"))
-        {
-            ConfigurationType fontSizeConfig = styleConfiguration->findConfigurationElement("fontSize");
-            m_textProperty.m_fontSize = ::boost::lexical_cast< size_t >(fontSizeConfig->getValue());
-        }
-        if(styleConfiguration->hasConfigurationElement("fontFamily"))
-        {
-            ConfigurationType fontFamilyConfig = styleConfiguration->findConfigurationElement("fontFamily");
-            const std::string fontFamily       = fontFamilyConfig->getValue();
-            SLM_ASSERT("'hAlign' value must be 'left' or 'right'",
-                       fontFamily == "ARIAL" ||
-                       fontFamily == "COURIER" ||
-                       fontFamily == "TIMES");
-            if(fontFamily == "TIMES")
-            {
-                m_textProperty.m_fontFamily = TIMES;
-            }
-            else if(fontFamily == "COURIER")
-            {
-                m_textProperty.m_fontFamily = COURIER;
-            }
-            else
-            {
-                m_textProperty.m_fontFamily = ARIAL;
-            }
-        }
-
-        if(styleConfiguration->hasConfigurationElement("hAlign"))
-        {
-            ConfigurationType hAlignConfig = styleConfiguration->findConfigurationElement("hAlign");
-            const std::string hAlign       = hAlignConfig->getValue();
-            SLM_ASSERT("'hAlign' value must be 'left' or 'right'",
-                       hAlign == "left" ||
-                       hAlign == "centered" ||
-                       hAlign == "right");
-            if(hAlign == "right")
-            {
-                m_textProperty.m_hAlign = RIGHT;
-            }
-            else if(hAlign == "centered")
-            {
-                m_textProperty.m_hAlign = HCENTERED;
-            }
-            else
-            {
-                m_textProperty.m_hAlign = LEFT;
-            }
-        }
-
-        if(styleConfiguration->hasConfigurationElement("vAlign"))
-        {
-            ConfigurationType vAlignConfig = styleConfiguration->findConfigurationElement("vAlign");
-            const std::string vAlign       = vAlignConfig->getValue();
-            SLM_ASSERT("'vAlign' value must be 'left' or 'right'",
-                       vAlign == "top" ||
-                       vAlign == "centered" ||
-                       vAlign == "bottom");
-            if(vAlign == "top")
-            {
-                m_textProperty.m_vAlign = TOP;
-            }
-            else if(vAlign == "centered")
-            {
-                m_textProperty.m_vAlign = VCENTERED;
-            }
-            else
-            {
-                m_textProperty.m_vAlign = BOTTOM;
-            }
-        }
-
-        if(styleConfiguration->hasConfigurationElement("color"))
-        {
-            ConfigurationType colorConfig = styleConfiguration->findConfigurationElement("color");
-            const std::string colorText   = colorConfig->getValue();
-            ::fwData::Color::sptr color = ::fwData::Color::New();
-            color->setRGBA(colorText);
-            m_textProperty.m_color[0] = color->getRefRGBA()[0];
-            m_textProperty.m_color[1] = color->getRefRGBA()[1];
-            m_textProperty.m_color[2] = color->getRefRGBA()[2];
-        }
-
-        if(styleConfiguration->hasConfigurationElement("italic"))
-        {
-            ConfigurationType italicConfig = styleConfiguration->findConfigurationElement("italic");
-            const std::string italic       = italicConfig->getValue();
-            SLM_ASSERT("'italic' value must be 'true' or 'false'", italic == "true" || italic == "false");
-            m_textProperty.m_italic = (italic == "true");
-        }
-
-        if(styleConfiguration->hasConfigurationElement("bold"))
-        {
-            ConfigurationType boldConfig = styleConfiguration->findConfigurationElement("bold");
-            const std::string bold       = boldConfig->getValue();
-            SLM_ASSERT("'bold' value must be 'true' or 'false'", bold == "true" || bold == "false");
-            m_textProperty.m_bold = (bold == "true");
-        }
-
-        if(styleConfiguration->hasConfigurationElement("shadow"))
-        {
-            ConfigurationType shadowConfig = styleConfiguration->findConfigurationElement("shadow");
-            const std::string shadow       = shadowConfig->getValue();
-            SLM_ASSERT("'shadow' value must be 'true' or 'false'", shadow == "true" || shadow == "false");
-            m_textProperty.m_shadow = (shadow == "true");
-        }
-
-        if(styleConfiguration->hasConfigurationElement("opacity"))
-        {
-            ConfigurationType opacityConfig = styleConfiguration->findConfigurationElement("opacity");
-            const std::string opacity       = opacityConfig->getValue();
-            m_textProperty.m_opacity = ::boost::lexical_cast< double >(opacity);
-        }
+        m_textProperty.m_fontFamily = TIMES;
     }
+    else if(fontFamily == "COURIER")
+    {
+        m_textProperty.m_fontFamily = COURIER;
+    }
+    else
+    {
+        m_textProperty.m_fontFamily = ARIAL;
+    }
+
+    const std::string hAlign = style.get<std::string>("hAlign");
+    SLM_ASSERT("'hAlign' value must be 'left', 'centered' or 'right'",
+               hAlign == "left" ||
+               hAlign == "centered" ||
+               hAlign == "right");
+
+    if(hAlign == "right")
+    {
+        m_textProperty.m_hAlign = RIGHT;
+    }
+    else if(hAlign == "centered")
+    {
+        m_textProperty.m_hAlign = HCENTERED;
+    }
+    else
+    {
+        m_textProperty.m_hAlign = LEFT;
+    }
+
+    const std::string vAlign = style.get<std::string>("vAlign");
+    SLM_ASSERT("'vAlign' value must be 'top', 'centered' or 'bottom'",
+               vAlign == "top" ||
+               vAlign == "centered" ||
+               vAlign == "bottom");
+
+    if(vAlign == "top")
+    {
+        m_textProperty.m_vAlign = TOP;
+    }
+    else if(vAlign == "centered")
+    {
+        m_textProperty.m_vAlign = VCENTERED;
+    }
+    else
+    {
+        m_textProperty.m_vAlign = BOTTOM;
+    }
+
+    const std::string colorText = style.get<std::string>("color");
+    ::fwData::Color::sptr color = ::fwData::Color::New();
+    color->setRGBA(colorText);
+
+    const ::fwData::Color::ColorArray& rgbaArray = color->getRefRGBA();
+    std::copy(rgbaArray.begin(), --rgbaArray.end(), std::begin(m_textProperty.m_color));
+
+    m_textProperty.m_italic  = style.get<bool>("italic");
+    m_textProperty.m_bold    = style.get<bool>("bold");
+    m_textProperty.m_shadow  = style.get<bool>("shadow");
+    m_textProperty.m_opacity = style.get<double>("opacity");
 }
 
 //-----------------------------------------------------------------------------
 
-void SText::doStart()
+void SText::starting()
 {
+    this->initialize();
+
     this->addToRenderer(m_actor);
-    this->doUpdate();
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void SText::doStop()
+void SText::stopping()
 {
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void SText::doSwap()
+void SText::swapping()
 {
-    this->doStop();
-    this->doStart();
+    this->stopping();
+    this->starting();
 }
 
 //-----------------------------------------------------------------------------
 
-void SText::doUpdate()
+void SText::updating()
 {
     this->updateStyle();
     this->updateText();
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -271,8 +227,8 @@ void SText::updateStyle()
 
 void SText::updateText()
 {
-    ::fwData::Object::sptr obj = this->getObject();
-    ::fwData::GenericFieldBase::sptr field;
+    ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >(s_OBJECT_IN);
+    ::fwData::GenericFieldBase::csptr field;
 
     if(!m_seshatPath.empty())
     {

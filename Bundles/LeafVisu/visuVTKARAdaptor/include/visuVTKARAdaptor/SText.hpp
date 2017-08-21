@@ -74,6 +74,44 @@ struct TextProperty
 /**
  * @brief   Adaptor to show a text, representing the associated object, in the scene.
  *          The service listens to the event OBJECT_MODIFIED for updating the displayed text.
+ *
+ * @section XML XML Configuration
+   @code{.xml}
+   <adaptor id="text" class="::visuVTKARAdaptor::SText" objectId="text">
+    <config renderer="default" seshat="@patient.name" >
+        <style>
+            <fontSize>15</fontSize>
+            <fontFamily>ARIAL</fontFamily>
+            <hAlign>right</hAlign>
+            <vAlign>top</vAlign>
+            <color>#FF0000</color>
+            <italic>false</italic>
+            <bold>false</bold>
+            <opacity>1.0</opacity>
+            <shadow>true</shadow>
+        </style>
+    </config>
+   </adaptor>
+   @endcode
+ *
+ * @subsection Input Input
+ *
+ * @subsection Configuration Configuration
+ * - seshat : seshat path, optional, if present it's used to extract text value in associated data.
+ * - style : described the look and formatting of the displayed text on the scene. Available options are :
+ *     - fontSize : font size in points of displayed text (not mandatory, default value is set to 20)
+ *     - fontFamily : defined the font family
+ *       ('ARIAL', 'COURIER' or 'TIMES', not mandatory, default value is set to ARIAL)
+ *     - hAlign : horizontal alignment
+ *       ('left', 'right' or 'centered', not mandatory, default value is set to 'left')
+ *     - vAlign : vertical alignment
+ *       ('top', 'bottom' or 'centered', not mandatory, default value is set to 'bottom')
+ *     - color : defined text color in hexa (not mandatory, default value is is set to black)
+ *     - italic : enable/disable text italic (not mandatory, default value is set to false, '#000000')
+ *     - bold : enable/disable text bolding (not mandatory, default value is set to false)
+ *     - opacity : text opacity. 1.0 is totally opaque and 0.0 is completely transparent
+ *       (not mandatory, default value is set to 1.0)
+ *     - shadow : enable/disable text shadow (not mandatory, default value is set to false)
  */
 class VISUVTKARADAPTOR_CLASS_API SText : public ::fwRenderVTK::IAdaptor
 {
@@ -89,56 +127,19 @@ public:
 
 protected:
 
-    /// starts the adaptor
-    virtual void doStart();
+    VISUVTKARADAPTOR_API void configuring();
 
-    /// stops the adaptor
-    virtual void doStop();
+    /// Start displaying text.
+    VISUVTKARADAPTOR_API void starting();
 
-    /// Calls doStop() and doStart()
-    virtual void doSwap();
+    /// Updates the displayed text and its properties.
+    VISUVTKARADAPTOR_API void updating();
 
-    /// updates the shown text and its properties.
-    virtual void doUpdate();
+    /// Stop displaying text.
+    VISUVTKARADAPTOR_API void stopping();
 
-    /**
-     * @brief Configure the adaptor
-     *
-     * Example :
-       @code{.xml}
-       <adaptor id="text" class="::visuVTKARAdaptor::SText" objectId="text">
-        <config renderer="default" seshat="@patient.name" >
-            <style>
-                <fontSize>15</fontSize>
-                <fontFamily>ARIAL</fontFamily>
-                <hAlign>right</hAlign>
-                <vAlign>top</vAlign>
-                <color>#FF0000</color>
-                <italic>false</italic>
-                <bold>false</bold>
-                <opacity>1.0</opacity>
-                <shadow>true</shadow>
-            </style>
-        </config>
-       </adaptor>
-       @endcode
-     * - seshat : seshat path, optional, if present it's used to extract text value in associated data.
-     * - style : described the look and formatting of the displayed text on the scene. Available options are :
-     *     - fontSize : font size in points of displayed text (not mandatory, default value is set to 20)
-     *     - fontFamily : defined the font family
-     *       ('ARIAL', 'COURIER' or 'TIMES', not mandatory, default value is set to ARIAL)
-     *     - hAlign : horizontal alignment
-     *       ('left', 'right' or 'centered', not mandatory, default value is set to 'left')
-     *     - vAlign : vertical alignment
-     *       ('top', 'bottom' or 'centered', not mandatory, default value is set to 'bottom')
-     *     - color : defined text color in hexa (not mandatory, default value is is set to black)
-     *     - italic : enable/disable text italic (not mandatory, default value is set to false, '#000000')
-     *     - bold : enable/disable text bolding (not mandatory, default value is set to false)
-     *     - opacity : text opacity. 1.0 is totally opaque and 0.0 is completely transparent
-     *       (not mandatory, default value is set to 1.0)
-     *     - shadow : enable/disable text shadow (not mandatory, default value is set to false)
-     */
-    VISUVTKARADAPTOR_API virtual void doConfigure();
+    /// Restarts the service (start-stop).
+    VISUVTKARADAPTOR_API void swapping();
 
 private:
 
