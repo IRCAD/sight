@@ -26,8 +26,8 @@ namespace adaptor
  *
    @code{.xml}
    <service uid="histogram" type="::scene2D::adaptor::SHistogram" autoConnect="yes">
-       <in key="histogram" uid="histogramUID" />
-       <inout key="point" uid="pointUID" optional="yes" />
+       <in key="histogram" uid="..." />
+       <inout key="point" uid="..." optional="yes" />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5"/>
    </service>
    @endcode
@@ -36,8 +36,8 @@ namespace adaptor
  * - \b histogram [::fwData::Histogram]: histogram to display.
  *
  * @subsection In-Out In-Out
- * - \b point [::fwData::Point]: histogram point, used to show information at the current histogram index pointed by the
- * mouse.
+ * - \b point [::fwData::Point](optional): histogram point, used to show information at the current histogram index
+ * pointed by the mouse.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
