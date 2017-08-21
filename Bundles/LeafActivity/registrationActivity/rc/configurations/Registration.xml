@@ -20,7 +20,6 @@
         <object uid="transformedImage" type="::fwData::Image" />
         <object uid="TFSelectionComposite" type="::fwData::Composite" />
         <object uid="TFTransformedComposite" type="::fwData::Composite" />
-        <object uid="viewport" type="::scene2D::data::Viewport" />
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
@@ -266,18 +265,25 @@
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="1" />
-                    <view proportion="5" />
                     <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <view sid="transformedTFSelector"  start="yes" />
-                <view sid="transformedTFWindow"    start="yes" />
-                <view sid="transformedTFEditor"    start="yes" />
+                <view wid="tfWidget" />
                 <view sid="transformedWindowLevel" start="yes" />
             </registry>
         </service>
 
+        <service uid="tfWidget" type="::fwServices::SConfigController">
+            <appConfig id="TransferFunctionWidget" />
+            <inout key="image" uid="transformedImage"/>
+            <inout key="histogram" uid="Histogram"/>
+            <inout key="TFSelections" uid="TFSelectionComposite" />
+            <parameter replace="WID_PARENT" uid="tfWidget"/>
+            <parameter replace="SelectedTFKey" by="transformedTF" />
+        </service>
+        
         <service uid="computeCenter" type="::guiQt::editor::SSignalButton" >
             <config>
                 <checkable>false</checkable>
@@ -471,107 +477,10 @@
             <config selectedTFKey="transformedTF" autoWindowing="yes"/>
         </service>
 
-        <service uid="transformedTFWindow" type="::scene2D::SRender" autoConnect="yes">
-            <inout key="viewport" uid="viewport" />
-            <in key="Histogram" uid="Histogram" />
-            <scene>
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" />
-                <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                    <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                </adaptor>
-
-                <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                </adaptor>
-
-                <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                </adaptor>
-
-                <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                    <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
-                </adaptor>
-
-                <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="Histogram">
-                    <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                </adaptor>
-
-            </scene>
-        </service>
-
         <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-            <inout key="image" uid="${referenceImageUid}" />
+            <in key="image" uid="${referenceImageUid}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
-        </service>
-
-        <service uid="transformedTFEditor" type="::scene2D::SRender" autoConnect="yes">
-            <in key="image" uid="${referenceImageUid}" />
-            <inout key="viewport" uid="viewport" />
-            <in key="Histogram" uid="Histogram" />
-            <inout key="TFSelections" uid="TFSelectionComposite" />
-            <scene>
-
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
-
-                <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
-                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                    <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                </adaptor>
-
-                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                </adaptor>
-
-                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                </adaptor>
-
-                <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-                </adaptor>
-
-                <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="transformedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-                <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                    <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                </adaptor>
-
-                <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                    <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                    <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                    <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                    <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="Histogram">
-                    <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
-                </adaptor>
-
-            </scene>
         </service>
 
         <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="yes">
@@ -809,6 +718,7 @@
         <start uid="copyLastTransform" />
         <start uid="resetIdentity" />
         <start uid="inverseMat" />
+        <start uid="tfWidget" />
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
