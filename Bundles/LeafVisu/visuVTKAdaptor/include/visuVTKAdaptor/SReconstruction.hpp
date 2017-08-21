@@ -64,11 +64,6 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setSharpEdgeAngle(double angle)
-    {
-        m_sharpEdgeAngle = angle;
-    }
-
     VISUVTKADAPTOR_API void setForceHide(bool hide);
 
     /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
@@ -118,8 +113,6 @@ protected:
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
     ::fwRenderVTK::IAdaptor::wptr m_meshService;
-
-    double m_sharpEdgeAngle;
 
 private:
 

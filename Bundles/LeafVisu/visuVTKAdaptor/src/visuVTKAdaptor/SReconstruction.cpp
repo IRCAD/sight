@@ -47,7 +47,6 @@ const ::fwServices::IService::KeyType SReconstruction::s_RECONSTRUCTION_INPUT = 
 
 //------------------------------------------------------------------------------
 SReconstruction::SReconstruction() noexcept :
-    m_sharpEdgeAngle(180.),
     m_autoResetCamera(true)
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SReconstruction::updateVisibility, this);
