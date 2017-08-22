@@ -1,18 +1,14 @@
-<plugin id="PoCMeshManualRegistration" version="@DASH_VERSION@" >
-
+<plugin id="PoCMeshManualRegistration" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-
-    <xi:include href="configurations/organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/worldViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/organManagerConfig.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/manualRegistrationEditorConfig.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/camViewManagerConfig.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/worldViewConfig.xml" />
     <extension implements="::fwServices::registry::AppConfig2">
         <id>PoCMeshManualRegistration</id>
         <config>
-
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
             <object uid="image" type="::fwData::Image" />
             <object uid="modelSeries" type="::fwMedData::ModelSeries" />
@@ -24,17 +20,15 @@
             <object uid="meshDB" type="::fwData::Composite" />
             <object uid="imageComposite" type="::fwData::Composite" />
             <!-- ***************************************** End Objects declaration ******************************************* -->
-
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
-
-            <service uid="IHM" type="::gui::frame::SDefaultFrame" >
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>PoC Mesh Manual Registration</name>
                         <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <menuBar />
+                    <menuBar/>
                 </gui>
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
@@ -42,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -55,14 +49,14 @@
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Load image" shortcut="Ctrl+I" />
                         <menuItem name="Load meshes" shortcut="Ctrl+M" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Load camera representation" shortcut="Ctrl+P" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -74,7 +68,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_Tools" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menu_Tools" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Manage organs colors" shortcut="F9" style="check" />
@@ -91,7 +85,7 @@
                 </registry>
             </service>
 
-            <service uid="viewSplitter" type="::gui::view::SDefaultView" >
+            <service uid="viewSplitter" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -105,7 +99,7 @@
                 </registry>
             </service>
 
-            <service uid="multiView_scene1" type="::gui::view::SDefaultView" >
+            <service uid="multiView_scene1" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -119,7 +113,7 @@
                 </registry>
             </service>
 
-            <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -136,17 +130,17 @@
                     <view sid="snapshotScene1Editor" start="yes" />
                 </registry>
             </service>
-            <!-- ***************************************** End layouts declaration ***************************************** -->
 
-            <!-- ***************************************** Begin services declarations  ************************************ -->
-            <service uid="action_manageOrgansColors" type="::gui::action::SConfigLauncher" >
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+            <!-- ***************************************** Begin services declarations    ************************************ -->
+            <service uid="action_manageOrgansColors" type="::gui::action::SConfigLauncher">
                 <appConfig id="organManagerConfig" />
                 <inout key="modelSeriesUid" uid="modelSeries" />
                 <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
                 <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
-            <service uid="action_manageView" type="::gui::action::SConfigLauncher" >
+            <service uid="action_manageView" type="::gui::action::SConfigLauncher">
                 <appConfig id="camViewManagerConfig" />
                 <inout key="modelSeries" uid="modelSeries" />
                 <inout key="image" uid="image" />
@@ -155,13 +149,13 @@
                 <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
-            <service uid="action_manageRegistration" type="::gui::action::SConfigLauncher" >
+            <service uid="action_manageRegistration" type="::gui::action::SConfigLauncher">
                 <appConfig id="manualRegistrationEditorConfig" />
                 <inout key="modelSeriesUid" uid="modelSeries" />
                 <inout key="meshDBUid" uid="meshDB" />
             </service>
 
-            <service uid="action_worldView" type="::gui::action::SConfigLauncher" >
+            <service uid="action_worldView" type="::gui::action::SConfigLauncher">
                 <appConfig id="worldViewConfig" />
                 <inout key="modelSeriesUid" uid="modelSeries" />
                 <inout key="cam1MeshUid" uid="cam1Mesh" />
@@ -171,45 +165,39 @@
                 <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
 
-            <service uid="action_openImage" type="::gui::action::SStarter" >
+            <service uid="action_openImage" type="::gui::action::SStarter">
                 <start uid="imageReaderUid" />
             </service>
 
-            <service uid="action_openMeshes" type="::gui::action::SStarter" >
+            <service uid="action_openMeshes" type="::gui::action::SStarter">
                 <start uid="modelSeriesReaderUid" />
             </service>
 
-            <service uid="action_openCamFile" type="::gui::action::SStarter" >
+            <service uid="action_openCamFile" type="::gui::action::SStarter">
                 <start uid="camReaderFile" />
             </service>
 
-            <service uid="action_quit" type="::gui::action::SQuit"  />
-
-
-
+            <service uid="action_quit" type="::gui::action::SQuit" />
             <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
-
-            <service uid="imageReaderUid" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderUid" type="::uiIO::editor::SIOSelector">
                 <in key="image" uid="image" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-
-            <service uid="updaterImageUID" type="::ctrlSelection::SManage" >
+            <service uid="updaterImageUID" type="::ctrlSelection::SManage">
                 <inout key="object" uid="image" />
                 <inout key="composite" uid="imageComposite" />
                 <compositeKey>image</compositeKey>
             </service>
 
-
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" >
+            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv">
                 <inout key="image" uid="image" />
             </service>
 
-            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton" >
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
                 <toolTip>Manage slice visibility</toolTip>
                 <selected>3</selected>
                 <items>
@@ -218,7 +206,7 @@
                 </items>
             </service>
 
-            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton" >
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
                     <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
@@ -234,139 +222,129 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="modelSeriesReaderUid" type="::uiIO::editor::SIOSelector" >
+            <service uid="modelSeriesReaderUid" type="::uiIO::editor::SIOSelector">
                 <inout key="target" uid="modelSeries" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-
-            <service uid="camReaderFile" type="::uiIO::editor::SIOSelector" >
+            <service uid="camReaderFile" type="::uiIO::editor::SIOSelector">
                 <inout key="target" uid="cam2Mesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-            <service uid="cam2ReaderFile" type="::ioData::STrianMeshReader" >
+            <service uid="cam2ReaderFile" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="cam2Mesh" />
                 <file>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/cam.trian</file>
             </service>
 
-            <service uid="cam1ReaderFile" type="::ioData::STrianMeshReader" >
+            <service uid="cam1ReaderFile" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="cam1Mesh" />
                 <file>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/cam.trian</file>
             </service>
 
-            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="imageID" uid="image" />
-                <inout key="modelSeriesID" uid="modelSeries" />
-                <inout key="view1ID" uid="view1" />
-                <inout key="view2ID" uid="view2" />
-                <inout key="meshDBID" uid="meshDB" />
                 <scene>
                     <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
-
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="modelSeriesAdaptor" uid="genericScene_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesID">
-                        <config renderer="default" picker="" autoresetcamera="no" />
-                    </adaptor>
-
-                    <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="imageID">
-                        <config renderer="default" picker="picker" slices="3" sliceIndex="axial" />
-                    </adaptor>
-
-                    <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="view1ID">
-                        <config renderer="default" picker="" />
-                    </adaptor>
-
-                    <adaptor id="CamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="view2ID">
-                        <config renderer="default" picker="" transform="cam2PosMatrixTransform" />
-                    </adaptor>
-
-                    <adaptor id="Cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam2Mesh">
-                        <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
-                    </adaptor>
-
-                    <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDBID">
-                        <config renderer="default" picker="picker" />
-                    </adaptor>
-
-                    <proxy channel="ModelRepresentationChannel" waitForKey="modelSeriesID">
-                        <slot>genericScene_modelSeriesAdaptorUid/updateNormalMode</slot>
-                    </proxy>
-
-                    <proxy channel="ModelDisplayChannel" waitForKey="modelSeriesID">
-                        <slot>genericScene_modelSeriesAdaptorUid/showReconstructions</slot>
-                    </proxy>
-
-                    <proxy channel="snapshotChannel">
-                        <slot>snapshotUID/snap</slot>
-                    </proxy>
-
-                    <proxy channel="showSliceChannel" waitForKey="imageID">
-                        <slot>MPRNegatoScene3D/showSlice</slot>
-                    </proxy>
-
-                    <proxy channel="sliceModeChannel" waitForKey="imageID">
-                        <slot>MPRNegatoScene3D/updateSliceMode</slot>
-                    </proxy>
-
+                    <adaptor uid="modelSeriesAdaptor" start="yes" />
+                    <adaptor uid="MPRNegato3D" start="yes" />
+                    <adaptor uid="snapshot1" start="yes" />
+                    <adaptor uid="CamPosMatrix" start="yes" />
+                    <adaptor uid="CamPos2MatrixTransformAdaptor" start="yes" />
+                    <adaptor uid="Cam2MeshAdaptor" start="yes" />
+                    <adaptor uid="MeshCompositeAdaptor" start="yes" />
                 </scene>
             </service>
 
+            <service uid="modelSeriesAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config renderer="default" picker="" autoresetcamera="no" />
+            </service>
+
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <config renderer="default" picker="picker" slices="3" sliceIndex="axial" />
+            </service>
+
+            <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="CamPosMatrix" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="view1" />
+                <config renderer="default" picker="" />
+            </service>
+
+            <service uid="CamPos2MatrixTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="view2" />
+                <config renderer="default" picker="" transform="cam2PosMatrixTransform" />
+            </service>
+
+            <service uid="Cam2MeshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cam2Mesh" />
+                <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
+            </service>
+
+            <service uid="MeshCompositeAdaptor" type="::visuVTKAdaptor::SMeshesBoxWidget" autoConnect="yes">
+                <in key="composite" uid="meshDB" />
+                <config renderer="default" picker="picker" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="genericScene2" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="modelSeriesID" uid="modelSeries" />
-                <inout key="view1ID" uid="view1" />
-                <inout key="view2ID" uid="view2" />
-                <inout key="meshDBID" uid="meshDB" />
                 <scene>
                     <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="modelSeriesAdaptor" uid="genericScene2_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesID">
-                        <config renderer="default" picker="" autoresetcamera="no" />
-                    </adaptor>
-
-                    <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="view2ID">
-                        <config renderer="default" picker="" />
-                    </adaptor>
-
-                    <adaptor id="CamPos1MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="view1ID">
-                        <config renderer="default" picker="" transform="cam1PosMatrixTransform" />
-                    </adaptor>
-
-                    <adaptor id="Cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam1Mesh">
-                        <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
-                    </adaptor>
-
-                    <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDBID">
-                        <config renderer="default" picker="picker" />
-                    </adaptor>
-
-                    <proxy channel="ModelRepresentationChannel" waitForKey="modelSeriesID">
-                        <slot>genericScene2_modelSeriesAdaptorUid/updateNormalMode</slot>
-                    </proxy>
-
-                    <proxy channel="ModelDisplayChannel" waitForKey="modelSeriesID">
-                        <slot>genericScene2_modelSeriesAdaptorUid/showReconstructions</slot>
-                    </proxy>
+                    <adaptor uid="modelSeriesAdaptor2" start="yes" />
+                    <adaptor uid="CamPosMatrix2" start="yes" />
+                    <adaptor uid="CamPos1MatrixTransformAdaptor" start="yes" />
+                    <adaptor uid="Cam1MeshAdaptor" start="yes" />
+                    <adaptor uid="MeshCompositeAdaptor2" start="yes" />
                 </scene>
             </service>
+
+            <service uid="modelSeriesAdaptor2" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config renderer="default" picker="" autoresetcamera="no" />
+            </service>
+
+            <service uid="CamPosMatrix2" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="view2" />
+                <config renderer="default" picker="" />
+            </service>
+
+            <service uid="CamPos1MatrixTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="view1" />
+                <config renderer="default" picker="" transform="cam1PosMatrixTransform" />
+            </service>
+
+            <service uid="Cam1MeshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="cam1Mesh" />
+                <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
+            </service>
+
+            <service uid="MeshCompositeAdaptor2" type="::visuVTKAdaptor::SMeshesBoxWidget" autoConnect="yes">
+                <in key="composite" uid="meshDB" />
+                <config renderer="default" picker="picker" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
             <!-- ***************************************** End render scenes declaration ***************************************** -->
-
-            <!-- ***************************************** End services declarations  ************************************************ -->
-
-            <!-- ***************************************** Begin connections declarations  *************************************** -->
+            <!-- ***************************************** End services declarations    ************************************************ -->
+            <!-- ***************************************** Begin connections declarations    *************************************** -->
             <connect>
                 <signal>image/modified</signal>
                 <slot>updaterImageUID/addOrSwap</slot>
@@ -376,7 +354,6 @@
                 <signal>showScanEditor/toggled</signal>
                 <slot>sliceListEditor/setEnabled</slot>
             </connect>
-
 
             <connect channel="snapshotChannel">
                 <signal>snapshotScene1Editor/snapped</signal>
@@ -389,16 +366,36 @@
             <connect channel="sliceModeChannel">
                 <signal>sliceListEditor/selected</signal>
             </connect>
-            <!-- ***************************************** End connections declarations  ***************************************** -->
+
+            <!-- ***************************************** End connections declarations    ***************************************** -->
+            <connect channel="ModelRepresentationChannel">
+                <slot>modelSeriesAdaptor/updateNormalMode</slot>
+                <slot>modelSeriesAdaptor2/updateNormalMode</slot>
+            </connect>
+
+            <connect channel="ModelDisplayChannel">
+                <slot>modelSeriesAdaptor/showReconstructions</slot>
+                <slot>modelSeriesAdaptor2/showReconstructions</slot>
+            </connect>
+
+            <connect channel="snapshotChannel">
+                <slot>snapshot1/snap</slot>
+            </connect>
+
+            <connect channel="showSliceChannel">
+                <slot>MPRNegato3D/showSlice</slot>
+            </connect>
+
+            <connect channel="sliceModeChannel">
+                <slot>MPRNegato3D/updateSliceMode</slot>
+            </connect>
+
             <start uid="IHM" />
             <start uid="updaterImageUID" />
             <start uid="cam1ReaderFile" />
             <start uid="cam2ReaderFile" />
-
             <update uid="cam1ReaderFile" />
             <update uid="cam2ReaderFile" />
-
         </config>
     </extension>
-
 </plugin>
