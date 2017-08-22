@@ -50,10 +50,6 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
-                    <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
-                    <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
-                    <separator/>
                     <menuItem name="Show 3d slice cursor" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-landmark.png" style="check" />
                     <menuItem name="Show mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" style="check" />
                     <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
@@ -67,9 +63,6 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="ActionHideCross" start="yes" />
-                <menuItem sid="ActionShowNormalCross" start="yes" />
-                <menuItem sid="ActionShowFullCross" start="yes" />
                 <menuItem sid="ActionShowSliceCursor" start="yes" />
                 <menuItem sid="ActionShowMesh" start="yes" />
                 <menuItem sid="action_organManager" start="no" />
