@@ -42,7 +42,7 @@
 
             <!-- ***************************************** Begin services declarations  ************************************ -->
 
-            <service uid="XSpacingEditor" type="::uiVisu::BasicFloatEditor" autoConnect="yes" >
+            <service uid="XSpacingEditor" type="::uiVisuQt::BasicFloatEditor" autoConnect="yes" >
                 <inout key="float" uid="Float" />
             </service>
 

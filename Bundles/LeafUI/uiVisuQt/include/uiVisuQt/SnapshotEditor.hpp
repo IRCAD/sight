@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __UIVISUQT_SNAPSHOTEDITOR_HPP__
 #define __UIVISUQT_SNAPSHOTEDITOR_HPP__
 
-
 #include "uiVisuQt/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
 #include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
 #include <QObject>
@@ -21,12 +21,11 @@
 
 class QPushButton;
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
 /**
  * @brief   SnapshotEditor service is represented by a button. It allows to snap shot a generic scene.
- * @class   SnapshotEditor
  *
  * Send a 'snapped' signal containing the filename used to save the snapshot.
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
@@ -39,7 +38,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SnapshotEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SnapshotEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIVISUQT_API SnapshotEditor() noexcept;
@@ -72,13 +71,13 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
+       <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisuQt::SnapshotEditor" autoConnect="no" />
        @endcode
      */
     virtual void configuring();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
     /**
@@ -106,8 +105,7 @@ private:
 
 };
 
-} // uiVisu
+} // uiVisuQt
 
 #endif /*__UIVISUQT_SNAPSHOTEDITOR_HPP__*/
-
 

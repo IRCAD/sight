@@ -32,10 +32,10 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite );
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -137,5 +137,6 @@ void PointEditor::info( std::ostream& _sstream )
 }
 
 //------------------------------------------------------------------------------
-}
+
+} // namespace uiVisuQt
 

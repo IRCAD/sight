@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace action
  * This action works on a ::fwData::Vector. It proposes all the available activity according to the given configuration.
  * And then, send a signal with the activity identifier.
  *
- * It should works with the ::uiMedData::editor::SActivityWizard that creates or updates the activitySeries.
+ * It should works with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
@@ -39,7 +39,8 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SCreateActivity" autoConnect="yes" >
+   <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SCreateActivity"
+ * autoConnect="yes" >
        <!-- Filter mode 'include' allows all given activity id-s.
             Filter mode 'exclude' allows all activity id-s excepted given ones. -->
        <filter>
@@ -61,7 +62,7 @@ class ACTIVITIES_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCreateActivity)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
@@ -135,6 +136,5 @@ private:
 
 } // namespace action
 } // namespace activities
-
 
 #endif // __ACTIVITIES_ACTION_SCREATEACTIVITY_HPP__

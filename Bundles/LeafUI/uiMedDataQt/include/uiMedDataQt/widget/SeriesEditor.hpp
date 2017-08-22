@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __UIMEDDATAQT_WIDGET_SERIESEDITOR_HPP__
 #define __UIMEDDATAQT_WIDGET_SERIESEDITOR_HPP__
 
-#include <QWidget>
-#include <QPointer>
-#include <QListWidget>
-#include <QPalette>
+#include "uiMedDataQt/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include "uiMedDataQt/config.hpp"
+#include <QListWidget>
+#include <QPalette>
+#include <QPointer>
+#include <QWidget>
 
 class QLineEdit;
 class QPushButton;
@@ -24,14 +24,13 @@ namespace fwMedData
 class Series;
 }
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace widget
 {
 
 /**
  * @brief Simple list widget where items can be added/removed from an input widget with add/remove buttons.
- * @class ListInput
  */
 class ListInput : public QWidget
 {
@@ -84,8 +83,6 @@ protected:
 
 /**
  * @brief   Widget to edit ::fwMedData::Series information
- * @class   SeriesEditor
- * @date    2014.
  */
 class UIMEDDATAQT_CLASS_API SeriesEditor : public QWidget
 {
@@ -96,7 +93,7 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    UIMEDDATAQT_API SeriesEditor(QWidget *parent = 0);
+    UIMEDDATAQT_API SeriesEditor(QWidget* parent = 0);
     UIMEDDATAQT_API ~SeriesEditor();
     /**  @} */
 
@@ -143,7 +140,7 @@ protected:
 };
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_WIDGET_SERIESEDITOR_HPP__
 

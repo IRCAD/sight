@@ -37,12 +37,12 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSeries, ::fwData::Vector );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SSeries, ::fwData::Vector );
 
 const ::fwCom::Signals::SignalKeyType SSeries::s_EXPORT_SLOT         = "export";
 const ::fwCom::Signals::SignalKeyType SSeries::s_SERIES_EXPORTED_SIG = "seriesExported";
@@ -85,10 +85,10 @@ void SSeries::starting()
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_patientEditor   = new ::uiMedData::widget::PatientEditor();
-    m_studyEditor     = new ::uiMedData::widget::StudyEditor();
-    m_equipmentEditor = new ::uiMedData::widget::EquipmentEditor();
-    m_seriesEditor    = new ::uiMedData::widget::SeriesEditor();
+    m_patientEditor   = new ::uiMedDataQt::widget::PatientEditor();
+    m_studyEditor     = new ::uiMedDataQt::widget::StudyEditor();
+    m_equipmentEditor = new ::uiMedDataQt::widget::EquipmentEditor();
+    m_seriesEditor    = new ::uiMedDataQt::widget::SeriesEditor();
 
     QVBoxLayout* studyEquipmentLayout = new QVBoxLayout();
     studyEquipmentLayout->addWidget(m_studyEditor);
@@ -265,5 +265,5 @@ void SSeries::configuring()
 //------------------------------------------------------------------------------
 
 }   // namespace editor
-}   // namespace uiMedData
+}   // namespace uiMedDataQt
 

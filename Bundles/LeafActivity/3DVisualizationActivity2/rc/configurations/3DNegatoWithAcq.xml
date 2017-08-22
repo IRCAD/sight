@@ -6,8 +6,7 @@
         <param name="modelSeries" />
         <param name="landmarks" />
         <param name="patient_name" default="" />
-        <param name="orientation" default="axial" />
-        <!-- axial, frontal, sagittal -->
+        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="ModelRepresentationChannel" />
         <param name="ModelDisplayChannel" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
@@ -52,7 +51,8 @@
             </registry>
         </service>
 
-        <service uid="snapshotNegatoEditor" type="::uiVisu::SnapshotEditor" />
+        <service uid="snapshotNegatoEditor" type="::uiVisuQt::SnapshotEditor" />
+
         <service uid="extractImage" type="::gui::action::SPushObject">
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
@@ -63,12 +63,12 @@
             <inout key="imageKey" uid="optionalInputImage" />
         </service>
 
-        <service uid="sliderNegato" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderNegato" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="imageKey" uid="optionalInputImage" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
-        <service uid="distanceNegatoEditor" type="::uiMeasurement::editor::Distance">
+        <service uid="distanceNegatoEditor" type="::uiMeasurementQt::editor::Distance">
             <inout key="image" uid="optionalInputImage" />
             <placeInScene uid="negato" />
         </service>

@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_snapshotNegatoEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
+            <service uid="${GENERIC_UID}_snapshotNegatoEditor" type="::gui::editor::IEditor" impl="::uiVisuQt::SnapshotEditor" autoConnect="no" />
 
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
@@ -146,11 +146,11 @@
 
                                         <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
 
-                                        <service uid="${GENERIC_UID}_slider_negato" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
+                                        <service uid="${GENERIC_UID}_slider_negato" impl="::uiImageQt::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                             <sliceIndex>${orientation}</sliceIndex>
                                         </service>
 
-                                        <service uid="${GENERIC_UID}_distanceNegatoEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
+                                        <service uid="${GENERIC_UID}_distanceNegatoEditor" type="::gui::editor::IEditor" impl="::uiMeasurementQt::editor::Distance" autoConnect="no">
                                             <placeInScene uid="${GENERIC_UID}_negato" />
                                         </service>
 

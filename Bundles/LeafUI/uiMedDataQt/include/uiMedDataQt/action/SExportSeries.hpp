@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,7 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace action
 {
@@ -37,7 +36,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::uiMedData::action::SExportSeries" autoConnect="yes">
+        <service type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
             <inout key="series" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
@@ -49,7 +48,7 @@ namespace action
 class UIMEDDATAQT_CLASS_API SExportSeries : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SExportSeries)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SExportSeries)(::fwGui::IActionSrv) );
 
     /// Constructor
     UIMEDDATAQT_API SExportSeries();
@@ -109,7 +108,7 @@ private:
     std::string m_seriesId;
 };
 } // namespace action
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_ACTION_SEXPORTSERIES_HPP__
 

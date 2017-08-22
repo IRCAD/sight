@@ -10,14 +10,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QUrl>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
-namespace uiGeneric
+namespace uiGenericQt
 {
 
 namespace action
@@ -25,7 +25,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::LaunchBrowserActionService, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -101,4 +101,4 @@ void LaunchBrowserActionService::stopping()
 
 } // namespace action
 
-} // namespace uiGeneric
+} // namespace uiGenericQt

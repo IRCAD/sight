@@ -112,7 +112,7 @@
 
             <service uid="action_quit" type="::gui::action::SQuit" />
 
-            <service uid="snapshotScene1Editor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
 
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
@@ -125,7 +125,7 @@
                 </config>
             </service>
 
-            <service uid="pointView" type="::uiVisu::PointEditor" autoConnect="yes" />
+            <service uid="pointView" type="::uiVisuQt::PointEditor" autoConnect="yes" />
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
                 <in key="target" uid="mesh" />
@@ -156,7 +156,7 @@
                 </items>
             </service>
 
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>

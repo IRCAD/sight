@@ -208,7 +208,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 </config>
             </service>
 
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
                 <in key="image" uid="imageUID" />
                 <sliceIndex>axial</sliceIndex>
             </service>

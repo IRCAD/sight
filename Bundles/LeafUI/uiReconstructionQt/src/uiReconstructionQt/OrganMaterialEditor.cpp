@@ -31,10 +31,10 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-namespace uiReconstruction
+namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::OrganMaterialEditor, ::fwData::Reconstruction );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor, ::fwData::Reconstruction );
 
 OrganMaterialEditor::OrganMaterialEditor() noexcept
 {

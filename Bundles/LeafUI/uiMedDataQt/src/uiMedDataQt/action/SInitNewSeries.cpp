@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMedDataQt/action/SInitNewSeries.hpp"
 
-#include "uiMedDataQt/InsertSeries.hpp"
 #include "uiMedDataQt/constants.hpp"
+#include "uiMedDataQt/InsertSeries.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -32,8 +32,7 @@
 #include <utility>
 #include <vector>
 
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 namespace action
@@ -41,11 +40,12 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwGui::IActionSrv, ::uiMedData::action::SInitNewSeries, ::fwMedData::SeriesDB);
+fwServicesRegisterMacro(::fwGui::IActionSrv, ::uiMedDataQt::action::SInitNewSeries, ::fwMedData::SeriesDB);
 
 //------------------------------------------------------------------------------
 
-SInitNewSeries::SInitNewSeries() : m_defaultInstitution("")
+SInitNewSeries::SInitNewSeries() :
+    m_defaultInstitution("")
 {
 }
 
@@ -118,7 +118,7 @@ void SInitNewSeries::updating()
 
     for(const StudyMapType::value_type& study :  studies)
     {
-        ::fwMedData::Series::sptr newSeries = ::uiMedData::InsertSeries::New();
+        ::fwMedData::Series::sptr newSeries = ::uiMedDataQt::InsertSeries::New();
         newSeries->setDescription(s_INSERT_NEW_SERIES_TEXT);
         newSeries->setDate(date);
         newSeries->setTime(time);
@@ -142,7 +142,7 @@ void SInitNewSeries::updating()
     ::fwMedData::Equipment::sptr newEquipment = ::fwMedData::Equipment::New();
     newEquipment->setInstitutionName(m_defaultInstitution);
 
-    ::fwMedData::Series::sptr newSeries = ::uiMedData::InsertSeries::New();
+    ::fwMedData::Series::sptr newSeries = ::uiMedDataQt::InsertSeries::New();
     newSeries->setDescription(s_INSERT_NEW_SERIES_TEXT);
     newSeries->setStudy(newStudy);
     newSeries->setPatient(newPatient);

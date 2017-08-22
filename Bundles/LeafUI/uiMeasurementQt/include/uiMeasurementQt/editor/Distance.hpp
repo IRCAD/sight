@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-namespace uiMeasurement
+namespace uiMeasurementQt
 {
 namespace editor
 {
@@ -34,7 +34,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::uiMeasurement::editor::Distance" >
+   <service uid="..." type="::uiMeasurementQt::editor::Distance" >
        <inout key="image" uid="..." />
        <placeInScene uid="genericScene" />
    </service>
@@ -51,7 +51,7 @@ class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Distance)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (Distance)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;
@@ -110,12 +110,9 @@ private:
 
     DistanceRequestedSignalType::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested
 
-
-
 };
 } // namespace editor
-} // uiMeasurement
+} // uiMeasurementQt
 
 #endif /*__UIMEASUREMENTQT_EDITOR_DISTANCE_HPP__*/
-
 

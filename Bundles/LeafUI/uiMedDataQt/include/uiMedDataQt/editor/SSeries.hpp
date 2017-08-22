@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,18 @@
 #ifndef __UIMEDDATAQT_EDITOR_SSERIES_HPP__
 #define __UIMEDDATAQT_EDITOR_SSERIES_HPP__
 
-#include <QObject>
-#include <QPointer>
+#include "uiMedDataQt/config.hpp"
 
 #include <fwCom/Signal.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiMedDataQt/config.hpp"
+#include <QObject>
+#include <QPointer>
 
 class QPushButton;
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 namespace widget
@@ -40,7 +40,7 @@ class UIMEDDATAQT_CLASS_API SSeries : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeries)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSeries)(::gui::editor::IEditor) );
 
     /// Constructor
     UIMEDDATAQT_API SSeries();
@@ -89,7 +89,7 @@ protected:
     /**
      *
      * @code{.xml}
-       <service uid="selector" impl="::uiMedData::editor::SSeries" type="::gui::editor::IEditor" autoConnect="yes">
+       <service uid="selector" impl="::uiMedDataQt::editor::SSeries" type="::gui::editor::IEditor" autoConnect="yes">
         <selectionId>selections</selectionId>
         <selectionMode>single|extended</selectionMode>
         <allowedRemove>yes|no</allowedRemove>
@@ -112,16 +112,16 @@ protected Q_SLOTS:
 private:
 
     /// Widget to allow patient information editing
-    QPointer< ::uiMedData::widget::PatientEditor > m_patientEditor;
+    QPointer< ::uiMedDataQt::widget::PatientEditor > m_patientEditor;
 
     /// Widget for study edition/creation
-    QPointer< ::uiMedData::widget::StudyEditor > m_studyEditor;
+    QPointer< ::uiMedDataQt::widget::StudyEditor > m_studyEditor;
 
     /// Widget for study edition/creation
-    QPointer< ::uiMedData::widget::EquipmentEditor > m_equipmentEditor;
+    QPointer< ::uiMedDataQt::widget::EquipmentEditor > m_equipmentEditor;
 
     /// Widget for series edition/creation
-    QPointer< ::uiMedData::widget::SeriesEditor > m_seriesEditor;
+    QPointer< ::uiMedDataQt::widget::SeriesEditor > m_seriesEditor;
 
     /// Widget to export information into target series
     QPointer< QPushButton > m_btnExport;
@@ -142,7 +142,7 @@ private:
     ExportSlotType::sptr m_slotExport;
 };
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_EDITOR_SSERIES_HPP__
 

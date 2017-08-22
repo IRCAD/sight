@@ -272,7 +272,7 @@
             <inout key="image" uid="optionalInputImage" />
         </service>
 
-        <service uid="ActionExportActivity" type="::uiMedData::action::SExportSeries" autoConnect="yes">
+        <service uid="ActionExportActivity" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${AS_UID}" />
         </service>

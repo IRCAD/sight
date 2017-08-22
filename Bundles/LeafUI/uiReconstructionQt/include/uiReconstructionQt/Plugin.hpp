@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,11 +9,9 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-namespace uiReconstruction
+namespace uiReconstructionQt
 {
 /**
- *
- * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -30,6 +28,6 @@ struct Plugin : public ::fwRuntime::Plugin
 
 };
 
-} // namespace uiReconstruction
+} // namespace uiReconstructionQt
 
 #endif //__UIRECONSTRUCTIONQT_PLUGIN_HPP__

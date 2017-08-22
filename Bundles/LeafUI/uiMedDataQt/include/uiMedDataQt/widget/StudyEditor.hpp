@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __UIMEDDATAQT_WIDGET_STUDYEDITOR_HPP__
 #define __UIMEDDATAQT_WIDGET_STUDYEDITOR_HPP__
 
-#include <QWidget>
-#include <QPointer>
-#include <QPalette>
+#include "uiMedDataQt/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include "uiMedDataQt/config.hpp"
+#include <QPalette>
+#include <QPointer>
+#include <QWidget>
 
 class QLineEdit;
 
@@ -23,15 +23,13 @@ class Series;
 class Study;
 }
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace widget
 {
 
 /**
  * @brief   Widget to edit ::fwMedData::Study information
- * @class   StudyEditor
- * @date    2014.
  */
 class UIMEDDATAQT_CLASS_API StudyEditor : public QWidget
 {
@@ -40,7 +38,7 @@ Q_OBJECT
 public:
 
     /// Constructor.
-    UIMEDDATAQT_API StudyEditor(QWidget *parent = 0);
+    UIMEDDATAQT_API StudyEditor(QWidget* parent = 0);
 
     /// Destructor
     UIMEDDATAQT_API ~StudyEditor();
@@ -88,7 +86,7 @@ protected:
 };
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_WIDGET_STUDYEDITOR_HPP__
 

@@ -29,10 +29,10 @@
 #include <QLabel>
 #include <QWidget>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageInfo, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwData::Image );
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 

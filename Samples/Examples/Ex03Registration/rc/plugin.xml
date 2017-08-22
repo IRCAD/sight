@@ -169,7 +169,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="snapshotNegato1Editor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotNegato1Editor" type="::uiVisuQt::SnapshotEditor" />
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
             <service uid="actionOpenFile" type="::gui::action::SStarter" >
@@ -337,7 +337,7 @@ Detail of the ToolBar
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderNegato1" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="target" uid="myImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>

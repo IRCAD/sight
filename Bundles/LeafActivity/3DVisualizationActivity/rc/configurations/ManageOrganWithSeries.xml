@@ -56,8 +56,8 @@
                         <config>
 
                             <object id="reconstruction" type="::fwData::Reconstruction">
-                                <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstructionQt::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstructionQt::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
 
                                 <proxy channel="${ModelRepresentationChannel}">
                                     <signal>${GENERIC_UID}_representationEditor/normalsModeModified</signal>
@@ -72,7 +72,7 @@
 
             <item key="modelSeries">
                 <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
-                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedDataQt::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
                         <columns>
                             <organ_name>@organ_name</organ_name>
                             <volume_cc view="positive">@volume</volume_cc>

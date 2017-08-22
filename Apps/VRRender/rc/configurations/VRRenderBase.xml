@@ -84,17 +84,17 @@
 
         <service uid="action_quit" type="::gui::action::SQuit" />
 
-        <service uid="action_about" type="::uiGeneric::action::SShowAbout">
+        <service uid="action_about" type="::uiGenericQt::action::SShowAbout">
             <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/about/about.html" />
         </service>
 
-        <service uid="action_acknowledgments" type="::uiGeneric::action::SShowAbout">
+        <service uid="action_acknowledgments" type="::uiGenericQt::action::SShowAbout">
             <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/documentations/ack.html"/>
             <title>Acknowledgments</title>
             <size width="500" height="600" />
         </service>
 
-        <service uid="action_openBrowser" type="::uiGeneric::action::LaunchBrowserActionService">
+        <service uid="action_openBrowser" type="::uiGenericQt::action::LaunchBrowserActionService">
             <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
         </service>
 

@@ -26,7 +26,7 @@ class QListWidgetItem;
 class QComboBox;
 class QCheckBox;
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
@@ -35,7 +35,7 @@ namespace editor
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::uiMedData::editor::SOrganTransformation">
+   <service type="::uiMedDataQt::editor::SOrganTransformation">
        <inout key="modelSeries" uid="..." />
        <inout key="composite" uid="..." />
    </service>
@@ -116,6 +116,6 @@ private:
 };
 
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__

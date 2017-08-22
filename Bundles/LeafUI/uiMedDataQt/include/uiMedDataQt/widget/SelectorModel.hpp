@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,28 +7,26 @@
 #ifndef __UIMEDDATAQT_WIDGET_SELECTORMODEL_HPP__
 #define __UIMEDDATAQT_WIDGET_SELECTORMODEL_HPP__
 
-#include <map>
-
-#include <QString>
-#include <QTreeView>
-#include <QPointer>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "uiMedDataQt/config.hpp"
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 
-#include "uiMedDataQt/config.hpp"
+#include <QPointer>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QString>
+#include <QTreeView>
 
-namespace uiMedData
+#include <map>
+
+namespace uiMedDataQt
 {
 namespace widget
 {
 
 /**
  * @brief   This class represents the Selector Model.
- * @class   SelectorModel
- * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SelectorModel : public QStandardItemModel
 {
@@ -54,7 +52,7 @@ public:
     typedef std::map<std::string, std::string> SeriesIconType;
 
     /// Constructor. Inits the model.
-    UIMEDDATAQT_API SelectorModel(QWidget *parent = 0);
+    UIMEDDATAQT_API SelectorModel(QWidget* parent = 0);
 
     /// Destructor. Does nothing
     UIMEDDATAQT_API ~SelectorModel();
@@ -81,7 +79,7 @@ public:
     }
 
     /// Returns the type of the item (SERIES or STUDY) associated to the ITEM_TYPE role.
-    UIMEDDATAQT_API ItemType getItemType(const QModelIndex &index);
+    UIMEDDATAQT_API ItemType getItemType(const QModelIndex& index);
 
     /**
      * @brief Returns the index in the same row as the given index and at the specified column.
@@ -103,11 +101,10 @@ public:
      * @brief Sets the specific icons for series in selector.
      * @param[in]  seriesIcons map\<series classname, icon path\>
      */
-    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType &seriesIcons);
+    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType& seriesIcons);
 
     /// Sets if the selector must be in insert mode.
     UIMEDDATAQT_API void setInsertMode(bool insert);
-
 
 private:
 
@@ -121,13 +118,13 @@ private:
     QStandardItem* getInfo(T data, QString separator);
 
     /// Removes the study item and all the series associated.
-    bool removeStudyItem(QStandardItem *item);
+    bool removeStudyItem(QStandardItem* item);
 
     /// Removes the series item and the parent study if it is the last series in the study.
-    bool removeSeriesItem(QStandardItem *item);
+    bool removeSeriesItem(QStandardItem* item);
 
     /// Add the icon corresponding to the type of series.
-    void addSeriesIcon(::fwMedData::Series::sptr series, QStandardItem *item);
+    void addSeriesIcon(::fwMedData::Series::sptr series, QStandardItem* item);
 
     /// Initializes model. Sets headers of the selector.
     void init();
@@ -148,6 +145,7 @@ private:
     SeriesIconType m_seriesIcons;
 };
 
+//------------------------------------------------------------------------------
 
 template <typename T>
 QStandardItem* SelectorModel::getInfo(T data, QString separator)
@@ -160,19 +158,18 @@ QStandardItem* SelectorModel::getInfo(T data, QString separator)
         str << *itr++;
         dataStr = QString::fromStdString(str.str());
 
-        for(; itr!= data.end(); ++itr)
+        for(; itr != data.end(); ++itr)
         {
             str.str("");
             str << *itr;
             dataStr.append(separator + QString::fromStdString(str.str()));
         }
     }
-    QStandardItem *item = new QStandardItem(dataStr);
+    QStandardItem* item = new QStandardItem(dataStr);
     return item;
 }
 
-
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_WIDGET_SELECTORMODEL_HPP__

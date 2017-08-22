@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,18 @@
 #include "monitorQt/action/ClassFactoryRegistryInfo.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <QHBoxLayout>
 
-namespace monitor
+namespace monitorQt
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ClassFactoryRegistryInfo, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +66,7 @@ void ClassFactoryRegistryInfo::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
-    QWidget *parent = qApp->activeWindow();
+    QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
     m_dialog->setWindowTitle("ServiceFactoryRegistry");
     m_dialog->setMinimumSize(800, 600);
@@ -99,5 +100,5 @@ void ClassFactoryRegistryInfo::stopping()
 
 } // namespace action
 
-} // namespace monitor
+} // namespace monitorQt
 

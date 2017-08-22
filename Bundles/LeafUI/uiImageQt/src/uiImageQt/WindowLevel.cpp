@@ -40,10 +40,10 @@
 
 #include <functional>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::WindowLevel, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 

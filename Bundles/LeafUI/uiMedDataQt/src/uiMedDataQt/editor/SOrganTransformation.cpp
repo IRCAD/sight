@@ -35,12 +35,12 @@
 
 #include <map>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SOrganTransformation );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation );
 
 static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
@@ -395,4 +395,4 @@ void SOrganTransformation::addMeshTransform()
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace uiMedData
+} // namespace uiMedDataQt

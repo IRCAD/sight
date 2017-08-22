@@ -17,7 +17,7 @@
 #include <QObject>
 #include <QPointer>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
 /**
@@ -25,7 +25,7 @@ namespace uiVisu
  * * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::uiVisu::BasicFloatEditor">
+   <service type="::uiVisuQt::BasicFloatEditor">
        <inout key="float" uid="..." />
    </service>
    @endcode
@@ -84,7 +84,7 @@ private:
 
 };
 
-} // uiVisu
+} // uiVisuQt
 
 #endif // __UIVISUQT_BASICFLOATEDITOR_HPP__
 
