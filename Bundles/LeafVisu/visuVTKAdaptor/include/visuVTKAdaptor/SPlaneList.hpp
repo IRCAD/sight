@@ -23,7 +23,7 @@ namespace visuVTKAdaptor
 {
 
 /**
- * @brief Displays a list of Plane that can be interacted with 3 points
+ * @brief Represents a list of Plane that can be interacted with 3 points
  *
  * @section Signals Signals
  * - \b interactionStarted(::fwData::Plane::sptr) : emitted when the user begin to interac with the plane (contains the

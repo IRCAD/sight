@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
 {
 
 /**
- * @brief Displays a Plane that can be interacted with 3 points
+ * @brief Represents a Plane that can be interacted with 3 points
  *
  * @section Signals Signals
  * - \b interactionStarted(::fwData::Plane::sptr) : emitted when the user begin to interac with the plane (contains the
@@ -86,6 +86,16 @@ public:
      * @}
      */
 
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Changes points color (red is selected, else white)
+    void selectPlane(bool select);
+    /**
+     * @}
+     */
+
 protected:
     VISUVTKADAPTOR_API void configuring();
     VISUVTKADAPTOR_API void starting();
@@ -110,9 +120,6 @@ protected:
 
     /// Re-notify "startInteraction" for this service
     void startInteraction();
-
-    /// Changes points color (red is selected, else white)
-    void selectPlane(bool select);
     /**
      * @}
      */

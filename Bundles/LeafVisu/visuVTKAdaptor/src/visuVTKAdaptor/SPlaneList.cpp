@@ -251,9 +251,9 @@ void SPlaneList::updating()
 
             servicePlane->setConfiguration(serviceConfig);
             servicePlane->setRenderService(this->getRenderService());
-            servicePlane->setRendererId( this->getRendererId() );
-            servicePlane->setPickerId( this->getPickerId() );
-            servicePlane->setAutoRender( this->getAutoRender() );
+            servicePlane->setRendererId(this->getRendererId());
+            servicePlane->setPickerId(this->getPickerId());
+            servicePlane->setAutoRender(this->getAutoRender());
 
             if (!m_planeCollectionId.empty())
             {
@@ -294,6 +294,20 @@ void SPlaneList::showPlanes(bool visible)
 
 void SPlaneList::updateSelection(::fwData::Plane::sptr plane)
 {
+    for (const ::fwRenderVTK::IAdaptor::wptr& adaptor: m_subServices)
+    {
+        SPlane::sptr planeAdaptor = SPlane::dynamicCast(adaptor.lock());
+
+        if (planeAdaptor->getInOut< ::fwData::Plane >(SPlane::s_PLANE_INOUT) == plane)
+        {
+            planeAdaptor->selectPlane(true);
+        }
+        else
+        {
+            planeAdaptor->selectPlane(false);
+        }
+    }
+
     auto sig = this->signal< SelectedignalType >(s_SELECTED_SIG);
     sig->asyncEmit(plane);
 }
@@ -319,7 +333,7 @@ SPlaneList::KeyConnectionsMap SPlaneList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_PLANES_INOUT, ::fwData::PlaneList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_PLANES_INOUT, ::fwData::PlaneList::s_MODIFIED_SIG, s_UPDATE_PLANES_SLOT);
 
     return connections;
 }

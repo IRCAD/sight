@@ -175,6 +175,8 @@ void SPlane::startInteraction()
     ::fwData::Plane::sptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
     SLM_ASSERT("Plane is missing", plane);
 
+    this->selectPlane(true);
+
     auto sig = this->signal< InteractionStartedSignalType >( s_INTERACTION_STARTED_SIG);
     sig->asyncEmit(plane);
 }
