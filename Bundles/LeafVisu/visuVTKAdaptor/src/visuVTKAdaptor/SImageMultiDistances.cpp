@@ -125,11 +125,12 @@ public:
                 propc->InitTraversal();
                 while ( (prop = propc->GetNextProp()) )
                 {
-                    ::fwData::PointList::sptr plist =
-                        ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop, 1));
-
-                    if(plist)
+                    ::fwRenderVTK::IAdaptor::sptr plAdaptor = m_service->getAssociatedAdaptor(prop, 1);
+                    if (plAdaptor)
                     {
+                        ::fwData::PointList::csptr plist =
+                            plAdaptor->getInput< ::fwData::PointList >(SPointList::s_POINTLIST_INPUT);
+
                         ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
                         auto sig = image->signal< ::fwData::Image::DistanceRemovedSignalType >(
                             ::fwData::Image::s_DISTANCE_REMOVED_SIG );
@@ -369,7 +370,7 @@ void SImageMultiDistances::updating()
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove )
+void SImageMultiDistances::removeDistance(::fwData::PointList::csptr plToRemove )
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);

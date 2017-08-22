@@ -94,7 +94,7 @@ private:
      * @{
      */
     /// Slot: remove distance
-    void removeDistance(::fwData::PointList::sptr pointList);
+    void removeDistance(fwData::PointList::csptr pointList);
 
     /// Slot: to create a new distance attached to this adaptor
     void createDistance();
