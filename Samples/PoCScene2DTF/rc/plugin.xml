@@ -219,10 +219,6 @@
             </service>
 
             <service uid="scene2D" type="::fwRenderQt::SRender" autoConnect="yes">
-                <in key="image" uid="image" />
-                <inout key="viewport" uid="viewport" />
-                <in key="Histogram" uid="histogram" />
-                <inout key="TFSelections" uid="TFSelections" />
                 <scene>
                     <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
                     <viewport x="-500" y="-1.1" width="500" height="1.2" />
