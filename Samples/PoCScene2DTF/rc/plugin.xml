@@ -192,7 +192,7 @@
                     <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                         <config renderer="default" picker="picker"
                                 mode="3D" slices="3" sliceIndex="axial"
-                                selectedTFKey="selectedTF" tfSelectionFwID="TFSelections" />
+                                selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                     </adaptor>
 
                     <adaptor id="snapshot" uid="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
