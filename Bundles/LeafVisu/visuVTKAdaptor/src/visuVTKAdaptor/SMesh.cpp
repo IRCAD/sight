@@ -71,8 +71,11 @@ const ::fwCom::Slots::SlotKeyType SMesh::s_SHOW_CELL_COLORS_SLOT        = "showC
 const ::fwCom::Slots::SlotKeyType SMesh::s_HIDE_COLORS_SLOT             = "hideColors";
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_COLOR_MODE_SLOT       = "updateColorMode";
 const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_NORMAL_MODE_SLOT      = "updateNormalMode";
+const ::fwCom::Slots::SlotKeyType SMesh::s_UPDATE_MATRIX_FIELD_SLOT     = "updateMatrixField";
 
 const ::fwServices::IService::KeyType SMesh::s_MESH_INPUT = "mesh";
+
+static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
 //-----------------------------------------------------------------------------
 
@@ -283,7 +286,8 @@ public:
                 meshAdaptor->setMaterial(service->getMaterial());
                 meshAdaptor->setVtkClippingPlanes(newCollection);
                 meshAdaptor->setShowClippedPart(false);
-                meshAdaptor->setAutoRender( service->getAutoRender() );
+                meshAdaptor->setAutoRender(service->getAutoRender());
+                meshAdaptor->setTransformId(service->getTransformId());
 
                 meshAdaptor->start().wait();
                 meshAdaptor->updateVisibility(service->getVisibility());
@@ -357,6 +361,7 @@ SMesh::SMesh() noexcept :
     newSlot(s_HIDE_COLORS_SLOT, &SMesh::hideColors, this);
     newSlot(s_UPDATE_COLOR_MODE_SLOT, &SMesh::updateColorMode, this);
     newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SMesh::updateNormalMode, this);
+    newSlot(s_UPDATE_MATRIX_FIELD_SLOT, &SMesh::updateMatrixField, this);
 }
 
 //------------------------------------------------------------------------------
@@ -463,10 +468,6 @@ void SMesh::starting()
 
     this->buildPipeline();
 
-    if (!m_transformService.expired())
-    {
-        m_transformService.lock()->start();
-    }
     this->requestRender();
 }
 
@@ -502,17 +503,27 @@ void SMesh::createTransformService()
     ::fwData::Mesh::csptr mesh = this->getInput < ::fwData::Mesh >(s_MESH_INPUT);
     SLM_ASSERT("Missing mesh", mesh);
 
-    if(!this->getTransformId().empty())
-    {
-        vtkTransform* t = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
-        m_transform->Concatenate(t);
-    }
-
-    ::fwData::TransformationMatrix3D::sptr fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D >(
-        "TransformMatrix");
+    ::fwData::TransformationMatrix3D::sptr fieldTransform =
+        mesh->getField< ::fwData::TransformationMatrix3D >(s_MATRIX_FIELD_NAME);
 
     if (fieldTransform)
     {
+        if (!m_transformService.expired())
+        {
+            ::fwData::TransformationMatrix3D::sptr trf =
+                m_transformService.lock()->getInOut< ::fwData::TransformationMatrix3D >(STransform::s_TM3D_INOUT);
+
+            if (trf == fieldTransform)
+            {
+                return;
+            }
+
+            m_transformService.lock()->stop();
+            ::fwServices::OSR::unregisterService(m_transformService.lock());
+            m_transformService.reset();
+            m_transform->Pop();
+        }
+
         vtkTransform* vtkFieldTransform = vtkTransform::New();
         vtkFieldTransform->Identity();
 
@@ -524,16 +535,16 @@ void SMesh::createTransformService()
         m_transformService = ::visuVTKAdaptor::STransform::dynamicCast(transformService);
 
         transformService->setConfiguration(srvConfig);
-        transformService->setRenderService( this->getRenderService()  );
-        transformService->setRendererId( this->getRendererId()       );
-        transformService->setAutoRender( this->getAutoRender()     );
-
+        transformService->setRenderService( this->getRenderService() );
+        transformService->setRendererId( this->getRendererId() );
+        transformService->setAutoRender( this->getAutoRender() );
         m_transformService.lock()->setTransform(vtkFieldTransform);
+        transformService->start();
+
         m_transform->Concatenate(vtkFieldTransform);
+        m_transform->Modified();
         vtkFieldTransform->Delete();
     }
-
-    m_actor->SetUserTransform(m_transform);
 }
 
 //------------------------------------------------------------------------------
@@ -697,6 +708,14 @@ void SMesh::buildPipeline()
     if (!m_actor)
     {
         m_actor = this->newActor();
+
+        if(!this->getTransformId().empty())
+        {
+            vtkTransform* t = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
+            m_transform->Concatenate(t);
+        }
+        m_actor->SetUserTransform(m_transform);
+
         this->createTransformService();
 
         this->addToRenderer(m_actor);
@@ -867,6 +886,9 @@ void SMesh::setAutoResetCamera(bool autoResetCamera)
     connections.push( s_MESH_INPUT, ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG,  s_UPDATE_CELL_NORMALS_SLOT);
     connections.push( s_MESH_INPUT, ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_UPDATE_POINT_TEX_COORDS_SLOT);
     connections.push( s_MESH_INPUT, ::fwData::Mesh::s_CELL_TEX_COORDS_MODIFIED_SIG, s_UPDATE_CELL_TEX_COORDS_SLOT);
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_ADDED_FIELDS_SIG, s_UPDATE_MATRIX_FIELD_SLOT);
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_REMOVED_FIELDS_SIG, s_UPDATE_MATRIX_FIELD_SLOT);
+    connections.push( s_MESH_INPUT, ::fwData::Mesh::s_CHANGED_FIELDS_SIG, s_UPDATE_MATRIX_FIELD_SLOT);
 
     return connections;
 }
@@ -1027,6 +1049,16 @@ void SMesh::updateNormalMode(std::uint8_t mode)
         ::visuVTKAdaptor::SMeshNormals::sptr normalsAdaptor =
             ::visuVTKAdaptor::SMeshNormals::dynamicCast(m_normalsService.lock());
         normalsAdaptor->updateNormalMode(mode);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMesh::updateMatrixField(::fwData::Object::FieldsContainerType fields)
+{
+    if (fields.find(s_MATRIX_FIELD_NAME) != fields.end())
+    {
+        this->createTransformService();
     }
 }
 

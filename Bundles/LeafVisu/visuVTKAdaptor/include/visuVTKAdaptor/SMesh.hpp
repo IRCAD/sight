@@ -58,6 +58,8 @@ class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
  * - \b hideColors() : hide the cells colors.
  * - \b updateColorMode(std::uint8_t) : update the color mode (0 : hide, 1 : points colors, 2 : cells colors).
  * - \b updateNormalMode(std::uint8_t) : updates the normal mode (0: hidden, 1: point normals, 2: cell normals)
+ * - \b updateMatrixField(::fwData::Object::FieldsContainerType) : updates the matrix service if the
+ *      'TransformMatrix' field changed
 
  * @section XML XML Configuration
  *
@@ -119,6 +121,7 @@ public:
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_HIDE_COLORS_SLOT;
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COLOR_MODE_SLOT;
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MATRIX_FIELD_SLOT;
 
     /// Slot: update mesh visibility (true = visible)
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
@@ -206,6 +209,9 @@ protected:
 
     /// Slot: used to update color mode (0: none, 1: point, 2: cell)
     void updateColorMode(std::uint8_t mode);
+
+    /// Slot: update the matrix service if the 'TransformMatrix' field changed
+    void updateMatrixField(::fwData::Object::FieldsContainerType fields);
     /**
      * @}
      */
@@ -262,16 +268,6 @@ protected:
 
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;
-
-public:
-
-    //------------------------------------------------------------------------------
-
-    vtkActor* getActor() const
-    {
-        return m_actor;
-    }
-
 };
 
 } //namespace visuVTKAdaptor
