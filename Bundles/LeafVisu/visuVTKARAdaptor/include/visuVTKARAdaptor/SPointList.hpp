@@ -27,9 +27,11 @@ namespace visuVTKARAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-       <config renderer="default" imageId="${imageId1}"cameraUID="cameraUid" color="#cb1f72" radius="3.0" />
-   </adaptor>
+   <service type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
+       <in key="pointlist" uid="..." />
+       <in key="camera" uid="..." />
+       <config renderer="default" color="#cb1f72" radius="3.0" />
+   </service>
    @endcode
  *
  * @subsection Input Input

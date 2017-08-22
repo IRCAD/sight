@@ -9,21 +9,7 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwRenderVTK/IAdaptor.hpp>
-
-namespace fwData
-{
-class Image;
-}
-
-namespace arData
-{
-class Camera;
-}
 
 class vtkPerspectiveTransform;
 class vtkCommand;
@@ -32,7 +18,32 @@ namespace visuVTKARAdaptor
 {
 
 /**
- * @brief   Adaptor to place the camera in the scene
+ * @brief   Places the camera inside a VTK scene and updates its transform matrix.
+ *
+ * @section Slots Slots
+ * - \b calibrate(): recompute the FOV.
+ *
+ * @section Signals Signals
+ * - \b positionModified(): notifies camera displacements.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+            <inout key="transform" uid="..." />
+            <in key="camera" uid="..." />
+            <config renderer="default" />
+        </service>
+   @endcode
+ *
+ * @subsection Input Input
+ * - \b camera [::arData::Camera] (optional): camera calibration.
+ *
+ * @subsection In-Out In-Out
+ * - \b transform [::fwData::TransformationMatrix3D]: camera position and orientation.
+ *
+ * @subsection Configuration Configuration
+ * - \b renderer : ID of renderer the adaptor must use.
  */
 class VISUVTKARADAPTOR_CLASS_API SCamera : public ::fwRenderVTK::IAdaptor
 {
@@ -40,74 +51,52 @@ class VISUVTKARADAPTOR_CLASS_API SCamera : public ::fwRenderVTK::IAdaptor
 public:
     fwCoreServiceClassDefinitionsMacro( (SCamera)(::fwRenderVTK::IAdaptor) );
 
-    /// Constructor
+    /// Constructor.
     SCamera() noexcept;
 
-    /// Destructor
+    /// Destructor.
     virtual ~SCamera() noexcept;
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    VISUVTKARADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void ()> PositionModifiedSignalType;
-    ///@}
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    VISUVTKARADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT;
-    typedef ::fwCom::Slot<void ()> CalibrateSlotType;
-    ///@}
 
     /// Update Camera position from VTK.
     VISUVTKARADAPTOR_API void updateFromVtk();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Camera::s_MODIFIED_SIG to this::s_CALIBRATE_SLOT
+     * Connect Camera::s_INTRINSIC_CALIBRATED_SIG to this::s_CALIBRATE_SLOT
+     *
+     * Connect Transform::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKARADAPTOR_API KeyConnectionsMap getAutoConnections() const override;
+
 protected:
 
-    /// Initializes the camera position and image connections
-    VISUVTKARADAPTOR_API void doStart();
+    VISUVTKARADAPTOR_API void configuring();
 
-    /**
-     * @code{.xml}
-       <adaptor id="camera" class="::visuVTKARAdaptor::SCamera" objectId="transform">
-        <config renderer="default" cameraUID="..." />
-       </adaptor>
-       @endcode
-     * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
-     * - \b cameraUID (optional): defines the uid of the camera (used to calibrate the vtk camera)
-     */
-    VISUVTKARADAPTOR_API void doConfigure();
+    /// Initializes the camera position and connects it to the observer.
+    VISUVTKARADAPTOR_API void starting();
 
-    /// Calls doStop() and doStart()
-    VISUVTKARADAPTOR_API void doSwap();
+    /// Restarts (stop-start).
+    VISUVTKARADAPTOR_API void swapping();
 
-    /// Does nothing
-    VISUVTKARADAPTOR_API void doUpdate();
+    /// Updates the camera with the input transform.
+    VISUVTKARADAPTOR_API void updating();
 
-    /// Removes camera observers and connections
-    VISUVTKARADAPTOR_API void doStop();
+    /// Removes the observer.
+    VISUVTKARADAPTOR_API void stopping();
 
 private:
 
-    /// Update vtk camera from current TransformationMatrix3D
+    /// Update vtk camera from current TransformationMatrix3D.
     void updateFromTMatrix3D();
 
-    /// Calibrate vtk camera
+    /// Calibrate vtk camera.
     void calibrate();
-
-    std::string m_cameraUID; ///< uid of the camera
-
-    CSPTR(::arData::Camera) m_camera; ///< camera used to calibrate vtk camera
 
     vtkPerspectiveTransform* m_transOrig; ///<  VTK original perspective transform.
     vtkCommand* m_cameraCommand; ///< VTK camera command.
-
-    ::fwCom::helper::SigSlotConnection m_connections; ///< Connection to image
-
-    CalibrateSlotType::sptr m_slotCalibrate; ///< Slot to calibrate camera
 };
 
 } //namespace visuVTKARAdaptor
