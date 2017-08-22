@@ -28,6 +28,10 @@ SText::SText() :
     m_actor(vtkActor2D::New()),
     m_mapper(vtkTextMapper::New()),
     m_fontSize(20),
+    m_fontFamily("courier"),
+    m_italic(false),
+    m_bold(false),
+    m_shadow(false),
     m_vAlign("bottom"),
     m_hAlign("left"),
     m_textColor("#ffffffff")
