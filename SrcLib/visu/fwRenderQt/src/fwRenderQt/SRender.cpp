@@ -90,14 +90,16 @@ void SRender::dispatchInteraction(::fwRenderQt::data::Event& _event)
     if ( !_event.isAccepted() )
     {
         const auto& registry = ::fwRenderQt::registry::getAdaptorRegistry();
-
         for( const auto& elt : registry)
         {
-            ::fwRenderQt::IAdaptor::sptr adaptor =
-                ::fwRenderQt::IAdaptor::dynamicCast(::fwTools::fwID::getObject(elt.first));
-            if(adaptor != nullptr && adaptor->isStarted())
+            if(elt.second == this->getID())
             {
-                adaptor->processInteraction( _event );
+                ::fwRenderQt::IAdaptor::sptr adaptor =
+                    ::fwRenderQt::IAdaptor::dynamicCast(::fwTools::fwID::getObject(elt.first));
+                if(adaptor != nullptr && adaptor->isStarted())
+                {
+                    adaptor->processInteraction( _event );
+                }
             }
         }
     }
