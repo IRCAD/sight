@@ -139,12 +139,12 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
     coord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
     // Shutter coordinates in scene
-    Point2DType shutterCoordPair = this->mapAdaptorToScene(
+    const Point2DType shutterCoordPair = this->mapAdaptorToScene(
         Point2DType( m_shutter->rect().x(), m_shutter->rect().y()),
         m_xAxis, m_yAxis);
     const double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
 
-    QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
+    const QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
     const bool onShutterLeft   = mouseOnShutterLeft( coord );
     const bool onShutterRight  = mouseOnShutterRight( coord );
@@ -216,7 +216,7 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
         if( m_isLeftInteracting )
         {
             // Shutter right side position
-            double rightSide = rect.x() + rect.width();
+            const double rightSide = rect.x() + rect.width();
 
             if( coord.getX() < rightSide - m_clickCatchRange)
             {
@@ -238,8 +238,8 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
         }
         else if( m_isRightInteracting )
         {
-            double newWidth        = coord.getX() - shutterCoordPair.first;
-            double shutterRightPos = abs(sceneRect.x()) + shutterCoordPair.first + newWidth;
+            const double newWidth        = coord.getX() - shutterCoordPair.first;
+            const double shutterRightPos = abs(sceneRect.x()) + shutterCoordPair.first + newWidth;
 
             if( newWidth > m_clickCatchRange ) // Shutter's width must be greater than the allowed picking range
             {
@@ -261,9 +261,9 @@ void SViewportRangeSelector::processInteraction( ::fwRenderQt::data::Event& _eve
         }
         else if( m_isInteracting )
         {
-            double offset          = coord.getX() - m_dragStartPoint.getX();
-            double newX            = m_dragStartShutterPos.getX() + offset;
-            double shutterRightPos = abs(sceneRect.x()) + newX + shutterWidth;
+            const double offset          = coord.getX() - m_dragStartPoint.getX();
+            const double newX            = m_dragStartShutterPos.getX() + offset;
+            const double shutterRightPos = abs(sceneRect.x()) + newX + shutterWidth;
 
             if( newX >= sceneRect.x() && shutterRightPos < sceneRect.width() )
             {
