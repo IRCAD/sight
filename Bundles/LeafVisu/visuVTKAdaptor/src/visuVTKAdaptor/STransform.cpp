@@ -120,7 +120,8 @@ void STransform::updateFromVtk()
     vtkTransform* vtkTrf = this->getTransform();
 
     vtkTrf->RemoveObserver( m_transformCommand );
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TM3D_INOUT);
+    SLM_ASSERT("matrix '" + s_TM3D_INOUT + "' is not defined", trf);
 
     vtkMatrix4x4* mat = nullptr;
 
@@ -169,6 +170,8 @@ void STransform::updating()
 
     vtkTrf->RemoveObserver( m_transformCommand );
     ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TM3D_INOUT);
+    SLM_ASSERT("matrix '" + s_TM3D_INOUT + "' is not defined", trf);
+
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
     {
