@@ -13,8 +13,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <vtkActor2D.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
@@ -23,6 +21,8 @@ fwServicesRegisterMacro(::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SText);
 
 namespace visuVTKAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_OBJECT_IN = "object";
 
 SText::SText() :
     m_actor(vtkActor2D::New()),
@@ -62,14 +62,27 @@ void SText::configuring()
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
     std::string text = config.get<std::string>("text", "");
+
     if(text.empty())
     {
         text = srvconfig.get<std::string>("text", "");
     }
+    else if(text[0] == '@')
+    {
+        m_path = text;
+    }
 
-    m_text = text;
+    if(m_path.empty())
+    {
+        m_text = text;
+    }
 
-    m_fontSize = config.get<unsigned int>("fontSize", 20);
+    m_fontSize   = config.get<unsigned int>("fontSize", 20);
+    m_fontFamily = config.get<std::string>("fontFamily", "courier");
+
+    m_italic = config.get<bool>("italic", false);
+    m_bold   = config.get<bool>("bold", false);
+    m_shadow = config.get<bool>("shadow", false);
 
     m_hAlign = config.get<std::string>("hAlign", "left");
     SLM_ASSERT("'hAlign' value must be 'left', 'center' or 'right'",
@@ -93,37 +106,21 @@ void SText::starting()
 {
     this->initialize();
 
-    if(!m_text.empty() && m_text[0] == '@')
-    {
-        ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >("object");
-        SLM_ASSERT("No object input", obj);
-        ::fwData::GenericFieldBase::sptr field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, m_text);
-        SLM_ASSERT("Camp path can't be cast to generic field", field);
-        if(field)
-        {
-            m_text = field->toString();
-        }
-    }
-
-    m_mapper->GetTextProperty()->SetFontSize( int(m_fontSize) );
-
-    if( m_textColor[0] == '#')
-    {
-        ::fwData::Color::sptr color = ::fwData::Color::New();
-        color->setRGBA(m_textColor);
-        m_mapper->GetTextProperty()->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1],
-                                              color->getRefRGBA()[2]);
-    }
-    else
-    {
-        // compatibility with "old" color
-        double color = ::boost::lexical_cast<double> (m_textColor);
-        m_mapper->GetTextProperty()->SetColor(color, color, color);
-    }
-
+    this->updateText();
+    this->setStyle();
     this->setText(m_text);
 
     this->addToRenderer(m_actor);
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SText::updating()
+{
+    this->updateText();
+    this->setText(m_text);
+
     this->requestRender();
 }
 
@@ -173,12 +170,91 @@ void SText::setAlignment()
 
 //-----------------------------------------------------------------------------
 
+void SText::setStyle()
+{
+    vtkTextProperty* textprop = m_mapper->GetTextProperty();
+
+    textprop->SetFontSize( int(m_fontSize) );
+    textprop->SetItalic(m_italic);
+    textprop->SetBold(m_bold);
+    textprop->SetShadow(m_shadow);
+
+    if( m_textColor[0] == '#')
+    {
+        ::fwData::Color::sptr color = ::fwData::Color::New();
+        color->setRGBA(m_textColor);
+        textprop->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
+    }
+    else
+    {
+        // compatibility with "old" color
+        double color = std::stod(m_textColor);
+        textprop->SetColor(color, color, color);
+    }
+
+    if(m_fontFamily == "arial")
+    {
+        textprop->SetFontFamilyToArial();
+    }
+    else if(m_fontFamily == "courier")
+    {
+        textprop->SetFontFamilyToCourier();
+    }
+    else if(m_fontFamily == "times")
+    {
+        textprop->SetFontFamilyToTimes();
+    }
+    else
+    {
+        OSLM_FATAL("Unknown font family : '" << m_fontFamily << "'");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SText::updateText()
+{
+    ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >(s_OBJECT_IN);
+
+    if(obj)
+    {
+        ::fwData::GenericFieldBase::csptr field;
+
+        if(m_path.empty())
+        {
+            field = ::fwData::GenericFieldBase::dynamicCast(obj);
+        }
+        else
+        {
+            field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, m_path);
+        }
+
+        if(field)
+        {
+            m_text = field->toString();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SText::setText(const std::string& str)
 {
     m_text = str;
     m_mapper->SetInput(m_text.c_str());
     this->setAlignment();
     this->setVtkPipelineModified();
+}
+
+//-----------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push(s_OBJECT_IN, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------
