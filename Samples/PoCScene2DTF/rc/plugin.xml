@@ -167,7 +167,7 @@
                 </config>
             </service>
 
-            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -177,7 +177,7 @@
                 <inout key="image" uid="image"/>
             </service>
 
-            <service uid="snapshotSceneEditor" type="::uiVisu::SnapshotEditor" />
+            <service uid="snapshotSceneEditor" type="::uiVisuQt::SnapshotEditor" />
 
 <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
 
@@ -309,7 +309,7 @@
                     <adaptor uid="viewportRangeSelector_Shutter" />
                 </scene>
             </service>
-            
+
             <service uid="grid1_Shutter" type="::scene2D::adaptor::SGrid2D" >
                 <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
@@ -333,7 +333,7 @@
                     <adaptor uid="grid" />
                 </scene>
             </service>
-            
+
             <service uid="negato" type="::scene2D::adaptor::SNegato" autoConnect="yes">
                 <inout key="image" uid="image" />
                 <inout key="tfSelection" uid="TFSelections" />
