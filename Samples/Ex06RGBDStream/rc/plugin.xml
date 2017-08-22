@@ -221,10 +221,8 @@
                 <in key="histogram" uid="histogram" />
                 <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
             </service>
-                    
+
             <service uid="TFEditorSettings" type="::fwRenderQt::SRender" autoConnect="yes">
-                <inout key="viewport" uid="viewport" />
-                <in key="myHistogram" uid="histogram" />
                 <scene>
                     <scene x="-10" y="-1.1" width="5100" height="1.2" />
 
