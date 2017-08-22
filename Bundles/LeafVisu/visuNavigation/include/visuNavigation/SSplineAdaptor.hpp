@@ -26,6 +26,25 @@ namespace visuNavigation
 
 /**
  * @brief Adaptor representing a spline from a point list.
+ *
+ * @section Slots Slots
+ * - \b addPoint(::fwData::Point::sptr) : Adds the point into the spline
+ * - \b removePoint(::fwData::Point::sptr) : Removes the point from the spline
+ * - \b updateSpline() : Updates the spline's points
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuNavigation::SSplineAdaptor">
+       <int key="pointlist" uid="..." />
+       <config renderer="default" />
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b pointlist [::fwData::PointList]: description5.
+ * @subsection Configuration Configuration
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer(mandatory) : renderer where the resection is displayed
  */
 class VISUNAVIGATION_CLASS_API SSplineAdaptor : public ::fwRenderVTK::IAdaptor
 {
@@ -41,6 +60,17 @@ public:
     VISUNAVIGATION_API virtual ~SSplineAdaptor() noexcept;
     /**  @} */
 
+protected:
+
+    /**
+     * @name Overrides.
+     * @{ */
+    VISUNAVIGATION_API void configuring();
+    VISUNAVIGATION_API void starting();
+    VISUNAVIGATION_API void updating();
+    VISUNAVIGATION_API void stopping();
+    /**  @} */
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
@@ -49,23 +79,7 @@ public:
      * Connect PointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
      * Connect PointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
      */
-    VISUNAVIGATION_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-protected:
-
-    /**
-     * @name Overrides.
-     * @{ */
-    VISUNAVIGATION_API void doStart();
-    VISUNAVIGATION_API void doStop();
-    //------------------------------------------------------------------------------
-
-    void doSwap()
-    {
-    }
-    VISUNAVIGATION_API void doUpdate();
-    VISUNAVIGATION_API void doConfigure();
-    /**  @} */
+    VISUNAVIGATION_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private:
 
@@ -73,10 +87,10 @@ private:
      * @name Slots
      * @{
      */
-    /// Adds a point into the spline
+    /// Adds the point into the spline
     void addPoint(::fwData::Point::sptr point);
 
-    /// Removes a point from the spline
+    /// Removes the point from the spline
     void removePoint(::fwData::Point::sptr point);
 
     /// Updates the spline's points
@@ -90,9 +104,6 @@ private:
 
     /// Spline points.
     vtkSmartPointer<vtkPoints> m_vtkpoints;
-
-    /// Number of points.
-    size_t m_numberOfPoints;
 
     /// Spline length.
     double m_splineLength;

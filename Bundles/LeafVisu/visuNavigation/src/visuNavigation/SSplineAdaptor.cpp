@@ -31,10 +31,11 @@ static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT  = "removePoint";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
+static const ::fwServices::IService::KeyType s_POINTLIST_INPUT = "pointlist";
+
 //-----------------------------------------------------------------------------------
 
 SSplineAdaptor::SSplineAdaptor() noexcept :
-    m_numberOfPoints(0),
     m_splineLength(0.0)
 {
     m_parametricSpline = vtkSmartPointer<vtkParametricSpline>::New();
@@ -54,39 +55,45 @@ SSplineAdaptor::~SSplineAdaptor() noexcept
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doStart()
+void SSplineAdaptor::starting()
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    this->initialize();
+
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    for(::fwData::Point::sptr point :  pointList->getRefPoints())
+    const size_t numberOfPoints = pointList->getCRefPoints().size();
+
+    for(size_t i = 0; i < numberOfPoints; ++i)
     {
-        ::navigation::computeSpline(pointList, m_numberOfPoints, m_vtkpoints, m_parametricSpline, m_splineLength);
-        this->doUpdate();
-        m_numberOfPoints++;
+        ::navigation::computeSpline(pointList, i, m_vtkpoints, m_parametricSpline, m_splineLength);
+        this->updating();
     }
 }
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doStop()
+void SSplineAdaptor::stopping()
 {
     this->removeAllPropFromRenderer();
 }
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doConfigure()
+void SSplineAdaptor::configuring()
 {
+    this->configureParams();
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
 void SSplineAdaptor::addPoint(::fwData::Point::sptr /*point*/)
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-    m_numberOfPoints                    = pointList->getRefPoints().size();
-    ::navigation::computeSpline(pointList, m_numberOfPoints - 1, m_vtkpoints, m_parametricSpline, m_splineLength);
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    SLM_ASSERT("Invalid pointList object", pointList);
+
+    const size_t numberOfPoints = pointList->getCRefPoints().size();
+    ::navigation::computeSpline(pointList, numberOfPoints - 1, m_vtkpoints, m_parametricSpline, m_splineLength);
 
     this->updating();
 }
@@ -95,8 +102,9 @@ void SSplineAdaptor::addPoint(::fwData::Point::sptr /*point*/)
 
 void SSplineAdaptor::removePoint(::fwData::Point::sptr /*point*/)
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-    m_numberOfPoints                    = pointList->getRefPoints().size();
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    SLM_ASSERT("Invalid pointList object", pointList);
+
     ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
 
     this->updating();
@@ -106,7 +114,9 @@ void SSplineAdaptor::removePoint(::fwData::Point::sptr /*point*/)
 
 void SSplineAdaptor::updateSpline()
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
+    SLM_ASSERT("Invalid pointList object", pointList);
+
     ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
 
     this->updating();
@@ -114,14 +124,14 @@ void SSplineAdaptor::updateSpline()
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doUpdate()
+void SSplineAdaptor::updating()
 {
     SLM_ASSERT("No valid spline", m_parametricSpline);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     vtkSmartPointer<vtkActor> actor           = vtkSmartPointer<vtkActor>::New();
 
-    m_functionSource->SetUResolution(floor(m_splineLength));
+    m_functionSource->SetUResolution(static_cast<int>(std::floor(m_splineLength)));
     m_functionSource->SetParametricFunction(m_parametricSpline);
     m_functionSource->Update();
 
@@ -136,12 +146,12 @@ void SSplineAdaptor::doUpdate()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SSplineAdaptor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SSplineAdaptor::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT);
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
+    connections.push(s_POINTLIST_INPUT, ::fwData::PointList::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
 
     return connections;
 }
