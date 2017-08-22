@@ -1,85 +1,99 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>worldViewConfig</id>
     <parameters>
-        <param name="COMPOSITE_VISU_UID" />
-        <param name="GENERIC_UID" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
         <param name="ModelDisplayChannel" />
+        <param name="modelSeriesUid" />
+        <param name="cam1MeshUid" />
+        <param name="cam2MeshUid" />
+        <param name="view1Uid" />
+        <param name="view2Uid" />
     </parameters>
+
     <config>
+        <!-- ***************************************** Begin Objects declaration ******************************************* -->
+        <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries" />
+        <object uid="${cam1MeshUid}" src="ref" type="::fwData::Mesh" />
+        <object uid="${cam2MeshUid}" src="ref" type="::fwData::Mesh" />
+        <object uid="${view1Uid}" src="ref" type="::fwData::TransformationMatrix3D" />
+        <object uid="${view2Uid}" src="ref" type="::fwData::TransformationMatrix3D" />
+        <!-- ***************************************** End Objects declaration ******************************************* -->
 
-        <object type="::fwData::Composite">
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <!-- MAIN FRAME -->
+        <service uid="worldViewConfigFrame" type="::gui::frame::SDefaultFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>world View</name>
+                    <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                    <minSize width="400" height="600" />
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="genericWorld" start="yes" />
+            </registry>
+        </service>
 
-            <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-                <window onclose="notify" />
-                <gui>
-                    <frame>
-                        <name>world View</name>
-                        <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
-                        <minSize width="400" height="600" />
-                        <style mode="STAY_ON_TOP" />
-                    </frame>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_genericWorld" start="yes" />
-                </registry>
-            </service>
+        <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+        <service uid="genericWorld" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <inout key="modelSeries" uid="${modelSeriesUid}" />
+            <inout key="cam1Mesh" uid="${cam1MeshUid}" />
+            <inout key="cam2Mesh" uid="${cam2MeshUid}" />
+            <inout key="view1" uid="${view1Uid}" />
+            <inout key="view2" uid="${view2Uid}" />
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
 
-            <item key="compositeVisu">
-                <object uid="${COMPOSITE_VISU_UID}" src="ref" type="::fwData::Composite">
+                <renderer id="default" background="0.0" />
 
-                    <service uid="${GENERIC_UID}_genericWorld" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-                            <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
+                <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
 
-                            <renderer id="default" background="0.0" />
+                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                    <config renderer="default" picker="" autoresetcamera="no" />
+                </adaptor>
 
-                            <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
-                            <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
+                <adaptor id="cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam1Mesh">
+                    <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
+                </adaptor>
 
-                            <adaptor id="modelSeriesAdaptor" uid="${GENERIC_UID}_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                                <config renderer="default" picker="" autoresetcamera="no" />
-                            </adaptor>
+                <adaptor id="cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam2Mesh">
+                    <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
+                </adaptor>
 
-                            <adaptor id="cam1MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam1Mesh">
-                                <config renderer="default" picker="picker" transform="cam1PosMatrixTransform" autoresetcamera="no" />
-                            </adaptor>
+                <adaptor id="camWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
+                    <config renderer="default" transform="cam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
+                </adaptor>
 
-                            <adaptor id="cam2MeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="cam2Mesh">
-                                <config renderer="default" picker="picker" transform="cam2PosMatrixTransform" autoresetcamera="no" />
-                            </adaptor>
-                            <adaptor id="camWidget1" class="::visuVTKAdaptor::BoxWidget" objectId="view1">
-                                <config renderer="default" transform="cam1PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
-                            </adaptor>
-                            <adaptor id="camWidget2" class="::visuVTKAdaptor::BoxWidget" objectId="view2">
-                                <config renderer="default" transform="cam2PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
-                            </adaptor>
-                            <adaptor id="cam1Axes" class="::visuVTKAdaptor::Axes" objectId="self">
-                                <config renderer="default" transform="cam1PosMatrixTransform" length="5" label="no" />
-                            </adaptor>
-                            <adaptor id="cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
-                                <config renderer="default" transform="cam2PosMatrixTransform" length="5" label="no" />
-                            </adaptor>
+                <adaptor id="camWidget2" class="::visuVTKAdaptor::BoxWidget" objectId="view2">
+                    <config renderer="default" transform="cam2PosMatrixTransform" scaleFactor="2.0" enableScaling="no" />
+                </adaptor>
 
-                            <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeries">
-                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/showReconstructions</slot>
-                            </proxy>
+                <adaptor id="cam1Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="cam1PosMatrixTransform" length="5" label="no" />
+                </adaptor>
 
-                        </scene>
-                    </service>
-                </object>
-            </item>
+                <adaptor id="cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="cam2PosMatrixTransform" length="5" label="no" />
+                </adaptor>
 
-            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
-                <signal>${GENERIC_UID}_worldViewConfigFrame/closed</signal>
-            </proxy>
+                <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeries">
+                    <slot>modelSeriesAdaptorUid/showReconstructions</slot>
+                </proxy>
 
-            <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_worldViewConfigFrame" />
+            </scene>
+        </service>
+        <!-- ***************************************** End render scenes declaration ***************************************** -->
+        <!-- ***************************************** tart connections declarations  ***************************************** -->
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>worldViewConfigFrame/closed</signal>
+        </connect>
+        <!-- ***************************************** End connections declarations  ***************************************** -->
 
-        </object>
-
+        <!-- START AND STOP SERVICES -->
+        <start uid="worldViewConfigFrame" />
 
     </config>
 </extension>
