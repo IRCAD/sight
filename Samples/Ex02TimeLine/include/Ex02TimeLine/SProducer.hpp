@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,49 +15,49 @@
 
 namespace Ex02TimeLine
 {
-
 /**
- * @brief   Service that produce messages and store them into a timeline.
+ * @brief   Service that produces messages and stores them into a timeline.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service type="::Ex02TimeLine::SProducer">
+            <inout key="timeline" uid="..." />
+           <message>Hello</message>
+           <id>0</id>
+           <period>1000</period>
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b timeline [::Ex02TimeLine::MessageTL]: timeline where to put messages.
+ * @subsection Configuration Configuration:
+ * - \b message : message to be sent.
+ * - \b id : id of the sender.
+ * - \b period : time between two messages, in milliseconds.
+ * - \b timelineSize (optional): maximum number of messages inside the timeline.
  */
 class EX02TIMELINE_CLASS_API SProducer : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SProducer)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (SProducer)(::fwServices::IService) );
 
     EX02TIMELINE_API SProducer() noexcept;
     EX02TIMELINE_API virtual ~SProducer() noexcept;
 
 protected:
 
+    /// Configure the service
+    virtual void configuring() final;
+
     /// Starts the timer.
-    virtual void starting();
+    virtual void starting() final;
 
     /// Stops the timer.
-    virtual void stopping();
-
-    /// Does nothing.
-    virtual void swapping();
+    virtual void stopping() final;
 
     /// Called by the timer to send messages periodically
-    virtual void updating();
-
-    /**
-     * @brief Configures the service.
-     *
-     * @code{.xml}
-       <service type="::fwServices::IService" impl="::Ex02TimeLine::SProducer" autoConnect="yes">
-           <message>Hello</message>
-           <id>0</id>
-           <period>1000</period>
-       </service>
-       @endcode
-     * - \b message : message to be sent.
-     * - \b id : id of the sender.
-     * - \b period : time between two messages, in milliseconds.
-     * - \b timelineSize (optional): maximum number of messages inside the timeline.
-     */
-    virtual void configuring();
+    virtual void updating() final;
 
 private:
 

@@ -33,8 +33,8 @@ namespace uiTools
 namespace editor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
+const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
+const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector );
 
@@ -86,11 +86,9 @@ void SShowVectorSize::stopping()
 void SShowVectorSize::configuring()
 {
     this->initialize();
-    if(m_configuration->findConfigurationElement("text"))
-    {
-        std::string configText = m_configuration->findConfigurationElement("text")->getValue();
-        m_textToShow = QString::fromStdString(configText);
-    }
+
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    m_textToShow                              = QString::fromStdString(config.get< std::string >("text", ""));
 
 }
 
@@ -133,11 +131,11 @@ void SShowVectorSize::removeObjects(::fwData::Vector::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SShowVectorSize::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push("vector", ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
+    connections.push("vector", ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
 
     return connections;
 }
