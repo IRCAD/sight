@@ -131,7 +131,6 @@ void SNegatoOneSlice::cleanImageSource()
         imgSliceAdaptor->setOrientation((Orientation) m_orientation);
 
         m_imageSliceAdaptor = adaptor;
-        this->registerService(adaptor);
     }
     else
     {
@@ -179,7 +178,6 @@ void SNegatoOneSlice::cleanImageSource()
         imgAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
 
         m_imageAdaptor = adaptor;
-        this->registerService(adaptor);
     }
     else
     {

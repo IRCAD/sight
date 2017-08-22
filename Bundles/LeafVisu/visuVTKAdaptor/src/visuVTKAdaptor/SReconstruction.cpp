@@ -118,7 +118,6 @@ void SReconstruction::createMeshService()
         meshAdaptor->update();
 
         m_meshService = meshService;
-        this->registerService(meshService);
         OSLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
         OSLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
     }

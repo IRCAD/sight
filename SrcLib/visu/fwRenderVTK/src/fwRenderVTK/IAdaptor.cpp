@@ -224,7 +224,8 @@ SRender::VtkObjectIdType IAdaptor::getTransformId() const
 
 vtkTransform* IAdaptor::getTransform()
 {
-    return vtkTransform::SafeDownCast(m_renderService.lock()->getVtkObject(m_transformId));
+    SLM_ASSERT("Transform id must be defined", !m_transformId.empty());
+    return m_renderService.lock()->getOrAddVtkTransform(m_transformId);
 }
 
 //------------------------------------------------------------------------------
@@ -243,38 +244,6 @@ vtkObject* IAdaptor::getVtkObject(const SRender::VtkObjectIdType& objectId) cons
 vtkRenderWindowInteractor* IAdaptor::getInteractor()
 {
     return this->getRenderer()->GetRenderWindow()->GetInteractor();
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::Object::sptr IAdaptor::getAssociatedObject(vtkProp* prop, int depth)
-{
-    ::fwData::Object::sptr obj;
-
-    if (prop)
-    {
-        if ( m_propCollection->IsItemPresent(prop) )
-        {
-            obj = this->getObject();
-        }
-        else
-        {
-            ::fwData::Object::sptr res;
-            for( ServiceVector::value_type service :  m_subServices)
-            {
-                if(!service.expired())
-                {
-                    res = service.lock()->getAssociatedObject(prop, depth - 1 );
-                    if (res)
-                    {
-                        break;
-                    }
-                }
-            }
-            obj = ( res && depth == 0 ) ? this->getObject() : res;
-        }
-    }
-    return obj;
 }
 
 //------------------------------------------------------------------------------
@@ -373,6 +342,7 @@ void IAdaptor::registerServiceInOut(const ::fwData::Object::sptr& obj,
 
 void IAdaptor::registerService( ::fwRenderVTK::IAdaptor::sptr service)
 {
+    SLM_ERROR("This method is deprecated, use createSubAdaptor() instead.");
     m_subServices.push_back(service);
 }
 

@@ -121,12 +121,12 @@ private:
     SVolume* m_adaptor;
 };
 
-static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT        = "resetBoxWidget";
-static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT   = "activateBoxClipping";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                    = "show";
+static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBoxWidget";
+static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT = "activateBoxClipping";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 
-const ::fwServices::IService::KeyType SVolume::s_IMAGE_INOUT            = "image";
-const ::fwServices::IService::KeyType SVolume::s_TF_SELECTION_INOUT     = "tfSelection";
+const ::fwServices::IService::KeyType SVolume::s_IMAGE_INOUT        = "image";
+const ::fwServices::IService::KeyType SVolume::s_TF_SELECTION_INOUT = "tfSelection";
 
 //------------------------------------------------------------------------------
 
@@ -257,7 +257,10 @@ void SVolume::starting()
     m_croppingCommand = CroppingCallback::New(this);
     m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 
-    m_volume->SetUserTransform(this->getTransform());
+    if (!this->getTransformId().empty())
+    {
+        m_volume->SetUserTransform(this->getTransform());
+    }
 }
 
 //------------------------------------------------------------------------------

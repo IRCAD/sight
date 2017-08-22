@@ -151,8 +151,6 @@ void SImageSeries::updating()
     negato->setVtkImageSourceId(m_imageSourceId);
     negato->setSelectedTFKey(this->getSelectedTFKey());
     service->start();
-
-    this->registerService(service);
 }
 
 //------------------------------------------------------------------------------

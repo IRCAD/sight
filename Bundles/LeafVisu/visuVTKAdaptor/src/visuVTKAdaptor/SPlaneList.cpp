@@ -157,9 +157,11 @@ public:
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
         {
-            m_pickedPlane = ::fwData::Plane::dynamicCast(m_service->getAssociatedObject(prop, 1));
-            if( !m_pickedPlane.expired() )
+            ::fwRenderVTK::IAdaptor::sptr planeAdaptor = m_service->getAssociatedAdaptor(prop, 1);
+            if (planeAdaptor)
             {
+                m_pickedPlane = planeAdaptor->getInOut< ::fwData::Plane >(SPlane::s_PLANE_INOUT);
+
                 ::fwData::PlaneList::sptr planeList = m_service->getInOut< ::fwData::PlaneList >(s_PLANES_INOUT);
                 SLM_ASSERT("PlaneList '" + s_PLANES_INOUT + "' is missing", planeList);
 

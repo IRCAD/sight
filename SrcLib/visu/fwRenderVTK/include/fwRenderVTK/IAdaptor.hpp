@@ -82,14 +82,6 @@ public:
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
     /**
-     * @brief Returns the object associated to the vtkProp.
-     * @param prop vtkProp to find the associated Object
-     * @param depth depth of reseach in sub-adaptors, if depth == 0 it only search in current prop collection
-     * @deprecated use getAssociatedAdaptor instead
-     */
-    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp* prop, int depth = 0);
-
-    /**
      * @brief Returns the adaptor associated to the vtkProp.
      * @param prop vtkProp to find the associated adaptor
      * @param depth depth of reseach in sub-adaptors, if depth == 0 it only search in current prop collection
@@ -208,7 +200,10 @@ protected:
                                               const bool autoConnect,
                                               ::fwServices::IService::Config& config);
 
-    /// Stores the service in the subServices list
+    /**
+     * @brief Stores the service in the subServices list
+     * @deprecated use createSubAdaptor and registerServiceInput or registerServiceInOut to create adaptors
+     */
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IAdaptor::sptr service );
 
     /// Unregiters the sub-adaptor from the OSR and the subServices list
@@ -281,6 +276,7 @@ protected:
 template< class DATATYPE >
 CSPTR(DATATYPE) IAdaptor::getSafeInput(const std::string& key) const
 {
+    SLM_ERROR("This method is deprecated, use getInput<...>(...) instead.");
     if( ::fwServices::IService::isVersion2() )
     {
         return this->getRenderService()->getInput<DATATYPE>(key);
@@ -296,6 +292,7 @@ CSPTR(DATATYPE) IAdaptor::getSafeInput(const std::string& key) const
 template< class DATATYPE >
 SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
 {
+    SLM_ERROR("This method is deprecated, use getInout<..>(...) instead.");
     if( ::fwServices::IService::isVersion2() )
     {
         return this->getRenderService()->getInOut<DATATYPE>(key);
