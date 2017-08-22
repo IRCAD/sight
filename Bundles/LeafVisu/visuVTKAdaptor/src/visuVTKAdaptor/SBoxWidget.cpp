@@ -187,7 +187,9 @@ void SBoxWidget::updating()
     {
         ::fwData::TransformationMatrix3D::sptr transMat =
             this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-        vtkMatrix4x4* mat = m_transform->GetMatrix();
+
+        vtkMatrix4x4* mat = vtkMatrix4x4::New();
+
         for(int lt = 0; lt < 4; lt++)
         {
             for(int ct = 0; ct < 4; ct++)
@@ -195,7 +197,7 @@ void SBoxWidget::updating()
                 mat->SetElement(lt, ct, transMat->getCoefficient(static_cast<size_t>(lt), static_cast<size_t>(ct)));
             }
         }
-
+        m_transform->SetMatrix(mat);
         repr->SetTransform(m_transform);
         this->setVtkPipelineModified();
     }
