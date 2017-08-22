@@ -13,6 +13,7 @@
 #include <QApplication>
 #include <QSurfaceFormat>
 #include <QVTKOpenGLWidget.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 
 namespace visuVTKQt
 {
@@ -30,6 +31,7 @@ Plugin::Plugin() noexcept
     SLM_ASSERT( "QApplication is already created! The default surface format cannot be changed afterward",
                 qApp == nullptr );
 
+    vtkOpenGLRenderWindow::SetGlobalMaximumNumberOfMultiSamples(0);
     QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
 }
 
