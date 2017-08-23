@@ -26,7 +26,7 @@ namespace uiVisuQt
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::uiData::STransformEditor" autoConnect="no">
+    <service uid="..." type="::uiVisuQt::STransformEditor" autoConnect="no">
         <inout key="matrix" uid="..."/>
         <translation enabled="no" min="-300"/>
         <rotation enabled="yes" min="-180" max="180" />
