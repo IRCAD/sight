@@ -124,6 +124,7 @@
                     <!-- Renderer -->
                     <renderer id="default" background="0.0" />
 
+                    <!-- adaptor displayed in the scene -->
                     <adaptor uid="meshAdaptor" />
                     <adaptor uid="textureAdaptor" />
                     <adaptor uid="imageAdaptor" />
@@ -177,6 +178,7 @@
                     <item text="three slices" value="3" /><!-- second item, if selected the emitted value is "1" -->
                 </items>
             </service>
+
             <!--
                 Generic editor representing a simple button with an icon.
                 The button can be checkable. In this case it can have a second icon.

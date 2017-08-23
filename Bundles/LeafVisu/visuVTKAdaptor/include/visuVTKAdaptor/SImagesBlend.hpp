@@ -40,7 +40,7 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." class="::visuVTKAdaptor::SImagesBlend">
+    <service uid="..." type="::visuVTKAdaptor::SImagesBlend">
         <inout group="image" autoConnect="yes">
             <key uid="..." tfalpha="no" />
             <key uid="..." tfalpha="yes" opacity="0.5" />
