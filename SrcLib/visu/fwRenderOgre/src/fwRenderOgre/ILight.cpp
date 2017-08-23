@@ -25,7 +25,7 @@ const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
 
 //-----------------------------------------------------------------------------
 
-::fwRenderOgre::ILight::sptr ILight::createLightManager(::fwData::TransformationMatrix3D::sptr _transform,
+::fwRenderOgre::ILight::sptr ILight::createLightAdaptor(::fwData::TransformationMatrix3D::sptr _transform,
                                                         ::fwData::Color::sptr _diffuse,
                                                         ::fwData::Color::sptr _specular)
 {

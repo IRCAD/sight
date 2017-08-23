@@ -162,8 +162,6 @@ protected:
     bool m_update_pending;
     /// Tells if the window is currently showed
     bool m_animating;
-    /// Tells if the renderWindow is initialised
-    bool m_isInitialised;
     /// Tells if the overlay is show for this renderwindow
     bool m_showOverlay;
     /// Tells if the window fills the screen.

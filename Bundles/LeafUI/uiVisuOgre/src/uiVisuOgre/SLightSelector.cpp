@@ -211,7 +211,9 @@ void SLightSelector::onRemoveLight(bool _checked)
     {
         ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
 
-        currentLayer->removeAdaptor(m_currentLight);
+        m_currentLight->disconnect();
+        m_currentLight->stop();
+        ::fwServices::OSR::unregisterService(m_currentLight);
         m_currentLight.reset();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
@@ -312,15 +314,14 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         ::fwData::Color::sptr lightDiffuseColor               = ::fwData::Color::New();
         ::fwData::Color::sptr lightSpecularColor              = ::fwData::Color::New();
 
-        ::fwRenderOgre::ILight::sptr lightManager = ::fwRenderOgre::ILight::createLightManager(lightTransform,
+        ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightTransform,
                                                                                                lightDiffuseColor,
                                                                                                lightSpecularColor);
-        lightManager->setName(_name);
-        lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
-        lightManager->setLayerID(currentLayer->getLayerID());
-
-        currentLayer->addAdaptor(lightManager);
-        lightManager->start();
+        lightAdaptor->setName(_name);
+        lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
+        lightAdaptor->setLayerID(currentLayer->getLayerID());
+        lightAdaptor->setRenderService(currentLayer->getRenderService());
+        lightAdaptor->start();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();

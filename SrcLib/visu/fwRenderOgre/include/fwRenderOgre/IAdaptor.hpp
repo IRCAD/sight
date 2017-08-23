@@ -45,9 +45,6 @@ public:
 
     FWRENDEROGRE_API Layer::sptr getLayer() const;
 
-    /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
-    FWRENDEROGRE_API virtual int getStartPriority();
-
     FWRENDEROGRE_API void connect();
     FWRENDEROGRE_API void disconnect();
 

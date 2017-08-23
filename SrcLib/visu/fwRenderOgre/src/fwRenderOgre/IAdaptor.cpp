@@ -124,13 +124,6 @@ Layer::sptr IAdaptor::getLayer() const
 
 //------------------------------------------------------------------------------
 
-int IAdaptor::getStartPriority()
-{
-    return 0;
-}
-
-//------------------------------------------------------------------------------
-
 ::Ogre::SceneManager* IAdaptor::getSceneManager()
 {
     return m_renderService.lock()->getSceneManager(m_layerID);

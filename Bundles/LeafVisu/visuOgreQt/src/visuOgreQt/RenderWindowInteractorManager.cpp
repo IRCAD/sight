@@ -92,8 +92,6 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
         m_qOgreWidget->setFullScreen(fullscreen);
     }
-
-    QObject::connect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +119,6 @@ void RenderWindowInteractorManager::connectToContainer()
 
 void RenderWindowInteractorManager::disconnectInteractor()
 {
-    QObject::disconnect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
     QObject::disconnect(m_qOgreWidget, SIGNAL(rayCastRequested(int, int, int, int)), this,
                         SLOT(onRayCastRequested(int, int, int, int)));
     QObject::disconnect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
@@ -159,16 +156,6 @@ int RenderWindowInteractorManager::getFrameId() const
 ::Ogre::RenderWindow* RenderWindowInteractorManager::getRenderWindow()
 {
     return m_qOgreWidget->getOgreRenderWindow();
-}
-
-//-----------------------------------------------------------------------------
-
-void RenderWindowInteractorManager::onRenderWindowCreated()
-{
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
-    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
-
-    ogreRenderService->slot(::fwRenderOgre::SRender::s_START_OBJECT_SLOT)->asyncRun();
 }
 
 //-----------------------------------------------------------------------------

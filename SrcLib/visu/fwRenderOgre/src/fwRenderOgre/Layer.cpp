@@ -15,6 +15,8 @@
 
 #include <fwDataTools/Color.hpp>
 
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <boost/tokenizer.hpp>
@@ -331,15 +333,16 @@ void Layer::createScene()
         m_defaultLightDiffuseColor  = ::fwData::Color::New();
         m_defaultLightSpecularColor = ::fwData::Color::New();
 
-        m_lightManager = ::fwRenderOgre::ILight::createLightManager(m_defaultLightTransform,
+        m_lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(m_defaultLightTransform,
                                                                     m_defaultLightDiffuseColor,
                                                                     m_defaultLightSpecularColor);
-        m_lightManager->setName(Layer::DEFAULT_LIGHT_NAME);
-        m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
-        m_lightManager->setParentTransformName(cameraNode->getName());
-        m_lightManager->setLayerID(this->getLayerID());
-
-        m_renderService.lock()->addAdaptor(m_lightManager);
+        m_lightAdaptor->setName(Layer::DEFAULT_LIGHT_NAME);
+        m_lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
+        m_lightAdaptor->setParentTransformName(cameraNode->getName());
+        m_lightAdaptor->setLayerID(this->getLayerID());
+        m_lightAdaptor->setRenderService(m_renderService.lock());
+        m_lightAdaptor->start();
+        m_lightAdaptor->connect();
     }
 
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
@@ -386,6 +389,19 @@ void Layer::createScene()
     m_sceneCreated = true;
 
     this->signal<InitLayerSignalType>(s_INIT_LAYER_SIG)->asyncEmit(this->getSptr());
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::destroyScene()
+{
+    if(m_lightAdaptor)
+    {
+        m_lightAdaptor->disconnect();
+        m_lightAdaptor->stop();
+        ::fwServices::OSR::unregisterService(m_lightAdaptor);
+        m_lightAdaptor.reset();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -473,7 +489,7 @@ void Layer::setWorker( const ::fwThread::Worker::sptr& _worker)
 
 // ----------------------------------------------------------------------------
 
-::fwRenderOgre::SRender::csptr Layer::getRenderService() const
+::fwRenderOgre::SRender::sptr Layer::getRenderService() const
 {
     return m_renderService.lock();
 }
@@ -485,22 +501,6 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
     SLM_ASSERT("service not instanced", _service);
 
     m_renderService = _service;
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::addAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
-{
-    SLM_ASSERT("Adaptor not instanced", _adaptor);
-    m_renderService.lock()->addAdaptor(_adaptor);
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::removeAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
-{
-    SLM_ASSERT("Adaptor not instanced", _adaptor);
-    m_renderService.lock()->removeAdaptor(_adaptor);
 }
 
 // ----------------------------------------------------------------------------

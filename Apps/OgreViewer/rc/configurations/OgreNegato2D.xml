@@ -1,4 +1,3 @@
-
 <extension implements="::fwServices::registry::AppConfig2">
     <id>OgreNegato2D</id>
     <parameters>
@@ -7,11 +6,9 @@
         <param name="TFSelections" />
     </parameters>
     <config>
-
-        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${imageUID}" type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
-
-        <service uid="OgreNegato2D" type="::gui::view::SDefaultView" >
+        <service uid="OgreNegato2D" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -27,30 +24,28 @@
         </service>
 
         <!-- Begin Generic Scene ***************************************** -->
-
-        <service uid="negato2DScene" type="::fwRenderOgre::SRender" >
-            <adaptor uid="interactorAdaptor" start="yes" />
-            <adaptor uid="negato2DAdaptor" start="yes" />
-
+        <service uid="negato2DScene" type="::fwRenderOgre::SRender">
             <!-- Fix afterglow bug when dezooming -->
-            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-
             <!-- Default Layer -->
-            <layer id="default" depth="1" />
+            <scene>
+                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                <layer id="default" depth="1" />
+                <adaptor uid="interactorAdaptor" />
+                <adaptor uid="negato2DAdaptor" />
+            </scene>
         </service>
 
-        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
             <config layer="default" style="Negato2D" />
         </service>
 
-        <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D" >
-            <in key="image" uid="${imageUID}" autoConnect="yes"/>
+        <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
+            <in key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" selectedTFKey="SelectedTF" />
         </service>
 
         <!-- End Generic Scene ***************************************** -->
-
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
@@ -58,6 +53,8 @@
         </service>
 
         <start uid="OgreNegato2D" />
-
+        <!-- Ogre scene 'negato2DScene' -->
+        <start uid="interactorAdaptor" />
+        <start uid="negato2DAdaptor" />
     </config>
 </extension>

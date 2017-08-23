@@ -123,8 +123,7 @@ void SLight::starting()
 
     if(!this->getParentTransformId().empty())
     {
-        ::Ogre::SceneNode* parentSceneNode =
-            this->getSceneManager()->getSceneNode(this->getParentTransformId());
+        ::Ogre::SceneNode* parentSceneNode = this->getSceneManager()->getSceneNode(this->getParentTransformId());
 
         if(parentSceneNode)
         {

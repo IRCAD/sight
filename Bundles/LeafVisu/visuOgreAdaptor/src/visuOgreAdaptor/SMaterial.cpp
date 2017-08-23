@@ -173,13 +173,6 @@ void SMaterial::setTextureName(const std::string& textureName)
 
 //------------------------------------------------------------------------------
 
-int SMaterial::getStartPriority()
-{
-    return -10;
-}
-
-//------------------------------------------------------------------------------
-
 void SMaterial::configuring()
 {
     this->configureParams();

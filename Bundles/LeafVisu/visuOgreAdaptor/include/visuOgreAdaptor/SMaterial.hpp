@@ -72,9 +72,6 @@ public:
     /// Retrieves the associated texture name
     VISUOGREADAPTOR_API void setTextureName(const std::string& textureName);
 
-    /// Returns the priority of the adaptor
-    VISUOGREADAPTOR_API virtual int getStartPriority();
-
     /// Set material name
     void setMaterialName(const std::string& materialName);
 

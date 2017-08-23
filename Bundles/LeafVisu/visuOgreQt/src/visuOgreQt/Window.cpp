@@ -41,7 +41,6 @@ Window::Window(QWindow* parent) :
     //    m_trayMgr(nullptr),
     m_update_pending(false),
     m_animating(false),
-    m_isInitialised(false),
     m_showOverlay(false),
     m_fullscreen(false),
     m_lastPosLeftClick(nullptr),
@@ -50,6 +49,7 @@ Window::Window(QWindow* parent) :
 {
     setAnimating(false);
     installEventFilter(this);
+    this->initialise();
 }
 
 // ----------------------------------------------------------------------------
@@ -114,13 +114,12 @@ void Window::initialise()
     parameters["macAPICocoaUseNSView"] = "true";
 #endif
 
-    /*
-       Note below that we supply the creation function for the Ogre3D window the width and height
-       from the current QWindow object using the "this" pointer.
-     */
+    // We create the renderWindow with a dummy size of 1 by 1, otherwise we would have to wait for the widget to
+    // be painted. But then, the starting process of the render service and its adaptors becomes quite complicated.
+    // We did that in the past, but now we use this trick to be able to start everything at once.
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
-                                                        static_cast<unsigned int>(this->width()),
-                                                        static_cast<unsigned int>(this->height()),
+                                                        static_cast<unsigned int>(1),
+                                                        static_cast<unsigned int>(1),
                                                         false,
                                                         &parameters);
 
@@ -130,12 +129,10 @@ void Window::initialise()
 
     mgr->registerWindow(m_ogreRenderWindow);
 
-    Q_EMIT renderWindowCreated();
-
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-    info.x               = this->width();
-    info.y               = this->height();
+    info.x               = 1;
+    info.y               = 1;
     info.dx              = 0;
     info.dy              = 0;
     Q_EMIT interacted(info);
@@ -300,12 +297,6 @@ void Window::renderNow()
         return;
     }
 
-    if(!m_isInitialised)
-    {
-        this->initialise();
-        m_isInitialised = true;
-    }
-
     this->render();
 
 #if DISPLAY_OGRE_FPS == 1
@@ -316,7 +307,7 @@ void Window::renderNow()
     fps += m_ogreRenderWindow->getLastFPS();
     if(++i == numFrames)
     {
-        OSLM_LOG("FPS average : " << fps/numFrames );
+        std::cout << "FPS average : " << fps/numFrames << std::endl;
         i   = 0;
         fps = 0.f;
     }

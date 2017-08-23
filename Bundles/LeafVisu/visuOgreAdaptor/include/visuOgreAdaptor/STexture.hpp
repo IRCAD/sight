@@ -57,9 +57,6 @@ public:
     /// Return true if a valid image is stored in this texture
     VISUOGREADAPTOR_API bool isValid() const;
 
-    /// Returns the priority of the adaptor
-    VISUOGREADAPTOR_API virtual int getStartPriority();
-
 protected:
 
     /// Creates the managed Ogre texture

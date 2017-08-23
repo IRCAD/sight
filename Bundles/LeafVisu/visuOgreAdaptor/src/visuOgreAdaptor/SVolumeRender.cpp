@@ -207,13 +207,6 @@ void SVolumeRender::configuring()
     this->parseTFConfig(cfg);
 }
 
-//------------------------------------------------------------------------------
-
-int SVolumeRender::getStartPriority()
-{
-    return 10;
-}
-
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::updatingTFPoints()
