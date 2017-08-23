@@ -41,10 +41,10 @@
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
                 <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
-                <adaptor uid="camPosMatrixTransformAdaptor" start="yes" />
-                <adaptor uid="modelSeriesAdaptor" start="yes" />
-                <adaptor uid="MPRNegato3D" start="yes" />
-                <adaptor uid="CamPosMatrix" start="yes" />
+                <adaptor uid="camPosMatrixTransformAdaptor" />
+                <adaptor uid="modelSeriesAdaptor" />
+                <adaptor uid="MPRNegato3D" />
+                <adaptor uid="CamPosMatrix" />
             </scene>
         </service>
 
@@ -88,5 +88,11 @@
         </connect>
 
         <start uid="camViewManagerConfigFrame" />
+
+        <!-- genericScene3 -->
+        <start uid="camPosMatrixTransformAdaptor" />
+        <start uid="modelSeriesAdaptor" />
+        <start uid="MPRNegato3D" />
+        <start uid="CamPosMatrix" />
     </config>
 </extension>

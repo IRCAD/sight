@@ -16,10 +16,6 @@
 
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
 
-            <requirement name="MSComposite" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
-                <key>OptionalModelSeriesKey</key>
-            </requirement>
-
             <requirement name="curvedPlanarReformation" type="::fwData::PointList" minOccurs="0" maxOccurs="0" >
                 <key>cprPointsKey</key>
             </requirement>
@@ -29,7 +25,6 @@
         <appConfig id="curvedPlanarReformation">
             <parameters>
                 <parameter replace="imageUid" by="@values.imageSeries.image" />
-                <parameter replace="ModelSeriesCompositeUid" by="@values.MSComposite" />
                 <parameter replace="SplinePointListUid" by="@values.curvedPlanarReformation" />
                 <parameter replace="orientation" by="axial" />
             </parameters>

@@ -6,7 +6,6 @@
         <param name="SERIESDB" />
         <param name="AS_UID" />
         <param name="ICON_PATH" />
-        <param name="ModelSeriesCompositeUid" />
         <param name="imageUid" />
         <param name="SplinePointListUid" />
         <param name="orientation" default="axial" />
@@ -152,11 +151,11 @@
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="interactor" start="yes" />
-                <adaptor uid="MPRNegato" start="yes" />
-                <adaptor uid="text" start="yes" />
-                <adaptor uid="PickerInteractor" start="yes" />
-                <adaptor uid="PointList" start="yes" />
+                <adaptor uid="interactor" />
+                <adaptor uid="MPRNegato" />
+                <adaptor uid="text" />
+                <adaptor uid="PickerInteractor" />
+                <adaptor uid="PointList" />
             </scene>
         </service>
 
@@ -192,12 +191,12 @@
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="interactor2" start="yes" />
-                <adaptor uid="MPRNegato2" start="yes" />
-                <adaptor uid="text2" start="yes" />
-                <adaptor uid="multiDistances2" start="yes" />
-                <adaptor uid="PickerInteractor2" start="yes" />
-                <adaptor uid="PointList2" start="yes" />
+                <adaptor uid="interactor2" />
+                <adaptor uid="MPRNegato2" />
+                <adaptor uid="text2" />
+                <adaptor uid="multiDistances2" />
+                <adaptor uid="PickerInteractor2" />
+                <adaptor uid="PointList2" />
             </scene>
         </service>
 
@@ -238,12 +237,12 @@
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="interactor3" start="yes" />
-                <adaptor uid="MPRNegato3" start="yes" />
-                <adaptor uid="text3" start="yes" />
-                <adaptor uid="multiDistances3" start="yes" />
-                <adaptor uid="PickerInteractor3" start="yes" />
-                <adaptor uid="PointList3" start="yes" />
+                <adaptor uid="interactor3" />
+                <adaptor uid="MPRNegato3" />
+                <adaptor uid="text3" />
+                <adaptor uid="multiDistances3" />
+                <adaptor uid="PickerInteractor3" />
+                <adaptor uid="PointList3" />
             </scene>
         </service>
 
@@ -283,8 +282,8 @@
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="MPRNegato4" start="yes" />
-                <adaptor uid="PointList4" start="yes" />
+                <adaptor uid="MPRNegato4" />
+                <adaptor uid="PointList4" />
             </scene>
         </service>
 
@@ -397,22 +396,14 @@
             <slot>ComputeCPR2D/selectPoint</slot>
         </connect>
 
-        <connect channel="interaction_channel">
+        <connect>
+            <signal>PickerInteractor/picked</signal>
+            <signal>PickerInteractor2/picked</signal>
+            <signal>PickerInteractor3/picked</signal>
             <slot>splinePointsEditor/getInteraction</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
-        <connect channel="interaction_channel">
-            <signal>PickerInteractor/picked</signal>
-        </connect>
-
-        <connect channel="interaction_channel">
-            <signal>Picker/picked</signal>
-        </connect>
-
-        <connect channel="interaction_channel">
-            <signal>Picker/picked</signal>
-        </connect>
 
         <start uid="mainView" />
         <start uid="LockImageSrv" />
@@ -423,5 +414,32 @@
         <start uid="CurvedPlanarReformation2D" />
         <start uid="cprEditor" />
         <start uid="cfgNegato3D" />
+
+        <!-- negato1 -->
+        <start uid="interactor" />
+        <start uid="MPRNegato" />
+        <start uid="text" />
+        <start uid="PickerInteractor" />
+        <start uid="PointList" />
+
+        <!-- negato2 -->
+        <start uid="interactor2" />
+        <start uid="MPRNegato2" />
+        <start uid="text2" />
+        <start uid="multiDistances2" />
+        <start uid="PickerInteractor2" />
+        <start uid="PointList2" />
+
+        <!-- negato3 -->
+        <start uid="interactor3" />
+        <start uid="MPRNegato3" />
+        <start uid="text3" />
+        <start uid="multiDistances3" />
+        <start uid="PickerInteractor3" />
+        <start uid="PointList3" />
+
+        <!-- CurvedPlanarReformation2D -->
+        <start uid="MPRNegato4" />
+        <start uid="PointList4" />
     </config>
 </extension>

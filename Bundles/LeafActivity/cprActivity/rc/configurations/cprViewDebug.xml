@@ -38,13 +38,13 @@
                 <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="Interactor1" start="yes" />
-                <adaptor uid="CamPos2MatrixTransformAdaptor" start="yes" />
-                <adaptor uid="Cam2Axes" start="yes" />
-                <adaptor uid="splineAdaptor" start="yes" />
-                <adaptor uid="MPRNegato" start="yes" />
-                <adaptor uid="renderMesh" start="yes" />
-                <adaptor uid="PointList" start="yes" />
+                <adaptor uid="Interactor1" />
+                <adaptor uid="CamPos2MatrixTransformAdaptor" />
+                <adaptor uid="Cam2Axes" />
+                <adaptor uid="splineAdaptor" />
+                <adaptor uid="MPRNegato" />
+                <adaptor uid="renderMesh" />
+                <adaptor uid="PointList" />
             </scene>
         </service>
 
@@ -136,6 +136,16 @@
 
         <start uid="mainView" />
         <start uid="ComputeCPR3D" />
+
+        <!-- vr2 -->
+        <start uid="Interactor1" />
+        <start uid="CamPos2MatrixTransformAdaptor" />
+        <start uid="Cam2Axes" />
+        <start uid="splineAdaptor" />
+        <start uid="MPRNegato" />
+        <start uid="renderMesh" />
+        <start uid="PointList" />
+
         <update uid="${cprEditorUid}" />
     </config>
 </extension>

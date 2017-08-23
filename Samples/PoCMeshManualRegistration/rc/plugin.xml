@@ -254,13 +254,13 @@
                     <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-                    <adaptor uid="modelSeriesAdaptor" start="yes" />
-                    <adaptor uid="MPRNegato3D" start="yes" />
-                    <adaptor uid="snapshot1" start="yes" />
-                    <adaptor uid="CamPosMatrix" start="yes" />
-                    <adaptor uid="CamPos2MatrixTransformAdaptor" start="yes" />
-                    <adaptor uid="Cam2MeshAdaptor" start="yes" />
-                    <adaptor uid="MeshCompositeAdaptor" start="yes" />
+                    <adaptor uid="modelSeriesAdaptor" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="snapshot1" />
+                    <adaptor uid="CamPosMatrix" />
+                    <adaptor uid="CamPos2MatrixTransformAdaptor" />
+                    <adaptor uid="Cam2MeshAdaptor" />
+                    <adaptor uid="MeshCompositeAdaptor" />
                 </scene>
             </service>
 
@@ -307,11 +307,11 @@
                     <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-                    <adaptor uid="modelSeriesAdaptor2" start="yes" />
-                    <adaptor uid="CamPosMatrix2" start="yes" />
-                    <adaptor uid="CamPos1MatrixTransformAdaptor" start="yes" />
-                    <adaptor uid="Cam1MeshAdaptor" start="yes" />
-                    <adaptor uid="MeshCompositeAdaptor2" start="yes" />
+                    <adaptor uid="modelSeriesAdaptor2" />
+                    <adaptor uid="CamPosMatrix2" />
+                    <adaptor uid="CamPos1MatrixTransformAdaptor" />
+                    <adaptor uid="Cam1MeshAdaptor" />
+                    <adaptor uid="MeshCompositeAdaptor2" />
                 </scene>
             </service>
 
@@ -394,6 +394,23 @@
             <start uid="updaterImageUID" />
             <start uid="cam1ReaderFile" />
             <start uid="cam2ReaderFile" />
+
+            <!-- genericScene -->
+            <start uid="modelSeriesAdaptor" />
+            <start uid="MPRNegato3D" />
+            <start uid="snapshot1" />
+            <start uid="CamPosMatrix" />
+            <start uid="CamPos2MatrixTransformAdaptor" />
+            <start uid="Cam2MeshAdaptor" />
+            <start uid="MeshCompositeAdaptor" />
+
+            <!-- genericScene2 -->
+            <start uid="modelSeriesAdaptor2" />
+            <start uid="CamPosMatrix2" />
+            <start uid="CamPos1MatrixTransformAdaptor" />
+            <start uid="Cam1MeshAdaptor" />
+            <start uid="MeshCompositeAdaptor2" />
+
             <update uid="cam1ReaderFile" />
             <update uid="cam2ReaderFile" />
         </config>
