@@ -181,6 +181,7 @@ void SMeshNormals::updateMeshNormals()
         this->getActor()->GetProperty()->SetColor(1., 1., 1.);
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

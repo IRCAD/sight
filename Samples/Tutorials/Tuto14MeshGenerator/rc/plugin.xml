@@ -1,5 +1,4 @@
-<plugin id="Tuto14MeshGenerator" version="@DASH_VERSION@" >
-
+<plugin id="Tuto14MeshGenerator" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -9,17 +8,15 @@
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
             <object uid="myMesh" type="::fwData::Mesh" />
-
             <!-- ***************************************** End Objects declaration ******************************************* -->
-
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
-            <service uid="MyIHM" type="::gui::frame::SDefaultFrame" >
+            <service uid="MyIHM" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Tuto14MeshGenerator</name>
                         <icon>@BUNDLE_PREFIX@/Tuto14MeshGenerator_0-1/tuto.ico</icon>
                     </frame>
-                    <menuBar />
+                    <menuBar/>
                 </gui>
                 <registry>
                     <menuBar sid="myMenuBar" start="yes" />
@@ -27,7 +24,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -40,12 +37,12 @@
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open file" shortcut="Ctrl+O" />
                         <menuItem name="Save file" shortcut="Ctrl+S" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -56,28 +53,28 @@
                 </registry>
             </service>
 
-            <service uid="menu_Modifier" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menu_Modifier" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Shake mesh point" shortcut="Q" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Colorize mesh point" shortcut="U" />
                         <menuItem name="Colorize mesh cells" shortcut="I" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Compute point normals" shortcut="O" />
                         <menuItem name="Compute cell normals" shortcut="P" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Shake point normals" shortcut="L" />
                         <menuItem name="Shake cell normals" shortcut="M" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Show point normals" style="radio" shortcut="2" />
                         <menuItem name="Show cell normals" style="radio" shortcut="1" />
                         <menuItem name="Hide normals" style="radio" shortcut="0" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Show point colors" style="radio" shortcut="4" />
                         <menuItem name="Show cell colors" style="radio" shortcut="5" />
                         <menuItem name="Hide colors" style="radio" shortcut="6" />
-                        <separator />
+                        <separator/>
                         <menuItem name="mesh deformation" shortcut="D" />
                     </layout>
                 </gui>
@@ -99,7 +96,7 @@
                 </registry>
             </service>
 
-            <service uid="multiView_scene1" type="::gui::view::SDefaultView" >
+            <service uid="multiView_scene1" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -110,130 +107,134 @@
                     <view sid="genericScene" start="yes" />
                 </registry>
             </service>
+
             <!-- ***************************************** End layouts declaration ***************************************** -->
-
-            <!-- ***************************************** Begin services declarations  ************************************ -->
-
-            <service uid="progress_statusbar" type="::gui::editor::SJobBar"  />
-
-            <service uid="action_openFile" type="::gui::action::SStarter" >
+            <!-- ***************************************** Begin services declarations    ************************************ -->
+            <service uid="progress_statusbar" type="::gui::editor::SJobBar" />
+            <service uid="action_openFile" type="::gui::action::SStarter">
                 <start uid="myReaderMesh" />
             </service>
 
-            <service uid="action_saveFile" type="::gui::action::SStarter" >
+            <service uid="action_saveFile" type="::gui::action::SStarter">
                 <start uid="myWriterMesh" />
             </service>
 
-            <service uid="action_quit" type="::gui::action::SQuit"  />
-
-            <service uid="myReaderMesh" type="::uiIO::editor::SIOSelector" >
+            <service uid="action_quit" type="::gui::action::SQuit" />
+            <service uid="myReaderMesh" type="::uiIO::editor::SIOSelector">
                 <in key="target" uid="myMesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-            <service uid="myWriterMesh" type="::uiIO::editor::SIOSelector" >
+            <service uid="myWriterMesh" type="::uiIO::editor::SIOSelector">
                 <in key="target" uid="myMesh" />
                 <type mode="writer" />
             </service>
 
-            <service uid="action_shakeMeshPoint" type="::ioData::action::SMeshModifier" >
+            <service uid="action_shakeMeshPoint" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ShakeMeshPoint" />
             </service>
 
-            <service uid="action_colorizeMeshPoints" type="::ioData::action::SMeshModifier" >
+            <service uid="action_colorizeMeshPoints" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ColorizeMeshPoints" />
             </service>
 
-            <service uid="action_colorizeMeshCells" type="::ioData::action::SMeshModifier" >
+            <service uid="action_colorizeMeshCells" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ColorizeMeshCells" />
             </service>
 
-            <service uid="action_computePointNormals" type="::ioData::action::SMeshModifier" >
+            <service uid="action_computePointNormals" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ComputePointNormals" />
             </service>
 
-            <service uid="action_computeCellNormals" type="::ioData::action::SMeshModifier" >
+            <service uid="action_computeCellNormals" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ComputeCellNormals" />
             </service>
 
-            <service uid="action_shakePointNormals" type="::ioData::action::SMeshModifier" >
+            <service uid="action_shakePointNormals" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ShakePointNormals" />
             </service>
 
-            <service uid="action_shakeCellNormals" type="::ioData::action::SMeshModifier" >
+            <service uid="action_shakeCellNormals" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ShakeCellNormals" />
             </service>
 
-            <service uid="action_showCellNormals" type="::gui::action::SSlotCaller" >
+            <service uid="action_showCellNormals" type="::gui::action::SSlotCaller">
                 <state active="true" />
                 <slots>
-                    <slot>myMeshNormalsAdaptorUid/showCellNormals</slot>
+                    <slot>meshNormalsAdaptor/showCellNormals</slot>
                 </slots>
             </service>
 
-            <service uid="action_showPointNormals" type="::gui::action::SSlotCaller" >
+            <service uid="action_showPointNormals" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>myMeshNormalsAdaptorUid/showPointNormals</slot>
+                    <slot>meshNormalsAdaptor/showPointNormals</slot>
                 </slots>
             </service>
 
-            <service uid="action_hideNormals" type="::gui::action::SSlotCaller" >
+            <service uid="action_hideNormals" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>myMeshNormalsAdaptorUid/hideNormals</slot>
+                    <slot>meshNormalsAdaptor/hideNormals</slot>
                 </slots>
             </service>
 
-            <service uid="action_meshDeformation" type="::ioData::action::SMeshModifier" >
+            <service uid="action_meshDeformation" type="::ioData::action::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="MeshDeformation" />
             </service>
 
-            <service uid="action_showPointColors" type="::gui::action::SSlotCaller" >
+            <service uid="action_showPointColors" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>myMeshAdaptorUid/showPointColors</slot>
+                    <slot>meshAdaptor/showPointColors</slot>
                 </slots>
             </service>
 
-            <service uid="action_showCellColors" type="::gui::action::SSlotCaller" >
+            <service uid="action_showCellColors" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>myMeshAdaptorUid/showCellColors</slot>
+                    <slot>meshAdaptor/showCellColors</slot>
                 </slots>
             </service>
 
-            <service uid="action_hideColors" type="::gui::action::SSlotCaller" >
+            <service uid="action_hideColors" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>myMeshAdaptorUid/hideColors</slot>
+                    <slot>meshAdaptor/hideColors</slot>
                 </slots>
             </service>
 
-            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="myMeshID" uid="myMesh" />
                 <scene>
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="myMeshAdaptor" uid="myMeshAdaptorUid" class="::visuVTKAdaptor::Mesh" objectId="myMeshID">
-                        <config renderer="default" picker="" />
-                    </adaptor>
-
-                    <adaptor id="myMeshNormalsAdaptor" uid="myMeshNormalsAdaptorUid" class="::visuVTKAdaptor::MeshNormals" objectId="myMeshID">
-                        <config renderer="default" picker="" normal="CELL" />
-                    </adaptor>
+                    <adaptor uid="meshAdaptor" />
+                    <adaptor uid="meshNormalsAdaptor" />
                 </scene>
             </service>
-            <!-- ***************************************** End render scenes declaration ***************************************** -->
 
-            <!-- ***************************************** End services declarations  ************************************************ -->
+            <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="myMesh" />
+                <config renderer="default" picker="" />
+            </service>
+
+            <service uid="meshNormalsAdaptor" type="::visuVTKAdaptor::SMeshNormals" autoConnect="yes">
+                <in key="mesh" uid="myMesh" />
+                <config renderer="default" picker="" normal="CELL" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- ***************************************** End render scenes declaration ***************************************** -->
+            <!-- ***************************************** End services declarations    ************************************************ -->
             <connect>
                 <signal>myWriterMesh/jobCreated</signal>
                 <slot>progress_statusbar/showJob</slot>
@@ -246,8 +247,9 @@
 
             <start uid="MyIHM" />
             <start uid="progress_statusbar" />
-
+            <!-- VTK scene 'genericScene' -->
+            <start uid="meshAdaptor" />
+            <start uid="meshNormalsAdaptor" />
         </config>
     </extension>
-
 </plugin>
