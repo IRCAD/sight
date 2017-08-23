@@ -19,8 +19,7 @@
             <object uid="imageDepth" type="::fwData::Image" />
             <object uid="imageVideo" type="::fwData::Image" />
 
-            <object uid="viewport" type="::scene2D::data::Viewport" />
-            <object uid="histogram" type="::fwData::Histogram" />
+            <object uid="viewport" type="::fwRenderQt::data::Viewport" />
 
             <object uid="tfSelectionDepth" type="::fwData::Composite">
                 <item key="SelectedTF">
@@ -45,6 +44,7 @@
                     <frame>
                         <name>Ex06RGBDStream</name>
                         <icon>@BUNDLE_PREFIX@/Ex06RGBDStream_@DASH_VERSION@/ex06rgbdstream.ico</icon>
+                        <minSize width="800" height="600" />
                     </frame>
                     <toolBar />
                 </gui>
@@ -146,103 +146,106 @@
                 </scene>
             </service>
 
-            <service uid="TFEditor" type="::scene2D::Render" autoConnect="yes">
-                <in key="image" uid="imageDepth" />
-                <in key="myHistogram" uid="histogram" />
-                <inout key="viewport" uid="viewport" />
-                <inout key="TFSelections" uid="tfSelectionDepth" />
+            <service uid="TFEditor" type="::fwRenderQt::SRender" >
                 <scene>
-
                     <scene x="-10" y="-1.1" width="5500" height="1.2" antialiasing="true" />
-
-                    <viewport id="view1" x="0" y="-1.1" width="1200" height="1.2" />
+                    <viewport x="0" y="-1.1" width="1200" height="1.2" />
 
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
 
-                    <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                    <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-10" xMax="5500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1"
-                                opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                    </adaptor>
-
-                    <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-10" x2="5500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                    </adaptor>
-
-                    <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                    </adaptor>
-
-                    <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-                    </adaptor>
-
-                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7"
-                                viewportUID="viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                    </adaptor>
-
-                    <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myHistogram">
-                        <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
-                    </adaptor>
+                    <adaptor uid="grid" />
+                    <adaptor uid="abscissa" />
+                    <adaptor uid="ordinate" />
+                    <adaptor uid="maxOpacity" />
+                    <adaptor uid="tf2" />
+                    <adaptor uid="viewportRangeUpdater" />
+                    <adaptor uid="scaleValuesLeft" />
+                    <adaptor uid="axisLeft" />
+                    <adaptor uid="scaleValuesBottom" />
+                    <adaptor uid="axisBottom" />
                 </scene>
             </service>
+            <service uid="grid" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-10" xMax="5500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1"
+                        opacity="0.25" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+            </service>
 
-            <service uid="TFEditorSettings" type="::scene2D::Render" autoConnect="yes">
+            <service uid="abscissa" type="::scene2D::adaptor::SLine" >
+                <config x1="-10" x2="5500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+            </service>
+
+            <service uid="ordinate" type="::scene2D::adaptor::SLine" >
+                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+            </service>
+
+            <service uid="maxOpacity" type="::scene2D::adaptor::SLine" >
+                <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+            </service>
+
+            <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
+                <inout key="image" uid="imageDepth" />
+                <inout key="tfSelection" uid="tfSelectionDepth" />
                 <inout key="viewport" uid="viewport" />
-                <in key="myHistogram" uid="histogram" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="viewportRangeUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes">
+                <in key="viewport" uid="viewport" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+            </service>
+
+            <service uid="scaleValuesLeft" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewport" />
+                <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+            </service>
+
+            <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+                <in key="viewport" uid="viewport" />
+                <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+            </service>
+
+            <service uid="scaleValuesBottom" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewport" />
+                <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+            </service>
+
+            <service uid="axisBottom" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+                <in key="viewport" uid="viewport" />
+                <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+            </service>
+
+            <service uid="TFEditorSettings" type="::fwRenderQt::SRender" autoConnect="yes">
                 <scene>
                     <scene x="-10" y="-1.1" width="5100" height="1.2" />
 
-                    <viewport id="view1" x="-10" y="-1.1" width="5100" height="1.2" />
+                    <viewport x="-10" y="-1.1" width="5100" height="1.2" />
 
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
 
-                    <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                    <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-10" xMax="5100" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                    </adaptor>
-
-                    <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-10" x2="5100" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                    </adaptor>
-
-                    <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                    </adaptor>
-
-                    <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="0" />
-                    </adaptor>
-
-                    <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram">
-                        <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                    </adaptor>
+                    <adaptor uid="shutterGrid" />
+                    <adaptor uid="shutterAbscissa" />
+                    <adaptor uid="shutterOrdinate" />
+                    <adaptor uid="viewportRangeSelector" />
                 </scene>
+            </service>
+
+            <service uid="shutterGrid" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-10" xMax="5100" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+            </service>
+
+            <service uid="shutterAbscissa" type="::scene2D::adaptor::SLine" >
+                <config x1="-10" x2="5100" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+            </service>
+
+            <service uid="shutterOrdinate" type="::scene2D::adaptor::SLine" >
+                <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+            </service>
+
+            <service uid="viewportRangeSelector" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes">
+                <inout key="viewport" uid="viewport" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="0" />
             </service>
 
             <!-- ***************************************** End render scenes declaration ***************************************** -->
@@ -293,6 +296,24 @@
             <!-- reconstruction services -->
             <start uid="synchronizer" />
             <start uid="scanner" />
+
+            <!-- TFEditor Scene2D -->
+            <start uid="grid" />
+            <start uid="abscissa" />
+            <start uid="ordinate" />
+            <start uid="maxOpacity" />
+            <start uid="tf2" />
+            <start uid="viewportRangeUpdater" />
+            <start uid="scaleValuesLeft" />
+            <start uid="axisLeft" />
+            <start uid="scaleValuesBottom" />
+            <start uid="axisBottom" />
+
+            <!-- TFEditorSettings Scene2D -->
+            <start uid="shutterGrid" />
+            <start uid="shutterAbscissa" />
+            <start uid="shutterOrdinate" />
+            <start uid="viewportRangeSelector" />
         </config>
     </extension>
 
