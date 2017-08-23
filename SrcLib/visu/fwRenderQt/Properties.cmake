@@ -1,20 +1,18 @@
 
-set( NAME scene2D )
+set( NAME fwRenderQt )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
-set( PRIORITY 2)
+set( TYPE LIBRARY )
 set( DEPENDENCIES
+    fwCom
     fwCore
-    fwTools
     fwData
     fwDataTools
+    fwGui
     fwGuiQt
     fwRender
-    fwRenderQt
     fwRuntime
     fwServices
-    fwGui
-    fwCom
+    fwTools
 )
 set( REQUIREMENTS  )
 

@@ -9,6 +9,7 @@
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/Image.hpp"
+#include "fwDataTools/helper/ImageGetter.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -150,7 +151,7 @@ public:
      * @param[out] _max : maximum value
      */
     template < typename MINMAXTYPE >
-    static void getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+    static void getMinMax(const ::fwData::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
 };
 
@@ -328,14 +329,14 @@ public:
     {
     public:
 
-        Param(::fwData::Image::sptr _img, T& _min, T& _max) :
+        Param(::fwData::Image::csptr _img, T& _min, T& _max) :
             image(_img),
             min(_min),
             max(_max)
         {
         }
 
-        ::fwData::Image::sptr image;
+        ::fwData::Image::csptr image;
         T& min;
         T& max;
     };
@@ -345,7 +346,7 @@ public:
     template < typename IMAGE >
     void operator()( Param& param )
     {
-        ::fwDataTools::helper::Image imageLock( param.image );
+        ::fwDataTools::helper::ImageGetter imageLock( param.image );
         IMAGE* buffer                         = static_cast < IMAGE* > (imageLock.getBuffer());
         const ::fwData::Image::SizeType& size = param.image->getSize();
         ::fwData::Image::SizeType::value_type len = static_cast< ::fwData::Image::SizeType::value_type >(
@@ -388,7 +389,7 @@ public:
 // ------------------------------------------------------------------------------
 
 template < typename MINMAXTYPE >
-void MedicalImageHelpers::getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
+void MedicalImageHelpers::getMinMax(const ::fwData::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
 {
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 
