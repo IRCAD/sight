@@ -74,11 +74,15 @@ int STexture::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void STexture::doConfigure()
+void STexture::configuring()
 {
-    if(m_configuration->hasAttribute("textureName"))
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if(config.count("textureName"))
     {
-        m_textureName = m_configuration->getAttributeValue("textureName");
+        m_textureName = config.get<std::string>("textureName");
     }
     else
     {
@@ -87,32 +91,32 @@ void STexture::doConfigure()
         m_textureName = this->getID();
     }
 
-    if ( m_configuration->hasAttribute( "filtering" ) )
+    if ( config.count( "filtering" ) )
     {
-        m_filtering = m_configuration->getAttributeValue("filtering");
+        m_filtering = config.get<std::string>("filtering");
     }
 
-    if ( m_configuration->hasAttribute( "wrapping" ) )
+    if ( config.count( "wrapping" ) )
     {
-        m_wrapping = m_configuration->getAttributeValue("wrapping");
+        m_wrapping = config.get<std::string>("wrapping");
     }
 
-    if ( m_configuration->hasAttribute( "useAlpha" ) )
+    if ( config.count( "useAlpha" ) )
     {
-        bool useAlpha = (m_configuration->getAttributeValue("useAlpha") == "true");
-        m_useAlpha = useAlpha;
+        m_useAlpha = config.get<bool>("useAlpha");
     }
-    if(m_configuration->hasAttribute("dynamic"))
+    if(config.count("dynamic"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamic");
-        m_isDynamic = ( dynamic == "true" );
+        m_isDynamic = config.get<bool>("dynamic");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void STexture::doStart()
+void STexture::starting()
 {
+    this->initialize();
+
     m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         m_textureName,
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -123,7 +127,7 @@ void STexture::doStart()
 
 //------------------------------------------------------------------------------
 
-void STexture::doUpdate()
+void STexture::updating()
 {
     // Retrieves associated f4s image
     ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
@@ -145,14 +149,14 @@ void STexture::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void STexture::doSwap()
+void STexture::swapping()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void STexture::doStop()
+void STexture::stopping()
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();

@@ -48,13 +48,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure();
+    VISUOGREADAPTOR_API virtual void configuring();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStart();
+    VISUOGREADAPTOR_API virtual void starting();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStop();
+    VISUOGREADAPTOR_API virtual void stopping();
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doSwap();
+    VISUOGREADAPTOR_API virtual void swapping();
 
 private:
 

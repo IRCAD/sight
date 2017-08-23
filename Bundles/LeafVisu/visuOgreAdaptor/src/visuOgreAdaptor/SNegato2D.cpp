@@ -61,8 +61,10 @@ SNegato2D::~SNegato2D() noexcept
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doStart()
+void SNegato2D::starting()
 {
+    this->initialize();
+
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
     this->setTFSelectionFwID(tfSelection->getID());
@@ -100,7 +102,7 @@ void SNegato2D::doStart()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doStop()
+void SNegato2D::stopping()
 {
     this->removeTFConnections();
 
@@ -120,11 +122,15 @@ void SNegato2D::doStop()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doConfigure()
+void SNegato2D::configuring()
 {
-    if(m_configuration->hasAttribute("sliceIndex"))
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if(config.count("sliceIndex"))
     {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        const std::string orientation = config.get<std::string>("sliceIndex");
 
         if(orientation == "axial")
         {
@@ -145,9 +151,9 @@ void SNegato2D::doConfigure()
         m_orientation = OrientationMode::Z_AXIS;
     }
 
-    if(m_configuration->hasAttribute("filtering"))
+    if(config.count("filtering"))
     {
-        std::string filteringValue = m_configuration->getAttributeValue("filtering");
+        const std::string filteringValue = config.get<std::string>("filtering");
         ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -162,12 +168,14 @@ void SNegato2D::doConfigure()
         this->setFiltering(filtering);
     }
 
-    this->parseTFConfig(m_configuration);
+    auto cfg = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("Tag 'config' not found.", cfg);
+    this->parseTFConfig(cfg);
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doUpdate()
+void SNegato2D::updating()
 {
     this->requestRender();
 }
@@ -315,7 +323,7 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doSwap()
+void SNegato2D::swapping()
 {
     this->stopping();
     this->starting();

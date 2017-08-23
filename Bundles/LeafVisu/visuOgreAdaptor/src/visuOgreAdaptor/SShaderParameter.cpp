@@ -42,18 +42,22 @@ void SShaderParameter::setMaterialName(const std::string& matName)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doConfigure()
+void SShaderParameter::configuring()
 {
-    this->IParameter::doConfigure();
+    this->IParameter::configuring();
 
-    m_materialName = m_configuration->getAttributeValue("materialName");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_materialName = config.get<std::string>("materialName", "");
     OSLM_ERROR_IF("material attribute not set", m_materialName.empty());
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doStart()
+void SShaderParameter::starting()
 {
+    this->initialize();
+
     // Retrieves the associated material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
     this->setMaterial(material);
@@ -61,14 +65,14 @@ void SShaderParameter::doStart()
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doStop()
+void SShaderParameter::stopping()
 {
-    this->IParameter::doStop();
+    this->IParameter::stopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doSwap()
+void SShaderParameter::swapping()
 {
 }
 

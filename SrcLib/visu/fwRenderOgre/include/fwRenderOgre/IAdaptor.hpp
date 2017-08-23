@@ -50,6 +50,7 @@ public:
 
     FWRENDEROGRE_API void connect();
     FWRENDEROGRE_API void disconnect();
+
 protected:
 
     /// Constructor
@@ -58,30 +59,23 @@ protected:
     /// Destructor
     FWRENDEROGRE_API virtual ~IAdaptor() noexcept;
 
-    /**
-     * @name Standard service methods
-     */
     //@{
     /// Overrides
     FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
-    FWRENDEROGRE_API void configuring();
-    FWRENDEROGRE_API void starting();
-    FWRENDEROGRE_API void stopping();
-    FWRENDEROGRE_API void swapping();
-    FWRENDEROGRE_API void updating();
     //@}
 
     /**
-     * @name    Standard adaptor methods
+     * @brief Parse common adaptor parameters:
+     * @code{.xml}
+       <config layer="..." />
+       @endcode
+     * @subsection Configuration Configuration:
+     * - \b layer (mandatory): id of the layer where this adaptor applies.
      */
-    //@{
-    /// Pure virtual methods
-    FWRENDEROGRE_API virtual void doConfigure() = 0;
-    FWRENDEROGRE_API virtual void doStart()                                 = 0;
-    FWRENDEROGRE_API virtual void doStop()                                  = 0;
-    FWRENDEROGRE_API virtual void doSwap()                                  = 0;
-    FWRENDEROGRE_API virtual void doUpdate()                                = 0;
-    //@}
+    FWRENDEROGRE_API void configureParams();
+
+    /// Register the adaptor into its SRender service
+    FWRENDEROGRE_API void initialize();
 
     /**
      * @brief Get the Ogre SceneManager

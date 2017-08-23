@@ -47,19 +47,19 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    VISUOGREADAPTOR_API void doConfigure();
+    VISUOGREADAPTOR_API void configuring();
 
     /// Create the ogre texture and mapper used to show the video frame.
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
 
     /// Removes the actor from the renderer
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
 
     /// Updated the frame from the current Image.
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;

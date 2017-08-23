@@ -42,7 +42,7 @@ public:
 
 protected:
     /// Creates a Transform Service, then updates.
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
 
     /**
      * @brief Configure the ModelSeries adaptor.
@@ -57,13 +57,13 @@ protected:
      *  - \b texture : the OgreTexture to associate to the adaptor
      *  - \b autoresetcamera (optional)
      */
-    VISUOGREADAPTOR_API void doConfigure();
+    VISUOGREADAPTOR_API void configuring();
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
     /// Redraws all (stops then restarts sub services)
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
     /// Closes connections and unregisters service.
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
 
     /// Calls updating
     VISUOGREADAPTOR_API void addReconstruction();

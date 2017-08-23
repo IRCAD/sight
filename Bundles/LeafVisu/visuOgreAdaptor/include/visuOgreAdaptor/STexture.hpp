@@ -63,7 +63,7 @@ public:
 protected:
 
     /// Creates the managed Ogre texture
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
 
     /**
      * @brief Configure the adaptor.
@@ -79,16 +79,16 @@ protected:
      *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
      *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
      */
-    VISUOGREADAPTOR_API void doConfigure();
+    VISUOGREADAPTOR_API void configuring();
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
 
     /// Updates the attached
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
 
     /// Does nothing
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;

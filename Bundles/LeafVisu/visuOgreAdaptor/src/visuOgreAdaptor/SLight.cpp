@@ -78,43 +78,41 @@ SLight::~SLight() noexcept
 
 //------------------------------------------------------------------------------
 
-void SLight::doConfigure()
+void SLight::configuring()
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if(m_configuration->hasAttribute("name"))
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_lightName = config.get<std::string>("name");
+
+    if(config.count("switchedOn"))
     {
-        m_lightName = m_configuration->getAttributeValue("name");
+        m_switchedOn = config.get<std::string>("switchedOn") == "yes";
     }
 
-    if(m_configuration->hasAttribute("switchedOn"))
+    if(config.count("parentTransformId"))
     {
-        const std::string switchedOnStr = m_configuration->getAttributeValue("switchedOn");
-        m_switchedOn = (switchedOnStr == "yes");
-    }
+        this->setParentTransformId(config.get<std::string>("parentTransformId"));
 
-    if(m_configuration->hasAttribute("parentTransformId"))
-    {
-        this->setParentTransformId(m_configuration->getAttributeValue("parentTransformId"));
-
-        if(m_configuration->hasAttribute("thetaOffset"))
+        if(config.count("thetaOffset"))
         {
-            const std::string thetaOffsetStr = m_configuration->getAttributeValue("thetaOffset");
-            m_thetaOffset = std::stof(thetaOffsetStr);
+            m_thetaOffset = config.get<float>("thetaOffset");
         }
 
-        if(m_configuration->hasAttribute("phiOffset"))
+        if(config.count("phiOffset"))
         {
-            const std::string phiOffsetStr = m_configuration->getAttributeValue("phiOffset");
-            m_phiOffset = std::stof(phiOffsetStr);
+            m_phiOffset = config.get<float>("phiOffset");
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doStart()
+void SLight::starting()
 {
+    this->initialize();
+
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >("diffuseColor");
     m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
 
@@ -144,12 +142,12 @@ void SLight::doStart()
     this->setTransformId(m_lightName + "_node");
     this->createTransformService();
 
-    doUpdate();
+    updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doUpdate()
+void SLight::updating()
 {
     SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
 
@@ -293,14 +291,14 @@ void SLight::attachNode(::Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SLight::doSwap()
+void SLight::swapping()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doStop()
+void SLight::stopping()
 {
     if(!m_transformService.expired())
     {

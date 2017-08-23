@@ -136,15 +136,15 @@ private:
     };
 
     /// Configures the adaptor
-    void doConfigure();
+    void configuring();
     /// Manually creates a Mesh in the Default Ogre Ressource group
-    void doStart    ();
+    void starting    ();
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void doStop     ();
+    void stopping     ();
     /// Performs a Stop -> Start
-    void doSwap     ();
+    void swapping     ();
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void doUpdate   ();
+    void updating   ();
 
     ::Ogre::Entity* newEntity();
 

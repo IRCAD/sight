@@ -120,19 +120,19 @@ protected:
      *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
      *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
      */
-    VISUOGREADAPTOR_API void doConfigure();
+    VISUOGREADAPTOR_API void configuring();
 
     /// Starting method under fixed function pipeline
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
 
     /// Swapping method, updating
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
 
     /// Updating method, updates fixed function pipeline parameters
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
 
 private:
 

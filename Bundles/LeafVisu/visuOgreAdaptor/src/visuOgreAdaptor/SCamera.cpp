@@ -55,14 +55,17 @@ SCamera::~SCamera() noexcept
 
 //------------------------------------------------------------------------------
 
-void SCamera::doConfigure()
+void SCamera::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStart()
+void SCamera::starting()
 {
+    this->initialize();
+
     m_camera      = this->getLayer()->getDefaultCamera();
     m_calibration = this->getInput< ::arData::Camera >("calibration");
 
@@ -78,7 +81,7 @@ void SCamera::doStart()
 
 //------------------------------------------------------------------------------
 
-void SCamera::doUpdate()
+void SCamera::updating()
 {
 }
 
@@ -128,14 +131,14 @@ void SCamera::attachNode(::Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doSwap()
+void SCamera::swapping()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStop()
+void SCamera::stopping()
 {
     m_layerConnection.disconnect();
 
@@ -239,7 +242,7 @@ void SCamera::calibrate()
                                                        atan(static_cast< double >(m_calibration->getHeight() / 2.0) /
                                                             fy))));
 
-        this->doUpdate();
+        this->updating();
     }
 }
 

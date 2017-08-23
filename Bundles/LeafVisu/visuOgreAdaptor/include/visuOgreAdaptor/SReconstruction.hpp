@@ -69,9 +69,9 @@ public:
 
 protected:
     /// starts the service; creates the mesh service.
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
     /// stops and unregisters the service.
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
 
     /**
      * @brief Configure the Reconstruction adaptor.
@@ -84,11 +84,11 @@ protected:
      *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor
      *  - \b autoresetcamera (optional)
      */
-    VISUOGREADAPTOR_API void doConfigure();
+    VISUOGREADAPTOR_API void configuring();
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
 
 private:
     /// Changes the attached mesh

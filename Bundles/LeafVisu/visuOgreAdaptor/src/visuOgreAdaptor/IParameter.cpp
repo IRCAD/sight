@@ -91,16 +91,20 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
-void IParameter::doConfigure()
+void IParameter::configuring()
 {
-    m_paramName = m_configuration->getAttributeValue("parameter");
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_paramName = config.get<std::string>("parameter", "");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
-    m_techniqueName = m_configuration->getAttributeValue("technique");
+    m_techniqueName = config.get<std::string>("technique", "");
 
-    if ( m_configuration->hasAttribute("shaderType"))
+    if ( config.count("shaderType"))
     {
-        std::string shaderType = m_configuration->getAttributeValue("shaderType");
+        const std::string shaderType = config.get<std::string>("shaderType");
         if (shaderType == "vertex")
         {
             m_shaderType = ::Ogre::GPT_VERTEX_PROGRAM;
@@ -122,7 +126,7 @@ void IParameter::doConfigure()
 
 //------------------------------------------------------------------------------
 
-void IParameter::doUpdate()
+void IParameter::updating()
 {
     if(m_material.isNull() || !m_dirty)
     {
@@ -170,7 +174,7 @@ void IParameter::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void IParameter::doStop()
+void IParameter::stopping()
 {
     m_material.setNull();
 }

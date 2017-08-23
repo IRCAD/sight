@@ -168,70 +168,71 @@ void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doConfigure()
+void SMesh::configuring()
 {
-    std::string color = m_configuration->getAttributeValue("color");
+    this->configureParams();
 
-    if(m_material)
-    {
-        m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
-    }
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    if(m_configuration->hasAttribute("autoresetcamera"))
+    const std::string color = config.get<std::string>("color", "");
+
+    SLM_ASSERT("Material not found", m_material);
+    m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
+
+    if(config.count("autoresetcamera"))
     {
-        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoResetCamera == "yes");
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if ( m_configuration->hasAttribute("materialName"))
+    if ( config.count("materialName"))
     {
-        m_materialName = m_configuration->getAttributeValue("materialName");
+        m_materialName = config.get<std::string>("materialName");
     }
     else
     {
         // An existing Ogre material will be used for this mesh
-        if( m_configuration->hasAttribute("materialTemplate"))
+        if( config.count("materialTemplate"))
         {
-            m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
+            m_materialTemplateName = config.get<std::string>("materialTemplate");
         }
 
         // The mesh adaptor will pass the texture name to the created material adaptor
-        if ( m_configuration->hasAttribute("textureName"))
+        if ( config.count("textureName"))
         {
-            m_textureName = m_configuration->getAttributeValue("textureName");
+            m_textureName = config.get<std::string>("textureName");
         }
 
-        if( m_configuration->hasAttribute("shadingMode"))
+        if( config.count("shadingMode"))
         {
-            m_shadingMode = m_configuration->getAttributeValue("shadingMode");
+            m_shadingMode = config.get<std::string>("shadingMode");
         }
     }
 
-    if(m_configuration->hasAttribute("dynamic"))
+    if(config.count("dynamic"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamic");
-        m_isDynamic = ( dynamic == "true" );
+        m_isDynamic = config.get<bool>("dynamic");
     }
 
-    if(m_configuration->hasAttribute("dynamicVertices"))
+    if(config.count("dynamicVertices"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamicVertices");
-        m_isDynamicVertices = ( dynamic == "true" );
+        m_isDynamicVertices = config.get<bool>("dynamicVertices");
     }
 
-    if(m_configuration->hasAttribute("transform"))
+    if(config.count("transform"))
     {
-        this->setTransformId(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(config.get<std::string>("transform"));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doStart()
+void SMesh::starting()
 {
+    this->initialize();
+
     auto& meshMgr = ::Ogre::MeshManager::getSingleton();
 
     // Create Mesh Data Structure
@@ -271,7 +272,7 @@ void SMesh::doStart()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doStop()
+void SMesh::stopping()
 {
     if(!m_transformService.expired())
     {
@@ -304,15 +305,15 @@ void SMesh::doStop()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doSwap()
+void SMesh::swapping()
 {
-    doStop();
-    doStart();
+    stopping();
+    starting();
 }
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doUpdate()
+void SMesh::updating()
 {
 }
 

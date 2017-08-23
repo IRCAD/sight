@@ -180,16 +180,20 @@ int SMaterial::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doConfigure()
+void SMaterial::configuring()
 {
-    if(m_configuration->hasAttribute("materialTemplate"))
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if(config.count("materialTemplate"))
     {
-        m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
+        m_materialTemplateName = config.get<std::string>("materialTemplate");
     }
 
-    if(m_configuration->hasAttribute("materialName"))
+    if(config.count("materialName"))
     {
-        m_materialName = m_configuration->getAttributeValue("materialName");
+        m_materialName = config.get<std::string>("materialName");
     }
     else
     {
@@ -197,27 +201,29 @@ void SMaterial::doConfigure()
         m_materialName = this->getID();
     }
 
-    if(m_configuration->hasAttribute("textureName"))
+    if(config.count("textureName"))
     {
-        m_textureName = m_configuration->getAttributeValue("textureName");
+        m_textureName = config.get<std::string>("textureName");
     }
 
-    if(m_configuration->hasAttribute("shadingMode"))
+    if(config.count("shadingMode"))
     {
-        m_shadingMode = m_configuration->getAttributeValue("shadingMode");
+        m_shadingMode = config.get<std::string>("shadingMode");
     }
 
-    if(m_configuration->hasAttribute("normalLength"))
+    if(config.count("normalLength"))
     {
-        std::string stringLength = m_configuration->getAttributeValue("normalLength");
+        std::string stringLength = config.get<std::string>("normalLength");
         m_normalLengthFactor = static_cast< ::Ogre::Real >(std::stof(stringLength));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStart()
+void SMaterial::starting()
 {
+    this->initialize();
+
     if(!m_shadingMode.empty())
     {
         ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
@@ -284,7 +290,7 @@ void SMaterial::doStart()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStop()
+void SMaterial::stopping()
 {
     m_material.setNull();
     m_textureConnection.disconnect();
@@ -299,7 +305,7 @@ void SMaterial::doStop()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doSwap()
+void SMaterial::swapping()
 {
     SLM_TRACE("SWAPPING Material");
     this->stopping();
@@ -308,7 +314,7 @@ void SMaterial::doSwap()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doUpdate()
+void SMaterial::updating()
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 

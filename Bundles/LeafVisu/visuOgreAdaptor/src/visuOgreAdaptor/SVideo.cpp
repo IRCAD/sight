@@ -54,8 +54,10 @@ SVideo::~SVideo() noexcept
 
 //------------------------------------------------------------------------------
 
-void SVideo::doStart()
+void SVideo::starting()
 {
+    this->initialize();
+
     m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
         this->getID() + "_VideoTexture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -77,35 +79,32 @@ void SVideo::doStart()
 
 //------------------------------------------------------------------------------
 
-void SVideo::doStop()
+void SVideo::stopping()
 {
     m_texture.setNull();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doSwap()
+void SVideo::swapping()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doConfigure()
+void SVideo::configuring()
 {
-    const std::string reverse = m_configuration->getAttributeValue("reverse");
-    if (!reverse.empty() )
-    {
-        if( reverse == "true" )
-        {
-            m_reverse = true;
-        }
-    }
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_reverse = config.get<bool>("reverse", false);
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doUpdate()
+void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 

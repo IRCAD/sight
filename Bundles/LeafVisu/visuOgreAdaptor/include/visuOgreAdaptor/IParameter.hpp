@@ -81,13 +81,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure();
+    VISUOGREADAPTOR_API virtual void configuring();
 
     /// Updates the shader parameter values and requests a render of the scene.
-    VISUOGREADAPTOR_API virtual void doUpdate();
+    VISUOGREADAPTOR_API virtual void updating();
 
     /// Clear the mesh pointer.
-    VISUOGREADAPTOR_API virtual void doStop();
+    VISUOGREADAPTOR_API virtual void stopping();
 
     /// Set the parameter for a given technique
     VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);

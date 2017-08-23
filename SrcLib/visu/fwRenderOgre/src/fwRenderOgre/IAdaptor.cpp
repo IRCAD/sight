@@ -18,13 +18,10 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT = "startObject";
-
 //------------------------------------------------------------------------------
 
 IAdaptor::IAdaptor() noexcept
 {
-    newSlot(s_START_OBJECT_SLOT, &IAdaptor::doStart, this);
 }
 
 //------------------------------------------------------------------------------
@@ -43,22 +40,15 @@ void IAdaptor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring()
+void IAdaptor::configureParams()
 {
-    auto config = m_configuration->findConfigurationElement("config");
-
-    SLM_ASSERT("Can't find 'config' tag.", config);
-
-    m_configuration = config;
-
-    m_layerID = m_configuration->getAttributeValue("layer");
-
-    this->doConfigure();
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    m_layerID = config.get<std::string>("layer");
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::starting()
+void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
@@ -77,27 +67,6 @@ void IAdaptor::starting()
 
         m_renderService = ::fwRenderOgre::SRender::dynamicCast(*result);
     }
-    doStart();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::stopping()
-{
-    doStop();
-}
-//------------------------------------------------------------------------------
-
-void IAdaptor::swapping()
-{
-    doSwap();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::updating()
-{
-    doUpdate();
 }
 
 //------------------------------------------------------------------------------

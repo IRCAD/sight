@@ -44,23 +44,27 @@ SReconstruction::~SReconstruction() noexcept
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doConfigure()
+void SReconstruction::configuring()
 {
-    // The transform attribute is mandatory in the XML configuration
-    this->setTransformId(m_configuration->getAttributeValue("transform"));
+    this->configureParams();
 
-    if (m_configuration->hasAttribute("autoresetcamera"))
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    // The transform attribute is mandatory in the XML configuration
+    this->setTransformId(config.get<std::string>("transform"));
+
+    if (config.count("autoresetcamera"))
     {
-        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoresetcamera == "yes");
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doStart()
+void SReconstruction::starting()
 {
-    SLM_TRACE_FUNC();
+    this->initialize();
+
     createMeshService();
 }
 
@@ -111,14 +115,14 @@ void SReconstruction::createMeshService()
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doSwap()
+void SReconstruction::swapping()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doUpdate()
+void SReconstruction::updating()
 {
     if (!m_meshAdaptor.expired())
     {
@@ -141,7 +145,7 @@ void SReconstruction::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void SReconstruction::doStop()
+void SReconstruction::stopping()
 {
     SLM_TRACE_FUNC();
     this->unregisterServices();

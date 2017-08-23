@@ -72,19 +72,19 @@ protected:
      * if \b Selection, Mesh or Video can be used.
 
      */
-    VISUOGREADAPTOR_API void doConfigure();
+    VISUOGREADAPTOR_API void configuring();
 
     /// Starting method
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
 
     /// Update the interactor
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
 
     /// Swaping method, do nothing
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
 
 private:
 
@@ -93,7 +93,7 @@ private:
      * @{
      */
 
-    /// SLOT : sends a signal when the interactor has recieved a clicked point signal
+    /// Slot: sends a signal when the interactor has recieved a clicked point signal
     void clickedPoint(fwData::Object::sptr obj);
 
     /**
@@ -120,9 +120,6 @@ private:
 
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
-
-    /// map containing all the classes associated to their xml designations (e.g. Default -> TrackballInteractor)
-    std::map<std::string, std::string> m_interactorStyles;
 };
 
 } //namespace visuOgreAdaptor

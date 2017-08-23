@@ -53,47 +53,51 @@ SModelSeries::~SModelSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doConfigure()
+void SModelSeries::configuring()
 {
-    if (m_configuration->hasAttribute("transform"))
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if (config.count("transform"))
     {
-        this->setTransformId(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(config.get<std::string>("transform"));
     }
 
-    if (m_configuration->hasAttribute("autoresetcamera"))
+    if (config.count("autoresetcamera"))
     {
-        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
+        std::string autoresetcamera = config.get<std::string>("autoresetcamera");
         m_autoResetCamera = (autoresetcamera == "yes");
     }
 
-    if (m_configuration->hasAttribute("material"))
+    if (config.count("material"))
     {
-        m_materialTemplateName = m_configuration->getAttributeValue("material");
+        m_materialTemplateName = config.get<std::string>("material");
     }
 
-    if(m_configuration->hasAttribute("dynamic"))
+    if(config.count("dynamic"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamic");
-        m_isDynamic = ( dynamic == "true" );
+        m_isDynamic = config.get<bool>("dynamic");
     }
 
-    if(m_configuration->hasAttribute("dynamicVertices"))
+    if(config.count("dynamicVertices"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamicVertices");
-        m_isDynamicVertices = ( dynamic == "true" );
+        m_isDynamicVertices = config.get<bool>("dynamicVertices");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doStart()
+void SModelSeries::starting()
 {
+    this->initialize();
+
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doUpdate()
+void SModelSeries::updating()
 {
     // Retrieves the associated f4s ModelSeries object
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
@@ -135,14 +139,14 @@ void SModelSeries::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doSwap()
+void SModelSeries::swapping()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doStop()
+void SModelSeries::stopping()
 {
     this->unregisterServices();
 }

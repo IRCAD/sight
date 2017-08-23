@@ -153,19 +153,19 @@ public:
 protected:
 
     /// Starts the service initializes scene objects.
-    VISUOGREADAPTOR_API virtual void doStart();
+    VISUOGREADAPTOR_API virtual void starting();
 
     /// Cleans up memory.
-    VISUOGREADAPTOR_API virtual void doStop();
+    VISUOGREADAPTOR_API virtual void stopping();
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual void doSwap();
+    VISUOGREADAPTOR_API virtual void swapping();
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual void doUpdate();
+    VISUOGREADAPTOR_API virtual void updating();
 
     /// Configures the service
-    VISUOGREADAPTOR_API virtual void doConfigure();
+    VISUOGREADAPTOR_API virtual void configuring();
 
     /// Returns the priority of the adaptor
     VISUOGREADAPTOR_API virtual int getStartPriority();

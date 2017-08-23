@@ -40,11 +40,11 @@ public:
 protected:
     /// Instanciates the texture, material, pass and texture unit state
     /// Sets the connection between attached data and the receive slot
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting();
     /// Disconnects the attached data from the receive slot
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping();
     /// Requests a rendering of the scene.
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating();
 
     /**
      * @brief Configures the service
@@ -60,9 +60,9 @@ protected:
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
      * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
      */
-    VISUOGREADAPTOR_API virtual void doConfigure();
+    VISUOGREADAPTOR_API virtual void configuring();
     /// Performs stop, start and update.
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void swapping();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;

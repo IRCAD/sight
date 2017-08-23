@@ -62,8 +62,10 @@ SNegato3D::~SNegato3D() noexcept
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doStart()
+void SNegato3D::starting()
 {
+    this->initialize();
+
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     SLM_ASSERT("TF 'key' not found", tfSelection);
 
@@ -118,7 +120,7 @@ void SNegato3D::doStart()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doStop()
+void SNegato3D::stopping()
 {
     this->removeTFConnections();
 
@@ -138,14 +140,18 @@ void SNegato3D::doStop()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doConfigure()
+void SNegato3D::configuring()
 {
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
     // Axis orientation mode by default
     m_orientation = OrientationMode::Z_AXIS;
 
-    if(m_configuration->hasAttribute("sliceIndex"))
+    if(config.count("sliceIndex"))
     {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        const std::string orientation = config.get<std::string>("sliceIndex");
 
         if(orientation == "axial")
         {
@@ -160,18 +166,17 @@ void SNegato3D::doConfigure()
             m_orientation = X_AXIS;
         }
     }
-    if(m_configuration->hasAttribute("autoresetcamera"))
+    if(config.count("autoresetcamera"))
     {
-        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoResetCamera == "yes");
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
-    if(m_configuration->hasAttribute("transform"))
+    if(config.count("transform"))
     {
-        this->setTransformId(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(config.get<std::string>("transform"));
     }
-    if(m_configuration->hasAttribute("filtering"))
+    if(config.count("filtering"))
     {
-        std::string filteringValue = m_configuration->getAttributeValue("filtering");
+        const std::string filteringValue = config.get<std::string>("filtering");
         ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
 
         if(filteringValue == "none")
@@ -186,19 +191,21 @@ void SNegato3D::doConfigure()
         this->setFiltering(filtering);
     }
 
-    this->parseTFConfig(m_configuration);
+    auto cfg = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("Tag 'config' not found.", cfg);
+    this->parseTFConfig(cfg);
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doUpdate()
+void SNegato3D::updating()
 {
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doSwap()
+void SNegato3D::swapping()
 {
     this->stopping();
     this->starting();

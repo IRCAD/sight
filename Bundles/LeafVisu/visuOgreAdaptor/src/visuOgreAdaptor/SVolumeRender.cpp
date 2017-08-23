@@ -115,86 +115,80 @@ SVolumeRender::~SVolumeRender() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doConfigure()
+void SVolumeRender::configuring()
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if(m_configuration->hasAttribute("autoresetcamera"))
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if(config.count("autoresetcamera"))
     {
-        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoResetCamera == "yes");
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
-    if(m_configuration->hasAttribute("preintegration"))
+    if(config.count("preintegration"))
     {
-        m_preIntegratedRendering = (m_configuration->getAttributeValue("preintegration") == "yes");
+        m_preIntegratedRendering = (config.get<std::string>("preintegration") == "yes");
     }
 
-    if(m_configuration->hasAttribute("mode"))
+    if(config.count("mode"))
     {
-        if(m_configuration->getAttributeValue("mode") == "slice")
+        if(config.get<std::string>("mode") == "slice")
         {
             m_renderingMode = VR_MODE_SLICE;
         }
-        if(m_configuration->getAttributeValue("mode") == "raytracing")
+        if(config.get<std::string>("mode") == "raytracing")
         {
             m_renderingMode = VR_MODE_RAY_TRACING;
 
-            if(m_configuration->hasAttribute("satSizeRatio"))
+            if(config.count("satSizeRatio"))
             {
-                std::string sizeRatioString = m_configuration->getAttributeValue("satSizeRatio");
-                m_satSizeRatio = std::stof(sizeRatioString);
+                m_satSizeRatio = config.get<float>("satSizeRatio");
             }
 
-            if(m_configuration->hasAttribute("satShells"))
+            if(config.count("satShells"))
             {
-                std::string shellsString = m_configuration->getAttributeValue("satShells");
-                m_satShells = std::stoi(shellsString);
+                m_satShells = config.get<int>("satShells");
             }
 
-            if(m_configuration->hasAttribute("satShellRadius"))
+            if(config.count("satShellRadius"))
             {
-                std::string shellRadiusString = m_configuration->getAttributeValue("satShellRadius");
-                m_satShellRadius = std::stoi(shellRadiusString);
+                m_satShellRadius = config.get<int>("satShellRadius");
             }
 
-            if(m_configuration->hasAttribute("satConeAngle"))
+            if(config.count("satConeAngle"))
             {
-                std::string coneAngleString = m_configuration->getAttributeValue("satConeAngle");
-                m_satConeAngle = std::stof(coneAngleString);
+                m_satConeAngle = config.get<float>("satConeAngle");
             }
 
-            if(m_configuration->hasAttribute("satConeSamples"))
+            if(config.count("satConeSamples"))
             {
-                std::string coneSamplesString = m_configuration->getAttributeValue("satConeSamples");
-                m_satConeSamples = std::stoi(coneSamplesString);
+                m_satConeSamples = config.get<int>("satConeSamples");
             }
 
-            if(m_configuration->hasAttribute("aoFactor"))
+            if(config.count("aoFactor"))
             {
-                std::string aoFactorString = m_configuration->getAttributeValue("aoFactor");
-                m_aoFactor = std::stod(aoFactorString);
+                m_aoFactor = config.get<double>("aoFactor");
             }
 
-            if(m_configuration->hasAttribute("colorBleedingFactor"))
+            if(config.count("colorBleedingFactor"))
             {
-                std::string colorBleedingFactorString = m_configuration->getAttributeValue("colorBleedingFactor");
-                m_colorBleedingFactor = std::stod(colorBleedingFactorString);
+                m_colorBleedingFactor = config.get<double>("colorBleedingFactor");
             }
 
-            if(m_configuration->hasAttribute("ao"))
+            if(config.count("ao"))
             {
-                m_ambientOcclusion = (m_configuration->getAttributeValue("ao") == "yes");
+                m_ambientOcclusion = (config.get<std::string>("ao") == "yes");
             }
 
-            if(m_configuration->hasAttribute("colorBleeding"))
+            if(config.count("colorBleeding"))
             {
-                m_colorBleeding = (m_configuration->getAttributeValue("colorBleeding") == "yes");
+                m_colorBleeding = (config.get<std::string>("colorBleeding") == "yes");
             }
 
-            if(m_configuration->hasAttribute("shadows"))
+            if(config.count("shadows"))
             {
-                m_shadows = (m_configuration->getAttributeValue("shadows") == "yes");
+                m_shadows = (config.get<std::string>("shadows") == "yes");
             }
         }
         else
@@ -203,12 +197,14 @@ void SVolumeRender::doConfigure()
         }
     }
 
-    if(m_configuration->hasAttribute("widgets"))
+    if(config.count("widgets"))
     {
-        m_widgetVisibilty = (m_configuration->getAttributeValue("widgets") == "yes");
+        m_widgetVisibilty = (config.get<std::string>("widgets") == "yes");
     }
 
-    this->parseTFConfig(m_configuration);
+    auto cfg = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("Tag 'config' not found.", cfg);
+    this->parseTFConfig(cfg);
 }
 
 //------------------------------------------------------------------------------
@@ -283,8 +279,10 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doStart()
+void SVolumeRender::starting()
 {
+    this->initialize();
+
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
     this->setTFSelectionFwID(tfSelection->getID());
@@ -394,7 +392,7 @@ void SVolumeRender::doStart()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doStop()
+void SVolumeRender::stopping()
 {
     this->removeTFConnections();
 
@@ -430,13 +428,13 @@ void SVolumeRender::doStop()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doUpdate()
+void SVolumeRender::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::doSwap()
+void SVolumeRender::swapping()
 {
 }
 
@@ -742,8 +740,8 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 
 void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType mode)
 {
-    this->doStop();
-    this->doStart();
+    this->stopping();
+    this->starting();
 }
 
 //-----------------------------------------------------------------------------
