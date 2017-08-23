@@ -44,7 +44,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <object uid="imageUID" type="::fwData::Image" />
             <object uid="TFSet" type="::fwData::Composite" src="deferred" />
             <object uid="TFSelectionsUID" type="::fwData::Composite" />
-            <object uid="Viewport" type="::scene2D::data::Viewport" />
+            <object uid="viewportUID" type="::fwRenderQt::data::Viewport" />
 
             <!--  Service entrance point for interface creation -->
             <service uid="IHM" type="::gui::frame::SDefaultFrame">
@@ -336,106 +336,116 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
 
             <!-- Declaration of the 2D scene service uses to create the TF editor which draw the range of transfer function define by the Scene2D_Shutter -->
-            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes" >
-                <in key="image" uid="imageUID" />
-                <inout key="viewport" uid="Viewport" />
-                <inout key="TFSelections" uid="TFSelectionsUID" />
+            <service uid="Scene2D" type="::fwRenderQt::SRender" >
                 <scene>
-
+                    <viewport x="-500" y="-1.1" width="500" height="1.2" />
                     <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
-
-                    <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                    <axis id="axeHistogramY" origin="0.0" scale="-0.0000025" scaleType="LINEAR" />
-
-                    <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1000" xMax="1000" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1" opacity="0.4" color="lightGray" xAxis="xAxis"
-                            yAxis="yAxis" zValue="2" viewportUID="viewport" />
-                    </adaptor>
-
-                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
-                            yAxis="yAxis" zValue="5" pointSize="12" viewportUID="viewport"
-                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                    </adaptor>
-
-                    <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" unit="%" align="left" min="0" max="1" step="0.1" viewportUID="viewport" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd." viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis"
-                            zValue="10" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%" viewportUID="viewport" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesTop" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd." viewportUID="viewport" color="red" xAxis="xAxis" yAxis="yAxis" zValue="10" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesRight" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%" viewportUID="viewport" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10" />
-                    </adaptor>
-
-                    <adaptor id="axisTestBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red" tickSize="5" interval="100" viewportUID="viewport" />
-                    </adaptor>
-
-                    <adaptor id="axisTestTop" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green" tickSize="5" interval="100" viewportUID="viewport" />
-                    </adaptor>
-
-                    <adaptor id="axisTestLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan" tickSize="5" interval="0.1" viewportUID="viewport" />
-                    </adaptor>
-
-                    <adaptor id="axisTestRight" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" viewportUID="viewport" />
-                    </adaptor>
-
-                    <adaptor id="viewportUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                    </adaptor>
-
+                    
+                    <adaptor uid="grid1" />
+                    <adaptor uid="tf2" />
+                    <adaptor uid="axisLeft" />
+                    <adaptor uid="scaleValuesBottom" />
+                    <adaptor uid="scaleValuesLeft" />
+                    <adaptor uid="scaleValuesTop" />
+                    <adaptor uid="scaleValuesRight" />
+                    <adaptor uid="axisTestBottom" />
+                    <adaptor uid="axisTestTop" />
+                    <adaptor uid="axisTestLeft" />
+                    <adaptor uid="axisTestRight" />
+                    <adaptor uid="viewportUpdater" />
                 </scene>
-
+            </service>
+            
+            <service uid="grid1" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-1000" xMax="1000" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1" opacity="0.4" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
+            <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <inout key="image" uid="imageUID" />
+                <inout key="tfSelection" uid="TFSelectionsUID" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" unit="%" align="left" min="0" max="1" step="0.1" />
+            </service>
+
+            <service uid="scaleValuesBottom" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd." color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+
+            <service uid="scaleValuesLeft" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+
+            <service uid="scaleValuesTop" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd." color="red" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+
+            <service uid="scaleValuesRight" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+            </service>
+
+            <service uid="axisTestBottom" type="::scene2D::adaptor::SAxis" autoConnect="yes">
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red" tickSize="5" interval="100" />
+            </service>
+
+            <service uid="axisTestTop" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green" tickSize="5" interval="100" />
+            </service>
+
+            <service uid="axisTestLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan" tickSize="5" interval="0.1" />
+            </service>
+
+            <service uid="axisTestRight" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" />
+            </service>
+            
+            <service uid="viewportUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes" >
+                <in key="viewport" uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+            </service>
+                    
             <!-- Declaration of the shutter service uses to focus a range of the transfer function which will be draw by the Scene2D service. -->
-            <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes" >
-                <in key="image" uid="imageUID" />
-                <inout key="viewport" uid="Viewport" />
-                <inout key="TFSelections" uid="TFSelectionsUID" />
+            <service uid="Scene2D_Shutter" type="::fwRenderQt::SRender" >
                 <scene>
-
                     <scene x="-1100" y="-1.1" width="2100" height="1.2" />
-                    <viewport id="view1" x="-1100" y="-1.1" width="2100" height="1.2" />
-
+                    <viewport x="-1100" y="-1.1" width="2100" height="1.2" />
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
 
-                    <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" color="lightGray" xAxis="xAxis" yAxis="yAxis"
-                            zValue="1" viewportUID="viewport"/>
-                    </adaptor>
-
-                    <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
-
-                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
-                            yAxis="yAxis" zValue="5" pointSize="12" viewportUID="viewport"
-                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                    </adaptor>
-
-                    <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
-                    </adaptor>
+                    <adaptor uid="grid1_Shutter" />                   
+                    <adaptor uid="tf2_Shutter" />
+                    <adaptor uid="viewportRangeSelector_Shutter" />
                 </scene>
+            </service>
+            <service uid="grid1_Shutter" type="::scene2D::adaptor::SGrid2D" >
+                <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
+            </service>
+
+            <service uid="tf2_Shutter" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
+                <inout key="image" uid="imageUID" />
+                <inout key="tfSelection" uid="TFSelectionsUID" />
+                <in key="viewport" uid="viewportUID" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="viewportRangeSelector_Shutter" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes" >
+                <inout key="viewport"  uid="viewportUID" />
+                <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
             </service>
 
             <service uid="imageEditorsManager" type="::fwServices::SConfigController">
@@ -460,6 +470,25 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <start uid="IHM" />
             <start uid="imageEditorsManager" />
 
+            <!-- Scene2D -->
+            <start uid="grid1" />
+            <start uid="tf2" />
+            <start uid="axisLeft" />
+            <start uid="scaleValuesBottom" />
+            <start uid="scaleValuesLeft" />
+            <start uid="scaleValuesTop" />
+            <start uid="scaleValuesRight" />
+            <start uid="axisTestBottom" />
+            <start uid="axisTestTop" />
+            <start uid="axisTestLeft" />
+            <start uid="axisTestRight" />
+            <start uid="viewportUpdater" />
+
+            <!-- Scene2D Shutter -->
+            <start uid="grid1_Shutter" />                   
+            <start uid="tf2_Shutter" />
+            <start uid="viewportRangeSelector_Shutter" />
+            
             <!-- Deferred start -->
             <start uid="TFEditor" />
 
