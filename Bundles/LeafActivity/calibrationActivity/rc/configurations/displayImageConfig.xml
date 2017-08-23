@@ -1,16 +1,15 @@
 <extension implements="::fwServices::registry::AppConfig2">
     <id>displayImageConfig</id>
     <parameters>
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <!-- defined by SConfigLauncher -->
         <param name="imageId1" />
         <param name="pointListId1" />
     </parameters>
     <config>
-
-        <object uid="${imageId1}" src='ref' type="::fwData::Image" />
-        <object uid="${pointListId1}" src='ref' type="::fwData::PointList" />
-
-        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame" >
+        <object uid="${imageId1}" src="ref" type="::fwData::Image" />
+        <object uid="${pointListId1}" src="ref" type="::fwData::PointList" />
+        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -23,30 +22,42 @@
             </registry>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="viewImage" type="::fwRenderVTK::SRender" autoConnect="yes">
-
-            <in key="imageKey" uid="${imageId1}" />
-            <in key="pointListKey" uid="${pointListId1}" />
-
             <scene>
                 <renderer id="default" background="0.0" />
-                <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="image" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-                    <config renderer="default" imageId="imageKey" color="#00FF00" />
-                </adaptor>
+                <adaptor uid="interactor2D" />
+                <adaptor uid="image" />
+                <adaptor uid="points" />
             </scene>
         </service>
+
+        <service uid="interactor2D" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="image" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="${imageId1}" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="points" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
+            <in key="pointlist" uid="${pointListId1}" />
+            <in key="image" uid="${imageId1}" />
+            <config renderer="default" color="#00FF00" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>BasicViewerFrame/closed</signal>
         </connect>
 
         <start uid="BasicViewerFrame" />
-
+        <!-- VTK scene 'viewImage' -->
+        <start uid="interactor2D" />
+        <start uid="image" />
+        <start uid="points" />
     </config>
 </extension>

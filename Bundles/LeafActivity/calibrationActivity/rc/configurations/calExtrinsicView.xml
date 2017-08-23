@@ -12,25 +12,18 @@
         <param name="videoGrabberImpl" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
-
         <object uid="Frame1" type="::fwData::Image" />
         <object uid="Frame2" type="::fwData::Image" />
-
         <object uid="Frame1TL" type="::arData::FrameTL" />
         <object uid="Frame2TL" type="::arData::FrameTL" />
-
         <object uid="${calibrationInfo1}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${calibrationInfo2}" type="::arData::CalibrationInfo" src="ref" />
-
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
         <object uid="${camera1}" type="::arData::Camera" src="ref" />
         <object uid="${camera2}" type="::arData::Camera" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
-
-        <service uid="extrinsicView" type="::gui::view::SDefaultView" >
+        <service uid="extrinsicView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -42,14 +35,14 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="::gui::view::SDefaultView" >
+        <service uid="extrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" caption="Calibration" />
                     <view align="bottom" caption="Information" />
                 </layout>
-                <toolBar />
+                <toolBar/>
             </gui>
             <registry>
                 <toolBar sid="toolBar" start="yes" />
@@ -59,7 +52,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
@@ -76,7 +69,7 @@
             </registry>
         </service>
 
-        <service uid="calibrationInfoView" type="::gui::view::SDefaultView" >
+        <service uid="calibrationInfoView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -91,7 +84,7 @@
             </registry>
         </service>
 
-        <service uid="videoView" type="::gui::view::SDefaultView" >
+        <service uid="videoView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -105,12 +98,12 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::gui::view::SDefaultView" >
+        <service uid="camerasView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view />
-                    <view />
+                    <view/>
+                    <view/>
                 </layout>
             </gui>
             <registry>
@@ -119,10 +112,10 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCamera" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="extrinsicCamera" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <editor />
+                    <editor/>
                     <menuItem name="Add" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
                     <menuItem name="Remove" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/remove.svg" />
                     <menuItem name="Reset" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg" />
@@ -140,7 +133,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::gui::view::SDefaultView" >
+        <service uid="cameraInfoView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -157,60 +150,59 @@
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
-
-        <service uid="ActionAdd" type="::gui::action::SSlotCaller" >
+        <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>ChessboardDetector/detectPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::gui::action::SSlotCaller" >
+        <service uid="ActionReset" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::gui::action::SSlotCaller" >
+        <service uid="ActionRemove" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller" >
+        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCal/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller" >
+        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/getSelection</slot>
             </slots>
         </service>
 
-        <service uid="ActionStartCamera" type="::gui::action::SSlotCaller" >
+        <service uid="ActionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/startCamera</slot>
                 <slot>VideoGrabber2/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="ActionStopCamera" type="::gui::action::SSlotCaller" >
+        <service uid="ActionStopCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/stopCamera</slot>
                 <slot>VideoGrabber2/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="PauseVideo" type="::gui::action::SSlotCaller" >
+        <service uid="PauseVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/pauseCamera</slot>
                 <slot>VideoGrabber2/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="LoopVideo" type="::gui::action::SSlotCaller" >
+        <service uid="LoopVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/loopVideo</slot>
                 <slot>VideoGrabber2/loopVideo</slot>
@@ -218,10 +210,8 @@
         </service>
 
         <!-- ******************************* Services ***************************************** -->
-
-        <service uid="VideoSlider" type="::videoQt::editor::SSlider"  />
-
-        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer"  worker="synchronizer">
+        <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="Frame1TL" />
                 <key uid="Frame2TL" />
@@ -233,48 +223,60 @@
             <framerate>30</framerate>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="camera1" type="::fwRenderVTK::SRender" autoConnect="yes">
-
-            <in key="frame" uid="Frame1" />
-
             <scene renderMode="timer">
                 <renderer id="default" background="0.0" />
-                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
+                <adaptor uid="videoAdapter1" />
+                <adaptor uid="interactorStyle1" />
             </scene>
         </service>
+
+        <service uid="videoAdapter1" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="Frame1" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="interactorStyle1" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="camera2" type="::fwRenderVTK::SRender" autoConnect="yes">
-
-            <in key="frame" uid="Frame2" />
-
             <scene renderMode="timer">
                 <renderer id="default" background="0.0" />
-                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
+                <adaptor uid="videoAdapter2" />
+                <adaptor uid="interactorStyle2" />
             </scene>
         </service>
+
+        <service uid="videoAdapter2" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="Frame2" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="interactorStyle2" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <service uid="ExtrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="Status" type="::uiTools::editor::SStatus" >
+        <service uid="Status" type="::uiTools::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector"  worker="extr_chess_checker">
+        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="extr_chess_checker">
             <in group="timeline">
                 <key uid="Frame1TL" />
                 <key uid="Frame2TL" />
@@ -286,18 +288,18 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
-        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo" >
+        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo1}" />
             <in key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="VideoGrabber1" type="${videoGrabberImpl}" >
+        <service uid="VideoGrabber1" type="${videoGrabberImpl}">
             <in key="camera" uid="${camera1}" />
             <inout key="frameTL" uid="Frame1TL" />
             <cameraFwId>${camera1}</cameraFwId>
         </service>
 
-        <service uid="VideoGrabber2" type="${videoGrabberImpl}" >
+        <service uid="VideoGrabber2" type="${videoGrabberImpl}">
             <in key="camera" uid="${camera2}" />
             <inout key="frameTL" uid="Frame2TL" />
             <cameraFwId>${camera2}</cameraFwId>
@@ -316,20 +318,20 @@
             <camIndex>${camIndex}</camIndex>
         </service>
 
-        <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
+        <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera1}" />
         </service>
 
-        <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
+        <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera2}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
-
         <connect>
             <signal>Frame1TL/objectPushed</signal>
             <slot>ChessboardDetector/checkPoints</slot>
         </connect>
+
         <connect>
             <signal>Frame2TL/objectPushed</signal>
             <slot>ChessboardDetector/checkPoints</slot>
@@ -386,5 +388,11 @@
         <start uid="synchronizer" />
         <start uid="VideoGrabber1" />
         <start uid="VideoGrabber2" />
+        <!-- VTK scene 'camera1' -->
+        <start uid="videoAdapter1" />
+        <start uid="interactorStyle1" />
+        <!-- VTK scene 'camera2' -->
+        <start uid="videoAdapter2" />
+        <start uid="interactorStyle2" />
     </config>
 </extension>
