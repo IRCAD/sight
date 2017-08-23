@@ -218,9 +218,9 @@
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
 
-                    <adaptor uid="modelSeriesAdaptor" start="yes" />
-                    <adaptor uid="MPRNegato3D" start="yes" />
-                    <adaptor uid="snapshot1" start="yes" />
+                    <adaptor uid="modelSeriesAdaptor" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="snapshot1" />
                 </scene>
             </service>
 
@@ -308,6 +308,11 @@
             <!-- Deferred start -->
             <start uid="representationEditor" />
             <start uid="organMaterialEditor" />
+
+            <!-- genericScene adaptors -->
+            <start uid="modelSeriesAdaptor" />
+            <start uid="MPRNegato3D" />
+            <start uid="snapshot1" />
         </config>
     </extension>
 </plugin>

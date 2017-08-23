@@ -121,12 +121,12 @@
                 <picker id="negato1default" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
 
-                <adaptor uid="snapshot1" start="yes" />
-                <adaptor uid="Interactor1" start="yes" />
-                <adaptor uid="modelSeriesAdaptor" start="no" />
-                <adaptor uid="VolumeScene3DA" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
-                <adaptor uid="image3DCursorAdaptor" start="no" />
+                <adaptor uid="snapshot1" />
+                <adaptor uid="Interactor1" />
+                <adaptor uid="modelSeriesAdaptor" />
+                <adaptor uid="VolumeScene3DA" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="image3DCursorAdaptor" />
             </scene>
         </service>
 
@@ -247,7 +247,14 @@
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
+
+        <!-- vr adaptors -->
+        <start uid="snapshot1" />
+        <start uid="Interactor1" />
         <start uid="modelSeriesAdaptor" />
+        <start uid="VolumeScene3DA" />
+        <start uid="nameAdaptor" />
+        <start uid="image3DCursorAdaptor" />
 
         <update uid="extractLandmarks" />
     </config>

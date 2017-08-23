@@ -55,15 +55,15 @@
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
 
-                <adaptor uid="snapshot" start="yes" />
-                <adaptor uid="interactor" start="yes" />
-                <adaptor uid="pickerInteractor" start="yes" />
-                <adaptor uid="MPRNegato" start="yes" />
-                <adaptor uid="text" start="yes" />
-                <adaptor uid="imageSliceOrientationText" start="yes" />
-                <adaptor uid="multiDistances" start="yes" />
-                <adaptor uid="landmarksNegato" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
+                <adaptor uid="snapshot" />
+                <adaptor uid="interactor" />
+                <adaptor uid="pickerInteractor" />
+                <adaptor uid="MPRNegato" />
+                <adaptor uid="text" />
+                <adaptor uid="imageSliceOrientationText" />
+                <adaptor uid="multiDistances" />
+                <adaptor uid="landmarksNegato" />
+                <adaptor uid="nameAdaptor" />
             </scene>
         </service>
 
@@ -148,5 +148,16 @@
 
         <start uid="LockImageSrv" />
         <start uid="mainView" />
+
+        <!-- negato adaptors -->
+        <start uid="snapshot"/>
+        <start uid="interactor" />
+        <start uid="pickerInteractor" />
+        <start uid="MPRNegato" />
+        <start uid="text" />
+        <start uid="imageSliceOrientationText" />
+        <start uid="multiDistances" />
+        <start uid="landmarksNegato" />
+        <start uid="nameAdaptor" />
     </config>
 </extension>

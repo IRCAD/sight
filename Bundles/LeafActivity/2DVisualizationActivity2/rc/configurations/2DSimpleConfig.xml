@@ -30,11 +30,11 @@
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
 
-                <adaptor uid="interactor4Negato" start="yes" />
-                <adaptor uid="imageText" start="yes" />
-                <adaptor uid="seriesAdaptor" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
-                <adaptor uid="imageSliceOrientationText" start="yes" />
+                <adaptor uid="interactor4Negato" />
+                <adaptor uid="imageText" />
+                <adaptor uid="seriesAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="imageSliceOrientationText" />
             </scene>
         </service>
 
@@ -82,5 +82,12 @@
         <start uid="imageDumpLocker" />
         <start uid="medicalImgConverter" />
         <start uid="mainview" />
+
+        <!-- gs adaptors -->
+        <start uid="interactor4Negato" />
+        <start uid="imageText" />
+        <start uid="seriesAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="imageSliceOrientationText" />
     </config>
 </extension>

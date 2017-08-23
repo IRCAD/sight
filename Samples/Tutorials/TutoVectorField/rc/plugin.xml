@@ -139,9 +139,9 @@
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.5" />
-                    <adaptor uid="MPRNegato3D" start="yes" />
-                    <adaptor uid="vectorFieldAdatporId" start="yes" />
-                    <adaptor uid="snapshot" start="yes" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="vectorFieldAdatporId" />
+                    <adaptor uid="snapshot" />
                 </scene>
             </service>
 
@@ -193,6 +193,11 @@
             </connect>
 
             <start uid="IHM" />
+
+            <!--  genericScene adaptors -->
+            <start uid="MPRNegato3D" />
+            <start uid="vectorFieldAdatporId" />
+            <start uid="snapshot" />
         </config>
     </extension>
 </plugin>

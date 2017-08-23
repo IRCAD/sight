@@ -79,12 +79,12 @@
             <scene>
                 <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="snapshot1" start="yes" />
-                <adaptor uid="Interactor1" start="yes" />
-                <adaptor uid="MPRNegato2" start="yes" />
-                <adaptor uid="text" start="yes" />
-                <adaptor uid="multiDistances" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
+                <adaptor uid="snapshot1" />
+                <adaptor uid="Interactor1" />
+                <adaptor uid="MPRNegato2" />
+                <adaptor uid="text" />
+                <adaptor uid="multiDistances" />
+                <adaptor uid="nameAdaptor" />
             </scene>
         </service>
 
@@ -172,6 +172,16 @@
         <start uid="tfWidget" />
         <!-- Deferred start -->
         <start uid="tfSelector" />
+
+        <!-- genericScene adaptors -->
+        <start uid="snapshot1" />
+        <start uid="Interactor1" />
+        <start uid="MPRNegato2" />
+        <start uid="text" />
+        <start uid="multiDistances" />
+        <start uid="nameAdaptor" />
+
         <update uid="fieldMgr" />
+
     </config>
 </extension>

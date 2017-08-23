@@ -81,17 +81,17 @@
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
 
-                <adaptor uid="snapshot" start="yes" />
-                <adaptor uid="orientationMarker" start="yes" />
-                <adaptor uid="interactor" start="yes" />
-                <adaptor uid="pickerInteractor" start="yes" />
-                <adaptor uid="${Medical3DCamera}" start="yes" />
-                <adaptor uid="MPRNegato" start="no" />
-                <adaptor uid="modelSeries" start="yes" />
-                <adaptor uid="text" start="no" />
-                <adaptor uid="multiDistances" start="no" />
-                <adaptor uid="landmarksNegato" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
+                <adaptor uid="snapshot" />
+                <adaptor uid="orientationMarker" />
+                <adaptor uid="interactor" />
+                <adaptor uid="pickerInteractor" />
+                <adaptor uid="${Medical3DCamera}" />
+                <adaptor uid="MPRNegato" />
+                <adaptor uid="modelSeries" />
+                <adaptor uid="text" />
+                <adaptor uid="multiDistances" />
+                <adaptor uid="landmarksNegato" />
+                <adaptor uid="nameAdaptor" />
             </scene>
         </service>
 
@@ -201,9 +201,19 @@
         <start uid="sliderNegato" />
         <start uid="distanceNegatoEditor" />
         <start uid="sliceListNegatoEditor" />
+
+        <!-- negato adaptors -->
+        <start uid="snapshot" />
+        <start uid="orientationMarker" />
+        <start uid="interactor" />
+        <start uid="pickerInteractor" />
+        <start uid="${Medical3DCamera}" />
         <start uid="MPRNegato" />
+        <start uid="modelSeries" />
         <start uid="text" />
         <start uid="multiDistances" />
+        <start uid="landmarksNegato" />
+        <start uid="nameAdaptor" />
 
         <update uid="extractImage" />
     </config>

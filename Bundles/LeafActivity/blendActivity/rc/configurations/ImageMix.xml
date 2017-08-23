@@ -150,14 +150,14 @@
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
                 <renderer id="default" background="0.0" />
-                <adaptor uid="MPRNegato3D" start="yes" />
-                <adaptor uid="interactor" start="yes" />
-                <adaptor uid="bgImagePicker" start="yes" />
-                <adaptor uid="frontImagePicker" start="yes" />
-                <adaptor uid="snapshotAdaptor" start="yes" />
-                <adaptor uid="myImagesBlendAdaptor" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
-                <adaptor uid="myImagesProbeCursor" start="yes" />
+                <adaptor uid="MPRNegato3D" />
+                <adaptor uid="interactor" />
+                <adaptor uid="bgImagePicker" />
+                <adaptor uid="frontImagePicker" />
+                <adaptor uid="snapshotAdaptor" />
+                <adaptor uid="myImagesBlendAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="myImagesProbeCursor" />
             </scene>
         </service>
 
@@ -219,5 +219,16 @@
         </connect>
 
         <start uid="mainView" />
+
+        <!-- blendGenericScene adaptors -->
+        <start uid="interactor" />
+        <start uid="bgImagePicker" />
+        <start uid="frontImagePicker" />
+        <start uid="snapshotAdaptor" />
+        <start uid="myImagesBlendAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="myImagesProbeCursor" />
+        <start uid="MPRNegato3D" />
+
     </config>
 </extension>

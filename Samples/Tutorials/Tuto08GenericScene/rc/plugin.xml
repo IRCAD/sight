@@ -124,10 +124,10 @@
                     <!-- Renderer -->
                     <renderer id="default" background="0.0" />
 
-                    <adaptor uid="meshAdaptor" start="yes" />
-                    <adaptor uid="textureAdaptor" start="yes" />
-                    <adaptor uid="imageAdaptor" start="yes" />
-                    <adaptor uid="snapshotAdaptor" start="yes" />
+                    <adaptor uid="meshAdaptor" />
+                    <adaptor uid="textureAdaptor" />
+                    <adaptor uid="imageAdaptor" />
+                    <adaptor uid="snapshotAdaptor" />
                 </scene>
             </service>
 
@@ -285,6 +285,12 @@
 
             <start uid="ihm" />
             <start uid="progressBar" />
+
+            <!-- genericScene adaptors-->
+            <start uid="meshAdaptor" />
+            <start uid="textureAdaptor" />
+            <start uid="imageAdaptor" />
+            <start uid="snapshotAdaptor" />
         </config>
     </extension>
 </plugin>

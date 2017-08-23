@@ -233,8 +233,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
 
-                    <adaptor uid="vRAdaptor" start="yes" />
-                    <adaptor uid="ImageText1" start="yes" />
+                    <adaptor uid="vRAdaptor" />
+                    <adaptor uid="ImageText1" />
                 </scene>
             </service>
 
@@ -260,9 +260,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
 
-                    <adaptor uid="MPRNegato3D" start="yes" />
-                    <adaptor uid="ImageText2" start="yes" />
-                    <adaptor uid="cameraScene3DID" start="yes" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="ImageText2" />
+                    <adaptor uid="cameraScene3DID" />
                 </scene>
             </service>
 
@@ -290,9 +290,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
 
-                    <adaptor uid="Interactor3Negato" start="yes" />
-                    <adaptor uid="MPRNegato2D1" start="yes" />
-                    <adaptor uid="ImageText3" start="yes" />
+                    <adaptor uid="Interactor3Negato" />
+                    <adaptor uid="MPRNegato2D1" />
+                    <adaptor uid="ImageText3" />
                 </scene>
             </service>
 
@@ -321,9 +321,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
 
-                    <adaptor uid="Interactor4Negato" start="yes" />
-                    <adaptor uid="MPRNegato2D2" start="yes" />
-                    <adaptor uid="ImageText4" start="yes" />
+                    <adaptor uid="Interactor4Negato" />
+                    <adaptor uid="MPRNegato2D2" />
+                    <adaptor uid="ImageText4" />
                 </scene>
             </service>
 
@@ -413,7 +413,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <in key="viewport" uid="viewportUID" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
             </service>
-                    
+
             <!-- Declaration of the shutter service uses to focus a range of the transfer function which will be draw by the Scene2D service. -->
             <service uid="Scene2D_Shutter" type="::fwRenderQt::SRender" >
                 <scene>
@@ -421,7 +421,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <viewport x="-1100" y="-1.1" width="2100" height="1.2" />
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                    <adaptor uid="grid1_Shutter" />                   
+                    <adaptor uid="grid1_Shutter" />
                     <adaptor uid="tf2_Shutter" />
                     <adaptor uid="viewportRangeSelector_Shutter" />
                 </scene>
@@ -486,10 +486,29 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <start uid="viewportUpdater" />
 
             <!-- Scene2D Shutter -->
-            <start uid="grid1_Shutter" />                   
+            <start uid="grid1_Shutter" />
             <start uid="tf2_Shutter" />
             <start uid="viewportRangeSelector_Shutter" />
-            
+
+            <!-- genericScene1 -->
+            <start uid="vRAdaptor" />
+            <start uid="ImageText1" />
+
+            <!-- genericscene2 -->
+            <start uid="MPRNegato3D" />
+            <start uid="ImageText2" />
+            <start uid="cameraScene3DID" />
+
+            <!-- negato1 -->
+            <start uid="Interactor3Negato" />
+            <start uid="MPRNegato2D1" />
+            <start uid="ImageText3" />
+
+            <!-- negato2 -->
+            <start uid="Interactor4Negato" />
+            <start uid="MPRNegato2D2" />
+            <start uid="ImageText4" />
+
             <!-- Deferred start -->
             <start uid="TFEditor" />
         </config>

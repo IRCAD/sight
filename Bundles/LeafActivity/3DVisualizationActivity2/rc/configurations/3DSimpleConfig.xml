@@ -16,9 +16,9 @@
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
 
-                <adaptor uid="modelAdaptor" start="yes" />
-                <adaptor uid="nameAdaptor" start="yes" />
-                <adaptor uid="orientationMarker" start="yes" />
+                <adaptor uid="modelAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="orientationMarker" />
             </scene>
         </service>
 
@@ -39,5 +39,10 @@
         <!-- *************************** End generic scene *************************** -->
 
         <start uid="gs" />
+
+        <!-- gs adaptors -->
+        <start uid="modelAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="orientationMarker" />
     </config>
 </extension>
