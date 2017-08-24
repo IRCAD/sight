@@ -2,9 +2,10 @@
     <id>mesherParametersCfg</id>
     <parameters>
         <param name="GENERIC_UID" />
-        <param name="MESHER_UID" />
         <param name="TRIGGER_CHANNEL" />
         <param name="CLOSE_CONFIG_CHANNEL" />
+        <param name="MESHER_INT_CHANNEL" />
+        <param name="MESHER_BOOL_CHANNEL" />
     </parameters>
 
     <config>
@@ -36,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="input_parameters" type="::guiQt::editor::SParameters" autoConnect="no">
+        <service uid="input_parameters" type="::guiQt::editor::SParameters">
             <parameters>
                 <param type="int" name="Min value to mesh" key="valueMin" defaultValue="1" min="0" max="255" />
                 <param type="int" name="Max value to mesh" key="valueMax" defaultValue="255" min="0" max="255" />
@@ -48,19 +49,17 @@
             </parameters>
         </service>
 
-        <service uid="startMesher" type="::uiLogo::editor::SButton" autoConnect="no">
+        <service uid="startMesher" type="::uiLogo::editor::SButton">
             <label>Start</label>
             <tooltip>Launch the CGoGn mesher with the settings above.</tooltip>
         </service>
 
-        <connect>
+        <connect channel="${MESHER_INT_CHANNEL}">
             <signal>input_parameters/intChanged</signal>
-            <slot>${MESHER_UID}/setInteger</slot>
         </connect>
 
-        <connect>
+        <connect channel="${MESHER_BOOL_CHANNEL}">
             <signal>input_parameters/boolChanged</signal>
-            <slot>${MESHER_UID}/setBoolean</slot>
         </connect>
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
@@ -75,4 +74,3 @@
 
     </config>
 </extension>
-
