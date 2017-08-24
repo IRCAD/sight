@@ -61,8 +61,8 @@ class IVtkRenderWindowInteractorManager;
             <vtkObject id="transform" class="vtkTransform" />
             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
-            <adaptor uid="tmAdaptor" start="yes" />
-            <adaptor uid="snapshot" start="yes" />
+            <adaptor uid="tmAdaptor" />
+            <adaptor uid="snapshot" />
         </scene>
         <fps>30</fps>
     </service>
@@ -89,7 +89,6 @@ class IVtkRenderWindowInteractorManager;
  *    - \b vtkclass (optional, by default vtkCellPicker): the classname of the picker to create.
  *  - \b adaptor
  *    - \b uid (mandatory): the uid of the adaptor
- *    - \b start (optional, default: "no") defines if the adaptor is started by the scene
  */
 class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
@@ -124,9 +123,6 @@ public:
 
     /// Returns the vtkObject with the given id
     FWRENDERVTK_API vtkObject* getVtkObject(const VtkObjectIdType& objectId) const;
-
-    /// Returns the adaptor with the given id
-    FWRENDERVTK_API SPTR(IAdaptor) getAdaptor(const AdaptorIdType &adaptorId) const;
 
     /// Get a vtkTransform in the SRender, referenced by a key. Create it if it does not exist.
     FWRENDERVTK_API vtkTransform* getOrAddVtkTransform( const VtkObjectIdType& _id );
@@ -167,20 +163,6 @@ protected:
 
 private:
 
-    class SceneAdaptor
-    {
-
-    public:
-
-        SPTR(IAdaptor) getService() const
-        {
-            return m_service.lock();
-        }
-
-        WPTR(IAdaptor) m_service;
-        bool m_start;
-    };
-
     /// Slot called when on each timer update
     void requestRender();
 
@@ -217,12 +199,8 @@ private:
     /// @brief scene's transforms
     typedef std::map< VtkObjectIdType, vtkObject* > VtkObjectMapType;
 
-    /// @brief Actives adaptors in scene
-    typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
-
     RenderersMapType m_renderers;
     PickersMapType m_pickers;
-    SceneAdaptorsMapType m_sceneAdaptors;
     VtkObjectMapType m_vtkObjects;
 
     bool m_pendingRenderRequest;

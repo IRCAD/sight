@@ -279,15 +279,7 @@ void SRender::configuring()
     {
         SLM_FATAL_IF("Missing 'uid' attribute in adaptor configuration", !currentConfig->hasAttribute("uid"));
 
-        SceneAdaptor adaptor;
-        std::string uid        = currentConfig->getAttributeValue("uid");
-        std::string startValue = currentConfig->getAttributeValue("start");
-
-        SLM_FATAL_IF("Wrong value '"+ startValue +"' for 'start' attribute (require yes or no)",
-                     !startValue.empty() && startValue != "yes" && startValue != "no");
-        adaptor.m_start = (startValue == "yes");
-
-        m_sceneAdaptors[uid] = adaptor;
+        std::string uid = currentConfig->getAttributeValue("uid");
 
         // register the assiciation <adaptor, scene>
         auto& registry = ::fwRenderVTK::registry::getAdaptorRegistry();
@@ -349,41 +341,6 @@ void SRender::starting()
         m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(renderer);
     }
 
-    // Start adaptors according to their starting priority
-    std::vector< SPTR(IAdaptor) > startAdaptors;
-
-    const auto servicesVector = ::fwServices::OSR::getServices("::fwRenderVTK::IAdaptor");
-
-    for(auto& sceneAdaptor : m_sceneAdaptors)
-    {
-        if (sceneAdaptor.second.m_start)
-        {
-            auto result =
-                std::find_if(servicesVector.begin(), servicesVector.end(),
-                             [sceneAdaptor](const ::fwServices::IService::sptr& srv)
-                {
-                    return srv->getID() == sceneAdaptor.first;
-                });
-
-            SLM_ASSERT("Adaptor '" + sceneAdaptor.first + "' is not found", result != servicesVector.end());
-
-            sceneAdaptor.second.m_service = ::fwRenderVTK::IAdaptor::dynamicCast(*result);
-            startAdaptors.emplace_back(sceneAdaptor.second.getService());
-        }
-    }
-
-    std::sort(startAdaptors.begin(), startAdaptors.end(),
-              [](const SPTR(IAdaptor)& a, const SPTR(IAdaptor)& b)
-        {
-            return b->getStartPriority() > a->getStartPriority();
-        });
-
-    for(auto& adaptor : startAdaptors)
-    {
-        adaptor->start();
-        SLM_ASSERT("Adaptor is not started", adaptor->isStarted());
-    }
-
     if(m_timer)
     {
         m_timer->start();
@@ -398,30 +355,6 @@ void SRender::stopping()
     {
         m_timer->stop();
     }
-
-    // Stop adaptors in the reverse order of their starting priority
-    std::vector< SPTR(IAdaptor) > stopAdaptors;
-
-    for(auto& sceneAdaptor : m_sceneAdaptors)
-    {
-        if(sceneAdaptor.second.m_start && sceneAdaptor.second.getService())
-        {
-            stopAdaptors.emplace_back(sceneAdaptor.second.getService());
-        }
-    }
-
-    std::sort(stopAdaptors.begin(), stopAdaptors.end(),
-              [](const SPTR(IAdaptor)& a, const SPTR(IAdaptor)& b)
-        {
-            return b->getStartPriority() < a->getStartPriority();
-        });
-
-    for(auto& adaptor : stopAdaptors)
-    {
-        adaptor->stop();
-    }
-    stopAdaptors.clear();
-    m_sceneAdaptors.clear();
 
     this->stopContext();
 
@@ -586,25 +519,6 @@ vtkObject* SRender::getVtkObject(const VtkObjectIdType& objectId) const
         return nullptr;
     }
     return iter->second;
-}
-
-//-----------------------------------------------------------------------------
-
-SPTR(IAdaptor) SRender::getAdaptor(const SRender::AdaptorIdType& adaptorId) const
-{
-    IAdaptor::sptr adaptor;
-    SceneAdaptorsMapType::const_iterator it = m_sceneAdaptors.find(adaptorId);
-
-    if ( it != m_sceneAdaptors.end() )
-    {
-        adaptor = it->second.getService();
-    }
-    else
-    {
-        SLM_WARN("adaptor '" + adaptorId + "' not found");
-    }
-
-    return adaptor;
 }
 
 //-----------------------------------------------------------------------------
