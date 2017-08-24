@@ -340,14 +340,6 @@ void IAdaptor::registerServiceInOut(const ::fwData::Object::sptr& obj,
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::registerService( ::fwRenderVTK::IAdaptor::sptr service)
-{
-    SLM_ERROR("This method is deprecated, use createSubAdaptor() instead.");
-    m_subServices.push_back(service);
-}
-
-//------------------------------------------------------------------------------
-
 void IAdaptor::unregisterService( ::fwRenderVTK::IAdaptor::sptr service)
 {
     auto iter = std::find_if(m_subServices.begin(), m_subServices.end(),

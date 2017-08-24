@@ -200,12 +200,6 @@ protected:
                                               const bool autoConnect,
                                               ::fwServices::IService::Config& config);
 
-    /**
-     * @brief Stores the service in the subServices list
-     * @deprecated use createSubAdaptor and registerServiceInput or registerServiceInOut to create adaptors
-     */
-    FWRENDERVTK_API void registerService( ::fwRenderVTK::IAdaptor::sptr service );
-
     /// Unregiters the sub-adaptor from the OSR and the subServices list
     FWRENDERVTK_API void unregisterService(::fwRenderVTK::IAdaptor::sptr service);
 
@@ -248,13 +242,6 @@ protected:
     /// notify a render request iff vtkPipeline is modified
     FWRENDERVTK_API void requestRender();
 
-    /// @deprecated use getInput instead
-    template< class DATATYPE >
-    CSPTR(DATATYPE) getSafeInput(const std::string& key) const;
-    /// @deprecated use getInOut instead
-    template< class DATATYPE >
-    SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
-
     /// state of the pipeline
     bool m_vtkPipelineModified;
     SRender::RendererIdType m_rendererId;
@@ -270,40 +257,6 @@ protected:
 
     bool m_autoRender;
 };
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
-CSPTR(DATATYPE) IAdaptor::getSafeInput(const std::string& key) const
-{
-    SLM_ERROR("This method is deprecated, use getInput<...>(...) instead.");
-    if( ::fwServices::IService::isVersion2() )
-    {
-        return this->getRenderService()->getInput<DATATYPE>(key);
-    }
-    else
-    {
-        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
-    }
-}
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
-SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
-{
-    SLM_ERROR("This method is deprecated, use getInout<..>(...) instead.");
-    if( ::fwServices::IService::isVersion2() )
-    {
-        return this->getRenderService()->getInOut<DATATYPE>(key);
-    }
-    else
-    {
-        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
-    }
-}
-
-//------------------------------------------------------------------------------
 
 }
 
