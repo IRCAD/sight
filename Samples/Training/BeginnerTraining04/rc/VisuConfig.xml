@@ -5,26 +5,30 @@
         <param name="WID_PARENT" />
     </parameters>
     <config>
-
         <object uid="${mesh}" type="::fwData::Mesh" src="ref" />
+        <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <inout key="mesh" uid="${mesh}" />
             <scene>
                 <!-- Renderer -->
                 <renderer id="default" background="0.0" />
-
-                <!-- Mesh adaptor -->
-                <adaptor id="meshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                    <config renderer="default" picker="" />
-                </adaptor>
+                <adaptor uid="meshAdaptor" />
             </scene>
             <registry>
                 <parent wid="${WID_PARENT}" />
             </registry>
         </service>
 
-        <start uid="genericScene" />
+        <!-- Mesh adaptor -->
+        <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+            <in key="mesh" uid="${mesh}" />
+            <config renderer="default" picker="" />
+        </service>
 
+        <!-- *************************** End generic scene *************************** -->
+
+        <start uid="genericScene" />
+        <!-- VTK scene 'genericScene' -->
+        <start uid="meshAdaptor" />
     </config>
 </extension>
