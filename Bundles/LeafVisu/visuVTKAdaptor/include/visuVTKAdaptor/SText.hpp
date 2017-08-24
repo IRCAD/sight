@@ -26,7 +26,7 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SText">
+   <service type="::visuVTKAdaptor::SText" autoConnect="yes">
         <in key="object" uid="..." />
         <config renderer="default" color="#ff4ae6" fontSize="20" fontFamily="courier" />
    </service>

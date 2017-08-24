@@ -55,36 +55,6 @@ void IAdaptor::configureParams()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring()
-{
-    SLM_ERROR("configuring() method must be implemented for '" + this->getClassname() + "'");
-    this->configureParams();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::starting()
-{
-    SLM_ERROR("starting() method must be implemented for '" + this->getClassname() + "'");
-    this->initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::stopping()
-{
-    SLM_ERROR("stopping() method must be implemented for '" + this->getClassname() + "'");
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::updating()
-{
-    SLM_ERROR("updating() method must be implemented for '" + this->getClassname() + "'");
-}
-
-//------------------------------------------------------------------------------
-
 void IAdaptor::initialize()
 {
     if(m_renderService.expired())
@@ -92,8 +62,12 @@ void IAdaptor::initialize()
         // retrieve the SRender service associated to this adaptor
         const auto servicesVector = ::fwServices::OSR::getServices("::fwRenderVTK::SRender");
 
-        const auto& registry        = ::fwRenderVTK::registry::getAdaptorRegistry();
-        const auto& renderServiceId = registry.at(this->getID());
+        const auto& registry = ::fwRenderVTK::registry::getAdaptorRegistry();
+
+        const std::string adaptorID = this->getID();
+        SLM_ASSERT("The service '" + adaptorID + "' is not found in the VTK adaptor registry. Make sure the service is "
+                   "declared in a SRender.", registry.find(adaptorID) != registry.end());
+        const auto& renderServiceId = registry.at(adaptorID);
 
         auto result =
             std::find_if(servicesVector.begin(), servicesVector.end(),

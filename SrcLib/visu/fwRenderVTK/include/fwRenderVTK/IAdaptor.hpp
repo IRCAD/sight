@@ -133,17 +133,6 @@ protected:
      */
     FWRENDERVTK_API virtual ~IAdaptor() noexcept;
 
-    /**
-     * @name    Standard service methods
-     */
-    //@{
-    // TODO remove: must be reimplemented in all adaptors
-    FWRENDERVTK_API void configuring();
-    FWRENDERVTK_API void starting();
-    FWRENDERVTK_API void stopping();
-    FWRENDERVTK_API void updating();
-    //@}
-
     /// Parse the xml configuration for renderer, picker and transform
     FWRENDERVTK_API void configureParams();
 
