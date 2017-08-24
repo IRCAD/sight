@@ -185,6 +185,8 @@ void SVideo::updating()
 
     m_imageData->Modified();
     this->setVtkPipelineModified();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
