@@ -70,13 +70,6 @@ void SPointList3D::starting()
 {
     this->initialize();
 
-    ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
-
-    if (pl)
-    {
-        m_connections.connect(pl, ::fwData::PointList::s_POINT_ADDED_SIG, this->getSptr(), s_UPDATE_SLOT);
-    }
-
     m_points = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
     polydata->SetPoints(m_points);
@@ -93,8 +86,11 @@ void SPointList3D::starting()
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue());
-    actor->GetProperty()->SetOpacity(m_ptColor->alpha());
+    actor->GetProperty()->SetColor(static_cast<double>(m_ptColor->red()),
+                                   static_cast<double>(m_ptColor->green()),
+                                   static_cast<double>(m_ptColor->blue()));
+
+    actor->GetProperty()->SetOpacity(static_cast<double>(m_ptColor->alpha()));
 
     if (!this->getTransformId().empty())
     {
