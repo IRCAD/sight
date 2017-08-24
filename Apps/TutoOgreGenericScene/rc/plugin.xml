@@ -182,9 +182,9 @@
             <!-- Ogre scene 'genericSceneOgre' -->
             <start uid="interactorAdaptor" />
             <start uid="cameraAdaptor" />
-            <start uid="meshAdaptor" />
             <start uid="textureAdaptor" />
             <start uid="materialAdaptor" />
+            <start uid="meshAdaptor" />
             <start uid="negato3DAdaptor" />
 
         </config>

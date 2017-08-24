@@ -299,15 +299,10 @@ void SLight::swapping()
 
 void SLight::stopping()
 {
-    if(!m_transformService.expired())
-    {
-        m_transformService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_transformService.lock());
-    }
+    this->unregisterServices();
+    m_transformService.reset();
 
     this->getSceneManager()->destroyLight(m_light);
-
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------

@@ -20,7 +20,6 @@
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -68,12 +67,6 @@ SRender::SRender() noexcept :
 SRender::~SRender() noexcept
 {
     m_ogreRoot = nullptr;
-
-    for(auto& sceneAdaptor : m_adaptors)
-    {
-        auto& registry = ::fwRenderOgre::registry::getAdaptorRegistry();
-        registry.erase(sceneAdaptor.first);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -105,9 +98,7 @@ void SRender::configuring()
     for( auto it = adaptorConfigs.first; it != adaptorConfigs.second; ++it )
     {
         const std::string uid = it->second.get<std::string>("<xmlattr>.uid");
-        m_adaptors[uid] = IAdaptor::sptr();
-
-        auto& registry = ::fwRenderOgre::registry::getAdaptorRegistry();
+        auto& registry        = ::fwRenderOgre::registry::getAdaptorRegistry();
         registry[uid] = this->getID();
     }
 }
@@ -137,7 +128,15 @@ void SRender::starting()
     for( auto it = bkgConfigs.first; it != bkgConfigs.second; ++it )
     {
         OSLM_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
-        this->configureBackgroundLayer(it->second);
+        try
+        {
+            this->configureBackgroundLayer(it->second);
+        }
+        catch (std::exception& e)
+        {
+            OSLM_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
+        }
+
         bHasBackground = true;
     }
 
@@ -172,22 +171,6 @@ void SRender::starting()
 
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
     m_interactorManager->connectToContainer();
-
-    auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
-
-    for(auto& sceneAdaptor : m_adaptors)
-    {
-        auto result =
-            std::find_if(servicesVector.begin(), servicesVector.end(),
-                         [sceneAdaptor](const ::fwServices::IService::sptr& srv)
-            {
-                return srv->getID() == sceneAdaptor.first;
-            });
-
-        SLM_ASSERT("Adaptor '" + sceneAdaptor.first + "' is not found", result != servicesVector.end());
-
-        sceneAdaptor.second = ::fwRenderOgre::IAdaptor::dynamicCast(*result);
-    }
 }
 
 //-----------------------------------------------------------------------------

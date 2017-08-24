@@ -397,9 +397,7 @@ void Layer::destroyScene()
 {
     if(m_lightAdaptor)
     {
-        m_lightAdaptor->disconnect();
-        m_lightAdaptor->stop();
-        ::fwServices::OSR::unregisterService(m_lightAdaptor);
+        ::fwRenderOgre::ILight::destroyLightAdaptor(m_lightAdaptor);
         m_lightAdaptor.reset();
     }
 }

@@ -142,8 +142,13 @@ private:
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
 
+    /// List of all light adaptors (existing in the configuration and those created by this editor)
     std::vector< ::fwRenderOgre::ILight::sptr > m_lightAdaptors;
 
+    /// List of adaptors managed by this editor
+    std::vector< ::fwRenderOgre::ILight::sptr > m_managedLightAdaptors;
+
+    /// Currently selected light
     ::fwRenderOgre::ILight::sptr m_currentLight;
 
     /// Connection service, needed for slot/signal association

@@ -25,6 +25,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/helper/Config.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -188,9 +189,6 @@ private:
     /// True if the rendering is done only when requested
     bool m_renderOnDemand;
 
-    /// Contain all adaptors
-    std::map< AdaptorIdType, WPTR(IAdaptor)> m_adaptors;
-
     /// True if the render window is in fullscreen.
     bool m_fullscreen;
 };
@@ -200,14 +198,18 @@ private:
 template<class T>
 std::vector<SPTR(T)> SRender::getAdaptors() const
 {
+    auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
-    for(auto& sceneAdaptor : m_adaptors)
+    for(auto& sceneAdaptor : servicesVector)
     {
-        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor.second.lock());
+        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
         if( adaptor )
         {
-            resultVector.push_back(adaptor);
+            if( adaptor->getRenderService() == this->getConstSptr())
+            {
+                resultVector.push_back(adaptor);
+            }
         }
     }
 
