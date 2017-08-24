@@ -7,6 +7,8 @@
 #ifndef __FWRENDERQT_DATA_AXIS_HPP__
 #define __FWRENDERQT_DATA_AXIS_HPP__
 
+#include <memory>
+
 namespace fwRenderQt
 {
 namespace data
