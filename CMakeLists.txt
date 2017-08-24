@@ -828,7 +828,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(PLATFORM)
     unset(USE_PCH_FROM_TARGET)
     unset(DISABLE_PCH)
-    unset(BEFORE)
+    unset(START_BEFORE)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -1002,7 +1002,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
             set(${NAME}_START "${START}")
         endif()
         
-        set(${NAME}_BEFORE "${BEFORE}")
+        set(${NAME}_START_BEFORE "${START_BEFORE}")
 
         list(APPEND PROJECT_LIST ${NAME})
     endif()

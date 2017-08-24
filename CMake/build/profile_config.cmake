@@ -40,11 +40,11 @@ macro(profile_setup ${PROJECT})
     # Manage bundle activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
     
-        # Ensure that we start this bundle before the "before"
-        foreach(CURRENT_BEFORE ${${CURRENT_REQUIREMENT}_BEFORE})
-            list(FIND START_BUNDLES ${CURRENT_BEFORE} INDEX_BEFORE )
-            if(NOT ${INDEX_BEFORE} EQUAL -1)
-                 list(INSERT START_BUNDLES ${INDEX_BEFORE} "${CURRENT_REQUIREMENT}")
+        # Ensure that we start this bundle before the "START_BEFORE"
+        foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
+            list(FIND START_BUNDLES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
+            if(NOT ${INDEX_START_BEFORE} EQUAL -1)
+                 list(INSERT START_BUNDLES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
                  break()
             endif()
         endforeach()
