@@ -65,9 +65,8 @@
             <object uid="image2" type="::fwData::Image" />
             <object uid="imageResult" type="::fwData::Image" />
             <!-- ***************************************** End Objects declaration ******************************************* -->
-
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Ex04ImageSubstraction</name>
@@ -79,12 +78,12 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::SDefaultView" >
+            <service uid="mainView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Main view" align="center" />
                     </layout>
-                    <toolBar />
+                    <toolBar/>
                 </gui>
                 <registry>
                     <toolBar sid="toolBar" start="yes" />
@@ -93,13 +92,13 @@
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
                         <menuItem name="Load Image" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/icon-load1.png" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Load Image2" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/icon-load2.png" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Save Image" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/save.png" />
                         <menuItem name="Quit" icon="@BUNDLE_PREFIX@/Ex04ImageSubstraction_0-1/icons/unreadable.png" />
                     </layout>
@@ -113,7 +112,7 @@
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::gui::view::SDefaultView" >
+            <service uid="multiView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Image 1" selected="yes" />
@@ -129,7 +128,7 @@
             </service>
 
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-            <service uid="multiViewNegato1" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato1" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -143,7 +142,7 @@
                 </registry>
             </service>
 
-            <service uid="multiViewNegato1Bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato1Bottom" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -157,9 +156,8 @@
                 </registry>
             </service>
 
-
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-            <service uid="multiViewNegato2" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato2" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -173,7 +171,7 @@
                 </registry>
             </service>
 
-            <service uid="multiViewNegato2Bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato2Bottom" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -187,9 +185,8 @@
                 </registry>
             </service>
 
-
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-            <service uid="substractionView" type="::gui::view::SDefaultView" >
+            <service uid="substractionView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -203,7 +200,7 @@
                 </registry>
             </service>
 
-            <service uid="multiViewNegato3" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato3" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -217,7 +214,7 @@
                 </registry>
             </service>
 
-            <service uid="multiViewNegato3Bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewNegato3Bottom" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -231,32 +228,30 @@
                     <view sid="sliderNegato3" />
                 </registry>
             </service>
-            <!-- ***************************************** End layouts declaration ***************************************** -->
 
-            <!-- ***************************************** Begin services declarations  ************************************ -->
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+            <!-- ***************************************** Begin services declarations    ************************************ -->
             <!-- ACTIONS -->
             <!-- Action to load an image in the Tab 1 -->
-            <service uid="openFile1" type="::gui::action::SStarter" >
+            <service uid="openFile1" type="::gui::action::SStarter">
                 <start uid="readerFile1" />
             </service>
 
             <!-- Action to load an image in the Tab 2 -->
-            <service uid="openFile2" type="::gui::action::SStarter" >
+            <service uid="openFile2" type="::gui::action::SStarter">
                 <start uid="readerFile2" />
             </service>
 
             <!-- Action to do Quit -->
-            <service uid="actionQuit" type="::gui::action::SQuit"  />
-
+            <service uid="actionQuit" type="::gui::action::SQuit" />
             <service uid="snapshotNegato1Editor" type="::uiVisuQt::SnapshotEditor" />
             <service uid="snapshotNegato2Editor" type="::uiVisuQt::SnapshotEditor" />
             <service uid="snapshotNegato3Editor" type="::uiVisuQt::SnapshotEditor" />
-
-            <service uid="medicalImageSrv1" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImageSrv1" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
                 <inout key="image" uid="image1" />
             </service>
 
-            <service uid="readerFile1" type="::uiIO::editor::SIOSelector" >
+            <service uid="readerFile1" type="::uiIO::editor::SIOSelector">
                 <in key="image" uid="image1" />
                 <type mode="reader" />
                 <selection mode="exclude" />
@@ -269,11 +264,11 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="medicalImageSrv2" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImageSrv2" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
                 <inout key="image" uid="image2" />
             </service>
 
-            <service uid="readerFile2" type="::uiIO::editor::SIOSelector" >
+            <service uid="readerFile2" type="::uiIO::editor::SIOSelector">
                 <in key="image" uid="image2" />
                 <type mode="reader" />
                 <selection mode="exclude" />
@@ -286,13 +281,13 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="paramEditor" type="::basicRegistration::SImagesSubstract" >
+            <service uid="paramEditor" type="::basicRegistration::SImagesSubstract">
                 <in key="image1" uid="image1" />
                 <in key="image2" uid="image2" />
                 <inout key="result" uid="imageResult" />
             </service>
 
-            <service uid="MedicalImageSrv3" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <service uid="MedicalImageSrv3" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
                 <inout key="image" uid="imageResult" />
             </service>
 
@@ -301,123 +296,135 @@
                 <inout key="image" uid="imageResult" />
                 <sliceIndex>axial</sliceIndex>
             </service>
+
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="saveFile" type="::gui::action::SStarter" >
+            <service uid="saveFile" type="::gui::action::SStarter">
                 <start uid="writerFile" />
             </service>
 
-            <service uid="writerFile" type="::uiIO::editor::SIOSelector" >
+            <service uid="writerFile" type="::uiIO::editor::SIOSelector">
                 <in key="target" uid="imageResult" />
                 <type mode="writer" />
             </service>
 
-            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
             <!-- Generic Scene (Negato) for the first tab -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="image1ID" uid="image1" />
                 <scene>
                     <picker id="negato1default" vtkclass="fwVtkCellPicker" />
-
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="snapshot1" uid="snapshot1UID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                        <config renderer="default" style="InteractorStyle3DForNegato" />
-                    </adaptor>
-
-                    <adaptor id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="image1ID">
-                        <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" />
-                    </adaptor>
-
-                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image1ID">
-                        <config renderer="default" picker="negato1default" text="" />
-                    </adaptor>
-
-                    <proxy channel="snapNegato1">
-                        <slot>snapshot1UID/snap</slot>
-                    </proxy>
-
+                    <adaptor uid="snapshot1" />
+                    <adaptor uid="Interactor1" />
+                    <adaptor uid="MPRNegato1" />
+                    <adaptor uid="text1" />
                 </scene>
             </service>
+
+            <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="Interactor1" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle3DForNegato" />
+            </service>
+
+            <service uid="MPRNegato1" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image1" />
+                <config renderer="default" picker="negato1default" slices="3" mode="3d" sliceIndex="axial" />
+            </service>
+
+            <service uid="text1" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="image1" />
+                <config renderer="default" picker="negato1default" text="" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the second tab -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="image2ID" uid="image2" />
                 <scene>
                     <picker id="negato2default" vtkclass="fwVtkCellPicker" />
-
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="snapshot2" uid="snapshot2UID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="Interactor2" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                        <config renderer="default" style="InteractorStyle3DForNegato" />
-                    </adaptor>
-
-                    <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="image2ID">
-                        <config renderer="default" picker="negato2default" slices="3" sliceIndex="axial" />
-                    </adaptor>
-
-                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image2ID">
-                        <config renderer="default" picker="negato2default" text="" />
-                    </adaptor>
-
-                    <proxy channel="snapNegato2">
-                        <slot>snapshot2UID/snap</slot>
-                    </proxy>
-
+                    <adaptor uid="snapshot2" />
+                    <adaptor uid="Interactor2" />
+                    <adaptor uid="MPRNegato2" />
+                    <adaptor uid="text2" />
                 </scene>
             </service>
+
+            <service uid="snapshot2" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="Interactor2" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle3DForNegato" />
+            </service>
+
+            <service uid="MPRNegato2" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image2" />
+                <config renderer="default" picker="negato2default" slices="3" mode="3d" sliceIndex="axial" />
+            </service>
+
+            <service uid="text2" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="image2" />
+                <config renderer="default" picker="negato2default" text="" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the Third tab -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="negato3" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="imageResultID" uid="imageResult" />
                 <scene>
-
                     <picker id="negato3default" vtkclass="fwVtkCellPicker" />
-
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="snapshot3" uid="snapshot3UID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="Interactor3" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                        <config renderer="default" style="InteractorStyle3DForNegato" />
-                    </adaptor>
-
-                    <adaptor id="MPRNegato3" class="::visuVTKAdaptor::NegatoMPR" objectId="imageResultID">
-                        <config renderer="default" picker="negato3default" slices="3" sliceIndex="axial" />
-                    </adaptor>
-
-                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageResultID">
-                        <config renderer="default" picker="negato3default" text="" />
-                    </adaptor>
-
-                    <proxy channel="snapNegato3">
-                        <slot>snapshot3UID/snap</slot>
-                    </proxy>
-
+                    <adaptor uid="snapshot3" />
+                    <adaptor uid="Interactor3" />
+                    <adaptor uid="MPRNegato3" />
+                    <adaptor uid="text3" />
                 </scene>
             </service>
+
+            <service uid="snapshot3" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="Interactor3" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle3DForNegato" />
+            </service>
+
+            <service uid="MPRNegato3" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="imageResult" />
+                <config renderer="default" picker="negato3default" slices="3" mode="3d" sliceIndex="axial" />
+            </service>
+
+            <service uid="text3" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="imageResult" />
+                <config renderer="default" picker="negato3default" text="" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
             <!-- ***************************************** End render scenes declaration ***************************************** -->
-
-            <!-- ***************************************** End services declarations  ************************************************ -->
-            <connect channel="snapNegato1" >
+            <!-- ***************************************** End services declarations    ************************************************ -->
+            <connect>
                 <signal>snapshotNegato1Editor/snapped</signal>
+                <slot>snapshot1/snap</slot>
             </connect>
 
-            <connect channel="snapNegato2" >
+            <connect>
                 <signal>snapshotNegato2Editor/snapped</signal>
+                <slot>snapshot2/snap</slot>
             </connect>
 
-            <connect channel="snapNegato3" >
+            <connect>
                 <signal>snapshotNegato3Editor/snapped</signal>
+                <slot>snapshot3/snap</slot>
             </connect>
 
             <start uid="mainFrame" />
@@ -426,7 +433,21 @@
             <start uid="sliderNegato1" />
             <start uid="sliderNegato2" />
             <start uid="sliderNegato3" />
-
+            <!-- VTK scene 'negato1' -->
+            <start uid="snapshot1" />
+            <start uid="Interactor1" />
+            <start uid="MPRNegato1" />
+            <start uid="text1" />
+            <!-- VTK scene 'negato2' -->
+            <start uid="snapshot2" />
+            <start uid="Interactor2" />
+            <start uid="MPRNegato2" />
+            <start uid="text2" />
+            <!-- VTK scene 'negato3' -->
+            <start uid="snapshot3" />
+            <start uid="Interactor3" />
+            <start uid="MPRNegato3" />
+            <start uid="text3" />
         </config>
     </extension>
 </plugin>
