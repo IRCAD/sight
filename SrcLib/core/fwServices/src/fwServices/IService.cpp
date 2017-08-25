@@ -125,6 +125,36 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
     return m_associatedObject.lock();
 }
 
+//------------------------------------------------------------------------------
+
+void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect)
+{
+    ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INPUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    m_serviceConfig.m_objects.push_back(objConfig);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect)
+{
+    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INOUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    m_serviceConfig.m_objects.push_back(objConfig);
+}
+
 //-----------------------------------------------------------------------------
 
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
@@ -203,8 +233,6 @@ IService::ConfigType IService::getConfigTree() const
 {
     return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
 }
-
-////-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 

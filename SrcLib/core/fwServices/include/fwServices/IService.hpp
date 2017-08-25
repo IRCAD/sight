@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,7 +69,7 @@ friend class registry::ObjectService;
 friend class AppConfigManager2;
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) );
+    fwCoreServiceClassDefinitionsMacro( (IService)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
 
     typedef ::boost::property_tree::ptree ConfigType;
@@ -92,8 +92,8 @@ public:
         std::string m_uid;
         std::string m_key;
         AccessType m_access;
-        bool m_autoConnect;
-        bool m_optional;
+        bool m_autoConnect { false };
+        bool m_optional { false };
     };
 
     /// Used to store a service configuration.
@@ -101,7 +101,7 @@ public:
     {
         std::string m_uid;
         std::string m_type;
-        bool m_globalAutoConnect;
+        bool m_globalAutoConnect { false };
         std::string m_worker;
         std::vector<ObjectServiceConfig> m_objects;
         std::map<std::string, size_t> m_groupSize;
@@ -219,7 +219,8 @@ public:
     FWSERVICES_API void setConfiguration( const ConfigType& ptree );
 
     /**
-     * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
+     * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does
+     * nothing otherwise.
      * @pre m_configurationState == UNCONFIGURED
      * @post m_configurationState == CONFIGURED
      * @note invoke checkConfiguration()
@@ -313,7 +314,6 @@ public:
     FWSERVICES_API UpdatingStatus getUpdatingStatus() const noexcept;
     //@}
 
-
     /**
      * @name All concerning configuration
      */
@@ -331,7 +331,6 @@ public:
      */
     FWSERVICES_API ConfigType getConfigTree() const;
 
-
 //    /**
 //     * @brief Check the configuration using XSD if possible
 //     * @return true if the configuration is validate or if
@@ -339,9 +338,7 @@ public:
 //     */
 //    FWSERVICES_API bool checkConfiguration() ;
 
-
     //@}
-
 
     /**
      * @name Optimized access to associated Object & Helper
@@ -457,6 +454,8 @@ public:
     class KeyConnectionsMap
     {
     public:
+        //------------------------------------------------------------------------------
+
         void push (const KeyType& key,
                    const ::fwCom::Signals::SignalKeyType& sig,
                    const ::fwCom::Slots::SlotKeyType& slot)
@@ -466,18 +465,26 @@ public:
 
         typedef std::map< KeyType, KeyConnectionsType> KeyConnectionsMapType;
 
+        //------------------------------------------------------------------------------
+
         KeyConnectionsMapType::const_iterator find(const KeyType& key) const
         {
             return m_keyConnectionsMap.find(key);
         }
+        //------------------------------------------------------------------------------
+
         KeyConnectionsMapType::const_iterator end() const
         {
             return m_keyConnectionsMap.cend();
         }
+        //------------------------------------------------------------------------------
+
         bool empty() const
         {
             return m_keyConnectionsMap.empty();
         }
+        //------------------------------------------------------------------------------
+
         size_t size() const
         {
             return m_keyConnectionsMap.size();
@@ -523,6 +530,24 @@ public:
      */
     FWSERVICES_API void setObjectId(const KeyType& _key, const IdType& _id);
     //@}
+
+    /**
+     * @brief Register an input object for this service
+     * @param[in] obj input object used by the service
+     * @param[in] key key of the object in the new adaptor
+     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @return
+     */
+    void registerInput(const::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect = false);
+
+    /**
+     * @brief Register an in/out object for this service
+     * @param[in] obj in/out object used by the service
+     * @param[in] key key of the object in the new adaptor
+     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @return
+     */
+    void registerInOut(const::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect = false);
 
 protected:
 
@@ -611,7 +636,8 @@ protected:
     FWSERVICES_API virtual void reconfiguring();
 
     /**
-     * @brief Perform some computations according to object (this service is attached to) attribute values and its internal state.
+     * @brief Perform some computations according to object (this service is attached to) attribute values and its
+     * internal state.
      * @see update()
      */
     FWSERVICES_API virtual void updating() = 0;
@@ -642,7 +668,6 @@ protected:
      * @todo this field must be private
      */
     ::fwData::Object::wptr m_associatedObject;
-
 
     /**
      * @name Slot API
