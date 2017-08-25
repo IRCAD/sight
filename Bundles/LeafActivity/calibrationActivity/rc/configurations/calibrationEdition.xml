@@ -108,11 +108,8 @@
             <inout key="series" uid="newCameraSeries" />
         </service>
 
-        <service uid="CalibrationXmlWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="newCameraSeries" />
-            <type mode="writer" />
-            <selection mode="include" />
-            <addSelection service="::ioCalibration::SExportCalibrationXml" />
+        <service uid="CalibrationXmlWriter" type="::ioCalibration::SOpenCVWriter">
+            <in key="target" uid="newCameraSeries"/>
         </service>
 
         <service uid="ActionStartCamera" type="::gui::action::SSlotCaller" >
