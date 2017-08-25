@@ -29,6 +29,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <fwVtkIO/BitmapImageReader.hpp>
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
@@ -71,6 +72,7 @@ void SImageReader::configureWithIHM()
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
+    dialogFile.addFilter("Bitmap image", "*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -184,9 +186,14 @@ bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData:
     {
         imageReader = configureReader< ::fwVtkIO::MetaImageReader >( imgFile );
     }
+    else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp"
+            || ext == ".png" || ext == "*.tiff")
+    {
+        imageReader = configureReader< ::fwVtkIO::BitmapImageReader >( imgFile );
+    }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti and .mhd are supported."));
+        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti, .mhd, .jpg, .jpeg, .bmp, .png and .tiff are supported."));
     }
 
     // Set the image (already created, but empty) that will be modified
