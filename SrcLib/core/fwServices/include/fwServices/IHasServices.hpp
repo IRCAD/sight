@@ -12,8 +12,6 @@
 
 #include <fwCore/macros.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <vector>
 
 namespace fwServices
@@ -27,7 +25,7 @@ class FWSERVICES_CLASS_API IHasServices
 {
 public:
 
-    typedef std::vector < WPTR(::fwServices::IService) > ServiceVector;
+    typedef std::vector < SPTR(::fwServices::IService) > ServiceVector;
 
     /**
      * @brief Get all subservices linked to this service
@@ -37,7 +35,7 @@ public:
 
     /**
      * @brief Return a specific registered service
-     * @param id Identifier of the service
+     * @param[in] id Identifier of the service
      */
     FWSERVICES_API CSPTR( ::fwServices::IService) getRegisteredService(const ::fwTools::fwID::IDType& _id) const;
 
@@ -51,16 +49,19 @@ protected:
 
     /**
      * @brief Register a new service linked to this service
+     * @param[in] _implType Type of the service
+     * @param[in] id Optional identifier of the service
      */
     FWSERVICES_API SPTR(::fwServices::IService) registerService(const std::string& _implType,
                                                                 const std::string& _id = "" );
 
     /**
      * @brief Register a new service linked to this service
+     * @param[in] _implType Type of the service
+     * @param[in] id Optional identifier of the service
      */
     template <class T>
-    FWSERVICES_API SPTR(T) registerService(const std::string& _implType,
-                                           const std::string& _id = "" );
+    FWSERVICES_API SPTR(T) registerService(const std::string& _implType, const std::string& _id = "" );
 
     /**
      * @brief Unregister a specific service
@@ -69,10 +70,10 @@ protected:
     FWSERVICES_API void unregisterService(const ::fwTools::fwID::IDType& _id);
 
     /**
-     * @brief Unregister all services linked to this service
-     * @param classname Classname of services to unregister
+     * @brief Unregister all services linked to this service, optionally matches only a given type of services
+     * @param _implType Optional type of the services to unregister
      */
-    FWSERVICES_API void unregisterServices(const std::string& _classname = "");
+    FWSERVICES_API void unregisterServices(const std::string& _implType = "");
 
 private:
 

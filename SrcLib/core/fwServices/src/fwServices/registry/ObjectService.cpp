@@ -256,13 +256,17 @@ void ObjectService::unregisterService( ::fwServices::IService::sptr service )
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
 
-    SLM_ASSERT( "The service ( " + service->getID() + " ) must be stop before being unregistered.",
+    SLM_ASSERT( "The service ( " + service->getID() + " ) must be stopped before being unregistered.",
                 service->isStopped() );
 
-    this->removeFromContainer( service );
-    service->m_inputsMap.clear();
-    service->m_inOutsMap.clear();
-    service->m_outputsMap.clear();
+    if( !service->m_inputsMap.empty() || !service->m_inOutsMap.empty() || !service->m_outputsMap.empty() ||
+        !service->m_associatedObject.expired())
+    {
+        this->removeFromContainer( service );
+        service->m_inputsMap.clear();
+        service->m_inOutsMap.clear();
+        service->m_outputsMap.clear();
+    }
 }
 
 //------------------------------------------------------------------------------

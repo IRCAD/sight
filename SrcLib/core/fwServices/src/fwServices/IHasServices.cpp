@@ -22,6 +22,9 @@ IHasServices::IHasServices() noexcept
 
 IHasServices::~IHasServices() noexcept
 {
+    SLM_ASSERT("Some sub-services were not unregistered, something is probably wrong."
+               "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
+               m_subServices.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -29,12 +32,11 @@ IHasServices::~IHasServices() noexcept
 ::fwServices::IService::csptr IHasServices::getRegisteredService(const fwTools::fwID::IDType& _id) const
 {
     ::fwServices::IService::sptr srv;
-    for(auto service : m_subServices)
+    for(const auto& service : m_subServices)
     {
-        ::fwServices::IService::sptr currentSrv = service.lock();
-        if(currentSrv && (currentSrv->getID() == _id))
+        if(service && (service->getID() == _id))
         {
-            srv = currentSrv;
+            srv = service;
             break;
         }
     }
@@ -45,12 +47,12 @@ IHasServices::~IHasServices() noexcept
 
 void IHasServices::unregisterService(const fwTools::fwID::IDType& _id)
 {
-    for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
+    for(auto itSrv = m_subServices.cbegin(); itSrv != m_subServices.cend(); )
     {
-        ::fwServices::IService::sptr srv = itSrv->lock();
+        const ::fwServices::IService::sptr& srv = *itSrv;
         if(srv && (srv->getID() == _id))
         {
-            ::fwServices::IService::sptr srv     = itSrv->lock();
+            ::fwServices::IService::sptr srv     = *itSrv;
             ::fwServices::IService::sptr service = ::fwServices::IService::dynamicCast(srv);
             srv->stop();
             ::fwServices::OSR::unregisterService(srv);
@@ -79,7 +81,7 @@ void IHasServices::unregisterServices(const std::string& _classname)
 {
     for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
     {
-        ::fwServices::IService::sptr srv = itSrv->lock();
+        const ::fwServices::IService::sptr& srv = *itSrv;
         if(srv && (_classname.empty() || ( !_classname.empty() && srv->getClassname() == _classname)))
         {
             ::fwServices::IService::sptr service = ::fwServices::IService::dynamicCast(srv);
