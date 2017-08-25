@@ -210,13 +210,19 @@ IService::ConfigType IService::getConfigTree() const
 
 void IService::configure()
 {
-    //SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
     if( m_configurationState == UNCONFIGURED )
     {
         m_configurationState = CONFIGURING;
         if( m_globalState == STOPPED )
         {
-            this->configuring();
+            try
+            {
+                this->configuring();
+            }
+            catch (std::exception& e)
+            {
+                SLM_FATAL("Error while configuring service '" + this->getID() + "' : " + e.what());
+            }
         }
         else if( m_globalState == STARTED )
         {
