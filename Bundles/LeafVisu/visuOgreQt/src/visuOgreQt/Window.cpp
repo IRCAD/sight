@@ -116,8 +116,8 @@ void Window::initialise()
     // be painted. But then, the starting process of the render service and its adaptors becomes quite complicated.
     // We did that in the past, but now we use this trick to be able to start everything at once.
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
-                                                        static_cast<unsigned int>(1),
-                                                        static_cast<unsigned int>(1),
+                                                        static_cast<unsigned int>(this->width()),
+                                                        static_cast<unsigned int>(this->height()),
                                                         false,
                                                         &parameters);
 
@@ -134,8 +134,6 @@ void Window::initialise()
     info.dx              = 0;
     info.dy              = 0;
     Q_EMIT interacted(info);
-
-    QApplication::postEvent(this, new QResizeEvent(this->size(), this->size()));
 }
 
 // ----------------------------------------------------------------------------
@@ -273,6 +271,11 @@ void Window::exposeEvent(QExposeEvent* event)
 {
     Q_UNUSED(event);
 
+#if defined(__APPLE__)
+    QResizeEvent resizeEvent(this->size(), QSize(0, 0));
+    this->eventFilter(this, &resizeEvent);
+#endif
+
     this->renderNow();
 }
 
@@ -292,6 +295,11 @@ void Window::moveEvent(QMoveEvent* event)
 
 void Window::renderNow()
 {
+    if(false == isExposed())
+    {
+        return;
+    }
+
     this->render();
 
 #if DISPLAY_OGRE_FPS == 1
@@ -331,7 +339,7 @@ bool Window::eventFilter(QObject* target, QEvent* event)
         {
             this->makeCurrent();
 
-#if defined(linux) || defined(__linux) ||(__APPLE__)
+#if defined(linux) || defined(__linux) || defined(__APPLE__)
             m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth),
                                        static_cast< unsigned int >(newHeight));
 #endif
