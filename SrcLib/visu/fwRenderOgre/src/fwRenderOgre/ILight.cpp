@@ -33,12 +33,9 @@ const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
     SLM_ASSERT("The factory process to create an ILight failed.", light);
     SLM_ASSERT("The light adaptor must be registered with existing data objects.", _transform && _diffuse && _specular);
 
-    ::fwServices::OSR::registerService(_transform, "transform",
-                                       ::fwServices::IService::AccessType::INOUT, light);
-    ::fwServices::OSR::registerService(_diffuse, "diffuseColor",
-                                       ::fwServices::IService::AccessType::INOUT, light);
-    ::fwServices::OSR::registerService(_specular, "specularColor",
-                                       ::fwServices::IService::AccessType::INOUT, light);
+    light->registerInOut(_transform, "transform", true);
+    light->registerInOut(_diffuse, "diffuseColor", true);
+    light->registerInOut(_specular, "specularColor", true);
 
     return light;
 }
@@ -49,7 +46,6 @@ void ILight::destroyLightAdaptor(ILight::sptr _lightAdaptor)
 {
     if(_lightAdaptor)
     {
-        _lightAdaptor->disconnect();
         _lightAdaptor->stop();
         ::fwServices::OSR::unregisterService(_lightAdaptor);
     }

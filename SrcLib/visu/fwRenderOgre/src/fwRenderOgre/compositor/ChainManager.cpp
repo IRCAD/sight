@@ -13,10 +13,8 @@
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
-#include <fwCore/spyLog.hpp>
-
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCompositionPass.h>
@@ -263,7 +261,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                                                       "geometry";
 
                     // Naming convention for shader parameters
-                    fwTools::fwID::IDType id = _layerId + "_" + shaderTypeStr + "-" + constantName;
+                    const fwTools::fwID::IDType id = _layerId + "_" + shaderTypeStr + "-" + constantName;
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {
@@ -278,10 +276,8 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                             obj->setName(constantName);
 
                             // Creates an Ogre adaptor and associates it with the f4s object
-                            auto osr = ::fwServices::registry::ServiceFactory::getDefault();
-                            ::fwServices::IService::sptr srv = osr->create( "::visuOgreAdaptor::SCompositorParameter" );
-                            srv->setID(id);
-                            ::fwServices::OSR::registerService( ::fwData::Object::constCast(obj), srv );
+                            auto srv = this->registerService("::visuOgreAdaptor::SCompositorParameter", id);
+                            srv->registerInOut(obj, "parameter", true);
 
                             auto shaderParamService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
                             shaderParamService->setRenderService(_renderService);
@@ -295,10 +291,6 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                             shaderParamService->setConfiguration(config);
                             shaderParamService->configure();
                             shaderParamService->start();
-                            shaderParamService->connect();
-
-                            // Add created subservice to current service
-                            this->registerService(shaderParamService);
 
                             (*m_adaptorsObjectsOwner)[constantName] = obj;
                         }

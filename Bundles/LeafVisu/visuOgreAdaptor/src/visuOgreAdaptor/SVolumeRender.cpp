@@ -427,12 +427,6 @@ void SVolumeRender::updating()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::swapping()
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SVolumeRender::newImage()
 {
     this->updateImageInfos(this->getObject< ::fwData::Image >());

@@ -32,6 +32,8 @@ const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::STexture::s_TEXTURE_SWAPP
 
 const std::string STexture::DEFAULT_TEXTURE_FILENAME = "default.png";
 
+static const std::string s_TEXTURE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 STexture::STexture() noexcept :
@@ -124,7 +126,7 @@ void STexture::starting()
 void STexture::updating()
 {
     // Retrieves associated f4s image
-    ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
+    ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>(s_TEXTURE_INOUT);
 
     SLM_ASSERT("Failed object dynamic cast", imageF4s);
 
@@ -143,13 +145,6 @@ void STexture::updating()
 
 //------------------------------------------------------------------------------
 
-void STexture::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void STexture::stopping()
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
@@ -159,11 +154,11 @@ void STexture::stopping()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType STexture::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_TEXTURE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_TEXTURE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

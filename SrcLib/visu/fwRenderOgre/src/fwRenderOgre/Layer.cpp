@@ -342,7 +342,6 @@ void Layer::createScene()
         m_lightAdaptor->setLayerID(this->getLayerID());
         m_lightAdaptor->setRenderService(m_renderService.lock());
         m_lightAdaptor->start();
-        m_lightAdaptor->connect();
     }
 
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
@@ -937,13 +936,13 @@ void Layer::setupCore()
 
 //-------------------------------------------------------------------------------------
 
-IHasAdaptors::AdaptorVector Layer::getRegisteredAdaptors() const
+::fwServices::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
 {
     if(m_compositorChainManager)
     {
-        return m_compositorChainManager->getRegisteredAdaptors();
+        return m_compositorChainManager->getRegisteredServices();
     }
-    return IHasAdaptors::AdaptorVector();
+    return ::fwServices::IHasServices::ServiceVector();
 }
 
 //-------------------------------------------------------------------------------------

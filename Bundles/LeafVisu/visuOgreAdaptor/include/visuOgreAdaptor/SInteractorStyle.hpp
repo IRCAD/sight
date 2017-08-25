@@ -22,7 +22,24 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Managing interactor style for Ogre
+ * @brief   Manage interactor style for Ogre
+ *
+ * @section Signals Signals
+ * - \b pointClickedSignal(int) : Emitted when a point is clicked.
+ *
+ * @section Slots Slots
+ * - \b pointClickedSlot(int) : Transmit the clicked point.
+
+ * @section XML XML Configuration
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::SInteractorStyle">
+            <config render="..." style="InteractorStyle" />
+       </service>
+   @endcode
+ * @subsection Configuration Configuration:
+ * - \b render: Layer on which the interactions will be done.
+ * - \b style: Style of the interactor depending on the type: 'Trackball', 'Fixed', 'Negato2D', 'Mesh', 'Video', or
+ * 'VR', default to 'Trackball'.
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
@@ -58,33 +75,17 @@ public:
 
 protected:
 
-    /**
-     * @brief Configuring method.
-     * Catch interaptor style
-     * @code{.xml}
-         <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-             <config render="layerID" type="InteractionType" style="InteractorStyle" />
-         </adaptor>
-       @endcode
-     * - \b render Layer on which the interactions will be done
-     * - \b type Type of the interactor either Movement or Selection
-     * - \b Style Style of the interactor depending on the type. if \b Movement, Default or Fixed can be used,
-     * if \b Selection, Mesh or Video can be used.
-
-     */
-    VISUOGREADAPTOR_API void configuring();
+    /// Select the interactor style
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Starting method
-    VISUOGREADAPTOR_API void starting();
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Update the interactor
-    VISUOGREADAPTOR_API void updating();
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Stopping method
-    VISUOGREADAPTOR_API void stopping();
-
-    /// Swaping method, do nothing
-    VISUOGREADAPTOR_API void swapping();
+    VISUOGREADAPTOR_API void stopping() override;
 
 private:
 

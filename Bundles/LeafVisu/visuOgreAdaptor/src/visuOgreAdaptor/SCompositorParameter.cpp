@@ -127,9 +127,4 @@ void SCompositorParameter::stopping()
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::swapping()
-{
-}
-//------------------------------------------------------------------------------
-
 } // namespace visuOgreAdaptor

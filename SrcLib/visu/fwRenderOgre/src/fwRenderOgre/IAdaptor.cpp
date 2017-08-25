@@ -71,21 +71,6 @@ void IAdaptor::initialize()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::connect()
-{
-    ::fwServices::IService::KeyConnectionsType connections = this->getObjSrvConnections();
-    m_objConnection.connect( this->getObject(), this->getSptr(), connections );
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::disconnect()
-{
-    m_objConnection.disconnect();
-}
-
-//------------------------------------------------------------------------------
-
 void IAdaptor::setLayerID(const std::string& id)
 {
     m_layerID = id;

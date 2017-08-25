@@ -46,6 +46,8 @@ const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "se
 const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
 const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
 
+static const std::string s_PARAMETER_INOUT = "parameter";
+
 //------------------------------------------------------------------------------
 
 IParameter::IParameter() noexcept :
@@ -210,7 +212,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         return false;
     }
 
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(s_PARAMETER_INOUT);
 
     // Set shader parameters
     std::string objClass = obj->getClassname();
@@ -351,8 +353,7 @@ void IParameter::setBoolParameter(bool value, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj          = this->getObject();
-        ::fwData::Boolean::sptr paramObject = ::fwData::Boolean::dynamicCast(obj);
+        ::fwData::Boolean::sptr paramObject = this->getInOut< ::fwData::Boolean>(s_PARAMETER_INOUT);
         paramObject->setValue(value);
 
         this->updating();
@@ -367,8 +368,7 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Color::sptr paramObject = ::fwData::Color::dynamicCast(obj);
+        ::fwData::Color::sptr paramObject = this->getInOut< ::fwData::Color>(s_PARAMETER_INOUT);
         paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
 
         this->updating();
@@ -383,8 +383,7 @@ void IParameter::setIntParameter(int value, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj          = this->getObject();
-        ::fwData::Integer::sptr paramObject = ::fwData::Integer::dynamicCast(obj);
+        ::fwData::Integer::sptr paramObject = this->getInOut< ::fwData::Integer>(s_PARAMETER_INOUT);
         paramObject->setValue(value);
 
         this->updating();
@@ -399,8 +398,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
 
         if(arrayObject->empty())
         {
@@ -424,8 +422,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
 
         if(arrayObject->empty())
         {
@@ -449,8 +446,7 @@ void IParameter::setDoubleParameter(double value, std::string name)
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
+        ::fwData::Float::sptr paramObject = this->getInOut< ::fwData::Float>(s_PARAMETER_INOUT);
         paramObject->setValue(static_cast<float>(value));
 
         this->updating();
@@ -465,9 +461,7 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
-
+        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
         if(arrayObject->empty())
         {
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
@@ -499,8 +493,7 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
     {
         m_dirty = true;
 
-        ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+        ::fwData::Array::sptr arrayObject = this->getInOut< ::fwData::Array>(s_PARAMETER_INOUT);
 
         if(arrayObject->empty())
         {

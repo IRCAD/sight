@@ -123,12 +123,12 @@
         </service>
 
         <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
-            <in key="object" uid="${modelSeriesUID}" />
+            <in key="model" uid="${modelSeriesUID}" />
             <config layer="default" />
         </service>
 
         <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
-            <in key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" selectedTFKey="SelectedTF" />
         </service>

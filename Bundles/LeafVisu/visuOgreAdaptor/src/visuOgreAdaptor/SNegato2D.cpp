@@ -33,6 +33,8 @@ const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
+static const std::string s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
@@ -41,8 +43,6 @@ SNegato2D::SNegato2D() noexcept :
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
 {
-    SLM_TRACE_FUNC();
-
     this->installTFSlots(this);
 
     m_currentSliceIndex = {0.f, 0.f, 0.f};
@@ -56,68 +56,6 @@ SNegato2D::SNegato2D() noexcept :
 
 SNegato2D::~SNegato2D() noexcept
 {
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::starting()
-{
-    this->initialize();
-
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
-    this->setTransferFunctionSelection(tfSelection);
-    this->setTFSelectionFwID(tfSelection->getID());
-
-    this->updateImageInfos(this->getObject< ::fwData::Image >());
-    this->updateTransferFunction(this->getImage());
-
-    // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
-        this->getID() + "_Texture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
-
-    // TF texture initialization
-    m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
-    m_gpuTF->createTexture(this->getID());
-
-    // Scene node's instanciation
-    m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
-
-    // Plane's instanciation
-    m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                        OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
-
-    this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
-
-    this->installTFConnections();
-
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
-    if(isValid)
-    {
-        this->newImage();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::stopping()
-{
-    this->removeTFConnections();
-
-    if (!m_connection.expired())
-    {
-        m_connection.disconnect();
-    }
-
-    m_plane->removeAndDestroyPlane();
-    delete m_plane;
-
-    m_3DOgreTexture.setNull();
-    m_gpuTF.reset();
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -171,6 +109,67 @@ void SNegato2D::configuring()
     auto cfg = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("Tag 'config' not found.", cfg);
     this->parseTFConfig(cfg);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::starting()
+{
+    this->initialize();
+
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
+    this->setTransferFunctionSelection(tfSelection);
+    this->setTFSelectionFwID(tfSelection->getID());
+
+    this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
+    this->updateTransferFunction(this->getImage());
+
+    // 3D source texture instantiation
+    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
+        this->getID() + "_Texture",
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        true);
+
+    // TF texture initialization
+    m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
+    m_gpuTF->createTexture(this->getID());
+
+    // Scene node's instanciation
+    m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+
+    // Plane's instanciation
+    m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
+                                        OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
+
+    this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
+
+    this->installTFConnections();
+
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    if(isValid)
+    {
+        this->newImage();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::stopping()
+{
+    this->removeTFConnections();
+
+    if (!m_connection.expired())
+    {
+        m_connection.disconnect();
+    }
+
+    m_plane->removeAndDestroyPlane();
+    delete m_plane;
+
+    m_3DOgreTexture.setNull();
+    m_gpuTF.reset();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -302,13 +301,12 @@ void SNegato2D::updatingTFWindowing(double window, double level)
 ::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
 
     return connections;
-
 }
 
 //------------------------------------------------------------------------------
@@ -319,15 +317,6 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
     // Fits the plane to the new texture
     m_plane->setDepthSpacing(_spacing);
     m_plane->initialize2DPlane();
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::swapping()
-{
-    this->stopping();
-    this->starting();
-    this->updating();
 }
 
 //------------------------------------------------------------------------------

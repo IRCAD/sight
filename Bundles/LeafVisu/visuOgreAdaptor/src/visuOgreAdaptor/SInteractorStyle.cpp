@@ -96,12 +96,6 @@ void SInteractorStyle::updating()
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::swapping()
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SInteractorStyle::stopping()
 {
     m_connections.disconnect();

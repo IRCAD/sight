@@ -47,7 +47,7 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the light.
  * - \b diffuseColor [::fwData::Color]: diffuse color of the light.
  * - \b specularColor [::fwData::Color]: specular color of the light.
- * With :
+ * @subsection Configuration Configuration:
  * - \b name (mandatory): defines a name for the associated Ogre light.
  * - \b parentTransformId (optional): name of the parent transform node.
  * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.
@@ -83,19 +83,16 @@ public:
 
 protected:
     /// Starting method. Do nothing
-    VISUOGREADAPTOR_API void starting();
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Stopping method
-    VISUOGREADAPTOR_API void stopping();
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Configures the service.
-    VISUOGREADAPTOR_API void configuring();
-
-    /// Swaping method, only asks for an updating.
-    VISUOGREADAPTOR_API void swapping();
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Updates the light position and orientation
-    VISUOGREADAPTOR_API void updating();
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Light name getter.
     VISUOGREADAPTOR_API virtual const std::string& getName() const;

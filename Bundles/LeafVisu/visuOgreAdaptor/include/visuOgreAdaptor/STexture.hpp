@@ -20,11 +20,30 @@
 
 namespace visuOgreAdaptor
 {
-
 /**
- * @brief Adaptor to map a texture on a mesh. This is done via ::visuOgreAdaptor::SMaterial. In the configuration we
- *        don't specify the material adaptor since it is automatically created by the ::visuOgreAdaptor::SMesh adaptor.
- *        The mesh adaptor isn't specified too because the texture can be applied on several meshes.
+ * @brief   Adaptor to map a texture on a mesh. This is done via ::visuOgreAdaptor::SMaterial. In the configuration we
+ *  don't specify the material adaptor since it is automatically created by the ::visuOgreAdaptor::SMesh adaptor.
+ *  The mesh adaptor isn't specified too because the texture can be applied on several meshes.
+ *
+ * @section Signals Signals
+ * - \b textureSwapped() : Emitted when the texture is modified.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::STexture">
+            <in key="image" uid="..." />
+            <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b key1 [::fwData::Image]: .
+ * @subsection Configuration Configuration:
+ *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
+ *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
+ *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
+ *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
+ *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
  */
 class VISUOGREADAPTOR_CLASS_API STexture : public ::fwRenderOgre::IAdaptor
 {
@@ -59,36 +78,20 @@ public:
 
 protected:
 
+    /// Configure the adaptor.
+    VISUOGREADAPTOR_API void configuring() override;
+
     /// Creates the managed Ogre texture
-    VISUOGREADAPTOR_API void starting();
-
-    /**
-     * @brief Configure the adaptor.
-     * @code{.xml}
-       <adaptor id="texAdaptor" class="::visuOgreAdaptor::STexture" objectId="imageKey" >
-        <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
-     *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
-     *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
-     *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
-     *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
-     */
-    VISUOGREADAPTOR_API void configuring();
-
-    /// Calls updating()
-    VISUOGREADAPTOR_API void swapping();
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Updates the attached
-    VISUOGREADAPTOR_API void updating();
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Does nothing
-    VISUOGREADAPTOR_API void stopping();
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

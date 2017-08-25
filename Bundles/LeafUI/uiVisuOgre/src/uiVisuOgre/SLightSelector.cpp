@@ -334,7 +334,6 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
         lightAdaptor->start();
-        lightAdaptor->connect();
 
         m_managedLightAdaptors.push_back(lightAdaptor);
         m_lightAdaptors = currentLayer->getLightAdaptors();

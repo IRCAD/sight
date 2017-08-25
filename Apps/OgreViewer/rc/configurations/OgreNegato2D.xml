@@ -40,7 +40,7 @@
         </service>
 
         <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
-            <in key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" selectedTFKey="SelectedTF" />
         </service>

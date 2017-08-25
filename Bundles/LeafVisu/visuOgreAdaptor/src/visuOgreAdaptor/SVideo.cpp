@@ -11,7 +11,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/Point.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 
@@ -54,6 +53,17 @@ SVideo::~SVideo() noexcept
 
 //------------------------------------------------------------------------------
 
+void SVideo::configuring()
+{
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    m_reverse = config.get<bool>("reverse", false);
+}
+
+//------------------------------------------------------------------------------
+
 void SVideo::starting()
 {
     this->initialize();
@@ -82,24 +92,6 @@ void SVideo::starting()
 void SVideo::stopping()
 {
     m_texture.setNull();
-}
-
-//------------------------------------------------------------------------------
-
-void SVideo::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SVideo::configuring()
-{
-    this->configureParams();
-
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
-
-    m_reverse = config.get<bool>("reverse", false);
 }
 
 //------------------------------------------------------------------------------

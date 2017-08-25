@@ -154,23 +154,23 @@
             </service>
 
             <service uid="meshAdaptor" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
-                <in key="mesh" uid="mesh" />
+                <inout key="mesh" uid="mesh" />
                 <config layer="default" materialName="texMaterial" />
             </service>
 
             <service uid="materialAdaptor" type="::visuOgreAdaptor::SMaterial">
-                <in key="material" uid="material" />
+                <inout key="material" uid="material" />
                 <config layer="default" materialName="texMaterial" textureName="meshTexture" normalLength="1.0" shadingMode="flat"/>
             </service>
 
             <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
-                <in key="image" uid="image" autoConnect="yes" />
+                <inout key="image" uid="image" autoConnect="yes" />
                 <inout key="TF" uid="TFSelections" />
                 <config layer="default" opacity="opacityFloatUID" selectedTFKey="SelectedTF" />
             </service>
 
             <service uid="textureAdaptor" type="::visuOgreAdaptor::STexture" autoConnect="yes">
-                <in key="texture" uid="texture" />
+                <in key="image" uid="texture" />
                 <config layer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
             </service>
 

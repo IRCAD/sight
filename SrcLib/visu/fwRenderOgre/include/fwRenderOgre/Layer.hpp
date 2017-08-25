@@ -229,7 +229,7 @@ public:
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
     /// Returns the list of adaptors in the chain manager.
-    FWRENDEROGRE_API IHasAdaptors::AdaptorVector getRegisteredAdaptors() const;
+    FWRENDEROGRE_API ::fwServices::IHasServices::ServiceVector getRegisteredAdaptors() const;
 
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
 

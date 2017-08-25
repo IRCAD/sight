@@ -255,10 +255,10 @@ void SLight::createTransformService()
 
     SLM_ASSERT("Missing tranform data object.", transform);
 
-    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
-                                                                       "::visuOgreAdaptor::STransform");
-    SLM_ASSERT("Transform service is null", m_transformService.lock());
-    auto transformService = this->getTransformService();
+    auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
+    transformService->registerInOut(transform, "transform", true);
+
+    m_transformService = transformService;
 
     transformService->setID(this->getID() + "_" + transformService->getID());
     transformService->setRenderService( this->getRenderService() );
@@ -267,8 +267,6 @@ void SLight::createTransformService()
     transformService->setParentTransformId(this->getParentTransformId());
 
     transformService->start();
-    transformService->connect();
-    this->registerService(transformService);
 
     this->attachNode(m_light);
 }
@@ -286,13 +284,6 @@ void SLight::attachNode(::Ogre::MovableObject* _node)
         _node->detachFromParent();
         transNode->attachObject(_node);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SLight::swapping()
-{
-    this->updating();
 }
 
 //------------------------------------------------------------------------------

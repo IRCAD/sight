@@ -8,11 +8,11 @@
 #define __FWRENDEROGRE_IADAPTOR_HPP__
 
 #include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/IHasAdaptors.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
+#include <fwServices/IHasServices.hpp>
 #include <fwServices/IService.hpp>
 
 #include <OGRE/OgreSceneManager.h>
@@ -26,7 +26,7 @@ namespace fwRenderOgre
  * @brief Interface providing behavior of Ogre adaptor services
  */
 class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
-                                        public ::fwRenderOgre::IHasAdaptors
+                                        public ::fwServices::IHasServices
 {
 friend class SRender;
 public:
@@ -45,9 +45,6 @@ public:
 
     FWRENDEROGRE_API Layer::sptr getLayer() const;
 
-    FWRENDEROGRE_API void connect();
-    FWRENDEROGRE_API void disconnect();
-
 protected:
 
     /// Constructor
@@ -64,7 +61,7 @@ protected:
     /**
      * @brief Parse common adaptor parameters:
      * @code{.xml}
-       <config layer="..." />
+            <config layer="..." />
        @endcode
      * @subsection Configuration Configuration:
      * - \b layer (mandatory): id of the layer where this adaptor applies.

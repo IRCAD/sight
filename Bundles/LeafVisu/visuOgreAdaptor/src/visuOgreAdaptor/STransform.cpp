@@ -170,13 +170,6 @@ const ::Ogre::Matrix4& STransform::getTransform() const
 
 //------------------------------------------------------------------------------
 
-void STransform::swapping()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
 void STransform::stopping()
 {
 }

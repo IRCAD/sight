@@ -24,6 +24,8 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SReconstru
 const ::fwCom::Slots::SlotKeyType SReconstruction::s_CHANGE_MESH_SLOT = "changeMesh";
 const ::fwCom::Slots::SlotKeyType SReconstruction::s_VISIBILITY_SLOT  = "modifyVisibility";
 
+static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
+
 //------------------------------------------------------------------------------
 
 SReconstruction::SReconstruction() noexcept :
@@ -73,25 +75,19 @@ void SReconstruction::starting()
 void SReconstruction::createMeshService()
 {
     // Retrieves the associated Reconstruction object
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
-    ::fwData::Mesh::sptr mesh                     = reconstruction->getMesh();
+    ::fwData::Reconstruction::csptr reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+    ::fwData::Mesh::sptr mesh                      = reconstruction->getMesh();
 
     SLM_TRACE_IF("Mesh is null", !mesh);
     if (mesh)
     {
         // Creates an Ogre adaptor and associates it with the f4s mesh object
-        ::fwRenderOgre::IAdaptor::sptr meshService;
-        meshService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(
-            mesh,
-            "::visuOgreAdaptor::SMesh");
+        auto meshAdaptor = this->registerService< ::visuOgreAdaptor::SMesh >("::visuOgreAdaptor::SMesh");
+        meshAdaptor->registerInOut(mesh, "mesh", true);
 
-        // If the adaptor has been well instantiated, we can cast it into a mesh adaptor
-        SLM_ASSERT("meshService not instantiated", meshService);
-        ::visuOgreAdaptor::SMesh::sptr meshAdaptor = ::visuOgreAdaptor::SMesh::dynamicCast(meshService);
-
-        meshService->setID(this->getID() + meshService->getID());
-        meshService->setLayerID(m_layerID);
-        meshService->setRenderService(this->getRenderService());
+        meshAdaptor->setID(this->getID() + meshAdaptor->getID());
+        meshAdaptor->setLayerID(m_layerID);
+        meshAdaptor->setRenderService(this->getRenderService());
 
         meshAdaptor->setIsReconstructionManaged(true);
         meshAdaptor->setMaterial(reconstruction->getMaterial());
@@ -103,21 +99,13 @@ void SReconstruction::createMeshService()
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
 
-        meshService->start();
-        meshService->connect();
+        meshAdaptor->start();
 
-        m_meshAdaptor = meshService;
-        this->registerService(meshService);
+        m_meshAdaptor = meshAdaptor;
+
         OSLM_TRACE("Mesh is visible : " << reconstruction->getIsVisible());
         OSLM_TRACE("Mesh nb points : " << mesh->getNumberOfPoints());
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SReconstruction::swapping()
-{
-    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -129,7 +117,8 @@ void SReconstruction::updating()
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Retrieves the associated f4s reconstruction object
-        ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
+        ::fwData::Reconstruction::csptr reconstruction = this->getInput< ::fwData::Reconstruction >(
+            s_RECONSTRUCTION_INPUT);
 
         // Updates the mesh adaptor according to the reconstruction
         meshAdaptor->setMaterial(reconstruction->getMaterial());
@@ -147,7 +136,6 @@ void SReconstruction::updating()
 
 void SReconstruction::stopping()
 {
-    SLM_TRACE_FUNC();
     this->unregisterServices();
 }
 
@@ -155,15 +143,13 @@ void SReconstruction::stopping()
 
 void SReconstruction::setForceHide(bool _hide)
 {
-    SLM_TRACE_FUNC();
-
     if (!m_meshAdaptor.expired())
     {
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         if (meshAdaptor)
         {
-            ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
+            auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
             meshAdaptor->updateVisibility(_hide ? false : reconstruction->getIsVisible());
         }
     }
@@ -175,7 +161,7 @@ void SReconstruction::changeMesh( SPTR( ::fwData::Mesh) )
 {
     if (!m_meshAdaptor.expired())
     {
-        ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
+        auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         SLM_ASSERT("reconstruction not instantiated", reconstruction);
         this->updating();
     }
@@ -191,7 +177,7 @@ void SReconstruction::modifyVisibility()
 {
     if (!m_meshAdaptor.expired())
     {
-        ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
+        auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         SLM_ASSERT("reconstruction not instantiated", reconstruction);
 
         this->setForceHide(!reconstruction->getIsVisible());
@@ -211,12 +197,11 @@ void SReconstruction::modifyVisibility()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType visuOgreAdaptor::SReconstruction::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SReconstruction::getAutoConnections() const
 {
-
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
+    connections.push( s_RECONSTRUCTION_INPUT, ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
     return connections;
 }
 
