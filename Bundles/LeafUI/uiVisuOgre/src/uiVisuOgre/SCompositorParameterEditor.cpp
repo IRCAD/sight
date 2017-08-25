@@ -155,9 +155,8 @@ void SCompositorParameterEditor::updateGuiInfo()
     auto adaptors = m_currentLayer.lock()->getRegisteredAdaptors();
 
     // Is there at least one parameter that we can handle ?
-    for (const auto& wAdaptor : adaptors)
+    for (const auto& adaptor : adaptors)
     {
-        auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
@@ -200,9 +199,8 @@ void SCompositorParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (const auto& wAdaptor : adaptors)
+    for (const auto& adaptor : adaptors)
     {
-        auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
