@@ -38,7 +38,6 @@ Window::Window(QWindow* parent) :
     m_id(Window::m_counter++),
     m_ogreRoot(nullptr),
     m_ogreRenderWindow(nullptr),
-    //    m_trayMgr(nullptr),
     m_update_pending(false),
     m_animating(false),
     m_showOverlay(false),
@@ -49,7 +48,6 @@ Window::Window(QWindow* parent) :
 {
     setAnimating(false);
     installEventFilter(this);
-    this->initialise();
 }
 
 // ----------------------------------------------------------------------------
@@ -131,11 +129,13 @@ void Window::initialise()
 
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-    info.x               = 1;
-    info.y               = 1;
+    info.x               = this->width();
+    info.y               = this->height();
     info.dx              = 0;
     info.dy              = 0;
     Q_EMIT interacted(info);
+
+    QApplication::postEvent(this, new QResizeEvent(this->size(), this->size()));
 }
 
 // ----------------------------------------------------------------------------
@@ -202,6 +202,11 @@ void Window::destroyWindow()
 
 void Window::render()
 {
+    if(m_ogreRenderWindow == nullptr)
+    {
+        return;
+    }
+
     ++m_frameId;
     /*
        How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
@@ -220,8 +225,6 @@ void Window::render()
     m_ogreRoot->_fireFrameStarted();
     m_ogreRenderWindow->update();
     m_ogreRoot->_fireFrameRenderingQueued();
-    //    Ogre::FrameEvent evt;
-    //    m_trayMgr->frameRenderingQueued(evt);
     m_ogreRoot->_fireFrameEnded();
 }
 
@@ -270,10 +273,7 @@ void Window::exposeEvent(QExposeEvent* event)
 {
     Q_UNUSED(event);
 
-    if (isExposed())
-    {
-        this->renderNow();
-    }
+    this->renderNow();
 }
 
 // ----------------------------------------------------------------------------
@@ -282,7 +282,7 @@ void Window::moveEvent(QMoveEvent* event)
 {
     Q_UNUSED(event);
 
-    if (m_ogreRenderWindow != nullptr)
+    if(m_ogreRenderWindow != nullptr)
     {
         m_ogreRenderWindow->reposition(x(), y());
     }
@@ -292,11 +292,6 @@ void Window::moveEvent(QMoveEvent* event)
 
 void Window::renderNow()
 {
-    if (!isExposed())
-    {
-        return;
-    }
-
     this->render();
 
 #if DISPLAY_OGRE_FPS == 1
@@ -323,61 +318,62 @@ void Window::renderNow()
 
 bool Window::eventFilter(QObject* target, QEvent* event)
 {
-    if (target == this)
+    if (target == this
+        && m_ogreRenderWindow != nullptr
+        && event->type() == QEvent::Resize)
     {
-        if (m_ogreRenderWindow != nullptr)
-        {
-            if (event->type() == QEvent::Resize )
-            {
+        const QResizeEvent* const resizeEvent = static_cast<QResizeEvent*>(event);
 
-                this->makeCurrent();
+        const int newWidth  = resizeEvent->size().width();
+        const int newHeight = resizeEvent->size().height();
+
+        if(newWidth > 0 && newHeight > 0)
+        {
+            this->makeCurrent();
 
 #if defined(linux) || defined(__linux) ||(__APPLE__)
-                m_ogreRenderWindow->resize(static_cast< unsigned int >(this->width()),
-                                           static_cast< unsigned int >(this->height()));
+            m_ogreRenderWindow->resize(static_cast< unsigned int >(newWidth),
+                                       static_cast< unsigned int >(newHeight));
 #endif
-                m_ogreRenderWindow->windowMovedOrResized();
+            m_ogreRenderWindow->windowMovedOrResized();
 
-                const auto numViewports = m_ogreRenderWindow->getNumViewports();
+            const auto numViewports = m_ogreRenderWindow->getNumViewports();
 
-                ::Ogre::Viewport* viewport = nullptr;
-                for (unsigned short i = 0; i < numViewports; i++)
+            ::Ogre::Viewport* viewport = nullptr;
+            for (unsigned short i = 0; i < numViewports; i++)
+            {
+                viewport = m_ogreRenderWindow->getViewport(i);
+                viewport->getCamera()->setAspectRatio(::Ogre::Real(newWidth) / ::Ogre::Real(newHeight));
+            }
+
+            if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
+            {
+                ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+                    viewport);
+                size_t length = chain->getNumCompositors();
+                for(size_t i = 0; i < length; i++)
                 {
-                    viewport = m_ogreRenderWindow->getViewport(i);
-                    viewport->getCamera()->setAspectRatio(::Ogre::Real(this->width()) / ::Ogre::Real(this->height()));
-                }
-
-                if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
-                {
-                    ::Ogre::CompositorChain* chain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-                        viewport);
-                    size_t length = chain->getNumCompositors();
-                    for(size_t i = 0; i < length; i++)
+                    if( chain->getCompositor(i)->getEnabled() )
                     {
-                        if( chain->getCompositor(i)->getEnabled() )
-                        {
-                            chain->setCompositorEnabled(i, false);
-                            chain->setCompositorEnabled(i, true);
-                        }
+                        chain->setCompositorEnabled(i, false);
+                        chain->setCompositorEnabled(i, true);
                     }
                 }
-
-                ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-                info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
-                info.x               = this->width();
-                info.y               = this->height();
-                info.dx              = 0;
-                info.dy              = 0;
-                Q_EMIT interacted(info);
-
-                if (isExposed())
-                {
-                    this->requestRender();
-                }
             }
+
+            ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+            info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE;
+            info.x               = newWidth;
+            info.y               = newHeight;
+            info.dx              = 0;
+            info.dy              = 0;
+            Q_EMIT interacted(info);
+
+            this->requestRender();
         }
     }
-    return false;
+
+    return QWindow::eventFilter(target, event);
 }
 
 // ----------------------------------------------------------------------------

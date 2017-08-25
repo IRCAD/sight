@@ -58,18 +58,17 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
 
+    QVBoxLayout* layout = new QVBoxLayout();
+    m_parentContainer->setLayout(layout);
+    layout->setContentsMargins(0, 0, 0, 0);
+
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->showOverlay(showOverlay);
     m_qOgreWidget->setAnimating(!renderOnDemand);
 
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
-    renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
-
-    QVBoxLayout* layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(renderingContainer);
-
-    m_parentContainer->setLayout(layout);
+    renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 
     if(fullscreen)
     {
@@ -92,6 +91,8 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
         m_qOgreWidget->setFullScreen(fullscreen);
     }
+
+    m_qOgreWidget->initialise();
 }
 
 //-----------------------------------------------------------------------------

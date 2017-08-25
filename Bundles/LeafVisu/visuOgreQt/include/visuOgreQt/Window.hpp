@@ -79,6 +79,12 @@ public:
 
     int getFrameId() const;
 
+    /**
+     * @brief initialise
+     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
+     */
+    VISUOGREQT_API void initialise();
+
 public Q_SLOTS:
 
     /**
@@ -116,11 +122,6 @@ protected:
      * If you want to update this window, call requestRender()
      */
     VISUOGREQT_API virtual void render();
-    /**
-     * @brief initialise
-     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
-     */
-    VISUOGREQT_API void initialise();
 
     /*
      * Qt events to manage keyboard and mouse input
