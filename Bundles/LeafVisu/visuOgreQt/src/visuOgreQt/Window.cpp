@@ -134,6 +134,10 @@ void Window::initialise()
     info.dx              = 0;
     info.dy              = 0;
     Q_EMIT interacted(info);
+
+#if defined(__APPLE__)
+    QApplication::postEvent(this, new QResizeEvent(this->size(), QSize(0, 0)));
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -295,10 +299,12 @@ void Window::moveEvent(QMoveEvent* event)
 
 void Window::renderNow()
 {
+#if !defined(__APPLE__)
     if(false == isExposed())
     {
         return;
     }
+#endif
 
     this->render();
 
