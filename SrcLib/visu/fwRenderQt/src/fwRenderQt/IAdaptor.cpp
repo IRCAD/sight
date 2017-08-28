@@ -252,24 +252,5 @@ void IAdaptor::processInteraction(::fwRenderQt::data::Event& _event )
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::registerService( ::fwRenderQt::IAdaptor::sptr srv )
-{
-    m_managedAdaptors.push_back( srv );
-}
-
-//-----------------------------------------------------------------------------
-
-void IAdaptor::unregisterServices()
-{
-    for(const ManagedAdaptorVector::value_type& adaptor : m_managedAdaptors )
-    {
-        adaptor.lock()->stop();
-        ::fwServices::OSR::unregisterService(adaptor.lock());
-    }
-    m_managedAdaptors.clear();
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace fwRenderQt
 

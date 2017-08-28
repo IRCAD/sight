@@ -120,25 +120,6 @@ protected:
     /// Initial size of the viewport. The goal of keeping a reference on the initial size of the
     /// viewport is the same as preceding.
     ViewportSizeRatio m_viewportInitialSize;
-
-    typedef std::vector< ::fwRenderQt::IAdaptor::wptr > ManagedAdaptorVector;
-
-    /// Return all managed adaptor
-    const ManagedAdaptorVector& getRegisteredServices() const
-    {
-        return m_managedAdaptors;
-    }
-
-    /// Register new adaptor
-    FWRENDERQT_API void registerService( ::fwRenderQt::IAdaptor::sptr srv );
-
-    /// Unregister all adaptors
-    FWRENDERQT_API void unregisterServices();
-
-private:
-
-    /// All managed adaptors
-    ManagedAdaptorVector m_managedAdaptors;
 };
 
 //------------------------------------------------------------------------------
