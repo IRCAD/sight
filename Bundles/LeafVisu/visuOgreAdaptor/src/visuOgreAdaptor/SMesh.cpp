@@ -276,12 +276,6 @@ void SMesh::starting()
 
 void SMesh::stopping()
 {
-    if(!m_transformService.expired())
-    {
-        m_transformService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_transformService.lock());
-    }
-
     this->unregisterServices();
 
     this->clearMesh();
