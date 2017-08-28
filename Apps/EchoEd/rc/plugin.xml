@@ -498,17 +498,17 @@
 
             <connect>
                 <signal>organEchoMeshAdaptor/textureApplied</signal>
-                <slot>organTextureAdaptor/applySTexture</slot>
+                <slot>organTextureAdaptor/applyTexture</slot>
             </connect>
 
             <connect>
                 <signal>echoMeshAdaptor/textureApplied</signal>
-                <slot>echoTextureAdaptor/applySTexture</slot>
+                <slot>echoTextureAdaptor/applyTexture</slot>
             </connect>
 
             <connect>
                 <signal>scanEchoMeshAdaptor/textureApplied</signal>
-                <slot>scanTextureAdaptor/applySTexture</slot>
+                <slot>scanTextureAdaptor/applyTexture</slot>
             </connect>
 
 
