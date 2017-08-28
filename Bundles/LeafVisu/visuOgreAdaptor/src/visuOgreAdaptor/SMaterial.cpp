@@ -107,8 +107,6 @@ void SMaterial::loadMaterialParameters()
         auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(constantType, constantValue);
         if(obj != nullptr)
         {
-            obj->setName(constantName);
-
             const auto shaderType           = std::get<2>(constant);
             const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
                                               shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
