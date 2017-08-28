@@ -61,7 +61,7 @@ protected:
      * @param[in] id Optional identifier of the service
      */
     template <class T>
-    FWSERVICES_API SPTR(T) registerService(const std::string& _implType, const std::string& _id = "" );
+    SPTR(T) registerService(const std::string& _implType, const std::string& _id = "" );
 
     /**
      * @brief Unregister a specific service

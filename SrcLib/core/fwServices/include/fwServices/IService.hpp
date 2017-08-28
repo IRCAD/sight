@@ -538,7 +538,8 @@ public:
      * @param[in] autoConnect if true, the service will be connected to all of its objects
      * @return
      */
-    void registerInput(const::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect = false);
+    FWSERVICES_API void registerInput(const::fwData::Object::csptr& obj, const std::string& key,
+                                      const bool autoConnect = false);
 
     /**
      * @brief Register an in/out object for this service
@@ -547,7 +548,8 @@ public:
      * @param[in] autoConnect if true, the service will be connected to all of its objects
      * @return
      */
-    void registerInOut(const::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect = false);
+    FWSERVICES_API void registerInOut(const::fwData::Object::sptr& obj, const std::string& key,
+                                      const bool autoConnect = false);
 
 protected:
 
