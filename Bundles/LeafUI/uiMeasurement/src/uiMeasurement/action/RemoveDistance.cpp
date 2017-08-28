@@ -8,6 +8,8 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
