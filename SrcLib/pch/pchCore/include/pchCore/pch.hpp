@@ -7,10 +7,8 @@
 #ifndef __PCHCORE_PCH_HPP__
 #define __PCHCORE_PCH_HPP__
 
-#include <fwCore/Demangler.hpp>
-#include <fwCore/LogicStamp.hpp>
-#include <fwCore/TimeStamp.hpp>
 #include <fwCore/base.hpp>
+#include <fwCore/Demangler.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
 #include <boost/filesystem.hpp>

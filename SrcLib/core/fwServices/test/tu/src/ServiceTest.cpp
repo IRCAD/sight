@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwCore/TimeStamp.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -37,6 +39,8 @@ namespace fwServices
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ServiceTest::setUp()
 {
@@ -225,14 +229,20 @@ struct TestServiceSignals : public ::fwCom::HasSlots
         m_slots.setWorker(m_worker);
     }
 
+    //------------------------------------------------------------------------------
+
     void start()
     {
         m_started = true;
     }
+    //------------------------------------------------------------------------------
+
     void update()
     {
         m_updated = true;
     }
+    //------------------------------------------------------------------------------
+
     void stop()
     {
         m_stopped = true;
@@ -254,6 +264,8 @@ struct TestServiceSignals : public ::fwCom::HasSlots
     { \
         std::this_thread::sleep_for( std::chrono::milliseconds(10)); \
     }
+
+//------------------------------------------------------------------------------
 
 void ServiceTest::testCommunication()
 {
@@ -372,7 +384,7 @@ void ServiceTest::testCommunication()
 
 std::shared_ptr< ::fwRuntime::EConfigurationElement > ServiceTest::buildServiceConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("service"));
     cfg->setAttributeValue( "uid", "myTestService" );
     cfg->setAttributeValue( "type", "::fwServices::ut::TestService" );
     cfg->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
@@ -386,7 +398,7 @@ std::shared_ptr< ::fwRuntime::EConfigurationElement > ServiceTest::buildServiceC
 std::shared_ptr< ::fwRuntime::ConfigurationElement > ServiceTest::buildObjectConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "objectUUID");
     cfg->setAttributeValue( "type", "::fwData::Composite");
 

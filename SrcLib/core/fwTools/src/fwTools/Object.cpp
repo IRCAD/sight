@@ -8,39 +8,14 @@
 
 #include "fwTools/UUID.hpp"
 
-#include <fwCore/HiResClock.hpp>
-
 namespace fwTools
 {
 
 //------------------------------------------------------------------------------
 
 Object::Object() :
-    m_timeStamp( ::fwCore::TimeStamp::New()  ),
     m_uuid( ::fwTools::UUID::New() )
 {
-}
-
-//------------------------------------------------------------------------------
-
-Object::~Object()
-{
-}
-
-//------------------------------------------------------------------------------
-
-Object& Object::operator=(const Object& _obj)
-{
-    SLM_FATAL("This operator is forbidden, use shallowCopy or deepCopy instead.");
-    m_timeStamp = _obj.m_timeStamp;
-    return (*this);
-}
-
-//------------------------------------------------------------------------------
-
-std::string Object::className() const
-{
-    return this->getClassname();
 }
 
 //-----------------------------------------------------------------------------

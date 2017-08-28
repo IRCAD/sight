@@ -346,10 +346,10 @@ IService::SharedFutureType IService::update()
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_ASSERT(
-            "INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->className(),
+            "INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->getClassname(),
             m_globalState == STARTED );
         OSLM_ASSERT(
-            "INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->className(),
+            "INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->getClassname(),
             m_updatingState == NOTUPDATING );
 
         PackagedTaskType task( ::boost::bind(&IService::updating, this) );
