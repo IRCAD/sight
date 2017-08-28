@@ -282,7 +282,7 @@
             -->
             <connect>
                 <signal>meshAdaptor/textureApplied</signal>
-                <slot>textureAdaptor/applySTexture</slot>
+                <slot>textureAdaptor/applyTexture</slot>
             </connect>
 
             <start uid="ihm" />

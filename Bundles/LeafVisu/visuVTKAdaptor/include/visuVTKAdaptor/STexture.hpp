@@ -31,12 +31,12 @@ namespace visuVTKAdaptor
  * @code{.xml}
     <connect>
         <signal>meshAdaptor/textureApplied</signal>
-        <slot>textureAdaptor/applySTexture</slot>
+        <slot>textureAdaptor/applyTexture</slot>
     </connect>
    @endcode
  *
  * @section Slots Slots
- * - \b applySTexture(SPTR(::fwData::Material)): update image slice type
+ * - \b applyTexture(SPTR(::fwData::Material)): update image slice type
  *
  * @section XML XML Configuration
  *
@@ -68,7 +68,7 @@ public:
      * @{
      */
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_APPLY_TEXTURE_SLOT;
-    typedef ::fwCom::Slot< void ( SPTR(::fwData::Material) ) > ApplySTextureSlotType;
+    typedef ::fwCom::Slot< void ( SPTR(::fwData::Material) ) > ApplyTextureSlotType;
     /** @} */
 
     /// Constructor
@@ -93,7 +93,7 @@ protected:
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
     /// Slot called when a texture must be applied on a material.
-    void applySTexture( SPTR(::fwData::Material) _material);
+    void applyTexture( SPTR(::fwData::Material) _material);
 
     /// Contains all mesh adaptors that currently have this texture applied. Needed when image is updated.
     std::set< SPTR(::fwData::Material) > m_materialSet;

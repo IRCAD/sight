@@ -434,7 +434,7 @@ void SMesh::configuring()
     if (config.count("texture"))
     {
         SLM_FATAL("'texture' is deprecated, you need to connect manually the SMesh::textureApplied signal to the "
-                  "STexture::applySTexture slot.");
+                  "STexture::applyTexture slot.");
     }
 
     if (config.count("shadingMode"))

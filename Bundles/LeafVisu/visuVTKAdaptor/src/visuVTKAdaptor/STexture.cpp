@@ -30,7 +30,7 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STexture);
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType STexture::s_APPLY_TEXTURE_SLOT = "applySTexture";
+const ::fwCom::Slots::SlotKeyType STexture::s_APPLY_TEXTURE_SLOT = "applyTexture";
 
 static const ::fwServices::IService::KeyType s_TEXTURE_INOUT = "texture";
 
@@ -41,7 +41,7 @@ STexture::STexture() noexcept :
     m_wrapping("repeat"),
     m_lighting(true)
 {
-    newSlot(s_APPLY_TEXTURE_SLOT, &STexture::applySTexture, this );
+    newSlot(s_APPLY_TEXTURE_SLOT, &STexture::applyTexture, this );
 }
 
 //------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ void STexture::updating()
 {
     for(::fwData::Material::sptr material :  m_materialSet)
     {
-        applySTexture(material);
+        applyTexture(material);
     }
 }
 
@@ -90,7 +90,7 @@ void STexture::stopping()
 
 //------------------------------------------------------------------------------
 
-void STexture::applySTexture( SPTR(::fwData::Material)_material )
+void STexture::applyTexture( SPTR(::fwData::Material)_material )
 {
     if(m_materialSet.count(_material) == 0)
     {

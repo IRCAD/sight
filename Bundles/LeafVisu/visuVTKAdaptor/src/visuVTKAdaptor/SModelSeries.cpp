@@ -76,7 +76,7 @@ void SModelSeries::configuring()
     if (config.count("texture"))
     {
         SLM_FATAL("'texture' is deprecated, you need to connect manually the SModelSeries::textureApplied signal to "
-                  "the STexture::applySTexture slot.");
+                  "the STexture::applyTexture slot.");
     }
 }
 
