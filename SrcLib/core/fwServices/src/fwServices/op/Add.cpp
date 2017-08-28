@@ -44,6 +44,7 @@ namespace fwServices
 {
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create( _implType );
+    ::fwServices::OSR::registerService( srv );
     FW_RAISE_IF("Failed to add " + _implType, !srv );
     if(!_uid.empty())
     {

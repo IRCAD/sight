@@ -103,7 +103,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
         {
             ::fwServices::IService::wptr refService1;
             {
-                auto testService1 = this->registerService< ::fwServices::ut::TestSrvAutoconnect >(srvType);
+                auto testService1 = this->registerService(srvType);
                 testService1->registerInOut(data1, "data1", true);
                 testService1->start();
                 refService1 = testService1;
@@ -111,7 +111,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
             ::fwServices::IService::wptr refService2;
             {
-                auto testService2 = this->registerService< ::fwServices::ut::TestSrvAutoconnect >(srvType);
+                auto testService2 = this->registerService(srvType);
                 testService2->start();
                 refService2 = testService2;
             }
@@ -126,6 +126,35 @@ struct TestIHasServices : public ::fwServices::IHasServices
             CPPUNIT_ASSERT(!refService2.expired());
 
             this->unregisterService(refService2.lock()->getID());
+            CPPUNIT_ASSERT(refService1.expired());
+            CPPUNIT_ASSERT(refService2.expired());
+        }
+        {
+            ::fwServices::IService::wptr refService1;
+            {
+                auto testService1 = this->registerService(srvType);
+                testService1->registerInOut(data1, "data1", true);
+                testService1->start();
+                refService1 = testService1;
+            }
+
+            ::fwServices::IService::wptr refService2;
+            {
+                auto testService2 = this->registerService(srvType);
+                testService2->start();
+                refService2 = testService2;
+            }
+
+            CPPUNIT_ASSERT(!refService1.expired());
+            CPPUNIT_ASSERT(!refService2.expired());
+
+            // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
+            // So if the test passes, that means we are ok with the unregistering
+            this->unregisterService(refService1.lock());
+            CPPUNIT_ASSERT(refService1.expired());
+            CPPUNIT_ASSERT(!refService2.expired());
+
+            this->unregisterService(refService2.lock());
             CPPUNIT_ASSERT(refService1.expired());
             CPPUNIT_ASSERT(refService2.expired());
         }

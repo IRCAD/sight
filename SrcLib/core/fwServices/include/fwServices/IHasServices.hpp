@@ -25,7 +25,7 @@ class FWSERVICES_CLASS_API IHasServices
 {
 public:
 
-    typedef std::vector < SPTR(::fwServices::IService) > ServiceVector;
+    typedef std::vector < WPTR(::fwServices::IService) > ServiceVector;
 
     /**
      * @brief Get all subservices linked to this service
@@ -68,6 +68,12 @@ protected:
      * @param id Identifier of the service
      */
     FWSERVICES_API void unregisterService(const ::fwTools::fwID::IDType& _id);
+
+    /**
+     * @brief Unregister a specific service
+     * @param service Pointer to the service
+     */
+    FWSERVICES_API void unregisterService(const ::fwServices::IService::sptr& _service);
 
     /**
      * @brief Unregister all services linked to this service, optionally matches only a given type of services

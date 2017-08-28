@@ -57,7 +57,7 @@ public:
      * keeps relation between objects identifiers and attached services
      */
     typedef ::boost::bimaps::bimap<
-            ::boost::bimaps::multiset_of< ::fwCore::LogicStamp::LogicStampType >,
+            ::boost::bimaps::multiset_of< ::fwData::Object::cwptr, std::owner_less< ::fwData::Object::cwptr > >,
             ::boost::bimaps::multiset_of< ::fwServices::IService::sptr >
             > ServiceContainerType;
 
@@ -87,6 +87,11 @@ public:
      * @name Management of registrations
      */
     //@{
+
+    /**
+     * @brief Register the service alone
+     */
+    FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
 
     /**
      * @brief Register the service (service) for the object (obj)
@@ -217,11 +222,6 @@ public:
      */
     FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType) const;
 
-    /**
-     * @brief return true if key is still present in OSR
-     */
-    FWSERVICES_API bool hasKey( ::fwCore::LogicStamp::csptr key ) const;
-
     //@}
 
     /**
@@ -238,13 +238,6 @@ public:
 
     //@}
 
-    /**
-     * @name New API for services with multiple data.
-     */
-
-    //@{
-
-    //@}
 protected:
 
     /**
@@ -340,6 +333,11 @@ FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServi
  * @brief Wraps ObjectService::has
  */
 FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType);
+
+/**
+ * @brief Wraps ObjectService::registerService
+ */
+FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
 
 /**
  * @brief Wraps ObjectService::registerService

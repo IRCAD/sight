@@ -22,7 +22,7 @@ IHasServices::IHasServices() noexcept
 
 IHasServices::~IHasServices() noexcept
 {
-    SLM_ASSERT("Some sub-services were not unregistered, something is probably wrong."
+    SLM_ASSERT("Some sub-services were not unregistered, something is probably wrong. "
                "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
                m_subServices.empty());
 }
@@ -32,8 +32,9 @@ IHasServices::~IHasServices() noexcept
 ::fwServices::IService::csptr IHasServices::getRegisteredService(const fwTools::fwID::IDType& _id) const
 {
     ::fwServices::IService::sptr srv;
-    for(const auto& service : m_subServices)
+    for(const auto& wService : m_subServices)
     {
+        const ::fwServices::IService::sptr& service = wService.lock();
         if(service && (service->getID() == _id))
         {
             srv = service;
@@ -49,13 +50,11 @@ void IHasServices::unregisterService(const fwTools::fwID::IDType& _id)
 {
     for(auto itSrv = m_subServices.cbegin(); itSrv != m_subServices.cend(); )
     {
-        const ::fwServices::IService::sptr& srv = *itSrv;
-        if(srv && (srv->getID() == _id))
+        const ::fwServices::IService::sptr& service = itSrv->lock();
+        if(service && (service->getID() == _id))
         {
-            ::fwServices::IService::sptr srv     = *itSrv;
-            ::fwServices::IService::sptr service = ::fwServices::IService::dynamicCast(srv);
-            srv->stop();
-            ::fwServices::OSR::unregisterService(srv);
+            service->stop();
+            ::fwServices::OSR::unregisterService(service);
             itSrv = m_subServices.erase(itSrv);
         }
         else
@@ -63,6 +62,23 @@ void IHasServices::unregisterService(const fwTools::fwID::IDType& _id)
             itSrv++;
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void IHasServices::unregisterService(const IService::sptr& _service)
+{
+    auto iter = std::find_if(m_subServices.begin(), m_subServices.end(),
+                             [ = ](const ::fwServices::IService::wptr& adaptor)
+        {
+            return adaptor.lock() == _service;
+        });
+
+    SLM_ASSERT("service '" + _service->getID() + "' is not registered", iter != m_subServices.end());
+    m_subServices.erase(iter);
+
+    _service->stop();
+    ::fwServices::OSR::unregisterService(_service);
 }
 
 //------------------------------------------------------------------------------
@@ -81,10 +97,9 @@ void IHasServices::unregisterServices(const std::string& _classname)
 {
     for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
     {
-        const ::fwServices::IService::sptr& srv = *itSrv;
+        const ::fwServices::IService::sptr& srv = itSrv->lock();
         if(srv && (_classname.empty() || ( !_classname.empty() && srv->getClassname() == _classname)))
         {
-            ::fwServices::IService::sptr service = ::fwServices::IService::dynamicCast(srv);
             srv->stop();
             ::fwServices::OSR::unregisterService(srv);
             itSrv = m_subServices.erase(itSrv);
