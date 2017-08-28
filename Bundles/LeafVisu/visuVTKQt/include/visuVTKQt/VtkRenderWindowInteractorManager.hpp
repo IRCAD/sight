@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,19 +9,14 @@
 
 #include "visuVTKQt/config.hpp"
 
-#include <fwCore/base.hpp>
-
-#include <fwGui/container/fwContainer.hpp>
-
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
-#include <string>
-
+#include <QPointer>
 
 class vtkRenderWindowInteractor;
 
 QT_BEGIN_NAMESPACE
-class QVTKWidget;
+class QVTKOpenGLWidget;
 QT_END_NAMESPACE
 
 namespace fwGuiQt
@@ -37,7 +32,6 @@ namespace visuVTKQt
 
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
- * @class   VtkRenderWindowInteractorManager
  *
  */
 class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVTK::IVtkRenderWindowInteractorManager
@@ -59,13 +53,13 @@ public:
     VISUVTKQT_API virtual void uninstallInteractor();
 
     /// Return a pointer on interactor
-    VISUVTKQT_API virtual ::vtkRenderWindowInteractor * getInteractor();
+    VISUVTKQT_API virtual ::vtkRenderWindowInteractor* getInteractor();
 
 private:
 
-    QPointer<QVTKWidget> m_qVTKWidget;
+    QPointer<QVTKOpenGLWidget> m_QVTKOpenGLWidget;
 
-    vtkRenderWindowInteractor *m_interactor;
+    vtkRenderWindowInteractor* m_interactor;
 
     SPTR(::fwGuiQt::container::QtContainer) m_parentContainer;
 
@@ -74,5 +68,4 @@ private:
 } // namespace visuVTKQt
 
 #endif // __VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP__
-
 
