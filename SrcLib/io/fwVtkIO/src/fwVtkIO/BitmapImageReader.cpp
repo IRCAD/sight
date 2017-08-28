@@ -78,8 +78,6 @@ void BitmapImageReader::read()
     m_job->addSimpleCancelHook([&] { reader->AbortExecuteOn(); });
 
     reader->Update();
-    reader->UpdateInformation();
-    reader->PropagateUpdateExtent();
 
     vtkDataObject* obj = reader->GetOutput();
     vtkImageData* img  = vtkImageData::SafeDownCast(obj);

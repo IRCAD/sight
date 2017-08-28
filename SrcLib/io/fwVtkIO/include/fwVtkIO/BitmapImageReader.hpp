@@ -28,7 +28,7 @@ namespace fwVtkIO
 /**
  * @brief   Read a bitmap image.
  *
- * Read a VTK Image using the VTK lib
+ * Read a Bitmap Image using the VTK library
  */
 class BitmapImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
                           public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
