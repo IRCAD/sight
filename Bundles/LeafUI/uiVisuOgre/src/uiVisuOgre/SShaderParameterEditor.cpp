@@ -151,8 +151,9 @@ void SShaderParameterEditor::updateGuiInfo()
     bool found = false;
 
     // Is there at least one parameter that we can handle ?
-    for (const auto& paramSrv : matService->getRegisteredServices())
+    for (const auto& wParamSrv : matService->getRegisteredServices())
     {
+        const auto paramSrv = wParamSrv.lock();
         if (paramSrv->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
             /// Getting associated object infos
@@ -192,8 +193,9 @@ void SShaderParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (auto adaptor : matService->getRegisteredServices())
+    for (auto wAdaptor : matService->getRegisteredServices())
     {
+        const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor);
