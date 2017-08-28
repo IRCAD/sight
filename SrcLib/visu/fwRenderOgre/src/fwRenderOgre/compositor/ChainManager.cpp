@@ -273,8 +273,6 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
 
                         if(obj != nullptr)
                         {
-                            obj->setName(constantName);
-
                             // Creates an Ogre adaptor and associates it with the f4s object
                             auto srv = this->registerService("::visuOgreAdaptor::SCompositorParameter", id);
                             srv->registerInOut(obj, "parameter", true);
