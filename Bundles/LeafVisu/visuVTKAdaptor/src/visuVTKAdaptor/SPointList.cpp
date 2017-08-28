@@ -150,21 +150,16 @@ void SPointList::createServices(WeakPointListType& wPtList)
         ::fwData::Point::sptr pt = wpt.lock();
 
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SPoint", srvConfig);
-        // register point
-        this->registerServiceInOut(pt, SPoint::s_POINT_INOUT, service, true, srvConfig);
-
-        ::visuVTKAdaptor::SPoint::sptr pointAdaptor = ::visuVTKAdaptor::SPoint::dynamicCast(service);
+        auto pointAdaptor = this->registerService< ::visuVTKAdaptor::SPoint >("::visuVTKAdaptor::SPoint");
+        pointAdaptor->registerInOut(pt, SPoint::s_POINT_INOUT, true);
 
         SLM_ASSERT("Bad cast of IAdaptor to Point", pointAdaptor);
 
-        service->setConfiguration(srvConfig);
-        service->setRenderService(this->getRenderService());
-        service->setRendererId( this->getRendererId() );
-        service->setPickerId( this->getPickerId() );
-        service->setAutoRender( this->getAutoRender() );
-        service->start();
+        pointAdaptor->setRenderService(this->getRenderService());
+        pointAdaptor->setRendererId( this->getRendererId() );
+        pointAdaptor->setPickerId( this->getPickerId() );
+        pointAdaptor->setAutoRender( this->getAutoRender() );
+        pointAdaptor->start();
 
         pointAdaptor->setColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue(), m_ptColor->alpha());
         pointAdaptor->setRadius(m_radius);

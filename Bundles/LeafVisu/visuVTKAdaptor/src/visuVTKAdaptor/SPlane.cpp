@@ -94,19 +94,16 @@ void SPlane::starting()
     for( const ::fwData::Point::sptr& point :  plane->getCRefPoints() )
     {
         // create the srv configuration for objects auto-connection
-        IService::Config serviceConfig;
-        ::fwRenderVTK::IAdaptor::sptr servicePoint = this->createSubAdaptor("::visuVTKAdaptor::SPoint", serviceConfig);
-        this->registerServiceInOut(point, SPoint::s_POINT_INOUT, servicePoint, true, serviceConfig);
+        auto servicePoint = this->registerService< ::fwRenderVTK::IAdaptor >("::visuVTKAdaptor::SPoint");
+        servicePoint->registerInOut(point, SPoint::s_POINT_INOUT, true);
 
-        servicePoint->setConfiguration(serviceConfig);
         servicePoint->setRenderService(this->getRenderService());
         servicePoint->setRendererId( this->getRendererId() );
         servicePoint->setPickerId( this->getPickerId() );
         servicePoint->setAutoRender( this->getAutoRender() );
         servicePoint->start();
 
-        m_connections.connect(point, ::fwData::Object::s_MODIFIED_SIG,
-                              this->getSptr(), s_UPDATE_POINTS_SLOT);
+        m_connections.connect(point, ::fwData::Object::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_POINTS_SLOT);
         m_connections.connect(servicePoint, ::visuVTKAdaptor::SPoint::s_INTERACTION_STARTED_SIG,
                               this->getSptr(), s_START_INTERACTION_SLOT);
     }
@@ -231,11 +228,12 @@ void SPlane::setVtkPlaneCollection( vtkObject* col )
 
 void SPlane::selectPlane(bool select)
 {
-    for( const ServiceVector::value_type& service :  m_subServices )
+    auto subServices = this->getRegisteredServices();
+    for (const ::fwServices::IService::wptr& adaptor: subServices)
     {
-        if(!service.expired())
+        auto servicePoint = ::visuVTKAdaptor::SPoint::dynamicCast(adaptor.lock());
+        if(servicePoint)
         {
-            ::visuVTKAdaptor::SPoint::sptr servicePoint = ::visuVTKAdaptor::SPoint::dynamicCast(service.lock());
             if(select)
             {
                 servicePoint->setColor(1., 0., 0.);

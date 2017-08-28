@@ -246,12 +246,9 @@ void SPlaneList::updating()
         for(const ::fwData::Plane::sptr& plane :  planeList->getPlanes())
         {
             // create the srv configuration for objects auto-connection
-            IService::Config serviceConfig;
-            ::fwRenderVTK::IAdaptor::sptr servicePlane =
-                this->createSubAdaptor("::visuVTKAdaptor::SPlane", serviceConfig);
-            this->registerServiceInOut(plane, SPlane::s_PLANE_INOUT, servicePlane, true, serviceConfig);
+            auto servicePlane = this->registerService< ::fwRenderVTK::IAdaptor>("::visuVTKAdaptor::SPlane");
+            servicePlane->registerInOut(plane, SPlane::s_PLANE_INOUT, true);
 
-            servicePlane->setConfiguration(serviceConfig);
             servicePlane->setRenderService(this->getRenderService());
             servicePlane->setRendererId(this->getRendererId());
             servicePlane->setPickerId(this->getPickerId());
@@ -296,7 +293,8 @@ void SPlaneList::showPlanes(bool visible)
 
 void SPlaneList::updateSelection(::fwData::Plane::sptr plane)
 {
-    for (const ::fwRenderVTK::IAdaptor::wptr& adaptor: m_subServices)
+    auto subServices = this->getRegisteredServices();
+    for (const ::fwServices::IService::wptr& adaptor: subServices)
     {
         SPlane::sptr planeAdaptor = SPlane::dynamicCast(adaptor.lock());
 

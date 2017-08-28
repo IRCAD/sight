@@ -107,22 +107,19 @@ void SModelSeries::updating()
     for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
     {
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SReconstruction", srvConfig);
-        this->registerServiceInput(reconstruction, SReconstruction::s_RECONSTRUCTION_INPUT, service, true, srvConfig);
+        auto adaptor = registerService< ::visuVTKAdaptor::SReconstruction >("::visuVTKAdaptor::SReconstruction");
+        adaptor->registerInput(reconstruction, SReconstruction::s_RECONSTRUCTION_INPUT, true);
 
-        service->setConfiguration(srvConfig);
-        service->setTransformId( this->getTransformId() );
-        service->setRendererId( this->getRendererId() );
-        service->setPickerId( this->getPickerId() );
-        service->setRenderService(this->getRenderService());
-        service->setAutoRender( this->getAutoRender() );
-        ::visuVTKAdaptor::SReconstruction::sptr renconstructionAdaptor =
-            ::visuVTKAdaptor::SReconstruction::dynamicCast(service);
-        renconstructionAdaptor->setClippingPlanes( m_clippingPlanes );
-        renconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
-        service->start();
-        renconstructionAdaptor->setForceHide( !showRec );
+        adaptor->setTransformId( this->getTransformId() );
+        adaptor->setRendererId( this->getRendererId() );
+        adaptor->setPickerId( this->getPickerId() );
+        adaptor->setRenderService(this->getRenderService());
+        adaptor->setAutoRender( this->getAutoRender() );
+
+        adaptor->setClippingPlanes( m_clippingPlanes );
+        adaptor->setAutoResetCamera(m_autoResetCamera);
+        adaptor->start();
+        adaptor->setForceHide( !showRec );
 
         m_sigTextureApplied->asyncEmit(reconstruction->getMaterial());
     }
@@ -141,15 +138,16 @@ void SModelSeries::stopping()
 
 void SModelSeries::updateNormalMode(std::uint8_t mode, std::string recID)
 {
-    for( ServiceVector::value_type service :  m_subServices)
+    auto subServices = this->getRegisteredServices();
+    for( auto& wService :  subServices)
     {
-        if(!service.expired())
+        auto service = wService.lock();
+        if(service)
         {
-            ::visuVTKAdaptor::SReconstruction::sptr renconstructionAdaptor
-                = ::visuVTKAdaptor::SReconstruction::dynamicCast(service.lock());
-            if (renconstructionAdaptor && renconstructionAdaptor->getObject()->getID() == recID)
+            auto reconstructionAdaptor = ::visuVTKAdaptor::SReconstruction::dynamicCast(service);
+            if (reconstructionAdaptor && reconstructionAdaptor->getObject()->getID() == recID)
             {
-                renconstructionAdaptor->updateNormalMode(mode);
+                reconstructionAdaptor->updateNormalMode(mode);
                 break;
             }
         }
@@ -163,15 +161,16 @@ void SModelSeries::showReconstructions(bool show)
     ::fwMedData::ModelSeries::csptr modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
     SLM_ASSERT("Missing ModelSeries '" + s_MODEL_INPUT + "'", modelSeries);
 
-    for( ServiceVector::value_type service :  m_subServices)
+    auto subServices = this->getRegisteredServices();
+    for( auto& wService :  subServices)
     {
-        if(!service.expired())
+        auto service = wService.lock();
+        if(service)
         {
-            ::visuVTKAdaptor::SReconstruction::sptr renconstructionAdaptor
-                = ::visuVTKAdaptor::SReconstruction::dynamicCast(service.lock());
-            if (renconstructionAdaptor)
+            auto reconstructionAdaptor = ::visuVTKAdaptor::SReconstruction::dynamicCast(service);
+            if (reconstructionAdaptor)
             {
-                renconstructionAdaptor->setForceHide( !show );
+                reconstructionAdaptor->setForceHide( !show );
             }
         }
     }

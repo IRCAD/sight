@@ -12,6 +12,7 @@
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
+#include <fwServices/IHasServices.hpp>
 #include <fwServices/IService.hpp>
 
 #include <string>
@@ -28,7 +29,8 @@ namespace fwRenderVTK
 /**
  * @brief Base class for VTK adaptors
  */
-class FWRENDERVTK_CLASS_API IAdaptor : public fwServices::IService
+class FWRENDERVTK_CLASS_API IAdaptor : public fwServices::IService,
+                                       public fwServices::IHasServices
 {
 friend class SRender;
 public:
@@ -121,8 +123,6 @@ public:
 
 protected:
 
-    typedef std::vector < ::fwRenderVTK::IAdaptor::wptr > ServiceVector;
-
     /**
      * @brief   constructor
      */
@@ -138,62 +138,6 @@ protected:
 
     /// Initialize the adaptor with the associated render service. (must be call in starting).
     FWRENDERVTK_API void initialize();
-
-    //------------------------------------------------------------------------------
-
-    /// Return the list of the sub-adaptor managed by this adaptor
-    const ServiceVector& getRegisteredServices() const
-    {
-        return m_subServices;
-    }
-
-    /**
-     * @brief Creates a new sub adaptor
-     * @param[in] type service type, must inherits of IAdaptor (ex. ::visuVTKAdaptor::Image)
-     * @param[out] config struct used to configure the service's objects and auto-connection
-     * @return Returns the created adaptor
-     * @throw fwCore::Exception if the service cannot be created
-     * @note if the service works on objects, you will need to call :registerServiceInput()  or registerServiceInOut()
-     * with the objects
-     */
-    FWRENDERVTK_API ::fwRenderVTK::IAdaptor::sptr createSubAdaptor(const std::string& type,
-                                                                   ::fwServices::IService::Config& config);
-
-    /**
-     * @brief Registers the object of the service in the OSR
-     * @param[in] obj input object used by the service
-     * @param[in] key key of the object in the new adaptor
-     * @param[in] srv service to register with the object
-     * @param[in] autoConnect if true, the service will be connected to all of its objects
-     * @param[in,out] config struct used to configure the service's objects and auto-connection
-     * @return
-     */
-    FWRENDERVTK_API void registerServiceInput(const ::fwData::Object::csptr& obj,
-                                              const std::string& key,
-                                              const ::fwRenderVTK::IAdaptor::sptr& srv,
-                                              const bool autoConnect,
-                                              ::fwServices::IService::Config& config);
-
-    /**
-     * @brief Registers the object of the service in the OSR
-     * @param[in] obj in-out object used by the service
-     * @param[in] key key of the object in the new adaptor
-     * @param[in] srv service to register with the object
-     * @param[in] autoConnect if true, the service will be connected to all of its objects
-     * @param[in,out] config struct used to configure the service's objects and auto-connection
-     * @return
-     */
-    FWRENDERVTK_API void registerServiceInOut(const ::fwData::Object::sptr& obj,
-                                              const std::string& key,
-                                              const ::fwRenderVTK::IAdaptor::sptr& srv,
-                                              const bool autoConnect,
-                                              ::fwServices::IService::Config& config);
-
-    /// Unregiters the sub-adaptor from the OSR and the subServices list
-    FWRENDERVTK_API void unregisterService(::fwRenderVTK::IAdaptor::sptr service);
-
-    /// Unregiters all the sub-adaptor from the OSR and clear the subServices list
-    FWRENDERVTK_API void unregisterServices();
 
     /// Registers the vtkProp
     FWRENDERVTK_API void registerProp(vtkProp* prop);
@@ -237,8 +181,6 @@ protected:
     SRender::PickerIdType m_pickerId;
     SRender::VtkObjectIdType m_transformId;
     SRender::wptr m_renderService;
-
-    ServiceVector m_subServices;
 
     vtkPropCollection* m_propCollection;
 

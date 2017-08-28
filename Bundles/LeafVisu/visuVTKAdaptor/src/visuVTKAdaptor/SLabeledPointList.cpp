@@ -265,37 +265,26 @@ void SLabeledPointList::updating()
 
     if ( !landmarks->getPoints().empty() )
     {
-        ::fwRenderVTK::IAdaptor::sptr servicePointList;
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        servicePointList = this->createSubAdaptor("::visuVTKAdaptor::SPointList", srvConfig);
+        auto pointListAdaptor = this->registerService< ::visuVTKAdaptor::SPointList>("::visuVTKAdaptor::SPointList");
         // register the point list
-        this->registerServiceInput(landmarks, SPointList::s_POINTLIST_INPUT, servicePointList, true, srvConfig);
-
-        ::visuVTKAdaptor::SPointList::sptr pointListAdaptor =
-            ::visuVTKAdaptor::SPointList::dynamicCast(servicePointList);
-
-        SLM_ASSERT("Bad cast of IAdaptor to servicePointList", pointListAdaptor);
+        pointListAdaptor->registerInput(landmarks, SPointList::s_POINTLIST_INPUT, true);
 
         pointListAdaptor->setColor(m_ptColor);
         pointListAdaptor->setRadius(m_radius);
         pointListAdaptor->setInteraction(m_interaction);
 
-        servicePointList->setConfiguration(srvConfig);
-        servicePointList->setPickerId( this->getPickerId() );
-        servicePointList->setRenderService( this->getRenderService() );
-        servicePointList->setAutoRender( this->getAutoRender() );
-        servicePointList->start();
+        pointListAdaptor->setPickerId( this->getPickerId() );
+        pointListAdaptor->setRenderService( this->getRenderService() );
+        pointListAdaptor->setAutoRender( this->getAutoRender() );
+        pointListAdaptor->start();
 
         for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
         {
-            ::fwRenderVTK::IAdaptor::sptr serviceLabel;
-            IService::Config labelSrvConfig;
-            serviceLabel = this->createSubAdaptor("::visuVTKAdaptor::SPointLabel", labelSrvConfig);
+            auto serviceLabel = this->registerService< ::fwRenderVTK::IAdaptor>("::visuVTKAdaptor::SPointLabel");
             // register the point list
-            this->registerServiceInput(point, SPointLabel::s_POINT_INPUT, serviceLabel, true, labelSrvConfig);
+            serviceLabel->registerInput(point, SPointLabel::s_POINT_INPUT, true);
 
-            serviceLabel->setConfiguration( labelSrvConfig );
             serviceLabel->setRenderService( this->getRenderService() );
             serviceLabel->setAutoRender( this->getAutoRender() );
             serviceLabel->start();

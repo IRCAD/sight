@@ -475,12 +475,6 @@ void SMesh::starting()
 
 void SMesh::stopping()
 {
-    if (!m_transformService.expired())
-    {
-        m_transformService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_transformService.lock());
-    }
-
     this->removeAllPropFromRenderer();
     if (this->getPicker())
     {
@@ -508,18 +502,17 @@ void SMesh::createTransformService()
 
     if (fieldTransform)
     {
-        if (!m_transformService.expired())
+        auto prevTransformService = m_transformService.lock();
+        if (prevTransformService)
         {
-            ::fwData::TransformationMatrix3D::sptr trf =
-                m_transformService.lock()->getInOut< ::fwData::TransformationMatrix3D >(STransform::s_TM3D_INOUT);
+            auto trf = prevTransformService->getInOut< ::fwData::TransformationMatrix3D >(STransform::s_TM3D_INOUT);
 
             if (trf == fieldTransform)
             {
                 return;
             }
 
-            m_transformService.lock()->stop();
-            ::fwServices::OSR::unregisterService(m_transformService.lock());
+            this->unregisterService(prevTransformService);
             m_transformService.reset();
             m_transform->Pop();
         }
@@ -528,17 +521,14 @@ void SMesh::createTransformService()
         vtkFieldTransform->Identity();
 
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        IAdaptor::sptr transformService =
-            this->createSubAdaptor( "::visuVTKAdaptor::STransform", srvConfig);
-        this->registerServiceInOut(fieldTransform, STransform::s_TM3D_INOUT, transformService, true, srvConfig);
-        m_transformService = ::visuVTKAdaptor::STransform::dynamicCast(transformService);
+        auto transformService = this->registerService< ::visuVTKAdaptor::STransform>( "::visuVTKAdaptor::STransform");
+        m_transformService = transformService;
+        transformService->registerInOut(fieldTransform, STransform::s_TM3D_INOUT, true);
 
-        transformService->setConfiguration(srvConfig);
         transformService->setRenderService( this->getRenderService() );
         transformService->setRendererId( this->getRendererId() );
         transformService->setAutoRender( this->getAutoRender() );
-        m_transformService.lock()->setTransform(vtkFieldTransform);
+        transformService->setTransform(vtkFieldTransform);
         transformService->start();
 
         m_transform->Concatenate(vtkFieldTransform);
@@ -605,11 +595,9 @@ void SMesh::setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv, ::fwData::M
     if (!srv)
     {
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        srv = this->createSubAdaptor("::visuVTKAdaptor::SMaterial", srvConfig);
-        this->registerServiceInput(material, SMaterial::s_MATERIAL_INPUT, srv, true, srvConfig);
+        srv = this->registerService< ::fwRenderVTK::IAdaptor>("::visuVTKAdaptor::SMaterial");
+        srv->registerInput(material, SMaterial::s_MATERIAL_INPUT, true);
 
-        srv->setConfiguration(srvConfig);
         srv->setRenderService(this->getRenderService());
         srv->setAutoRender( this->getAutoRender() );
         srv->start();
@@ -655,16 +643,14 @@ void SMesh::createNormalsService()
         SLM_ASSERT("Missing mesh", mesh);
 
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SMeshNormals", srvConfig);
-        this->registerServiceInput(mesh, SMeshNormals::s_MESH_INPUT, service, true, srvConfig);
+        auto service = this->registerService< ::visuVTKAdaptor::SMeshNormals >("::visuVTKAdaptor::SMeshNormals");
+        service->registerInput(mesh, SMeshNormals::s_MESH_INPUT, true);
 
-        service->setConfiguration(srvConfig);
         service->setRenderService( this->getRenderService() );
         service->setRendererId( this->getRendererId()      );
         service->setPickerId( this->getPickerId()      );
         service->setAutoRender( this->getAutoRender()    );
-        ::visuVTKAdaptor::SMeshNormals::dynamicCast(service)->setPolyData( m_polyData );
+        service->setPolyData( m_polyData );
         service->start();
 
         m_normalsService = service;

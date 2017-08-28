@@ -365,32 +365,25 @@ void SNegatoMPR::set3dMode( bool enabled )
 
 //------------------------------------------------------------------------------
 
-::fwRenderVTK::IAdaptor::sptr SNegatoMPR::addAdaptor(const std::string& adaptor, int axis)
+::fwRenderVTK::IAdaptor::sptr SNegatoMPR::addAdaptor(const std::string& adaptorType, int axis)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    ::fwRenderVTK::IAdaptor::sptr service;
-
     // create the srv configuration for objects auto-connection
-    IService::Config srvConfig;
-    service = this->createSubAdaptor(adaptor, srvConfig);
+    auto service = this->registerService< ::fwRenderVTK::IAdaptor>(adaptorType);
     // register image
-    this->registerServiceInOut(image, s_IMAGE_INOUT, service, true, srvConfig);
+    service->registerInOut(image, s_IMAGE_INOUT, true);
 
     if(axis >= 0)
     {
-        ::fwDataTools::helper::MedicalImageAdaptor::sptr adaptorSrv =
-            ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
+        auto adaptorSrv = ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }
 
-    ::visuVTKAdaptor::SNegatoOneSlice::sptr negatoAdaptor;
-    negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
-
-    ::visuVTKAdaptor::SNegatoWindowingInteractor::sptr negatoWindowingAdaptor;
-    negatoWindowingAdaptor = ::visuVTKAdaptor::SNegatoWindowingInteractor::dynamicCast(service);
+    auto negatoAdaptor          = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
+    auto negatoWindowingAdaptor = ::visuVTKAdaptor::SNegatoWindowingInteractor::dynamicCast(service);
 
     if (negatoAdaptor)
     {
@@ -407,7 +400,7 @@ void SNegatoMPR::set3dMode( bool enabled )
         ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
         if (tfSelection)
         {
-            this->registerServiceInOut(tfSelection, s_TF_SELECTION_INOUT, negatoAdaptor, true, srvConfig);
+            negatoAdaptor->registerInOut(tfSelection, s_TF_SELECTION_INOUT, true);
         }
     }
     else if (negatoWindowingAdaptor)
@@ -417,11 +410,10 @@ void SNegatoMPR::set3dMode( bool enabled )
         ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
         if (tfSelection)
         {
-            this->registerServiceInOut(tfSelection, s_TF_SELECTION_INOUT, negatoWindowingAdaptor, true, srvConfig);
+            negatoWindowingAdaptor->registerInOut(tfSelection, s_TF_SELECTION_INOUT, true);
         }
     }
 
-    service->setConfiguration(srvConfig);
     service->setRenderService(this->getRenderService());
     service->setRendererId( this->getRendererId() );
     service->setPickerId( this->getPickerId() );

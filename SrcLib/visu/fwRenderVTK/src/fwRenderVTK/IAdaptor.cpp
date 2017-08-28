@@ -235,11 +235,13 @@ IAdaptor::sptr IAdaptor::getAssociatedAdaptor(vtkProp* prop, int depth)
         else
         {
             IAdaptor::sptr res;
-            for( ServiceVector::value_type service :  m_subServices)
+            auto subServices = this->getRegisteredServices();
+            for( auto& service : subServices)
             {
-                if(!service.expired())
+                auto adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(service.lock());
+                if(adaptor)
                 {
-                    res = service.lock()->getAssociatedAdaptor(prop, depth - 1 );
+                    res = adaptor->getAssociatedAdaptor(prop, depth - 1 );
                     if (res)
                     {
                         break;
@@ -250,98 +252,6 @@ IAdaptor::sptr IAdaptor::getAssociatedAdaptor(vtkProp* prop, int depth)
         }
     }
     return srv;
-}
-
-//------------------------------------------------------------------------------
-
-::fwRenderVTK::IAdaptor::sptr IAdaptor::createSubAdaptor(const std::string& type,
-                                                         ::fwServices::IService::Config& config)
-{
-    ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-
-    ::fwServices::IService::sptr srv = srvFactory->create(type);
-    FW_RAISE_IF("Service of type '" + type + "' cannot be instantiated.", !srv);
-
-    ::fwRenderVTK::IAdaptor::sptr adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(srv);
-    FW_RAISE_IF("Service of type '"+ type + "' is not an adaptor", !adaptor);
-
-    m_subServices.push_back(adaptor);
-
-    config.m_type              = type;
-    config.m_globalAutoConnect = false;
-    config.m_config            = ::fwRuntime::EConfigurationElement::New("service");
-
-    return adaptor;
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::registerServiceInput(const ::fwData::Object::csptr& obj,
-                                    const std::string& key,
-                                    const ::fwRenderVTK::IAdaptor::sptr& srv,
-                                    const bool autoConnect,
-                                    ::fwServices::IService::Config& config)
-{
-    ::fwServices::OSR::registerServiceInput(obj, key, srv);
-
-    ObjectServiceConfig objConfig;
-    objConfig.m_key         = key;
-    objConfig.m_access      = AccessType::INPUT;
-    objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = false;
-
-    config.m_objects.push_back(objConfig);
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::registerServiceInOut(const ::fwData::Object::sptr& obj,
-                                    const std::string& key,
-                                    const ::fwRenderVTK::IAdaptor::sptr& srv,
-                                    const bool autoConnect,
-                                    ::fwServices::IService::Config& config)
-{
-    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, srv);
-
-    ObjectServiceConfig objConfig;
-    objConfig.m_key         = key;
-    objConfig.m_access      = AccessType::INOUT;
-    objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = false;
-
-    config.m_objects.push_back(objConfig);
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::unregisterService( ::fwRenderVTK::IAdaptor::sptr service)
-{
-    auto iter = std::find_if(m_subServices.begin(), m_subServices.end(),
-                             [ = ](const ::fwRenderVTK::IAdaptor::wptr& adaptor)
-        {
-            return adaptor.lock() == service;
-        });
-
-    SLM_ASSERT("service '" + service->getID() + "' is not registered", iter != m_subServices.end());
-    m_subServices.erase(iter);
-
-    service->stop();
-    ::fwServices::OSR::unregisterService(service);
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::unregisterServices()
-{
-    for(ServiceVector::value_type service : m_subServices)
-    {
-        if(!service.expired())
-        {
-            service.lock()->stop();
-            ::fwServices::OSR::unregisterService(service.lock());
-        }
-    }
-    m_subServices.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -381,11 +291,13 @@ void IAdaptor::getAllSubProps(vtkPropCollection* propc, int depth)
 
     if(depth != 0)
     {
-        for( ServiceVector::value_type service :  m_subServices)
+        auto subServices = this->getRegisteredServices();
+        for( const auto& service : subServices)
         {
-            if(!service.expired())
+            auto adaptor = ::fwRenderVTK::IAdaptor::dynamicCast(service.lock());
+            if(adaptor)
             {
-                service.lock()->getAllSubProps( propc, depth - 1 );
+                adaptor->getAllSubProps( propc, depth - 1 );
             }
         }
     }

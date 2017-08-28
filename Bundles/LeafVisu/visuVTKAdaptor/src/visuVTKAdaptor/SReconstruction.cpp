@@ -86,8 +86,7 @@ void SReconstruction::starting()
 
 void SReconstruction::createMeshService()
 {
-    ::fwData::Reconstruction::csptr reconstruction =
-        this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+    auto reconstruction = this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
     SLM_ASSERT("Missing Reconstruction", reconstruction);
 
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
@@ -96,28 +95,24 @@ void SReconstruction::createMeshService()
     if (mesh)
     {
         // create the srv configuration for objects auto-connection
-        IService::Config serviceConfig;
-        ::fwRenderVTK::IAdaptor::sptr meshService = this->createSubAdaptor("::visuVTKAdaptor::SMesh", serviceConfig);
-        this->registerServiceInput(mesh, SMesh::s_MESH_INPUT, meshService, true, serviceConfig);
+        auto meshAdaptor = this->registerService< ::visuVTKAdaptor::SMesh >("::visuVTKAdaptor::SMesh");
+        meshAdaptor->registerInput(mesh, SMesh::s_MESH_INPUT, true);
 
-        ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
-
-        meshService->setConfiguration(serviceConfig);
-        meshService->setRenderService( this->getRenderService() );
-        meshService->setRendererId( this->getRendererId() );
-        meshService->setPickerId( this->getPickerId() );
-        meshService->setTransformId( this->getTransformId() );
-        meshService->setAutoRender( this->getAutoRender() );
+        meshAdaptor->setRenderService( this->getRenderService() );
+        meshAdaptor->setRendererId( this->getRendererId() );
+        meshAdaptor->setPickerId( this->getPickerId() );
+        meshAdaptor->setTransformId( this->getTransformId() );
+        meshAdaptor->setAutoRender( this->getAutoRender() );
 
         meshAdaptor->setClippingPlanesId( m_clippingPlanesId);
         meshAdaptor->setShowClippedPart( true );
         meshAdaptor->setMaterial( reconstruction->getMaterial()  );
         meshAdaptor->setAutoResetCamera( m_autoResetCamera );
-        meshService->start();
+        meshAdaptor->start();
         meshAdaptor->updateVisibility( reconstruction->getIsVisible() );
         meshAdaptor->update();
 
-        m_meshService = meshService;
+        m_meshService = meshAdaptor;
         OSLM_TRACE("Mesh is visible : "<< reconstruction->getIsVisible());
         OSLM_TRACE("Mesh nb points : "<< mesh->getNumberOfPoints());
     }
@@ -131,8 +126,7 @@ void SReconstruction::updating()
     {
         ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
 
-        ::fwData::Reconstruction::csptr reconstruction =
-            this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
+        auto reconstruction = this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         SLM_ASSERT("Missing Reconstruction", reconstruction);
         ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
 

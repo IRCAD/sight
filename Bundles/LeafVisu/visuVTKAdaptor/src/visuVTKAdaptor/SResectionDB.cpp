@@ -67,21 +67,18 @@ void SResectionDB::updating()
     for( const ::fwData::Resection::sptr& resection :  resecDB->getResections())
     {
         // create the srv configuration for objects auto-connection
-        IService::Config serviceConfig;
-        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SResection", serviceConfig);
-        this->registerServiceInput(resection, SResection::s_RESECTION_INPUT, service, true, serviceConfig);
+        auto resecSrv = this->registerService< ::visuVTKAdaptor::SResection>("::visuVTKAdaptor::SResection");
+        resecSrv->registerInput(resection, SResection::s_RESECTION_INPUT, true);
 
-        service->setConfiguration(serviceConfig);
-        service->setTransformId( this->getTransformId() );
-        service->setRendererId( this->getRendererId() );
-        service->setPickerId( this->getPickerId() );
-        service->setRenderService(this->getRenderService());
-        service->setAutoRender( this->getAutoRender() );
+        resecSrv->setTransformId( this->getTransformId() );
+        resecSrv->setRendererId( this->getRendererId() );
+        resecSrv->setPickerId( this->getPickerId() );
+        resecSrv->setRenderService(this->getRenderService());
+        resecSrv->setAutoRender( this->getAutoRender() );
 
-        ::visuVTKAdaptor::SResection::sptr resecSrv = ::visuVTKAdaptor::SResection::dynamicCast(service);
         resecSrv->setClippingPlanes( m_clippingPlanes );
         resecSrv->setAutoResetCamera(m_autoResetCamera);
-        service->start();
+        resecSrv->start();
 
     }
 
@@ -90,17 +87,15 @@ void SResectionDB::updating()
     if(resec)
     {
         // create the srv configuration for objects auto-connection
-        IService::Config serviceConfig;
-        ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SResection", serviceConfig);
-        this->registerServiceInput(resec, SResection::s_RESECTION_INPUT, service, true, serviceConfig);
+        auto service = this->registerService< ::visuVTKAdaptor::SResection>("::visuVTKAdaptor::SResection");
+        service->registerInput(resec, SResection::s_RESECTION_INPUT, true);
 
-        service->setConfiguration(serviceConfig);
         service->setTransformId( this->getTransformId() );
         service->setRendererId( this->getRendererId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
         service->setAutoRender( this->getAutoRender() );
-        ::visuVTKAdaptor::SResection::dynamicCast(service)->setAutoResetCamera(m_autoResetCamera);
+        service->setAutoResetCamera(m_autoResetCamera);
 
         service->start();
     }

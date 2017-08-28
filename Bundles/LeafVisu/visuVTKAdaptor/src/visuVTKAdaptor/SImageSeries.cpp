@@ -124,25 +124,24 @@ void SImageSeries::updating()
 
     this->stopping();
 
-    ::fwData::Image::sptr image = series->getImage();
+    auto negato = this->registerService< ::visuVTKAdaptor::SNegatoMPR>("::visuVTKAdaptor::SNegatoMPR");
 
-    IService::Config srvConfig;
-    ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SNegatoMPR", srvConfig);
     // register image
-    this->registerServiceInOut(image, SNegatoMPR::s_IMAGE_INOUT, service, true, srvConfig);
+    ::fwData::Image::sptr image = series->getImage();
+    negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
 
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
     if (tfSelection)
     {
-        this->registerServiceInOut(tfSelection, SNegatoMPR::s_TF_SELECTION_INOUT, service, true, srvConfig);
+        negato->registerInOut(tfSelection, SNegatoMPR::s_TF_SELECTION_INOUT, true);
     }
 
-    service->setTransformId( this->getTransformId() );
-    service->setRendererId( this->getRendererId() );
-    service->setPickerId( this->getPickerId() );
-    service->setRenderService(this->getRenderService());
-    service->setAutoRender( this->getAutoRender() );
-    ::visuVTKAdaptor::SNegatoMPR::sptr negato = ::visuVTKAdaptor::SNegatoMPR::dynamicCast(service);
+    negato->setTransformId( this->getTransformId() );
+    negato->setRendererId( this->getRendererId() );
+    negato->setPickerId( this->getPickerId() );
+    negato->setRenderService(this->getRenderService());
+    negato->setAutoRender( this->getAutoRender() );
+
     negato->set3dMode(this->is3dModeEnabled());
     negato->setSliceMode(this->getSliceMode());
     negato->setOrientation(this->getOrientation());
@@ -150,7 +149,7 @@ void SImageSeries::updating()
     negato->setInterpolation(m_interpolation);
     negato->setVtkImageSourceId(m_imageSourceId);
     negato->setSelectedTFKey(this->getSelectedTFKey());
-    service->start();
+    negato->start();
 }
 
 //------------------------------------------------------------------------------

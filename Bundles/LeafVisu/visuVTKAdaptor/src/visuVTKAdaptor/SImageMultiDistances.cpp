@@ -254,17 +254,15 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
     if ( pl->getPoints().size() > 1 )
     {
         // create the srv configuration for objects auto-connection
-        IService::Config srvDistConfig;
-        ::fwRenderVTK::IAdaptor::sptr serviceDistance = this->createSubAdaptor("::visuVTKAdaptor::SDistance",
-                                                                               srvDistConfig);
+        auto serviceDistance = this->registerService< ::fwRenderVTK::IAdaptor>("::visuVTKAdaptor::SDistance");
+
         // register image
-        this->registerServiceInput(pl, SDistance::s_POINTLIST_INPUT, serviceDistance, true, srvDistConfig);
+        serviceDistance->registerInput(pl, SDistance::s_POINTLIST_INPUT, true);
 
         // install  Color Field if none
         pl->setDefaultField( ::fwDataTools::fieldHelper::Image::m_colorId, generateColor() );
 
         // no mandatory to set picker id
-        serviceDistance->setConfiguration(srvDistConfig);
         serviceDistance->setPickerId( this->getPickerId() );
         serviceDistance->setRendererId( this->getRendererId() );
         serviceDistance->setRenderService( this->getRenderService() );
@@ -273,12 +271,10 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
         // create the srv configuration for objects auto-connection
         IService::Config srvPLConfig;
-        ::fwRenderVTK::IAdaptor::sptr servicePointList = this->createSubAdaptor("::visuVTKAdaptor::SPointList",
-                                                                                srvPLConfig);
+        auto servicePointList = this->registerService< ::fwRenderVTK::IAdaptor>("::visuVTKAdaptor::SPointList");
         // register image
-        this->registerServiceInput(pl, SPointList::s_POINTLIST_INPUT, servicePointList, true, srvPLConfig);
+        servicePointList->registerInput(pl, SPointList::s_POINTLIST_INPUT, true);
 
-        servicePointList->setConfiguration(srvPLConfig);
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRendererId( this->getRendererId() );
         servicePointList->setRenderService( this->getRenderService() );

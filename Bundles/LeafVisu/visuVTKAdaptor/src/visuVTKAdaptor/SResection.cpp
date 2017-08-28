@@ -78,25 +78,21 @@ void SResection::updating()
         for (const ::fwData::Reconstruction::sptr& resec: vReconst)
         {
             // create the srv configuration for objects auto-connection
-            IService::Config serviceConfig;
-            ::fwRenderVTK::IAdaptor::sptr service = this->createSubAdaptor("::visuVTKAdaptor::SReconstruction",
-                                                                           serviceConfig);
-            this->registerServiceInput(resec, SReconstruction::s_RECONSTRUCTION_INPUT, service, true, serviceConfig);
+            auto reconstAdaptor =
+                this->registerService< ::visuVTKAdaptor::SReconstruction>("::visuVTKAdaptor::SReconstruction");
+            reconstAdaptor->registerInput(resec, SReconstruction::s_RECONSTRUCTION_INPUT, true);
 
-            service->setConfiguration(serviceConfig);
-            service->setTransformId( this->getTransformId() );
-            service->setRendererId( this->getRendererId() );
-            service->setPickerId( this->getPickerId() );
-            service->setRenderService(this->getRenderService());
-            service->setAutoRender( this->getAutoRender() );
-            ::visuVTKAdaptor::SReconstruction::sptr reconstAdaptor =
-                ::visuVTKAdaptor::SReconstruction::dynamicCast(service);
+            reconstAdaptor->setTransformId( this->getTransformId() );
+            reconstAdaptor->setRendererId( this->getRendererId() );
+            reconstAdaptor->setPickerId( this->getPickerId() );
+            reconstAdaptor->setRenderService(this->getRenderService());
+            reconstAdaptor->setAutoRender( this->getAutoRender() );
             if(!resectionIsValid)
             {
                 reconstAdaptor->setClippingPlanes( m_clippingPlanes );
             }
             reconstAdaptor->setAutoResetCamera(m_autoResetCamera);
-            service->start();
+            reconstAdaptor->start();
         }
     }
     this->setVtkPipelineModified();

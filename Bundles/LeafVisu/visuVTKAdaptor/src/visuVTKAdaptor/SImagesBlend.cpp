@@ -335,29 +335,25 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr
                             const std::string& selectedTFKey)
 {
     // create the srv configuration for objects auto-connection
-    IService::Config srvConfig;
-    ::fwRenderVTK::IAdaptor::sptr imageAdaptorService = this->createSubAdaptor("::visuVTKAdaptor::SImage", srvConfig);
+    auto imageAdaptor = this->registerService< ::visuVTKAdaptor::SImage>("::visuVTKAdaptor::SImage");
     // register image
-    this->registerServiceInOut(img, SImage::s_IMAGE_INOUT, imageAdaptorService, true, srvConfig);
-    this->registerServiceInOut(tfSelection, SImage::s_TF_SELECTION_INOUT, imageAdaptorService, false, srvConfig);
+    imageAdaptor->registerInOut(img, SImage::s_IMAGE_INOUT, true);
+    imageAdaptor->registerInOut(tfSelection, SImage::s_TF_SELECTION_INOUT, false);
 
-    imageAdaptorService->setConfiguration(srvConfig);
-    imageAdaptorService->setRenderService(this->getRenderService());
-    imageAdaptorService->setRendererId( this->getRendererId() );
-    imageAdaptorService->setPickerId( this->getPickerId() );
-    imageAdaptorService->setTransformId( this->getTransformId() );
-    imageAdaptorService->setAutoRender( this->getAutoRender() );
-
-    ::visuVTKAdaptor::SImage::sptr imageAdaptor = ::visuVTKAdaptor::SImage::dynamicCast(imageAdaptorService);
+    imageAdaptor->setRenderService(this->getRenderService());
+    imageAdaptor->setRendererId( this->getRendererId() );
+    imageAdaptor->setPickerId( this->getPickerId() );
+    imageAdaptor->setTransformId( this->getTransformId() );
+    imageAdaptor->setAutoRender( this->getAutoRender() );
 
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
     imageAdaptor->setImageOpacity(info.m_imageOpacity);
     imageAdaptor->setAllowAlphaInTF(info.m_useTFAlfa);
     imageAdaptor->setSelectedTFKey( selectedTFKey );
 
-    m_registeredImages[img->getID()] = imageAdaptorService;
+    m_registeredImages[img->getID()] = imageAdaptor;
 
-    imageAdaptorService->start();
+    imageAdaptor->start();
 }
 
 //------------------------------------------------------------------------------

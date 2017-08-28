@@ -100,51 +100,37 @@ void SNegatoOneSlice::cleanImageSource()
 
 ::fwRenderVTK::IAdaptor::sptr SNegatoOneSlice::getImageSliceAdaptor()
 {
-    ::fwRenderVTK::IAdaptor::sptr adaptor;
-
     if (m_imageSliceAdaptor.expired())
     {
         OSLM_TRACE(this->getID() << ": Create SImageSlice Adaptor Service");
-        ::fwData::Image::sptr image;
-        ::fwData::Composite::sptr sceneComposite;
-
-        image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("Missing image", image);
 
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        adaptor = this->createSubAdaptor("::visuVTKAdaptor::SImageSlice", srvConfig);
-        this->registerServiceInOut(image, s_IMAGE_INOUT, adaptor, true, srvConfig);
+        auto imgSliceAdaptor = this->registerService< ::visuVTKAdaptor::SImageSlice>("::visuVTKAdaptor::SImageSlice");
+        imgSliceAdaptor->registerInOut(image, s_IMAGE_INOUT, true);
 
-        adaptor->setConfiguration(srvConfig);
-        adaptor->setRenderService(this->getRenderService());
-        adaptor->setRendererId( this->getRendererId() );
-        adaptor->setPickerId( this->getPickerId() );
-        adaptor->setTransformId( this->getTransformId() );
-        adaptor->setAutoRender( this->getAutoRender() );
+        imgSliceAdaptor->setRenderService(this->getRenderService());
+        imgSliceAdaptor->setRendererId( this->getRendererId() );
+        imgSliceAdaptor->setPickerId( this->getPickerId() );
+        imgSliceAdaptor->setTransformId( this->getTransformId() );
+        imgSliceAdaptor->setAutoRender( this->getAutoRender() );
 
-        ::visuVTKAdaptor::SImageSlice::sptr imgSliceAdaptor;
-        imgSliceAdaptor = ::visuVTKAdaptor::SImageSlice::dynamicCast(adaptor);
         imgSliceAdaptor->setVtkImageSource(this->getImageSource());
         imgSliceAdaptor->setInterpolation(m_interpolation);
         imgSliceAdaptor->setActorOpacity(m_actorOpacity);
-        imgSliceAdaptor->setOrientation((Orientation) m_orientation);
+        imgSliceAdaptor->setOrientation(m_orientation);
 
-        m_imageSliceAdaptor = adaptor;
+        m_imageSliceAdaptor = imgSliceAdaptor;
     }
-    else
-    {
-        adaptor = m_imageSliceAdaptor.lock();
-    }
-    return adaptor;
+
+    return m_imageSliceAdaptor.lock();
 }
 
 //------------------------------------------------------------------------------
 
 ::fwRenderVTK::IAdaptor::sptr SNegatoOneSlice::getImageAdaptor()
 {
-    ::fwRenderVTK::IAdaptor::sptr adaptor;
-
     if (m_imageAdaptor.expired())
     {
         OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
@@ -152,38 +138,31 @@ void SNegatoOneSlice::cleanImageSource()
         SLM_ASSERT("Missing image", image);
 
         // create the srv configuration for objects auto-connection
-        IService::Config srvConfig;
-        adaptor = this->createSubAdaptor("::visuVTKAdaptor::SImage", srvConfig);
-        this->registerServiceInOut(image, s_IMAGE_INOUT, adaptor, true, srvConfig);
+        auto imgAdaptor = this->registerService< ::visuVTKAdaptor::SImage>("::visuVTKAdaptor::SImage");
+        imgAdaptor->registerInOut(image, s_IMAGE_INOUT, true);
 
-        adaptor->setConfiguration(srvConfig);
-        adaptor->setRenderService(this->getRenderService());
-        adaptor->setRendererId( this->getRendererId() );
-        adaptor->setPickerId( this->getPickerId() );
-        adaptor->setTransformId( this->getTransformId() );
-        adaptor->setAutoRender( this->getAutoRender() );
+        imgAdaptor->setRenderService(this->getRenderService());
+        imgAdaptor->setRendererId( this->getRendererId() );
+        imgAdaptor->setPickerId( this->getPickerId() );
+        imgAdaptor->setTransformId( this->getTransformId() );
+        imgAdaptor->setAutoRender( this->getAutoRender() );
 
-        ::visuVTKAdaptor::SImage::sptr imgAdaptor;
-        imgAdaptor = ::visuVTKAdaptor::SImage::dynamicCast(adaptor);
         imgAdaptor->setVtkImageRegister(this->getImageSource());
         imgAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
 
         ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
         if (tfSelection)
         {
-            this->registerServiceInOut(tfSelection, s_TF_SELECTION_INOUT, imgAdaptor, true, srvConfig);
+            imgAdaptor->registerInOut(tfSelection, s_TF_SELECTION_INOUT, true);
         }
 
         imgAdaptor->setImageOpacity(1.);
         imgAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
 
-        m_imageAdaptor = adaptor;
+        m_imageAdaptor = imgAdaptor;
     }
-    else
-    {
-        adaptor = m_imageAdaptor.lock();
-    }
-    return adaptor;
+
+    return m_imageAdaptor.lock();
 }
 
 //------------------------------------------------------------------------------
