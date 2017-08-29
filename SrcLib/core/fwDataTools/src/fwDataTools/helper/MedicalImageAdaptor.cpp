@@ -35,7 +35,6 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFW
 
 MedicalImageAdaptor::MedicalImageAdaptor() :
     m_orientation(Z_AXIS),
-    m_tfSelectionFwID(""),
     m_selectedTFKey("")
 {
 }
@@ -272,7 +271,6 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
     {
         ::fwData::Composite::sptr tfSelection = m_tfSelection.lock();
 
-        SLM_ASSERT( "The object with the fwID '" + m_tfSelectionFwID + "' doesn't exist.", tfSelection );
         SLM_ASSERT( "The selectedTFKey must be defined, check your configuration.", !m_selectedTFKey.empty() );
         if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
         {
@@ -340,23 +338,9 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setTFSelectionFwID( const std::string& fwid )
-{
-    m_tfSelectionFwID = fwid;
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageAdaptor::setSelectedTFKey( const std::string& key )
 {
     m_selectedTFKey = key;
-}
-
-//------------------------------------------------------------------------------
-
-const std::string& MedicalImageAdaptor::getTFSelectionFwID() const
-{
-    return m_tfSelectionFwID;
 }
 
 //------------------------------------------------------------------------------
@@ -382,11 +366,6 @@ void MedicalImageAdaptor::parseTFConfig( ::fwRuntime::ConfigurationElement::sptr
     {
         m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
         SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
-    }
-    if ( configuration->hasAttribute("tfSelectionFwID") )
-    {
-        m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
-        SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
     }
 }
 

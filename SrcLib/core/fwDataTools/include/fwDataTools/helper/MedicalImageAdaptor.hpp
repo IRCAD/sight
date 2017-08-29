@@ -60,12 +60,6 @@ public:
     }
 
     /// Set TF Selection fwID
-    FWDATATOOLS_API void setTFSelectionFwID( const std::string& fwid );
-
-    /// Get TF Selection fwID
-    FWDATATOOLS_API const std::string& getTFSelectionFwID() const;
-
-    /// Set TF Selection fwID
     FWDATATOOLS_API void setTransferFunctionSelection( ::fwData::Composite::wptr selection );
 
     /// Set selected TF Key
@@ -310,9 +304,6 @@ private:
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;
-
-    /// fwID of tf selections ( used during configuration )
-    std::string m_tfSelectionFwID;
 
     /// Identifier of the key containing the current selection of TransferFunction in TFSelection
     std::string m_selectedTFKey;
