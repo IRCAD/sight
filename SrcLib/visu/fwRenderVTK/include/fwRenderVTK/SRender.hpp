@@ -56,7 +56,7 @@ class IVtkRenderWindowInteractorManager;
  *
  * @code{.xml}
     <service uid="generiSceneUID" impl="::fwRenderVTK::SRender" type="::fwRender::IRender">
-        <scene renderMode="auto|timer|none" offScreen="imageKey" width="1920" height="1080">
+        <scene renderMode="auto|timer|none" width="1920" height="1080">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -67,28 +67,32 @@ class IVtkRenderWindowInteractorManager;
         <fps>30</fps>
     </service>
    @endcode
- * With :
- *  - \b renderMode (optional, "auto" by default): this attribute is forwarded to all adaptors. For each adaptor,
- *    if renderMode="auto",  the scene is automatically rendered after doStart, doUpdate, doSwap, doStop
- *    and m_vtkPipelineModified=true. If renderMode="timer" the scene is rendered at N frame per seconds (N is
- *    defined by fps tag). If renderMode="none" you should call 'render' slot to call reder the scene.
- *  - \b offScreen (optional): key of the image used for off screen render
- *  - \b width (optional, "1280" by default): width for off screen render
- *  - \b height (optional, "720" by default): height for off screen render
- *  - \b renderer
- *     - \b id (mandatory): the identifier of the renderer
- *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered
- * renderers.
- *     - \b background (optional): the background color of the rendering screen. The color value can be defines as a
- *       grey level value (ex . 1.0 for white) or as a hexadecimal value (ex : \#ffffff for white).
- *  - \b vtkObject
- *    - \b id (mandatory): the identifier of the vtkObject
- *    - \b class (mandatory): the classname of the vtkObject to create. For example vtkTransform, vtkImageBlend, ...
- *  - \b picker
- *    - \b id (mandatory): the identifier of the picker
- *    - \b vtkclass (optional, by default vtkCellPicker): the classname of the picker to create.
- *  - \b adaptor
- *    - \b uid (mandatory): the uid of the adaptor
+ *
+ * @subsection In-Out In-Out
+ * - \b offScreen [::fwData::Image] (optional, unused by default): If used, render the scene in an image
+ * and not in a window.
+ *
+ * @subsection Configuration Configuration
+ * - \b renderMode (optional, "auto" by default): this attribute is forwarded to all adaptors. For each adaptor,
+ *   if renderMode="auto",  the scene is automatically rendered after doStart, doUpdate, doSwap, doStop
+ *   and m_vtkPipelineModified=true. If renderMode="timer" the scene is rendered at N frame per seconds (N is
+ *   defined by fps tag). If renderMode="none" you should call 'render' slot to call reder the scene.
+ * - \b width (optional, "1280" by default): width for off screen render
+ * - \b height (optional, "720" by default): height for off screen render
+ * - \b renderer
+ *    - \b id (mandatory): the identifier of the renderer
+ *    - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered
+ * enderers.
+ *    - \b background (optional): the background color of the rendering screen. The color value can be defines as a
+ *      grey level value (ex . 1.0 for white) or as a hexadecimal value (ex : \#ffffff for white).
+ * - \b vtkObject
+ *   - \b id (mandatory): the identifier of the vtkObject
+ *   - \b class (mandatory): the classname of the vtkObject to create. For example vtkTransform, vtkImageBlend, ...
+ * - \b picker
+ *   - \b id (mandatory): the identifier of the picker
+ *   - \b vtkclass (optional, by default vtkCellPicker): the classname of the picker to create.
+ * - \b adaptor
+ *   - \b uid (mandatory): the uid of the adaptor
  */
 class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
@@ -173,19 +177,16 @@ private:
     void stopContext();
 
     /// Parse the 'picker' configuration and create the associated vtk picker
-    void configurePicker   ( ConfigurationType conf );
+    void configurePicker   (const ConfigType& pickerConf );
 
     /// Parse the 'renderer' configuration and create the associated vtk renderer
-    void configureRenderer ( ConfigurationType conf );
+    void configureRenderer (const ConfigType& rendererConf );
 
     /// Parse the 'vtkObject' configuration and create the associated vtk objects
-    void configureVtkObject( ConfigurationType conf );
+    void configureVtkObject(const ConfigType& vtkObjectConf );
 
     /// Parse the transform configuration to create vtk transform and manage concatenate
-    vtkTransform* createVtkTransform( ConfigurationType conf );
-
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    ConfigurationType m_sceneConfiguration;
+    vtkTransform* createVtkTransform(const ConfigType& vtkObjectConf );
 
     /// @brief VTK Interactor window manager
     SPTR( ::fwRenderVTK::IVtkRenderWindowInteractorManager ) m_interactorManager;
@@ -209,7 +210,6 @@ private:
     /// Otherwise it is updated periodically (default 30Hz)
     RenderMode m_renderMode;
 
-    std::string m_offScreenImageKey; ///< Key of the image used for off screen render
     unsigned int m_width; ///< width for off screen render
     unsigned int m_height; ///< height for off screen render
     bool m_offScreen; ///< if true, scene is render in off screen
@@ -217,18 +217,8 @@ private:
     /// Timer used for the update
     SPTR( ::fwThread::Timer ) m_timer;
 
-    /// Signal/ Slot connection
-    ::fwCom::helper::SigSlotConnection m_connections;
-
-    /// Map to register proxy connections
-    ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
-
-    typedef std::vector< ConfigurationType > ConnectConfigType;
-    /// vector containing all the connections configurations
-    ConnectConfigType m_connect;
-
-    /// vector containing all the proxy configurations
-    ConnectConfigType m_proxies;
+    /// Stores the scene connfiguration.
+    ConfigType m_sceneConf;
 };
 
 //-----------------------------------------------------------------------------

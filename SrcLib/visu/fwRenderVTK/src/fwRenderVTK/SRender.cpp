@@ -35,8 +35,9 @@
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <boost/foreach.hpp>
 #include <boost/function.hpp>
-#include <boost/lexical_cast.hpp>
+#include <boost/optional.hpp>
 
 #include <vtkCellPicker.h>
 #include <vtkInstantiator.h>
@@ -58,6 +59,8 @@ namespace fwRenderVTK
 const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG     = "dropped";
 const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT         = "render";
 const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT = "requestRender";
+
+static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 
 //-----------------------------------------------------------------------------
 
@@ -82,12 +85,10 @@ SRender::~SRender() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureRenderer( ConfigurationType conf )
+void SRender::configureRenderer( const ConfigType& rendererConf )
 {
-    assert(conf->getName() == "renderer");
-
-    std::string id         = conf->getAttributeValue("id");
-    std::string background = conf->getAttributeValue("background");
+    const std::string id         = rendererConf.get<std::string>("<xmlattr>.id");
+    const std::string background = rendererConf.get<std::string>("<xmlattr>.background", "");
 
     if(m_renderers.count(id) == 0)
     {
@@ -100,11 +101,8 @@ void SRender::configureRenderer( ConfigurationType conf )
         m_renderers[id]->SetOcclusionRatio( 0. );
 #endif
 
-        if(conf->hasAttribute("layer") )
-        {
-            int layer = ::boost::lexical_cast< int >(conf->getAttributeValue("layer"));
-            m_renderers[id]->SetLayer(layer);
-        }
+        const int layer = rendererConf.get<int>("<xmlattr>.layer", m_renderers[id]->GetLayer());
+        m_renderers[id]->SetLayer(layer);
     }
 
     if ( !background.empty() )
@@ -118,7 +116,7 @@ void SRender::configureRenderer( ConfigurationType conf )
         else
         {
             // compatibility with "old" color
-            double color = ::boost::lexical_cast<double> (background);
+            double color = std::stod(background);
             m_renderers[id]->SetBackground(color, color, color);
         }
     }
@@ -126,17 +124,10 @@ void SRender::configureRenderer( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void SRender::configurePicker( ConfigurationType conf )
+void SRender::configurePicker( const ConfigType& pickerConf )
 {
-    assert(conf->getName() == "picker");
-
-    std::string id       = conf->getAttributeValue("id");
-    std::string vtkclass = conf->getAttributeValue("vtkclass");
-
-    if (vtkclass.empty())
-    {
-        vtkclass = "vtkCellPicker";
-    }
+    const std::string& id       = pickerConf.get<std::string>("<xmlattr>.id");
+    const std::string& vtkclass = pickerConf.get<std::string>("<xmlattr>.vtkclass", "vtkCellPicker");
 
     if(m_pickers.count(id) == 0)
     {
@@ -154,21 +145,19 @@ void SRender::configurePicker( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureVtkObject( ConfigurationType conf )
+void SRender::configureVtkObject( const ConfigType& vtkObjectConf )
 {
-    assert(conf->getName() == "vtkObject");
+    const std::string& id       = vtkObjectConf.get<std::string>("<xmlattr>.id");
+    const std::string& vtkClass = vtkObjectConf.get<std::string>("<xmlattr>.class");
 
-    std::string id       = conf->getAttributeValue("id");
-    std::string vtkClass = conf->getAttributeValue("class");
-    assert( !id.empty() );
-    assert( !vtkClass.empty() );
+    SLM_ASSERT("Empty 'id'.", !id.empty() );
+    SLM_ASSERT("Empty 'class'.", !vtkClass.empty() );
 
     if( m_vtkObjects.count(id) == 0 )
     {
-
-        if ( vtkClass == "vtkTransform" && conf->size() == 1 )
+        if ( vtkClass == "vtkTransform" )
         {
-            m_vtkObjects[id] = createVtkTransform( conf );
+            m_vtkObjects[id] = createVtkTransform(vtkObjectConf);
         }
         else
         {
@@ -179,34 +168,40 @@ void SRender::configureVtkObject( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-vtkTransform* SRender::createVtkTransform( ConfigurationType conf )
+vtkTransform* SRender::createVtkTransform( const ConfigType& vtkObjectConf )
 {
-    SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.", conf->size() == 1 &&
-               ( *conf->begin() )->getName() == "vtkTransform");
-
-    ConfigurationType vtkTransformXmlElem = *conf->begin();
-
     vtkTransform* newMat = vtkTransform::New();
 
-    for(    ::fwRuntime::ConfigurationElement::Iterator elem = vtkTransformXmlElem->begin();
-            !(elem == vtkTransformXmlElem->end());
-            ++elem )
+    SLM_ASSERT("VTK transforms can contain at most one 'vtkTransform' sub-element.",
+               vtkObjectConf.count("vtkTransform") <= 1 );
+
+    const ::boost::optional<const ConfigType&> vtkTransformConf = vtkObjectConf.get_child_optional("vtkTransform");
+
+    if(vtkTransformConf.is_initialized())
     {
-        SLM_ASSERT("The name of the xml element must be concatenate.", (*elem)->getName() == "concatenate" );
-
-        std::string transformId = (*elem)->getValue();
-
-        vtkTransform* mat = vtkTransform::SafeDownCast( getVtkObject(transformId) );
-
-        if ( (*elem)->hasAttribute( "inverse" ) && (*elem)->getAttributeValue( "inverse" ) == "yes" )
+        BOOST_FOREACH(const ::boost::property_tree::ptree::value_type &v, vtkTransformConf.get())
         {
-            newMat->Concatenate( mat->GetLinearInverse() );
-        }
-        else
-        {
-            newMat->Concatenate( mat );
-        }
+            SLM_ASSERT("Invalid markup '" + v.first + "', 'concatenate' must be used here.", v.first == "concatenate");
 
+            const std::string& transformId = v.second.data();
+
+            vtkTransform* mat = vtkTransform::SafeDownCast( getVtkObject(transformId) );
+
+            SLM_ASSERT("No transform named '" + transformId + "'.", mat != nullptr);
+
+            const std::string& inverse = v.second.get<std::string>("<xmlattr>.inverse", "no");
+
+            SLM_ASSERT("Inverse must be 'yes' or 'no'.", inverse == "yes" || inverse == "no");
+
+            if(inverse == "yes")
+            {
+                newMat->Concatenate( mat->GetLinearInverse() );
+            }
+            else
+            {
+                newMat->Concatenate( mat );
+            }
+        }
     }
 
     return newMat;
@@ -229,22 +224,30 @@ void SRender::addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj )
 
 void SRender::configuring()
 {
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
-    SLM_FATAL_IF("Missing 'scene' configuration.", vectConfig.empty());
-    m_sceneConfiguration = vectConfig.at(0);
+    const ConfigType& srvConf = this->getConfigTree();
 
-    m_offScreenImageKey = m_sceneConfiguration->getAttributeValue("offScreen");
-    if (!m_offScreenImageKey.empty())
+    const ::boost::optional<const ConfigType&> inouts = srvConf.get_child_optional("service");
+
+    const size_t nbInouts = inouts.is_initialized() ? inouts->count("inout") : 0;
+
+    SLM_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
+
+    if(nbInouts == 1)
     {
-        m_offScreen = true;
-    }
+        const std::string& key = inouts->get<std::string>("inout.<xmlattr>.key", "");
+        m_offScreen = (key == s_OFFSCREEN_INOUT);
 
-    if (!m_offScreen)
+        SLM_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
+    }
+    else // no offscreen rendering.
     {
         this->initialize();
     }
 
-    std::string renderMode = m_sceneConfiguration->getAttributeValue("renderMode");
+    m_sceneConf = srvConf.get_child("service.scene");
+
+    const std::string& renderMode = m_sceneConf.get("<xmlattr>.renderMode", "auto");
+
     if (renderMode == "auto")
     {
         m_renderMode = RenderMode::AUTO;
@@ -259,40 +262,26 @@ void SRender::configuring()
     }
     else
     {
-        SLM_WARN_IF("renderMode '" + renderMode + " is unknown, setting renderMode to 'auto'.", !renderMode.empty());
+        SLM_WARN_IF("renderMode '" + renderMode + " is unknown, setting renderMode to 'auto'.",
+                    !renderMode.empty());
     }
 
-    std::string widthKey = m_sceneConfiguration->getAttributeValue("width");
-    if (!widthKey.empty())
+    m_width  = m_sceneConf.get<unsigned int>("<xmlattr>.width", m_width);
+    m_height = m_sceneConf.get<unsigned int>("<xmlattr>.height", m_height);
+
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, m_sceneConf.equal_range("adaptor"))
     {
-        m_width = ::boost::lexical_cast<unsigned int>(widthKey);
-    }
+        const std::string& adaptorUid = v.second.get<std::string>("<xmlattr>.uid", "");
 
-    std::string heightKey = m_sceneConfiguration->getAttributeValue("height");
-    if (!heightKey.empty())
-    {
-        m_height = ::boost::lexical_cast<unsigned int>(heightKey);
-    }
+        SLM_FATAL_IF("Missing 'uid' attribute in adaptor configuration", adaptorUid == "");
 
-    auto adaptorConfigs = m_sceneConfiguration->findAllConfigurationElement("adaptor");
-    for (const auto& currentConfig : adaptorConfigs)
-    {
-        SLM_FATAL_IF("Missing 'uid' attribute in adaptor configuration", !currentConfig->hasAttribute("uid"));
-
-        std::string uid = currentConfig->getAttributeValue("uid");
-
-        // register the assiciation <adaptor, scene>
+        // register the <adaptor, scene> association
         auto& registry = ::fwRenderVTK::registry::getAdaptorRegistry();
-        registry[uid] = this->getID();
+        registry[adaptorUid] = this->getID();
     }
 
     /// Target frame rate (default 30Hz)
-    unsigned int targetFrameRate = 30;
-    ::fwRuntime::ConfigurationElement::sptr fpsConfig = m_configuration->findConfigurationElement("fps");
-    if(fpsConfig)
-    {
-        targetFrameRate = ::boost::lexical_cast< unsigned int >(fpsConfig->getValue());
-    }
+    const unsigned int targetFrameRate = srvConf.get<unsigned int>("service.fps", 30);
 
     if(m_renderMode == RenderMode::TIMER)
     {
@@ -317,20 +306,24 @@ void SRender::starting()
     this->startContext();
 
     // Instantiate vtk object, class...
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-    for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, m_sceneConf)
     {
-        if ((*iter)->getName() == "renderer")
+        const std::string& subEltName = v.first;
+        if(subEltName == "renderer")
         {
-            this->configureRenderer(*iter);
+            this->configureRenderer(v.second);
         }
-        else if ((*iter)->getName() == "picker")
+        else if(subEltName == "picker")
         {
-            this->configurePicker(*iter);
+            this->configurePicker(v.second);
         }
-        else if ((*iter)->getName() == "vtkObject")
+        else if(subEltName == "vtkObject")
         {
-            this->configureVtkObject(*iter);
+            this->configureVtkObject(v.second);
+        }
+        else if(subEltName != "adaptor" && subEltName != "<xmlattr>")
+        {
+            SLM_FATAL("Unknown sub-element '" + subEltName + "'.");
         }
     }
 
@@ -387,8 +380,8 @@ void SRender::render()
         windowToImageFilter->Update();
 
         vtkImageData* vtkImage = windowToImageFilter->GetOutput();
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(m_offScreenImageKey);
-        SLM_ASSERT("Image '" + m_offScreenImageKey + "' not found.", image);
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
+        SLM_ASSERT("Offscreen image not found.", image);
 
         {
             ::fwData::mt::ObjectWriteLock lock(image);
