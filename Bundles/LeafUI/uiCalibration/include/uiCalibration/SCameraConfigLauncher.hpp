@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,17 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <arData/CameraSeries.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/helper/ConfigLauncher.hpp>
 
+#include <gui/editor/IEditor.hpp>
+
+#include <QComboBox>
 #include <QObject>
 #include <QPointer>
-#include <QComboBox>
 #include <QPushButton>
 
 namespace uiCalibration
@@ -27,7 +27,6 @@ namespace uiCalibration
 
 /**
  * @brief   SCameraConfigLauncher This editors allows calibrate one or more camera.
- * @class   SCameraConfigLauncher
  *
  * @note Currently, only two cameras are allowed.
  *
@@ -39,7 +38,7 @@ class UICALIBRATION_CLASS_API SCameraConfigLauncher : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCameraConfigLauncher)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCameraConfigLauncher)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UICALIBRATION_API SCameraConfigLauncher() noexcept;
@@ -125,8 +124,8 @@ private:
     QPointer<QPushButton> m_removeButton;
     QPointer<QPushButton> m_extrinsicButton;
 
-    ::fwServices::helper::ConfigLauncher::sptr m_intrinsicLauncher;
-    ::fwServices::helper::ConfigLauncher::sptr m_extrinsicLauncher;
+    ::fwServices::helper::ConfigLauncher m_intrinsicLauncher;
+    ::fwServices::helper::ConfigLauncher m_extrinsicLauncher;
 
     std::string m_cameraSeriesKey;
     std::string m_activitySeriesKey;
@@ -139,5 +138,4 @@ private:
 } // namespace uiCalibration
 
 #endif // __UICALIBRATION_SCAMERACONFIGLAUNCHER_HPP__
-
 

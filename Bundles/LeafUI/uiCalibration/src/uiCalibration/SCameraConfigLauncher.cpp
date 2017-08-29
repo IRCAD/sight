@@ -32,8 +32,6 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraConfigL
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
-    m_intrinsicLauncher = ::fwServices::helper::ConfigLauncher::New();
-    m_extrinsicLauncher = ::fwServices::helper::ConfigLauncher::New();
 }
 
 //------------------------------------------------------------------------------
@@ -64,8 +62,8 @@ void SCameraConfigLauncher::configuring()
     cameraConfig.add_child("service.config", intrinsic);
     extrinsicConfig.add_child("service.config", extrinsic);
 
-    m_intrinsicLauncher->parseConfig(cameraConfig);
-    m_extrinsicLauncher->parseConfig(extrinsicConfig);
+    m_intrinsicLauncher.parseConfig(cameraConfig, this->getSptr());
+    m_extrinsicLauncher.parseConfig(extrinsicConfig,  this->getSptr());
 }
 
 //------------------------------------------------------------------------------
@@ -137,8 +135,8 @@ void SCameraConfigLauncher::starting()
 
 void SCameraConfigLauncher::stopping()
 {
-    m_intrinsicLauncher->stopConfig();
-    m_extrinsicLauncher->stopConfig();
+    m_intrinsicLauncher.stopConfig();
+    m_extrinsicLauncher.stopConfig();
 
     this->destroy();
 }
@@ -268,9 +266,9 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
     replaceMap["camera"]          = camera->getID();
     replaceMap["calibrationInfo"] = calibInfo->getID();
 
-    m_extrinsicLauncher->stopConfig();
-    m_intrinsicLauncher->stopConfig();
-    m_intrinsicLauncher->startConfig(this->getSptr(), replaceMap);
+    m_extrinsicLauncher.stopConfig();
+    m_intrinsicLauncher.stopConfig();
+    m_intrinsicLauncher.startConfig(this->getSptr(), replaceMap);
 }
 
 //------------------------------------------------------------------------------
@@ -315,9 +313,9 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
         replaceMap["calibrationInfo2"] = calibInfo2->getID();
         replaceMap["camIndex"]         = std::to_string(index);
 
-        m_extrinsicLauncher->stopConfig();
-        m_intrinsicLauncher->stopConfig();
-        m_extrinsicLauncher->startConfig(this->getSptr(), replaceMap);
+        m_extrinsicLauncher.stopConfig();
+        m_intrinsicLauncher.stopConfig();
+        m_extrinsicLauncher.startConfig(this->getSptr(), replaceMap);
     }
     else
     {
