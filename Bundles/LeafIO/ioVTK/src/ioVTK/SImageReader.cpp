@@ -38,6 +38,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <chrono>
 #include <cstdint>
@@ -66,13 +67,27 @@ void SImageReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
+    /* Initialize the available extensions for BitmapImageReader */
+    std::vector<std::string> ext;
+    ::fwVtkIO::BitmapImageReader::getAvailableExtensions(ext);
+    std::string availableExtensions = "";
+
+    if(ext.size() > 0)
+    {
+        availableExtensions = ext.at(0);
+        for(int i = 1; i < ext.size(); i++)
+        {
+            availableExtensions = availableExtensions + " *" + ext.at(i);
+        }
+    }
+
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
-    dialogFile.addFilter("Bitmap image", "*.jpg *.jpeg *.bmp *.png *.tiff");
+    dialogFile.addFilter("Bitmap image", availableExtensions);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -186,14 +201,34 @@ bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData:
     {
         imageReader = configureReader< ::fwVtkIO::MetaImageReader >( imgFile );
     }
-    else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp"
-            || ext == ".png" || ext == "*.tiff")
-    {
-        imageReader = configureReader< ::fwVtkIO::BitmapImageReader >( imgFile );
-    }
     else
     {
-        FW_RAISE_EXCEPTION(::fwTools::Failed("Only .vtk, .vti, .mhd, .jpg, .jpeg, .bmp, .png and .tiff are supported."));
+        /* Handle BitmapImageReader extensions */
+        std::vector<std::string> availableExtensions;
+        ::fwVtkIO::BitmapImageReader::getAvailableExtensions(availableExtensions);
+
+        /* If we find the current extensions in the available readers, we use it */
+        int i = 0;
+        for(; i < availableExtensions.size(); i++)
+        {
+            if(availableExtensions.at(i) == ext)
+            {
+                imageReader = configureReader< ::fwVtkIO::BitmapImageReader >( imgFile );
+                break;
+            }
+        }
+
+        // If we didn't find any suitable extension with BitmapImageReader, we raise an exception */
+        if(i == availableExtensions.size())
+        {
+            i = 0;
+            std::string bitmapExtensions = "";
+            for(; i < availableExtensions.size(); i++)
+            {
+                bitmapExtensions = bitmapExtensions + availableExtensions.at(i) + ", ";
+            }
+            FW_RAISE_EXCEPTION(::fwTools::Failed("Only " + bitmapExtensions + ".vtk, .vti and .mhd are supported."));
+        }
     }
 
     // Set the image (already created, but empty) that will be modified

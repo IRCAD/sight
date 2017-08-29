@@ -14,7 +14,7 @@
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <vector>
 
 namespace fwJobs
 {
@@ -53,16 +53,22 @@ public:
     //! @brief Reading operator.
     FWVTKIO_API void read();
 
-    /// @return ".vtk"
+    /// @return The available file extensions for loading bitmap images.
     FWVTKIO_API std::string extension();
 
     /// @return internal job
     FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
 
+    /// @return A vector of the available bitmap extensions for the vtkImageReader2 class
+    FWVTKIO_API static void getAvailableExtensions(std::vector<std::string>& ext);
+
 private:
 
     ///Internal job
     SPTR(::fwJobs::Observer) m_job;
+
+    /// Available file extensions for bitmap files
+    std::string m_availableExtensions;
 };
 
 } // namespace fwVtkIO

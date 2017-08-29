@@ -9,16 +9,17 @@
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 #include "fwVtkIO/vtk.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
+#include <boost/tokenizer.hpp>
+
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkImageReader2.h>
+#include <vtkImageReader2Collection.h>
 #include <vtkImageReader2Factory.h>
 #include <vtkSmartPointer.h>
 
@@ -32,22 +33,32 @@ BitmapImageReader::BitmapImageReader(::fwDataIO::reader::IObjectReader::Key key)
     ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
     m_job(::fwJobs::Observer::New("Bitmap image reader"))
 {
-    SLM_TRACE_FUNC();
+    /* Initialize the available extensions */
+    std::vector<std::string> ext;
+    BitmapImageReader::getAvailableExtensions(ext);
+
+    if(ext.size() > 0)
+    {
+        m_availableExtensions = ext.at(0);
+        for(int i = 1; i < ext.size(); i++)
+        {
+            m_availableExtensions = m_availableExtensions + " " + ext.at(i);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
 BitmapImageReader::~BitmapImageReader()
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void BitmapImageReader::read()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
+    SLM_ASSERT("The current object has expired.", !m_object.expired() );
+    SLM_ASSERT("Unable to lock object", m_object.lock() );
 
     ::fwData::Image::sptr pImage = getConcreteObject();
 
@@ -99,7 +110,7 @@ void BitmapImageReader::read()
 
 std::string BitmapImageReader::extension()
 {
-    return "*.jpg *.jpeg *.bmp *.png *.tiff";
+    return m_availableExtensions;
 }
 
 //------------------------------------------------------------------------------
@@ -107,6 +118,33 @@ std::string BitmapImageReader::extension()
 ::fwJobs::IJob::sptr BitmapImageReader::getJob() const
 {
     return m_job;
+}
+
+//------------------------------------------------------------------------------
+
+void BitmapImageReader::getAvailableExtensions(std::vector<std::string>& ext)
+{
+    /* Get the collection of available bitmap image readers */
+    vtkSmartPointer<vtkImageReader2Collection> ir2c = vtkSmartPointer<vtkImageReader2Collection>::New();
+    vtkImageReader2Factory::GetRegisteredReaders(ir2c);
+
+    const ::boost::char_separator<char> sep(" ");
+
+    /* Iterate over the elements of the collection */
+    ir2c->InitTraversal();
+    for(int i = 0; i < ir2c->GetNumberOfItems(); i++)
+    {
+        vtkImageReader2* ir2 = ir2c->GetNextItem();
+
+        /* Split the string returned by GetFileExtensions() (several extensions can be available for the same type) */
+        const std::string s = ir2->GetFileExtensions();
+        const ::boost::tokenizer< ::boost::char_separator<char> > tokens {s, sep};
+
+        for(const auto& token : tokens)
+        {
+            ext.push_back(token);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
