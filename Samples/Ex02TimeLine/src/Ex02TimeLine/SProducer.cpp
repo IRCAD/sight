@@ -93,7 +93,7 @@ void SProducer::updating()
 
     ::Ex02TimeLine::MsgData* data = buffer->addElement(0);
 
-    const std::string message = m_message + " #" + ::boost::lexical_cast<std::string>( m_msgCount++ );
+    const std::string message = m_message + " #" + std::to_string( m_msgCount++ );
 
     data->uidSender = m_senderId;
     strncpy(data->szMsg, message.c_str(), ::Ex02TimeLine::MsgData::MAX_MSG_SIZE);
