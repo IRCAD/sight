@@ -40,7 +40,7 @@ BitmapImageReader::BitmapImageReader(::fwDataIO::reader::IObjectReader::Key key)
     if(ext.size() > 0)
     {
         m_availableExtensions = ext.at(0);
-        for(int i = 1; i < ext.size(); i++)
+        for(std::vector<std::string>::size_type i = 1; i < ext.size(); i++)
         {
             m_availableExtensions = m_availableExtensions + " " + ext.at(i);
         }
@@ -81,7 +81,7 @@ void BitmapImageReader::read()
         [&](vtkObject* caller, long unsigned int, void*)
         {
             auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
-            m_job->doneWork(filter->GetProgress() * 100);
+            m_job->doneWork(static_cast<uint64_t>(filter->GetProgress() * 100.0));
         }
         );
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
