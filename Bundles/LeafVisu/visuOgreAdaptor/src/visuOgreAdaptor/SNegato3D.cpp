@@ -130,7 +130,6 @@ void SNegato3D::starting()
     SLM_ASSERT("TF 'key' not found", tfSelection);
 
     this->setTransferFunctionSelection(tfSelection);
-    this->setTFSelectionFwID(tfSelection->getID());
 
     this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
     this->updateTransferFunction(this->getImage());

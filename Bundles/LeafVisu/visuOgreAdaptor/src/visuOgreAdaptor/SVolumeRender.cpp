@@ -278,7 +278,6 @@ void SVolumeRender::starting()
 
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
-    this->setTFSelectionFwID(tfSelection->getID());
 
     this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateTransferFunction(this->getImage());

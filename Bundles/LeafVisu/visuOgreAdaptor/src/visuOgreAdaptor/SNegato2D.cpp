@@ -119,7 +119,6 @@ void SNegato2D::starting()
 
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
-    this->setTFSelectionFwID(tfSelection->getID());
 
     this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
     this->updateTransferFunction(this->getImage());
