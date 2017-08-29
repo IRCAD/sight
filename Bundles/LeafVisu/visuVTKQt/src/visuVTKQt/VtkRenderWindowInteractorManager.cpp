@@ -110,6 +110,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
     // Create the render window and the associated QVTKOpenGLWidget
     vtkNew<vtkGenericOpenGLRenderWindow> window;
     m_QVTKOpenGLWidget = new QVTKOpenGLWidget(m_parentContainer->getQtContainer());
+    m_QVTKOpenGLWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     layout->addWidget(m_QVTKOpenGLWidget);
     m_QVTKOpenGLWidget->SetRenderWindow(window.Get());
 
