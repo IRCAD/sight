@@ -222,19 +222,6 @@ void SLabeledPointList::configuring()
         SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
                      interaction != "on" && interaction != "off");
         m_interaction = (interaction == "on");
-
-        if(!m_interaction)
-        {
-            try
-            {
-                this->stopping();
-            }
-            catch(::fwTools::Failed& e)
-            {
-                OSLM_ERROR("Error : " << e.what());
-                FW_RAISE_EXCEPTION(e);
-            }
-        }
     }
 }
 
