@@ -1,7 +1,8 @@
 
 fwLoadProperties()
 
-find_package(Boost COMPONENTS regex REQUIRED)
+# Boost shouldn't be necessary but not linking it results in weird linker errors (duplicate symbols).
+find_package(Boost COMPONENTS regex thread system REQUIRED)
 find_package(ZLIB REQUIRED )
 find_library(cgogn_LIBRARY NAMES cgogn libcgogn PATHS ${EXTERNAL_LIBRARIES}/lib)
 
@@ -11,7 +12,11 @@ fwInclude(
     ${ZLIB_INCLUDE_DIRS}
 )
 fwLink(
+    # Boost libraries need to be linked before cgogn (who depends on them)
+    # otherwise we end up having duplicate symbols on windows builds.
     ${Boost_REGEX_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
     ${cgogn_LIBRARY}
     ${ZLIB_LIBRARIES}
 )

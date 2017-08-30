@@ -1,23 +1,21 @@
 fwLoadProperties()
 
-
-find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(ZLIB REQUIRED )
 
+# Boost shouldn't be necessary but not linking it results in weird linker errors (duplicate symbols).
+find_package(Boost COMPONENTS thread system REQUIRED)
 find_library(cgogn_LIBRARY NAMES cgogn libcgogn PATHS ${EXTERNAL_LIBRARIES}/lib)
 
 fwInclude(
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Gui_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
     ${EXTERNAL_LIBRARIES}/include/cgogn/include
     ${ZLIB_INCLUDE_DIRS}
 )
 
 fwLink(
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
+    # Boost libraries need to be linked before cgogn (who depends on them)
+    # otherwise we end up having duplicate symbols on windows builds.
+    ${Boost_THREAD_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
     ${cgogn_LIBRARY}
     ${ZLIB_LIBRARIES}
 )
