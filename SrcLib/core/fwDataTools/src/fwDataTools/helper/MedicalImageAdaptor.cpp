@@ -47,7 +47,7 @@ MedicalImageAdaptor::~MedicalImageAdaptor()
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageSpacing(double spacing[3])
+void MedicalImageAdaptor::getImageSpacing(double spacing[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -57,7 +57,7 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageOrigin(double origin[3])
+void MedicalImageAdaptor::getImageOrigin(double origin[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -66,7 +66,7 @@ void MedicalImageAdaptor::getImageOrigin(double origin[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageDataSize(int size[3])
+void MedicalImageAdaptor::getImageDataSize(int size[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
 
@@ -76,7 +76,7 @@ void MedicalImageAdaptor::getImageDataSize(int size[3])
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::getImageSize(double size[3])
+void MedicalImageAdaptor::getImageSize(double size[3]) const
 {
     ::fwData::Image::sptr image = this->getImage();
     double spacing[3];
@@ -145,7 +145,7 @@ void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
 {
     ::fwData::Image::sptr image = this->getImage();
     double extent[6];
-    for (char i = 0; i < 3; ++i )
+    for (unsigned char i = 0; i < 3; ++i )
     {
         extent[2*i]   = 0;
         extent[2*i+1] = image->getSize()[i]*image->getSpacing()[i];
@@ -232,20 +232,19 @@ void MedicalImageAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
 bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 {
     bool isModified = false;
-    ::fwData::Image::sptr image = this->getImage();
 
     ::fwData::Integer::sptr sliceIndex[3];
 
     this->getSliceIndex(sliceIndex);
 
-    if(    index[0] != sliceIndex[0]->value()
-           || index[1] != sliceIndex[1]->value()
-           || index[2] != sliceIndex[2]->value() )
+    if(    index[0] != m_sagittalIndex->value()
+           || index[1] != m_frontalIndex->value()
+           || index[2] != m_axialIndex->value() )
     {
-        sliceIndex[0]->value() = index[0];
-        sliceIndex[1]->value() = index[1];
-        sliceIndex[2]->value() = index[2];
-        isModified             = true;
+        m_sagittalIndex->value() = index[0];
+        m_frontalIndex->value()  = index[1];
+        m_axialIndex->value()    = index[2];
+        isModified               = true;
     }
     return isModified;
 }
@@ -255,12 +254,12 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 {
     m_weakImage  = image;
-    m_axialIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, ::fwData::Integer::New(
-                                              0));
-    m_frontalIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, ::fwData::Integer::New(
-                                                0));
-    m_sagittalIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, ::fwData::Integer::New(
-                                                 0));
+    m_axialIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId,
+                                          ::fwData::Integer::New(0));
+    m_frontalIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId,
+                                            ::fwData::Integer::New(0));
+    m_sagittalIndex = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId,
+                                             ::fwData::Integer::New(0));
 }
 
 //------------------------------------------------------------------------------
@@ -330,7 +329,7 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-::fwData::Image::sptr MedicalImageAdaptor::getImage()
+::fwData::Image::sptr MedicalImageAdaptor::getImage() const
 {
     SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();
@@ -459,7 +458,7 @@ void MedicalImageAdaptor::addObjects(::fwData::Composite::ContainerType objects)
 //------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::changeObjects(::fwData::Composite::ContainerType newObjects,
-                                        ::fwData::Composite::ContainerType oldObjects)
+                                        ::fwData::Composite::ContainerType /*oldObjects*/)
 {
     ::fwData::Composite::iterator iter = newObjects.find(this->getSelectedTFKey());
     if( iter != newObjects.end())

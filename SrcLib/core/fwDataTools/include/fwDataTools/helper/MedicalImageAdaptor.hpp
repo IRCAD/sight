@@ -101,25 +101,25 @@ protected:
      * @brief Get the image spacing.
      * @param[out] spacing : the image spacing
      */
-    FWDATATOOLS_API void getImageSpacing(double spacing[3]);
+    FWDATATOOLS_API void getImageSpacing(double spacing[3]) const;
 
     /**
      * @brief Get the image origin.
      * @param[out] origin : the image origin
      */
-    FWDATATOOLS_API void getImageOrigin(double origin[3]);
+    FWDATATOOLS_API void getImageOrigin(double origin[3]) const;
 
     /**
      * @brief Get the image data size (number of slices).
      * @param[out] size : the image size
      */
-    FWDATATOOLS_API void getImageDataSize(int size[3]);
+    FWDATATOOLS_API void getImageDataSize(int size[3]) const;
 
     /**
      * @brief Get the image size ( = dataSize * spacing ).
      * @param[out] size : the image size
      */
-    FWDATATOOLS_API void getImageSize(double size[3]);
+    FWDATATOOLS_API void getImageSize(double size[3]) const;
 
     /**
      * @brief Get the slice center
@@ -208,7 +208,7 @@ protected:
     FWDATATOOLS_API void updateTransferFunction( ::fwData::Image::sptr image );
 
     /// Return the image
-    FWDATATOOLS_API ::fwData::Image::sptr getImage();
+    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
 
     /// Image orientation
     Orientation m_orientation;
