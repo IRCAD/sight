@@ -26,6 +26,16 @@ namespace visuOgreAdaptor
 const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SIG = "pointClickedSignal";
 const ::fwCom::Slots::SlotKeyType visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT    = "pointClickedSlot";
 
+/// map containing all the classes associated to their xml designations (e.g. Default -> TrackballInteractor)
+const std::map<std::string, std::string> s_STYLES_TO_IMPL = {
+    { "Trackball", "::fwRenderOgre::interactor::TrackballInteractor"},
+    { "Fixed", "::fwRenderOgre::interactor::FixedStyleInteractor"},
+    { "Mesh", "::fwRenderOgre::interactor::MeshPickerInteractor"},
+    { "Video", "::fwRenderOgre::interactor::VideoPickerInteractor"},
+    { "Negato2D", "::fwRenderOgre::interactor::Negato2DInteractor"},
+    { "VR", "::fwRenderOgre::interactor::VRWidgetsInteractor"}
+};
+
 //------------------------------------------------------------------------------
 
 SInteractorStyle::SInteractorStyle() noexcept
@@ -33,13 +43,6 @@ SInteractorStyle::SInteractorStyle() noexcept
     newSlot( s_POINT_CLICKED_SLOT, &::visuOgreAdaptor::SInteractorStyle::clickedPoint, this );
 
     m_sigPointClicked = newSignal< PointClickedSignalType >( s_POINT_CLICKED_SIG );
-
-    m_interactorStyles["Trackball"] = "::fwRenderOgre::interactor::TrackballInteractor";
-    m_interactorStyles["Fixed"]     = "::fwRenderOgre::interactor::FixedStyleInteractor";
-    m_interactorStyles["Mesh"]      = "::fwRenderOgre::interactor::MeshPickerInteractor";
-    m_interactorStyles["Video"]     = "::fwRenderOgre::interactor::VideoPickerInteractor";
-    m_interactorStyles["Negato2D"]  = "::fwRenderOgre::interactor::Negato2DInteractor";
-    m_interactorStyles["VR"]        = "::fwRenderOgre::interactor::VRWidgetsInteractor";
 }
 
 //------------------------------------------------------------------------------
@@ -50,18 +53,23 @@ SInteractorStyle::~SInteractorStyle() noexcept
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doConfigure()
+void SInteractorStyle::configuring()
 {
-    SLM_ASSERT("Interactor style not found, in xml, config style must be 'Default', 'Fixed', 'Negato2D', 'Mesh', "
-               "or 'Video'",
-               m_configuration->hasAttribute("style"));
-    m_configuredStyle = m_configuration->getAttributeValue("style");
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    SLM_ASSERT("Interactor style not found, config must be 'Trackball', 'Fixed', 'Negato2D', 'Mesh', 'Video', or 'VR'",
+               config.count("style"));
+    m_configuredStyle = config.get<std::string>("style");
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doStart()
+void SInteractorStyle::starting()
 {
+    this->initialize();
+
     this->setInteractorStyle();
 
     if(!std::strcmp("Mesh", m_configuredStyle.c_str()) || !std::strcmp("Video", m_configuredStyle.c_str()))
@@ -81,20 +89,14 @@ void SInteractorStyle::doStart()
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doUpdate()
+void SInteractorStyle::updating()
 {
     this->setInteractorStyle();
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doSwap()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SInteractorStyle::doStop()
+void SInteractorStyle::stopping()
 {
     m_connections.disconnect();
 }
@@ -103,7 +105,7 @@ void SInteractorStyle::doStop()
 
 void SInteractorStyle::setInteractorStyle()
 {
-    std::string style = m_interactorStyles[m_configuredStyle];
+    const auto style = s_STYLES_TO_IMPL.at(m_configuredStyle);
 
     ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
     interactor->setSceneID(this->getSceneManager()->getName());

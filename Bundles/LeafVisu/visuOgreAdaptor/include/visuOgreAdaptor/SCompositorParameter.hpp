@@ -16,15 +16,29 @@ namespace visuOgreAdaptor
 class CompositorListener;
 
 /**
- * @brief   Binds a FW4SPL data to a shader uniform from a specific compositor
+ * @brief   Binds a FW4SPL data to a shader uniform from a specific compositor.
+ *
+ * @section Slots Slots
+ *  - \b setBoolParameter(bool, std::string): Set the uniform from an integer value.
+ *  - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
+ *  - \b setIntParameter(int, std::string): Set the uniform from an integer value.
+ *  - \b setInt2Parameter(int, int, std::string): Set the uniform from two integer values.
+ *  - \b setInt3Parameter(int, int, int, std::string): Set the uniform from three integer values.
+ *  - \b setFloatParameter(float, std::string): Set the uniform from an float value.
+ *  - \b setDoubleParameter(double, std::string): Set the uniform from an double value.
+ *  - \b setDouble2Parameter(double, double, std::string): Set the uniform from two double values.
+ *  - \b setDouble3Parameter(double, double, double, std::string): Set the uniform from three double values.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <adaptor uid="paramAdaptor" class="::visuOgreAdaptor::SCompositorParameter">
-        <config layer="layerName" compositorName="compositor" parameter="u_value" shaderType="fragment" />
-    </adaptor>
+    <service uid="..." type="::visuOgreAdaptor::SCompositorParameter">
+        <inout key="parameter" uid="collimation" />
+        <config layer="..." compositorName="compositor" parameter="u_value" shaderType="fragment" />
+    </service>
    @endcode
- *
+ * @subsection InOut InOut:
+ * - \b parameter [::fwData::Object]: parameter containing the data to upload.
+ * @subsection Configuration Configuration:
  * - \b compositorName (mandatory) : the name of the associated Ogre compositor
  * - \b parameter (mandatory) : name of the shader parameter to set
  * - \b technique (optional) : name of the technique, default to the first in the compositor
@@ -52,13 +66,11 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure();
+    VISUOGREADAPTOR_API virtual void configuring() final;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStart();
+    VISUOGREADAPTOR_API virtual void starting() final;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStop();
-    /// Do nothing
-    VISUOGREADAPTOR_API virtual void doSwap();
+    VISUOGREADAPTOR_API virtual void stopping() final;
 
 private:
 

@@ -17,7 +17,7 @@ namespace visuOgreAdaptor
 
 using namespace ::fwRuntime::utils;
 
-static GenericExecutableFactoryRegistrar<Plugin> registrar("visuOgreAdaptor::Plugin");
+static GenericExecutableFactoryRegistrar<Plugin> registrar("::visuOgreAdaptor::Plugin");
 
 Plugin::~Plugin() noexcept
 {

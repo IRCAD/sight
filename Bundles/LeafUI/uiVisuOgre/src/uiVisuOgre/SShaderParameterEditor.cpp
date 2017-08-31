@@ -151,12 +151,11 @@ void SShaderParameterEditor::updateGuiInfo()
     bool found = false;
 
     // Is there at least one parameter that we can handle ?
-    for (auto subSrv : matService->getRegisteredAdaptors())
+    for (const auto& wParamSrv : matService->getRegisteredServices())
     {
-        if (subSrv.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        const auto paramSrv = wParamSrv.lock();
+        if (paramSrv->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
-
             /// Getting associated object infos
             const ::fwData::Object::csptr shaderObj = paramSrv->getObject();
             const ObjectClassnameType objType       = shaderObj->getClassname();
@@ -194,11 +193,12 @@ void SShaderParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (auto adaptor : matService->getRegisteredAdaptors())
+    for (auto wAdaptor : matService->getRegisteredServices())
     {
-        if (adaptor.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        const auto adaptor = wAdaptor.lock();
+        if (adaptor->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor.lock());
+            auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor);
             auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                     m_editorInfo.service.lock(),
                                                                                     m_editorInfo.connections);

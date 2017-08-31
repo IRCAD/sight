@@ -21,7 +21,30 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor shows ModelSeries. Creates adaptors for each reconstruction in model.
+ * @brief   This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.
+ *
+ * @section Slots Slots
+ * - \b addReconstruction() : show a new reconstruction.
+ * - \b removeReconstruction() : hide a deleted reconstruction.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::SModelSeries">
+            <inout key="model" uid="..." />
+            <config transform="transform" material="mat" autoresetcamera="autoresetcamera" dynamic="no" />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b model [::fwData::ModelSeries]: adapted model series.
+ * @subsection Configuration Configuration:
+ *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
+ *  - \b material : the name of the base Ogre material to pass to the mesh adaptors.
+ *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
+ *  - \b dynamic (optional, default=no) : if the modelSeries topolgy is likely to be updated frequently. This is a
+ * performance hint that will choose a specific GPU memory pool accordingly.
+ *  - \b dynamicVertices (optional, default=no) : if the modelSeries geometry is likely to be updated frequently. This
+ * is a performance hint that will choose a specific GPU memory pool accordingly.
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -38,32 +61,17 @@ public:
     VISUOGREADAPTOR_API virtual ~SModelSeries() noexcept;
 
     /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /// Creates a Transform Service, then updates.
-    VISUOGREADAPTOR_API void doStart();
-
-    /**
-     * @brief Configure the ModelSeries adaptor.
-     * @code{.xml}
-       <adaptor id="msAdaptorId" class="::visuOgreAdaptor::ModelSeries" objectId="objectId">
-        <config transform="transform" texture="texture" autoresetcamera="autoresetcamera" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor
-     *  - \b dynamic (optional) : if the modelSeries is likely to be updated frequently (performance hint)
-     *  - \b texture : the OgreTexture to associate to the adaptor
-     *  - \b autoresetcamera (optional)
-     */
-    VISUOGREADAPTOR_API void doConfigure();
-    /// Calls updating
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void starting() override;
+    /// Configure the parameter
+    VISUOGREADAPTOR_API void configuring() override;
     /// Redraws all (stops then restarts sub services)
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating() override;
     /// Closes connections and unregisters service.
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Calls updating
     VISUOGREADAPTOR_API void addReconstruction();

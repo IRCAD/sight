@@ -16,9 +16,23 @@
 
 namespace visuOgreAdaptor
 {
-
 /**
  * @brief   Adaptor to render a video frame from a 2D-image.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <in key="frame" uid="..." />
+            <in key="camera" uid="..." />
+            <config renderer="default" reversed="true" />
+        </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b frame [::fwData::Image]: frame displayed.
+ * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
+ * @subsection Configuration Configuration:
+ * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
  */
 class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor
 {
@@ -38,31 +52,20 @@ public:
 
 protected:
 
-    /**
-     * @brief method description:
-     * @code{.xml}
-        <service uid="SVideoInstance" type="::visuOgreAdaptor::SVideo">
-             <parameter>param</parameter>
-        </service>
-       @endcode
-     * - \b Parameter : parameter description.
-     */
-    VISUOGREADAPTOR_API void doConfigure();
+    /// Configure the options
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Create the ogre texture and mapper used to show the video frame.
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Removes the actor from the renderer
-    VISUOGREADAPTOR_API void doStop();
-
-    /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Updated the frame from the current Image.
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

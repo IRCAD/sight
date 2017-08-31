@@ -35,6 +35,35 @@ class Material;
 namespace visuOgreAdaptor
 {
 
+/**
+ * @brief   Adapt a ::fwData::Material, allowing to tweak material parameters.
+ *
+ * @section Slots Slots
+ * - \b updateField(::fwData::Object::FieldsContainerType) : Listen to the fields in the ::fwData::Material.
+ * - \b swapTexture() : Listen to the ::visuOgreAdaptor::STexture changes.
+ * - \b addTexture() : Called when a texture is added in the ::fwData::Material.
+ * - \b removeTexture() : Called when a texture is removed in the ::fwData::Material.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="::visuOgreAdaptor::SMaterial">
+        <inout key="material" uid="..." />
+        <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
+                shadingMode="gouraud" normalLength="0.1" />
+    </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b material [::fwData::Material]: adapted material. The material may be modified to comply to the configuration
+ * of the adaptor.
+ * @subsection Configuration Configuration:
+ *  - \b materialTemplate (mandatory) : name of the base Ogre material
+ *  - \b materialName (optional) : name of the Ogre material. This is necessary to bind a ::visuOgreAdaptor:SMesh or a
+ * ::visuOgreAdaptor:SModelSeries to this material; simply specify the same Ogre material in its configuration.
+ *  - \b textureName (optional) : the Ogre texture name used the material. Use it if you want to reference a texture
+ * managed by an another ::visuOgreAdaptor::STexture.
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
+ *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
+ */
 class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
 {
 
@@ -72,9 +101,6 @@ public:
     /// Retrieves the associated texture name
     VISUOGREADAPTOR_API void setTextureName(const std::string& textureName);
 
-    /// Returns the priority of the adaptor
-    VISUOGREADAPTOR_API virtual int getStartPriority();
-
     /// Set material name
     void setMaterialName(const std::string& materialName);
 
@@ -101,46 +127,37 @@ public:
     void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
     /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <adaptor id="materialAdaptor" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
-        <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureAdaptor="texAdaptorUID"
-                shadingMode="gouraud" normalLength="0.1" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b materialTemplate (mandatory) : name of the base Ogre material
-     *  - \b materialName (optional) : name of the managed Ogre material
-     *  - \b textureAdaptor (optional) : the texture adaptor listened by the material
-     *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
-     *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
-     */
-    VISUOGREADAPTOR_API void doConfigure();
+    /// Configure the parameters
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Starting method under fixed function pipeline
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop();
-
-    /// Swapping method, updating
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Updating method, updates fixed function pipeline parameters
-    VISUOGREADAPTOR_API void doUpdate();
+    VISUOGREADAPTOR_API void updating() override;
 
 private:
 
-    /// SLOT: called when the material's field changed
+    /// Slot: called when the material's field changed
     void updateField( ::fwData::Object::FieldsContainerType fields);
 
-    /// SLOT: called when the texture is swapped in the texture adaptor
+    /// Slot: called when the texture is swapped in the texture adaptor
     void swapTexture();
+
+    /// Slot: called to create a texture adaptor when a texture is added to the material.
+    /// This method is also called from the starting in order to create the texture adaptor if the material has a
+    /// default texture.
+    void createTextureAdaptor();
+
+    /// Slot: called to remove the texture adaptor when the texture is removed from the material
+    void removeTextureAdaptor();
 
     /// Creates a new object from loaded shader
     ::fwData::Object::sptr createObjectFromShaderParameter(::Ogre::GpuConstantType type,
@@ -160,14 +177,6 @@ private:
 
     /// Update material color in fixed function pipeline
     void updateRGBAMode( ::fwData::Material::sptr fw_material );
-
-    /// Slot called to create a texture adaptor when a texture is added to the material.
-    /// This method is also called from the starting in order to create the texture adaptor if the material has a
-    /// default texture.
-    void createTextureAdaptor();
-
-    /// Slot called to remove the texture adaptor when the texture is removed from the material
-    void removeTextureAdaptor();
 
     /// Generates a normal length according to the mesh's bounding box
     ::Ogre::Real computeNormalLength();

@@ -77,9 +77,6 @@ public:
 private Q_SLOTS:
 
     /// When the render window is created
-    void onRenderWindowCreated();
-
-    /// When the render window is created
     void onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info);
 
     /// When the clipping range has to match the last updating of the scene bounding box

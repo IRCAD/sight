@@ -333,7 +333,7 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
+void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);

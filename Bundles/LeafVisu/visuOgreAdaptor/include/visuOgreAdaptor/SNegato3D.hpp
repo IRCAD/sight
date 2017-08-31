@@ -25,7 +25,29 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Adaptor to display a 3D negato
+ * @brief   Adaptor to display a 3D negato.
+ * *
+ * @section Slots Slots
+ * - \b newImage() : update the image display to show the new content.
+ * - \b sliceType(int, int) : update image slice index .
+ * - \b sliceIndex(int, int, int) : update image slice type.
+
+ * @section XML XML Configuration
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::SNegato3D">
+            <inout key="image" uid="..." />
+            <inout key="tfSelection" uid="..." />
+            <config renderer="default" sliceIndex="axial" filtering="none" />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b image [::fwData::Image]: image to display.
+ * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * @subsection Configuration Configuration:
+ * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+ * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
+ * - \b selectedTFKey: key of the transfer function to use in negato
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
@@ -57,33 +79,17 @@ public:
 
 protected:
 
+    /// Configures the service
+    VISUOGREADAPTOR_API virtual void configuring() override;
     /// Starts the service,
-    VISUOGREADAPTOR_API void doStart();
+    VISUOGREADAPTOR_API virtual void starting() override;
     /// Stops the service, disconnects connections.
-    VISUOGREADAPTOR_API void doStop();
+    VISUOGREADAPTOR_API virtual void stopping() override;
     /// Requests rendering of the scene.
-    VISUOGREADAPTOR_API void doUpdate();
-
-    /**
-     * @brief Configures the service
-     * @code{.xml}
-        <adaptor uid="SNegato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
-             <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                     imageSource="imageKey" filtering="none" />
-        </adaptor>
-       @endcode
-     * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects
-     *      renderer.
-     * - \b picker (optional): identifier of the picker
-     * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
-     */
-    VISUOGREADAPTOR_API virtual void doConfigure();
-    /// Performs stop, start and update.
-    VISUOGREADAPTOR_API void doSwap();
+    VISUOGREADAPTOR_API virtual void updating() override;
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Called when transfer function points are modified.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();

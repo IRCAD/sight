@@ -37,6 +37,8 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_SLICEINDEX_SLOT        = "sliceIn
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateOpacity";
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
+static const std::string s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept :
@@ -62,15 +64,74 @@ SNegato3D::~SNegato3D() noexcept
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doStart()
+void SNegato3D::configuring()
 {
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    // Axis orientation mode by default
+    m_orientation = OrientationMode::Z_AXIS;
+
+    if(config.count("sliceIndex"))
+    {
+        const std::string orientation = config.get<std::string>("sliceIndex");
+
+        if(orientation == "axial")
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal")
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal")
+        {
+            m_orientation = X_AXIS;
+        }
+    }
+    if(config.count("autoresetcamera"))
+    {
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
+    }
+    if(config.count("transform"))
+    {
+        this->setTransformId(config.get<std::string>("transform"));
+    }
+    if(config.count("filtering"))
+    {
+        const std::string filteringValue = config.get<std::string>("filtering");
+        ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
+
+        if(filteringValue == "none")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::NONE;
+        }
+        else if(filteringValue == "anisotropic")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
+        }
+
+        this->setFiltering(filtering);
+    }
+
+    auto cfg = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("Tag 'config' not found.", cfg);
+    this->parseTFConfig(cfg);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::starting()
+{
+    this->initialize();
+
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     SLM_ASSERT("TF 'key' not found", tfSelection);
 
     this->setTransferFunctionSelection(tfSelection);
-    this->setTFSelectionFwID(tfSelection->getID());
 
-    this->updateImageInfos(this->getObject< ::fwData::Image >());
+    this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
     this->updateTransferFunction(this->getImage());
 
     // 3D source texture instantiation
@@ -118,7 +179,7 @@ void SNegato3D::doStart()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doStop()
+void SNegato3D::stopping()
 {
     this->removeTFConnections();
 
@@ -138,71 +199,9 @@ void SNegato3D::doStop()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::doConfigure()
-{
-    // Axis orientation mode by default
-    m_orientation = OrientationMode::Z_AXIS;
-
-    if(m_configuration->hasAttribute("sliceIndex"))
-    {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
-
-        if(orientation == "axial")
-        {
-            m_orientation = Z_AXIS;
-        }
-        else if(orientation == "frontal")
-        {
-            m_orientation = Y_AXIS;
-        }
-        else if(orientation == "sagittal")
-        {
-            m_orientation = X_AXIS;
-        }
-    }
-    if(m_configuration->hasAttribute("autoresetcamera"))
-    {
-        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoResetCamera == "yes");
-    }
-    if(m_configuration->hasAttribute("transform"))
-    {
-        this->setTransformId(m_configuration->getAttributeValue("transform"));
-    }
-    if(m_configuration->hasAttribute("filtering"))
-    {
-        std::string filteringValue = m_configuration->getAttributeValue("filtering");
-        ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
-
-        if(filteringValue == "none")
-        {
-            filtering = ::fwRenderOgre::Plane::FilteringEnumType::NONE;
-        }
-        else if(filteringValue == "anisotropic")
-        {
-            filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
-        }
-
-        this->setFiltering(filtering);
-    }
-
-    this->parseTFConfig(m_configuration);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::doUpdate()
+void SNegato3D::updating()
 {
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato3D::doSwap()
-{
-    this->stopping();
-    this->starting();
-    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -293,12 +292,12 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 ::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
-    connections.push( "image", ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
-    connections.push( "image", ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
     return connections;
 }
 
@@ -344,7 +343,7 @@ void SNegato3D::setPlanesOpacity()
     ::fwData::Integer::sptr transparency = image->setDefaultField(TRANSPARENCY_FIELD, ::fwData::Integer::New(0));
     ::fwData::Boolean::sptr isVisible    = image->setDefaultField(VISIBILITY_FIELD, ::fwData::Boolean::New(true));
 
-    float opacity = isVisible->getValue() ? (100.f - transparency->getValue())/100.f : 0.f;
+    const float opacity = isVisible->getValue() ? (100.f - transparency->getValue())/100.f : 0.f;
 
     if(m_planes[0] && m_planes[1] && m_planes[2])
     {

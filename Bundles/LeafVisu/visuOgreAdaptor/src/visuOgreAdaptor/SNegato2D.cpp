@@ -33,6 +33,8 @@ const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
+static const std::string s_IMAGE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept :
@@ -41,8 +43,6 @@ SNegato2D::SNegato2D() noexcept :
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
 {
-    SLM_TRACE_FUNC();
-
     this->installTFSlots(this);
 
     m_currentSliceIndex = {0.f, 0.f, 0.f};
@@ -56,18 +56,71 @@ SNegato2D::SNegato2D() noexcept :
 
 SNegato2D::~SNegato2D() noexcept
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doStart()
+void SNegato2D::configuring()
 {
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if(config.count("sliceIndex"))
+    {
+        const std::string orientation = config.get<std::string>("sliceIndex");
+
+        if(orientation == "axial")
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal")
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal")
+        {
+            m_orientation = X_AXIS;
+        }
+    }
+    else
+    {
+        // Axis orientation mode by default
+        m_orientation = OrientationMode::Z_AXIS;
+    }
+
+    if(config.count("filtering"))
+    {
+        const std::string filteringValue = config.get<std::string>("filtering");
+        ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
+
+        if(filteringValue == "none")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::NONE;
+        }
+        else if(filteringValue == "anisotropic")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
+        }
+
+        this->setFiltering(filtering);
+    }
+
+    auto cfg = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("Tag 'config' not found.", cfg);
+    this->parseTFConfig(cfg);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::starting()
+{
+    this->initialize();
+
     ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
-    this->setTFSelectionFwID(tfSelection->getID());
 
-    this->updateImageInfos(this->getObject< ::fwData::Image >());
+    this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
     this->updateTransferFunction(this->getImage());
 
     // 3D source texture instantiation
@@ -100,7 +153,7 @@ void SNegato2D::doStart()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doStop()
+void SNegato2D::stopping()
 {
     this->removeTFConnections();
 
@@ -120,54 +173,7 @@ void SNegato2D::doStop()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doConfigure()
-{
-    if(m_configuration->hasAttribute("sliceIndex"))
-    {
-        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
-
-        if(orientation == "axial")
-        {
-            m_orientation = Z_AXIS;
-        }
-        else if(orientation == "frontal")
-        {
-            m_orientation = Y_AXIS;
-        }
-        else if(orientation == "sagittal")
-        {
-            m_orientation = X_AXIS;
-        }
-    }
-    else
-    {
-        // Axis orientation mode by default
-        m_orientation = OrientationMode::Z_AXIS;
-    }
-
-    if(m_configuration->hasAttribute("filtering"))
-    {
-        std::string filteringValue = m_configuration->getAttributeValue("filtering");
-        ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
-
-        if(filteringValue == "none")
-        {
-            filtering = ::fwRenderOgre::Plane::FilteringEnumType::NONE;
-        }
-        else if(filteringValue == "anisotropic")
-        {
-            filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
-        }
-
-        this->setFiltering(filtering);
-    }
-
-    this->parseTFConfig(m_configuration);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::doUpdate()
+void SNegato2D::updating()
 {
     this->requestRender();
 }
@@ -294,13 +300,12 @@ void SNegato2D::updatingTFWindowing(double window, double level)
 ::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
-    connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
 
     return connections;
-
 }
 
 //------------------------------------------------------------------------------
@@ -311,15 +316,6 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
     // Fits the plane to the new texture
     m_plane->setDepthSpacing(_spacing);
     m_plane->initialize2DPlane();
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::doSwap()
-{
-    this->stopping();
-    this->starting();
-    this->updating();
 }
 
 //------------------------------------------------------------------------------

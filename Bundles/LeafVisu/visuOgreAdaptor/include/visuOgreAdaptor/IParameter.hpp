@@ -15,27 +15,7 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Send a FW4SPL data as a shader parameter
- *
- * Send parameters to vertex, fragment and geometry shaders
- *
- * @section Slots Slots
- *  - \b setBoolParameter(bool, std::string): Set the uniform from an integer value.
- *  - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
- *  - \b setIntParameter(int, std::string): Set the uniform from an integer value.
- *  - \b setFloatParameter(float, std::string): Set the uniform from an float value.
- *  - \b setDoubleParameter(double, std::string): Set the uniform from an double value.
- *
- * @section XML XML Configuration
- * @code{.xml}
-       <service uid="paramAdaptor" class="::visuOgreAdaptor::IParameter">
-           <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
-       </service>
-   @endcode
- *  - \b materialName (mandatory) : the name of the associated Ogre material
- *  - \b parameter (mandatory) : name of the shader parameter to set
- *  - \b technique (optional) : name of the technique, default to the first in the material
- *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
+ * @brief   Base interface containing common code to upload shader parameters from FW4SPL data.
  */
 class VISUOGREADAPTOR_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 {
@@ -81,13 +61,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure();
+    VISUOGREADAPTOR_API virtual void configuring() override;
 
     /// Updates the shader parameter values and requests a render of the scene.
-    VISUOGREADAPTOR_API virtual void doUpdate();
+    VISUOGREADAPTOR_API virtual void updating() override;
 
     /// Clear the mesh pointer.
-    VISUOGREADAPTOR_API virtual void doStop();
+    VISUOGREADAPTOR_API virtual void stopping() override;
 
     /// Set the parameter for a given technique
     VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);

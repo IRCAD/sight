@@ -81,7 +81,7 @@ public:
      * @param _texType Type of the texture (::Ogre::TEX_TYPE_2D, ::Ogre::TEX_TYPE_3D, ...)
      * @param _dynamic
      */
-    FWRENDEROGRE_API static void loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
+    FWRENDEROGRE_API static void loadOgreTexture(const fwData::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                                                  ::Ogre::TextureType _texType, bool _dynamic);
 
     /**

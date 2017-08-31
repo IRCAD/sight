@@ -67,12 +67,12 @@ public:
     FWRENDEROGRE_API static const int s_OFFSET_RANGE;
 
     /// ILight factory method.
-    FWRENDEROGRE_API static ILight::sptr createLightManager(::fwData::TransformationMatrix3D::sptr _transform,
+    FWRENDEROGRE_API static ILight::sptr createLightAdaptor(::fwData::TransformationMatrix3D::sptr _transform,
                                                             ::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
 
     /// ILight stopping and unregistrating method.
-    FWRENDEROGRE_API static void destroyLightManager(ILight::sptr _lightManager);
+    FWRENDEROGRE_API static void destroyLightAdaptor(ILight::sptr _lightManager);
 
     /// Constructor. Do nothing.
     FWRENDEROGRE_API ILight();

@@ -8,11 +8,11 @@
 #define __FWRENDEROGRE_IADAPTOR_HPP__
 
 #include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/IHasAdaptors.hpp"
 #include "fwRenderOgre/SRender.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
+#include <fwServices/IHasServices.hpp>
 #include <fwServices/IService.hpp>
 
 #include <OGRE/OgreSceneManager.h>
@@ -26,7 +26,7 @@ namespace fwRenderOgre
  * @brief Interface providing behavior of Ogre adaptor services
  */
 class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
-                                        public ::fwRenderOgre::IHasAdaptors
+                                        public ::fwServices::IHasServices
 {
 friend class SRender;
 public:
@@ -45,11 +45,6 @@ public:
 
     FWRENDEROGRE_API Layer::sptr getLayer() const;
 
-    /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
-    FWRENDEROGRE_API virtual int getStartPriority();
-
-    FWRENDEROGRE_API void connect();
-    FWRENDEROGRE_API void disconnect();
 protected:
 
     /// Constructor
@@ -58,30 +53,23 @@ protected:
     /// Destructor
     FWRENDEROGRE_API virtual ~IAdaptor() noexcept;
 
-    /**
-     * @name Standard service methods
-     */
     //@{
     /// Overrides
     FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
-    FWRENDEROGRE_API void configuring();
-    FWRENDEROGRE_API void starting();
-    FWRENDEROGRE_API void stopping();
-    FWRENDEROGRE_API void swapping();
-    FWRENDEROGRE_API void updating();
     //@}
 
     /**
-     * @name    Standard adaptor methods
+     * @brief Parse common adaptor parameters:
+     * @code{.xml}
+            <config layer="..." />
+       @endcode
+     * @subsection Configuration Configuration:
+     * - \b layer (mandatory): id of the layer where this adaptor applies.
      */
-    //@{
-    /// Pure virtual methods
-    FWRENDEROGRE_API virtual void doConfigure() = 0;
-    FWRENDEROGRE_API virtual void doStart()                                 = 0;
-    FWRENDEROGRE_API virtual void doStop()                                  = 0;
-    FWRENDEROGRE_API virtual void doSwap()                                  = 0;
-    FWRENDEROGRE_API virtual void doUpdate()                                = 0;
-    //@}
+    FWRENDEROGRE_API void configureParams();
+
+    /// Register the adaptor into its SRender service
+    FWRENDEROGRE_API void initialize();
 
     /**
      * @brief Get the Ogre SceneManager

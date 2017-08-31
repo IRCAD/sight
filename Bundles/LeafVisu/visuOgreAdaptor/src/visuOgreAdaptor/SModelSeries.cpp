@@ -33,6 +33,8 @@ namespace visuOgreAdaptor
 static const ::fwCom::Slots::SlotKeyType s_ADD_RECONSTRUCTION_SLOT    = "addReconstruction";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_RECONSTRUCTION_SLOT = "removeReconstruction";
 
+static const std::string s_MODEL_INPUT = "model";
+
 //------------------------------------------------------------------------------
 
 SModelSeries::SModelSeries() noexcept :
@@ -53,50 +55,53 @@ SModelSeries::~SModelSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doConfigure()
+void SModelSeries::configuring()
 {
-    if (m_configuration->hasAttribute("transform"))
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+
+    if (config.count("transform"))
     {
-        this->setTransformId(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(config.get<std::string>("transform"));
     }
 
-    if (m_configuration->hasAttribute("autoresetcamera"))
+    if (config.count("autoresetcamera"))
     {
-        std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoresetcamera == "yes");
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
-    if (m_configuration->hasAttribute("material"))
+    if (config.count("material"))
     {
-        m_materialTemplateName = m_configuration->getAttributeValue("material");
+        m_materialTemplateName = config.get<std::string>("material");
     }
 
-    if(m_configuration->hasAttribute("dynamic"))
+    if(config.count("dynamic"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamic");
-        m_isDynamic = ( dynamic == "true" );
+        m_isDynamic = config.get<bool>("dynamic");
     }
 
-    if(m_configuration->hasAttribute("dynamicVertices"))
+    if(config.count("dynamicVertices"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamicVertices");
-        m_isDynamicVertices = ( dynamic == "true" );
+        m_isDynamicVertices = config.get<bool>("dynamicVertices");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doStart()
+void SModelSeries::starting()
 {
+    this->initialize();
+
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doUpdate()
+void SModelSeries::updating()
 {
     // Retrieves the associated f4s ModelSeries object
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     this->stopping();
 
@@ -105,29 +110,23 @@ void SModelSeries::doUpdate()
 
     for(auto reconstruction : modelSeries->getReconstructionDB())
     {
-        ::fwRenderOgre::IAdaptor::sptr service =
-            ::fwServices::add< ::fwRenderOgre::IAdaptor >(reconstruction, "::visuOgreAdaptor::SReconstruction");
-        SLM_ASSERT("service not instantiated", service);
+        auto adaptor = this->registerService< ::visuOgreAdaptor::SReconstruction>("::visuOgreAdaptor::SReconstruction");
+        adaptor->registerInput(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
-        service->setID(this->getID() + "_" + service->getID());
+        adaptor->setID(this->getID() + "_" + adaptor->getID());
 
-        service->setRenderService(this->getRenderService());
-        service->setLayerID(m_layerID);
-        auto reconstructionAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(service);
+        adaptor->setRenderService(this->getRenderService());
+        adaptor->setLayerID(m_layerID);
+        adaptor->setTransformId(adaptor->getID() + "_TF");
+        adaptor->setMaterialTemplateName(m_materialTemplateName);
+        adaptor->setParentTransformId(this->getTransformId());
+        adaptor->setAutoResetCamera(m_autoResetCamera);
 
-        reconstructionAdaptor->setTransformId(reconstructionAdaptor->getID() + "_TF");
-        reconstructionAdaptor->setMaterialTemplateName(m_materialTemplateName);
-        reconstructionAdaptor->setParentTransformId(this->getTransformId());
-        reconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
+        adaptor->start();
+        adaptor->setForceHide(!showRec);
 
-        service->start();
-        service->connect();
-        reconstructionAdaptor->setForceHide(!showRec);
-
-        this->registerService(service);
-
-        ::visuOgreAdaptor::SMesh::sptr meshAdaptor = reconstructionAdaptor->getMeshAdaptor();
+        ::visuOgreAdaptor::SMesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
     }
@@ -135,14 +134,7 @@ void SModelSeries::doUpdate()
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::doSwap()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SModelSeries::doStop()
+void SModelSeries::stopping()
 {
     this->unregisterServices();
 }
@@ -163,14 +155,13 @@ void SModelSeries::removeReconstruction()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SModelSeries::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG,
-                                           s_ADD_RECONSTRUCTION_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG,
-                                           s_REMOVE_RECONSTRUCTION_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTION_SLOT);
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG,
+                      s_REMOVE_RECONSTRUCTION_SLOT );
     return connections;
 }
 

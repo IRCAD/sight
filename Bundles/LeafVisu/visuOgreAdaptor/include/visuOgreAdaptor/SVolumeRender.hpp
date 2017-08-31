@@ -77,7 +77,7 @@ namespace visuOgreAdaptor
  * - \b image [::fwData::Image]: input volume data.
  * @subsection In-Out In-Out
  * - \b TF [::fwData::Composite]: composite containing transfer functions.
- * - \b mask [::fwData::Image]: segmented data.
+ * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
  * - \b renderer (optional): defines the renderer displaying the volume.
@@ -153,22 +153,16 @@ public:
 protected:
 
     /// Starts the service initializes scene objects.
-    VISUOGREADAPTOR_API virtual void doStart();
+    VISUOGREADAPTOR_API virtual void starting() override;
 
     /// Cleans up memory.
-    VISUOGREADAPTOR_API virtual void doStop();
+    VISUOGREADAPTOR_API virtual void stopping() override;
 
     /// Does nothing.
-    VISUOGREADAPTOR_API virtual void doSwap();
-
-    /// Does nothing.
-    VISUOGREADAPTOR_API virtual void doUpdate();
+    VISUOGREADAPTOR_API virtual void updating() override;
 
     /// Configures the service
-    VISUOGREADAPTOR_API virtual void doConfigure();
-
-    /// Returns the priority of the adaptor
-    VISUOGREADAPTOR_API virtual int getStartPriority();
+    VISUOGREADAPTOR_API virtual void configuring() override;
 
     /// Slot called on TF update.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
@@ -182,7 +176,7 @@ protected:
      *
      * Connects fwData::Image::s_MODIFIED_SIG to this::s_NEWIMAGE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
