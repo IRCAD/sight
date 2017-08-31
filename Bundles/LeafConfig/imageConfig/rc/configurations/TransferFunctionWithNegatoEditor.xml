@@ -69,7 +69,7 @@
             <inout key="image" uid="${image}" />
             <inout key="TFSelections" uid="${TFSelections}" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="negatoView" />
+            <parameter replace="WID_PARENT" by="negatoView" />
             <parameter replace="selectedTFKey" by="${SelectedTFKey}" />
         </service>
 
@@ -78,7 +78,7 @@
             <inout key="image" uid="${image}"/>
             <inout key="histogram" uid="${histogram}"/>
             <inout key="TFSelections" uid="${TFSelections}" />
-            <parameter replace="WID_PARENT" uid="tfScene"/>
+            <parameter replace="WID_PARENT" by="tfScene"/>
             <parameter replace="SelectedTFKey" by="${SelectedTFKey}" />
         </service>
 

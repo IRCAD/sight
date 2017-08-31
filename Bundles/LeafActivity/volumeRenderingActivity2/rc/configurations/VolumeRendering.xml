@@ -108,8 +108,8 @@
             <appConfig id="OrganManagerWithSeries" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-            <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-            <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
+            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
         </service>
 
         <service uid="ActionSnapshotVR" type="::uiVisu::action::SSnapshot" />
@@ -206,7 +206,7 @@
             <inout key="histogram" uid="Histogram" />
             <inout key="landmarks" uid="landmarks" />
             <inout key="TFSelections" uid="TFSelections" />
-            <parameter replace="WID_PARENT" uid="tfEditor" />
+            <parameter replace="WID_PARENT" by="tfEditor" />
             <parameter replace="SelectedTFKey" by="SelectedTF" />
         </service>
 

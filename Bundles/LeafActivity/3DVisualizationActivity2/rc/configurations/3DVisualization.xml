@@ -129,8 +129,8 @@
             <appConfig id="OrganManagerWithSeries" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="${modelSeries}" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-            <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-            <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
+            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
         </service>
 
         <service uid="cfgNegato1" type="::fwServices::SConfigController">
@@ -139,12 +139,12 @@
             <inout key="modelSeries" uid="${modelSeries}" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="orientation" by="axial" />
-            <parameter replace="WID_PARENT" uid="view_negato1" />
+            <parameter replace="WID_PARENT" by="view_negato1" />
             <parameter replace="patient_name" by="${patient_name}" />
-            <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
-            <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
-            <parameter replace="PickingChannel" uid="pickerChannel" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
+            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="setSagittalCameraChannel" by="setSagittalCameraChannel" />
             <parameter replace="setFrontalCameraChannel" by="setFrontalCameraChannel" />
             <parameter replace="setAxialCameraChannel" by="setAxialCameraChannel" />
@@ -178,9 +178,9 @@
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="view_negato2" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
-            <parameter replace="PickingChannel" uid="pickerChannel" />
+            <parameter replace="WID_PARENT" by="view_negato2" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="frontal" />
             <parameter replace="patient_name" by="${patient_name}" />
         </service>
@@ -189,9 +189,9 @@
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="view_negato3" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
-            <parameter replace="PickingChannel" uid="pickerChannel" />
+            <parameter replace="WID_PARENT" by="view_negato3" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="sagittal" />
             <parameter replace="patient_name" by="${patient_name}" />
         </service>

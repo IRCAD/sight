@@ -152,7 +152,7 @@
             <parentView wid="pacsPreview" />
             <configs>
                 <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
-                    <parameter replace="PACS_CONFIGURATION" uid="pacsConfiguration" />
+                    <parameter replace="PACS_CONFIGURATION" by="pacsConfiguration" />
                 </config>
             </configs>
         </service>

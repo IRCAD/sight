@@ -442,9 +442,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <service uid="imageEditorsManager" type="::fwServices::SConfigController">
                 <appConfig id="ImageManager" />
-                <parameter replace="WID_PARENT" uid="multiView_scene1_editors" />
-                <parameter replace="IMAGE_UID" uid="imageUID" />
-                <parameter replace="TF_IMAGE" uid="TFSelectionsUID" />
+                <parameter replace="WID_PARENT" by="multiView_scene1_editors" />
+                <parameter replace="IMAGE_UID" by="imageUID" />
+                <parameter replace="TF_IMAGE" by="TFSelectionsUID" />
                 <parameter replace="TF_KEY" by="SelectedTF" />
             </service>
 

@@ -125,7 +125,7 @@
             <inout key="image" uid="${myImage}" />
             <inout key="histogram" uid="Histogram" />
             <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <parameter replace="WID_PARENT" uid="tfWidget" />
+            <parameter replace="WID_PARENT" by="tfWidget" />
             <parameter replace="SelectedTFKey" by="${SELECTED_TF_KEY}" />
         </service>
 
