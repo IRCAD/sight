@@ -40,7 +40,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
         <config>
             <object uid="imageUID" type="::fwData::Image" />
             <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-            <object uid="TFSelectionsUID" type="::fwData::Composite" />
+            <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
             <object uid="viewportUID" type="::fwRenderQt::data::Viewport" />
             <!-- Service entrance point for interface creation -->
             <service uid="IHM" type="::gui::frame::SDefaultFrame">
@@ -221,12 +221,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
             </service>
 
             <service uid="TFEditor" type="::uiTF::TransferFunctionEditor">
-                <inout key="transferFunctions" uid="TFSet" />
-                <inout key="TFSelections" uid="TFSelectionsUID" />
-                <config selectedTFKey="SelectedTF" />
+                <inout key="tfPool" uid="TFSet" autoConnect="yes" />
+                <out key="tf" uid="TF" />
             </service>
 
-            <!-- This generic scene (genericScene1) uses the transfer function stores with key = SelectedTF in TFSelections -->
+            <!-- This generic scene (genericScene1) uses the TF transfer function stores -->
 
             <service uid="genericScene1" type="::fwRenderVTK::SRender" autoConnect="yes">
                 <scene>
@@ -241,14 +240,14 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <!-- Adaptor to visualize the medical image (image) with volume rendering. -->
             <service uid="vRAdaptor" type="::visuVTKVRAdaptor::SVolume" autoConnect="yes">
                 <inout key="image" uid="imageUID" />
-                <inout key="tfSelection" uid="TFSelectionsUID" />
-                <config renderer="default" selectedTFKey="SelectedTF" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" />
             </service>
 
             <service uid="ImageText1" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
                 <inout key="image" uid="imageUID" />
-                <inout key="tfSelection" uid="TFSelectionsUID" />
-                <config renderer="default" picker="picker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
             </service>
 
             <!-- End genericScene1 -->
@@ -302,14 +301,14 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <service uid="MPRNegato2D1" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
                 <inout key="image" uid="imageUID" />
-                <inout key="tfSelection" uid="TFSelectionsUID" />
-                <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="SelectedTF" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
             </service>
 
             <service uid="ImageText3" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
                 <inout key="image" uid="imageUID" />
-                <inout key="tfSelection" uid="TFSelectionsUID" />
-                <config renderer="default" picker="picker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" />
+                <inout key="tf" uid="TF" optional="yes" />
+                <config renderer="default" picker="picker" text="" color="#FFFFFF" />
             </service>
 
             <!-- End negato1 -->
@@ -370,8 +369,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
                 <in key="viewport" uid="viewportUID" />
                 <inout key="image" uid="imageUID" />
-                <inout key="tfSelection" uid="TFSelectionsUID" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" selectedTFKey="SelectedTF" />
+                <inout key="tf" uid="TF" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" />
             </service>
             <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewportUID" />
@@ -431,9 +430,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
             </service>
             <service uid="tf2_Shutter" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
                 <inout key="image" uid="imageUID" />
-                <inout key="tfSelection" uid="TFSelectionsUID" />
+                <inout key="tf" uid="TF" />
                 <in key="viewport" uid="viewportUID" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" selectedTFKey="SelectedTF" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" />
             </service>
             <service uid="viewportRangeSelector_Shutter" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes" >
                 <inout key="viewport"  uid="viewportUID" />
@@ -442,10 +441,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <service uid="imageEditorsManager" type="::fwServices::SConfigController">
                 <appConfig id="ImageManager" />
+                <inout key="IMAGE_UID" uid="imageUID" />
+                <inout key="TF_UID" uid="TF" />
                 <parameter replace="WID_PARENT" by="multiView_scene1_editors" />
-                <parameter replace="IMAGE_UID" by="imageUID" />
-                <parameter replace="TF_IMAGE" by="TFSelectionsUID" />
-                <parameter replace="TF_KEY" by="SelectedTF" />
             </service>
 
             <connect>

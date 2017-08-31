@@ -48,8 +48,8 @@ namespace visuVTKAdaptor
 const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
 const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
 
-static const ::fwServices::IService::KeyType s_IMAGE_GROUP        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_GROUP = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_GROUP = "image";
+static const ::fwServices::IService::KeyType s_TF_GROUP    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -137,21 +137,6 @@ void SImagesBlend::configuring()
                 info.m_useTFAlfa    = (tfalpha == "yes");
                 m_imagesInfo.push_back(info);
             }
-        }
-        else if (group == s_TF_SELECTION_GROUP)
-        {
-            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, inoutConfig.equal_range("key"))
-            {
-                const ::fwServices::IService::ConfigType& specAssoc = v.second;
-                const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
-                const std::string tfKey                             = attr.get("selectedTFKey", "");
-
-                m_tfSelectionKeys.push_back(tfKey);
-            }
-        }
-        else
-        {
-            OSLM_FATAL("group named '" + group + "' is not managed");
         }
     }
 
@@ -246,16 +231,16 @@ void SImagesBlend::addImageAdaptors()
     for(size_t i = 0; i < nbImages; ++i)
     {
         ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
-        ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_GROUP, i);
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, i);
 
-        if (img && composite)
+        if (img && tf)
         {
             const ImageInfo& info = m_imagesInfo[i];
 
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
-                this->addImage(img, composite, info, m_tfSelectionKeys[i]);
+                this->addImage(img, tf, info);
 
                 ++addedImageCount;
                 lastValidIndex = i;
@@ -267,10 +252,10 @@ void SImagesBlend::addImageAdaptors()
     if(addedImageCount == 1 && nullptr != vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId)))
     {
         ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, lastValidIndex);
-        ::fwData::Composite::sptr composite =
-            this->getInOut< ::fwData::Composite >(s_TF_SELECTION_GROUP, lastValidIndex);
+        ::fwData::TransferFunction::sptr tf =
+            this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, lastValidIndex);
         const ImageInfo& info = m_imagesInfo[lastValidIndex];
-        this->addImage(img, composite, info, m_tfSelectionKeys[lastValidIndex]);
+        this->addImage(img, tf, info);
     }
 }
 
@@ -328,14 +313,13 @@ void SImagesBlend::changeMode(std::string _value, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr tfSelection, const ImageInfo& info,
-                            const std::string& selectedTFKey)
+void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunction::sptr tf, const ImageInfo& info)
 {
     // create the srv configuration for objects auto-connection
     auto imageAdaptor = this->registerService< ::visuVTKAdaptor::SImage>("::visuVTKAdaptor::SImage");
     // register image
     imageAdaptor->registerInOut(img, SImage::s_IMAGE_INOUT, true);
-    imageAdaptor->registerInOut(tfSelection, SImage::s_TF_SELECTION_INOUT, false);
+    imageAdaptor->registerInOut(tf, SImage::s_TF_INOUT, false, true);
 
     imageAdaptor->setRenderService(this->getRenderService());
     imageAdaptor->setRendererId( this->getRendererId() );
@@ -346,7 +330,6 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
     imageAdaptor->setImageOpacity(info.m_imageOpacity);
     imageAdaptor->setAllowAlphaInTF(info.m_useTFAlfa);
-    imageAdaptor->setSelectedTFKey( selectedTFKey );
 
     m_registeredImages[img->getID()] = imageAdaptor;
 

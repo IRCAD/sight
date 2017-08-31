@@ -21,7 +21,7 @@
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSeries);
 
 static const ::fwServices::IService::KeyType s_IMAGE_SERIES_INOUT = "imageSeries";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_TF_INOUT           = "transferFunction";
 
 namespace visuVTKAdaptor
 {
@@ -103,8 +103,6 @@ void SImageSeries::configuring()
     this->setInterpolation(interpolation == "yes");
 
     this->setVtkImageSourceId( config.get<std::string>("vtkimagesource", ""));
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
@@ -130,10 +128,10 @@ void SImageSeries::updating()
     ::fwData::Image::sptr image = series->getImage();
     negato->registerInOut(image, SNegatoMPR::s_IMAGE_INOUT, true);
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    if (tfSelection)
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    if (tf)
     {
-        negato->registerInOut(tfSelection, SNegatoMPR::s_TF_SELECTION_INOUT, true);
+        negato->registerInOut(tf, SNegatoMPR::s_TF_INOUT, true);
     }
 
     negato->setTransformId( this->getTransformId() );
@@ -148,7 +146,6 @@ void SImageSeries::updating()
     negato->setAllowAlphaInTF(m_allowAlphaInTF);
     negato->setInterpolation(m_interpolation);
     negato->setVtkImageSourceId(m_imageSourceId);
-    negato->setSelectedTFKey(this->getSelectedTFKey());
     negato->start();
 }
 

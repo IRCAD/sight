@@ -28,7 +28,7 @@ namespace adaptor
  * @code{.xml}
    <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
     <inout key="image" uid="..." />
-    <inout key="tfSelection" uid="..." />
+    <inout key="tf" uid="..." />
     <inout key="viewport" uid="..." />
     <config lineColor="lightGray" circleColor="gray" xAxis="xAxis" yAxis="yAxis" zValue="4" selectedTFKey="tfKey" />
    </service>
@@ -36,7 +36,7 @@ namespace adaptor
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction]: the current TransferFunction.
  * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update the adaptor.
  *
  * @subsection Configuration Configuration:
@@ -47,7 +47,6 @@ namespace adaptor
  *    - \b lineColor (optional, default black): Set the color of the lines between the TF points.
  *    - \b circleColor (optional, default black): Set the outline color of the circles representing the TF points.
  *    - \b pointSize (optional, default 10): specify point size.
- *    - \b selectedTFKey: key of the transfer function used.
  */
 class SCENE2D_CLASS_API STransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
                                             public ::fwRenderQt::IAdaptor

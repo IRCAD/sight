@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKVRADAPTOR_VOLUME_HPP__
-#define __VISUVTKVRADAPTOR_VOLUME_HPP__
+#ifndef __VISUVTKVRADAPTOR_SVOLUME_HPP__
+#define __VISUVTKVRADAPTOR_SVOLUME_HPP__
 
 #include "visuVTKVRAdaptor/config.hpp"
 
@@ -35,19 +35,24 @@ namespace visuVTKVRAdaptor
  * - \b resetBoxWidget() : reset the clipping box widget around the volume.
  * - \b activateBoxClipping(bool) : show/hide clipping box.
  * - \b show(bool) : show/hide the volume.
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuVTKVRAdaptor::SVolume">
             <inout key="image" uid="..." />
-            <inout key="tfSelection" uid="..." />
+            <inout key="tf" uid="..." optional="yes" />
             <config renderer="default"  clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"
-                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" selectedTFKey="TFKey" />
+                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" />
        </service
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the current transfer function.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction
+ *
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use
  * - \b clippingplanes (optional) : id of VTK object for clipping planes
@@ -71,7 +76,7 @@ public:
     VISUVTKVRADAPTOR_API virtual ~SVolume() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
-    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
@@ -101,7 +106,7 @@ protected:
     VISUVTKVRADAPTOR_API void starting();
     VISUVTKVRADAPTOR_API void stopping();
     VISUVTKVRADAPTOR_API void updating();
-    VISUVTKVRADAPTOR_API void swapping();
+    VISUVTKVRADAPTOR_API void swapping(const KeyType& key);
 
     /// Called when transfer function points are modified.
     VISUVTKVRADAPTOR_API virtual void updatingTFPoints();
@@ -159,4 +164,4 @@ private:
 
 } //namespace visuVTKVRAdaptor
 
-#endif // __VISUVTKVRADAPTOR_VOLUME_HPP__
+#endif // __VISUVTKVRADAPTOR_SVOLUME_HPP__

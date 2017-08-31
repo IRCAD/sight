@@ -127,7 +127,8 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 //------------------------------------------------------------------------------
 
-void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect)
+void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect,
+                             const bool optional)
 {
     ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
 
@@ -135,14 +136,15 @@ void IService::registerInput(const ::fwData::Object::csptr& obj, const std::stri
     objConfig.m_key         = key;
     objConfig.m_access      = AccessType::INPUT;
     objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = false;
+    objConfig.m_optional    = optional;
 
     m_serviceConfig.m_objects.push_back(objConfig);
 }
 
 //------------------------------------------------------------------------------
 
-void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect)
+void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect,
+                             const bool optional)
 {
     ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
 
@@ -150,7 +152,7 @@ void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::strin
     objConfig.m_key         = key;
     objConfig.m_access      = AccessType::INOUT;
     objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = false;
+    objConfig.m_optional    = optional;
 
     m_serviceConfig.m_objects.push_back(objConfig);
 }

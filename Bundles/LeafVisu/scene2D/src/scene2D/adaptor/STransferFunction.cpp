@@ -36,9 +36,9 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
-static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT     = "viewport";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT       = "tf";
+static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 STransferFunction::STransferFunction() noexcept :
     m_layer(nullptr),
@@ -80,9 +80,6 @@ void STransferFunction::configuring()
     {
         m_pointSize = config.get<float>("pointSize");
     }
-
-    SLM_ASSERT("'selectedTFKey' attribute is missing.", config.count("selectedTFKey"));
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey"));
 }
 
 //-----------------------------------------------------------------------------
@@ -507,8 +504,9 @@ void STransferFunction::starting()
     m_circlePen.setCosmetic( true );
     m_circlePen.setWidthF( 0 );
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", tf);
+    this->setTransferFunction(tf);
 
     this->updating();
     this->installTFConnections();
@@ -518,12 +516,8 @@ void STransferFunction::starting()
 
 void STransferFunction::updating()
 {
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
-
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    this->updateImageInfos(image);
-    this->updateTransferFunction(image);
+//    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+//    this->updateImageInfos(image);
 
     // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it
     // to the scene
@@ -542,7 +536,7 @@ void STransferFunction::updatingTFPoints()
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::updatingTFWindowing(double window, double level)
+void STransferFunction::updatingTFWindowing(double /*window*/, double /*level*/)
 {
     this->updating();
 }

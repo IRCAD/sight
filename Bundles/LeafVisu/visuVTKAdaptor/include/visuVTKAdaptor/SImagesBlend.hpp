@@ -45,9 +45,9 @@ namespace visuVTKAdaptor
             <key uid="..." tfalpha="no" />
             <key uid="..." tfalpha="yes" opacity="0.5" />
         </inout>
-        <inout group="tfSelection">
-            <key uid="..." selectedTFKey="selected1" />
-            <key uid="..." selectedTFKey="selected2" />
+        <inout group="tf">
+            <key uid="..." />
+            <key uid="..." />
         </inout>
         <config renderer="default" vtkimageregister="imageBlend" checkerboardDivision="10" />
     </service>
@@ -57,9 +57,7 @@ namespace visuVTKAdaptor
  *      required)
  *    - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato
  *    - \b opacity (optional, default=1.0): opacity (0.0..1.0)
- * - \b tfSelection [::fwData::Composite] : group containing the TransferFunction selection Composite associated to the
- *      image
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
+ * - \b tf [::fwData::TransferFunction] : group containing the TransferFunction used to display the images
  * @note There must be as much elements in the two groups
  *
  * @subsection Configuration Configuration:
@@ -136,16 +134,11 @@ private:
     void changeCheckerboardDivision(int division);
 
     /// Create a new image adaptor
-    void addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr tfSelection, const ImageInfo& info,
-                  const std::string& selectedTFKey);
+    void addImage(::fwData::Image::sptr img, ::fwData::TransferFunction::sptr tf, const ImageInfo& info);
 
     typedef std::vector< ImageInfo > ImageInfoMap;
     /// Map containing the image displaying information
     ImageInfoMap m_imagesInfo;
-
-    typedef std::vector< std::string > TFSelectionKeys;
-    /// Vector containing the tf selection keys
-    TFSelectionKeys m_tfSelectionKeys;
 
     /// map <fwId, adaptor>
     typedef std::map< std::string, ::fwRenderVTK::IAdaptor::sptr > RegisteredImageMap;

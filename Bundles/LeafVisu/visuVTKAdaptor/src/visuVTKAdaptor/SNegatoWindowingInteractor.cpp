@@ -34,8 +34,8 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SNegatoWindo
 namespace visuVTKAdaptor
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -184,10 +184,6 @@ SNegatoWindowingInteractor::~SNegatoWindowingInteractor() noexcept
 void SNegatoWindowingInteractor::configuring()
 {
     this->configureParams();
-
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
@@ -196,8 +192,17 @@ void SNegatoWindowingInteractor::starting()
 {
     this->initialize();
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    if (tf)
+    {
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+        this->createTransferFunction(image);
+    }
 
     NegatoWindowingCallback* observer = NegatoWindowingCallback::New();
     observer->setAdaptor( SNegatoWindowingInteractor::dynamicCast(this->getSptr()) );
@@ -220,7 +225,6 @@ void SNegatoWindowingInteractor::updating()
     SLM_ASSERT("Missing image", image);
 
     this->updateImageInfos(image);
-    this->updateTransferFunction(image);
     this->requestRender();
 }
 
@@ -234,6 +238,27 @@ void SNegatoWindowingInteractor::stopping()
     m_vtkObserver->Delete();
     m_vtkObserver = nullptr;
     this->removeAllPropFromRenderer();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegatoWindowingInteractor::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------

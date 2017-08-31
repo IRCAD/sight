@@ -32,7 +32,7 @@ namespace visuVTKAdaptor
  * @code{.xml}
    <service type="::visuVTKAdaptor::SImageText">
         <inout key="image" uid="..." />
-        <inout key="tfSelection" uid="..." />
+       <inout key="tf" uid="..." optional="yes" />
         <config renderer="default" text="@patient.name" color="#ff0000" fontSize="16" />
    </service>
    @endcode
@@ -48,7 +48,8 @@ namespace visuVTKAdaptor
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
@@ -81,6 +82,8 @@ protected:
     VISUVTKADAPTOR_API void starting();
     VISUVTKADAPTOR_API void updating();
     VISUVTKADAPTOR_API void stopping();
+    /// Select the current tf
+    VISUVTKADAPTOR_API void swapping(const KeyType& key);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

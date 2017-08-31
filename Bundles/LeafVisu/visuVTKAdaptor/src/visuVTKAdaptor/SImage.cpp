@@ -37,8 +37,8 @@ namespace visuVTKAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
 
-const ::fwServices::IService::KeyType SImage::s_IMAGE_INOUT        = "image";
-const ::fwServices::IService::KeyType SImage::s_TF_SELECTION_INOUT = "tfSelection";
+const ::fwServices::IService::KeyType SImage::s_IMAGE_INOUT = "image";
+const ::fwServices::IService::KeyType SImage::s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -67,8 +67,17 @@ void SImage::starting()
 {
     this->initialize();
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    if (tf)
+    {
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+        this->createTransferFunction(image);
+    }
 
     this->updating();
     this->installTFConnections();
@@ -96,14 +105,33 @@ void SImage::updating()
         this->updateImage(image);
         this->buildPipeline();
         this->updateImageTransferFunction(image);
-        this->updateWindowing();
         this->updateImageOpacity();
     }
-    else
-    {
-        this->updateTransferFunction(image);
-    }
+
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImage::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        this->removeTFConnections();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->installTFConnections();
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -145,8 +173,6 @@ void SImage::configuring()
     const std::string tfalpha = config.get<std::string>("tfalpha", "no");
     SLM_ASSERT("'tfalpha' value must be 'yes' or 'no', actual: " + tfalpha, tfalpha == "yes" || tfalpha == "no");
     this->setAllowAlphaInTF(tfalpha == "yes");
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
@@ -173,7 +199,6 @@ void SImage::updateWindowing()
 
 void SImage::updateImageTransferFunction( ::fwData::Image::sptr image )
 {
-    this->updateTransferFunction(image);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );

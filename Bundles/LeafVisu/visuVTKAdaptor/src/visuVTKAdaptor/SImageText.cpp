@@ -34,8 +34,8 @@ namespace visuVTKAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //-----------------------------------------------------------------------------
 
@@ -55,16 +55,21 @@ SImageText::~SImageText() noexcept
 
 void SImageText::starting()
 {
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
-
     this->SText::starting();
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    if (tf)
+    {
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        this->createTransferFunction(image);
+    }
 
     this->updateImageInfos(image);
-    this->updateTransferFunction(image);
     this->installTFConnections();
     this->updating();
 }
@@ -82,10 +87,6 @@ void SImageText::stopping()
 void SImageText::configuring()
 {
     this->SText::configuring();
-
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //-----------------------------------------------------------------------------
@@ -119,6 +120,29 @@ void SImageText::updating()
 
     this->setVtkPipelineModified();
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageText::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        this->removeTFConnections();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->installTFConnections();
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------

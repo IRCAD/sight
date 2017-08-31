@@ -38,14 +38,14 @@ namespace adaptor
    @code{.xml}
    <service uid="negato" type="::scene2D::adaptor::SNegato" autoConnect="yes">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
+       <inout key="tf" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" selectedTFKey="tfKey"/>
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction]: TransferFunction use to display the image.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
