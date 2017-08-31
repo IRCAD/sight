@@ -5,19 +5,17 @@
         <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
         <param name="imageUid" />
-        <param name="CurrentViewPointUid"/>
-        <param name="splinePointsListUid"/>
-        <param name="cprEditorUid"/>
-        <param name="selectedPointsUid"/>
+        <param name="CurrentViewPointUid" />
+        <param name="splinePointsListUid" />
+        <param name="cprEditorUid" />
+        <param name="selectedPointsUid" />
     </parameters>
     <config>
-
         <object uid="${imageUid}" src="ref" type="::fwData::Image" />
         <object uid="Cpr3dMeshUid" type="::fwData::Mesh" />
-        <object uid="${CurrentViewPointUid}" src="ref" type="::fwData::TransformationMatrix3D"/>
-        <object uid="${splinePointsListUid}" src="ref" type="::fwData::PointList"/>
-        <object uid="${selectedPointsUid}" src="ref" type="::fwData::PointList"/>
-
+        <object uid="${CurrentViewPointUid}" src="ref" type="::fwData::TransformationMatrix3D" />
+        <object uid="${splinePointsListUid}" src="ref" type="::fwData::PointList" />
+        <object uid="${selectedPointsUid}" src="ref" type="::fwData::PointList" />
         <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -33,53 +31,57 @@
             </registry>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="vr2" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="CurrentViewPointKey" uid="${CurrentViewPointUid}" />
-            <in key="splinePointListKey" uid="${splinePointsListUid}" />
-            <in key="imageKey" uid="${imageUid}" />
-            <in key="Cpr3dMesh" uid="Cpr3dMeshUid" />
-            <in key="selectedPointsKey" uid="${selectedPointsUid}" />
             <scene>
                 <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
-
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
                 <renderer id="default" background="0.0" />
-
-                <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle3DForNegato" />
-                </adaptor>
-
-                <adaptor id="CamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="CurrentViewPointKey">
-                    <config transform="camPosMatrixTransform" />
-                </adaptor>
-
-                <adaptor id="Cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
-                    <config renderer="default" transform="camPosMatrixTransform" length="40" label="no" />
-                </adaptor>
-
-                <adaptor id="splineAdaptor" class="::visuNavigation::SSplineAdaptor" objectId="splinePointListKey">
-                    <config image="${imageUid}" renderer="default" picker=""/>
-                </adaptor>
-
-                <adaptor uid="MPRNegato" id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" slices="3"/>
-                </adaptor>
-
-                <adaptor id="renderMesh" class="::visuVTKAdaptor::Mesh" objectId="Cpr3dMesh">
-                    <config renderer="default" picker="" />
-                </adaptor>
-
-                <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPointsKey">
-                    <config renderer="default" picker="negatodefault" />
-                </adaptor>
-                <connect>
-                    <signal>sliceListNegatoEditor/selected</signal>
-                    <slot>MPRNegato/updateSliceMode</slot>
-                </connect>
-
+                <adaptor uid="Interactor1" />
+                <adaptor uid="CamPos2MatrixTransformAdaptor" />
+                <adaptor uid="Cam2Axes" />
+                <adaptor uid="splineAdaptor" />
+                <adaptor uid="MPRNegato" />
+                <adaptor uid="renderMesh" />
+                <adaptor uid="PointList" />
             </scene>
         </service>
+
+        <service uid="Interactor1" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle3DForNegato" />
+        </service>
+
+        <service uid="CamPos2MatrixTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="${CurrentViewPointUid}" />
+            <config transform="camPosMatrixTransform" />
+        </service>
+
+        <service uid="Cam2Axes" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" transform="camPosMatrixTransform" length="40" label="no" />
+        </service>
+
+        <service uid="splineAdaptor" type="::visuNavigation::SSplineAdaptor" autoConnect="yes">
+            <in key="pointlist" uid="${splinePointsListUid}" />
+            <config image="${imageUid}" renderer="default" picker="" />
+        </service>
+
+        <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${imageUid}" />
+            <config renderer="default" picker="negatodefault" slices="3" />
+        </service>
+
+        <service uid="renderMesh" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+            <in key="mesh" uid="Cpr3dMeshUid" />
+            <config renderer="default" picker="" />
+        </service>
+
+        <service uid="PointList" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+            <inout key="pointList" uid="${selectedPointsUid}" />
+            <config renderer="default" picker="negatodefault" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <service uid="sliceListNegatoEditor" type="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
             <toolTip>Manage slice visibility</toolTip>
@@ -100,34 +102,50 @@
         <connect>
             <signal>${splinePointsListUid}/modified</signal>
             <slot>ComputeCPR3D/updateSpline</slot>
-        </connect> 
+        </connect>
+
         <connect>
             <signal>${splinePointsListUid}/pointAdded</signal>
             <slot>ComputeCPR3D/updateSpline</slot>
-        </connect> 
+        </connect>
+
         <connect>
             <signal>${splinePointsListUid}/pointRemoved</signal>
             <slot>ComputeCPR3D/updateSpline</slot>
-        </connect> 
+        </connect>
 
         <connect>
             <signal>${cprEditorUid}/heightChanged</signal>
             <slot>ComputeCPR3D/changeHeight</slot>
-        </connect> 
+        </connect>
 
         <connect>
             <signal>${cprEditorUid}/spacingChanged</signal>
             <slot>ComputeCPR3D/changeSpacing</slot>
-        </connect> 
+        </connect>
 
         <connect>
             <signal>${cprEditorUid}/sliderProgressed</signal>
             <slot>ComputeCPR3D/changeAngle</slot>
-        </connect> 
+        </connect>
+
+        <connect>
+            <signal>sliceListNegatoEditor/selected</signal>
+            <slot>MPRNegato/updateSliceMode</slot>
+        </connect>
 
         <start uid="mainView" />
         <start uid="ComputeCPR3D" />
-        <update uid="${cprEditorUid}"/>
 
+        <!-- vr2 -->
+        <start uid="Interactor1" />
+        <start uid="CamPos2MatrixTransformAdaptor" />
+        <start uid="Cam2Axes" />
+        <start uid="splineAdaptor" />
+        <start uid="MPRNegato" />
+        <start uid="renderMesh" />
+        <start uid="PointList" />
+
+        <update uid="${cprEditorUid}" />
     </config>
 </extension>

@@ -1,33 +1,27 @@
-<plugin id="PoCScene2DTF" version="@DASH_VERSION@" >
-
+<plugin id="PoCScene2DTF" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
-
     <extension implements="::fwServices::registry::AppConfig2">
         <id>pocScene2DTFConfig</id>
         <config>
-<!-- ***************************************** Begin Objects declaration ***************************************** -->
-
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
             <object uid="image" type="::fwData::Image" />
             <object uid="TFSelections" type="::fwData::Composite" />
             <object uid="viewport" type="::fwRenderQt::data::Viewport" />
             <object uid="histogram" type="::fwData::Histogram" />
             <object uid="TFSet" type="::fwData::Composite" />
-
-<!-- ***************************************** End Objects declaration ******************************************* -->
-
-<!-- ***************************************** Begin layouts declaration ***************************************** -->
-
-            <service uid="IHM" type="::gui::frame::SDefaultFrame" >
+            <!-- ***************************************** End Objects declaration ******************************************* -->
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>PoCScene2DTF</name>
                         <icon>@BUNDLE_PREFIX@/PoCScene2DTF_0-1/tuto.ico</icon>
                         <minSize width="1024" height="600" />
                     </frame>
-                    <menuBar />
+                    <menuBar/>
                 </gui>
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
@@ -50,7 +44,7 @@
                 <gui>
                     <layout>
                         <menuItem name="Open file" shortcut="Ctrl+O" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -65,7 +59,6 @@
             </service>
 
             <service uid="action_quit" type="::gui::action::SQuit" />
-
             <service uid="multiView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
@@ -138,10 +131,9 @@
                     <view sid="snapshotSceneEditor" start="yes" />
                 </registry>
             </service>
-<!-- ***************************************** End layouts declaration ***************************************** -->
 
-<!-- ***************************************** Begin services declarations  ************************************ -->
-
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+            <!-- ***************************************** Begin services declarations    ************************************ -->
             <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
                 <in key="image" uid="image" />
                 <type mode="reader" />
@@ -174,58 +166,47 @@
 
             <!-- This service convert a simple fwData::Image to medical Image -->
             <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
-                <inout key="image" uid="image"/>
+                <inout key="image" uid="image" />
             </service>
 
             <service uid="snapshotSceneEditor" type="::uiVisuQt::SnapshotEditor" />
-
-<!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="TFSelections" uid="TFSelections" />
-                <inout key="image" uid="image" optional="yes" />
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
-
                     <renderer id="default" background="#78c5d2" />
-
-                    <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                        <config renderer="default" picker="picker"
-                                mode="3D" slices="3" sliceIndex="axial"
-                                selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                    </adaptor>
-
-                    <adaptor id="snapshot" uid="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image">
-                        <config renderer="default" picker="negato2default" text="" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                    </adaptor>
-
-                    <proxy channel="snap">
-                        <slot>snapshot/snap</slot>
-                    </proxy>
-
-                    <proxy channel="scanEditor">
-                        <slot>MPRNegatoScene3D/showSlice</slot>
-                    </proxy>
-
-                    <proxy channel="sliceListEditor">
-                        <slot>MPRNegatoScene3D/updateSliceMode</slot>
-                    </proxy>
-
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="snapshot" />
+                    <adaptor uid="text" />
                 </scene>
             </service>
+
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <inout key="tfSelection" uid="TFSelections" />
+                <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <inout key="tfSelection" uid="TFSelections" />
+                <config renderer="default" picker="negato2default" text="" selectedTFKey="SelectedTF" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
 
             <service uid="scene2D" type="::fwRenderQt::SRender" autoConnect="yes">
                 <scene>
                     <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
                     <viewport x="-500" y="-1.1" width="500" height="1.2" />
-
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
                     <adaptor uid="grid1" />
                     <adaptor uid="tf2" />
                     <adaptor uid="axisLeft" />
@@ -238,55 +219,65 @@
                     <adaptor uid="axisTestLeft" />
                     <adaptor uid="axisTestRight" />
                     <adaptor uid="viewportUpdater" />
-
                 </scene>
             </service>
 
             <service uid="grid1" type="::scene2D::adaptor::SGrid2D">
                 <config xMin="-500" xMax="500" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" opacity="0.4" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
+
             <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
                 <inout key="image" uid="image" />
                 <inout key="tfSelection" uid="TFSelections" />
                 <inout key="viewport" uid="viewport" />
                 <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" selectedTFKey="SelectedTF" />
             </service>
+
             <service uid="axisLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" unit="%" align="left" min="0" max="1" step="0.1" />
             </service>
+
             <service uid="scaleValuesBottom" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd." color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="10" />
             </service>
+
             <service uid="scaleValuesLeft" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10" />
             </service>
+
             <service uid="scaleValuesTop" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd." color="red" xAxis="xAxis" yAxis="yAxis" zValue="10" />
             </service>
+
             <service uid="scaleValuesRight" type="::scene2D::adaptor::SScaleValues" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10" />
             </service>
+
             <service uid="axisTestBottom" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red" tickSize="5" interval="100" />
             </service>
+
             <service uid="axisTestTop" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green" tickSize="5" interval="100" />
             </service>
+
             <service uid="axisTestLeft" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan" tickSize="5" interval="0.1" />
             </service>
+
             <service uid="axisTestRight" type="::scene2D::adaptor::SAxis" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" />
             </service>
+
             <service uid="viewportUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes">
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
@@ -296,27 +287,27 @@
                 <scene>
                     <scene x="-1100" y="-1.1" width="2100" height="1.2" />
                     <viewport x="-1100" y="-1.1" width="2100" height="1.2" />
-
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
                     <adaptor uid="grid1_Shutter" />
                     <adaptor uid="tf2_Shutter" />
                     <adaptor uid="viewportRangeSelector_Shutter" />
                 </scene>
             </service>
 
-            <service uid="grid1_Shutter" type="::scene2D::adaptor::SGrid2D" >
+            <service uid="grid1_Shutter" type="::scene2D::adaptor::SGrid2D">
                 <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
+
             <service uid="tf2_Shutter" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
                 <inout key="image" uid="image" />
                 <inout key="tfSelection" uid="TFSelections" />
                 <inout key="viewport" uid="viewport" />
                 <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="5" pointSize="12" viewportUID="GENERIC_UID_Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
             </service>
+
             <service uid="viewportRangeSelector_Shutter" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes">
-                <inout key="viewport"  uid="viewport" />
+                <inout key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
             </service>
 
@@ -324,7 +315,6 @@
                 <scene>
                     <scene x="-10" y="-10" width="310" height="310" />
                     <viewport x="-10" y="-10" width="310" height="310" />
-
                     <adaptor uid="negato" />
                     <adaptor uid="grid" />
                 </scene>
@@ -335,45 +325,45 @@
                 <inout key="tfSelection" uid="TFSelections" />
                 <config zValue="0" selectedTFKey="SelectedTF" />
             </service>
-            <service uid="grid" type="::scene2D::adaptor::SGrid2D" >
+
+            <service uid="grid" type="::scene2D::adaptor::SGrid2D">
                 <config xMin="0" xMax="300" yMin="0" yMax="300" xSpacing="100" ySpacing="100" color="red" zValue="1" />
             </service>
 
-            <service uid="tfEditor" type="::uiTF::TransferFunctionEditor" autoConnect="yes" >
+            <service uid="tfEditor" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
                 <inout key="transferFunctions" uid="TFSet" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <config selectedTFKey="SelectedTF" />
             </service>
 
-<!-- ***************************************** End render scenes declaration ***************************************** -->
-
-<!-- ***************************************** End services declarations  ************************************************ -->
-
-<!-- ***************************************** Begin connections declarations  *************************************** -->
-
+            <!-- ***************************************** End render scenes declaration ***************************************** -->
+            <!-- ***************************************** End services declarations    ************************************************ -->
+            <!-- ***************************************** Begin connections declarations    *************************************** -->
             <connect>
                 <signal>showScanEditor/toggled</signal>
                 <slot>sliceListEditor/setEnabled</slot>
             </connect>
 
-            <connect channel="snap">
+            <connect>
                 <signal>snapshotSceneEditor/snapped</signal>
+                <slot>snapshot/snap</slot>
             </connect>
 
-            <connect channel="scanEditor">
+            <connect>
                 <signal>showScanEditor/toggled</signal>
+                <slot>MPRNegato3D/showSlice</slot>
             </connect>
 
-            <connect channel="sliceListEditor">
+            <connect>
                 <signal>sliceListEditor/selected</signal>
+                <slot>MPRNegato3D/updateSliceMode</slot>
             </connect>
 
-<!-- ***************************************** End connections declarations  ***************************************** -->
+            <!-- ***************************************** End connections declarations    ***************************************** -->
 
             <start uid="IHM" />
             <start uid="scene2D_Shutter" />
             <start uid="scene2D" />
-
             <!-- scene2D adaptors -->
             <start uid="grid1" />
             <start uid="tf2" />
@@ -387,16 +377,17 @@
             <start uid="axisTestLeft" />
             <start uid="axisTestRight" />
             <start uid="viewportUpdater" />
-
             <!-- scene2D shutter adaptors -->
             <start uid="grid1_Shutter" />
             <start uid="tf2_Shutter" />
             <start uid="viewportRangeSelector_Shutter" />
-
             <!-- scene2D negato adaptors -->
             <start uid="negato" />
             <start uid="grid" />
-
+            <!-- VTK scene 'genericScene' -->
+            <start uid="MPRNegato3D" />
+            <start uid="snapshot" />
+            <start uid="text" />
         </config>
     </extension>
 </plugin>
