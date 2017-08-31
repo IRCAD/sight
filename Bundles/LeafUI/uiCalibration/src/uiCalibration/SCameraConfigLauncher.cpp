@@ -59,8 +59,8 @@ void SCameraConfigLauncher::configuring()
     // ConfigLauncher needs ptree configuration with service.config.appConfig
     ::fwServices::IService::ConfigType cameraConfig;
     ::fwServices::IService::ConfigType extrinsicConfig;
-    cameraConfig.add_child("service.config", intrinsic);
-    extrinsicConfig.add_child("service.config", extrinsic);
+    cameraConfig.add_child("service", intrinsic);
+    extrinsicConfig.add_child("service", extrinsic);
 
     m_intrinsicLauncher.parseConfig(cameraConfig, this->getSptr());
     m_extrinsicLauncher.parseConfig(extrinsicConfig,  this->getSptr());
