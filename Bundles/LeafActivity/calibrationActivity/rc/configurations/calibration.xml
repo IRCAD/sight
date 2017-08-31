@@ -67,23 +67,17 @@
             <inout key="activitySeries" uid="${AS_UID}" />
             <config>
                 <intrinsic>
-                    <appConfig id="calIntrinsicView">
-                        <parameters>
-                            <parameter replace="WID_PARENT" uid="calibrationView" />
-                            <parameter replace="preferencesModifiedProxy" uid="preferencesModifiedProxy" />
-                            <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
-                        </parameters>
-                    </appConfig>
+                    <appConfig id="calIntrinsicView" />
+                    <parameter replace="WID_PARENT" by="calibrationView" />
+                    <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
+                    <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                 </intrinsic>
                 <extrinsic>
-                    <appConfig id="calExtrinsicView">
-                        <parameters>
-                            <parameter replace="WID_PARENT" uid="calibrationView" />
-                            <parameter replace="preferencesModifiedProxy" uid="preferencesModifiedProxy" />
-                            <parameter replace="cameraSeries" uid="${cameraSeries}" />
-                            <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
-                        </parameters>
-                    </appConfig>
+                    <appConfig id="calExtrinsicView" />
+                    <inout key="cameraSeries" uid="${cameraSeries}" />
+                    <parameter replace="WID_PARENT" by="calibrationView" />
+                    <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
+                    <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                 </extrinsic>
             </config>
         </service>
