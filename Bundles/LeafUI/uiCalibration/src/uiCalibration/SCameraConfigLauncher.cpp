@@ -73,10 +73,10 @@ void SCameraConfigLauncher::starting()
     this->create();
 
     m_cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
-    SLM_ASSERT("Missing CameraSeries: " + m_cameraSeriesKey, m_cameraSeries);
+    SLM_ASSERT("Missing cameraSeries.", m_cameraSeries);
 
     m_activitySeries = this->getInOut< ::fwMedData::ActivitySeries >("activitySeries");
-    SLM_ASSERT("Missing ActivitySeries: " + m_activitySeriesKey, m_activitySeries);
+    SLM_ASSERT("Missing activitySeries.", m_activitySeries);
 
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
@@ -101,7 +101,7 @@ void SCameraConfigLauncher::starting()
 
     qtContainer->setLayout( layout );
 
-    size_t nbCam = m_cameraSeries->getNumberOfCameras();
+    const size_t nbCam = m_cameraSeries->getNumberOfCameras();
 
     if (nbCam == 0)
     {
@@ -239,7 +239,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
     const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    OSLM_ASSERT("Bad index: " << index, index >= 0 && index < m_cameraSeries->getNumberOfCameras());
+    OSLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
         this->startExtrinsicConfig(index);
@@ -275,7 +275,7 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 
 void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 {
-    size_t cameraIdx = std::max(index, size_t(1));
+    const size_t cameraIdx = std::max(index, size_t(1));
 
     ::arData::Camera::sptr camera1 = m_cameraSeries->getCamera(0);
     ::arData::Camera::sptr camera2 = m_cameraSeries->getCamera(cameraIdx);
