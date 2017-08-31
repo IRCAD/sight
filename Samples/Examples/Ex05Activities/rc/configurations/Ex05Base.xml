@@ -85,7 +85,6 @@
             <parameters>
                 <parameter replace="SERIESDB" uid="seriesDB" />
                 <parameter replace="ICON_PATH" by="${appIconPath}" />
-                <parameter replace="PARAMETERS_CHANNEL" uid="parametersChannel" />
                 <parameter replace="enabledPreviousChannel" uid="enabledPreviousChannel" />
                 <parameter replace="enabledNextChannel" uid="enabledNextChannel" />
                 <parameter replace="previousActivityChannel" uid="previousActivityChannel" />

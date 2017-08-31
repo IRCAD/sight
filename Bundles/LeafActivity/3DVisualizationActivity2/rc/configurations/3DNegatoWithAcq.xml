@@ -11,7 +11,9 @@
         <param name="ModelDisplayChannel" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="PickingChannel" default="pickingChannel" />
-        <param name="Medical3DCamera" />
+        <param name="setSagittalCameraChannel" />
+        <param name="setFrontalCameraChannel" />
+        <param name="setAxialCameraChannel" />
     </parameters>
     <config>
         <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
@@ -85,7 +87,7 @@
                 <adaptor uid="orientationMarker" />
                 <adaptor uid="interactor" />
                 <adaptor uid="pickerInteractor" />
-                <adaptor uid="${Medical3DCamera}" />
+                <adaptor uid="medical3DCamera" />
                 <adaptor uid="MPRNegato" />
                 <adaptor uid="modelSeries" />
                 <adaptor uid="text" />
@@ -111,7 +113,7 @@
             <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP" />
         </service>
 
-        <service uid="${Medical3DCamera}" type="::visuVTKAdaptor::SMedical3DCamera">
+        <service uid="medical3DCamera" type="::visuVTKAdaptor::SMedical3DCamera">
             <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
         </service>
 
@@ -194,6 +196,18 @@
             <slot>MPRNegato/setCrossScale</slot>
         </connect>
 
+        <connect channel="${setSagittalCameraChannel}">
+            <slot>medical3DCamera/setSagittal</slot>
+        </connect>
+
+        <connect channel="${setFrontalCameraChannel}">
+            <slot>medical3DCamera/setFrontal</slot>
+        </connect>
+
+        <connect channel="${setAxialCameraChannel}">
+            <slot>medical3DCamera/setAxial</slot>
+        </connect>
+
         <start uid="mainView" />
         <start uid="extractImage" />
         <!-- Deferred -->
@@ -207,7 +221,7 @@
         <start uid="orientationMarker" />
         <start uid="interactor" />
         <start uid="pickerInteractor" />
-        <start uid="${Medical3DCamera}" />
+        <start uid="medical3DCamera" />
         <start uid="MPRNegato" />
         <start uid="modelSeries" />
         <start uid="text" />

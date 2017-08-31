@@ -144,27 +144,15 @@
             <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
             <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             <parameter replace="PickingChannel" uid="pickerChannel" />
-            <parameter replace="Medical3DCamera" uid="Medical3DCamera" />
             <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
+            <parameter replace="setSagittalCameraChannel" by="setSagittalCameraChannel" />
+            <parameter replace="setFrontalCameraChannel" by="setFrontalCameraChannel" />
+            <parameter replace="setAxialCameraChannel" by="setAxialCameraChannel" />
         </service>
 
-        <service uid="action_SagittalViewMPR3D" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>Medical3DCamera/setSagittal</slot>
-            </slots>
-        </service>
-
-        <service uid="action_FrontalViewMPR3D" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>Medical3DCamera/setFrontal</slot>
-            </slots>
-        </service>
-
-        <service uid="action_AxialViewMPR3D" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>Medical3DCamera/setAxial</slot>
-            </slots>
-        </service>
+        <service uid="action_SagittalViewMPR3D" type="::gui::action::SSignal" />
+        <service uid="action_FrontalViewMPR3D" type="::gui::action::SSignal" />
+        <service uid="action_AxialViewMPR3D" type="::gui::action::SSignal" />
 
         <!-- Negato -->
 
@@ -291,6 +279,22 @@
         <connect channel="pickerChannel">
             <slot>landmarksEditor/addPickedPoint</slot>
         </connect>
+
+        <connect channel="setSagittalCameraChannel">
+            <signal>action_SagittalViewMPR3D/triggered</signal>
+        </connect>
+
+        <connect channel="setFrontalCameraChannel">
+            <signal>action_FrontalViewMPR3D/triggered</signal>
+        </connect>
+
+        <connect channel="setAxialCameraChannel">
+            <signal>action_AxialViewMPR3D/triggered</signal>
+        </connect>
+
+        <!-- Shared channels between 3DNegatoWithAcq and OrganManagerWithSeries -->
+        <connect channel="ModelDisplayChannel" />
+        <connect channel="ModelRepresentationChannel" />
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
