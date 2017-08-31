@@ -32,15 +32,12 @@ namespace helper
 /**
  * @brief   This class provides few methods to manage AppConfig (parsing, starting, stopping...).
  */
-class FWSERVICES_CLASS_API ConfigLauncher : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ConfigLauncher
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ConfigLauncher)(::fwCore::BaseObject),
-                                            (()),
-                                            std::make_shared< ConfigLauncher > );
-
+    typedef std::unique_ptr<ConfigLauncher> uptr;
     typedef ::fwServices::registry::FieldAdaptorType FieldAdaptorType;
 
     /// Constructor. Do nothing.
@@ -56,17 +53,15 @@ public:
      * @code{.xml}
        <service>
            <config>
-                <appConfig id="Visu2DID" >
-                    <parameters>
-                        <parameter replace="SERIESDB" by="medicalData"  />
-                        <parameter replace="IMAGE" by="@values.image"  />
-                    </parameters>
-                </appConfig>
+                <appConfig id="Visu2DID" />
+                <parameter replace="SERIESDB" by="medicalData" />
+                <parameter replace="IMAGE" by="@values.image" />
             </config>
        </service>
         @endcode
      */
-    FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config);
+    FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config,
+                                            const ::fwServices::IService::sptr &service);
 
     /**
      * @brief Launch Appconfig

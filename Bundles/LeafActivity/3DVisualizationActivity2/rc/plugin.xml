@@ -31,9 +31,9 @@
         <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
         <appConfig id="3DVisualization">
             <parameters>
-                <parameter replace="imageComposite" uid="@values.imageSeries" />
-                <parameter replace="modelSeries" uid="@values.modelSeries" />
-                <parameter replace="landmarks" uid="@values.landmarks" />
+                <parameter replace="imageComposite" by="@values.imageSeries" />
+                <parameter replace="modelSeries" by="@values.modelSeries" />
+                <parameter replace="landmarks" by="@values.landmarks" />
                 <parameter replace="orientation" by="frontal" />
             </parameters>
         </appConfig>

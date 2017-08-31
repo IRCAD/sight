@@ -130,7 +130,8 @@ void AppConfig2Test::parametersConfigTest()
 
 ::fwServices::AppConfigManager2::sptr AppConfig2Test::launchAppConfigMgr(
     const std::string& name,
-    const ::fwRuntime::ConfigurationElement::csptr& config)
+    const ::fwRuntime::ConfigurationElement::csptr& config,
+    bool autoPrefix)
 {
     const std::string configId(name);
     const std::string group("parametersGroup");
@@ -143,7 +144,7 @@ void AppConfig2Test::parametersConfigTest()
     currentAppConfig->addAppInfo(configId, group, desc, parameters, config, bundleId, bundleVersion);
 
     auto appConfigMgr = ::fwServices::AppConfigManager2::New();
-    appConfigMgr->setIsUnitTest(true);
+    appConfigMgr->setIsUnitTest(!autoPrefix);
 
     const ::fwServices::registry::FieldAdaptorType fields;
     appConfigMgr->setConfig( configId, fields );
@@ -1144,6 +1145,45 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
 
 //------------------------------------------------------------------------------
 
+void AppConfig2Test::parameterReplaceTest()
+{
+    ::fwRuntime::ConfigurationElement::csptr config = this->buildParameterReplaceConfig();
+    m_appConfigMgr                                  = this->launchAppConfigMgr("", config, true);
+
+    unsigned int i = 0;
+    fwTools::Object::sptr gnsrv1;
+
+    // Not really elegant, but we have to "guess" how it is replaced
+    while (gnsrv1 == nullptr && i++ < 200)
+    {
+        gnsrv1 = ::fwTools::fwID::getObject("AppConfig2Manager_" + std::to_string(i) + "_TestService2Uid");
+    }
+
+    auto srv1 = ::fwServices::ut::TestService::dynamicCast(gnsrv1);
+    CPPUNIT_ASSERT(srv1 != nullptr);
+
+    auto adaptedConfig = srv1->getConfiguration();
+
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
+    const std::vector< ConfigType > paramsCfg = adaptedConfig->find("parameter");
+
+    std::string replaceBy;
+
+    replaceBy = paramsCfg[0]->getAttributeValue("by");
+    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_" + std::to_string(i) + "_data2Id"), replaceBy);
+
+    replaceBy = paramsCfg[1]->getAttributeValue("by");
+    CPPUNIT_ASSERT_EQUAL(std::string("name"), replaceBy);
+
+    replaceBy = paramsCfg[2]->getAttributeValue("by");
+    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_" + std::to_string(i) + "_Channel No5"), replaceBy);
+
+    replaceBy = paramsCfg[3]->getAttributeValue("by");
+    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_" + std::to_string(i) + "_view1"), replaceBy);
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildParametersConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
@@ -1717,6 +1757,77 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildKeyGroupConfig()
 
     // Start method from object's services
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
+
+    return cfg;
+}
+
+//------------------------------------------------------------------------------
+
+fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildParameterReplaceConfig()
+{
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
+    objCfg->setAttributeValue( "uid", "data1Id");
+    objCfg->setAttributeValue( "type", "::fwData::String");
+
+    objCfg = cfg->addConfigurationElement("object");
+    objCfg->setAttributeValue( "uid", "data2Id");
+    objCfg->setAttributeValue( "type", "::fwData::Boolean");
+
+    objCfg = cfg->addConfigurationElement("object");
+    objCfg->setAttributeValue( "uid", "data3Id");
+    objCfg->setAttributeValue( "type", "::fwData::Image");
+
+    // Service #1
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
+    service1->setAttributeValue( "uid", "TestService1Uid" );
+    service1->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_1 = service1->addConfigurationElement("in");
+    dataService1_1->setAttributeValue( "key", "data1" );
+    dataService1_1->setAttributeValue( "uid", "data1Id" );
+    dataService1_1->setAttributeValue( "autoConnect", "yes" );
+
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > configService1 = service1->addConfigurationElement("view");
+    configService1->setAttributeValue( "wid", "view1" );
+
+    // Service #2
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
+    service2->setAttributeValue( "uid", "TestService2Uid" );
+    service2->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_1 =
+        service2->addConfigurationElement("parameter");
+    dataService2_1->setAttributeValue( "replace", "data2" );
+    dataService2_1->setAttributeValue( "by", "data2Id" );
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_2 =
+        service2->addConfigurationElement("parameter");
+    dataService2_2->setAttributeValue( "replace", "patient" );
+    dataService2_2->setAttributeValue( "by", "name" );
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_3 =
+        service2->addConfigurationElement("parameter");
+    dataService2_3->setAttributeValue( "replace", "channel1" );
+    dataService2_3->setAttributeValue( "by", "Channel No5" );
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_4 =
+        service2->addConfigurationElement("parameter");
+    dataService2_4->setAttributeValue( "replace", "WID_PARENT" );
+    dataService2_4->setAttributeValue( "by", "view1" );
+
+    // Connections
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
+    connect1->setAttributeValue( "channel", "disneyChannel" );
+    connect1->addConfigurationElement("signal")->setValue( "data1Id/modified" );
+    connect1->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
+
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect2 = cfg->addConfigurationElement("connect");
+    connect2->setAttributeValue( "channel", "Channel No5" );
+    connect2->addConfigurationElement("signal")->setValue( "data2Id/modified" );
+    connect2->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
+
+    // Start method from object's services
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,7 @@
 
 #include "gui/config.hpp"
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwServices/IService.hpp>
-
-#include <vector>
 
 namespace gui
 {
@@ -25,18 +17,20 @@ namespace action
 {
 
 /**
- * @brief   Simple Signal service
+ * @brief   Action that sends a signal when it is triggered
  *
- * Triggers a signal when the action is triggered.
- * If the action uses a confirmation, different signals are emitted depending on the confirmation result.
+ * @section Signals Signals
+ * - \b triggered(bool) : Emitted when the action is triggered, with the state of the action as parameter.
+ * - \b cancelled(bool) : Emitted when the user cancel the action, if confirmation has been set up in the configuration.
+ *
+ * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::gui::action::SSignal" />
+        <service type="::gui::action::SSignal" />
    @endcode
  *
- * See also ::fwGui::IActionSrv::configuring for more configuration parameters.
- * @see IActionSrv::configuring
- *
+ * See also ::fwGui::IActionSrv::initialize for more configuration parameters.
+ * @see IActionSrv::initialize
  */
 
 class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
@@ -44,16 +38,11 @@ class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
 
 public:
 
-    typedef std::vector< ::fwData::Object::sptr > ObjectVectorType;
-
-    fwCoreServiceClassDefinitionsMacro ( (SSignal)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SSignal)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
-    typedef ::fwCom::Signal< void (ObjectVectorType) > TrigerredSignalType;
-
-    /// Type of setObject slot
-    typedef ::fwCom::Slot< void ( ObjectVectorType ) >  SetObjectsSlotType;
+    typedef ::fwCom::Signal< void (bool) > TriggeredSignalType;
 
     /**
      * @brief Constructor. Do nothing.
@@ -67,49 +56,29 @@ public:
 
 protected:
 
-    /**
-     * @brief This method gives information about the class. Do nothing.
-     */
-    GUI_API virtual void info(std::ostream& _sstream );
+    /// Configures the service
+    GUI_API void configuring() override;
 
-    /**
-     * @brief This method emit a signal.
-     */
-    GUI_API void updating();
+    /// Register the action and check if the action is executable.
+    GUI_API virtual void starting() override;
 
-    /**
-     * @brief Configures the service
-     */
-    GUI_API void configuring();
+    /// Unregister the action.
+    GUI_API virtual void stopping() override;
 
-    GUI_API virtual void starting();
+    /// Emit the signal
+    GUI_API void updating() override;
 
-    GUI_API virtual void stopping();
+    /// Give information about the class. Do nothing.
+    GUI_API virtual void info(std::ostream& _sstream ) override;
 
-    /**
-     * @brief setObjects slot's method
-     */
-    virtual void setObjects( ObjectVectorType objects )
-    {
-        m_objects = objects;
-    }
-
-    ///Signal trigerred when action has been trigerred
-    SPTR(TrigerredSignalType) m_sigTriggered;
-    ///Signal trigerred when action has been cancelled
-    SPTR(TrigerredSignalType) m_sigCancelled;
-
-    /// setObject slot : save a vector of objects
-    SPTR(SetObjectsSlotType) m_slotSetObjects;
-
-    /// vector of objects passed to triggered signals
-    ObjectVectorType m_objects;
-
+    /// Signal trigerred when action has been triggered
+    SPTR(TriggeredSignalType) m_sigTriggered;
+    /// Signal trigerred when action has been cancelled
+    SPTR(TriggeredSignalType) m_sigCancelled;
 };
 
 } // namespace action
 } // namespace gui
-
 
 #endif /* __GUI_ACTION_SSIGNAL_HPP__ */
 

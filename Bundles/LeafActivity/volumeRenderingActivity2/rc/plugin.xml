@@ -28,8 +28,8 @@
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="VolumeRendering">
             <parameters>
-                <parameter replace="image" uid="@values.imageSeries.image" />
-                <parameter replace="optionalModelSeriesComposite" uid="@values.modelSeries" />
+                <parameter replace="image" by="@values.imageSeries.image" />
+                <parameter replace="optionalModelSeriesComposite" by="@values.modelSeries" />
             </parameters>
         </appConfig>
     </extension>

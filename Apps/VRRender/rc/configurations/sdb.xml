@@ -89,7 +89,7 @@
                 </config>
                 <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
                 <config id="ActivityCreatorConfig" type="::fwMedData::ActivitySeries">
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                 </config>
             </configs>
         </service>
@@ -97,7 +97,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -113,7 +113,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -128,7 +128,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -142,7 +142,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -173,7 +173,7 @@
                 <parameters>
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="VRRender" />
-                    <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
+                    <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>
@@ -188,7 +188,7 @@
                 <parameters>
                     <parameter replace="SERIESDB" by="${SERIESDB}"  />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                    <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
+                    <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>

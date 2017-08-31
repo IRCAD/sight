@@ -80,9 +80,9 @@
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="view_negato1" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
-            <parameter replace="PickingChannel" uid="pickerChannel" />
+            <parameter replace="WID_PARENT" by="view_negato1" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="axial" />
         </service>
 
@@ -90,9 +90,9 @@
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="view_negato2" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
-            <parameter replace="PickingChannel" uid="pickerChannel" />
+            <parameter replace="WID_PARENT" by="view_negato2" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="frontal" />
         </service>
 
@@ -100,9 +100,9 @@
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="view_negato3" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
-            <parameter replace="PickingChannel" uid="pickerChannel" />
+            <parameter replace="WID_PARENT" by="view_negato3" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="sagittal" />
         </service>
 

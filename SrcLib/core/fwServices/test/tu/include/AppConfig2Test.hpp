@@ -30,6 +30,7 @@ CPPUNIT_TEST( connectionTest );
 CPPUNIT_TEST( optionalKeyTest );
 CPPUNIT_TEST( keyGroupTest );
 CPPUNIT_TEST( concurentAccessToAppConfig2Test );
+CPPUNIT_TEST( parameterReplaceTest );
 CPPUNIT_TEST_SUITE_END();
 
 
@@ -45,6 +46,7 @@ public:
     void optionalKeyTest();
     void keyGroupTest();
     void concurentAccessToAppConfig2Test();
+    void parameterReplaceTest();
 
 private:
     ::fwRuntime::ConfigurationElement::sptr buildConfig();
@@ -54,10 +56,12 @@ private:
     ::fwRuntime::ConfigurationElement::sptr buildConnectionConfig();
     ::fwRuntime::ConfigurationElement::sptr buildOptionalKeyConfig();
     ::fwRuntime::ConfigurationElement::sptr buildKeyGroupConfig();
+    ::fwRuntime::ConfigurationElement::sptr buildParameterReplaceConfig();
 
 
     ::fwServices::AppConfigManager2::sptr launchAppConfigMgr(const std::string &name,
-                                                             const ::fwRuntime::ConfigurationElement::csptr& config);
+                                                             const ::fwRuntime::ConfigurationElement::csptr& config,
+                                                             bool autoPrefix = false);
 
     ::fwServices::AppConfigManager2::sptr m_appConfigMgr;
 };
