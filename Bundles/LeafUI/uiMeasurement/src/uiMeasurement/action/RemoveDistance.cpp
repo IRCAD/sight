@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,8 @@
 #include "uiMeasurement/action/RemoveDistance.hpp"
 
 #include <fwCore/base.hpp>
+
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
@@ -79,7 +81,7 @@ std::string distanceToStr(double dist)
         {
             ::fwData::PointList::sptr pl = ::fwData::PointList::dynamicCast(obj);
 
-            if ( pl->getPoints().size()!=2 )
+            if ( pl->getPoints().size() != 2 )
             {
                 continue;
             }                                              // we skip no paired pointList
@@ -107,7 +109,7 @@ std::string distanceToStr(double dist)
             std::string selection = selector->show();
             if( !selection.empty() )
             {
-                if (selection=="ALL")
+                if (selection == "ALL")
                 {
                     removeAll = true;
                 }
@@ -124,7 +126,8 @@ std::string distanceToStr(double dist)
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance)
+void RemoveDistance::notifyDeleteDistance(const ::fwData::Image::csptr& image,
+                                          const ::fwData::PointList::csptr& distance) const
 {
     auto sig = image->signal< ::fwData::Image::DistanceRemovedSignalType >(::fwData::Image::s_DISTANCE_REMOVED_SIG);
     sig->asyncEmit(distance);
@@ -132,7 +135,8 @@ void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData:
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance)
+void RemoveDistance::notifyNewDistance(const ::fwData::Image::csptr& image,
+                                       const ::fwData::PointList::sptr& distance) const
 {
     auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
     sig->asyncEmit(distance);
@@ -156,7 +160,7 @@ void RemoveDistance::updating( )
         // perform action only available distance
         if ( distToRemove )
         {
-            SLM_ASSERT("No Field ImageDistancesId",vectDist);
+            SLM_ASSERT("No Field ImageDistancesId", vectDist);
             ::fwData::Vector::IteratorType newEnd = std::remove(vectDist->begin(), vectDist->end(), distToRemove);
             vectDist->getContainer().erase(newEnd, vectDist->end());
 

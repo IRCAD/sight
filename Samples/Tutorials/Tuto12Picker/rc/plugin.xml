@@ -1,9 +1,7 @@
 <plugin id="Tuto12Picker" version="@DASH_VERSION@">
-
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-
     <extension implements="::fwServices::registry::AppConfig2">
         <id>Tuto12Picker</id>
         <config>
@@ -11,7 +9,6 @@
             <object uid="mesh" type="::fwData::Mesh" />
             <object uid="image" type="::fwData::Image" />
             <!-- ***************************************** End Objects declaration ******************************************* -->
-
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
             <service uid="MyIHM" type="::gui::frame::SDefaultFrame">
                 <gui>
@@ -20,7 +17,7 @@
                         <icon>@BUNDLE_PREFIX@/Tuto12Picker_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <menuBar />
+                    <menuBar/>
                 </gui>
                 <registry>
                     <menuBar sid="myMenuBar" start="yes" />
@@ -44,7 +41,7 @@
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -54,6 +51,7 @@
                     <menuItem sid="action_quit" start="yes" />
                 </registry>
             </service>
+
             <service uid="mainView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -98,10 +96,9 @@
                     <view sid="snapshotScene1Editor" start="yes" />
                 </registry>
             </service>
+
             <!-- ***************************************** End layouts declaration ***************************************** -->
-
-            <!-- ***************************************** Begin services declarations  ************************************ -->
-
+            <!-- ***************************************** Begin services declarations    ************************************ -->
             <service uid="action_openImage" type="::gui::action::SStarter">
                 <start uid="imageReader" />
             </service>
@@ -111,9 +108,7 @@
             </service>
 
             <service uid="action_quit" type="::gui::action::SQuit" />
-
             <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor" />
-
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
@@ -126,14 +121,12 @@
             </service>
 
             <service uid="pointView" type="::uiVisuQt::PointEditor" autoConnect="yes" />
-
             <service uid="meshReader" type="::uiIO::editor::SIOSelector">
                 <in key="target" uid="mesh" />
                 <type mode="reader" />
                 <selection mode="exclude" />
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
-
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector">
                 <in key="image" uid="image" />
@@ -143,7 +136,7 @@
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
                 <inout key="image" uid="image" />
             </service>
 
@@ -161,71 +154,69 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="meshID" uid="mesh" />
-                <inout key="imageID" uid="image" />
                 <scene>
                     <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="meshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="meshID">
-                        <config renderer="default" picker="" />
-                    </adaptor>
-
-                    <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="imageID">
-                        <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
-                    </adaptor>
-                    <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="pickerInteractor" uid="pickerInteractorUID" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
-                        <config renderer="default" picker="myPicker" />
-                    </adaptor>
-
-                    <proxy channel="snapChannel">
-                        <slot>snapshotUID/snap</slot>
-                    </proxy>
-
-                    <proxy channel="showSliceChannel">
-                        <slot>MPRNegatoScene3D/showSlice</slot>
-                    </proxy>
-
-                    <proxy channel="sliceModeChannel">
-                        <slot>MPRNegatoScene3D/updateSliceMode</slot>
-                    </proxy>
-
-                    <proxy channel="pickerChannel">
-                        <signal>pickerInteractorUID/picked</signal>
-                    </proxy>
-
+                    <adaptor uid="meshAdaptor" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="snapshot1" />
+                    <adaptor uid="pickerInteractor" />
                 </scene>
             </service>
+
+            <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="mesh" />
+                <config renderer="default" picker="myPicker" />
+            </service>
+
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+            </service>
+
+            <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <service uid="pickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+                <config renderer="default" picker="myPicker" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
             <!-- ***************************************** End render scenes declaration ***************************************** -->
-
-            <!-- ***************************************** End services declarations  ************************************************ -->
-
-            <connect channel="snapChannel">
+            <!-- ***************************************** End services declarations    ************************************************ -->
+            <connect>
                 <signal>snapshotScene1Editor/snapped</signal>
+                <slot>snapshot1/snap</slot>
             </connect>
 
-            <connect channel="showSliceChannel">
+            <connect>
                 <signal>showScanEditor/toggled</signal>
+                <slot>MPRNegato3D/showSlice</slot>
             </connect>
 
-            <connect channel="sliceModeChannel">
+            <connect>
                 <signal>sliceListEditor/selected</signal>
+                <slot>MPRNegato3D/updateSliceMode</slot>
             </connect>
 
-            <connect channel="pickerChannel">
+            <connect>
+                <signal>pickerInteractor/picked</signal>
                 <slot>pointView/getInteraction</slot>
             </connect>
 
             <start uid="MyIHM" />
             <start uid="medicalImageConverter" />
-
+            <!-- VTK scene 'genericScene' -->
+            <start uid="meshAdaptor" />
+            <start uid="MPRNegato3D" />
+            <start uid="snapshot1" />
+            <start uid="pickerInteractor" />
         </config>
     </extension>
 </plugin>

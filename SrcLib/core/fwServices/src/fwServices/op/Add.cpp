@@ -1,36 +1,55 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vector>
-#include <boost/lexical_cast.hpp>
+#include "fwServices/op/Add.hpp"
+
+#include "fwServices/IService.hpp"
+#include "fwServices/macros.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
 
 #include <fwTools/fwID.hpp>
 
-#include "fwServices/macros.hpp"
-#include "fwServices/IService.hpp"
-#include "fwServices/op/Add.hpp"
-#include "fwServices/registry/ServiceFactory.hpp"
+#include <boost/lexical_cast.hpp>
+
+#include <vector>
 
 namespace fwServices
 {
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr add( ::fwData::Object::sptr obj,
-                                  std::string serviceType,
-                                  std::string _implementationId,
-                                  std::string uid)
+::fwServices::IService::sptr add( ::fwData::Object::sptr _obj,
+                                  const std::string& _serviceType,
+                                  const std::string& _implType,
+                                  const std::string& _uid)
 {
     ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( serviceType, _implementationId );
-    ::fwServices::OSR::registerService( obj, srv );
-    if(!uid.empty())
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( _serviceType, _implType );
+    FW_RAISE_IF("Failed to add " + _implType, !srv );
+    ::fwServices::OSR::registerService( _obj, srv );
+    if(!_uid.empty())
     {
-        OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
-        srv->setID( uid );
+        SLM_ASSERT( "Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID() );
+        srv->setID( _uid );
+    }
+    return srv;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::sptr add( const std::string& _implType, const std::string& _uid)
+{
+    ::fwServices::IService::sptr srv;
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( _implType );
+    ::fwServices::OSR::registerService( srv );
+    FW_RAISE_IF("Failed to add " + _implType, !srv );
+    if(!_uid.empty())
+    {
+        SLM_ASSERT( "Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID() );
+        srv->setID( _uid );
     }
     return srv;
 }

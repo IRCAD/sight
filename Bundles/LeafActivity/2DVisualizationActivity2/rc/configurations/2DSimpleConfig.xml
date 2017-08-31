@@ -9,7 +9,6 @@
     <config>
         <object uid="${objectID}" type="::fwMedData::ImageSeries" src="ref" />
         <object uid="${imageID}" type="::fwData::Image" src="ref" />
-
         <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -24,36 +23,54 @@
             </registry>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="imageSeries" uid="${objectID}" />
-            <in key="image" uid="${imageID}" />
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="imageText" class="::visuVTKAdaptor::ImageText" objectId="image">
-                    <config renderer="default" picker="picker" text="" color="#FFFFFF" />
-                </adaptor>
-                <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::ImageSeries" objectId="imageSeries">
-                    <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
-                </adaptor>
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageSeries">
-                    <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-                <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="image">
-                    <config renderer="default">
-                        <locations>default</locations>
-                        <initialOrientation>${orientation}</initialOrientation>
-                    </config>
-                </adaptor>
+
+                <adaptor uid="interactor4Negato" />
+                <adaptor uid="imageText" />
+                <adaptor uid="seriesAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="imageSliceOrientationText" />
             </scene>
         </service>
+
+        <service uid="interactor4Negato" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="imageText" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+            <inout key="image" uid="${imageID}" />
+            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+        </service>
+
+        <service uid="seriesAdaptor" type="::visuVTKAdaptor::SImageSeries" autoConnect="yes">
+            <inout key="imageSeries" uid="${objectID}" />
+            <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${objectID}" />
+            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <service uid="imageSliceOrientationText" type="::visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
+            <in key="image" uid="${imageID}" />
+            <config renderer="default">
+                <locations>default</locations>
+                <initialOrientation>${orientation}</initialOrientation>
+            </config>
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
             <in key="image" uid="${imageID}" />
         </service>
+
         <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
@@ -65,6 +82,12 @@
         <start uid="imageDumpLocker" />
         <start uid="medicalImgConverter" />
         <start uid="mainview" />
+
+        <!-- gs adaptors -->
+        <start uid="interactor4Negato" />
+        <start uid="imageText" />
+        <start uid="seriesAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="imageSliceOrientationText" />
     </config>
 </extension>
-

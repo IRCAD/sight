@@ -44,11 +44,11 @@ public:
     // Standard vtk methods
     vtkTypeMacro(fwHandleRepresentation3D,
                  vtkPolygonalHandleRepresentation3D);
-    FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent);
+    FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent) override;
 
     // Description:
     // Set the position of the point in world and display coordinates.
-    FWRENDERVTK_API virtual void SetWorldPosition(double p[3]);
+    FWRENDERVTK_API virtual void SetWorldPosition(double p[3]) override;
 
     // Description:
     // Set/Get the radius factor of the marker (must be > 1 to be visible)
@@ -69,22 +69,22 @@ public:
     // For some exporters and other other operations we must be
     // able to collect all the actors or volumes. These methods
     // are used in that process.
-    FWRENDERVTK_API virtual void GetActors(vtkPropCollection*);
+    FWRENDERVTK_API virtual void GetActors(vtkPropCollection*) override;
 
     // Description:
     // Release any graphics resources that are being consumed by this actor.
     // The parameter window could be used to determine which graphic
     // resources to release.
-    FWRENDERVTK_API virtual void ReleaseGraphicsResources(vtkWindow*);
+    FWRENDERVTK_API virtual void ReleaseGraphicsResources(vtkWindow*) override;
 
     // Description:
     // Support the standard render methods.
-    FWRENDERVTK_API virtual int RenderOpaqueGeometry(vtkViewport* viewport);
-    FWRENDERVTK_API virtual int RenderTranslucentPolygonalGeometry(vtkViewport* viewport);
+    FWRENDERVTK_API virtual int RenderOpaqueGeometry(vtkViewport* viewport) override;
+    FWRENDERVTK_API virtual int RenderTranslucentPolygonalGeometry(vtkViewport* viewport) override;
 
     // Description:
     // Does this prop have some translucent polygonal geometry?
-    FWRENDERVTK_API virtual int HasTranslucentPolygonalGeometry();
+    FWRENDERVTK_API virtual int HasTranslucentPolygonalGeometry() override;
 
 protected:
     fwHandleRepresentation3D();
@@ -92,7 +92,7 @@ protected:
 
     // Description:
     // Recomputes the handle world size based on the set display size.
-    virtual void BuildRepresentation();
+    virtual void BuildRepresentation() override;
 
     // Create default properties for markers
     void CreateDefaultProperties();

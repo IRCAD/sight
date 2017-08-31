@@ -26,7 +26,6 @@ namespace fwServices
 {
 
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
 
 namespace OSR
 {
@@ -83,6 +82,13 @@ bool has( ::fwData::Object::sptr obj, const std::string& srvType)
 
 //------------------------------------------------------------------------------
 
+void registerService( ::fwServices::IService::sptr service )
+{
+    ::fwServices::OSR::get()->registerService(service);
+}
+
+//------------------------------------------------------------------------------
+
 void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerService(obj, service);
@@ -94,6 +100,14 @@ void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::
                       ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerService(obj, objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
+void registerServiceInput( ::fwData::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
+                           ::fwServices::IService::sptr service )
+{
+    ::fwServices::OSR::get()->registerServiceInput(obj, objKey, service);
 }
 
 //------------------------------------------------------------------------------
@@ -167,24 +181,32 @@ ObjectService::ObjectService()
 std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
-    ::fwCore::LogicStamp::LogicStampType previousKey = ~0ul;
+    ::fwData::Object::csptr previousObj;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
     for( const ServiceContainerType::left_map::value_type& objSrvMap :  m_container.left)
     {
         // TODO FIXME getObject() fail if there are expired object in OSR
-        ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
+        ::fwData::Object::csptr obj = objSrvMap.first.lock();
 
-        if ( previousKey != key )
+        if ( previousObj != obj )
         {
-            info << "Object ( key = "<<key<<" ) has "
-                 << m_container.left.count(key) <<" services." << std::endl;
-            previousKey = key;
+            info << "Object ( id = "<<obj->getID()<<" ) has "
+                 << m_container.left.count(obj) <<" services." << std::endl;
+            previousObj = obj;
         }
         ::fwServices::IService::sptr service = objSrvMap.second;
         info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname()
              <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
     }
     return info.str();
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::registerService( ::fwServices::IService::sptr service )
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    m_container.insert( ServiceContainerType::value_type( ::fwData::Object::wptr(), service ) );
 }
 
 //------------------------------------------------------------------------------
@@ -207,6 +229,17 @@ void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwSe
 
 //------------------------------------------------------------------------------
 
+void ObjectService::registerServiceInput( const ::fwData::Object::csptr& object,
+                                          const ::fwServices::IService::KeyType& objKey,
+                                          const ::fwServices::IService::sptr& service)
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    this->internalRegisterServiceInput(object, service, objKey);
+
+}
+
+//------------------------------------------------------------------------------
+
 void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                           ::fwServices::IService::sptr service)
 {
@@ -221,7 +254,7 @@ void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IS
 {
     ::fwCore::mt::WriteLock lock(m_containerMutex);
     OSLM_ASSERT("Object "<< service->getObject()->getID()<<" is not registered in OSR",
-                m_container.left.find(service->getObject()->getOSRKey()->getLogicStamp()) != m_container.left.end());
+                m_container.left.find(service->getObject()) != m_container.left.end());
 
     OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
                 m_container.right.find(service) != m_container.right.end());
@@ -237,7 +270,7 @@ void ObjectService::unregisterService( ::fwServices::IService::sptr service )
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
 
-    SLM_ASSERT( "The service ( " + service->getID() + " ) must be stop before being unregistered.",
+    SLM_ASSERT( "The service ( " + service->getID() + " ) must be stopped before being unregistered.",
                 service->isStopped() );
 
     this->removeFromContainer( service );
@@ -273,7 +306,7 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
 
     // Remove from the left part
     {
-        auto range = m_container.left.equal_range(obj.lock()->getOSRKey()->getLogicStamp());
+        auto range = m_container.left.equal_range(obj);
         for(auto it = range.first; it != range.second; )
         {
             if(it->second == service)
@@ -292,7 +325,7 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
         auto range = m_container.right.equal_range(service);
         for(auto it = range.first; it != range.second; )
         {
-            if(it->second == obj.lock()->getOSRKey()->getLogicStamp())
+            if(it->second.lock() == obj.lock())
             {
                 it = m_container.right.erase(it);
             }
@@ -396,7 +429,21 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
             service->m_outputsMap[objKey] = object;
         }
     }
-    m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
+    m_container.insert( ServiceContainerType::value_type( object, service ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::internalRegisterServiceInput(const fwData::Object::csptr& object, const IService::sptr& service,
+                                                 const ::fwServices::IService::KeyType& objKey)
+{
+    SLM_ASSERT("Can't register a null service in OSR.", service);
+    SLM_ASSERT("Can't register a null object in OSR.", object);
+    SLM_ASSERT("Can't register an input object without key.", !objKey.empty());
+
+    service->m_inputsMap[objKey] = object;
+
+    m_container.insert( ServiceContainerType::value_type( object, service ) );
 }
 
 //------------------------------------------------------------------------------
@@ -469,13 +516,12 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 {
     ServiceVectorType services;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
-    if(m_container.left.find(obj->getOSRKey()->getLogicStamp()) != m_container.left.end())
+
+    ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(obj);
+    if(firstElement != m_container.left.end())
     {
-        ServiceContainerType::left_map::const_iterator iter;
-        ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
-        ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(key);
-        ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
-        for (iter = firstElement; iter != lastElement; ++iter)
+        ServiceContainerType::left_map::const_iterator lastElement = m_container.left.upper_bound(obj);
+        for (auto iter = firstElement; iter != lastElement; ++iter)
         {
             services.insert( iter->second );
         }
@@ -489,13 +535,11 @@ bool ObjectService::has( ::fwData::Object::sptr obj, const std::string& srvType)
 {
     bool hasServices = false;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
-    if( m_container.left.find(obj->getOSRKey()->getLogicStamp()) != m_container.left.end())
+    ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(obj);
+    if( firstElement != m_container.left.end())
     {
-        ServiceContainerType::left_map::const_iterator iter;
-        ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
-        ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(key);
-        ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
-        for (iter = firstElement; iter != lastElement; ++iter)
+        ServiceContainerType::left_map::const_iterator lastElement = m_container.left.upper_bound(obj);
+        for (auto iter = firstElement; iter != lastElement; ++iter)
         {
             if( iter->second->isA(srvType))
             {
@@ -505,14 +549,6 @@ bool ObjectService::has( ::fwData::Object::sptr obj, const std::string& srvType)
         }
     }
     return hasServices;
-}
-
-//------------------------------------------------------------------------------
-
-bool ObjectService::hasKey( ::fwCore::LogicStamp::csptr key ) const
-{
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
-    return (m_container.left.find(key->getLogicStamp()) != m_container.left.end());
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,9 @@
 
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+
 #include <fwData/String.hpp>
+
 #include <fwTest/helper/Thread.hpp>
 
 #include <functional>
@@ -20,6 +22,8 @@ namespace fwServices
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ServiceConfigTest::setUp()
 {
@@ -42,7 +46,7 @@ void ServiceConfigTest::serviceConfigTest()
 
     const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const std::string service("::fwServices::ut::TestService");
-    const std::string desc("Descritpion of config");
+    const std::string desc("Description of config");
     ::fwRuntime::ConfigurationElement::csptr config = this->buildConfig();
 
     currentServiceConfig->addServiceConfigInfo( configId, service, desc, config );
@@ -63,7 +67,7 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 {
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i = 0; i<nbThreads; ++i)
+    for (int i = 0; i < nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
@@ -71,7 +75,7 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
         threads.push_back(thread);
     }
 
-    for (int i = 0; i<nbThreads; ++i)
+    for (int i = 0; i < nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
@@ -90,14 +94,13 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 
 ::fwRuntime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg ( new ::fwRuntime::EConfigurationElement(
-                                                                           "config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg( new ::fwRuntime::EConfigurationElement(
+                                                                          "config"));
     serviceCfg->setAttributeValue( "uid", "serviceUUID");
     serviceCfg->setAttributeValue( "type", "serviceType");
 
     ::fwRuntime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
     cfg->setValue("Parameter");
-
 
     return serviceCfg;
 }

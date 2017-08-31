@@ -125,6 +125,36 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
     return m_associatedObject.lock();
 }
 
+//------------------------------------------------------------------------------
+
+void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect)
+{
+    ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INPUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    m_serviceConfig.m_objects.push_back(objConfig);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect)
+{
+    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INOUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    m_serviceConfig.m_objects.push_back(objConfig);
+}
+
 //-----------------------------------------------------------------------------
 
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
@@ -204,19 +234,23 @@ IService::ConfigType IService::getConfigTree() const
     return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
 }
 
-////-----------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------------
 
 void IService::configure()
 {
-    //SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
     if( m_configurationState == UNCONFIGURED )
     {
         m_configurationState = CONFIGURING;
         if( m_globalState == STOPPED )
         {
-            this->configuring();
+            try
+            {
+                this->configuring();
+            }
+            catch (std::exception& e)
+            {
+                SLM_FATAL("Error while configuring service '" + this->getID() + "' : " + e.what());
+            }
         }
         else if( m_globalState == STARTED )
         {
@@ -312,10 +346,10 @@ IService::SharedFutureType IService::update()
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_ASSERT(
-            "INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->className(),
+            "INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->getClassname(),
             m_globalState == STARTED );
         OSLM_ASSERT(
-            "INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->className(),
+            "INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->getClassname(),
             m_updatingState == NOTUPDATING );
 
         PackagedTaskType task( ::boost::bind(&IService::updating, this) );

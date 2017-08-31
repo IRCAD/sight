@@ -7,8 +7,8 @@
 #ifndef __CTRLSELECTION_WRAPPER_SIMAGESIGNALFORWARDER_HPP__
 #define __CTRLSELECTION_WRAPPER_SIMAGESIGNALFORWARDER_HPP__
 
-#include "ctrlSelection/IWrapperSrv.hpp"
 #include "ctrlSelection/config.hpp"
+#include "ctrlSelection/IWrapperSrv.hpp"
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -89,7 +89,7 @@ private:
     void forwardLandmarkRemoved(SPTR(::fwData::Point) point);
     void forwardLandmarkDisplayed(bool display);
     void forwardDistanceAdded(SPTR(::fwData::PointList) pointList);
-    void forwardDistanceRemoved(SPTR(::fwData::PointList) pointList);
+    void forwardDistanceRemoved(CSPTR(::fwData::PointList) pointList);
     void forwardDistanceDisplayed(bool display);
     void forwardSliceIndexModified(int axial, int frontal, int sagittal);
     void forwardSliceTypeModified(int from, int to);

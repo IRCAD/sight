@@ -94,6 +94,9 @@ private:
     void refresh();
     void notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
 
+    /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
+    void addMeshTransform();
+
     // ReconstructionMapType
     typedef ::std::map< ::std::string, ::fwData::Reconstruction::sptr > ReconstructionMapType;
     typedef ::std::map< ::std::string, ::fwData::TransformationMatrix3D::sptr> InnerMatMappingType;

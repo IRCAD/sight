@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwCore/TimeStamp.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -37,6 +39,8 @@ namespace fwServices
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ServiceTest::setUp()
 {
@@ -225,14 +229,20 @@ struct TestServiceSignals : public ::fwCom::HasSlots
         m_slots.setWorker(m_worker);
     }
 
+    //------------------------------------------------------------------------------
+
     void start()
     {
         m_started = true;
     }
+    //------------------------------------------------------------------------------
+
     void update()
     {
         m_updated = true;
     }
+    //------------------------------------------------------------------------------
+
     void stop()
     {
         m_stopped = true;
@@ -254,6 +264,8 @@ struct TestServiceSignals : public ::fwCom::HasSlots
     { \
         std::this_thread::sleep_for( std::chrono::milliseconds(10)); \
     }
+
+//------------------------------------------------------------------------------
 
 void ServiceTest::testCommunication()
 {
@@ -366,61 +378,6 @@ void ServiceTest::testCommunication()
     ::fwServices::OSR::unregisterService(service2);
 
     activeWorkers->clearRegistry();
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr< ::fwRuntime::EConfigurationElement > ServiceTest::buildServiceConfig()
-{
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service"));
-    cfg->setAttributeValue( "uid", "myTestService" );
-    cfg->setAttributeValue( "type", "::fwServices::ut::TestService" );
-    cfg->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
-    cfg->setAttributeValue( "autoConnect", "no" );
-
-    return cfg;
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr< ::fwRuntime::ConfigurationElement > ServiceTest::buildObjectConfig()
-{
-    // Configuration on fwTools::Object which uid is objectUUID
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
-    cfg->setAttributeValue( "uid", "objectUUID");
-    cfg->setAttributeValue( "type", "::fwData::Composite");
-
-    // Object's service A
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
-    serviceA->setAttributeValue( "uid", "myTestService1" );
-    serviceA->setAttributeValue( "type", "::fwServices::ut::TestService" );
-    serviceA->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
-    serviceA->setAttributeValue( "autoConnect", "no" );
-
-    // Object's service B
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
-    serviceB->setAttributeValue( "uid", "myTestService2" );
-    serviceB->setAttributeValue( "type", "::fwServices::ut::TestService" );
-    serviceB->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
-    serviceB->setAttributeValue( "autoConnect", "no" );
-
-    // Start method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
-    startA->setAttributeValue( "uid", "myTestService1" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
-    startB->setAttributeValue( "uid", "myTestService2" );
-
-    // Update method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
-    updateA->setAttributeValue( "uid", "myTestService1" );
-
-    // Stop method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > stopA = cfg->addConfigurationElement("stop");
-    stopA->setAttributeValue( "uid", "myTestService1" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > stopB = cfg->addConfigurationElement("stop");
-    stopB->setAttributeValue( "uid", "myTestService2" );
-
-    return cfg;
 }
 
 //------------------------------------------------------------------------------

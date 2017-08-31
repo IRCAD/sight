@@ -1,23 +1,20 @@
-<plugin id="TutoVectorField" version="@DASH_VERSION@" >
-
+<plugin id="TutoVectorField" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-
     <extension implements="::fwServices::registry::AppConfig2">
         <id>TutoVectorField</id>
         <config>
-        <!-- ***************************************** Begin Objects declaration ***************************************** -->
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
             <object uid="image" type="::fwData::Image" />
-<!-- ***************************************** End Objects declaration ******************************************* -->
-
-<!-- ***************************************** Begin layouts declaration ***************************************** -->
-            <service uid="IHM" type="::gui::frame::SDefaultFrame" >
+            <!-- ***************************************** End Objects declaration ******************************************* -->
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>TutoVectorField</name>
                     </frame>
-                    <menuBar />
+                    <menuBar/>
                 </gui>
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
@@ -25,7 +22,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -36,12 +33,12 @@
                 </registry>
             </service>
 
-            <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open file" shortcut="Ctrl+O" />
                         <menuItem name="Save file" shortcut="Ctrl+S" />
-                        <separator />
+                        <separator/>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -52,17 +49,16 @@
                 </registry>
             </service>
 
-            <service uid="actionOpenFile" type="::gui::action::SStarter" >
+            <service uid="actionOpenFile" type="::gui::action::SStarter">
                 <start uid="readerPathFile" />
             </service>
 
-            <service uid="actionSaveFile" type="::gui::action::SStarter" >
+            <service uid="actionSaveFile" type="::gui::action::SStarter">
                 <start uid="writerPathFile" />
             </service>
 
-            <service uid="actionQuit" type="::gui::action::SQuit"  />
-
-            <service uid="multiViewScene1" type="::gui::view::SDefaultView" >
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="multiViewScene1" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -75,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="multiViewScene1Bottom" type="::gui::view::SDefaultView" >
+            <service uid="multiViewScene1Bottom" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -92,20 +88,19 @@
                     <view sid="snapshotScene1Editor" start="yes" />
                 </registry>
             </service>
+
             <!-- ***************************************** End layouts declaration ***************************************** -->
-
-<!-- ***************************************** Begin services declarations  ************************************ -->
-
-            <service uid="readerPathFile" type="::uiIO::editor::SIOSelector" >
+            <!-- ***************************************** Begin services declarations    ************************************ -->
+            <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
                 <in key="image" uid="image" />
                 <type mode="reader" />
             </service>
 
-            <service uid="writerPathFile" type="::uiIO::editor::SIOSelector" >
+            <service uid="writerPathFile" type="::uiIO::editor::SIOSelector">
                 <type mode="writer" />
             </service>
 
-            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton" >
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
                 <toolTip>Manage slice visibility</toolTip>
                 <selected>3</selected>
                 <items>
@@ -114,7 +109,7 @@
                 </items>
             </service>
 
-            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton" >
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
                     <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
@@ -133,47 +128,40 @@
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
-                <inout key="image" uid="image"/>
+            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+                <inout key="image" uid="image" />
             </service>
 
-<!-- ***************************************** Begin render scenes declarations  ***************************************** -->
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
 
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <inout key="image" uid="image" optional="yes" />
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
-
                     <renderer id="default" background="0.5" />
-
-                    <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                        <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
-                    </adaptor>
-
-                    <adaptor uid="vectorFieldAdatpor" id="vectorFieldAdatporId" class="::visuVTKAdaptor::VectorField" objectId="image">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
-                    <proxy channel="snap">
-                        <slot>snapshotUID/snap</slot>
-                    </proxy>
-
-                    <proxy channel="scanEditor">
-                        <slot>MPRNegatoScene3D/showSlice</slot>
-                    </proxy>
-
-                    <proxy channel="sliceListEditor">
-                        <slot>MPRNegatoScene3D/updateSliceMode</slot>
-                    </proxy>
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="vectorFieldAdatporId" />
+                    <adaptor uid="snapshot" />
                 </scene>
             </service>
 
-            <!-- ***************************************** Begin connections declarations  *************************************** -->
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+            </service>
 
+            <service uid="vectorFieldAdatporId" type="::visuVTKAdaptor::SVectorField" autoConnect="yes">
+                <in key="image" uid="image" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- ***************************************** Begin connections declarations    *************************************** -->
             <connect>
                 <signal>showScanEditor/toggled</signal>
                 <slot>sliceListEditor/setEnabled</slot>
@@ -191,10 +179,25 @@
                 <signal>sliceListEditor/selected</signal>
             </connect>
 
-            <!-- ***************************************** End connections declarations  ***************************************** -->
+            <!-- ***************************************** End connections declarations    ***************************************** -->
+            <connect channel="snap">
+                <slot>snapshot/snap</slot>
+            </connect>
+
+            <connect channel="scanEditor">
+                <slot>MPRNegato3D/showSlice</slot>
+            </connect>
+
+            <connect channel="sliceListEditor">
+                <slot>MPRNegato3D/updateSliceMode</slot>
+            </connect>
 
             <start uid="IHM" />
 
+            <!--  genericScene adaptors -->
+            <start uid="MPRNegato3D" />
+            <start uid="vectorFieldAdatporId" />
+            <start uid="snapshot" />
         </config>
     </extension>
 </plugin>

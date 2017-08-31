@@ -18,7 +18,6 @@
         <object uid="${imageComposite}" type="::fwData::Composite" src="ref" />
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::fwData::Image" src="deferred" />
-
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -54,7 +53,7 @@
 
         <service uid="snapshotNegatoEditor" type="::uiVisuQt::SnapshotEditor" />
 
-        <service uid="extractImage" type="::gui::action::SPushObject" >
+        <service uid="extractImage" type="::gui::action::SPushObject">
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
             <push srcKey="OptionalInputImageKey" />
@@ -70,96 +69,83 @@
         </service>
 
         <service uid="distanceNegatoEditor" type="::uiMeasurementQt::editor::Distance">
-            <in key="imageKey" uid="optionalInputImage" />
+            <inout key="image" uid="optionalInputImage" />
             <placeInScene uid="negato" />
         </service>
 
         <!-- Generic Scene Negato -->
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="modelSeriesKey" uid="${modelSeries}" />
-            <in key="imageKey" uid="optionalInputImage" optional="yes" />
-            <in key="landmarksKey" uid="${landmarks}" optional="yes" />
             <scene>
-
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
                 <renderer id="default" background="0.0" />
 
-                <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                    <config renderer="default" />
-                </adaptor>
-
-                <adaptor id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
-                    <config renderer="default" hAlign="right" />
-                </adaptor>
-
-                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle3DForNegato" />
-                </adaptor>
-
-                <adaptor id="pickerInteractor" uid="pickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
-                    <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP"/>
-                </adaptor>
-
-                <adaptor id="medicalCamera" uid="${Medical3DCamera}" class="::visuVTKAdaptor::Medical3DCamera" objectId="self">
-                    <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
-                </adaptor>
-
-                <adaptor uid="MPRNegato" id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" slices="3" sliceIndex="${orientation}" />
-                </adaptor>
-
-                <adaptor id="modelSeries" uid="modelSeries" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
-                    <config renderer="default" picker="negatodefault" autoresetcamera="yes" />
-                </adaptor>
-
-                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" text="" />
-                </adaptor>
-
-                <adaptor id="multiDistances" uid="multiDistancesUID" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
-                    <config filter="true" renderer="default" picker="negatodefault" />
-                </adaptor>
-
-                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::SLandmarks" objectId="landmarksKey">
-                    <config renderer="default" picker="negatodefault" />
-                </adaptor>
-
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeriesKey">
-                    <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-
-                <proxy channel="${ModelRepresentationChannel}" waitForKey="modelSeriesKey">
-                    <slot>modelSeries/updateNormalMode</slot>
-                </proxy>
-                <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeriesKey">
-                    <slot>modelSeries/showReconstructions</slot>
-                </proxy>
-
-                <proxy channel="${PickingChannel}" >
-                    <signal>pickerInteractor/picked</signal>
-                </proxy>
-
-                <connect>
-                    <signal>snapshotNegatoEditor/snapped</signal>
-                    <slot>snapshotUID/snap</slot>
-                </connect>
-
-                <connect waitForKey="imageKey">
-                    <signal>distanceNegatoEditor/distanceRequested</signal>
-                    <slot>multiDistancesUID/createDistance</slot>
-                </connect>
-
-                <proxy channel="slice_mode" waitForKey="imageKey">
-                    <slot>MPRNegato/updateSliceMode</slot>
-                </proxy>
-
-                <proxy channel="${CrossTypeChannel}" waitForKey="imageKey">
-                    <slot>MPRNegato/setCrossScale</slot>
-                </proxy>
-
+                <adaptor uid="snapshot" />
+                <adaptor uid="orientationMarker" />
+                <adaptor uid="interactor" />
+                <adaptor uid="pickerInteractor" />
+                <adaptor uid="${Medical3DCamera}" />
+                <adaptor uid="MPRNegato" />
+                <adaptor uid="modelSeries" />
+                <adaptor uid="text" />
+                <adaptor uid="multiDistances" />
+                <adaptor uid="landmarksNegato" />
+                <adaptor uid="nameAdaptor" />
             </scene>
         </service>
+
+        <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+            <config renderer="default" />
+        </service>
+
+        <service uid="orientationMarker" type="::visuVTKAdaptor::SOrientationMarker">
+            <config renderer="default" hAlign="right" />
+        </service>
+
+        <service uid="interactor" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle3DForNegato" />
+        </service>
+
+        <service uid="pickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP" />
+        </service>
+
+        <service uid="${Medical3DCamera}" type="::visuVTKAdaptor::SMedical3DCamera">
+            <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
+        </service>
+
+        <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="optionalInputImage" />
+            <config renderer="default" picker="negatodefault" slices="3" sliceIndex="${orientation}" />
+        </service>
+
+        <service uid="modelSeries" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${modelSeries}" />
+            <config renderer="default" picker="negatodefault" autoresetcamera="yes" />
+        </service>
+
+        <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+            <inout key="image" uid="optionalInputImage" />
+            <config renderer="default" picker="negatodefault" text="" />
+        </service>
+
+        <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+            <inout key="image" uid="optionalInputImage" />
+            <config filter="true" renderer="default" picker="negatodefault" />
+        </service>
+
+        <service uid="landmarksNegato" type="::visuVTKAdaptor::SLandmarks" autoConnect="yes">
+            <inout key="landmarks" uid="${landmarks}" />
+            <config renderer="default" picker="negatodefault" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${modelSeries}" />
+            <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <service uid="sliceListNegatoEditor" type="::guiQt::editor::SSelectionMenuButton">
             <!-- This input is only needed to start the service only if the image is present -->
@@ -178,17 +164,57 @@
         </connect>
 
         <!-- START AND STOP SERVICES -->
+        <connect>
+            <signal>snapshotNegatoEditor/snapped</signal>
+            <slot>snapshot/snap</slot>
+        </connect>
+
+        <connect>
+            <signal>distanceNegatoEditor/distanceRequested</signal>
+            <slot>multiDistances/createDistance</slot>
+        </connect>
+
+        <connect channel="${ModelRepresentationChannel}">
+            <slot>modelSeries/updateNormalMode</slot>
+        </connect>
+
+        <connect channel="${ModelDisplayChannel}">
+            <slot>modelSeries/showReconstructions</slot>
+        </connect>
+
+        <connect channel="${PickingChannel}">
+            <signal>pickerInteractor/picked</signal>
+        </connect>
+
+        <connect channel="slice_mode">
+            <slot>MPRNegato/updateSliceMode</slot>
+        </connect>
+
+        <connect channel="${CrossTypeChannel}">
+            <slot>MPRNegato/setCrossScale</slot>
+        </connect>
+
         <start uid="mainView" />
         <start uid="extractImage" />
-
         <!-- Deferred -->
         <start uid="LockImageSrv" />
         <start uid="sliderNegato" />
         <start uid="distanceNegatoEditor" />
         <start uid="sliceListNegatoEditor" />
 
-        <update uid="extractImage" />
+        <!-- negato adaptors -->
+        <start uid="snapshot" />
+        <start uid="orientationMarker" />
+        <start uid="interactor" />
+        <start uid="pickerInteractor" />
+        <start uid="${Medical3DCamera}" />
+        <start uid="MPRNegato" />
+        <start uid="modelSeries" />
+        <start uid="text" />
+        <start uid="multiDistances" />
+        <start uid="landmarksNegato" />
+        <start uid="nameAdaptor" />
 
+        <update uid="extractImage" />
     </config>
 </extension>
-

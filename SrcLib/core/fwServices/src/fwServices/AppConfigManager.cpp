@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/AppConfigManager.hpp"
-#include "fwServices/macros.hpp"
+
 #include "fwServices/helper/Config.hpp"
-#include <fwServices/op/Get.hpp>
+#include "fwServices/macros.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/Proxy.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
+#include <fwServices/op/Get.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
@@ -22,7 +23,6 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
-
 
 namespace fwServices
 {
@@ -57,10 +57,6 @@ namespace fwServices
         obj->setID(::boost::get<0>(uid));
     }
 
-    if (::boost::get<1>(id))
-    {
-        obj->setName(::boost::get<0>(id));
-    }
     return obj;
 }
 
@@ -92,13 +88,7 @@ namespace fwServices
                                          << obj->getClassname() << "\").",
                     ::boost::get<0>(type) == obj->getClassname());
     }
-    if (::boost::get<1>(id))
-    {
-        OSLM_ASSERT("Object with UID \"" << uid
-                                         << "\" has a different id (\""
-                                         << obj->getName() << "\").",
-                    ::boost::get<0>(id) == obj->getName());
-    }
+
     return obj;
 }
 
@@ -588,6 +578,8 @@ void AppConfigManager::stopAndDestroy()
     this->destroy();
 }
 
+//------------------------------------------------------------------------------
+
 fwData::Object::sptr AppConfigManager::getConfigRoot() const
 {
     return m_configuredObject;
@@ -689,7 +681,6 @@ void AppConfigManager::setConfig(const std::string& configId, const FieldAdaptor
     m_configId = configId;
     m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );
 }
-
 
 // ------------------------------------------------------------------------
 

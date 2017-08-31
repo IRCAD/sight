@@ -51,13 +51,14 @@ namespace uiImageQt
  * @code{.xml}
     <service uid="..." type="::uiImageQt::WindowLevel" autoConnect="yes">
         <inout key="image" uid="..."/>
-        <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection"
- * useImageGreyLevelTF="yes" />
+        <inout key="TFSelections" uid="..."/>
+        <config autoWindowing="yes" selectedTFKey="mySelectedTF" useImageGreyLevelTF="yes" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image on which the windowing will be changed
+ * - \b TFSelections [::fwData::Composite]: composite containing the selected transfer function
  *
  * @subsection Configuration Configuration
  *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
@@ -83,24 +84,6 @@ public:
     /// Destructor. Do nothing.
     UIIMAGEQT_API virtual ~WindowLevel() noexcept;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
-     */
-    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
-     */
-    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const;
-
 protected:
 
     /**
@@ -119,24 +102,17 @@ protected:
     /// Swap of image
     virtual void swapping();
 
-    /**
-     * @brief Configure the editor.
-     *
-     * Example of configuration
-     * @code{.xml}
-         <service uid="windowLevel" impl="::uiImageQt::WindowLevel" type="::gui::editor::IEditor" autoConnect="yes">
-             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection"
-     * useImageGreyLevelTF="yes" />
-         </service>
-       @endcode
-     * With :
-     *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
-     *  intensity when this service receive BUFFER event
-     *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it
-     * use default selection field.
-     *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
-     */
+    /// Parse the xml configuration
     virtual void configuring();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream );

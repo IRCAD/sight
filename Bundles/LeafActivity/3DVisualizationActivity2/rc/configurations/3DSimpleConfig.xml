@@ -5,11 +5,10 @@
         <param name="objectID" />
     </parameters>
     <config>
-
         <object uid="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
+        <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="modelSeries" uid="${objectID}" />
             <registry>
                 <parent wid="${WID_PARENT}" />
             </registry>
@@ -17,20 +16,33 @@
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
 
-                <adaptor id="modelAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                    <config renderer="default" picker="picker" autoresetcamera="yes" />
-                </adaptor>
-
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeries">
-                    <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-                <adaptor id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
-                    <config renderer="default" />
-                </adaptor>
+                <adaptor uid="modelAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="orientationMarker" />
             </scene>
         </service>
 
+        <service uid="modelAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${objectID}" />
+            <config renderer="default" picker="picker" autoresetcamera="yes" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${objectID}" />
+            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <service uid="orientationMarker" type="::visuVTKAdaptor::SOrientationMarker">
+            <config renderer="default" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
         <start uid="gs" />
+
+        <!-- gs adaptors -->
+        <start uid="modelAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="orientationMarker" />
     </config>
 </extension>
-

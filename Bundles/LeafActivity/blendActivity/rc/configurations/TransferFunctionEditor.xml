@@ -8,16 +8,13 @@
         <param name="myImage" />
         <param name="patient_name" default="" />
     </parameters>
-
     <config>
-
         <object uid="myComposite" type="::fwData::Composite" />
         <object uid="viewport" type="::scene2D::data::Viewport" />
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="${myImage}" type="::fwData::Image" src="ref" />
         <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -76,46 +73,59 @@
             </registry>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="image" uid="${myImage}" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
             <scene>
                 <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="MPRNegato2" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                    <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="TFSelections" />
-                </adaptor>
-                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image">
-                    <config renderer="default" picker="negato2default" text="" selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="TFSelections" />
-                </adaptor>
-                <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="image">
-                    <config filter="true" renderer="default" picker="negato2default" />
-                </adaptor>
-
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="image">
-                    <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-
-                <connect>
-                    <signal>snapshotEditor/snapped</signal>
-                    <slot>snapshotUID/snap</slot>
-                </connect>
-
+                <adaptor uid="snapshot1" />
+                <adaptor uid="Interactor1" />
+                <adaptor uid="MPRNegato2" />
+                <adaptor uid="text" />
+                <adaptor uid="multiDistances" />
+                <adaptor uid="nameAdaptor" />
             </scene>
         </service>
 
+        <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+            <config renderer="default" />
+        </service>
+
+        <service uid="Interactor1" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="MPRNegato2" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${myImage}" />
+            <inout key="tfSelection" uid="${TF_COMPOSITE_ID}" />
+            <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="${SELECTED_TF_KEY}" />
+        </service>
+
+        <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+            <inout key="image" uid="${myImage}" />
+            <inout key="tfSelection" uid="${TF_COMPOSITE_ID}" />
+            <config renderer="default" picker="negato2default" text="" selectedTFKey="${SELECTED_TF_KEY}" />
+        </service>
+
+        <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+            <inout key="image" uid="${myImage}" />
+            <config filter="true" renderer="default" picker="negato2default" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${myImage}" />
+            <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
-            <inout key="image" uid="${myImage}"/>
-            <inout key="histogram" uid="Histogram"/>
+            <inout key="image" uid="${myImage}" />
+            <inout key="histogram" uid="Histogram" />
             <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <parameter replace="WID_PARENT" uid="tfWidget"/>
+            <parameter replace="WID_PARENT" uid="tfWidget" />
             <parameter replace="SelectedTFKey" by="${SELECTED_TF_KEY}" />
         </service>
 
@@ -148,6 +158,11 @@
         </service>
 
         <!-- START AND STOP SERVICES -->
+        <connect>
+            <signal>snapshotEditor/snapped</signal>
+            <slot>snapshot1/snap</slot>
+        </connect>
+
         <start uid="LockImageSrv" />
         <start uid="computeHistogram" />
         <start uid="mainView" />
@@ -155,12 +170,18 @@
         <start uid="slider" />
         <start uid="genericScene" />
         <start uid="tfWidget" />
-
         <!-- Deferred start -->
         <start uid="tfSelector" />
+
+        <!-- genericScene adaptors -->
+        <start uid="snapshot1" />
+        <start uid="Interactor1" />
+        <start uid="MPRNegato2" />
+        <start uid="text" />
+        <start uid="multiDistances" />
+        <start uid="nameAdaptor" />
 
         <update uid="fieldMgr" />
 
     </config>
 </extension>
-

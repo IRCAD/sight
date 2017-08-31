@@ -16,7 +16,6 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    maths
     fwlauncher
     appXml2
 )

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,6 @@
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    =========================================================================*/
-
 
 /*=========================================================================
 
@@ -31,21 +30,20 @@
 
    =========================================================================*/
 
-#include <boost/assign.hpp>
-
-#include <vtkGenericCell.h>
-#include <vtkImageData.h>
-#include <vtkMapper.h>
-#include <vtkMath.h>
-#include <vtkPolyData.h>
-#include <vtkObjectFactory.h>
-#include <vtkAbstractVolumeMapper.h>
-#include <vtkInstantiator.h>
-
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 
-vtkStandardNewMacro(fwVtkCellPicker);
+#include <boost/assign.hpp>
 
+#include <vtkAbstractVolumeMapper.h>
+#include <vtkGenericCell.h>
+#include <vtkImageData.h>
+#include <vtkInstantiator.h>
+#include <vtkMapper.h>
+#include <vtkMath.h>
+#include <vtkObjectFactory.h>
+#include <vtkPolyData.h>
+
+vtkStandardNewMacro(fwVtkCellPicker);
 
 //------------------------------------------------------------------------------
 
@@ -53,7 +51,7 @@ fwVtkCellPicker::fwVtkCellPicker()
 {
     this->CellId = -1;
     this->SubId  = -1;
-    for (int i = 0; i<3; i++)
+    for (int i = 0; i < 3; i++)
     {
         this->PCoords[i] = 0.0;
     }
@@ -70,16 +68,16 @@ fwVtkCellPicker::~fwVtkCellPicker()
 //------------------------------------------------------------------------------
 
 double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol,
-                                          vtkAssemblyPath *path,
-                                          vtkProp3D *prop3D,
-                                          vtkAbstractMapper3D *m)
+                                          vtkAssemblyPath* path,
+                                          vtkProp3D* prop3D,
+                                          vtkAbstractMapper3D* m)
 {
     vtkIdType numCells, cellId, minCellId;
     int i, minSubId, subId;
     double x[3], tMin, t, pcoords[3], minXYZ[3], minPcoords[3];
-    vtkDataSet *input;
-    vtkMapper *mapper;
-    vtkAbstractVolumeMapper *volumeMapper;
+    vtkDataSet* input;
+    vtkMapper* mapper;
+    vtkAbstractVolumeMapper* volumeMapper;
 
     // Get the underlying dataset
     if ( (mapper = vtkMapper::SafeDownCast(m)) != NULL )
@@ -112,7 +110,7 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
     minSubId   = -1;
     pcoords[0] = pcoords[1] = pcoords[2] = 0;
     double pDistMin = VTK_DOUBLE_MAX, pDist;
-    for (tMin = VTK_DOUBLE_MAX,cellId = 0; cellId<numCells; cellId++)
+    for (tMin = VTK_DOUBLE_MAX, cellId = 0; cellId < numCells; cellId++)
     {
         input->GetCell(cellId, this->Cell);
 
@@ -124,7 +122,7 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
             {
                 minCellId = cellId;
                 minSubId  = subId;
-                for (i = 0; i<3; i++)
+                for (i = 0; i < 3; i++)
                 {
                     minXYZ[i]     = x[i];
                     minPcoords[i] = pcoords[i];
@@ -136,12 +134,12 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
     }//for all cells
 
     //  Now compare this against other actors.
-    if ( minCellId>(-1) && tMin < this->GlobalTMin )
+    if ( minCellId > (-1) && tMin < this->GlobalTMin )
     {
         this->MarkPicked(path, prop3D, m, tMin, minXYZ);
         this->CellId = minCellId;
         this->SubId  = minSubId;
-        for (i = 0; i<3; i++)
+        for (i = 0; i < 3; i++)
         {
             this->PCoords[i] = minPcoords[i];
         }
@@ -156,7 +154,7 @@ void fwVtkCellPicker::Initialize()
 {
     this->CellId = (-1);
     this->SubId  = (-1);
-    for (int i = 0; i<3; i++)
+    for (int i = 0; i < 3; i++)
     {
         this->PCoords[i] = 0.0;
     }
@@ -167,7 +165,7 @@ void fwVtkCellPicker::Initialize()
 
 void fwVtkCellPicker::PrintSelf(ostream& os, vtkIndent indent)
 {
-    this->Superclass::PrintSelf(os,indent);
+    this->Superclass::PrintSelf(os, indent);
 
     os << indent << "Cell Id: " << this->CellId << "\n";
     os << indent << "SubId: " << this->SubId << "\n";
@@ -177,21 +175,20 @@ void fwVtkCellPicker::PrintSelf(ostream& os, vtkIndent indent)
 
 //------------------------------------------------------------------------------
 
-fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3], double p2[3], vtkPolyData *polydata)
+fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3], double p2[3], vtkPolyData* polydata)
 {
     PickedCellType res;
 
-    if ( this->PickPolyData(p1,p2, polydata) )
+    if ( this->PickPolyData(p1, p2, polydata) )
     {
-        double *intersec = this->GetPickPosition();
+        double* intersec = this->GetPickPosition();
         fwVec3d point;
 
-        for(int i = 0; i<3; i++)
+        for(unsigned int i = 0; i < 3; i++)
         {
             point[i] = intersec[i];
         }
         res.push_back( std::make_pair( this->GetCellId(), point) );
-
 
         double ray[3];
         double p3a[3];
@@ -213,7 +210,6 @@ fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3],
             p3a[i] -= ray[i];
             p3b[i] += ray[i];
         }
-
 
         ::boost::assign::push_back(res).range( this->GetPickedCellIds(p1, p3a, polydata) );
         ::boost::assign::push_back(res).range( this->GetPickedCellIds(p3b, p2, polydata) );
