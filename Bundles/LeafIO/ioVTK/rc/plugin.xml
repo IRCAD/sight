@@ -47,7 +47,7 @@
         <object>::fwMedData::ModelSeries</object>
         <desc>VTK files (VTK)</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
         <service>::ioVTK::SModelSeriesReader</service>
