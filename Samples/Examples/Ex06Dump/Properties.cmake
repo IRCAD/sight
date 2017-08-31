@@ -25,8 +25,8 @@ set( REQUIREMENTS
     uiIO
     uiMedDataQt
 
-    2DVisualizationActivity2
-    3DVisualizationActivity2
+    2DVisualizationActivity
+    3DVisualizationActivity
     ioActivity
 
     media

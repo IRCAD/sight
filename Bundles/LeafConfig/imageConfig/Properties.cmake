@@ -5,7 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES  )
 
 set( REQUIREMENTS 
-        2DVisualizationActivity2
+        2DVisualizationActivity
         dataReg
         servicesReg
         gui

@@ -40,63 +40,9 @@
         </appConfig>
     </extension>
 
-    <!-- Activity used to export an image series. -->
-    <extension implements="::fwActivities::registry::Activities">
-        <id>ImageSeriesExport2</id>
-        <title>ImageSeries Export</title>
-        <desc>Activity to export the selected ImageSeries.</desc>
-        <icon>NONE</icon>
-        <requirements>
-            <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
-        </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection2">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
-    </extension>
-
-    <!-- Activity used to export a model series. -->
-    <extension implements="::fwActivities::registry::Activities">
-        <id>ModelSeriesExport2</id>
-        <title>ModelSeries Export</title>
-        <desc>Activity to export the selected ModelSeries.</desc>
-        <icon>NONE</icon>
-        <requirements>
-            <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
-        </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection2">
-            <parameters>
-                <parameter replace="selection" by="@values.series" />
-            </parameters>
-        </appConfig>
-    </extension>
-
-    <!-- App config used to export the selected series. -->
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExportSelection</id>
-        <parameters>
-            <param name="GENERIC_UID" />
-            <param name="selection" />
-        </parameters>
-        <config>
-            <object uid="${selection}" src="ref">
-                <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
-                    <type mode="writer" />
-                    <selection mode="exclude" />
-                    <addSelection service="::ioAtoms::SWriter" />
-                </service>
-                <start uid="${GENERIC_UID}_export_selection" />
-                <update uid="${GENERIC_UID}_export_selection" />
-            </object>
-        </config>
-    </extension>
-
     <!-- App config used to export the selected series. -->
     <extension implements="::fwServices::registry::AppConfig2">
-        <id>ExportSelection2</id>
+        <id>ExportSelection</id>
         <parameters>
             <param name="selection" />
         </parameters>

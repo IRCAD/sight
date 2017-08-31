@@ -17,7 +17,7 @@ set( REQUIREMENTS
     patchMedicalData
     filterVRRender
 
-    2DVisualizationActivity2
+    2DVisualizationActivity
     vtkSimpleNegato
 
     activities
