@@ -161,8 +161,7 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
-        <start uid="cameraLauncher" />
-        <!-- Must be started after mainView -->
+        <start uid="cameraLauncher" />  <!-- Must be started after mainView -->
         <start uid="CalibrationWriter" />
     </config>
 </extension>
