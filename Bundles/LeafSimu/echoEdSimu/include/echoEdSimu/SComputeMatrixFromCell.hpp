@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,10 @@
 #include <arServices/ISimulator.hpp>
 
 #include <fwCom/Slot.hpp>
+
 #include <fwData/Mesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwTools/UUID.hpp>
 
 namespace echoEdSimu
@@ -21,9 +23,9 @@ namespace echoEdSimu
 
 /**
  * @brief   Compute the transformation matrix that match the barycenter of a cell of a mesh.
- * *
+ *
  * @section Slots Slots
- * - \b updateSignal(int, std::string) : called to update the "craniocaudal" or the "radial" index.
+ * - \b updateSingle(int, std::string) : called to update the "craniocaudal" or the "radial" index.
  * - \b updateBoth(int,int) : called to update the craniocaudal and the radial indexes.
 
  * @section XML XML Configuration
@@ -35,16 +37,16 @@ namespace echoEdSimu
        </service>
    @endcode
  * @subsection Input Input:
- * - \b radialMesh [::fwData::Object]: mesh used to compute the cell.
+ * - \b radialMesh [::fwData::Mesh]: mesh used to compute the cell.
  * @subsection In-Out In-Out:
- * - \b matrix [::fwData::Object]: output matrix.
+ * - \b matrix [::fwData::TransformationMatrix3D]: output matrix.
  */
 class ECHOEDSIMU_CLASS_API SComputeMatrixFromCell : public ::arServices::ISimulator
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SComputeMatrixFromCell)(::arServices::ISimulator) );
+    fwCoreServiceClassDefinitionsMacro( (SComputeMatrixFromCell)(::arServices::ISimulator) );
 
     /// Constructor.
     ECHOEDSIMU_API SComputeMatrixFromCell() noexcept;

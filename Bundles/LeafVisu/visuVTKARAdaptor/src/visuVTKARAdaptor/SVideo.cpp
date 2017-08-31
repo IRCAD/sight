@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKARAdaptor/SVideoAdapter.hpp"
+#include "visuVTKARAdaptor/SVideo.hpp"
 
 #include <arData/Camera.hpp>
 
@@ -30,16 +30,18 @@
 #include <vtkImageMapper3D.h>
 #include <vtkImageMapToColors.h>
 #include <vtkMatrix4x4.h>
-#include <vtkPlaneSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkTexture.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SVideoAdapter, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo, ::fwData::Image );
 
 namespace visuVTKARAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_IMAGE_IN           = "frame";
+static const ::fwServices::IService::KeyType s_CAMERA_IN          = "camera";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
@@ -48,7 +50,7 @@ static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrat
 
 //------------------------------------------------------------------------------
 
-SVideoAdapter::SVideoAdapter() noexcept :
+SVideo::SVideo() noexcept :
     m_imageData(vtkImageData::New()),
     m_actor(vtkImageActor::New()),
     m_isTextureInit(false),
@@ -56,16 +58,16 @@ SVideoAdapter::SVideoAdapter() noexcept :
     m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
     m_hasTF(false)
 {
-    newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
-    newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
-    newSlot(s_SHOW_SLOT, &SVideoAdapter::show, this);
-    newSlot(s_CALIBRATE_SLOT, &SVideoAdapter::offsetOpticalCenter, this);
+    newSlot(s_UPDATE_IMAGE_SLOT, &SVideo::updateImage, this);
+    newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideo::updateImageOpacity, this);
+    newSlot(s_SHOW_SLOT, &SVideo::show, this);
+    newSlot(s_CALIBRATE_SLOT, &SVideo::offsetOpticalCenter, this);
     this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
 
-SVideoAdapter::~SVideoAdapter() noexcept
+SVideo::~SVideo() noexcept
 {
     m_actor->Delete();
     m_actor = nullptr;
@@ -73,66 +75,56 @@ SVideoAdapter::~SVideoAdapter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SVideoAdapter::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair(::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT));
+    KeyConnectionsMap connections;
+    connections.push( s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT);
+    connections.push( s_IMAGE_IN, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
+    connections.push( s_IMAGE_IN, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
+    connections.push( s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    connections.push( s_CAMERA_IN, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push( s_CAMERA_IN, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doConfigure()
+void SVideo::configuring()
 {
-    assert(m_configuration->getName() == "config");
+    this->configureParams();
 
-    m_cameraUID = m_configuration->getAttributeValue("cameraUID");
+    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
-    std::string reverse = m_configuration->getAttributeValue("reverse");
-    if (!reverse.empty() && reverse == "false")
-    {
-        m_reverse = false;
-    }
-    this->setPickerId(m_configuration->getAttributeValue("picker"));
-    this->parseTFConfig(m_configuration);
-    m_hasTF = !(this->getTFSelectionFwID() == "");
+    m_reverse = config.get<bool>("reverse", m_reverse);
+
+    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
+
+    m_hasTF = !this->getSelectedTFKey().empty();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doStart()
+void SVideo::starting()
 {
+    this->initialize();
+
     if (m_reverse)
     {
         m_actor->RotateZ(180);
         m_actor->RotateY(180);
     }
 
-    // Set camera pointer, it will be used if present in doUpdate()
-    if (!m_cameraUID.empty())
-    {
-        m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
-        SLM_ASSERT("Missing camera", m_camera);
-
-        m_connections.connect(m_camera, ::arData::Camera::s_MODIFIED_SIG,
-                              this->getSptr(), s_CALIBRATE_SLOT);
-        m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
-                              this->getSptr(), s_CALIBRATE_SLOT);
-    }
-
     if(m_hasTF)
     {
-        auto const& tf = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
-        this->setTransferFunctionSelection(tf);
+        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
+        this->setTransferFunctionSelection(tfSelection);
         this->installTFConnections();
         this->updatingTFPoints();
     }
 
-    this->doUpdate();
+    this->updating();
 
     if (this->getPicker())
     {
@@ -142,9 +134,9 @@ void SVideoAdapter::doStart()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doUpdate()
+void SVideo::updating()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (!imageIsValid)
@@ -193,18 +185,20 @@ void SVideoAdapter::doUpdate()
 
     m_imageData->Modified();
     this->setVtkPipelineModified();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doSwap()
+void SVideo::swapping()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doStop()
+void SVideo::stopping()
 {
     this->unregisterServices();
     this->removeAllPropFromRenderer();
@@ -216,13 +210,13 @@ void SVideoAdapter::doStop()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::updateImageOpacity()
+void SVideo::updateImageOpacity()
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+    ::fwData::Image::csptr img = this->getInput< ::fwData::Image >(s_IMAGE_IN);
     if(img->getField( "TRANSPARENCY" ) )
     {
         ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
-        double imageOpacity = (100 - (*transparency) ) / 100.0;
+        const double imageOpacity = (100 - (*transparency) ) / 100.0;
         m_actor->SetOpacity(imageOpacity);
     }
     if(img->getField( "VISIBILITY" ) )
@@ -237,7 +231,7 @@ void SVideoAdapter::updateImageOpacity()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::updateImage()
+void SVideo::updateImage()
 {
     m_isTextureInit = false;
     this->updating();
@@ -245,7 +239,7 @@ void SVideoAdapter::updateImage()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::show(bool visible)
+void SVideo::show(bool visible)
 {
     m_actor->SetVisibility(visible);
 
@@ -255,9 +249,10 @@ void SVideoAdapter::show(bool visible)
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::offsetOpticalCenter()
+void SVideo::offsetOpticalCenter()
 {
-    if (m_camera)
+    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_IN);
+    if (camera)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -269,8 +264,8 @@ void SVideoAdapter::offsetOpticalCenter()
 
         const ::fwData::Image::SizeType size = image->getSize();
 
-        const double shiftX = size[0] / 2. - m_camera->getCx();
-        const double shiftY = size[1] / 2. - m_camera->getCy();
+        const double shiftX = size[0] / 2. - camera->getCx();
+        const double shiftY = size[1] / 2. - camera->getCy();
 
         if (m_reverse)
         {
@@ -285,14 +280,14 @@ void SVideoAdapter::offsetOpticalCenter()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::updatingTFPoints()
+void SVideo::updatingTFPoints()
 {
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::updatingTFWindowing(double window, double level)
+void SVideo::updatingTFWindowing(double window, double level)
 {
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
 }

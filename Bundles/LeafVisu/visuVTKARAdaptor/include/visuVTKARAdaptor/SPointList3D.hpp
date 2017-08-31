@@ -1,11 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,85 +9,89 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwData/Color.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
-#include <vtkActor.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
+#include <vtkPoints.h>
 #include <vtkSmartPointer.h>
-
-namespace fwData
-{
-class Point;
-}
 
 namespace visuVTKARAdaptor
 {
 
 /**
- * @brief   Display a 3D point list.
+ * @brief Display a 3D point list.
  *
- *  This adaptor works on a ::fwData::PointList.
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::visuVTKARAdaptor::SPointList3D" autoConnect="yes">
+       <in key="pointList" uid="..." />
+       <config renderer="default" color="#cb1f72" radius="3.0" />
+   </service>
+   @endcode
+ *
+ * @subsection Input Input
+ * - \b pointList [::fwData::PointList]: displayed point list
+ *
+ * @subsection Configuration Configuration
+ * - \b renderer : ID of the renderer the adaptor must use.
+ * - \b color(optional, default=3.): color used to display the points.
+ * - \b radius (optional, default="#ffffff") : point sphere radius.
+ * - \b transform (optional) : transform applied to the displayed points.
  */
-class VISUVTKARADAPTOR_CLASS_API SPointList3D : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKARADAPTOR_CLASS_API SPointList3D : public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    typedef std::vector< SPTR(::fwData::Point) > PointListType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SPointList3D)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SPointList3D)(::fwRenderVTK::IAdaptor) );
 
+    /// Constructor.
     VISUVTKARADAPTOR_API SPointList3D() noexcept;
 
+    /// Destructor.
     VISUVTKARADAPTOR_API virtual ~SPointList3D() noexcept;
 
 protected:
 
-    /// Copy point list and create adaptors
-    VISUVTKARADAPTOR_API void doStart();
+    /// Configure the service.
+    VISUVTKARADAPTOR_API void configuring();
 
-    /// Unregister adaptors and clears local point list
-    VISUVTKARADAPTOR_API void doStop();
+    /// Initialize the actor and update the point list.
+    VISUVTKARADAPTOR_API void starting();
+
+    /// Update the point list.
+    VISUVTKARADAPTOR_API void updating();
+
+    /// Destroy all vtk props created at start.
+    VISUVTKARADAPTOR_API void stopping();
+
+    /// Restart the service (stop-start).
+    VISUVTKARADAPTOR_API void swapping();
 
     /**
-     * @code{.xml}
-       <adaptor id="points" class="::visuVTKRDAdaptor::SPointList3D" objectId="pointListKey">
-        <config renderer="default" color="#cb1f72" radius="3.0" />
-       </adaptor>
-       @endcode
-     * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
-     * - \b color(optional) : color used to display the points.
-     * - \b radius (optional) : point sphere radius.
-     * - \b transform (optional) : transform used to display the points.
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ::fwData::PointList::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::PointList::s_POINT_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ::fwData::PointList::s_POINT_REMOVED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKARADAPTOR_API void doConfigure();
-
-    /// Restart the service (stop-start)
-    VISUVTKARADAPTOR_API void doSwap();
-
-    /// Create adaptors
-    VISUVTKARADAPTOR_API void doUpdate();
+    VISUVTKARADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
-    vtkSmartPointer<vtkPoints> m_points; ///< vtk points
+    /// vtk point list.
+    vtkSmartPointer<vtkPoints> m_points;
 
-    double m_radius; ///< Sphere radius
+    /// Sphere radius.
+    double m_radius;
 
-    /// color of the points
+    /// Point color.
     ::fwData::Color::sptr m_ptColor;
 
 };
-
-
-
 
 } //namespace visuVTKRDAdaptor
 

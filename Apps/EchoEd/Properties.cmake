@@ -33,6 +33,7 @@ set( REQUIREMENTS
     fwlauncher
     patchMedicalData
     preferences
+    uiPreferences
 
     visuVTKAdaptor
     visuVTKARAdaptor

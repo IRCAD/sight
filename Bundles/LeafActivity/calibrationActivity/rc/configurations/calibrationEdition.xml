@@ -8,22 +8,15 @@
         <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
-
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
-
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
-
         <object uid="newCameraSeries" type="::arData::CameraSeries" src="deferred" />
-
         <object uid="camera0" type="::arData::Camera" src="deferred" />
         <object uid="camera1" type="::arData::Camera" src="deferred" />
-
         <!-- ******************************* UI declaration *********************************** -->
-
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -31,7 +24,7 @@
                     <view proportion="0" />
                     <view proportion="0" />
                 </layout>
-                <toolBar />
+                <toolBar/>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
@@ -42,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::gui::view::SDefaultView" >
+        <service uid="camerasView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -56,13 +49,13 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
-                    <separator />
+                    <separator/>
                     <menuItem name="Export XML" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
-                    <separator />
+                    <separator/>
                     <menuItem name="Start camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
                     <menuItem name="Stop camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
                     <menuItem name="Pause video" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
@@ -79,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::gui::view::SDefaultView" >
+        <service uid="cameraInfoView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -96,8 +89,7 @@
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
-
-        <service uid="ActionWriteXmlCalib" type="::gui::action::SSlotCaller" >
+        <service uid="ActionWriteXmlCalib" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationXmlWriter/update</slot>
             </slots>
@@ -112,28 +104,28 @@
             <in key="target" uid="newCameraSeries"/>
         </service>
 
-        <service uid="ActionStartCamera" type="::gui::action::SSlotCaller" >
+        <service uid="ActionStartCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1/startCamera</slot>
                 <slot>videoGrabber2/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="ActionStopCamera" type="::gui::action::SSlotCaller" >
+        <service uid="ActionStopCamera" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1/stopCamera</slot>
                 <slot>videoGrabber2/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="PauseVideo" type="::gui::action::SSlotCaller" >
+        <service uid="PauseVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1/pauseCamera</slot>
                 <slot>videoGrabber2/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="LoopVideo" type="::gui::action::SSlotCaller" >
+        <service uid="LoopVideo" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1/loopVideo</slot>
                 <slot>videoGrabber2/loopVideo</slot>
@@ -141,23 +133,21 @@
         </service>
 
         <!-- ******************************* Service ************************************** -->
+        <service uid="VideoSlider" type="::videoQt::editor::SSlider" />
+        <service uid="copyCameraSeries" type="::ctrlCamp::SCopy">
+            <in key="source" uid="${cameraSeries}" />
+            <out key="target" uid="newCameraSeries" />
+        </service>
 
-        <service uid="VideoSlider" type="::videoQt::editor::SSlider"  />
-
-       <service uid="copyCameraSeries" type="::ctrlCamp::SCopy" >
-           <in key="source" uid="${cameraSeries}" />
-           <out key="target" uid="newCameraSeries" />
-       </service>
-
-        <service uid="extractCameras" type="::ctrlCamp::SExtractObj" >
-           <inout key="source" uid="newCameraSeries">
-               <extract from="@cameras.0" />
-               <extract from="@cameras.1" />
-           </inout>
-           <out group="target">
-               <key uid="camera0"/>
-               <key uid="camera1"/>
-           </out>
+        <service uid="extractCameras" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="newCameraSeries">
+                <extract from="@cameras.0" />
+                <extract from="@cameras.1" />
+            </inout>
+            <out group="target">
+                <key uid="camera0" />
+                <key uid="camera1" />
+            </out>
         </service>
 
         <service uid="camera0Launcher" type="::fwServices::SConfigController">
@@ -181,26 +171,24 @@
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
             <parameter replace="videoDurationModifiedChannel" uid="videoDurationModified" />
-
             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
 
-
         <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor">
             <in key="cameraSeries" uid="${cameraSeries}" autoConnect="yes" />
-            <in key="notUsed" uid="camera1" /><!-- Not used, it allows to start this service only if we have a stereo calibration -->
+            <in key="notUsed" uid="camera1" />
+            <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>
 
-        <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
+        <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="camera0" />
         </service>
 
-        <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
+        <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="camera1" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
-
         <connect channel="cameraModified">
             <signal>camera0/idModified</signal>
             <signal>camera1/idModified</signal>
@@ -221,7 +209,6 @@
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
         <start uid="copyCameraSeries" />
-
         <!-- Deferred start -->
         <start uid="extractCameras" />
         <start uid="cameraSeriesInfo" />
@@ -231,11 +218,8 @@
         <start uid="cameraInfo2" />
         <start uid="camera0Launcher" />
         <start uid="camera1Launcher" />
-
         <update uid="copyCameraSeries" />
-
         <!-- Deferred update -->
         <update uid="extractCameras" />
-
     </config>
 </extension>
