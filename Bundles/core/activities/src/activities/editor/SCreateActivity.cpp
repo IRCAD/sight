@@ -33,6 +33,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -81,12 +82,11 @@ void SCreateActivity::configuring()
     fwGui::IGuiContainerSrv::initialize();
 
     typedef ::fwServices::IService::ConfigType ConfigType;
+    ConfigType cfg = this->getConfigTree();
 
-    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
-
-    if(srvconfig.count("filter") == 1 )
+    if(cfg.count("filter") == 1 )
     {
-        const ::fwServices::IService::ConfigType& configFilter = srvconfig.get_child("filter");
+        const ::fwServices::IService::ConfigType& configFilter = cfg.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -99,7 +99,7 @@ void SCreateActivity::configuring()
             m_keys.push_back(v.second.get<std::string>(""));
         }
     }
-    SLM_ASSERT("A maximum of 1 <filter> tag is allowed", srvconfig.count("filter") < 2);
+    SLM_ASSERT("A maximum of 1 <filter> tag is allowed", cfg.count("filter") < 2);
 }
 
 //------------------------------------------------------------------------------
