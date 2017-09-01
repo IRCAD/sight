@@ -7,6 +7,7 @@ set( REQUIREMENTS
     activities
     gui
     guiQt
+    ctrlMemory
     ctrlSelection
     uiVisu
     uiVisuQt

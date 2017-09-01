@@ -12,7 +12,6 @@ set( REQUIREMENTS
 
     appXml2
     memory
-    ctrlMemory
     fwlauncher
 
     io

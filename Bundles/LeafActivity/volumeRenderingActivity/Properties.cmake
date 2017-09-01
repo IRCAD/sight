@@ -8,6 +8,7 @@ set( REQUIREMENTS
     3DVisualizationActivity
     gui
     guiQt
+    ctrlMemory
     ctrlSelection
     uiVisu
     uiVisuQt

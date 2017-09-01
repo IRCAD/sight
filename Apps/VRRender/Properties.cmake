@@ -13,7 +13,6 @@ set( REQUIREMENTS
     activities
     appXml2
     memory
-    ctrlMemory
     fwlauncher
 
     io

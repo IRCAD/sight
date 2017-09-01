@@ -27,7 +27,6 @@ set( REQUIREMENTS
     ioVTK
 
     uiMedDataQt
-    ctrlMemory
 
     media
 

@@ -10,6 +10,7 @@ set( REQUIREMENTS
     uiMeasurement
     uiMeasurementQt
     ctrlCamp
+    ctrlMemory
     ctrlSelection
     uiImageQt
     uiVisu
