@@ -34,35 +34,35 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo, ::fwData::Image );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo);
 
 namespace visuVTKARAdaptor
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN           = "frame";
-static const ::fwServices::IService::KeyType s_CAMERA_IN          = "camera";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_IN  = "frame";
+static const ::fwServices::IService::KeyType s_CAMERA_IN = "camera";
+static const ::fwServices::IService::KeyType s_TF_INPUT  = "tf";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
 static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                 = "show";
 static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrate";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT            = "updateTF";
 
 //------------------------------------------------------------------------------
 
 SVideo::SVideo() noexcept :
     m_imageData(vtkImageData::New()),
     m_actor(vtkImageActor::New()),
-    m_isTextureInit(false),
-    m_reverse(true),
     m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
-    m_hasTF(false)
+    m_isTextureInit(false),
+    m_reverse(true)
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideo::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideo::updateImageOpacity, this);
     newSlot(s_SHOW_SLOT, &SVideo::show, this);
     newSlot(s_CALIBRATE_SLOT, &SVideo::offsetOpticalCenter, this);
-    this->installTFSlots(this);
+    newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
 }
 
 //------------------------------------------------------------------------------
@@ -86,6 +86,9 @@ SVideo::~SVideo() noexcept
     connections.push( s_CAMERA_IN, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push( s_CAMERA_IN, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
+    connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+
     return connections;
 }
 
@@ -98,10 +101,6 @@ void SVideo::configuring()
     const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
 
     m_reverse = config.get<bool>("reverse", m_reverse);
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
-
-    m_hasTF = !this->getSelectedTFKey().empty();
 }
 
 //------------------------------------------------------------------------------
@@ -116,12 +115,10 @@ void SVideo::starting()
         m_actor->RotateY(180);
     }
 
-    if(m_hasTF)
+    ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
+    if(tf)
     {
-        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
-        this->setTransferFunctionSelection(tfSelection);
-        this->installTFConnections();
-        this->updatingTFPoints();
+        this->updateTF();
     }
 
     this->updating();
@@ -160,7 +157,7 @@ void SVideo::updating()
 
         const ::fwData::Image::SizeType size = image->getSize();
 
-        if(m_hasTF)
+        if(this->getInput< ::fwData::TransferFunction>(s_TF_INPUT))
         {
             auto scalarValuesToColors = vtkSmartPointer<vtkImageMapToColors>::New();
             scalarValuesToColors->SetLookupTable(m_lookupTable);
@@ -191,9 +188,17 @@ void SVideo::updating()
 
 //------------------------------------------------------------------------------
 
-void SVideo::swapping()
+void SVideo::swapping(const KeyType& key)
 {
-    this->updating();
+    if (key == s_TF_INPUT)
+    {
+        ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
+        if (tf)
+        {
+            this->updateTF();
+        }
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -280,16 +285,12 @@ void SVideo::offsetOpticalCenter()
 
 //------------------------------------------------------------------------------
 
-void SVideo::updatingTFPoints()
+void SVideo::updateTF()
 {
-    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
-}
-
-//------------------------------------------------------------------------------
-
-void SVideo::updatingTFWindowing(double window, double level)
-{
-    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
+    ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
+    SLM_ASSERT("input '" + s_TF_INPUT + "' is missing.", tf);
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(tf, m_lookupTable);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
