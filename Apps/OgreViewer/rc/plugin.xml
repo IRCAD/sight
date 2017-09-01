@@ -196,6 +196,7 @@
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreSceneView" />
                 <parameter replace="genericSceneUID" uid="genericSceneUID" />
+                <parameter replace="selectedTFKey" by="SelectedTF" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
@@ -203,6 +204,7 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
+                <parameter replace="selectedTFKey" by="SelectedTF" />
             </service>
 
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
@@ -215,6 +217,7 @@
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
                 <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
+                <parameter replace="selectedTFKey" by="SelectedTF" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -237,6 +240,7 @@
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="histogramView" />
                 <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+                <parameter replace="selectedTFKey" by="SelectedTF" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">

@@ -6,6 +6,7 @@
         <param name="imageUID" />
         <param name="maskUID" />
         <param name="TFSelections" />
+        <param name="selectedTFKey" />
     </parameters>
 
     <config>
@@ -17,6 +18,7 @@
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
         <object uid="TFPool" type="::fwData::Composite" />
+        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
 
         <object uid="histogram" type="::fwData::Histogram" />
 
@@ -36,26 +38,30 @@
                 <parent wid="${WID_PARENT}" />
                 <view sid="tfm" start="yes" />
                 <view wid="tfScene" />
-                <view sid="windowLevel" start="yes" />
+                <view sid="windowLevel" start="no" />
                 <view sid="transparencyEditor" start="yes" />
             </registry>
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
+        <service uid="addTFinSelection" type="::ctrlSelection::SManage">
+           <inout key="object" uid="TF" />
+           <inout key="composite" uid="${TFSelections}" />
+           <compositeKey>${selectedTFKey}</compositeKey>
+        </service>
+
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${imageUID}"/>
             <inout key="histogram" uid="histogram"/>
-            <inout key="TFSelections" uid="${TFSelections}" />
+            <inout key="transferFunction" uid="TF" />
             <parameter replace="WID_PARENT" uid="tfScene"/>
-            <parameter replace="SelectedTFKey" by="SelectedTF" />
         </service>
 
         <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <config selectedTFKey="SelectedTF" />
+            <inout key="image" uid="${imageUID}" />
+            <inout key="tf" uid="TF" />
         </service>
 
         <service uid="transparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
@@ -63,9 +69,8 @@
         </service>
 
         <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
-            <inout key="transferFunctions" uid="TFPool" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <config selectedTFKey="SelectedTF" />
+            <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
+            <out key="tf" uid="TF" />
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
@@ -74,12 +79,23 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <!-- ************************************* Actions ************************************* -->
+        <!-- ********************************** Connections ********************************** -->
+
+        <!-- add or swap the TF in the composite when it is present in the config (the service is started when the TF exists) -->
+        <connect>
+            <signal>addTFinSelection/started</signal>
+            <slot>addTFinSelection/addOrSwap</slot>
+        </connect>
+
+        <!-- ************************************* Start ************************************* -->
 
         <!-- Start/Stop services -->
         <start uid="histogramView" />
         <start uid="tfWidget" />
         <start uid="computeHistogram" />
+        <start uid="addTFinSelection" />
+        <!-- deferred -->
+        <start uid="windowLevel" />
 
     </config>
 </extension>

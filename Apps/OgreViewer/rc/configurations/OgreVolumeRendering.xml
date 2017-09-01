@@ -9,12 +9,14 @@
         <param name="idvrBoolParamChannel" />
         <param name="idvrDoubleParamChannel" />
         <param name="idvrColorParamChannel" />
+        <param name="selectedTFKey" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
         <object uid="${maskUID}" type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
@@ -60,10 +62,10 @@
         </service>
 
         <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
-            <in key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TF" uid="${TFSelections}" />
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
+<!--            <inout key="tf" uid="TF" optional="yes" />-->
             <inout key="mask" uid="${maskUID}" autoConnect="yes" />
-            <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" />
         </service>
 
         <!-- End Generic Scene ***************************************** -->
@@ -92,7 +94,16 @@
             </parameters>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
+        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="${TFSelections}">
+               <extract from="@values.${selectedTFKey}" />
+           </inout>
+           <out group="target">
+               <key uid="TF"/>
+           </out>
+        </service>
+
+        <!-- ************************************* Connections ************************************ -->
         <connect>
             <signal>vrBasicEditor/boolChanged</signal>
             <slot>volumeRender/setBoolParameter</slot>
@@ -139,9 +150,22 @@
             <slot>volumeRender/setColorParameter</slot>
         </connect>
 
+        <connect>
+            <signal>${TFSelections}/addedObjects</signal>
+            <signal>${TFSelections}/changedObjects</signal>
+            <slot>extractTF/update</slot>
+        </connect>
+
+        <!-- *************************************** Starts ************************************ -->
+
         <start uid="OgreVolumeRendering" />
+        <start uid="extractTF" />
+
         <!-- Ogre scene 'volumeRenderingScene' -->
         <start uid="interactorAdaptor" />
         <start uid="volumeRender" />
+
+        <update uid="extractTF" />
+
     </config>
 </extension>

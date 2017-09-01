@@ -38,6 +38,7 @@ const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_OPACITY_SLOT    = "updateO
 const ::fwCom::Slots::SlotKeyType SNegato3D::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
 static const std::string s_IMAGE_INOUT = "image";
+static const std::string s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -114,10 +115,6 @@ void SNegato3D::configuring()
 
         this->setFiltering(filtering);
     }
-
-    auto cfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Tag 'config' not found.", cfg);
-    this->parseTFConfig(cfg);
 }
 
 //------------------------------------------------------------------------------
@@ -126,13 +123,11 @@ void SNegato3D::starting()
 {
     this->initialize();
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
-    SLM_ASSERT("TF 'key' not found", tfSelection);
-
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    this->setTransferFunction(tf);
 
     this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
-    this->updateTransferFunction(this->getImage());
+    this->createTransferFunction(this->getImage());
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
@@ -202,6 +197,29 @@ void SNegato3D::stopping()
 void SNegato3D::updating()
 {
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato3D::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        this->removeTFConnections();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->installTFConnections();
+        this->updatingTFPoints();
+    }
 }
 
 //------------------------------------------------------------------------------

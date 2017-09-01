@@ -4,10 +4,13 @@
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="TFSelections" />
+        <param name="selectedTFKey" />
     </parameters>
     <config>
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="OgreNegato2D" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -41,20 +44,47 @@
 
         <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TF" uid="${TFSelections}" />
+            <inout key="tf" uid="TF" optional="yes" />
             <config layer="default" selectedTFKey="SelectedTF" />
         </service>
 
         <!-- End Generic Scene ***************************************** -->
+
+        <!-- ************************************* Services ************************************ -->
+
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
+        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="${TFSelections}">
+               <extract from="@values.${selectedTFKey}" />
+           </inout>
+           <out group="target">
+               <key uid="TF"/>
+           </out>
+        </service>
+
+        <!-- ************************************* Connections ************************************ -->
+
+        <connect>
+            <signal>${TFSelections}/addedObjects</signal>
+            <signal>${TFSelections}/changedObjects</signal>
+            <slot>extractTF/update</slot>
+        </connect>
+
+        <!-- *************************************** Starts ************************************ -->
+
         <start uid="OgreNegato2D" />
+        <start uid="extractTF" />
+
         <!-- Ogre scene 'negato2DScene' -->
         <start uid="interactorAdaptor" />
         <start uid="negato2DAdaptor" />
+
+        <update uid="extractTF" />
+
     </config>
 </extension>

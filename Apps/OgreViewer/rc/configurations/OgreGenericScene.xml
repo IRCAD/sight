@@ -7,6 +7,7 @@
         <!-- 3D negato image -->
         <param name="imageUID" />
         <param name="TFSelections" />
+        <param name="selectedTFKey" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -16,6 +17,7 @@
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="camera" type="::arData::Camera" />
+        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreSceneView" type="::gui::view::SDefaultView">
             <gui>
@@ -129,8 +131,8 @@
 
         <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TF" uid="${TFSelections}" />
-            <config layer="default" selectedTFKey="SelectedTF" />
+            <inout key="tf" uid="TF" />
+            <config layer="default" />
         </service>
 
         <!-- ********************************* End Generic Scene ******************************* -->
@@ -160,9 +162,30 @@
             <videoSupport>yes</videoSupport>
         </service>
 
+        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="${TFSelections}">
+               <extract from="@values.${selectedTFKey}" />
+           </inout>
+           <out group="target">
+               <key uid="TF"/>
+           </out>
+        </service>
+
+        <!-- ************************************* Connections ************************************ -->
+
+        <connect>
+            <signal>${TFSelections}/addedObjects</signal>
+            <signal>${TFSelections}/changedObjects</signal>
+            <slot>extractTF/update</slot>
+        </connect>
+
+        <!-- *************************************** Starts ************************************ -->
+
+
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
+        <start uid="extractTF" />
 
         <!-- Ogre scene '${genericSceneUID}' -->
         <start uid="videoAdapter" />
@@ -172,6 +195,7 @@
         <start uid="negato3DAdaptor" />
 
         <update uid="actionNegato3DInteractor" />
+        <update uid="extractTF" />
 
     </config>
 </extension>

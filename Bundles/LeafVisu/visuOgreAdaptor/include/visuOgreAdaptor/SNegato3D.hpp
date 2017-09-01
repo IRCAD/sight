@@ -36,18 +36,18 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SNegato3D">
             <inout key="image" uid="..." />
-            <inout key="tfSelection" uid="..." />
+            <inout key="tf" uid="..." optional="yes" />
             <config renderer="default" sliceIndex="axial" filtering="none" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction
  * @subsection Configuration Configuration:
  * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
- * - \b selectedTFKey: key of the transfer function to use in negato
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
@@ -87,6 +87,9 @@ protected:
     VISUOGREADAPTOR_API virtual void stopping() override;
     /// Requests rendering of the scene.
     VISUOGREADAPTOR_API virtual void updating() override;
+
+    /// Retrieves the current transfer function
+    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;

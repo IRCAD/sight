@@ -33,7 +33,8 @@ const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
-static const std::string s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -105,10 +106,6 @@ void SNegato2D::configuring()
 
         this->setFiltering(filtering);
     }
-
-    auto cfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Tag 'config' not found.", cfg);
-    this->parseTFConfig(cfg);
 }
 
 //------------------------------------------------------------------------------
@@ -117,11 +114,20 @@ void SNegato2D::starting()
 {
     this->initialize();
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    if (tf)
+    {
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        this->createTransferFunction(image);
+    }
 
     this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
-    this->updateTransferFunction(this->getImage());
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -176,6 +182,29 @@ void SNegato2D::stopping()
 void SNegato2D::updating()
 {
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        this->removeTFConnections();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->installTFConnections();
+        this->updatingTFPoints();
+    }
 }
 
 //------------------------------------------------------------------------------
