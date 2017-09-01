@@ -6,8 +6,6 @@
     <requirement id="gui" />
     <requirement id="uiImageQt" />
 
-    <xi:include href="SeriesExportCfg.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSelector</service>

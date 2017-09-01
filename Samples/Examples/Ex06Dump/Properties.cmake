@@ -12,7 +12,6 @@ set( REQUIREMENTS
 
     appXml2
     memory
-    ctrlMemory
     fwlauncher
 
     io
@@ -25,8 +24,8 @@ set( REQUIREMENTS
     uiIO
     uiMedDataQt
 
-    2DVisualizationActivity2
-    3DVisualizationActivity2
+    2DVisualizationActivity
+    3DVisualizationActivity
     ioActivity
 
     media
