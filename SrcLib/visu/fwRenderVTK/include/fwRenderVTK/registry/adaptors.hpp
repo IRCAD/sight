@@ -7,6 +7,8 @@
 #ifndef __FWRENDERVTK_REGISTRY_ADAPTORS_HPP__
 #define __FWRENDERVTK_REGISTRY_ADAPTORS_HPP__
 
+#include "fwRenderVTK/config.hpp"
+
 #include <map>
 #include <string>
 
@@ -22,7 +24,7 @@ namespace registry
 typedef std::map<std::string, std::string> AdaptorRegistryType;
 
 /// Get the association <adaptor, scene>
-AdaptorRegistryType& getAdaptorRegistry();
+FWRENDERVTK_API AdaptorRegistryType& getAdaptorRegistry();
 
 } // namespace registry
 

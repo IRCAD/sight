@@ -7,6 +7,8 @@
 #ifndef __FWRENDERQT_REGISTRY_ADAPTOR_HPP__
 #define __FWRENDERQT_REGISTRY_ADAPTOR_HPP__
 
+#include "fwRenderQt/config.hpp"
+
 #include <map>
 #include <string>
 
@@ -21,7 +23,7 @@ namespace registry
 typedef std::map<std::string, std::string> AdaptorRegistryType;
 
 /// Returns map containing Adaptor-SRender association
-AdaptorRegistryType& getAdaptorRegistry();
+FWRENDERQT_API AdaptorRegistryType& getAdaptorRegistry();
 
 } // namespace registry
 
