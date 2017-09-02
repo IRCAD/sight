@@ -8,7 +8,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto10MatrixTransformInGS</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->

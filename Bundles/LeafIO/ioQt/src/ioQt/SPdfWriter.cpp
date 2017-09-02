@@ -62,39 +62,17 @@ SPdfWriter::~SPdfWriter() noexcept
 void SPdfWriter::configuring()
 {
     this->::io::IWriter::configuring();
-    if(!this->isVersion2())
-    {
-        ::fwRuntime::ConfigurationElementContainer imagesConfig = m_configuration->findAllConfigurationElement(
-            s_IMAGE_INPUT);
 
-        ///Gets images UIDs
-        for(const auto& imageCfg : imagesConfig.getElements())
-        {
-            const std::string id = imageCfg->getValue();
-            m_imagesUIDs.push_back( id );
-        }
-        ::fwRuntime::ConfigurationElementContainer containersConfig = m_configuration->findAllConfigurationElement(
-            s_CONTAINER_INPUT);
-        ///Gets containers UIDs
-        for(const auto& containerCfg : containersConfig.getElements())
-        {
-            const std::string id = containerCfg->getValue();
-            m_containersIDs.push_back( id );
-        }
-    }
-    else
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
+    if (containersConfig)
     {
-        typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-        const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
-        if (containersConfig)
+        const std::vector< ConfigurationType > containersCfg = containersConfig->find(s_CONTAINER_INPUT);
+        for (const auto& cfg : containersCfg)
         {
-            const std::vector< ConfigurationType > containersCfg = containersConfig->find(s_CONTAINER_INPUT);
-            for (const auto& cfg : containersCfg)
-            {
-                SLM_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
-                std::string id = cfg->getAttributeValue("uid");
-                m_containersIDs.push_back( id );
-            }
+            SLM_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
+            std::string id = cfg->getAttributeValue("uid");
+            m_containersIDs.push_back( id );
         }
     }
 }
@@ -198,27 +176,13 @@ void SPdfWriter::updating()
 
 void SPdfWriter::starting()
 {
-    if (!this->isVersion2())
+    const size_t groupImageSize = this->getKeyGroupSize(s_IMAGE_INPUT);
+    for (size_t idxImage = 0; idxImage < groupImageSize; ++idxImage)
     {
-        for(const std::string& id : m_imagesUIDs)
-        {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(id);
-            SLM_ASSERT("Object '" + id + "' is not found", obj);
-            ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(obj);
-            SLM_ASSERT("Object '" + id + "' is not an ::fwData::Image (" + obj->getClassname() + ")",
-                       image);
-            m_imagesToExport.push_back(image);
-        }
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INPUT, idxImage);
+        m_imagesToExport.push_back(image);
     }
-    else
-    {
-        const size_t groupImageSize = this->getKeyGroupSize(s_IMAGE_INPUT);
-        for (size_t idxImage = 0; idxImage < groupImageSize; ++idxImage)
-        {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INPUT, idxImage);
-            m_imagesToExport.push_back(image);
-        }
-    }
+
     for(const auto& id : m_containersIDs)
     {
         ::fwGuiQt::container::QtContainer::sptr containerElt;

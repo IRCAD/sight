@@ -21,8 +21,8 @@ set( REQUIREMENTS
     uiVisu
     uiVisuQt
     ctrlSelection
-    appXml2
+    appXml
     basicRegistration
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex04ImageSubstractionConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex04ImageSubstractionConfig)

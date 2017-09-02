@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
+
 #include <limits>
 
 namespace fwActivities
@@ -22,11 +23,11 @@ namespace fwActivities
 namespace registry
 {
 
-ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
+ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType& config) :
     replace(config.get<std::string>("<xmlattr>.replace"))
 {
     // @deprecated This is no longer necessary to use "uid" to get the prefix replacement, since
-    // this is now done in AppConfig2. However we keep that code for a while for backward compatibility
+    // this is now done in AppConfig. However we keep that code for a while for backward compatibility
     by = config.get_optional<std::string>("<xmlattr>.uid").get_value_or("");
     if(by.empty())
     {
@@ -37,12 +38,12 @@ ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
 
 //-----------------------------------------------------------------------------
 
-ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
+ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
     id(config.get<std::string>("<xmlattr>.id"))
 {
     if(config.count("parameters") == 1 )
     {
-        const ConfigType &configParameters = config.get_child("parameters");
+        const ConfigType& configParameters = config.get_child("parameters");
         BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
         {
             ActivityAppConfigParam parameter( v.second );
@@ -54,7 +55,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
 
 //-----------------------------------------------------------------------------
 
-ActivityRequirementKey::ActivityRequirementKey(const ConfigType &config) :
+ActivityRequirementKey::ActivityRequirementKey(const ConfigType& config) :
     key(config.get_value<std::string>()),
     path(config.get_optional<std::string>("<xmlattr>.path").get_value_or(""))
 {
@@ -62,7 +63,7 @@ ActivityRequirementKey::ActivityRequirementKey(const ConfigType &config) :
 
 //-----------------------------------------------------------------------------
 
-ActivityRequirement::ActivityRequirement(const ConfigType &config) :
+ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
     container(config.get_optional<std::string>("<xmlattr>.container").get_value_or("")),
@@ -96,7 +97,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
 
 //-----------------------------------------------------------------------------
 
-ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
+ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
     id(ext->findConfigurationElement("id")->getValue()),
     title(ext->findConfigurationElement("title")->getValue()),
     description(ext->findConfigurationElement("desc")->getValue()),
@@ -111,7 +112,6 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
         tabInfo = ext->findConfigurationElement("tabinfo")->getValue();
     }
 
-
     ::fwRuntime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
     for(  ::fwRuntime::ConfigurationElementContainer::Iterator elem = req->begin();
           elem != req->end();
@@ -120,11 +120,11 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
         ActivityRequirement requirement( ::fwRuntime::Convert::toPropertyTree(*elem).get_child("requirement") );
         requirements.push_back( requirement );
 
-        MinMaxType &minMax = m_requirementCount[requirement.type];
+        MinMaxType& minMax = m_requirementCount[requirement.type];
 
         minMax.first += requirement.minOccurs;
 
-        if (requirement.maxOccurs <  (std::numeric_limits<unsigned int>::max() - minMax.second) )
+        if (requirement.maxOccurs < (std::numeric_limits<unsigned int>::max() - minMax.second) )
         {
             minMax.second += requirement.maxOccurs;
         }
@@ -180,9 +180,9 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
 
     if(ok)
     {
-        for( const RequirementsMinMaxCount::value_type &reqCount :  m_requirementCount )
+        for( const RequirementsMinMaxCount::value_type& reqCount :  m_requirementCount )
         {
-            const MinMaxType &reqMinMax  = reqCount.second;
+            const MinMaxType& reqMinMax  = reqCount.second;
             DataCountType::iterator iter = dataCounts.find(reqCount.first);
             if (iter != dataCounts.end())
             {
@@ -202,7 +202,7 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
 
         if(ok)
         {
-            for( const DataCountType::value_type &dataCount :  dataCounts )
+            for( const DataCountType::value_type& dataCount :  dataCounts )
             {
                 if(m_requirementCount.find(dataCount.first) == m_requirementCount.end())
                 {
@@ -245,7 +245,9 @@ void Activities::parseBundleInformation()
 
 }
 
-void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) > &extensions)
+//------------------------------------------------------------------------------
+
+void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) >& extensions)
 {
 
     for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
@@ -276,7 +278,7 @@ void Activities::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-bool Activities::hasInfo( const std::string & extensionId ) const
+bool Activities::hasInfo( const std::string& extensionId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
@@ -301,11 +303,11 @@ std::vector< ActivityInfo > Activities::getInfos() const
 
 //-----------------------------------------------------------------------------
 
-ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sptr &data ) const
+ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sptr& data ) const
 {
     ActivityInfo::DataCountType dataCount;
 
-    for( const ::fwData::Object::sptr &obj :  *data)
+    for( const ::fwData::Object::sptr& obj :  * data)
     {
         ++dataCount[obj->getClassname()];
     }
@@ -315,16 +317,16 @@ ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sp
 
 //-----------------------------------------------------------------------------
 
-std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::sptr &data ) const
+std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::sptr& data ) const
 {
     ActivityInfo::DataCountType dataCount = this->getDataCount(data);
     std::vector< ActivityInfo > infos;
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    for( const Registry::value_type &regValue :  m_reg )
+    for( const Registry::value_type& regValue :  m_reg )
     {
-        const ActivityInfo &activity = regValue.second;
+        const ActivityInfo& activity = regValue.second;
         if (activity.usableWith(dataCount))
         {
             infos.push_back(activity);
@@ -352,7 +354,7 @@ std::vector< std::string > Activities::getKeys() const
 
 //-----------------------------------------------------------------------------
 
-const ActivityInfo Activities::getInfo( const std::string & extensionId ) const
+const ActivityInfo Activities::getInfo( const std::string& extensionId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );

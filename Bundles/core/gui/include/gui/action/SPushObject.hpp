@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,8 +13,8 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <set>
 #include <map>
+#include <set>
 
 namespace gui
 {
@@ -39,23 +39,13 @@ class GUI_CLASS_API SPushObject : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SPushObject)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SPushObject)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     GUI_API SPushObject() noexcept;
 
     /// Destructor. Do nothing.
     GUI_API virtual ~SPushObject() noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     * @deprecated
-     *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     */
-    GUI_API virtual KeyConnectionsType getObjSrvConnections() const;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -67,7 +57,6 @@ public:
     GUI_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
-
 
     /// Configure the service.
     virtual void configuring();
@@ -108,5 +97,4 @@ private:
 } // namespace gui
 
 #endif // __GUI_ACTION_SPUSHOBJECT_HPP__
-
 

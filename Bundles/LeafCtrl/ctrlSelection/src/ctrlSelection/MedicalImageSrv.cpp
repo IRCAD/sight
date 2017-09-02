@@ -39,16 +39,7 @@ MedicalImageSrv::~MedicalImageSrv() noexcept
 
 void MedicalImageSrv::convertImage()
 {
-    ::fwData::Image::sptr pImg;
-
-    if (this->isVersion2())
-    {
-        pImg = this->getInOut< ::fwData::Image >("image");
-    }
-    else
-    {
-        pImg = this->getObject< ::fwData::Image >();
-    }
+    ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >("image");
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         ::fwDataTools::helper::Image helper( pImg );

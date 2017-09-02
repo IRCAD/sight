@@ -18,7 +18,7 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor # contains adaptors for the generic scene
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Tuto08GenericScene)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto08GenericScene)

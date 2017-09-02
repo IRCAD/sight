@@ -15,7 +15,7 @@ set( REQUIREMENTS
     visuVTKQt
     vtkSimpleMesh
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)

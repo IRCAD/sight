@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>DicomPreview</id>
     <parameters>
         <param name="ICON_PATH" />

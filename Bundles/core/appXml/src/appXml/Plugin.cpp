@@ -1,14 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "appXml/Plugin.hpp"
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
-
-#include "appXml/Plugin.hpp"
 
 namespace appXml
 {
@@ -17,7 +18,9 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept : m_configurationName(""),m_parametersName("")
+Plugin::Plugin() noexcept :
+    m_configurationName(""),
+    m_parametersName("")
 {
 }
 
@@ -55,7 +58,7 @@ void Plugin::initialize()
     }
     else
     {
-        const ::fwServices::registry::FieldAdaptorType & fields =
+        const ::fwServices::registry::FieldAdaptorType& fields =
             ::fwServices::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
@@ -75,6 +78,7 @@ void Plugin::uninitialize() noexcept
 {
     SLM_ASSERT("The OSR is not initialized.", m_appConfigMng );
     m_appConfigMng->stopAndDestroy();
+    m_appConfigMng.reset();
 }
 
 //------------------------------------------------------------------------------

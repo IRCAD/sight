@@ -66,7 +66,7 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
 
 // to give to OSR an access on IService.m_associatedObject;
 friend class registry::ObjectService;
-friend class AppConfigManager2;
+friend class AppConfigManager;
 
 public:
     fwCoreServiceClassDefinitionsMacro( (IService)(::fwTools::Object) );
@@ -516,10 +516,6 @@ public:
      */
     FWSERVICES_API friend std::ostream& operator<<(std::ostream& _sstream, IService& _service);
 
-    /** Set/get the version of the service. Temporary, this should be removed when appXml is gone. */
-    FWSERVICES_API static void setVersion(int version);
-    FWSERVICES_API static bool isVersion2();
-
     /**
      * @brief Return the id of the object, throw if it is not found
      */
@@ -752,11 +748,6 @@ private:
      * @brief Defines if the service is configured or not.
      */
     ConfigurationStatus m_configurationState;
-
-    /**
-     * @brief Defines if the service is part of a version 1 or a version 2 application.
-     */
-    static int s_version;
 
     /**
      * @brief Defines the configuration of the objects. Used for autoConnect.

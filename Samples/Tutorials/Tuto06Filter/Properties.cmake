@@ -15,7 +15,7 @@ set( REQUIREMENTS
     vtkSimpleNegato
     opImageFilter # bundle containing the action to performs a threshold
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES FilterConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES FilterConfig)

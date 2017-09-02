@@ -84,15 +84,6 @@ public:
      * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
      * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
-     * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
-     */
     UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:

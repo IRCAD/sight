@@ -48,7 +48,7 @@ IHasServices::~IHasServices() noexcept
 
 void IHasServices::unregisterService(const fwTools::fwID::IDType& _id)
 {
-    for(auto itSrv = m_subServices.cbegin(); itSrv != m_subServices.cend(); )
+    for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
     {
         const ::fwServices::IService::sptr& service = itSrv->lock();
         if(service && (service->getID() == _id))

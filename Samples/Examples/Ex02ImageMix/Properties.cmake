@@ -20,7 +20,7 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex02ImageMix)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02ImageMix)

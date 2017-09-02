@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,7 +60,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
     const std::string GET_OBJECT        = "ref";
 
     ::fwData::List::sptr dataList = ::fwData::List::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a fwData::List",dataList);
+    SLM_ASSERT("The passed object must be a fwData::List", dataList);
 
     for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -69,7 +69,6 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 
             // Test build mode
             std::string buildMode = BUILD_OBJECT;
-
 
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
@@ -84,14 +83,8 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 
                 // Create and manage object config
                 ::fwServices::IAppConfigManager::sptr ctm = ::fwServices::IAppConfigManager::New();
-                if( ::fwServices::IService::isVersion2())
-                {
-                    ctm->::fwServices::IAppConfigManager::setConfig( elem );
-                }
-                else
-                {
-                    ctm->::fwServices::IAppConfigManager::setConfig( *( elem->getElements().begin() ) );
-                }
+                ctm->::fwServices::IAppConfigManager::setConfig( elem );
+
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
                 ::fwData::Object::sptr localObj = ctm->getConfigRoot();
@@ -154,5 +147,4 @@ void List::destroyConfig()
 
 } //namespace parser
 } //namespace dataReg
-
 

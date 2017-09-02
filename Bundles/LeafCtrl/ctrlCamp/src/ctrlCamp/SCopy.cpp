@@ -44,39 +44,21 @@ void SCopy::configuring()
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     m_hasExtractTag = false;
-    if(!this->isVersion2())
+    const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
+    SLM_ASSERT("One 'in' tag is required.", inCfg);
+
+    const std::vector< ConfigurationType > inoutCfg = m_configuration->find("inout");
+    const std::vector< ConfigurationType > outCfg   = m_configuration->find("out");
+    SLM_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() +  outCfg.size() == 1);
+
+    const std::vector< ConfigurationType > extractCfg = inCfg->find("extract");
+    SLM_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
+    if (extractCfg.size() == 1)
     {
-        const ConfigurationType srcConfig = m_configuration->findConfigurationElement("source");
-        SLM_ASSERT("element 'source' is missing.", srcConfig);
-        m_source = srcConfig->getValue();
-        SLM_ASSERT("Missing source.", srcConfig->getValue() != "");
-
-        const ConfigurationType tgtConfig = m_configuration->findConfigurationElement("target");
-        if (tgtConfig)
-        {
-            m_target = tgtConfig->getValue();
-
-        }
-    }
-    else
-    {
-        const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
-        SLM_ASSERT("One 'in' tag is required.", inCfg);
-
-        const std::vector< ConfigurationType > inoutCfg = m_configuration->find("inout");
-        const std::vector< ConfigurationType > outCfg   = m_configuration->find("out");
-        SLM_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() +  outCfg.size() == 1);
-
-        const std::vector< ConfigurationType > extractCfg = inCfg->find("extract");
-        SLM_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
-        if (extractCfg.size() == 1)
-        {
-            ConfigurationType cfg = extractCfg[0];
-            SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
-            m_path          = cfg->getAttributeValue("from");
-            m_hasExtractTag = true;
-        }
-
+        ConfigurationType cfg = extractCfg[0];
+        SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+        m_path          = cfg->getAttributeValue("from");
+        m_hasExtractTag = true;
     }
 
     const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
@@ -139,17 +121,10 @@ void SCopy::copy()
     ::fwData::Object::csptr source;
     if (m_target.empty())
     {
-        if(this->isVersion2())
+        target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
+        if(!target)
         {
-            target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
-            if(!target)
-            {
-                create = true;
-            }
-        }
-        else
-        {
-            target = this->getObject< ::fwData::Object >();
+            create = true;
         }
     }
     else
@@ -174,44 +149,32 @@ void SCopy::copy()
     }
     else
     {
-        if(this->isVersion2())
+        ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+        if (m_hasExtractTag)
         {
-            ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
-            if (m_hasExtractTag)
+            ::fwData::Object::sptr object;
+            try
             {
-                ::fwData::Object::sptr object;
-                try
-                {
-                    object = ::fwDataCamp::getObject( sourceObject, m_path, true );
-                }
-                catch(::fwDataCamp::exception::ObjectNotFound& nf)
-                {
-                    SLM_WARN("Object from '"+ m_path +"' not found");
-                }
-                catch(std::exception& e)
-                {
-                    OSLM_FATAL("Unhandled exception: " << e.what());
-                }
-
-                SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
-                if(object)
-                {
-                    source = object;
-                }
+                object = ::fwDataCamp::getObject( sourceObject, m_path, true );
             }
-            else
+            catch(::fwDataCamp::exception::ObjectNotFound& nf)
             {
-                source = sourceObject;
+                SLM_WARN("Object from '"+ m_path +"' not found");
+            }
+            catch(std::exception& e)
+            {
+                OSLM_FATAL("Unhandled exception: " << e.what());
+            }
+
+            SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
+            if(object)
+            {
+                source = object;
             }
         }
         else
         {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_source);
-            SLM_ASSERT("Object '" + m_source + "' is not found", obj);
-            source = ::fwData::Object::dynamicCast(obj);
-            SLM_ERROR_IF(
-                "Object '" + m_source + "' is not a valid fwData::Object (" + obj->getClassname() + ") or does not exist",
-                !source);
+            source = sourceObject;
         }
     }
 

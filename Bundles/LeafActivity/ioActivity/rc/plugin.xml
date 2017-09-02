@@ -41,7 +41,7 @@
     </extension>
 
     <!-- App config used to export the selected series. -->
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
         <parameters>
             <param name="selection" />

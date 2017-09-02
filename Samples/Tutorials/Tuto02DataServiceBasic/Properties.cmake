@@ -14,7 +14,7 @@ set( REQUIREMENTS
     visuVTKQt # containsthe vtk Renderer window interactor manager using Qt.
     vtkSimpleNegato # contains a visualization service of medical image.
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoDataServiceBasicConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoDataServiceBasicConfig)

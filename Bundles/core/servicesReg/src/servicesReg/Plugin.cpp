@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/AppConfig2.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -35,7 +34,6 @@ void Plugin::start()
     ::fwServices::registry::ServiceFactory::getDefault()->parseBundleInformation();
     ::fwServices::registry::ServiceConfig::getDefault()->parseBundleInformation();
     ::fwServices::registry::AppConfig::getDefault()->parseBundleInformation();
-    ::fwServices::registry::AppConfig2::getDefault()->parseBundleInformation();
     ::fwServices::registry::AppConfigParameters::getDefault()->parseBundleInformation();
 
     ::fwThread::createDefaultPool();

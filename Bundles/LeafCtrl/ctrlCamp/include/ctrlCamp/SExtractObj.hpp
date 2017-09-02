@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,10 +12,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
-
-
+#include <fwServices/macros.hpp>
 
 namespace ctrlCamp
 {
@@ -53,7 +51,7 @@ class CTRLCAMP_CLASS_API SExtractObj : public ::ctrlCamp::ICamp
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SExtractObj)(::ctrlCamp::ICamp) );
+    fwCoreServiceClassDefinitionsMacro( (SExtractObj)(::ctrlCamp::ICamp) );
 
     typedef std::map<std::string, std::string> ExtractMapType;
 
@@ -65,12 +63,6 @@ public:
 
 protected:
 
-    enum class ModeType : std::int8_t
-    {
-        START,
-        UPDATE,
-    };
-
     /// Does nothing
     CTRLCAMP_API virtual void starting();
 
@@ -80,26 +72,18 @@ protected:
     /// Does nothing
     CTRLCAMP_API virtual void stopping();
 
-    /// Does nothing
+    /// Extract the object(s)
     CTRLCAMP_API virtual void updating();
 
 private:
-
-    /// Extract method
-    void extract();
 
     /// Map to associate \<from, to\> for object extraction
     ExtractMapType m_extract;
 
     /// Vector to associate source paths
     std::vector<std::string> m_sourcePaths;
-
-    /// Determine when the data is copied (start or update)
-    /// @deprecated no longer needed with appXml2
-    ModeType m_mode;
 };
 
 } // namespace ctrlCamp
-
 
 #endif /* __CTRLCAMP_SEXTRACTOBJ_HPP__ */

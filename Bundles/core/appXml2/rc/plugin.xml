@@ -1,7 +1,0 @@
-<plugin id="appXml2" class="::appXml2::Plugin" version="@DASH_VERSION@" >
-
-    <library name="appXml2" />
-    <requirement id="servicesReg" />
-    <requirement id="dataReg" />
-
-</plugin>

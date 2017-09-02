@@ -131,15 +131,7 @@ void SSelector::stopping()
 
 void SSelector::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB;
-    if (this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
 
     m_selectorWidget->clear();
 
@@ -154,14 +146,6 @@ void SSelector::updating()
 void SSelector::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
-
-    if(!this->isVersion2())
-    {
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionCfg = m_configuration->find("selectionId");
-        SLM_ASSERT("Missing tag 'selectionId'", !selectionCfg.empty());
-        m_selectionId = selectionCfg.front()->getValue();
-        SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
-    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg = m_configuration->find("selectionMode");
     if(!selectionModeCfg.empty())
@@ -296,15 +280,7 @@ void SSelector::onDoubleClick(const QModelIndex& index)
 
 void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB;
-    if (this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
     ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Remove duplicated series
@@ -328,18 +304,7 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 
 ::fwData::Vector::sptr SSelector::getSelection()
 {
-    ::fwData::Vector::sptr selection;
-    if(this->isVersion2())
-    {
-        selection = this->getInOut< ::fwData::Vector >("selection");
-    }
-    else
-    {
-        SLM_ASSERT("Object " << m_selectionId << " doesn't exist", ::fwTools::fwID::exist(m_selectionId));
-
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_selectionId);
-        selection                   = ::fwData::Vector::dynamicCast(obj);
-    }
+    ::fwData::Vector::sptr selection = this->getInOut< ::fwData::Vector >("selection");
     SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
 
     return selection;
@@ -363,17 +328,6 @@ void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
     {
         m_selectorWidget->removeSeries(series);
     }
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType SSelector::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT ) );
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------

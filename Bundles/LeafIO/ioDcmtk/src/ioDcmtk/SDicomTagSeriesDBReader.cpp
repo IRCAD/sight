@@ -148,15 +148,7 @@ void SDicomTagSeriesDBReader::updating()
             if( seriesDB->size() > 0 )
             {
                 // Retrieve dataStruct associated with this service
-                ::fwMedData::SeriesDB::sptr associatedSeriesDB;
-                if(this->isVersion2())
-                {
-                    associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-                }
-                else
-                {
-                    associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-                }
+                auto associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
                 associatedSeriesDB->shallowCopy( seriesDB );
 
                 ::fwGui::Cursor cursor;
@@ -183,17 +175,7 @@ void SDicomTagSeriesDBReader::updating()
 
 void SDicomTagSeriesDBReader::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::csptr seriesDB;
-    if(this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
-
+    ::fwMedData::SeriesDB::csptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;
