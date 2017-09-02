@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwServices
 )
 set( REQUIREMENTS
-    appXml2
+    appXml
     dataReg
     arDataReg
     servicesReg
@@ -15,4 +15,4 @@ set( REQUIREMENTS
     console
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex02TimeLineConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02TimeLineConfig)

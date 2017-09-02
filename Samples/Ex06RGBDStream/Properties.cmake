@@ -6,7 +6,7 @@ set( UNIQUE TRUE )
 set( DEPENDENCIES )
 
 set( REQUIREMENTS
-    appXml2
+    appXml
     fwlauncher
 
     arDataReg
@@ -31,4 +31,4 @@ set( REQUIREMENTS
     media
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex06RGBDStream)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex06RGBDStream)

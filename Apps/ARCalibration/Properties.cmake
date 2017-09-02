@@ -30,7 +30,7 @@ set( REQUIREMENTS
     calibrationActivity
     trackedCameraRegistrationActivity
 
-    appXml2
+    appXml
     fwlauncher
     memory
 
@@ -38,4 +38,4 @@ set( REQUIREMENTS
     uiPreferences
     )
 
-bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)

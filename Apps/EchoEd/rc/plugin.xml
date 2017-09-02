@@ -5,7 +5,7 @@
     <requirement id="preferences" />
     <requirement id="visuVTKQt" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/cameraView.xml" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>EchoEdConfig</id>
         <config>
             <object uid="seriesDB" type="::fwMedData::SeriesDB" />
@@ -48,7 +48,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>EchoEdView</id>
         <parameters>
             <param name="modelSeries" />

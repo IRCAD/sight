@@ -5,7 +5,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="visuVTKARAdaptor" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex06RGBDStream</id>
         <config>
             <object uid="frameTLVideo" type="::arData::FrameTL" />

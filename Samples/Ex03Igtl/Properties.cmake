@@ -10,7 +10,7 @@ set( REQUIREMENTS
     guiQt
     servicesReg
     fwlauncher
-    appXml2
+    appXml
     visuVTK
     visuVTKQt
     visuVTKAdaptor
@@ -25,4 +25,4 @@ set( REQUIREMENTS
     uiPreferences
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex03IgtlConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03IgtlConfig)

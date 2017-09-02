@@ -6,7 +6,7 @@
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
     <requirement id="preferences" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04SimpleARCVConfig</id>
         <config>
             <!-- objects declarations -->

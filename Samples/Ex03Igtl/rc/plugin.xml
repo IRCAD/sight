@@ -3,7 +3,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex03IgtlConfig</id>
         <config>
             <object uid="objectMeshUid" type="::fwData::Mesh" />
