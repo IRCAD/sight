@@ -24,7 +24,7 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     fwlauncher
-    appXml2
+    appXml
     activities
     arMedia
     arDataReg
@@ -41,4 +41,4 @@ set( REQUIREMENTS
     imageConfig
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)

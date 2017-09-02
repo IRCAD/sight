@@ -28,7 +28,7 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>OgreViewer_Extension</id>
         <config>
 

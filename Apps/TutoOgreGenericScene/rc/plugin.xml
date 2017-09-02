@@ -2,7 +2,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>TutoOgreGenericScene</id>
         <config>
             <object uid="image" type="::fwData::Image" />

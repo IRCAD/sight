@@ -6,7 +6,7 @@ set( DEPENDENCIES )
 set( REQUIREMENTS
     io
     ioVTK
-    appXml2
+    appXml
     gui
     guiQt
     ctrlSelection
@@ -26,4 +26,4 @@ set( REQUIREMENTS
     material
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES TutoOgreGenericScene)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoOgreGenericScene)

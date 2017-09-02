@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>OgreIDVR</id>
     <parameters>
         <param name="WID_PARENT" />
