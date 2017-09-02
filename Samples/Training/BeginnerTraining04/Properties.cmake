@@ -12,10 +12,10 @@ set( REQUIREMENTS
     ioVTK
     uiIO
     fwlauncher
-    appXml2
+    appXml
     beginnerTraining
     visuVTKQt
     visuVTKAdaptor
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES BeginnerTraining04Config)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES BeginnerTraining04Config)

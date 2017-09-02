@@ -22,7 +22,7 @@ set( REQUIREMENTS
     uiIO
     uiGenericQt
     uiMedDataQt
-    appXml2
+    appXml
     activities
     ctrlSelection
 
@@ -37,4 +37,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES PoCRegistrationBase PoCRegistrationAppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES PoCRegistrationBase PoCRegistrationAppBase)

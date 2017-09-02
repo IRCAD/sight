@@ -6,7 +6,7 @@
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/manualRegistrationEditorConfig.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/camViewManagerConfig.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/worldViewConfig.xml" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>PoCMeshManualRegistration</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->

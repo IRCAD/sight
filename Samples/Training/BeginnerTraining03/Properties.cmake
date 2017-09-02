@@ -10,8 +10,8 @@ set( REQUIREMENTS
     guiQt
     io
     fwlauncher
-    appXml2
+    appXml
     beginnerTraining
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES BeginnerTraining03Config)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES BeginnerTraining03Config)

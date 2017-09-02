@@ -21,9 +21,9 @@ set( REQUIREMENTS
     uiVisuQt
     ctrlSelection
     ioAtoms
-    appXml2
+    appXml
     scene2D
     uiTF
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES pocScene2DTFConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES pocScene2DTFConfig)

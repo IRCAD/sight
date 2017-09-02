@@ -3,7 +3,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>pocScene2DTFConfig</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
