@@ -94,12 +94,10 @@ void SPushField::updating()
 
 void SPushField::updateObjects()
 {
-    bool executable = true;
-
     ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
-    executable = (objectSrc->getField(m_field) != nullptr);
+    const bool executable = (objectSrc->getField(m_field) != nullptr);
 
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 }

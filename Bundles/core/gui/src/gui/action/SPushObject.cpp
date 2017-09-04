@@ -103,12 +103,10 @@ void SPushObject::updating()
 
 void SPushObject::updateObjects()
 {
-    bool executable = true;
-
     ::fwData::Composite::sptr compositeSrc = this->getInOut< ::fwData::Composite >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
-    executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
+    const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
     OSLM_TRACE("start check : " << compositeSrc->getID() << "[" << m_srcKey << "] : " <<
                (compositeSrc->find(m_srcKey) != compositeSrc->end()) );
 

@@ -71,7 +71,7 @@ void SPdfWriter::configuring()
         for (const auto& cfg : containersCfg)
         {
             SLM_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
-            std::string id = cfg->getAttributeValue("uid");
+            const std::string id = cfg->getAttributeValue("uid");
             m_containersIDs.push_back( id );
         }
     }

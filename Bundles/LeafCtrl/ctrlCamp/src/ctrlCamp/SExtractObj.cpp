@@ -80,11 +80,11 @@ void SExtractObj::updating()
         {
             object = ::fwDataCamp::getObject( sourceObject, from, true );
         }
-        catch(::fwDataCamp::exception::NullPointer& np)
+        catch(::fwDataCamp::exception::NullPointer&)
         {
             this->setOutput("target", nullptr, index);
         }
-        catch(::fwDataCamp::exception::ObjectNotFound& nf)
+        catch(::fwDataCamp::exception::ObjectNotFound&)
         {
             SLM_WARN("Object from '"+ from +"' not found");
         }

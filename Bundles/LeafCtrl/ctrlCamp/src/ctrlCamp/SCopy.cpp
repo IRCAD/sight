@@ -157,7 +157,7 @@ void SCopy::copy()
             {
                 object = ::fwDataCamp::getObject( sourceObject, m_path, true );
             }
-            catch(::fwDataCamp::exception::ObjectNotFound& nf)
+            catch(::fwDataCamp::exception::ObjectNotFound&)
             {
                 SLM_WARN("Object from '"+ m_path +"' not found");
             }

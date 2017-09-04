@@ -71,8 +71,8 @@ void SExtractMeshByType::configuring()
 
     for(ConfigType cfg : extractCfg)
     {
-        std::string type  = cfg->getAttributeValue("type");
-        std::string regex = cfg->getAttributeValue("matching");
+        const std::string type  = cfg->getAttributeValue("type");
+        const std::string regex = cfg->getAttributeValue("matching");
 
         m_extract.push_back(std::make_pair(type, regex));
     }
@@ -94,18 +94,18 @@ void SExtractMeshByType::updating()
     size_t index = 0;
     for(const auto& elt : m_extract)
     {
-        std::string type  = elt.first;
-        std::string regex = elt.second;
+        const std::string type  = elt.first;
+        const std::string regex = elt.second;
 
-        bool found = false;
-        ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
-        for(::fwData::Reconstruction::sptr element : recs)
+        bool found                                                    = false;
+        const ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+        for(const ::fwData::Reconstruction::csptr element : recs)
         {
             if(element->getCRefStructureType() == type)
             {
-                ::boost::regex regSurface(regex);
+                const ::boost::regex regSurface(regex);
                 ::boost::smatch match;
-                std::string name = element->getOrganName();
+                const std::string name = element->getOrganName();
 
                 if(regex.empty() || ::boost::regex_match(name, match, regSurface))
                 {
