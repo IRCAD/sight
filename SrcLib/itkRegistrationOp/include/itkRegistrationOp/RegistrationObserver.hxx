@@ -77,7 +77,7 @@ void RegistrationObserver<OptimizerType>::Execute(const itk::Object* object, con
         {
             const OptimizerType* optimizer = dynamic_cast< const OptimizerType* >( object );
 
-            const unsigned int itNum = optimizer->GetCurrentIteration() + 1;
+            const unsigned int itNum = static_cast<unsigned int>(optimizer->GetCurrentIteration()) + 1;
 
             std::string msg = "Number of iterations : " + std::to_string(itNum);
             m_dialog(static_cast<float>(itNum)/static_cast<float>(m_maxIters), msg);

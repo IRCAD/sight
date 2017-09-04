@@ -64,7 +64,7 @@ struct ItkImageCaster
         typedef typename ::itk::Image<INPUT_PIXELTYPE, 3> InputImageType;
 
         // Convert to ITK.
-        InputImageType::Pointer tmp = ::fwItkIO::itkImageFactory< InputImageType >(p.i_img);
+        typename InputImageType::Pointer tmp = ::fwItkIO::itkImageFactory< InputImageType >(p.i_img);
 
         // Cast to the desired pixel type.
         auto castFilter = ::itk::CastImageFilter<InputImageType, OutputImageType>::New();
