@@ -80,7 +80,7 @@ public:
     using ConfiguredCamerasSignalType = ::fwCom::Signal<void()>;
 
     /// Key of the 'configuredCameras' signal
-    static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
 
 protected:
 
