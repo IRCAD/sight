@@ -42,7 +42,7 @@ void IAdaptor::info(std::ostream& _sstream )
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
     m_layerID = config.get<std::string>("layer");
 }
 

@@ -122,10 +122,10 @@ void SMaterial::loadMaterialParameters()
             srv->setRenderService(this->getRenderService());
 
             ::fwServices::IService::ConfigType config;
-            config.add("service.config.<xmlattr>.layer", m_layerID);
-            config.add("service.config.<xmlattr>.parameter", constantName);
-            config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
-            config.add("service.config.<xmlattr>.materialName", m_materialName);
+            config.add("config.<xmlattr>.layer", m_layerID);
+            config.add("config.<xmlattr>.parameter", constantName);
+            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+            config.add("config.<xmlattr>.materialName", m_materialName);
 
             srv->setConfiguration(config);
             srv->configure();
@@ -171,7 +171,7 @@ void SMaterial::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     if(config.count("materialTemplate"))
     {

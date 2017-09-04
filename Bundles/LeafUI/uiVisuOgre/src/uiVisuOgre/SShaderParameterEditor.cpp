@@ -205,7 +205,7 @@ void SShaderParameterEditor::updateGuiInfo()
 
             if(!paramConfig.empty())
             {
-                editorConfig.add_child("service.parameters.param", paramConfig);
+                editorConfig.add_child("parameters.param", paramConfig);
             }
         }
     }

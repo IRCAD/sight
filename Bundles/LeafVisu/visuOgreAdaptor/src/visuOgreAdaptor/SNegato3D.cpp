@@ -68,7 +68,7 @@ void SNegato3D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // Axis orientation mode by default
     m_orientation = OrientationMode::Z_AXIS;

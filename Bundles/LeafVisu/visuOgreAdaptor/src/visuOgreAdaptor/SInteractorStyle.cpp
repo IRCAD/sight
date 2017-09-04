@@ -57,7 +57,7 @@ void SInteractorStyle::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     SLM_ASSERT("Interactor style not found, config must be 'Trackball', 'Fixed', 'Negato2D', 'Mesh', 'Video', or 'VR'",
                config.count("style"));

@@ -281,10 +281,10 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                             shaderParamService->setRenderService(_renderService);
 
                             ::fwServices::IService::ConfigType config;
-                            config.add("service.config.<xmlattr>.layer", _layerId);
-                            config.add("service.config.<xmlattr>.compositorName", _compositorName);
-                            config.add("service.config.<xmlattr>.parameter", constantName);
-                            config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
+                            config.add("config.<xmlattr>.layer", _layerId);
+                            config.add("config.<xmlattr>.compositorName", _compositorName);
+                            config.add("config.<xmlattr>.parameter", constantName);
+                            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
 
                             shaderParamService->setConfiguration(config);
                             shaderParamService->configure();

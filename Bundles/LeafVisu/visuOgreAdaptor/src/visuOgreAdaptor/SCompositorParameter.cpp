@@ -89,7 +89,7 @@ void SCompositorParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_compositorName = config.get<std::string>("compositorName", "");
     OSLM_ERROR_IF("'compositorName' attribute not set", m_compositorName.empty());
