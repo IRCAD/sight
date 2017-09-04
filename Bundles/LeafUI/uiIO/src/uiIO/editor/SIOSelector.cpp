@@ -337,8 +337,14 @@ void SIOSelector::updating()
             }
             else
             {
-                ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( extensionId );
-                writer->registerInput(this->getObject(), ::io::s_DATA_KEY);
+                // When all writers make use of getObject(), we can use the following code instead:
+                //      ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( extensionId );
+                //      writer->registerInput(this->getObject(), ::io::s_DATA_KEY);
+
+                auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+                ::io::IWriter::sptr writer = ::io::IWriter::dynamicCast(factory->create( "::io::IWriter", extensionId));
+                ::fwServices::OSR::registerService(this->getObject(), ::io::s_DATA_KEY,
+                                                   ::fwServices::IService::AccessType::INPUT, writer);
 
                 writer->setWorker(m_associatedWorker);
 
