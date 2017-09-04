@@ -43,19 +43,13 @@ void SConcatenateMatrices::configuring()
 
     for(ConfigurationType cfg : matrixCfgs)
     {
-        TransformMatrix currentMatrix;
+        bool invertCurrentMatrix  = false;
         const std::string inverse = cfg->getAttributeValue("inverse");
         if(!inverse.empty())
         {
-            currentMatrix.m_inverse = (inverse == "true");
+            invertCurrentMatrix = (inverse == "true");
         }
-        else
-        {
-            currentMatrix.m_inverse = false;
-        }
-
-        currentMatrix.m_connect = false; // Unused with appXml
-        m_matrixVector.push_back(currentMatrix);
+        m_invertVector.push_back(invertCurrentMatrix);
     }
 }
 
@@ -84,12 +78,12 @@ void SConcatenateMatrices::updating()
         auto inverse = ::fwData::TransformationMatrix3D::New();
 
         size_t index = 0;
-        for( TransformMatrix currentMatrix : m_matrixVector)
+        for( const bool invertCurrentMatrix : m_invertVector)
         {
             auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index++);
             ::fwData::mt::ObjectReadLock inputMatrixLock(inputMatrix);
 
-            if( currentMatrix.m_inverse )
+            if( invertCurrentMatrix )
             {
                 ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
                 ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
