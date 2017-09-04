@@ -9,8 +9,6 @@
         <param name="patient_name" default="" />
     </parameters>
     <config>
-        <object uid="myComposite" type="::fwData::Composite" />
-        <object uid="viewport" type="::scene2D::data::Viewport" />
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="${myImage}" type="::fwData::Image" src="ref" />
         <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
@@ -152,7 +150,7 @@
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-            <inout key="image" uid="${myImage}" />
+            <in key="image" uid="${myImage}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
         </service>
