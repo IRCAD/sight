@@ -58,7 +58,7 @@ void SCurvedHistogram::configuring()
 {
     this->configureParams();  // Looks for 'xAxis', 'yAxis', 'opacity' and 'zValue'
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_innerColor  = QPen( Qt::transparent );
     m_borderColor = QPen( Qt::transparent );

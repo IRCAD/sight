@@ -49,9 +49,9 @@ void GuiQtTest::testDefaultFrame()
 
     ::fwServices::IService::ConfigType frameConfig;
 
-    frameConfig.put("service.gui.frame.name", "guiQtUnitTest");
-    frameConfig.put("service.gui.frame.minSize.<xmlattr>.width", "800");
-    frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
+    frameConfig.put("gui.frame.name", "guiQtUnitTest");
+    frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
+    frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv",

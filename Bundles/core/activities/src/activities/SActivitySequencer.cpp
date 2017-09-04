@@ -76,7 +76,7 @@ SActivitySequencer::~SActivitySequencer() noexcept
 
 void SActivitySequencer::configuring()
 {
-    const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
     BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v,  config.equal_range("activity") )
     {
         m_activityIds.push_back(v.second.get<std::string>(""));

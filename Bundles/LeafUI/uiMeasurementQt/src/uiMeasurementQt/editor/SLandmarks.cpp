@@ -85,7 +85,7 @@ void SLandmarks::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_defaultLandmarkSize = config.get_optional<float>("size").get_value_or(10.0);
     OSLM_FATAL_IF(

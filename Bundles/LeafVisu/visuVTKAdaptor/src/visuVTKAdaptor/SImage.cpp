@@ -144,7 +144,7 @@ void SImage::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     this->setVtkImageRegisterId( config.get<std::string>("vtkimageregister", ""));
 

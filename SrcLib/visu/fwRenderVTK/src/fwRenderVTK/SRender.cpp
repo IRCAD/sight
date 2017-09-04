@@ -244,7 +244,7 @@ void SRender::configuring()
         this->initialize();
     }
 
-    m_sceneConf = srvConf.get_child("service.scene");
+    m_sceneConf = srvConf.get_child("scene");
 
     const std::string& renderMode = m_sceneConf.get("<xmlattr>.renderMode", "auto");
 
@@ -281,7 +281,7 @@ void SRender::configuring()
     }
 
     /// Target frame rate (default 30Hz)
-    const unsigned int targetFrameRate = srvConf.get<unsigned int>("service.fps", 30);
+    const unsigned int targetFrameRate = srvConf.get<unsigned int>("fps", 30);
 
     if(m_renderMode == RenderMode::TIMER)
     {

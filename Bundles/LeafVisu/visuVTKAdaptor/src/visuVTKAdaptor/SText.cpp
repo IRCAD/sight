@@ -62,7 +62,7 @@ void SText::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvconfig = this->getConfigTree().get_child("service");
+    const ConfigType srvconfig = this->getConfigTree();
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
     std::string text = config.get<std::string>("text", "");

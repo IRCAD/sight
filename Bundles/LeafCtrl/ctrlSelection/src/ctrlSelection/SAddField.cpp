@@ -33,7 +33,7 @@ SAddField::~SAddField() noexcept
 
 void SAddField::configuring()
 {
-    auto srvConfig = this->getConfigTree().get_child("service");
+    auto srvConfig = this->getConfigTree();
 
     BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, srvConfig.equal_range("inout"))
     {

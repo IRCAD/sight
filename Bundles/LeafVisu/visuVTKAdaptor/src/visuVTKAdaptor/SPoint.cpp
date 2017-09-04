@@ -175,7 +175,7 @@ void SPoint::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string hexaSelectedColor = config.get<std::string>("selectedColor", "");
     m_ptSelectedColor = ::fwData::Color::New();

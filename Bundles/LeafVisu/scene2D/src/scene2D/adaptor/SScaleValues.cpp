@@ -46,7 +46,7 @@ void SScaleValues::configuring()
 {
     this->configureParams();  // xAxis, yAxis, zValue, opacity
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // Set the min/max values
     SLM_ASSERT("'min' atttribute is missing.", config.count("min"));

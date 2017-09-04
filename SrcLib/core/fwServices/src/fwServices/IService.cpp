@@ -211,7 +211,10 @@ void IService::setConfiguration( const ConfigType& ptree )
 {
     ::fwRuntime::ConfigurationElement::sptr ce;
 
-    ce = ::fwRuntime::Convert::fromPropertyTree(ptree);
+    ConfigType serviceConfig;
+    serviceConfig.add_child("service", ptree);
+
+    ce = ::fwRuntime::Convert::fromPropertyTree(serviceConfig);
 
     SLM_ASSERT( "Invalid ConfigurationElement", ce );
 
@@ -229,7 +232,7 @@ void IService::setConfiguration( const ConfigType& ptree )
 
 IService::ConfigType IService::getConfigTree() const
 {
-    return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
+    return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration()).get_child("service");
 }
 
 //-----------------------------------------------------------------------------

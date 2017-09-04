@@ -51,7 +51,7 @@ void SHistogram::configuring()
 {
     this->configureParams();  // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_scale = m_yAxis->getScale();
 

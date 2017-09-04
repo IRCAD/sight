@@ -84,7 +84,7 @@ void SLine::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_length = config.get("length", 1.f);
     m_width  = config.get("width", 1.f);

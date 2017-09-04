@@ -48,14 +48,14 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
     ::fwServices::IService::ConfigType srvCfg;
     const ::fwServices::IService::ConfigType* curConfig = &config;
 
-    const ::fwServices::IService::ConfigType& oldConfig = config.get_child("service");
+    const ::fwServices::IService::ConfigType& oldConfig = config;
     SLM_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1 );
 
     const ::fwServices::IService::ConfigType& appConfig = oldConfig.get_child("appConfig");
     const std::string appCfgId                          = appConfig.get<std::string>("<xmlattr>.id");
 
-    srvCfg.add("service.config.appConfig.<xmlattr>.id", appCfgId);
-    ::fwServices::IService::ConfigType& newCfg = srvCfg.get_child("service.config.appConfig");
+    srvCfg.add("config.appConfig.<xmlattr>.id", appCfgId);
+    ::fwServices::IService::ConfigType& newCfg = srvCfg.get_child("config.appConfig");
     curConfig                                  = &srvCfg;
 
     auto inoutsCfg = oldConfig.equal_range("inout");
@@ -103,9 +103,9 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         newCfg.add_child("parameters.parameter", parameterCfg);
     }
 
-    SLM_ASSERT("There must be only one <config/> element.", curConfig->get_child("service").count("config") == 1 );
+    SLM_ASSERT("There must be only one <config/> element.", curConfig->count("config") == 1 );
 
-    const ::fwServices::IService::ConfigType& srvconfig = curConfig->get_child("service.config");
+    const ::fwServices::IService::ConfigType& srvconfig = curConfig->get_child("config");
 
     SLM_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1 );
 

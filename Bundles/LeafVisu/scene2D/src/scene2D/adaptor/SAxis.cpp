@@ -61,7 +61,7 @@ void SAxis::configuring()
 {
     this->configureParams();  // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // 'color'
     if (config.count("color"))

@@ -69,9 +69,9 @@ void SVTKMesher::configuring()
 {
     const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
 
-    SLM_ASSERT("You must have one <config/> element.", srvConfig.get_child("service").count("config") == 1 );
+    SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
 
-    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("service.config");
+    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("config");
 
     SLM_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
     const ::fwServices::IService::ConfigType& reductionCfg = config.get_child("percentReduction");

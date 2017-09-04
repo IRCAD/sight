@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,13 +13,12 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <fwServices/macros.hpp>
 
+#include <fwTools/fwID.hpp>
 
-#include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace ctrlSelection
 {
@@ -90,7 +89,7 @@ void STranslate::stopping()
 
 void STranslate::configuring()
 {
-    const ::fwServices::IService::ConfigType conf = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType conf = this->getConfigTree();
 
     if (conf.count("source"))
     {

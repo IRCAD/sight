@@ -257,7 +257,7 @@ void SImageSliceOrientationText::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvconfig = this->getConfigTree().get_child("service.config");
+    const ConfigType srvconfig = this->getConfigTree().get_child("config");
 
     m_locations = srvconfig.get("locations", "");
 

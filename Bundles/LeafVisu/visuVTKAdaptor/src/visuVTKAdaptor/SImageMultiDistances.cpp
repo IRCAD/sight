@@ -179,7 +179,7 @@ void SImageMultiDistances::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string filter = config.get<std::string>("filter", "false");
     SLM_ASSERT("'filter' value must be 'true' or 'false'", filter == "true" || filter == "false");

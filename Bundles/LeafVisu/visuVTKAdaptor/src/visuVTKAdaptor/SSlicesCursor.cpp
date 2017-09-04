@@ -91,7 +91,7 @@ void SSlicesCursor::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_scale = config.get<float>("scale", 0.5f);
 }
