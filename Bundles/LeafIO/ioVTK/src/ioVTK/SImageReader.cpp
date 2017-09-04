@@ -74,7 +74,7 @@ void SImageReader::configureWithIHM()
 
     if(ext.size() > 0)
     {
-        availableExtensions = ext.at(0);
+        availableExtensions = "*" + ext.at(0);
         for(int i = 1; i < ext.size(); i++)
         {
             availableExtensions = availableExtensions + " *" + ext.at(i);
