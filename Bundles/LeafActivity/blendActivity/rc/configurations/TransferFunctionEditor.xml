@@ -13,6 +13,8 @@
         <object uid="${myImage}" type="::fwData::Image" src="ref" />
         <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
+        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -96,14 +98,14 @@
 
         <service uid="MPRNegato2" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${myImage}" />
-            <inout key="tfSelection" uid="${TF_COMPOSITE_ID}" />
-            <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="${SELECTED_TF_KEY}" />
+            <inout key="tf" uid="TF" />
+            <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial"/>
         </service>
 
         <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${myImage}" />
-            <inout key="tfSelection" uid="${TF_COMPOSITE_ID}" />
-            <config renderer="default" picker="negato2default" text="" selectedTFKey="${SELECTED_TF_KEY}" />
+            <inout key="tf" uid="TF" />
+            <config renderer="default" picker="negato2default" text="" />
         </service>
 
         <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
@@ -122,7 +124,7 @@
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${myImage}" />
             <inout key="histogram" uid="Histogram" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
+            <inout key="transferFunction" uid="TF" />
             <parameter replace="WID_PARENT" by="tfWidget" />
             <parameter replace="SelectedTFKey" by="${SELECTED_TF_KEY}" />
         </service>
@@ -138,9 +140,8 @@
         </service>
 
         <service uid="tfSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
-            <inout key="transferFunctions" uid="TFSet" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <config selectedTFKey="${SELECTED_TF_KEY}" />
+            <inout key="tfPool" uid="TFSet" />
+            <out key="tf" uid="TF" />
         </service>
 
         <!-- Editors for Negato2 -->
@@ -155,11 +156,27 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <!-- START AND STOP SERVICES -->
+        <!-- add the TF in the selection composite to be transfered in other configuration -->
+        <service uid="addTFinSelection" type="::ctrlSelection::SManage">
+           <inout key="object" uid="TF" />
+           <inout key="composite" uid="${TF_COMPOSITE_ID}" />
+           <compositeKey>${SELECTED_TF_KEY}</compositeKey>
+        </service>
+
+        <!--************************** Connections **************************** -->
+
         <connect>
             <signal>snapshotEditor/snapped</signal>
             <slot>snapshot1/snap</slot>
         </connect>
+
+        <!-- add or swap the TF in the composite when it is present in the config (the service is started when the TF exists) -->
+        <connect>
+            <signal>addTFinSelection/started</signal>
+            <slot>addTFinSelection/addOrSwap</slot>
+        </connect>
+
+        <!--************************** Starts **************************** -->
 
         <start uid="LockImageSrv" />
         <start uid="computeHistogram" />
@@ -170,6 +187,7 @@
         <start uid="tfWidget" />
         <!-- Deferred start -->
         <start uid="tfSelector" />
+        <start uid="addTFinSelection" />
 
         <!-- genericScene adaptors -->
         <start uid="snapshot1" />

@@ -14,6 +14,10 @@
         <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
         <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
+
+        <object uid="bgTransferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="frontTransferFunction" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -79,7 +83,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="bg_windowLevel" start="yes" />
+                <view sid="bg_windowLevel" start="no" />
             </registry>
         </service>
 
@@ -93,7 +97,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="front_windowLevel" start="yes" />
+                <view sid="front_windowLevel" start="no" />
                 <view sid="front_imageTransparency" start="yes" />
             </registry>
         </service>
@@ -114,8 +118,7 @@
         </service>
         <service uid="bg_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <config selectedTFKey="${SELECTED_TF_KEYA}" />
+            <inout key="tf" uid="bgTransferFunction" />
         </service>
 
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
@@ -134,8 +137,39 @@
 
         <service uid="front_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <config selectedTFKey="${SELECTED_TF_KEYB}" />
+            <inout key="tf" uid="frontTransferFunction" />
+        </service>
+
+        <!-- Extract the default TF from the backgroud image -->
+        <service uid="extractDefaultBgTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="${backgroundImageUid}">
+               <extract from="@fields.m_transferFunctionCompositeId.values.CT-GreyLevel" />
+           </inout>
+           <out group="target">
+               <key uid="bgTransferFunction"/>
+           </out>
+        </service>
+
+        <!-- Extract the default TF from the backgroud image -->
+        <service uid="extractDefaultFrontTF" type="::ctrlCamp::SExtractObj" >
+            <inout key="source" uid="${frontImageUid}">
+                <extract from="@fields.m_transferFunctionCompositeId.values.CT-GreyLevel" />
+            </inout>
+            <out group="target">
+                <key uid="frontTransferFunction"/>
+            </out>
+        </service>
+
+        <!-- Extract the selected TFs from the Composite -->
+        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="${TF_COMPOSITE_ID}">
+               <extract from="@values.${SELECTED_TF_KEYA}" />
+               <extract from="@values.${SELECTED_TF_KEYB}" />
+           </inout>
+           <out group="target">
+               <key uid="bgTransferFunction"/>
+               <key uid="frontTransferFunction"/>
+           </out>
         </service>
 
         <!-- Generic scene to show merging of backgroung and front images -->
@@ -159,6 +193,7 @@
 
         <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
+            <inout key="tf" uid="bgTransferFunction" />
             <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
         </service>
 
@@ -186,9 +221,9 @@
                 <key uid="${backgroundImageUid}" tfalpha="no" />
                 <key uid="${frontImageUid}" tfalpha="yes" />
             </inout>
-            <inout group="tfSelection">
-                <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYA}" />
-                <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYB}" />
+            <inout group="tf">
+                <key uid="bgTransferFunction" />
+                <key uid="frontTransferFunction" />
             </inout>
             <config vtkimageregister="imageBlend" />
         </service>
@@ -208,13 +243,25 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <!-- START AND STOP SERVICES -->
         <connect>
             <signal>snapshot/snapped</signal>
             <slot>snapshotAdaptor/snap</slot>
         </connect>
 
+        <!--
+             The extraction of the selected TF must be performed when the default TF are extracted and registered in the
+             configuration. It does not work if we only call <update uid="extractTF" /> after the other update.
+        -->
+        <connect>
+            <signal>extractDefaultBgTF/updated</signal>
+            <slot>extractTF/update</slot>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
+        <start uid="extractDefaultFrontTF" />
+        <start uid="extractDefaultBgTF" />
+        <start uid="extractTF" />
 
         <!-- blendGenericScene adaptors -->
         <start uid="interactor" />
@@ -225,6 +272,13 @@
         <start uid="nameAdaptor" />
         <start uid="myImagesProbeCursor" />
         <start uid="MPRNegato3D" />
+
+        <!-- deferred -->
+        <start uid="bg_windowLevel" />
+        <start uid="front_windowLevel" />
+
+        <update uid="extractDefaultFrontTF" />
+        <update uid="extractDefaultBgTF" />
 
     </config>
 </extension>
