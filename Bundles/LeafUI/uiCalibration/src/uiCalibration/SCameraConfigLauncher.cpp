@@ -48,22 +48,15 @@ void SCameraConfigLauncher::configuring()
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
 
     SLM_ASSERT("There must be one (and only one) <config/> element.",
-               configuration.get_child("service").count("config") == 1 );
-    const ::fwServices::IService::ConfigType& srvconfig = configuration.get_child("service");
+               configuration.count("config") == 1 );
+    const ::fwServices::IService::ConfigType& srvconfig = configuration;
     const ::fwServices::IService::ConfigType& config    = srvconfig.get_child("config");
 
     const ::fwServices::IService::ConfigType& intrinsic = config.get_child("intrinsic");
-
     const ::fwServices::IService::ConfigType& extrinsic = config.get_child("extrinsic");
 
-    // ConfigLauncher needs ptree configuration with service.config.appConfig
-    ::fwServices::IService::ConfigType cameraConfig;
-    ::fwServices::IService::ConfigType extrinsicConfig;
-    cameraConfig.add_child("service", intrinsic);
-    extrinsicConfig.add_child("service", extrinsic);
-
-    m_intrinsicLauncher.parseConfig(cameraConfig, this->getSptr());
-    m_extrinsicLauncher.parseConfig(extrinsicConfig,  this->getSptr());
+    m_intrinsicLauncher.parseConfig(intrinsic, this->getSptr());
+    m_extrinsicLauncher.parseConfig(extrinsic,  this->getSptr());
 }
 
 //------------------------------------------------------------------------------

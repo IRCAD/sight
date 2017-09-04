@@ -64,7 +64,7 @@ SCamera::~SCamera() noexcept
 
 void SCamera::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_bVideoSupport    = (config.get<std::string>("videoSupport", "no") == "yes");
     m_numCreateCameras = config.get<size_t>("createCameraNumber", 0);

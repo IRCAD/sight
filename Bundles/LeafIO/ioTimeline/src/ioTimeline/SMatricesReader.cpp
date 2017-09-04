@@ -85,7 +85,7 @@ void SMatricesReader::configuring()
 {
     ::io::IReader::configuring();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
     OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);

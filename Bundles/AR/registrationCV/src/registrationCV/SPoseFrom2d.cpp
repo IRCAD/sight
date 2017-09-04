@@ -52,7 +52,7 @@ SPoseFrom2d::~SPoseFrom2d() noexcept
 
 void SPoseFrom2d::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
     m_patternWidth                            = config.get<double>("patternWidth", 80);
     OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 }

@@ -87,7 +87,7 @@ void SShowVectorSize::configuring()
 {
     this->initialize();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
     m_textToShow                              = QString::fromStdString(config.get< std::string >("text", ""));
 
 }

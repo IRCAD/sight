@@ -48,7 +48,7 @@ void SCameraSeriesEditor::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
     m_camIndex                                = config.get<size_t>("index", 1);
 }
 
