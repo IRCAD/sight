@@ -23,6 +23,7 @@
 
         <!-- Transfer function -->
         <object uid="TFSelections" type="::fwData::Composite" />
+        <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
 
         <!-- optional model series -->
         <object uid="${optionalModelSeriesComposite}" type="::fwData::Composite" src="ref" />
@@ -145,8 +146,8 @@
 
         <service uid="VolumeScene3DA" type="::visuVTKVRAdaptor::SVolume" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="TFSelections" />
-            <config renderer="default" selectedTFKey="SelectedTF" />
+            <inout key="tf" uid="transferFunction" optional="yes" />
+            <config renderer="default" />
         </service>
 
         <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
@@ -224,7 +225,25 @@
             <inout key="target" uid="landmarks" />
         </service>
 
-        <!-- START AND STOP SERVICES -->
+        <!-- Extract the transfer function from the composite when it is added/changed. -->
+        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="TFSelections">
+               <extract from="@values.SelectedTF" />
+           </inout>
+           <out group="target">
+               <key uid="transferFunction"/>
+           </out>
+        </service>
+
+        <!-- ************************************* Connections ************************************ -->
+
+        <!-- Extract the transfer function from the composite when it is added/changed. -->
+        <connect>
+            <signal>TFSelections/addedObjects</signal>
+            <signal>TFSelections/changedObjects</signal>
+            <slot>extractTF/update</slot>
+        </connect>
+
         <connect>
             <signal>ActionSnapshotVR/snapped</signal>
             <slot>snapshot1/snap</slot>
@@ -238,12 +257,14 @@
             <slot>modelSeriesAdaptor/showReconstructions</slot>
         </connect>
 
+        <!-- START AND STOP SERVICES -->
         <start uid="computeHistogram" />
         <start uid="LockImageSrv" />
         <start uid="MedicalImageSrv" />
         <start uid="mainView" />
         <start uid="tfEditor" />
         <start uid="extractLandmarks" />
+        <start uid="extractTF" />
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
@@ -257,5 +278,7 @@
         <start uid="image3DCursorAdaptor" />
 
         <update uid="extractLandmarks" />
+        <update uid="extractTF" />
+
     </config>
 </extension>

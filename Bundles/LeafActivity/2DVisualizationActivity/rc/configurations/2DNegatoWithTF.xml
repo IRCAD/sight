@@ -14,6 +14,8 @@
         <object uid="${image}" type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+        <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -76,14 +78,14 @@
 
         <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="${TFSelections}" />
-            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" selectedTFKey="${selectedTFKey}" />
+            <inout key="tf" uid="transferFunction" optional="yes" />
+            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" />
         </service>
 
         <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="${TFSelections}" />
-            <config renderer="default" picker="negatodefault" text="" selectedTFKey="${selectedTFKey}" />
+            <inout key="tf" uid="transferFunction" />
+            <config renderer="default" picker="negatodefault" text="" />
         </service>
 
         <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
@@ -125,7 +127,24 @@
             <placeInScene uid="negato" />
         </service>
 
-        <!-- START AND STOP SERVICES -->
+        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="${TFSelections}">
+               <extract from="@values.${selectedTFKey}" />
+           </inout>
+           <out group="target">
+               <key uid="transferFunction"/>
+           </out>
+        </service>
+
+        <!-- ************************************* Connections ************************************ -->
+
+        <!-- Extract the transfer function from the composite when it is added/changed. -->
+        <connect>
+            <signal>${TFSelections}/addedObjects</signal>
+            <signal>${TFSelections}/changedObjects</signal>
+            <slot>extractTF/update</slot>
+        </connect>
+
         <connect>
             <signal>snapshotNegatoEditor/snapped</signal>
             <slot>snapshot/snap</slot>
@@ -140,8 +159,10 @@
             <slot>MPRNegato/setCrossScale</slot>
         </connect>
 
+        <!-- START AND STOP SERVICES -->
         <start uid="LockImageSrv" />
         <start uid="mainView" />
+        <start uid="extractTF" />
 
         <!-- negato adaptors -->
         <start uid="snapshot" />
@@ -152,6 +173,8 @@
         <start uid="landmarksNegato" />
         <start uid="nameAdaptor" />
         <start uid="imageSliceOrientationText" />
+
+        <update uid="extractTF" />
 
     </config>
 </extension>
