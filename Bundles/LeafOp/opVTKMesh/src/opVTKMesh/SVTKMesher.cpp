@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,13 +24,12 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkDiscreteMarchingCubes.h>
-#include <vtkWindowedSincPolyDataFilter.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkDecimatePro.h>
-#include <vtkSmartPointer.h>
+#include <vtkDiscreteMarchingCubes.h>
 #include <vtkImageData.h>
-
+#include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
+#include <vtkWindowedSincPolyDataFilter.h>
 
 namespace opVTKMesh
 {
@@ -77,45 +76,14 @@ void SVTKMesher::configuring()
     SLM_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
     const ::fwServices::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
     m_reduction = reductionCfg.get_value<unsigned int>();
-
-    if(!this->isVersion2())
-    {
-        SLM_ASSERT("You must have one <image/> element.", config.count("image") == 1);
-        SLM_ASSERT("You must have one <modelSeries/> element.", config.count("modelSeries") == 1);
-        const ::fwServices::IService::ConfigType& imageCfg       = config.get_child("image");
-        const ::fwServices::IService::ConfigType& modelSeriesCfg = config.get_child("modelSeries");
-        m_imageKey       = imageCfg.get_value<std::string>();
-        m_modelSeriesKey = modelSeriesCfg.get_value<std::string>();
-    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::updating()
 {
-    ::fwData::Image::csptr image;
-    ::fwMedData::ModelSeries::sptr modelSeries;
-
-    if(this->isVersion2())
-    {
-        image       = this->getInput< ::fwData::Image >("image");
-        modelSeries = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
-    }
-    else
-    {
-        ::fwData::Composite::sptr composite           = this->getObject< ::fwData::Composite >();
-        ::fwData::Composite::iterator iterImg         = composite->find(m_imageKey);
-        ::fwData::Composite::iterator iterModelSeries = composite->find(m_modelSeriesKey);
-
-        SLM_ASSERT("Key '"+m_imageKey+"' not found in composite.", iterImg != composite->end());
-        SLM_ASSERT("Key '"+m_modelSeriesKey+"' not found in composite.", iterModelSeries != composite->end());
-
-        image = ::fwData::Image::dynamicCast(iterImg->second);
-        SLM_ASSERT("Image '"+m_imageKey+"' is not valid.", image);
-
-        modelSeries = ::fwMedData::ModelSeries::dynamicCast(iterModelSeries->second);
-        SLM_ASSERT("ModelSeries '"+m_modelSeriesKey+"' is not valid.", modelSeries);
-    }
+    ::fwData::Image::csptr image               = this->getInput< ::fwData::Image >("image");
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
@@ -137,12 +105,11 @@ void SVTKMesher::updating()
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
-    smoothFilter->SetPassBand ( 0.1 );
+    smoothFilter->SetPassBand( 0.1 );
     smoothFilter->SetFeatureAngle(120.0);
     smoothFilter->SetEdgeAngle(90);
     smoothFilter->FeatureEdgeSmoothingOn();
     smoothFilter->Update();
-
 
     // Get polyData
     vtkSmartPointer< vtkPolyData > polyData;

@@ -5,7 +5,7 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS 
     io
-    appXml2
+    appXml
     gui
     guiQt
     dataReg
@@ -13,4 +13,4 @@ set( REQUIREMENTS
     fwlauncher
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoGuiConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)

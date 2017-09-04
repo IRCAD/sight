@@ -124,16 +124,8 @@ void SSeriesViewer::configuring()
     std::vector < ::fwRuntime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
     SLM_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
 
-    if(this->isVersion2())
-    {
-        m_parentView = viewCfg[0]->getAttributeValue("wid");
-        SLM_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
-    }
-    else
-    {
-        m_parentView = viewCfg[0]->getValue();
-        SLM_ASSERT("'parentView' value must not be empty ", !m_parentView.empty());
-    }
+    m_parentView = viewCfg[0]->getAttributeValue("wid");
+    SLM_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > configsCfg = m_configuration->find("configs");
     SLM_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);

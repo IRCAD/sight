@@ -10,11 +10,11 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -25,7 +25,6 @@
 #include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/AppConfig2.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 #include <exception>
@@ -38,9 +37,7 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::LoadLandmark, ::fwData::Image);
 
-
 //------------------------------------------------------------------------------
-
 
 LoadLandmark::LoadLandmark( ) noexcept
 {
@@ -122,74 +119,40 @@ void LoadLandmark::stopping()
 
 void LoadLandmark::load(const ::boost::filesystem::path& path)
 {
-    if (this->isVersion2())
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
+    SLM_ASSERT("In-Out 'image' is not found.", image);
+
+    //get landmarks
+    ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
+    ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
+        ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+    SLM_ASSERT("landmarks not instanced", landmarks);
+
+    ::fwData::PointList::sptr newLandmarks = ::fwData::PointList::New();
+    ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
+    replaceMap["GENERIC_UID"] = ::fwServices::registry::AppConfig::getUniqueIdentifier("LoadLandmarkApp");
+    replaceMap["landmark"]    = newLandmarks->getID();
+    replaceMap["file"]        = path.string();
+
+    ::fwRuntime::ConfigurationElement::csptr config =
+        ::fwServices::registry::AppConfig::getDefault()->
+        getAdaptedTemplateConfig("LoadLandmark2", replaceMap, true);
+
+    ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
+    helper->setConfig( config );
+    helper->launch();
+    helper->stopAndDestroy();
+
+    for(::fwData::Point::sptr landmark :  newLandmarks->getCRefPoints())
     {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
-        SLM_ASSERT("In-Out 'image' is not found.", image);
-
-        //get landmarks
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-        ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
-            ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
-        SLM_ASSERT("landmarks not instanced", landmarks);
-
-        ::fwData::PointList::sptr newLandmarks = ::fwData::PointList::New();
-        ::fwServices::registry::AppConfig2::FieldAdaptorType replaceMap;
-        replaceMap["GENERIC_UID"] = ::fwServices::registry::AppConfig::getUniqueIdentifier("LoadLandmarkApp");
-        replaceMap["landmark"]    = newLandmarks->getID();
-        replaceMap["file"]        = path.string();
-
-        ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig2::getDefault()->
-            getAdaptedTemplateConfig("LoadLandmark2", replaceMap, true);
-
-        ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
-        helper->setConfig( config );
-        helper->launch();
-        helper->stopAndDestroy();
-
-        for(::fwData::Point::sptr landmark :  newLandmarks->getCRefPoints())
-        {
-            landmarks->getRefPoints().push_back( landmark );
-            auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
-            sig->asyncEmit(landmark);
-        }
-
-        {
-            auto sig = landmarks->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
-        }
+        landmarks->getRefPoints().push_back( landmark );
+        auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
+        sig->asyncEmit(landmark);
     }
-    else
+
     {
-
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-        //get landmarks
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-        ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
-            ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
-        SLM_ASSERT("landmarks not instanced", landmarks);
-
-        ::fwData::PointList::sptr newLandmarks = ::fwData::PointList::New();
-        ::fwData::Composite::sptr replaceMap   = ::fwData::Composite::New();
-        (*replaceMap)["GENERIC_UID"]           = ::fwData::String::New(
-            ::fwServices::registry::AppConfig::getUniqueIdentifier("LoadLandmarkApp")
-            );
-        (*replaceMap)["landmark"]                       = ::fwData::String::New(newLandmarks->getID());
-        (*replaceMap)["file"]                           = ::fwData::String::New(path.string());
-        ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig("LoadLandmark", replaceMap);
-
-        ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
-        helper->setConfig( config );
-        helper->launch();
-        helper->stopAndDestroy();
-
-        for(::fwData::Point::sptr landmark :  newLandmarks->getCRefPoints())
-        {
-            landmarks->getRefPoints().push_back( landmark );
-        }
+        auto sig = landmarks->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 

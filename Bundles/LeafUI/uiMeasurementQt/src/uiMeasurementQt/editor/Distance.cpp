@@ -133,15 +133,7 @@ void Distance::onDistanceButton()
     SLM_ASSERT("No scene UID!", !m_scenesUID.empty());
     SLM_TRACE_FUNC();
 
-    ::fwData::Image::sptr image;
-    if (this->isVersion2())
-    {
-        image = this->getInOut< ::fwData::Image >("image");
-    }
-    else
-    {
-        image = this->getObject< ::fwData::Image >();
-    }
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
     SLM_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown

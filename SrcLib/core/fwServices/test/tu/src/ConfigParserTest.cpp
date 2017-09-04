@@ -8,7 +8,7 @@
 
 #include "TestServices.hpp"
 
-#include <fwServices/AppConfigManager2.hpp>
+#include <fwServices/AppConfigManager.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
@@ -55,7 +55,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig();
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager2::sptr configManager = ::fwServices::AppConfigManager2::New();
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
     auto image = ::fwData::Image::dynamicCast(configManager->getConfigRoot());

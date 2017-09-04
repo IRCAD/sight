@@ -57,7 +57,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04ImageSubstractionConfig</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,7 +60,7 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
     const std::string GET_OBJECT        = "ref";
 
     ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a fwData::Composite",dataComposite);
+    SLM_ASSERT("The passed object must be a fwData::Composite", dataComposite);
 
     for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -94,14 +94,7 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
 
                 // Create and manage object config
                 ::fwServices::IAppConfigManager::sptr ctm = ::fwServices::IAppConfigManager::New();
-                if( ::fwServices::IService::isVersion2())
-                {
-                    ctm->::fwServices::IAppConfigManager::setConfig( elem );
-                }
-                else
-                {
-                    ctm->::fwServices::IAppConfigManager::setConfig( *( elem->getElements().begin() ) );
-                }
+                ctm->::fwServices::IAppConfigManager::setConfig( elem );
 
                 m_ctmContainer.push_back( ctm );
                 ctm->create();

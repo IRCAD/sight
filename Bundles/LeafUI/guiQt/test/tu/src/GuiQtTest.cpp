@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QApplication>
-#include <QMainWindow>
+#include "GuiQtTest.hpp"
 
 #include <fwData/String.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
+#include <fwServices/AppConfigManager.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/AppConfigManager2.hpp>
-#include <fwServices/registry/AppConfig2.hpp>
+#include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include "GuiQtTest.hpp"
+#include <QApplication>
+#include <QMainWindow>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::guiQt::ut::GuiQtTest );
@@ -79,10 +79,10 @@ void GuiQtTest::testDefaultFrame()
 
 void GuiQtTest::testTuto01()
 {
-    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig2::getDefault()->getAllConfigs();
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
 
-    ::fwServices::AppConfigManager2::sptr appConfigMng = ::fwServices::AppConfigManager2::New();
+    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
     appConfigMng->setConfig( "tutoBasicConfig" );
 
     appConfigMng->launch();
@@ -93,10 +93,10 @@ void GuiQtTest::testTuto01()
 
 void GuiQtTest::testTuto02()
 {
-    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig2::getDefault()->getAllConfigs();
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
 
-    ::fwServices::AppConfigManager2::sptr appConfigMng = ::fwServices::AppConfigManager2::New();
+    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
     appConfigMng->setConfig( "tutoDataServiceBasicConfig" );
 
     appConfigMng->launch();

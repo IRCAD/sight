@@ -7,7 +7,7 @@
     <requirement id="preferences" />
 
     <!-- This exmaple allows to test the different dump policy. -->
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex06DumpConfig</id>
         <config>
 

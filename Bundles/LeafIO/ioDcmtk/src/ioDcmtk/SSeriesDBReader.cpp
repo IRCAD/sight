@@ -231,15 +231,7 @@ void SSeriesDBReader::updating()
         if( seriesDB->size() > 0 )
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB;
-            if (this->isVersion2())
-            {
-                associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-            }
-            else
-            {
-                associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-            }
+            ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
@@ -261,17 +253,7 @@ void SSeriesDBReader::updating()
 
 void SSeriesDBReader::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB;
-    if (this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
-
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;

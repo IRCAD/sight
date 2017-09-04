@@ -58,7 +58,7 @@ Detail of the ToolBar
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex03RegistrationConfig</id>
         <config>
             <!-- Object to store the image loading in the first tab -->

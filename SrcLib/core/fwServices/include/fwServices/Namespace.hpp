@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -214,17 +214,16 @@ namespace fwServices
    @endcode
  */
 
-
 /**
- * @page AppConfig2 AppConfig2
+ * @page AppConfig AppConfig
  *
  * The FW4SPL architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
- * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig2``.
+ * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig``.
  *
  * @code{.xml}
-     <extension implements="::fwServices::registry::AppConfig2">
+     <extension implements="::fwServices::registry::AppConfig">
          <id>myAppConfigId</id>
          <parameters>
              <param name="appName" default="my Application" />

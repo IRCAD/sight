@@ -104,7 +104,7 @@ private:
     ::fwMedData::Series::sptr getSeries();
 
     /// fwID of the series to add in SeriesDB
-    /// @deprecated appXml2
+    /// @deprecated appXml
     std::string m_seriesId;
 };
 } // namespace action

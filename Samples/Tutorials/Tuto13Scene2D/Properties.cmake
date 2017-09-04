@@ -12,7 +12,7 @@ set( REQUIREMENTS
     uiVisuQt
     scene2D
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoScene2DConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoScene2DConfig)

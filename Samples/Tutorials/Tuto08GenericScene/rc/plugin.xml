@@ -6,7 +6,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto08GenericScene</id>
         <config>
             <object uid="imageUID" type="::fwData::Image" />

@@ -411,7 +411,7 @@ void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwS
     {
         if(service->m_inputsMap.empty() && service->m_inOutsMap.empty() && service->m_outputsMap.empty())
         {
-            // If we have an appXml2 but with an old service implementation,
+            // If we have an appXml but with an old service implementation,
             // we consider that the primary object is the first one we added
             service->m_associatedObject = object;
         }

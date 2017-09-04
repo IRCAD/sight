@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,6 @@
 #include <fwServices/macros.hpp>
 
 #include <exception>
-
 
 namespace uiMeasurement
 {
@@ -127,16 +126,6 @@ void ShowDistance::starting()
 void ShowDistance::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType ShowDistance::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT ) );
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------

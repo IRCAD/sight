@@ -23,7 +23,7 @@
         <object>::fwData::Array</object>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto16MultithreadConsoleConfig</id>
         <parameters>
         </parameters>

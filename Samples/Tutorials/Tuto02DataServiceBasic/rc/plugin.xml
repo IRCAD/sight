@@ -6,7 +6,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceBasicConfig</id>
         <config>
 

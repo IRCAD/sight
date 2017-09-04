@@ -1,22 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ctrlSelection/updater/SObjFromSlot.hpp"
 
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Composite.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 namespace ctrlSelection
 {
@@ -59,16 +52,6 @@ SObjFromSlot::~SObjFromSlot() noexcept
 
 void SObjFromSlot::configuring()
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
-
-    if(!this->isVersion2())
-    {
-        ConfigType cfg = m_configuration->findConfigurationElement("compositeKey");
-        SLM_ASSERT("Missing element 'compositeKey'", cfg );
-
-        m_compositeKey = cfg->getValue();
-        SLM_ASSERT("Missing 'compositeKey' value", !m_compositeKey.empty());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +65,6 @@ void SObjFromSlot::starting()
 void SObjFromSlot::stopping()
 {
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -100,96 +82,38 @@ void SObjFromSlot::info( std::ostream& _sstream )
 
 void SObjFromSlot::add(::fwData::Object::sptr obj)
 {
-    if(this->isVersion2())
-    {
-        this->setOutput(s_OBJECT, obj);
-    }
-    else
-    {
-        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-        helper.add(m_compositeKey, obj);
-        helper.notify();
-    }
+    this->setOutput(s_OBJECT, obj);
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 {
-    if(this->isVersion2())
-    {
-        this->setOutput(s_OBJECT, obj);
-    }
-    else
-    {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        ::fwDataTools::helper::Composite helper(composite);
-        if (composite->find(m_compositeKey) == composite->end())
-        {
-            helper.add(m_compositeKey, obj);
-        }
-        else
-        {
-            helper.swap(m_compositeKey, obj);
-        }
-        helper.notify();
-    }
+    this->setOutput(s_OBJECT, obj);
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::swap(::fwData::Object::sptr obj)
 {
-    if(this->isVersion2())
-    {
-        this->setOutput(s_OBJECT, obj);
-    }
-    else
-    {
-        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-        helper.swap(m_compositeKey, obj);
-        helper.notify();
-    }
+    this->setOutput(s_OBJECT, obj);
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::remove()
 {
-    if(this->isVersion2())
-    {
-        this->setOutput(s_OBJECT, nullptr);
-    }
-    else
-    {
-        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-        helper.remove(m_compositeKey);
-        helper.notify();
-    }
+    this->setOutput(s_OBJECT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::removeIfPresent()
 {
-    if(this->isVersion2())
-    {
-        this->setOutput(s_OBJECT, nullptr);
-    }
-    else
-    {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        ::fwDataTools::helper::Composite helper(composite);
-        if (composite->find(m_compositeKey) != composite->end())
-        {
-            helper.remove(m_compositeKey);
-        }
-        helper.notify();
-    }
+    this->setOutput(s_OBJECT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
-
 
 } // updater
 } // ctrlSelection

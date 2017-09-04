@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    appXml2
+    appXml
     ctrlCamp
     ctrlSelection
     dataReg
@@ -27,4 +27,4 @@ set( REQUIREMENTS
     visuVTKVRAdaptor
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex01VolumeRendering)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex01VolumeRendering)

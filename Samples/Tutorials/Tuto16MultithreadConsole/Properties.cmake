@@ -10,10 +10,10 @@ set( REQUIREMENTS
     dataReg
     servicesReg
     fwlauncher
-    appXml2
+    appXml
     # The bundle console is used to run a console application with a main loop
     # Typically it can be used for server command line applications
     console
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Tuto16MultithreadConsoleConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto16MultithreadConsoleConfig)

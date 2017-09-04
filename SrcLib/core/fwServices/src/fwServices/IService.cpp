@@ -42,8 +42,6 @@ const ::fwCom::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 
 const std::string IService::s_DEFAULT_OBJECT = "defaultObject";
 
-int IService::s_version = 1;
-
 //-----------------------------------------------------------------------------
 
 IService::IService() :
@@ -103,7 +101,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
     // Handle compatibility with new behavior
     if(m_associatedObject.expired())
     {
-        // If we have an appXml2 but with an old service definition, we consider that the old primary object is the
+        // If we have an appXml but with an old service definition, we consider that the old primary object is the
         // first one in the map
         if(!m_inputsMap.empty())
         {
@@ -695,20 +693,6 @@ std::ostream& operator<<(std::ostream& _ostream, IService& _service)
 {
     _service.info( _ostream );
     return _ostream;
-}
-
-//-----------------------------------------------------------------------------
-
-bool IService::isVersion2()
-{
-    return s_version == 2;
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::setVersion(int version)
-{
-    s_version = version;
 }
 
 //-----------------------------------------------------------------------------

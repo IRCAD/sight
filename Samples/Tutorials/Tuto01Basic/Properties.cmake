@@ -8,8 +8,8 @@ set( REQUIREMENTS # The bundles used by this application
     gui # to load gui
     guiQt # to load qt implementation of gui
     fwlauncher # executable to run the application
-    appXml2 # to parse the application configuration
+    appXml # to parse the application configuration
 )
 
 # Set the configuration to use : 'tutoBasicConfig'
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoBasicConfig) 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig) 

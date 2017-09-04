@@ -19,23 +19,26 @@
             <xs:element name="param" type="ParamType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="ParamType">
         <xs:attribute name='name' type='xs:string' use="required" />
         <xs:attribute name='default' type='xs:string' />
     </xs:complexType>
-    
+
     <xs:complexType name="ConfigType">
         <xs:sequence>
-            <xs:element name="object" type="ObjectType" />
+            <xs:element name="object" type="ObjectType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
     <!-- Object Type -->
     <xs:complexType name="ObjectType">
         <xs:sequence>
-            <xs:element name="serviceList" type="ServiceListType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="ServiceType" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="item"  type="ItemType"  minOccurs="0" maxOccurs="unbounded" />
@@ -43,18 +46,12 @@
             <xs:element name="edge"  type="EdgeType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="colors"  type="ColorType"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="connect"  type="ConnectionType"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="proxy"  type="ProxyType"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="UpdateType" minOccurs="0" maxOccurs="unbounded" />
-            <!-- <xs:element name="stop" minOccurs="0" maxOccurs="0" /> -->
-            <!-- <xs:any processContents="skip" minOccurs="0" maxOccurs="unbounded"/> -->
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='type' type='xs:string'/>
         <xs:attribute name='src' type='xs:string' />
     </xs:complexType>
-    
+
     <!-- Item Type -->
     <xs:complexType name="ItemType">
         <xs:sequence>
@@ -62,55 +59,44 @@
         </xs:sequence>
         <xs:attribute name='key' type='xs:string' />
     </xs:complexType>
-    
+
     <!-- Service Type -->
     <xs:complexType name="ServiceType">
         <xs:sequence>
             <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string' use="optional" />
-        <xs:attribute name='impl' type='xs:string' use="required" />
+        <xs:attribute name='uid' type='xs:string' use="optional"/>
+        <xs:attribute name='type' type='xs:string' use="required" />
         <xs:attribute name='autoConnect' type='AutoConnectType' />
         <xs:attribute name='worker' type='xs:string' />
         <xs:attribute name='config' type='xs:string' />
     </xs:complexType>
-   
+
     <!-- Connection Type -->
     <xs:complexType name="ConnectionType">
         <xs:sequence>
-            <xs:element name="signal"  type="xs:string"  minOccurs="1" maxOccurs="1" />
-            <xs:element name="slot"  type="xs:string"  minOccurs="1" maxOccurs="unbounded" />
+            <xs:element name="signal"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="slot"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-    </xs:complexType>
-
-    <!-- Proxy Type -->
-    <xs:complexType name="ProxyType">
-        <xs:sequence>
-            <xs:element name="signal" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="slot" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-        </xs:sequence>
-        <xs:attribute name='channel' type='xs:string' />
+        <xs:attribute name='channel' type='xs:string' use="optional" />
     </xs:complexType>
 
     <!-- Start/Update/stop Type -->
     <xs:complexType name="StartType">
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string' />
     </xs:complexType>
-    
+
     <xs:complexType name="UpdateType">
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='type' type='xs:string' />
     </xs:complexType>
-        
+
     <xs:simpleType name="AutoConnectType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="yes" />
             <xs:enumeration value="no" />
         </xs:restriction>
     </xs:simpleType>
-    
+
     <!-- ServiceList Type -->
     <xs:complexType name="ServiceListType">
         <xs:sequence>
@@ -146,16 +132,16 @@
         <xs:attribute name="uid" type="xs:string" />
         <xs:attribute name="src" type="xs:string" />
     </xs:complexType>
-    
+
     <xs:complexType name="ColorType">
         <xs:sequence>
             <xs:element name="step" type="StepType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="StepType">
         <xs:attribute name="color" type="xs:string" use="required" />
         <xs:attribute name="value" type="xs:string" use="required" />
     </xs:complexType>
 
-</xs:schema>        
+</xs:schema>

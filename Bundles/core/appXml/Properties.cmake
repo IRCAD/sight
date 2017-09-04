@@ -1,10 +1,10 @@
 
 set( NAME appXml )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE BUNDLE )
 set( START ON )
-set( DEPENDENCIES 
-    fwCore 
+set( DEPENDENCIES
+    fwCore
     fwRuntime
     fwServices
 )

@@ -35,7 +35,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex01VolumeRendering</id>
         <config>
             <object uid="imageUID" type="::fwData::Image" />

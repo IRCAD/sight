@@ -25,9 +25,9 @@
         servicesReg
         guiQt # it will be automatically started when the application launches
         fwlauncher
-        appXml2 # it will be automatically started when the application launches
+        appXml # it will be automatically started when the application launches
     )
-    bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoBasicConfig)
+    bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)
    @endcode
  */
 namespace guiQt

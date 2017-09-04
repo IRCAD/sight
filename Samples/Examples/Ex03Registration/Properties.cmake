@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    appXml2
+    appXml
     basicRegistration
     ctrlSelection
     dataReg
@@ -29,4 +29,4 @@ set( REQUIREMENTS
 
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex03RegistrationConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03RegistrationConfig)

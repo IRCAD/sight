@@ -12,7 +12,7 @@ set( REQUIREMENTS
     guiQt
 
     fwlauncher
-    appXml2
+    appXml
 
     patchMedicalData
     filterVRRender
@@ -34,4 +34,4 @@ set( REQUIREMENTS
     ctrlCamp
 )
 
-bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES Ex05Base Ex05AppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES Ex05Base Ex05AppBase)

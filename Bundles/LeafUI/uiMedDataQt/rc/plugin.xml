@@ -54,7 +54,7 @@
         <object>::fwMedData::SeriesDB</object>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>ActivityCreatorConfig</id>
         <parameters>
             <param name="GENERIC_UID" />

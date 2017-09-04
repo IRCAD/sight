@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>2DNegato</id>
     <parameters>
         <param name="WID_PARENT" />

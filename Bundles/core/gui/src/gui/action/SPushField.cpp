@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,15 +94,11 @@ void SPushField::updating()
 
 void SPushField::updateObjects()
 {
-    bool executable = true;
+    ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
+    SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
-    if(this->isVersion2())
-    {
-        ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
-        SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    const bool executable = (objectSrc->getField(m_field) != nullptr);
 
-        executable = (objectSrc->getField(m_field) != nullptr);
-    }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 

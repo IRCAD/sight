@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,8 +50,8 @@ static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 //------------------------------------------------------------------------------
 
 SIOSelector::SIOSelector() :
-    m_mode                  ( READER_MODE ),
-    m_servicesAreExcluded   ( true )
+    m_mode( READER_MODE ),
+    m_servicesAreExcluded( true )
 {
     m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
     m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SIOSelector::forwardJob, this );
@@ -163,13 +163,13 @@ void SIOSelector::updating()
     {
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                this->getObject()->getClassname(),"::io::IReader");
+                this->getObject()->getClassname(), "::io::IReader");
     }
     else // m_mode == WRITER_MODE
     {
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                this->getObject()->getClassname(),"::io::IWriter");
+                this->getObject()->getClassname(), "::io::IWriter");
     }
 
     // Filter available extensions and replace id by service description
@@ -300,18 +300,8 @@ void SIOSelector::updating()
                     }
                 }
 
-                ::io::IReader::sptr reader;
-                if (this->isVersion2())
-                {
-                    auto factory = ::fwServices::registry::ServiceFactory::getDefault();
-                    reader = ::io::IReader::dynamicCast(factory->create( "::io::IReader", extensionId ));
-                    ::fwServices::OSR::registerService(object, ::io::s_DATA_KEY,
-                                                       ::fwServices::IService::AccessType::INOUT, reader);
-                }
-                else
-                {
-                    reader = ::fwServices::add< ::io::IReader >( object, extensionId );
-                }
+                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( extensionId );
+                reader->registerInOut(this->getObject(), ::io::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -347,18 +337,9 @@ void SIOSelector::updating()
             }
             else
             {
-                ::io::IWriter::sptr writer;
-                if (this->isVersion2())
-                {
-                    auto factory = ::fwServices::registry::ServiceFactory::getDefault();
-                    writer = ::io::IWriter::dynamicCast(factory->create( "::io::IWriter", extensionId ));
-                    ::fwServices::OSR::registerService(this->getObject(), ::io::s_DATA_KEY,
-                                                       ::fwServices::IService::AccessType::INPUT, writer);
-                }
-                else
-                {
-                    writer = ::fwServices::add< ::io::IWriter >( this->getObject(), extensionId );
-                }
+                ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( extensionId );
+                writer->registerInput(this->getObject(), ::io::s_DATA_KEY);
+
                 writer->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )

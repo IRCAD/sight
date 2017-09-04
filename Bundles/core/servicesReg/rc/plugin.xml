@@ -6,7 +6,6 @@
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::fwServices::registry::AppConfig" schema="appConfig.xsd"/>
-    <extension-point id="::fwServices::registry::AppConfig2" schema="appConfig2.xsd"/>
 
     <!-- EXTENSION POINT FOR APP CONFIGURATION PARAMETERS-->
     <extension-point id="::fwServices::registry::AppConfigParameters" schema="appConfigParameters.xsd"/>

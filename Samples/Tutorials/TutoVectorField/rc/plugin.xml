@@ -2,7 +2,7 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>TutoVectorField</id>
         <config>
             <!-- ***************************************** Begin Objects declaration ***************************************** -->
