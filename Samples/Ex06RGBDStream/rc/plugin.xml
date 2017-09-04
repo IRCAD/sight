@@ -184,7 +184,7 @@
                 <inout key="image" uid="imageDepth" />
                 <inout key="tf" uid="tfDepth" />
                 <inout key="viewport" uid="viewport" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" selectedTFKey="SelectedTF" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
             <service uid="viewportRangeUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes">
