@@ -47,20 +47,20 @@ void SAutomaticRegistration::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    m_minStep = config.get< double >("service.minStep", -1.);
-    m_maxStep = config.get< double >("service.maxStep", -1.);
+    m_minStep = config.get< double >("minStep", -1.);
+    m_maxStep = config.get< double >("maxStep", -1.);
 
     OSLM_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
     OSLM_FATAL_IF("Invalid or missing maxStep.", m_maxStep <= 0);
 
-    m_maxIterations = config.get< unsigned long >("service.maxIterations", 0);
+    m_maxIterations = config.get< unsigned long >("maxIterations", 0);
 
     OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
-    const std::string metric = config.get< std::string >("service.metric", "");
+    const std::string metric = config.get< std::string >("metric", "");
     setMetric(metric);
 
-    const std::string legacyMode = config.get_optional< std::string >("service.legacyMode").get_value_or("off");
+    const std::string legacyMode = config.get_optional< std::string >("legacyMode").get_value_or("off");
 
     OSLM_FATAL_IF("Invalid legacyMode, must be 'on' or 'off'. Here : " << legacyMode,
                   legacyMode != "on" && legacyMode != "off");
