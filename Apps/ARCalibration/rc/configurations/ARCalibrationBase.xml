@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>ARCalibrationBase</id>
     <parameters>
         <param name="appName" />

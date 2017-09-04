@@ -11,13 +11,13 @@
 
 #include <arData/Camera.hpp>
 
-#include <QComboBox>
-#include <QObject>
-#include <QPointer>
-
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
+
+#include <QComboBox>
+#include <QObject>
+#include <QPointer>
 
 namespace videoQt
 {
@@ -103,7 +103,7 @@ private:
     void onChooseDevice();
 
     /// Retrieve camera objects according to the XML configuration
-    std::vector< ::arData::Camera::sptr > getCameras();
+    std::vector< ::arData::Camera::sptr > getCameras() const;
 
     /// Combobox for camera selection
     QPointer<QComboBox> m_devicesComboBox;

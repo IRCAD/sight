@@ -4,7 +4,7 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07RGBDManualARConfig</id>
         <config>
             <!-- objects declarations -->

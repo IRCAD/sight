@@ -33,65 +33,23 @@ SConcatenateMatrices::SConcatenateMatrices() noexcept
 
 void SConcatenateMatrices::configuring()
 {
-    if(this->isVersion2())
+    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+    std::vector< ConfigurationType > inCfgs = m_configuration->find("in");
+    SLM_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
+
+    SLM_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == "matrix");
+
+    std::vector< ConfigurationType > matrixCfgs = inCfgs[0]->find("key");
+
+    for(ConfigurationType cfg : matrixCfgs)
     {
-        typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-        std::vector< ConfigurationType > inCfgs = m_configuration->find("in");
-        SLM_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
-
-        SLM_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == "matrix");
-
-        std::vector< ConfigurationType > matrixCfgs = inCfgs[0]->find("key");
-
-        for(ConfigurationType cfg : matrixCfgs)
+        bool invertCurrentMatrix  = false;
+        const std::string inverse = cfg->getAttributeValue("inverse");
+        if(!inverse.empty())
         {
-            TransformMatrix currentMatrix;
-            const std::string inverse = cfg->getAttributeValue("inverse");
-            if(!inverse.empty())
-            {
-                currentMatrix.m_inverse = (inverse == "true");
-            }
-            else
-            {
-                currentMatrix.m_inverse = false;
-            }
-
-            currentMatrix.m_connect = false; // Unused with appXml2
-            m_matrixVector.push_back(currentMatrix);
+            invertCurrentMatrix = (inverse == "true");
         }
-    }
-    else
-    {
-        typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-        std::vector< ConfigurationType > matrixCfgs = m_configuration->find("matrix");
-
-        for(ConfigurationType cfg : matrixCfgs)
-        {
-            TransformMatrix currentMatrix;
-            currentMatrix.m_uid = cfg->getValue();
-
-            const std::string inverse = cfg->getAttributeValue("inverse");
-            if(!inverse.empty())
-            {
-                currentMatrix.m_inverse = (inverse == "true");
-            }
-            else
-            {
-                currentMatrix.m_inverse = false;
-            }
-
-            const std::string connect = cfg->getAttributeValue("connect");
-            if(!connect.empty())
-            {
-                currentMatrix.m_connect = (connect == "true");
-            }
-            else
-            {
-                currentMatrix.m_connect = true;
-            }
-
-            m_matrixVector.push_back(currentMatrix);
-        }
+        m_invertVector.push_back(invertCurrentMatrix);
     }
 }
 
@@ -99,102 +57,48 @@ void SConcatenateMatrices::configuring()
 
 void SConcatenateMatrices::starting()
 {
-    if(!this->isVersion2())
-    {
-        for( TransformMatrix& currentMatrix : m_matrixVector)
-        {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(currentMatrix.m_uid);
-            SLM_ASSERT("Object '" + currentMatrix.m_uid + "' is not found.", obj);
-
-            currentMatrix.m_matrix = ::fwData::TransformationMatrix3D::dynamicCast(obj);
-            SLM_ASSERT("Object '" + currentMatrix.m_uid + "' is not a TransformationMatrix3D", currentMatrix.m_matrix);
-
-            if(currentMatrix.m_connect)
-            {
-                m_connections.connect(currentMatrix.m_matrix, this->getSptr(), this->getObjSrvConnections());
-            }
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------
 
 void SConcatenateMatrices::stopping()
 {
-    if(!this->isVersion2())
-    {
-        m_connections.disconnect();
-    }
 }
 
 // ----------------------------------------------------------------------------
 
 void SConcatenateMatrices::updating()
 {
-    if(this->isVersion2())
+    auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D >("output");
     {
-        auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D >("output");
+        ::fwData::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
+
+        ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
+
+        auto inverse = ::fwData::TransformationMatrix3D::New();
+
+        size_t index = 0;
+        for( const bool invertCurrentMatrix : m_invertVector)
         {
-            ::fwData::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
+            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index++);
+            ::fwData::mt::ObjectReadLock inputMatrixLock(inputMatrix);
 
-            ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
-
-            auto inverse = ::fwData::TransformationMatrix3D::New();
-
-            size_t index = 0;
-            for( TransformMatrix currentMatrix : m_matrixVector)
+            if( invertCurrentMatrix )
             {
-                auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index++);
-                ::fwData::mt::ObjectReadLock inputMatrixLock(inputMatrix);
-
-                if( currentMatrix.m_inverse )
-                {
-                    ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
-                    ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
-                }
-                else
-                {
-                    ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
-                }
+                ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
+                ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
             }
-        }
-
-        auto sig = outputMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
+            else
+            {
+                ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
+            }
         }
     }
-    else
+
+    auto sig = outputMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwData::TransformationMatrix3D::sptr inverse = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrix  = this->getObject< ::fwData::TransformationMatrix3D >();
-
-        ::fwData::mt::ObjectWriteLock outputMatrixLock(matrix);
-        {
-            ::fwDataTools::TransformationMatrix3D::identity(matrix);
-
-            for( TransformMatrix currentMatrix : m_matrixVector)
-            {
-                ::fwData::mt::ObjectReadLock inputMatrixLock(currentMatrix.m_matrix);
-
-                if( currentMatrix.m_inverse )
-                {
-                    ::fwDataTools::TransformationMatrix3D::invert(currentMatrix.m_matrix, inverse);
-                    ::fwDataTools::TransformationMatrix3D::multiply(matrix, inverse, matrix);
-                }
-                else
-                {
-                    ::fwDataTools::TransformationMatrix3D::multiply(matrix, currentMatrix.m_matrix, matrix);
-                }
-            }
-        }
-
-        auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
-        }
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

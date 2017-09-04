@@ -279,29 +279,22 @@ void SCamera::onChooseDevice()
 
 //------------------------------------------------------------------------------
 
-std::vector< ::arData::Camera::sptr > SCamera::getCameras()
+std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
 {
     std::vector< ::arData::Camera::sptr > cameras;
-    if (this->isVersion2())
+
+    auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    if(cameraSeries)
     {
-        auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
-        if(cameraSeries)
+        const size_t numCameras = cameraSeries->getNumberOfCameras();
+        for(size_t i = 0; i < numCameras; ++i)
         {
-            const size_t numCameras = cameraSeries->getNumberOfCameras();
-            for(size_t i = 0; i < numCameras; ++i)
-            {
-                cameras.push_back(cameraSeries->getCamera(i));
-            }
-        }
-        else
-        {
-            cameras.push_back(this->getInOut< ::arData::Camera >("camera"));
+            cameras.push_back(cameraSeries->getCamera(i));
         }
     }
     else
     {
-        // TODO: When removing this appXml1 branch we can make the method const
-        cameras.push_back(this->getObject< ::arData::Camera >());
+        cameras.push_back(this->getInOut< ::arData::Camera >("camera"));
     }
 
     return cameras;

@@ -73,13 +73,6 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    if(!this->isVersion2())
-    {
-        ::fwRuntime::ConfigurationElement::sptr cameraCfg = m_configuration->findConfigurationElement("cameraFwId");
-        SLM_ASSERT("Missing tag 'cameraFwId'", cameraCfg);
-        m_cameraID = cameraCfg->getValue();
-        SLM_ASSERT("tag 'cameraFwId' must not be empty", !m_cameraID.empty());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -163,15 +156,7 @@ void SFrameGrabber::stopCamera()
         m_videoPlayer = nullptr;
 
         // Reset the timeline and send a black frame
-        ::arData::FrameTL::sptr timeline;
-        if(this->isVersion2())
-        {
-            timeline = this->getInOut< ::arData::FrameTL >("frameTL");
-        }
-        else
-        {
-            timeline = this->getObject< ::arData::FrameTL >();
-        }
+        ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
 
         if(timeline->isAllocated())
         {
@@ -201,17 +186,9 @@ void SFrameGrabber::stopCamera()
 
 CSPTR(::arData::Camera) SFrameGrabber::getCamera()
 {
-    ::arData::Camera::csptr camera;
-    if(this->isVersion2())
-    {
-        camera = this->getInput< ::arData::Camera>("camera");
-    }
-    else
-    {
-        ::fwTools::Object::csptr obj = ::fwTools::fwID::getObject(m_cameraID);
-        camera                       = ::arData::Camera::dynamicConstCast(obj);
-        FW_RAISE_IF("Camera not found", !camera);
-    }
+    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
+    FW_RAISE_IF("Camera not found", !camera);
+
     return camera;
 }
 
@@ -266,15 +243,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
         return;
     }
 
-    ::arData::FrameTL::sptr timeline;
-    if(this->isVersion2())
-    {
-        timeline = this->getInOut< ::arData::FrameTL >("frameTL");
-    }
-    else
-    {
-        timeline = this->getObject< ::arData::FrameTL >();
-    }
+    ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
 
     // If we have the same output format, we can take the fast path
     const int width  = frame.width();

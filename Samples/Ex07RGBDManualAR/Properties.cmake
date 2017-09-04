@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
 
     activities
-    appXml2
+    appXml
     arDataReg
     arMedia
     ctrlCamp
@@ -36,4 +36,4 @@ set( REQUIREMENTS
 
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex07RGBDManualARConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex07RGBDManualARConfig)

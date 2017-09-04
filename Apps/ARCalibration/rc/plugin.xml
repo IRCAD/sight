@@ -23,7 +23,7 @@
         </parameters>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>CameraExportSelection</id>
         <parameters>
             <param name="selection" />

@@ -4,7 +4,7 @@
     <requirement id="visuVTKQt" />
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex01VideoTrackingConfig</id>
         <config>
             <object uid="camera" type="::arData::Camera" />

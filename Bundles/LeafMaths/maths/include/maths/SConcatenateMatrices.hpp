@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwServices/IController.hpp>
-
 
 namespace maths
 {
@@ -80,19 +79,10 @@ protected:
 
 private:
 
-    struct TransformMatrix
-    {
-        ::fwData::TransformationMatrix3D::sptr m_matrix;
-        std::string m_uid;
-        bool m_inverse;
-        bool m_connect;
-    };
+    typedef std::vector< bool > InvertVectorType;
 
-    typedef std::vector< TransformMatrix > MatrixVectorType;
-
-    MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
-
-    ::fwCom::helper::SigSlotConnection m_connections; ///< connection to matrices
+    /// Vector to specify if matrix must be inverted.
+    InvertVectorType m_invertVector;
 };
 
 } //namespace maths
