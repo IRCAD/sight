@@ -48,7 +48,8 @@ SMatricesReader::SMatricesReader() throw() :
     m_tsMatricesCount(0),
     m_createNewTS(false),
     m_fps(30),
-    m_oneShot(false)
+    m_oneShot(false),
+    m_useTimelapse(false)
 {
 
     m_worker = ::fwThread::Worker::New();
