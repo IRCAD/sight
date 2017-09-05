@@ -215,7 +215,7 @@ void SPlaneList::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     this->setPlaneCollectionId( config.get("planecollection", "") );
 }

@@ -226,15 +226,13 @@ void SRender::configuring()
 {
     const ConfigType& srvConf = this->getConfigTree();
 
-    const ::boost::optional<const ConfigType&> inouts = srvConf.get_child_optional("service");
-
-    const size_t nbInouts = inouts.is_initialized() ? inouts->count("inout") : 0;
+    const size_t nbInouts = srvConf.count("inout");
 
     SLM_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
 
     if(nbInouts == 1)
     {
-        const std::string& key = inouts->get<std::string>("inout.<xmlattr>.key", "");
+        const std::string& key = srvConf.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
         SLM_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
@@ -244,7 +242,7 @@ void SRender::configuring()
         this->initialize();
     }
 
-    m_sceneConf = srvConf.get_child("service.scene");
+    m_sceneConf = srvConf.get_child("scene");
 
     const std::string& renderMode = m_sceneConf.get("<xmlattr>.renderMode", "auto");
 
@@ -281,7 +279,7 @@ void SRender::configuring()
     }
 
     /// Target frame rate (default 30Hz)
-    const unsigned int targetFrameRate = srvConf.get<unsigned int>("service.fps", 30);
+    const unsigned int targetFrameRate = srvConf.get<unsigned int>("fps", 30);
 
     if(m_renderMode == RenderMode::TIMER)
     {

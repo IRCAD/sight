@@ -150,7 +150,7 @@ void SImageSlice::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string orientation = config.get<std::string>("sliceIndex", "axial");
     if(orientation == "axial" )

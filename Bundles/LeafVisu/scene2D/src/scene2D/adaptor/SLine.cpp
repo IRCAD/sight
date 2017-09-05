@@ -40,7 +40,7 @@ void SLine::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     SLM_ASSERT("Attribute 'x1' is missing", config.count("x1"));
     SLM_ASSERT("Attribute 'x2' is missing", config.count("x2"));

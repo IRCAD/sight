@@ -82,7 +82,7 @@ void SCreateActivity::configuring()
 
     typedef ::fwServices::IService::ConfigType ConfigType;
 
-    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
 
     if(srvconfig.count("filter") == 1 )
     {

@@ -39,7 +39,7 @@ void SInteractorStyle::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     SLM_ASSERT("Missing attribute 'style'", config.count("style"));
     m_configuredStyle = config.get<std::string>("style");

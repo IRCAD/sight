@@ -92,7 +92,7 @@ void SParameters::starting()
     QGridLayout* layout = new QGridLayout();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
-    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("service.parameters");
+    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
 
     int row = 0;
 

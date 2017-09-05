@@ -65,7 +65,7 @@ void SImagesProbeCursor::configuring()
 {
     this->SProbeCursor::configuring();
 
-    const ConfigType config = this->getConfigTree().get_child("service.inout");
+    const ConfigType config = this->getConfigTree().get_child("inout");
 
     SLM_ASSERT("configured group must be '" + s_IMAGE_GROUP + "'",
                config.get<std::string>("<xmlattr>.group", "") == s_IMAGE_GROUP);

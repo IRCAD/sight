@@ -124,7 +124,7 @@ void SImagesBlend::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvConfig = this->getConfigTree().get_child("service");
+    const ConfigType srvConfig = this->getConfigTree();
 
     BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &cfg, srvConfig.equal_range("inout"))
     {

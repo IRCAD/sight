@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "activities/action/SActivityLauncher.hpp"
 
+#include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
-#include <fwActivities/IActivityValidator.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -42,12 +42,11 @@
 
 #include <QApplication>
 #include <QDialog>
-#include <QPushButton>
-#include <QListWidget>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QListWidget>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QVBoxLayout>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
@@ -109,13 +108,13 @@ void SActivityLauncher::configuring()
     typedef ::fwServices::IService::ConfigType ConfigType;
 
     m_parameters.clear();
-    if(this->getConfigTree().get_child("service").count("config") > 0)
+    if(this->getConfigTree().count("config") > 0)
     {
         SLM_ASSERT("There must be one (and only one) <config/> element.",
-                   this->getConfigTree().get_child("service").count("config") == 1 );
+                   this->getConfigTree().count("config") == 1 );
 
-        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
-        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
+        const ::fwServices::IService::ConfigType& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
         SLM_ASSERT("SActivityLauncher mode must be either 'immediate' or 'message'",
@@ -123,7 +122,7 @@ void SActivityLauncher::configuring()
 
         if(config.count("parameters") == 1 )
         {
-            const ::fwServices::IService::ConfigType &configParameters = config.get_child("parameters");
+            const ::fwServices::IService::ConfigType& configParameters = config.get_child("parameters");
             BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
             {
                 ParametersType::value_type parameter( v.second );
@@ -134,7 +133,7 @@ void SActivityLauncher::configuring()
 
         if(config.count("filter") == 1 )
         {
-            const ::fwServices::IService::ConfigType &configFilter = config.get_child("filter");
+            const ::fwServices::IService::ConfigType& configFilter = config.get_child("filter");
             OSLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
@@ -152,10 +151,10 @@ void SActivityLauncher::configuring()
         if(config.count("quickLaunch") == 1 )
         {
             m_quickLaunch.clear();
-            const ::fwServices::IService::ConfigType &configQuickLaunch = config.get_child("quickLaunch");
+            const ::fwServices::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
             BOOST_FOREACH( const ConfigType::value_type &v,  configQuickLaunch.equal_range("association") )
             {
-                const ::fwServices::IService::ConfigType &association = v.second;
+                const ::fwServices::IService::ConfigType& association = v.second;
                 const ::fwServices::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
 
                 SLM_FATAL_IF( "The attribute \"type\" is missing", xmlattr.count("type") != 1 );
@@ -173,15 +172,14 @@ void SActivityLauncher::configuring()
 
 //------------------------------------------------------------------------------
 
-::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer & infos )
+::fwActivities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
-    QWidget *parent = qApp->activeWindow();
+    QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
 
-
-    QStandardItemModel *model = new QStandardItemModel(dialog);
+    QStandardItemModel* model = new QStandardItemModel(dialog);
     for( ::fwActivities::registry::ActivityInfo info :  infos)
     {
         std::string text;
@@ -200,9 +198,8 @@ void SActivityLauncher::configuring()
         model->appendRow(item);
     }
 
-
-    QListView * selectionList = new QListView();
-    selectionList->setIconSize(QSize(100,100));
+    QListView* selectionList = new QListView();
+    selectionList->setIconSize(QSize(100, 100));
     selectionList->setUniformItemSizes(true);
     selectionList->setModel(model);
 
@@ -215,11 +212,11 @@ void SActivityLauncher::configuring()
     QPushButton* okButton     = new QPushButton("Ok");
     QPushButton* cancelButton = new QPushButton("Cancel");
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    QHBoxLayout* hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);
     hLayout->addWidget(cancelButton);
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
+    QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
@@ -232,7 +229,7 @@ void SActivityLauncher::configuring()
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
-        QStandardItem *item      = model->itemFromIndex( currentIndex );
+        QStandardItem* item      = model->itemFromIndex( currentIndex );
         QVariant var             = item->data();
         info = var.value< ::fwActivities::registry::ActivityInfo >();
     }
@@ -322,7 +319,6 @@ void SActivityLauncher::updateState()
     {
         ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]);
 
-
         if(m_filterMode == "include" || m_filterMode == "exclude")
         {
             const bool isIncludeMode = m_filterMode == "include";
@@ -370,13 +366,13 @@ void SActivityLauncher::updateState()
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::info( std::ostream &_sstream )
+void SActivityLauncher::info( std::ostream& _sstream )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo & info,
+void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo& info,
                                       const ::fwData::Vector::sptr& selection)
 {
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
@@ -424,7 +420,6 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
         }
     }
 
-
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(actSeries, info, parameters);
 
@@ -450,7 +445,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo & info )
+void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo& info )
 {
     // Start Bundle containing the activity if it is not started
     std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
@@ -462,13 +457,12 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
         bundle->start();
     }
 
-
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
     ::fwActivities::IValidator::ValidationType validation;
     validation.first = true;
 
-    for(auto const &validatorImpl :  info.validatorsImpl)
+    for(auto const& validatorImpl :  info.validatorsImpl)
     {
         ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
         OSLM_ASSERT(validatorImpl << " instantiation failed", validator);
@@ -497,7 +491,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
 
 //------------------------------------------------------------------------------
 
-bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
+bool SActivityLauncher::launchAS(::fwData::Vector::sptr& selection)
 {
     bool launchAS = false;
     ::fwActivities::registry::ActivityInfo::DataCountType dataCount;
@@ -591,7 +585,6 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
         }
     }
 
-
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(series, info, parameters);
 
@@ -609,7 +602,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
         if(param.isSeshat())
         {
             std::string parameterToReplace = param.by;
-            if (parameterToReplace.substr(0,1) == "!")
+            if (parameterToReplace.substr(0, 1) == "!")
             {
                 parameterToReplace.replace(0, 1, "@");
             }
@@ -621,7 +614,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
             std::string parameterValue = obj->getID();
 
-            if(stringParameter && param.by.substr(0,1) == "!")
+            if(stringParameter && param.by.substr(0, 1) == "!")
             {
                 parameterValue = stringParameter->getValue();
             }

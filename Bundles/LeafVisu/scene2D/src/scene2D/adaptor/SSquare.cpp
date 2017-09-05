@@ -39,7 +39,7 @@ void SSquare::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     SLM_ASSERT("Attribute 'x' is missing", config.count("x"));
     SLM_ASSERT("Attribute 'y' is missing", config.count("y"));

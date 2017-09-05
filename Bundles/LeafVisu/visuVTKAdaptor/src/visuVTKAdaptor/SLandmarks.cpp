@@ -262,7 +262,7 @@ void SLandmarks::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string interaction = config.get<std::string>("interaction", "on");
 

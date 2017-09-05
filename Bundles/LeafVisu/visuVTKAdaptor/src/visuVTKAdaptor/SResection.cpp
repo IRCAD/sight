@@ -37,7 +37,7 @@ void SResection::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     this->setClippingPlanes(config.get("clippingplanes", ""));
 

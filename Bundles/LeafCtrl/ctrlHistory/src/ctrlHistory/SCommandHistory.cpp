@@ -59,8 +59,8 @@ void SCommandHistory::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    auto maxCommands = config.get_optional< size_t >("service.maxCommands");
-    auto maxMemory   = config.get_optional< size_t >("service.maxMemory");
+    auto maxCommands = config.get_optional< size_t >("maxCommands");
+    auto maxMemory   = config.get_optional< size_t >("maxMemory");
 
     if(maxCommands.is_initialized())
     {

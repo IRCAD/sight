@@ -56,7 +56,7 @@ void STexture::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_filtering = config.get<std::string>("filtering", "linear");
 

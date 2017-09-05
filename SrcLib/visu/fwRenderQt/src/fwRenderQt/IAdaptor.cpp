@@ -169,7 +169,7 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(const Point2DType& _xy,
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_viewInitialSize.first  = -1.0f;
     m_viewInitialSize.second = -1.0f;

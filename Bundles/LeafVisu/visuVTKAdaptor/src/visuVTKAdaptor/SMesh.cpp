@@ -395,7 +395,7 @@ void SMesh::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     const std::string color          = config.get<std::string>("color", "#ffffffff");
     const std::string unclippedColor = config.get<std::string>("unclippedcolor", "#aaaaff44");

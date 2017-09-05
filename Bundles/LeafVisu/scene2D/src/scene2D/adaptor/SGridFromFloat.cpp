@@ -46,7 +46,7 @@ void SGridFromFloat::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     SLM_ASSERT("Attribute 'xMin' is missing", config.count("xMin"));
     SLM_ASSERT("Attribute 'xMax' is missing", config.count("xMax"));

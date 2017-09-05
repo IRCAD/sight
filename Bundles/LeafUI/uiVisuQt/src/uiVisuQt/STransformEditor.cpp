@@ -65,7 +65,7 @@ void STransformEditor::configuring()
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    const std::string rotation = config.get< std::string >("service.rotation.<xmlattr>.enabled", "yes");
+    const std::string rotation = config.get< std::string >("rotation.<xmlattr>.enabled", "yes");
 
     if(rotation == "no")
     {
@@ -84,10 +84,10 @@ void STransformEditor::configuring()
         SLM_ERROR("Attribute 'rotation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
-    m_rotationRange[0] = config.get< int >("service.rotation.<xmlattr>.min", m_rotationRange[0]);
-    m_rotationRange[1] = config.get< int >("service.rotation.<xmlattr>.max", m_rotationRange[1]);
+    m_rotationRange[0] = config.get< int >("rotation.<xmlattr>.min", m_rotationRange[0]);
+    m_rotationRange[1] = config.get< int >("rotation.<xmlattr>.max", m_rotationRange[1]);
 
-    const std::string translation = config.get< std::string >("service.translation.<xmlattr>.enabled", "yes");
+    const std::string translation = config.get< std::string >("translation.<xmlattr>.enabled", "yes");
 
     if(translation == "no")
     {
@@ -106,8 +106,8 @@ void STransformEditor::configuring()
         SLM_ERROR("Attribute 'translation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
-    m_translationRange[0] = config.get< int >("service.translation.<xmlattr>.min", m_translationRange[0]);
-    m_translationRange[1] = config.get< int >("service.translation.<xmlattr>.max", m_translationRange[1]);
+    m_translationRange[0] = config.get< int >("translation.<xmlattr>.min", m_translationRange[0]);
+    m_translationRange[1] = config.get< int >("translation.<xmlattr>.max", m_translationRange[1]);
 }
 
 //------------------------------------------------------------------------------

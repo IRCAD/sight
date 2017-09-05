@@ -133,11 +133,11 @@ void DynamicView::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    if(this->getConfigTree().get_child("service").count("config") > 0)
+    if(this->getConfigTree().count("config") > 0)
     {
         SLM_ASSERT("There must be one (and only one) <config/> element.",
-                   this->getConfigTree().get_child("service").count("config") == 1 );
-        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+                   this->getConfigTree().count("config") == 1 );
+        const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
         const ::fwServices::IService::ConfigType& config   = srvconfig.get_child("config");
 
         const std::string dynamicConfig =
