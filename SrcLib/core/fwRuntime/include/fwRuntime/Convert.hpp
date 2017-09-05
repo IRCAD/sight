@@ -51,10 +51,8 @@ public:
 
 private:
 
-    FWRUNTIME_API static void fromConfigurationElementToXml(
-        std::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr _node);                                                       //_node
-                                                                                                                                                   // is
-                                                                                                                                                   // modified
+    static void fromConfigurationElementToXml(std::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement,
+                                              xmlNodePtr _node);
 
     /**
      * @brief   Constructor : does nothing.
