@@ -44,6 +44,7 @@ namespace ioTimeline
        <inout key="matrixTL" uid="..." />
        <oneShot>false</oneShot>
        <fps>30</fps>
+       <useTimelapse>true</useTimelapse>
        <createTimestamp>false</createTimestamp>
        <windowTitle>Select the matrix timeline to load</windowTitle>
    </service>
@@ -58,9 +59,9 @@ namespace ioTimeline
  * - \b fps (optionnal): frequence at which matrices are pushed in the timeline (default 30),
  *  only used if oneShot is off.
  * - \b createTimestamp(optionnal): create a new timestamp instead of using csv file (default: false).
- *
- * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
+ * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
+ *     timestamps to figure out at which speed to read the matrices. (default: false)
  */
 
 class IOTIMELINE_CLASS_API SMatricesReader : public ::io::IReader
@@ -144,6 +145,8 @@ private:
 
     bool m_oneShot; ///< oneShot mode (read matrices one-by-one)
 
+    /// If set to true, ignore the fps value and use the interval between timestamps for the timer
+    bool m_useTimelapse;
 };
 
 } // ioTimeline
