@@ -32,6 +32,7 @@ const ::fwCom::Slots::SlotKeyType SManage::s_ADD_SLOT               = "add";
 const ::fwCom::Slots::SlotKeyType SManage::s_SWAP_OBJ_SLOT          = "swapObj";
 const ::fwCom::Slots::SlotKeyType SManage::s_REMOVE_SLOT            = "remove";
 const ::fwCom::Slots::SlotKeyType SManage::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
+const ::fwCom::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
 
 const ::fwServices::IService::KeyType s_COMPOSITE_INOUT = "composite";
 const ::fwServices::IService::KeyType s_VECTOR_INOUT    = "vector";
@@ -51,6 +52,7 @@ SManage::SManage() noexcept
     newSlot(s_SWAP_OBJ_SLOT, &SManage::swap, this);
     newSlot(s_REMOVE_SLOT, &SManage::remove, this);
     newSlot(s_REMOVE_IF_PRESENT_SLOT, &SManage::removeIfPresent, this);
+    newSlot(s_CLEAR_SLOT, &SManage::clear, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -288,6 +290,38 @@ void SManage::removeIfPresent()
             helper.notify();
         }
         SLM_WARN_IF("Object does not exist in the SeriesDB, does nothing.", iter == seriesDB->end());
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SManage::clear()
+{
+    ::fwData::Composite::sptr composite  = this->getInOut< ::fwData::Composite >(s_COMPOSITE_INOUT);
+    ::fwData::Vector::sptr vector        = this->getInOut< ::fwData::Vector >(s_VECTOR_INOUT);
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(s_SERIESDB_INOUT);
+
+    SLM_ASSERT("Target object is missing, required one of 'composite', 'vector' or 'seriesDB'",
+               vector || composite || seriesDB);
+    if (composite)
+    {
+        SLM_ASSERT("Only one target object is managed", !vector && !seriesDB);
+        ::fwDataTools::helper::Composite helper( composite );
+        helper.clear();
+        helper.notify();
+    }
+    else if (vector)
+    {
+        SLM_ASSERT("Only one target object is managed", !composite && !seriesDB);
+        ::fwDataTools::helper::Vector helper( vector );
+        helper.clear();
+        helper.notify();
+    }
+    else if (seriesDB)
+    {
+        ::fwMedDataTools::helper::SeriesDB helper( seriesDB );
+        helper.clear();
+        helper.notify();
     }
 }
 
