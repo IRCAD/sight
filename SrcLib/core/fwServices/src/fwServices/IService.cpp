@@ -232,7 +232,19 @@ void IService::setConfiguration( const ConfigType& ptree )
 
 IService::ConfigType IService::getConfigTree() const
 {
-    return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration()).get_child("service");
+    const auto configTree = ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
+
+    // This is in case we get the configuration from a ::fwServices::registry::ServiceConfig
+    const auto srvConfig = configTree.get_child_optional("config");
+
+    if(srvConfig.is_initialized())
+    {
+        return srvConfig.value();
+    }
+    else
+    {
+        return configTree.get_child("service");
+    }
 }
 
 //-----------------------------------------------------------------------------
