@@ -15,6 +15,7 @@
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+#include <itkRegistrationOp/AutomaticRegistrationV4.hpp>
 
 namespace opItkRegistration
 {
@@ -57,8 +58,14 @@ void SAutomaticRegistration::configuring()
     OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("service.metric", "");
-
     setMetric(metric);
+
+    const std::string legacyMode = config.get_optional< std::string >("service.legacyMode").get_value_or("off");
+
+    OSLM_FATAL_IF("Invalid legacyMode, must be 'on' or 'off'. Here : " << legacyMode,
+                  legacyMode != "on" && legacyMode != "off");
+
+    m_legacyMode = (legacyMode == "on");
 }
 
 //------------------------------------------------------------------------------
@@ -87,8 +94,17 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                              m_maxStep, m_maxIterations);
+    if(m_legacyMode)
+    {
+        ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                                  m_maxStep, m_maxIterations);
+
+    }
+    else
+    {
+        ::itkRegistrationOp::AutomaticRegistrationV4::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                                    m_maxIterations);
+    }
 
     m_sigComputed->asyncEmit();
 
@@ -135,19 +151,50 @@ void SAutomaticRegistration::setEnumParameter(std::string val, std::string key)
 
 //------------------------------------------------------------------------------
 
+void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
+{
+    if(key == "minStep")
+    {
+        m_minStep = val;
+    }
+    else if(key == "maxStep")
+    {
+        m_maxStep = val;
+
+        OSLM_WARN_IF("'maxStep' is useless in non-legacy (v4) mode.", !m_legacyMode);
+    }
+    else
+    {
+        OSLM_FATAL("Unknown key : " << key);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SAutomaticRegistration::setIntParameter(int val, std::string key)
+{
+    if(key == "maxIterations")
+    {
+        OSLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
+        m_maxIterations = static_cast<unsigned long>(val);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SAutomaticRegistration::setMetric(const std::string& metricName)
 {
     if(metricName == "MeanSquares")
     {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::MEAN_SQUARES;
+        m_metric = ::itkRegistrationOp::MEAN_SQUARES;
     }
     else if(metricName == "NormalizedCorrelation")
     {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::NORMALIZED_CORRELATION;
+        m_metric = ::itkRegistrationOp::NORMALIZED_CORRELATION;
     }
     else if(metricName == "MutualInformation")
     {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::MUTUAL_INFORMATION;
+        m_metric = ::itkRegistrationOp::MUTUAL_INFORMATION;
     }
     else
     {

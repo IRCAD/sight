@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ITKREGISTRATIONOP_AUTOMATICREGISTRATION_HPP__
-#define __ITKREGISTRATIONOP_AUTOMATICREGISTRATION_HPP__
+#ifndef __ITKREGISTRATIONOP_AUTOMATICREGISTRATIONV4_HPP__
+#define __ITKREGISTRATIONOP_AUTOMATICREGISTRATIONV4_HPP__
 
 #include "itkRegistrationOp/config.hpp"
 #include "itkRegistrationOp/Metric.hpp"
@@ -17,9 +17,9 @@ namespace itkRegistrationOp
 {
 
 /**
- * @brief Static class for automatic image registration.
+ * @brief Static class for automatic image registration. Uses the newer v4 registration framework.
  */
-class ITKREGISTRATIONOP_CLASS_API AutomaticRegistration
+class ITKREGISTRATIONOP_CLASS_API AutomaticRegistrationV4
 {
 public:
 
@@ -30,7 +30,6 @@ public:
      * @param[out] _trf the resulting rigid transform.
      * @param[in] _metric the metric to be used for registration.
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
-     * @param[in] _maxStep maximum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
      */
     static ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
@@ -38,10 +37,9 @@ public:
                                                     const ::fwData::TransformationMatrix3D::sptr& _trf,
                                                     MetricType _metric,
                                                     double _minStep = 0.0001,
-                                                    double _maxStep = 0.2,
                                                     unsigned long _maxIterations = 200);
 };
 
 } // itkRegistrationOp
 
-#endif // __ITKREGISTRATIONOP_AUTOMATICREGISTRATION_HPP__
+#endif // __ITKREGISTRATIONOP_AUTOMATICREGISTRATIONV4_HPP__

@@ -490,6 +490,9 @@
 
         <service uid="setAutoRegistrationMetric" type="::guiQt::editor::SParameters">
             <parameters>
+                <param type="double" name="min step" key="minStep" defaultValue="0.0001" min="0.00001" max="1." />
+                <param type="double" name="max step" key="maxStep" defaultValue="0.3" min="0.01" max="5." />
+                <param type="int" name="iterations" key="maxIterations" defaultValue="200" min="1" max="1000" />
                 <param type="enum" name="Mode" key="metric" defaultValue="NormalizedCorrelation" values="MeanSquares,NormalizedCorrelation,MutualInformation" />
             </parameters>
         </service>
@@ -645,6 +648,16 @@
         <connect>
             <signal>setAutoRegistrationMetric/enumChanged</signal>
             <slot>automaticRegistration/setEnumParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>setAutoRegistrationMetric/doubleChanged</signal>
+            <slot>automaticRegistration/setDoubleParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>setAutoRegistrationMetric/intChanged</signal>
+            <slot>automaticRegistration/setIntParameter</slot>
         </connect>
 
         <connect>
