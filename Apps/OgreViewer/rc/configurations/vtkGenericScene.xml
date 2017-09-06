@@ -1,17 +1,14 @@
-
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>VTKGenericScene</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="modelSeriesUID" />
     </parameters>
     <config>
-
         <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
-
-        <service uid="VTKSceneView" type="::gui::view::SDefaultView" >
+        <service uid="VTKSceneView" type="::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -22,19 +19,26 @@
             </registry>
         </service>
 
-        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes" >
-            <in key="modelSeries" uid="${modelSeriesUID}" />
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
             <!-- <scene autoRender="false"> -->
             <scene>
                 <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                    <config renderer="default" picker="defaultPicker" />
-                </adaptor>
+                <adaptor uid="modelSeriesAdaptor" />
             </scene>
         </service>
 
-        <start uid="VTKSceneView" />
+        <service uid="modelSeriesAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${modelSeriesUID}" />
+            <config renderer="default" picker="defaultPicker" />
+        </service>
 
+        <!-- *************************** End generic scene *************************** -->
+
+        <start uid="VTKSceneView" />
+        <!-- VTK scene 'genericScene' -->
+        <start uid="modelSeriesAdaptor" />
     </config>
 </extension>

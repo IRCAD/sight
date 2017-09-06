@@ -37,10 +37,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UIVISUOGRE_API SMaterialSelector() throw();
+    UIVISUOGRE_API SMaterialSelector() noexcept;
 
     /// Destructor. Does nothing
-    UIVISUOGRE_API virtual ~SMaterialSelector() throw();
+    UIVISUOGRE_API virtual ~SMaterialSelector() noexcept;
 
     /**
      * @name Signals API
@@ -59,18 +59,18 @@ protected:
         </service>
        @endcode
      */
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Start the service. Create UI
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Stop the service. Delete UI
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Update UI depending on current reconstruction
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
-    UIVISUOGRE_API virtual void swapping() throw(::fwTools::Failed);
+    UIVISUOGRE_API virtual void swapping();
 
 protected Q_SLOTS:
 

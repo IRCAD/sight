@@ -25,7 +25,7 @@ namespace visuOgreAdaptor
 
 //------------------------------------------------------------------------------
 
-STransform::STransform() throw() :
+STransform::STransform() noexcept :
     m_transformNode(nullptr),
     m_parentTransformNode(nullptr)
 {
@@ -33,34 +33,32 @@ STransform::STransform() throw() :
 
 //------------------------------------------------------------------------------
 
-STransform::~STransform() throw()
+STransform::~STransform() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void STransform::doConfigure() throw(::fwTools::Failed)
+void STransform::configuring()
 {
-    this->setTransformId( m_configuration->getAttributeValue("transform") );
+    this->configureParams();
 
-    if ( m_configuration->hasAttribute( "parent" ) )
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    this->setTransformId( config.get<std::string>("transform") );
+
+    if ( config.count( "parent" ) )
     {
-        m_parentTransformId = m_configuration->getAttributeValue("parent");
-
-        if(m_parentTransformId.empty())
-        {
-            OSLM_ERROR(
-                "visuOgreAdaptor->Transform: Can't find parent: '"<< m_parentTransformId <<
-                "'. Check XML configuration"
-                );
-        }
+        m_parentTransformId = config.get<std::string>("parent");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void STransform::doStart() throw(::fwTools::Failed)
+void STransform::starting()
 {
+    this->initialize();
+
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     if(!this->getTransformId().empty())
     {
@@ -118,7 +116,7 @@ void STransform::updateFromOgre()
 
 //------------------------------------------------------------------------------
 
-void STransform::doUpdate() throw(::fwTools::Failed)
+void STransform::updating()
 {
     m_fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
 
@@ -172,14 +170,7 @@ const ::Ogre::Matrix4& STransform::getTransform() const
 
 //------------------------------------------------------------------------------
 
-void STransform::doSwap() throw(::fwTools::Failed)
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void STransform::doStop() throw(::fwTools::Failed)
+void STransform::stopping()
 {
 }
 

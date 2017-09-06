@@ -78,9 +78,6 @@ private:
     /// Table's GPU texture.
     ::Ogre::TexturePtr m_tableTexture;
 
-    /// Size of the longest view ray inside the volume.
-    double m_volumeDiagonalSize;
-
     /// Image value interval.
     std::pair<int, int> m_valueInterval;
 

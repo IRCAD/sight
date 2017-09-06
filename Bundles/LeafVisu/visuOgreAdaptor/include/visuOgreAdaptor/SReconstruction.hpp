@@ -22,20 +22,40 @@ class Mesh;
 
 namespace visuOgreAdaptor
 {
+/**
+ * @brief
+ *
+ * @section Slots Slots
+ * - \b changeMesh(::fwData::Mesh::sptr) : called when the associated mesh changes.
+ * - \b modifyVisibility(int) : called to show or hide the reconstruction.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::SReconstruction">
+            <in key="reconstruction" uid="..." />
+            <config transform="transform" autoresetcamera="autoresetcamera" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b reconstruction [::fwData::Reconstruction]: reconstruction to display.
+ * @subsection Configuration Configuration:
+ * - \b transform (mandatory) : the transformation matrix to associate to the adaptor.
+ *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
+ */
 
 class VISUOGREADAPTOR_CLASS_API SReconstruction : public ::fwRenderOgre::IAdaptor,
                                                   public ::fwRenderOgre::ITransformable
 {
-
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SReconstruction)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor.
-    VISUOGREADAPTOR_API SReconstruction() throw();
+    VISUOGREADAPTOR_API SReconstruction() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SReconstruction() throw();
+    VISUOGREADAPTOR_API virtual ~SReconstruction() noexcept;
 
     /**
      * @name Slots API
@@ -59,7 +79,7 @@ public:
     VISUOGREADAPTOR_API ::visuOgreAdaptor::SMesh::sptr getMeshAdaptor();
 
     /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
     VISUOGREADAPTOR_API void setDynamicVertices(bool _isDynamic);
@@ -68,27 +88,14 @@ public:
     VISUOGREADAPTOR_API void setDynamic(bool _isDynamic);
 
 protected:
+    /// Configure the Reconstruction adaptor.
+    VISUOGREADAPTOR_API void configuring() override;
     /// starts the service; creates the mesh service.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void starting() override;
     /// stops and unregisters the service.
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
-
-    /**
-     * @brief Configure the Reconstruction adaptor.
-     * @code{.xml}
-       <adaptor id="reconstructionAdaptorId" class="::visuOgreAdaptor::SReconstruction" objectId="objectId">
-        <config transform="transform" autoresetcamera="autoresetcamera" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor
-     *  - \b autoresetcamera (optional)
-     */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void stopping() override;
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
-    /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void updating() override;
 
 private:
     /// Changes the attached mesh

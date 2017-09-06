@@ -32,9 +32,11 @@ const ::fwCom::Signals::SignalKeyType visuOgreAdaptor::STexture::s_TEXTURE_SWAPP
 
 const std::string STexture::DEFAULT_TEXTURE_FILENAME = "default.png";
 
+static const std::string s_TEXTURE_INOUT = "image";
+
 //------------------------------------------------------------------------------
 
-STexture::STexture() throw() :
+STexture::STexture() noexcept :
     m_textureName(""),
     m_filtering("linear"),
     m_wrapping("repeat"),
@@ -46,7 +48,7 @@ STexture::STexture() throw() :
 
 //------------------------------------------------------------------------------
 
-STexture::~STexture() throw()
+STexture::~STexture() noexcept
 {
 
 }
@@ -65,20 +67,18 @@ bool STexture::isValid() const
 
     return false;
 }
-//------------------------------------------------------------------------------
-
-int STexture::getStartPriority()
-{
-    return -20;
-}
 
 //------------------------------------------------------------------------------
 
-void STexture::doConfigure() throw(::fwTools::Failed)
+void STexture::configuring()
 {
-    if(m_configuration->hasAttribute("textureName"))
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    if(config.count("textureName"))
     {
-        m_textureName = m_configuration->getAttributeValue("textureName");
+        m_textureName = config.get<std::string>("textureName");
     }
     else
     {
@@ -87,32 +87,32 @@ void STexture::doConfigure() throw(::fwTools::Failed)
         m_textureName = this->getID();
     }
 
-    if ( m_configuration->hasAttribute( "filtering" ) )
+    if ( config.count( "filtering" ) )
     {
-        m_filtering = m_configuration->getAttributeValue("filtering");
+        m_filtering = config.get<std::string>("filtering");
     }
 
-    if ( m_configuration->hasAttribute( "wrapping" ) )
+    if ( config.count( "wrapping" ) )
     {
-        m_wrapping = m_configuration->getAttributeValue("wrapping");
+        m_wrapping = config.get<std::string>("wrapping");
     }
 
-    if ( m_configuration->hasAttribute( "useAlpha" ) )
+    if ( config.count( "useAlpha" ) )
     {
-        bool useAlpha = (m_configuration->getAttributeValue("useAlpha") == "true");
-        m_useAlpha = useAlpha;
+        m_useAlpha = config.get<bool>("useAlpha");
     }
-    if(m_configuration->hasAttribute("dynamic"))
+    if(config.count("dynamic"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamic");
-        m_isDynamic = ( dynamic == "true" );
+        m_isDynamic = config.get<bool>("dynamic");
     }
 }
 
 //------------------------------------------------------------------------------
 
-void STexture::doStart() throw(::fwTools::Failed)
+void STexture::starting()
 {
+    this->initialize();
+
     m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         m_textureName,
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -123,10 +123,10 @@ void STexture::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doUpdate() throw(::fwTools::Failed)
+void STexture::updating()
 {
     // Retrieves associated f4s image
-    ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
+    ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>(s_TEXTURE_INOUT);
 
     SLM_ASSERT("Failed object dynamic cast", imageF4s);
 
@@ -145,14 +145,7 @@ void STexture::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doSwap() throw(::fwTools::Failed)
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void STexture::doStop() throw(::fwTools::Failed)
+void STexture::stopping()
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();
@@ -161,11 +154,11 @@ void STexture::doStop() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType STexture::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap STexture::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_TEXTURE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_TEXTURE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

@@ -38,7 +38,7 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformat
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
+SCamera::SCamera() noexcept :
     m_camera(nullptr),
     m_nearClipDistance(1.f),
     m_aspectRatio(0.f)
@@ -49,20 +49,33 @@ SCamera::SCamera() throw() :
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() throw()
+SCamera::~SCamera() noexcept
 {
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "calibration", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
+    return connections;
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doConfigure() throw(::fwTools::Failed)
+void SCamera::configuring()
 {
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStart() throw(::fwTools::Failed)
+void SCamera::starting()
 {
+    this->initialize();
+
     m_camera      = this->getLayer()->getDefaultCamera();
     m_calibration = this->getInput< ::arData::Camera >("calibration");
 
@@ -78,7 +91,16 @@ void SCamera::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doUpdate() throw(::fwTools::Failed)
+void SCamera::stopping()
+{
+    m_layerConnection.disconnect();
+
+    this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::updating()
 {
 }
 
@@ -86,16 +108,17 @@ void SCamera::doUpdate() throw(::fwTools::Failed)
 
 void SCamera::createTransformService()
 {
-    auto transform = this->getInput< ::fwData::TransformationMatrix3D >("transform");
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
 
     if(!transform)
     {
         transform = ::fwData::TransformationMatrix3D::New();
     }
 
-    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform, "::visuOgreAdaptor::STransform");
-    SLM_ASSERT("Transform service is null", m_transformService.lock());
-    auto transformService = this->getTransformService();
+    auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
+    transformService->registerInOut(transform, "transform", true);
+
+    m_transformService = transformService;
 
     transformService->setID(this->getID() + "_" + transformService->getID());
     transformService->setRenderService(this->getRenderService());
@@ -105,8 +128,6 @@ void SCamera::createTransformService()
     transformService->setParentTransformId(this->getParentTransformId());
 
     transformService->start();
-    transformService->connect();
-    this->registerService(transformService);
 
     this->attachNode(m_camera);
 }
@@ -124,22 +145,6 @@ void SCamera::attachNode(::Ogre::MovableObject* _node)
         _node->detachFromParent();
         transNode->attachObject(_node);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SCamera::doSwap() throw(::fwTools::Failed)
-{
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void SCamera::doStop() throw(::fwTools::Failed)
-{
-    m_layerConnection.disconnect();
-
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
@@ -187,16 +192,6 @@ void SCamera::updateTF3D()
     this->getTransformService()->setTransform(newTransMat);
 }
 
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
-{
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( "calibration", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
-    return connections;
-}
-
 //------------------------------------------------------------------------------
 
 void SCamera::setNearClipDistance(::Ogre::Real _nearClipDistance)
@@ -239,7 +234,7 @@ void SCamera::calibrate()
                                                        atan(static_cast< double >(m_calibration->getHeight() / 2.0) /
                                                             fy))));
 
-        this->doUpdate();
+        this->updating();
     }
 }
 

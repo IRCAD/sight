@@ -63,22 +63,28 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+    <service uid="..." type="::visuOgreAdaptor::SMesh" >
+        <inout key="mesh" uid="..." />
         <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureAdaptor="texAdaptorUID" />
-    </adaptor>
+                textureName="texAdaptorUID" />
+    </service>
    @endcode
- * With :
+ * @subsection In-Out In-Out
+ * - \b mesh [::fwData::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add some
+ * fields.
+ * @subsection Configuration Configuration:
  *  - \b renderer (mandatory) : defines the mesh's layer
+ *  - \b autoresetcamera (optional, default="yes"): reset the camera when this mesh is modified, "yes" or "no".
  *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor.
  * Either of the following (whether a material is configured in the XML scene or not) :
- *  - \b materialAdaptor (optional) : the name of the associated material adaptor
- * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
+ *  - \b materialName (optional) : name of the Ogre material, as defined in the ::visuOgreAdaptor::SMaterial you want
+ * to be bound to.
+ * Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
  * template, the texture adaptor and the shading mode) :
- *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
- *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
+ *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
+ *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode.
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -87,9 +93,9 @@ public:
     fwCoreServiceClassDefinitionsMacro((SMesh)(::fwRenderOgre::IAdaptor));
 
     /// Constructor: Sets default parameters and initializes necessary members.
-    VISUOGREADAPTOR_API SMesh() throw();
+    VISUOGREADAPTOR_API SMesh() noexcept;
     /// Destructor: if an entity exists in the Ogre Scene, asks Ogre to destroy it.
-    VISUOGREADAPTOR_API virtual ~SMesh() throw();
+    VISUOGREADAPTOR_API virtual ~SMesh() noexcept;
 
     /// Returns the material associated to this.
     VISUOGREADAPTOR_API SPTR(::fwData::Material) getMaterial() const;
@@ -120,10 +126,10 @@ public:
     VISUOGREADAPTOR_API void setIsReconstructionManaged(bool _isReconstructionManaged);
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
-    VISUOGREADAPTOR_API virtual void requestRender();
+    VISUOGREADAPTOR_API virtual void requestRender() override;
 
 private:
 
@@ -136,30 +142,28 @@ private:
     };
 
     /// Configures the adaptor
-    void doConfigure() throw(::fwTools::Failed);
+    void configuring() override;
     /// Manually creates a Mesh in the Default Ogre Ressource group
-    void doStart    () throw(::fwTools::Failed);
+    void starting() override;
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void doStop     () throw(::fwTools::Failed);
-    /// Performs a Stop -> Start
-    void doSwap     () throw(::fwTools::Failed);
+    void stopping() override;
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void doUpdate   () throw(::fwTools::Failed);
+    void updating() override;
 
     ::Ogre::Entity* newEntity();
 
     /// Bind a vertex layer
-    void bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding, ::Ogre::VertexElementSemantic _semantic,
+    void bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding, ::Ogre::VertexElementSemantic _semantic,
                    ::Ogre::VertexElementType _type);
 
     /// Updates the Mesh, checks if color, number of vertices have changed, and updates them.
     void updateMesh(const ::fwData::Mesh::sptr& mesh);
     /// Updates the vertices position
-    void updateVertices(const ::fwData::Mesh::sptr& mesh);
+    void updateVertices(const ::fwData::Mesh::csptr& mesh);
     /// Updates the vertices colors.
-    void updateColors(const ::fwData::Mesh::sptr& mesh);
+    void updateColors(const ::fwData::Mesh::csptr& mesh);
     /// Updates the vertices texture coordinates.
-    void updateTexCoords(const ::fwData::Mesh::sptr& mesh);
+    void updateTexCoords(const ::fwData::Mesh::csptr& mesh);
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
     void clearMesh();
     /// Instantiates a new material adaptor

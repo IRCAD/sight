@@ -28,31 +28,31 @@ namespace uiVisuOgre
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor, ::fwData::Object);
 
 //------------------------------------------------------------------------------
-SCompositorParameterEditor::SCompositorParameterEditor() throw()
+SCompositorParameterEditor::SCompositorParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SCompositorParameterEditor::~SCompositorParameterEditor() throw()
+SCompositorParameterEditor::~SCompositorParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::configuring() throw(::fwTools::Failed)
+void SCompositorParameterEditor::configuring()
 {
     this->initialize();
 
     auto config = this->getConfigTree();
 
-    m_renderID = config.get<std::string>("service.render.<xmlattr>.uid", "");
-    m_layerID  = config.get<std::string>("service.layer.<xmlattr>.id", "");
+    m_renderID = config.get<std::string>("render.<xmlattr>.uid", "");
+    m_layerID  = config.get<std::string>("layer.<xmlattr>.id", "");
 }
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
+void SCompositorParameterEditor::starting()
 {
     this->create();
 
@@ -105,7 +105,7 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
+void SCompositorParameterEditor::stopping()
 {
     m_layerConnection.disconnect();
     this->clear();
@@ -114,7 +114,7 @@ void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameterEditor::updating() throw(::fwTools::Failed)
+void SCompositorParameterEditor::updating()
 {
     this->clear();
     this->updateGuiInfo();
@@ -157,7 +157,7 @@ void SCompositorParameterEditor::updateGuiInfo()
     // Is there at least one parameter that we can handle ?
     for (const auto& wAdaptor : adaptors)
     {
-        auto adaptor = wAdaptor.lock();
+        const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
@@ -202,7 +202,7 @@ void SCompositorParameterEditor::updateGuiInfo()
     // Get all ShaderParameter subservices from the corresponding Material adaptor
     for (const auto& wAdaptor : adaptors)
     {
-        auto adaptor = wAdaptor.lock();
+        const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
@@ -212,7 +212,7 @@ void SCompositorParameterEditor::updateGuiInfo()
 
             if(!paramConfig.empty())
             {
-                editorConfig.add_child("service.parameters.param", paramConfig);
+                editorConfig.add_child("parameters.param", paramConfig);
             }
         }
     }

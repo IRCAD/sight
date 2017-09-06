@@ -30,10 +30,10 @@ class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::intera
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API VRWidgetsInteractor() throw();
+    FWRENDEROGRE_API VRWidgetsInteractor() noexcept;
 
     /// Destructor.
-    FWRENDEROGRE_API virtual ~VRWidgetsInteractor() throw();
+    FWRENDEROGRE_API virtual ~VRWidgetsInteractor() noexcept;
 
     /// Rotate the camera (see TrackballInteractor) or displace widgets if in drag mode.
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);

@@ -126,6 +126,10 @@ public:
 
     /// Create the scene.
     FWRENDEROGRE_API void createScene();
+    /// Destroy the scene.
+    FWRENDEROGRE_API void destroyScene();
+    /// True if the scene is created
+    FWRENDEROGRE_API bool isSceneCreated() const;
 
     /// Add a disabled compositor name to the ChainManager.
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
@@ -179,16 +183,10 @@ public:
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
 
     /// Gets the render service.
-    FWRENDEROGRE_API CSPTR(::fwRenderOgre::SRender) getRenderService() const;
+    FWRENDEROGRE_API SPTR(::fwRenderOgre::SRender) getRenderService() const;
 
     /// Sets the render service.
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
-
-    /// Adds an adaptor to the render service.
-    FWRENDEROGRE_API void addAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
-
-    /// Removes an adaptor from the render service.
-    FWRENDEROGRE_API void removeAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
 
     FWRENDEROGRE_API void doRayCast(int x, int y, int width, int height);
 
@@ -231,11 +229,9 @@ public:
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
     /// Returns the list of adaptors in the chain manager.
-    FWRENDEROGRE_API IHasAdaptors::AdaptorVector getRegisteredAdaptors() const;
+    FWRENDEROGRE_API ::fwServices::IHasServices::ServiceVector getRegisteredAdaptors() const;
 
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
-
-    FWRENDEROGRE_API bool isSceneCreated() const;
 
     FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera() const;
 
@@ -336,7 +332,7 @@ private:
     bool m_hasDefaultLight;
 
     /// Abstract light used to set the default light.
-    SPTR(::fwRenderOgre::ILight) m_lightManager;
+    SPTR(::fwRenderOgre::ILight) m_lightAdaptor;
 
     SPTR(::fwData::TransformationMatrix3D) m_defaultLightTransform;
 

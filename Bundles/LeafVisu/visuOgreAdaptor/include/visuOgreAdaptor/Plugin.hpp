@@ -23,13 +23,13 @@ public:
     /**
      * @brief   destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    VISUOGREADAPTOR_API void start() throw(::fwRuntime::RuntimeException);
+    VISUOGREADAPTOR_API void start();
 
     // Overrides
-    VISUOGREADAPTOR_API void stop() throw();
+    VISUOGREADAPTOR_API void stop() noexcept;
 };
 
 } // namespace visuOgreAdaptor

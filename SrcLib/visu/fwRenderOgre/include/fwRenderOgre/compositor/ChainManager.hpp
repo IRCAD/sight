@@ -9,7 +9,8 @@
 
 #include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/IHasAdaptors.hpp"
+
+#include "fwServices/IHasServices.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -31,7 +32,7 @@ namespace compositor
  * @brief   Manage the compositors in a layer view.
  */
 class FWRENDEROGRE_CLASS_API ChainManager : ::boost::noncopyable,
-                                            public ::fwRenderOgre::IHasAdaptors
+                                            public ::fwServices::IHasServices
 {
 public:
     typedef std::unique_ptr < ChainManager > uptr;

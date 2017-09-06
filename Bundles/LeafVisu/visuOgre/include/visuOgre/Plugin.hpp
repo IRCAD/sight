@@ -22,13 +22,13 @@ class VISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Destructor
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    VISUOGRE_API void start() throw(::fwRuntime::RuntimeException);
+    VISUOGRE_API void start();
 
     // Overrides
-    VISUOGRE_API void stop() throw();
+    VISUOGRE_API void stop() noexcept;
 };
 
 /**

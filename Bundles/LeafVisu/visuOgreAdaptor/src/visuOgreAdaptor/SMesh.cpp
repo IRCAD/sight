@@ -13,7 +13,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwDataTools/helper/Mesh.hpp>
+#include <fwDataTools/helper/MeshGetter.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwDataTools/Mesh.hpp>
@@ -49,11 +49,13 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "modif
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
 
+static const std::string s_MESH_INOUT = "mesh";
+
 //-----------------------------------------------------------------------------
 
 template <typename T>
 void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
-                 ::fwDataTools::helper::Mesh& _meshHelper, size_t uiNumCells)
+                 ::fwDataTools::helper::MeshGetter& _meshHelper, size_t uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
@@ -62,9 +64,9 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     T* pEdges     = static_cast<T*>(_pEdges);
     T* pTetras    = static_cast<T*>(_pTetras);
 
-    ::fwData::Mesh::CellDataMultiArrayType cells                  = _meshHelper.getCellData();
-    ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
-    ::fwData::Mesh::CellTypesMultiArrayType cellsType             = _meshHelper.getCellTypes();
+    ::fwData::Mesh::ConstCellDataMultiArrayType cells                  = _meshHelper.getCellData();
+    ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
+    ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType             = _meshHelper.getCellTypes();
 
     for (unsigned int i = 0; i < uiNumCells; ++i)
     {
@@ -99,7 +101,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
 
 //-----------------------------------------------------------------------------
 
-SMesh::SMesh() throw() :
+SMesh::SMesh() noexcept :
     m_autoResetCamera(true),
     m_entity(nullptr),
     m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
@@ -135,7 +137,7 @@ SMesh::SMesh() throw() :
 
 //-----------------------------------------------------------------------------
 
-SMesh::~SMesh() throw()
+SMesh::~SMesh() noexcept
 {
     if(m_entity)
     {
@@ -168,70 +170,71 @@ void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doConfigure() throw(::fwTools::Failed)
+void SMesh::configuring()
 {
-    std::string color = m_configuration->getAttributeValue("color");
+    this->configureParams();
 
-    if(m_material)
-    {
-        m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
-    }
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(m_configuration->hasAttribute("autoresetcamera"))
+    const std::string color = config.get<std::string>("color", "");
+
+    SLM_ASSERT("Material not found", m_material);
+    m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
+
+    if(config.count("autoresetcamera"))
     {
-        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
-        m_autoResetCamera = (autoResetCamera == "yes");
+        m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if ( m_configuration->hasAttribute("materialName"))
+    if ( config.count("materialName"))
     {
-        m_materialName = m_configuration->getAttributeValue("materialName");
+        m_materialName = config.get<std::string>("materialName");
     }
     else
     {
         // An existing Ogre material will be used for this mesh
-        if( m_configuration->hasAttribute("materialTemplate"))
+        if( config.count("materialTemplate"))
         {
-            m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
+            m_materialTemplateName = config.get<std::string>("materialTemplate");
         }
 
         // The mesh adaptor will pass the texture name to the created material adaptor
-        if ( m_configuration->hasAttribute("textureName"))
+        if ( config.count("textureName"))
         {
-            m_textureName = m_configuration->getAttributeValue("textureName");
+            m_textureName = config.get<std::string>("textureName");
         }
 
-        if( m_configuration->hasAttribute("shadingMode"))
+        if( config.count("shadingMode"))
         {
-            m_shadingMode = m_configuration->getAttributeValue("shadingMode");
+            m_shadingMode = config.get<std::string>("shadingMode");
         }
     }
 
-    if(m_configuration->hasAttribute("dynamic"))
+    if(config.count("dynamic"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamic");
-        m_isDynamic = ( dynamic == "true" );
+        m_isDynamic = config.get<bool>("dynamic");
     }
 
-    if(m_configuration->hasAttribute("dynamicVertices"))
+    if(config.count("dynamicVertices"))
     {
-        std::string dynamic = m_configuration->getAttributeValue("dynamicVertices");
-        m_isDynamicVertices = ( dynamic == "true" );
+        m_isDynamicVertices = config.get<bool>("dynamicVertices");
     }
 
-    if(m_configuration->hasAttribute("transform"))
+    if(config.count("transform"))
     {
-        this->setTransformId(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(config.get<std::string>("transform"));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doStart() throw(::fwTools::Failed)
+void SMesh::starting()
 {
+    this->initialize();
+
     auto& meshMgr = ::Ogre::MeshManager::getSingleton();
 
     // Create Mesh Data Structure
@@ -265,20 +268,14 @@ void SMesh::doStart() throw(::fwTools::Failed)
         m_material = m_materialAdaptor->getObject< ::fwData::Material >();
     }
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
     this->updateMesh(mesh);
 }
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doStop() throw(::fwTools::Failed)
+void SMesh::stopping()
 {
-    if(!m_transformService.expired())
-    {
-        m_transformService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_transformService.lock());
-    }
-
     this->unregisterServices();
 
     this->clearMesh();
@@ -304,15 +301,7 @@ void SMesh::doStop() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doSwap() throw(::fwTools::Failed)
-{
-    doStop();
-    doStart();
-}
-
-//-----------------------------------------------------------------------------
-
-void SMesh::doUpdate() throw(::fwTools::Failed)
+void SMesh::updating()
 {
 }
 
@@ -320,7 +309,7 @@ void SMesh::doUpdate() throw(::fwTools::Failed)
 
 void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 {
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = mesh->getNumberOfPoints();
@@ -370,10 +359,10 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         {
             // Verify if mesh contains Tetra or Edge
             // If not, generate normals
-            ::fwData::Mesh::CellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
+            ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
             bool computeNormals = true;
 
-            ::fwData::mt::ObjectReadLock lock(this->getObject());
+            ::fwData::mt::ObjectReadLock lock( mesh );
 
             for(unsigned int i = 0; i < cellsType.size() && computeNormals; ++i)
             {
@@ -437,12 +426,12 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     //------------------------------------------
 
     // 1 - Count number of primitives for each type
-    ::fwData::Mesh::CellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
+    ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
     unsigned int numIndices[ s_numPrimitiveTypes ];
 
     memset(numIndices, 0, sizeof(numIndices));
 
-    ::fwData::mt::ObjectReadLock lock(this->getObject());
+    ::fwData::mt::ObjectReadLock lock(  this->getInOut< ::fwData::Mesh >(s_MESH_INOUT) );
 
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
@@ -680,7 +669,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
 
                 r2vbMtlAdaptor->start();
-                r2vbMtlAdaptor->connect();
 
                 m_r2vbMaterialAdaptor[cellType] = r2vbMtlAdaptor;
             }
@@ -722,7 +710,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
+void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
 {
     FW_PROFILE_AVG("UPDATE VERTICES", 5);
 
@@ -735,8 +723,8 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 
     // Update Ogre Mesh with ::fwData::Mesh
     ::fwData::mt::ObjectReadLock lock(mesh);
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
+    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+    ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
 
     size_t uiStrideFloat = 3;
     if(m_hasNormal)
@@ -789,7 +777,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     if(m_hasNormal)
     {
         FW_PROFILE_AVG("UPDATE NORMALS", 5);
-        ::fwData::Mesh::PointNormalsMultiArrayType normals = meshHelper.getPointNormals();
+        ::fwData::Mesh::ConstPointNormalsMultiArrayType normals = meshHelper.getPointNormals();
         NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
 
         for (unsigned int i = 0; i < numPoints; ++i)
@@ -817,7 +805,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding,
+void SMesh::bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding,
                       ::Ogre::VertexElementSemantic _semantic, ::Ogre::VertexElementType _type)
 {
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
@@ -861,7 +849,7 @@ void SMesh::bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding,
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
+void SMesh::updateColors(const ::fwData::Mesh::csptr& mesh)
 {
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
@@ -941,7 +929,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if (hasVertexColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwDataTools::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::MeshGetter meshHelper(mesh);
 
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
@@ -961,7 +949,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if(hasPrimitiveColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwDataTools::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::MeshGetter meshHelper(mesh);
 
         // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
@@ -970,8 +958,8 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         ::Ogre::RGBA* pColorDest = static_cast< ::Ogre::RGBA* >( pixelBox.data );
 
         // Destination
-        auto colors           = meshHelper.getCellColors();
-        std::uint8_t* icolors = reinterpret_cast<std::uint8_t*>(colors.data());
+        auto colors                 = meshHelper.getCellColors();
+        const std::uint8_t* icolors = reinterpret_cast<const std::uint8_t*>(colors.data());
 
         // Copy cells
         ::fwRenderOgre::helper::Mesh::copyColors(pColorDest, icolors, mesh->getNumberOfCells(), colors.shape()[1]);
@@ -996,7 +984,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
+void SMesh::updateTexCoords(const ::fwData::Mesh::csptr& mesh)
 {
     m_hasUV = (mesh->getPointTexCoordsArray() != nullptr);
 
@@ -1008,14 +996,14 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwDataTools::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::MeshGetter meshHelper(mesh);
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
         void* pBuf = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 
-        ::fwData::Mesh::PointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
+        ::fwData::Mesh::ConstPointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
 
         // Copy UV coordinates for each mesh point
         for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
@@ -1070,9 +1058,8 @@ void SMesh::clearMesh()
 
 ::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const std::string& _materialSuffix)
 {
-    auto matSrv = ::fwServices::add< ::fwRenderOgre::IAdaptor>(m_material, "::visuOgreAdaptor::SMaterial");
-    SLM_ASSERT("Material service not instantiated", matSrv);
-    auto materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(matSrv);
+    auto materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
+    materialAdaptor->registerInOut(m_material, "material", true);
 
     materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
     materialAdaptor->setRenderService( this->getRenderService() );
@@ -1083,7 +1070,7 @@ void SMesh::clearMesh()
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
 
-    const std::string meshName = this->getObject()->getID();
+    const std::string meshName = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT)->getID();
     const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
@@ -1093,8 +1080,6 @@ void SMesh::clearMesh()
     materialAdaptor->setTextureName(m_textureName);
     materialAdaptor->setShadingMode(m_shadingMode);
     materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
-
-    this->registerService(materialAdaptor);
 
     return materialAdaptor;
 }
@@ -1109,7 +1094,6 @@ void SMesh::updateNewMaterialAdaptor()
         {
             m_materialAdaptor = this->createMaterialService();
             m_materialAdaptor->start();
-            m_materialAdaptor->connect();
 
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
@@ -1128,7 +1112,7 @@ void SMesh::updateXMLMaterialAdaptor()
     {
         if(m_materialAdaptor->getMaterialName().empty())
         {
-            std::string meshName = this->getObject()->getID();
+            std::string meshName = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT)->getID();
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
 
@@ -1155,16 +1139,16 @@ void SMesh::createTransformService()
     // We need to create a transform service only once
     if(m_transformService.expired())
     {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
         // Create a transform and set it as a field of the mesh
         auto fieldTransform = ::fwData::TransformationMatrix3D::New();
         mesh->setField("TransformMatrix", fieldTransform);
 
-        m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(fieldTransform,
-                                                                           "::visuOgreAdaptor::STransform");
-        SLM_ASSERT("Transform service is null", m_transformService.lock());
-        auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
+        auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
+        transformService->registerInOut(fieldTransform, "transform", true);
+
+        m_transformService = transformService;
 
         transformService->setID(this->getID() + "_" + transformService->getID());
         transformService->setRenderService( this->getRenderService() );
@@ -1173,8 +1157,6 @@ void SMesh::createTransformService()
         transformService->setParentTransformId(this->getParentTransformId());
 
         transformService->start();
-        transformService->connect();
-        this->registerService(transformService);
 
         this->attachNode(m_entity);
     }
@@ -1192,7 +1174,7 @@ void SMesh::modifyVertices()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
     this->updateVertices(mesh);
 
     /// Notify -Mesh object that it has been loaded
@@ -1208,7 +1190,7 @@ void SMesh::modifyMesh()
     {
         return;
     }
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
     const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
     const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
@@ -1233,7 +1215,7 @@ void SMesh::modifyPointColors()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
 
     const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
     const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
@@ -1265,7 +1247,7 @@ void SMesh::modifyTexCoords()
     // Keep the make current outside to avoid too many context changes when we update multiple attributes
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
     this->updateTexCoords(mesh);
 
     /// Notify -Mesh object that it has been loaded
@@ -1290,15 +1272,14 @@ void SMesh::attachNode(::Ogre::MovableObject* _node)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SMesh::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG,
-                                           s_MODIFY_POINT_TEX_COORDS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_MODIFIED_SIG, s_MODIFY_MESH_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT );
+    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT );
+    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT );
+    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT );
+    connections.push( s_MESH_INOUT, ::fwData::Mesh::s_MODIFIED_SIG, s_MODIFY_MESH_SLOT );
     return connections;
 }
 

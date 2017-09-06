@@ -35,10 +35,10 @@ class FWRENDEROGRE_CLASS_API VideoPickerInteractor : public ::fwRenderOgre::inte
 public:
 
     /// Constructor.
-    FWRENDEROGRE_API VideoPickerInteractor() throw();
+    FWRENDEROGRE_API VideoPickerInteractor() noexcept;
 
     /// Destructor. Does nothing
-    FWRENDEROGRE_API ~VideoPickerInteractor() throw();
+    FWRENDEROGRE_API ~VideoPickerInteractor() noexcept;
 
 protected:
 

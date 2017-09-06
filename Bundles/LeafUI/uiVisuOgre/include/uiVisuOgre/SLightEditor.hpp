@@ -50,22 +50,22 @@ public:
     UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_EDIT_LIGHT_SLOT;
     /** @} */
 
-    UIVISUOGRE_API SLightEditor() throw();
-    UIVISUOGRE_API virtual ~SLightEditor() throw();
+    UIVISUOGRE_API SLightEditor() noexcept;
+    UIVISUOGRE_API virtual ~SLightEditor() noexcept;
 
 protected:
 
     /// Configure the service.
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Sets the connections and the UI elements.
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Destroys the connections and cleans the container.
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Does nothing.
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
 protected Q_SLOTS:
 

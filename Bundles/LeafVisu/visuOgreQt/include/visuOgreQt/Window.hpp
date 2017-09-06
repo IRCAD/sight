@@ -79,6 +79,12 @@ public:
 
     int getFrameId() const;
 
+    /**
+     * @brief initialise
+     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
+     */
+    VISUOGREQT_API void initialise();
+
 public Q_SLOTS:
 
     /**
@@ -116,11 +122,6 @@ protected:
      * If you want to update this window, call requestRender()
      */
     VISUOGREQT_API virtual void render();
-    /**
-     * @brief initialise
-     * Creates the Ogre renderWindow associated to this window, called by renderNow() once the window is first exposed
-     */
-    VISUOGREQT_API void initialise();
 
     /*
      * Qt events to manage keyboard and mouse input
@@ -162,8 +163,6 @@ protected:
     bool m_update_pending;
     /// Tells if the window is currently showed
     bool m_animating;
-    /// Tells if the renderWindow is initialised
-    bool m_isInitialised;
     /// Tells if the overlay is show for this renderwindow
     bool m_showOverlay;
     /// Tells if the window fills the screen.

@@ -45,7 +45,7 @@ const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT   = "in
 
 //------------------------------------------------------------------------------
 
-SLightSelector::SLightSelector() throw()
+SLightSelector::SLightSelector() noexcept
 {
     newSignal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
     newSlot(s_INIT_LIGHT_LIST_SLOT, &SLightSelector::initLightList, this);
@@ -53,13 +53,13 @@ SLightSelector::SLightSelector() throw()
 
 //------------------------------------------------------------------------------
 
-SLightSelector::~SLightSelector() throw()
+SLightSelector::~SLightSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::starting() throw(::fwTools::Failed)
+void SLightSelector::starting()
 {
     this->create();
 
@@ -90,6 +90,8 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
     this->refreshLayers();
 
+    this->updateLightsList();
+
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
     QObject::connect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
@@ -103,27 +105,34 @@ void SLightSelector::starting() throw(::fwTools::Failed)
     QObject::connect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
 
     QObject::connect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
+
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::stopping() throw(::fwTools::Failed)
+void SLightSelector::stopping()
 {
     m_connections.disconnect();
+
+    for(auto& lightAdaptor : m_managedLightAdaptors)
+    {
+        ::fwRenderOgre::ILight::destroyLightAdaptor(lightAdaptor);
+    }
+    m_managedLightAdaptors.clear();
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::configuring() throw(::fwTools::Failed)
+void SLightSelector::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::updating() throw(::fwTools::Failed)
+void SLightSelector::updating()
 {
 }
 
@@ -205,13 +214,11 @@ void SLightSelector::onAddLight(bool _checked)
 
 void SLightSelector::onRemoveLight(bool _checked)
 {
-    ::fwRenderOgre::ILight::destroyLightManager(m_currentLight);
+    ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
 
     if(m_currentLight)
     {
         ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
-
-        currentLayer->removeAdaptor(m_currentLight);
         m_currentLight.reset();
 
         m_lightAdaptors = currentLayer->getLightAdaptors();
@@ -280,6 +287,13 @@ void SLightSelector::refreshLayers()
                                   this->getSptr(), s_INIT_LIGHT_LIST_SLOT);
         }
     }
+
+    // Default to the first layer
+    if(!m_layers.empty())
+    {
+        m_currentLayer  = m_layers[0];
+        m_lightAdaptors = m_currentLayer.lock()->getLightAdaptors();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -312,16 +326,16 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         ::fwData::Color::sptr lightDiffuseColor               = ::fwData::Color::New();
         ::fwData::Color::sptr lightSpecularColor              = ::fwData::Color::New();
 
-        ::fwRenderOgre::ILight::sptr lightManager = ::fwRenderOgre::ILight::createLightManager(lightTransform,
+        ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightTransform,
                                                                                                lightDiffuseColor,
                                                                                                lightSpecularColor);
-        lightManager->setName(_name);
-        lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
-        lightManager->setLayerID(currentLayer->getLayerID());
+        lightAdaptor->setName(_name);
+        lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
+        lightAdaptor->setLayerID(currentLayer->getLayerID());
+        lightAdaptor->setRenderService(currentLayer->getRenderService());
+        lightAdaptor->start();
 
-        currentLayer->addAdaptor(lightManager);
-        lightManager->start();
-
+        m_managedLightAdaptors.push_back(lightAdaptor);
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();
 

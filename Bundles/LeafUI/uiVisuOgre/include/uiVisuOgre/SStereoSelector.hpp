@@ -36,10 +36,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SStereoSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UIVISUOGRE_API SStereoSelector() throw();
+    UIVISUOGRE_API SStereoSelector() noexcept;
 
     /// Destructor. Does nothing
-    UIVISUOGRE_API virtual ~SStereoSelector() throw();
+    UIVISUOGRE_API virtual ~SStereoSelector() noexcept;
 
 protected:
 
@@ -52,16 +52,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Sets the connections and the UI elements
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Destroys the connections and cleans the container
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Does nothing
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
 private Q_SLOTS:
 

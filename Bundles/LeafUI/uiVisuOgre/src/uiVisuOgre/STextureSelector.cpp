@@ -35,20 +35,20 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::STextureSelector,
 
 //------------------------------------------------------------------------------
 
-STextureSelector::STextureSelector() throw()
+STextureSelector::STextureSelector() noexcept
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-STextureSelector::~STextureSelector() throw()
+STextureSelector::~STextureSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void STextureSelector::starting() throw(::fwTools::Failed)
+void STextureSelector::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -80,7 +80,7 @@ void STextureSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STextureSelector::stopping() throw(::fwTools::Failed)
+void STextureSelector::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -89,7 +89,7 @@ void STextureSelector::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STextureSelector::configuring() throw(::fwTools::Failed)
+void STextureSelector::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -98,7 +98,7 @@ void STextureSelector::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STextureSelector::updating() throw(::fwTools::Failed)
+void STextureSelector::updating()
 {
 }
 

@@ -30,19 +30,19 @@ namespace uiVisuOgre
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, ::fwData::Reconstruction);
 
 //------------------------------------------------------------------------------
-SShaderParameterEditor::SShaderParameterEditor() throw()
+SShaderParameterEditor::SShaderParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShaderParameterEditor::~SShaderParameterEditor() throw()
+SShaderParameterEditor::~SShaderParameterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::starting() throw(::fwTools::Failed)
+void SShaderParameterEditor::starting()
 {
     ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
     ::fwData::Material::sptr material  = rec->getMaterial();
@@ -62,7 +62,7 @@ void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
+void SShaderParameterEditor::stopping()
 {
     m_connections.disconnect();
     this->clear();
@@ -71,7 +71,7 @@ void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
+void SShaderParameterEditor::swapping()
 {
     m_connections.disconnect();
     ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
@@ -83,14 +83,14 @@ void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::configuring() throw(::fwTools::Failed)
+void SShaderParameterEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::updating() throw(::fwTools::Failed)
+void SShaderParameterEditor::updating()
 {
     this->clear();
     this->updateGuiInfo();
@@ -151,12 +151,11 @@ void SShaderParameterEditor::updateGuiInfo()
     bool found = false;
 
     // Is there at least one parameter that we can handle ?
-    for (auto subSrv : matService->getRegisteredAdaptors())
+    for (const auto& wParamSrv : matService->getRegisteredServices())
     {
-        if (subSrv.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        const auto paramSrv = wParamSrv.lock();
+        if (paramSrv->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
-
             /// Getting associated object infos
             const ::fwData::Object::csptr shaderObj = paramSrv->getObject();
             const ObjectClassnameType objType       = shaderObj->getClassname();
@@ -194,18 +193,19 @@ void SShaderParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (auto adaptor : matService->getRegisteredAdaptors())
+    for (auto wAdaptor : matService->getRegisteredServices())
     {
-        if (adaptor.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        const auto adaptor = wAdaptor.lock();
+        if (adaptor->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor.lock());
+            auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor);
             auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                     m_editorInfo.service.lock(),
                                                                                     m_editorInfo.connections);
 
             if(!paramConfig.empty())
             {
-                editorConfig.add_child("service.parameters.param", paramConfig);
+                editorConfig.add_child("parameters.param", paramConfig);
             }
         }
     }

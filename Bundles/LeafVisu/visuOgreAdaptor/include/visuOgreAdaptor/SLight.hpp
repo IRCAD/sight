@@ -47,8 +47,8 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the light.
  * - \b diffuseColor [::fwData::Color]: diffuse color of the light.
  * - \b specularColor [::fwData::Color]: specular color of the light.
- * With :
- * - \b name (optional): defines a name for the associated Ogre light.
+ * @subsection Configuration Configuration:
+ * - \b name (mandatory): defines a name for the associated Ogre light.
  * - \b parentTransformId (optional): name of the parent transform node.
  * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.
  * Only if a parent transform node is configured :
@@ -73,29 +73,26 @@ public:
     /** @} */
 
     /// Constructor.
-    VISUOGREADAPTOR_API SLight() throw();
+    VISUOGREADAPTOR_API SLight() noexcept;
 
     /// Factory Constructor.
     VISUOGREADAPTOR_API SLight(::fwRenderOgre::ILight::Key key);
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SLight() throw();
+    VISUOGREADAPTOR_API virtual ~SLight() noexcept;
 
 protected:
     /// Starting method. Do nothing
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Configures the service.
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
-
-    /// Swaping method, only asks for an updating.
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Updates the light position and orientation
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Light name getter.
     VISUOGREADAPTOR_API virtual const std::string& getName() const;

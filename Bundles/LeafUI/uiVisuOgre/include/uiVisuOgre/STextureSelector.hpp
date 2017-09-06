@@ -34,8 +34,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (STextureSelector)(::gui::editor::IEditor) );
 
-    UIVISUOGRE_API STextureSelector() throw();
-    UIVISUOGRE_API virtual ~STextureSelector() throw();
+    UIVISUOGRE_API STextureSelector() noexcept;
+    UIVISUOGRE_API virtual ~STextureSelector() noexcept;
 
 protected:
 
@@ -46,16 +46,16 @@ protected:
         </service>
        @endcode
      */
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Start the service. Create UI
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Stop the service. Delete UI
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Do nothing
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
 protected Q_SLOTS:
 

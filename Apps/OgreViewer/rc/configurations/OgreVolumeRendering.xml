@@ -1,5 +1,4 @@
-
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>OgreVolumeRendering</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -12,15 +11,11 @@
         <param name="idvrColorParamChannel" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${imageUID}"     type="::fwData::Image"     src="ref" />
-        <object uid="${maskUID}"      type="::fwData::Image"     src="ref" />
+        <object uid="${imageUID}" type="::fwData::Image" src="ref" />
+        <object uid="${maskUID}" type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
-
         <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -51,21 +46,20 @@
         </service>
 
         <!-- Begin Generic Scene ***************************************** -->
-
         <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
-            <scene overlay="true" fullscreen="no" />
-            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-            <layer id="default" depth="1" />
-
-            <adaptor uid="interactorAdaptor" start="yes" />
-            <adaptor uid="volumeRender" start="yes" />
+            <scene overlay="true" fullscreen="false">
+                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                <layer id="default" depth="1" />
+                <adaptor uid="interactorAdaptor" />
+                <adaptor uid="volumeRender" />
+            </scene>
         </service>
 
-        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
             <config layer="default" style="VR" />
         </service>
 
-        <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender" >
+        <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
             <in key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <inout key="mask" uid="${maskUID}" autoConnect="yes" />
@@ -73,9 +67,7 @@
         </service>
 
         <!-- End Generic Scene ***************************************** -->
-
         <!-- ******************************* Services ***************************************** -->
-
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
@@ -101,7 +93,6 @@
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
-
         <connect>
             <signal>vrBasicEditor/boolChanged</signal>
             <slot>volumeRender/setBoolParameter</slot>
@@ -149,6 +140,8 @@
         </connect>
 
         <start uid="OgreVolumeRendering" />
-
+        <!-- Ogre scene 'volumeRenderingScene' -->
+        <start uid="interactorAdaptor" />
+        <start uid="volumeRender" />
     </config>
 </extension>

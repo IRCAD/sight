@@ -40,24 +40,24 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SCompositorParameterEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UIVISUOGRE_API SCompositorParameterEditor() throw();
+    UIVISUOGRE_API SCompositorParameterEditor() noexcept;
 
     /// Destructor. Destroy UI
-    UIVISUOGRE_API virtual ~SCompositorParameterEditor() throw();
+    UIVISUOGRE_API virtual ~SCompositorParameterEditor() noexcept;
 
 protected:
 
     /// Configure the editor to associate with each object type
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Start the service, slot connections, QtContainer initialization .
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Destroy the service and the container.
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Update the interface.
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
 private:
     /// Clear the current container

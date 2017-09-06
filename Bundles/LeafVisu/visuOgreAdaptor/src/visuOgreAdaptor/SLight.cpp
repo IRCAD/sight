@@ -43,7 +43,7 @@ const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoub
 
 //------------------------------------------------------------------------------
 
-SLight::SLight() throw() :
+SLight::SLight() noexcept :
     m_light(nullptr),
     m_lightName(""),
     m_lightType(::Ogre::Light::LT_DIRECTIONAL),
@@ -72,49 +72,47 @@ SLight::SLight(::fwRenderOgre::ILight::Key key) :
 
 //------------------------------------------------------------------------------
 
-SLight::~SLight() throw()
+SLight::~SLight() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doConfigure() throw(::fwTools::Failed)
+void SLight::configuring()
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
+    this->configureParams();
 
-    if(m_configuration->hasAttribute("name"))
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    m_lightName = config.get<std::string>("name");
+
+    if(config.count("switchedOn"))
     {
-        m_lightName = m_configuration->getAttributeValue("name");
+        m_switchedOn = config.get<std::string>("switchedOn") == "yes";
     }
 
-    if(m_configuration->hasAttribute("switchedOn"))
+    if(config.count("parentTransformId"))
     {
-        const std::string switchedOnStr = m_configuration->getAttributeValue("switchedOn");
-        m_switchedOn = (switchedOnStr == "yes");
-    }
+        this->setParentTransformId(config.get<std::string>("parentTransformId"));
 
-    if(m_configuration->hasAttribute("parentTransformId"))
-    {
-        this->setParentTransformId(m_configuration->getAttributeValue("parentTransformId"));
-
-        if(m_configuration->hasAttribute("thetaOffset"))
+        if(config.count("thetaOffset"))
         {
-            const std::string thetaOffsetStr = m_configuration->getAttributeValue("thetaOffset");
-            m_thetaOffset = std::stof(thetaOffsetStr);
+            m_thetaOffset = config.get<float>("thetaOffset");
         }
 
-        if(m_configuration->hasAttribute("phiOffset"))
+        if(config.count("phiOffset"))
         {
-            const std::string phiOffsetStr = m_configuration->getAttributeValue("phiOffset");
-            m_phiOffset = std::stof(phiOffsetStr);
+            m_phiOffset = config.get<float>("phiOffset");
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doStart() throw(::fwTools::Failed)
+void SLight::starting()
 {
+    this->initialize();
+
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >("diffuseColor");
     m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
 
@@ -125,8 +123,7 @@ void SLight::doStart() throw(::fwTools::Failed)
 
     if(!this->getParentTransformId().empty())
     {
-        ::Ogre::SceneNode* parentSceneNode =
-            this->getSceneManager()->getSceneNode(this->getParentTransformId());
+        ::Ogre::SceneNode* parentSceneNode = this->getSceneManager()->getSceneNode(this->getParentTransformId());
 
         if(parentSceneNode)
         {
@@ -144,12 +141,12 @@ void SLight::doStart() throw(::fwTools::Failed)
     this->setTransformId(m_lightName + "_node");
     this->createTransformService();
 
-    doUpdate();
+    updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doUpdate() throw(::fwTools::Failed)
+void SLight::updating()
 {
     SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
 
@@ -258,10 +255,10 @@ void SLight::createTransformService()
 
     SLM_ASSERT("Missing tranform data object.", transform);
 
-    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
-                                                                       "::visuOgreAdaptor::STransform");
-    SLM_ASSERT("Transform service is null", m_transformService.lock());
-    auto transformService = this->getTransformService();
+    auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
+    transformService->registerInOut(transform, "transform", true);
+
+    m_transformService = transformService;
 
     transformService->setID(this->getID() + "_" + transformService->getID());
     transformService->setRenderService( this->getRenderService() );
@@ -270,8 +267,6 @@ void SLight::createTransformService()
     transformService->setParentTransformId(this->getParentTransformId());
 
     transformService->start();
-    transformService->connect();
-    this->registerService(transformService);
 
     this->attachNode(m_light);
 }
@@ -293,24 +288,12 @@ void SLight::attachNode(::Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SLight::doSwap() throw(::fwTools::Failed)
+void SLight::stopping()
 {
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void SLight::doStop() throw(::fwTools::Failed)
-{
-    if(!m_transformService.expired())
-    {
-        m_transformService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_transformService.lock());
-    }
+    this->unregisterServices();
+    m_transformService.reset();
 
     this->getSceneManager()->destroyLight(m_light);
-
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------

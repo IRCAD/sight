@@ -27,6 +27,24 @@
 namespace visuOgreAdaptor
 {
 
+/**
+ * @brief   This adaptor binds a ::fwData::TransformationMatrix3D to an Ogre scene node.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::STransform">
+            <inout key="transform" uid="..." />
+            <config layer="default" transform="meshTFAdaptor" />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b transform [::fwData::TransformationMatrix3D]: f4s transform matrix. The matrix will be updated as well if the
+ * scene node is modified from Ogre.
+ * @subsection Configuration Configuration:
+ * - \b transform: name of the Ogre Transform.
+ * - \b parent: name of the parent Ogre Transform you want to attach to.
+ */
 class VISUOGREADAPTOR_CLASS_API STransform : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable
 {
@@ -35,9 +53,9 @@ public:
     fwCoreServiceClassDefinitionsMacro((STransform)(::fwRenderOgre::IAdaptor));
 
     /// Constructor,
-    VISUOGREADAPTOR_API STransform() throw();
+    VISUOGREADAPTOR_API STransform() noexcept;
     /// Destructor, does nothing
-    VISUOGREADAPTOR_API virtual ~STransform() throw();
+    VISUOGREADAPTOR_API virtual ~STransform() noexcept;
 
     /// Get Ogre transform matrix
     VISUOGREADAPTOR_API const ::Ogre::Matrix4& getTransform() const;
@@ -51,16 +69,14 @@ public:
     VISUOGREADAPTOR_API void updateFromOgre();
 
 protected:
-    /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
-    /// Unregisters the service
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
     /// Takes the attribute "parent" from m_config, and then puts it in m_parentTransformUID
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
-    /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void configuring() override;
+    /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
+    VISUOGREADAPTOR_API void starting() override;
+    /// Unregisters the service
+    VISUOGREADAPTOR_API void stopping() override;
     /// Updates m_transform and m_ogreTransformNode from ::fwData::TransformationMatrix3D
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Ogre transform node.
     ::Ogre::SceneNode* m_transformNode;

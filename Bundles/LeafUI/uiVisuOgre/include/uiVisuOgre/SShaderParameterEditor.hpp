@@ -42,10 +42,10 @@ public:
     typedef std::map< ObjectClassnameType, EditorImplementationType > EditorMapType;
 
     /// Constructor.
-    UIVISUOGRE_API SShaderParameterEditor() throw();
+    UIVISUOGRE_API SShaderParameterEditor() noexcept;
 
     /// Destructor. Destroy UI
-    UIVISUOGRE_API virtual ~SShaderParameterEditor() throw();
+    UIVISUOGRE_API virtual ~SShaderParameterEditor() noexcept;
 
 protected:
 
@@ -64,19 +64,19 @@ protected:
      * - type attribute is a fw4spl data type
      * - editor attribute is the editor associated to the type given in association.
      */
-    UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void configuring();
 
     /// Start the service, slot connections, QtContainer initialization .
-    UIVISUOGRE_API virtual void starting()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void starting();
 
     /// Destroy the service and the container.
-    UIVISUOGRE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void stopping();
 
     /// Called once we change the data.
-    UIVISUOGRE_API virtual void swapping() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void swapping();
 
     /// Update the interface.
-    UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
+    UIVISUOGRE_API virtual void updating();
 
 private:
 

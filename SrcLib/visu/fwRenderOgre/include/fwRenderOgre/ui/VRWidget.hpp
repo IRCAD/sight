@@ -52,10 +52,10 @@ public:
                               SRender::sptr renderService,
                               ::Ogre::SceneManager* sceneManager,
                               ::fwRenderOgre::vr::IVolumeRenderer* renderer,
-                              ::fwData::TransformationMatrix3D::sptr clippingMatrix) throw();
+                              ::fwData::TransformationMatrix3D::sptr clippingMatrix) noexcept;
 
     /// Destructor.
-    FWRENDEROGRE_API virtual ~VRWidget() throw();
+    FWRENDEROGRE_API virtual ~VRWidget() noexcept;
 
     /**
      * @brief Drags a widget toward a screen position.

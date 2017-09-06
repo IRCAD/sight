@@ -41,7 +41,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEd
 
 //------------------------------------------------------------------------------
 
-SCoreCompositorEditor::SCoreCompositorEditor() throw() :
+SCoreCompositorEditor::SCoreCompositorEditor() noexcept :
     m_currentCoreCompositor(nullptr),
     m_isLayerSelected(false)
 {
@@ -49,13 +49,13 @@ SCoreCompositorEditor::SCoreCompositorEditor() throw() :
 
 //------------------------------------------------------------------------------
 
-SCoreCompositorEditor::~SCoreCompositorEditor() throw()
+SCoreCompositorEditor::~SCoreCompositorEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
+void SCoreCompositorEditor::starting()
 {
     this->create();
 
@@ -162,7 +162,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCoreCompositorEditor::stopping() throw(::fwTools::Failed)
+void SCoreCompositorEditor::stopping()
 {
     this->destroy();
 }
@@ -201,14 +201,14 @@ void SCoreCompositorEditor::refreshRenderers()
 
 //------------------------------------------------------------------------------
 
-void SCoreCompositorEditor::configuring() throw(::fwTools::Failed)
+void SCoreCompositorEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SCoreCompositorEditor::updating() throw(::fwTools::Failed)
+void SCoreCompositorEditor::updating()
 {
     m_currentCoreCompositor->update();
     m_currentLayer.lock()->requestRender();

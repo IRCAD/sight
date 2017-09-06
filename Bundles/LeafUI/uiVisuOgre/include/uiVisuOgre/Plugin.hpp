@@ -21,13 +21,13 @@ struct UIVISUOGRE_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    UIVISUOGRE_API ~Plugin() throw();
+    UIVISUOGRE_API ~Plugin() noexcept;
 
     // Overrides
-    UIVISUOGRE_API void start() throw(::fwRuntime::RuntimeException);
+    UIVISUOGRE_API void start();
 
     // Overrides
-    UIVISUOGRE_API void stop() throw();
+    UIVISUOGRE_API void stop() noexcept;
 
 };
 

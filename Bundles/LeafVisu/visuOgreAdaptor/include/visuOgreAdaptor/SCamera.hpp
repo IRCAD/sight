@@ -41,16 +41,14 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
  *  <service uid="cameraAdaptor" type="::visuOgreAdaptor::SCamera">
- *      <in key="transform" uid="cameraTFUid" />
- *      <in key="calibration" uid="cameraCalibUid" />
- *      <config name="sceneCamera" />
+ *      <inout key="transform" uid="..." />
+ *      <in key="calibration" uid="..." />
+ *      <config renderer="scene" />
  *  </service>
  * @endcode
  * @subsection Input Input
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
  * - \b calibration [::arData::Camera]: camera containing calibration information.
- * With :
- * - \b name (optional): defines a name for the associated Ogre camera.
  */
 class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor,
                                           public ::fwRenderOgre::ITransformable
@@ -60,10 +58,10 @@ public:
     fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::IAdaptor));
 
     /// Constructor.
-    VISUOGREADAPTOR_API SCamera() throw();
+    VISUOGREADAPTOR_API SCamera() noexcept;
 
     /// Destructor. Does nothing.
-    VISUOGREADAPTOR_API virtual ~SCamera() throw();
+    VISUOGREADAPTOR_API virtual ~SCamera() noexcept;
 
     /**
      * @name Slots API
@@ -77,7 +75,7 @@ public:
     VISUOGREADAPTOR_API virtual void updateTF3D();
 
     /// Returns proposals to connect service slots to associated object signals.
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Associated ogre camera getter.
     VISUOGREADAPTOR_API virtual ::Ogre::Camera* getCamera();
@@ -95,20 +93,17 @@ public:
     VISUOGREADAPTOR_API virtual void setTransformName(::fwRenderOgre::SRender::OgreObjectIdType newId);
 
 protected:
+    /// Configures the service.
+    VISUOGREADAPTOR_API void configuring() override;
+
     /// Starting method. Does nothing.
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Stopping method.
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
-
-    /// Configures the service.
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
-
-    /// Swaping method, only asks for a updating.
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void stopping() override;
 
     /// Updating method. Does nothing.
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void updating() override;
 
 private:
 

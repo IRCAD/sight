@@ -11,7 +11,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/Point.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 
@@ -37,7 +36,7 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVideo, ::
 static const char* VIDEO_MATERIAL_NAME = "Video";
 
 //------------------------------------------------------------------------------
-SVideo::SVideo() throw() :
+SVideo::SVideo() noexcept :
     m_imageData(nullptr),
     m_isTextureInit(false),
     m_previousWidth(0),
@@ -48,14 +47,27 @@ SVideo::SVideo() throw() :
 
 //------------------------------------------------------------------------------
 
-SVideo::~SVideo() throw()
+SVideo::~SVideo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doStart() throw(::fwTools::Failed)
+void SVideo::configuring()
 {
+    this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    m_reverse = config.get<bool>("reverse", false);
+}
+
+//------------------------------------------------------------------------------
+
+void SVideo::starting()
+{
+    this->initialize();
+
     m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
         this->getID() + "_VideoTexture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -77,35 +89,14 @@ void SVideo::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideo::doStop() throw(::fwTools::Failed)
+void SVideo::stopping()
 {
     m_texture.setNull();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideo::doSwap() throw(::fwTools::Failed)
-{
-    this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void SVideo::doConfigure() throw(::fwTools::Failed)
-{
-    const std::string reverse = m_configuration->getAttributeValue("reverse");
-    if (!reverse.empty() )
-    {
-        if( reverse == "true" )
-        {
-            m_reverse = true;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SVideo::doUpdate() throw(::fwTools::Failed)
+void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 

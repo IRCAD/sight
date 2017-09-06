@@ -33,8 +33,6 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
@@ -52,6 +50,8 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_SWAP_TEXTURE_SLOT   = "swapTextur
 const ::fwCom::Slots::SlotKeyType SMaterial::s_ADD_TEXTURE_SLOT    = "addTexture";
 const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTexture";
 
+static const std::string s_MATERIAL_INOUT = "material";
+
 //-----------------------------------------------------------------------------
 
 const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "Default";
@@ -61,7 +61,7 @@ static const std::string s_NORMALS_PASS = "NormalsPass";
 
 //------------------------------------------------------------------------------
 
-SMaterial::SMaterial() throw() :
+SMaterial::SMaterial() noexcept :
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_hasMeshNormal(true),
     m_hasVertexColor(false),
@@ -79,7 +79,7 @@ SMaterial::SMaterial() throw() :
 
 //------------------------------------------------------------------------------
 
-SMaterial::~SMaterial() throw()
+SMaterial::~SMaterial() noexcept
 {
 
 }
@@ -107,38 +107,32 @@ void SMaterial::loadMaterialParameters()
         auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(constantType, constantValue);
         if(obj != nullptr)
         {
-            obj->setName(constantName);
-
-            // Creates an Ogre adaptor and associates it with the f4s object
-            auto srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(obj, "::visuOgreAdaptor::SShaderParameter");
-            SLM_ASSERT("Unable to instantiate ::visuOgreAdaptor::SShaderParameter.", srv);
-            auto shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(srv);
-
             const auto shaderType           = std::get<2>(constant);
             const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
                                               shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
                                               "geometry";
+            const fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
+
+            // Creates an Ogre adaptor and associates it with the f4s object
+            auto srv =
+                this->registerService< ::visuOgreAdaptor::SShaderParameter>( "::visuOgreAdaptor::SShaderParameter", id);
+            srv->registerInOut(obj, "parameter", true);
 
             // Naming convention for shader parameters
-            shaderParamService->setID(this->getID() + "_" + shaderTypeStr + "-" + constantName);
-            shaderParamService->setRenderService(this->getRenderService());
+            srv->setRenderService(this->getRenderService());
 
             ::fwServices::IService::ConfigType config;
-            config.add("service.config.<xmlattr>.layer", m_layerID);
-            config.add("service.config.<xmlattr>.parameter", constantName);
-            config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
-            config.add("service.config.<xmlattr>.materialName", m_materialName);
+            config.add("config.<xmlattr>.layer", m_layerID);
+            config.add("config.<xmlattr>.parameter", constantName);
+            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+            config.add("config.<xmlattr>.materialName", m_materialName);
 
-            shaderParamService->setConfiguration(config);
-            shaderParamService->configure();
-            shaderParamService->start();
-            shaderParamService->connect();
-
-            // Add created subservice to current service
-            this->registerService(shaderParamService);
+            srv->setConfiguration(config);
+            srv->configure();
+            srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
+            ::fwData::Material::sptr material   = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
             ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters",
                                                                             ::fwData::Composite::New());
             (*composite)[constantName] = obj;
@@ -173,23 +167,20 @@ void SMaterial::setTextureName(const std::string& textureName)
 
 //------------------------------------------------------------------------------
 
-int SMaterial::getStartPriority()
+void SMaterial::configuring()
 {
-    return -10;
-}
+    this->configureParams();
 
-//------------------------------------------------------------------------------
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-void SMaterial::doConfigure() throw(::fwTools::Failed)
-{
-    if(m_configuration->hasAttribute("materialTemplate"))
+    if(config.count("materialTemplate"))
     {
-        m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
+        m_materialTemplateName = config.get<std::string>("materialTemplate");
     }
 
-    if(m_configuration->hasAttribute("materialName"))
+    if(config.count("materialName"))
     {
-        m_materialName = m_configuration->getAttributeValue("materialName");
+        m_materialName = config.get<std::string>("materialName");
     }
     else
     {
@@ -197,27 +188,31 @@ void SMaterial::doConfigure() throw(::fwTools::Failed)
         m_materialName = this->getID();
     }
 
-    if(m_configuration->hasAttribute("textureName"))
+    if(config.count("textureName"))
     {
-        m_textureName = m_configuration->getAttributeValue("textureName");
+        m_textureName = config.get<std::string>("textureName");
     }
 
-    if(m_configuration->hasAttribute("shadingMode"))
+    if(config.count("shadingMode"))
     {
-        m_shadingMode = m_configuration->getAttributeValue("shadingMode");
+        m_shadingMode = config.get<std::string>("shadingMode");
     }
 
-    if(m_configuration->hasAttribute("normalLength"))
+    if(config.count("normalLength"))
     {
-        std::string stringLength = m_configuration->getAttributeValue("normalLength");
+        std::string stringLength = config.get<std::string>("normalLength");
         m_normalLengthFactor = static_cast< ::Ogre::Real >(std::stof(stringLength));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStart() throw(::fwTools::Failed)
+void SMaterial::starting()
 {
+    this->initialize();
+
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+
     if(!m_shadingMode.empty())
     {
         ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
@@ -235,7 +230,6 @@ void SMaterial::doStart() throw(::fwTools::Failed)
         }
 
         // Force the shading mode of the material if it has been set in the configuration of the adaptor
-        ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
         material->setShadingMode(shadingMode);
     }
 
@@ -245,7 +239,6 @@ void SMaterial::doStart() throw(::fwTools::Failed)
     ::fwData::String::sptr string = ::fwData::String::New();
     string->setValue(m_materialTemplateName);
 
-    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
     ::fwDataTools::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
@@ -284,13 +277,13 @@ void SMaterial::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStop() throw(::fwTools::Failed)
+void SMaterial::stopping()
 {
     m_material.setNull();
     m_textureConnection.disconnect();
     this->unregisterServices();
 
-    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     if(material->getField("shaderParameters"))
     {
         material->removeField("shaderParameters");
@@ -299,18 +292,9 @@ void SMaterial::doStop() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doSwap() throw(::fwTools::Failed)
+void SMaterial::updating()
 {
-    SLM_TRACE("SWAPPING Material");
-    this->stopping();
-    this->starting();
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::doUpdate() throw(::fwTools::Failed)
-{
-    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     // Set up representation mode
     this->updatePolygonMode( material->getRepresentationMode() );
@@ -324,9 +308,9 @@ void SMaterial::doUpdate() throw(::fwTools::Failed)
 
 ::Ogre::Real SMaterial::computeNormalLength()
 {
-    ::Ogre::Vector3 meshBBoxSize = m_meshBoundingBox.getSize();
-    ::Ogre::Real averageSize     = ( meshBBoxSize.x + meshBBoxSize.y + meshBBoxSize.z ) /
-                                   static_cast< ::Ogre::Real >(3.0);
+    const ::Ogre::Vector3 meshBBoxSize = m_meshBoundingBox.getSize();
+    const ::Ogre::Real averageSize     = ( meshBBoxSize.x + meshBBoxSize.y + meshBBoxSize.z ) /
+                                         static_cast< ::Ogre::Real >(3.0);
     return averageSize * m_normalLengthFactor;
 }
 
@@ -388,7 +372,7 @@ void SMaterial::swapTexture()
     }
 
     // Update the shaders
-    ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     this->updateShadingMode( material->getShadingMode() );
 
     this->requestRender();
@@ -396,14 +380,81 @@ void SMaterial::swapTexture()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SMaterial::getObjSrvConnections() const
+void SMaterial::createTextureAdaptor()
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Object::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Object::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT ) );
+    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
+
+    ::fwData::Material::sptr f4sMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+
+    // If the associated material has a texture, we have to create a texture adaptor to handle it
+    if(f4sMaterial->getDiffuseTexture())
+    {
+        // Creates an Ogre adaptor and associates it with the f4s texture object
+        auto texture = f4sMaterial->getDiffuseTexture();
+        m_texAdaptor = this->registerService< ::visuOgreAdaptor::STexture >("::visuOgreAdaptor::STexture");
+        m_texAdaptor->registerInput(texture, "image", true);
+
+        m_texAdaptor->setID(this->getID() + "_" + m_texAdaptor->getID());
+        m_texAdaptor->setRenderService(this->getRenderService());
+        m_texAdaptor->setLayerID(m_layerID);
+
+        std::string materialName = f4sMaterial->getID();
+        m_texAdaptor->setTextureName(materialName + "_Texture");
+
+        m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
+                                    ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+
+        m_texAdaptor->start();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::removeTextureAdaptor()
+{
+    SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
+    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
+
+    this->getRenderService()->makeCurrent();
+
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
+    {
+        ::Ogre::Technique* technique = techIt.getNext();
+        SLM_ASSERT("Technique is not set", technique);
+
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*technique))
+        {
+            ::Ogre::Pass* pass                     = technique->getPass(0);
+            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
+            if(texUnitState)
+            {
+                texUnitState->setTextureName("");
+            }
+        }
+    }
+
+    m_textureConnection.disconnect();
+    this->unregisterServices("::visuOgreAdaptor::STexture");
+    m_texAdaptor.reset();
+
+    // Update the shaders
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
+    this->updateShadingMode( material->getShadingMode() );
+
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT );
     return connections;
 }
 
@@ -716,79 +767,6 @@ void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
     ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
     m_material->setSpecular( specular );
     m_material->setShininess( 25 );
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::createTextureAdaptor()
-{
-    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
-
-    ::fwData::Material::sptr f4sMaterial = this->getObject< ::fwData::Material >();
-
-    // If the associated material has a texture, we have to create a texture adaptor to handle it
-    if(f4sMaterial->getDiffuseTexture())
-    {
-        // Creates an Ogre adaptor and associates it with the f4s texture object
-        auto textureService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(f4sMaterial->getDiffuseTexture(),
-                                                                            "::visuOgreAdaptor::STexture");
-
-        // If the adaptor has been well instantiated, we can cast it into a texture adaptor
-        SLM_ASSERT("textureService not instantiated", textureService);
-        m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
-
-        m_texAdaptor->setID(this->getID() + "_" + m_texAdaptor->getID());
-        m_texAdaptor->setRenderService(this->getRenderService());
-        m_texAdaptor->setLayerID(m_layerID);
-
-        std::string materialName = this->getObject()->getID();
-        m_texAdaptor->setTextureName(materialName + "_Texture");
-
-        this->registerService(m_texAdaptor);
-
-        m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
-                                    ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
-
-        m_texAdaptor->start();
-        m_texAdaptor->connect();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::removeTextureAdaptor()
-{
-    SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
-    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
-
-    this->getRenderService()->makeCurrent();
-
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
-    {
-        ::Ogre::Technique* technique = techIt.getNext();
-        SLM_ASSERT("Technique is not set", technique);
-
-        if(::fwRenderOgre::helper::Shading::isColorTechnique(*technique))
-        {
-            ::Ogre::Pass* pass                     = technique->getPass(0);
-            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
-            if(texUnitState)
-            {
-                texUnitState->setTextureName("");
-            }
-        }
-    }
-
-    m_textureConnection.disconnect();
-    this->unregisterServices("::visuOgreAdaptor::STexture");
-    m_texAdaptor.reset();
-
-    // Update the shaders
-    ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
-    this->updateShadingMode( material->getShadingMode() );
-
-    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

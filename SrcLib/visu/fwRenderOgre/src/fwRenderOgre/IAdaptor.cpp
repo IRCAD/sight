@@ -18,18 +18,15 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT = "startObject";
-
 //------------------------------------------------------------------------------
 
-IAdaptor::IAdaptor() throw()
+IAdaptor::IAdaptor() noexcept
 {
-    newSlot(s_START_OBJECT_SLOT, &IAdaptor::doStart, this);
 }
 
 //------------------------------------------------------------------------------
 
-IAdaptor::~IAdaptor() throw()
+IAdaptor::~IAdaptor() noexcept
 {
 }
 
@@ -43,22 +40,15 @@ void IAdaptor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring() throw ( ::fwTools::Failed )
+void IAdaptor::configureParams()
 {
-    auto config = m_configuration->findConfigurationElement("config");
-
-    SLM_ASSERT("Can't find 'config' tag.", config);
-
-    m_configuration = config;
-
-    m_layerID = m_configuration->getAttributeValue("layer");
-
-    this->doConfigure();
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    m_layerID = config.get<std::string>("layer");
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::starting() throw ( ::fwTools::Failed )
+void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
@@ -77,42 +67,6 @@ void IAdaptor::starting() throw ( ::fwTools::Failed )
 
         m_renderService = ::fwRenderOgre::SRender::dynamicCast(*result);
     }
-    doStart();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::stopping() throw(::fwTools::Failed)
-{
-    doStop();
-}
-//------------------------------------------------------------------------------
-
-void IAdaptor::swapping() throw(::fwTools::Failed)
-{
-    doSwap();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::updating() throw(::fwTools::Failed)
-{
-    doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::connect()
-{
-    ::fwServices::IService::KeyConnectionsType connections = this->getObjSrvConnections();
-    m_objConnection.connect( this->getObject(), this->getSptr(), connections );
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::disconnect()
-{
-    m_objConnection.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -151,13 +105,6 @@ SRender::sptr IAdaptor::getRenderService() const
 Layer::sptr IAdaptor::getLayer() const
 {
     return this->getRenderService()->getLayer(m_layerID);
-}
-
-//------------------------------------------------------------------------------
-
-int IAdaptor::getStartPriority()
-{
-    return 0;
 }
 
 //------------------------------------------------------------------------------

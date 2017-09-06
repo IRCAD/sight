@@ -37,7 +37,7 @@ VRWidget::VRWidget(const std::string id,
                    SRender::sptr renderService,
                    ::Ogre::SceneManager* sceneManager,
                    ::fwRenderOgre::vr::IVolumeRenderer* renderer,
-                   ::fwData::TransformationMatrix3D::sptr clippingMatrix) throw() :
+                   ::fwData::TransformationMatrix3D::sptr clippingMatrix) noexcept :
     m_selectionMode(NONE),
     m_id(id),
     m_sceneManager(sceneManager),
@@ -72,7 +72,7 @@ VRWidget::VRWidget(const std::string id,
 
 //-----------------------------------------------------------------------------
 
-VRWidget::~VRWidget() throw()
+VRWidget::~VRWidget() noexcept
 {
     ::Ogre::MaterialManager::getSingleton().remove(m_sphereHighlightMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_frameMtl->getHandle());

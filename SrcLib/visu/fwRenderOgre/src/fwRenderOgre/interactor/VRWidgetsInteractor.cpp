@@ -24,7 +24,7 @@ namespace interactor
 
 //------------------------------------------------------------------------------
 
-VRWidgetsInteractor::VRWidgetsInteractor() throw() :
+VRWidgetsInteractor::VRWidgetsInteractor() noexcept :
     m_pickedObject(nullptr),
     m_widget(nullptr)
 {
@@ -32,7 +32,7 @@ VRWidgetsInteractor::VRWidgetsInteractor() throw() :
 
 //------------------------------------------------------------------------------
 
-VRWidgetsInteractor::~VRWidgetsInteractor() throw()
+VRWidgetsInteractor::~VRWidgetsInteractor() noexcept
 {
 }
 

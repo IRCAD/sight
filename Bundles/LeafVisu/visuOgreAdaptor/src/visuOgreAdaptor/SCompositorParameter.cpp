@@ -58,13 +58,13 @@ private:
 
 //------------------------------------------------------------------------------
 
-SCompositorParameter::SCompositorParameter() throw()
+SCompositorParameter::SCompositorParameter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SCompositorParameter::~SCompositorParameter() throw()
+SCompositorParameter::~SCompositorParameter() noexcept
 {
 }
 
@@ -85,18 +85,22 @@ const std::string& SCompositorParameter::getCompositorName() const
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doConfigure() throw(::fwTools::Failed)
+void SCompositorParameter::configuring()
 {
-    this->IParameter::doConfigure();
+    this->IParameter::configuring();
 
-    m_compositorName = m_configuration->getAttributeValue("compositorName");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    m_compositorName = config.get<std::string>("compositorName", "");
     OSLM_ERROR_IF("'compositorName' attribute not set", m_compositorName.empty());
 }
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doStart() throw(::fwTools::Failed)
+void SCompositorParameter::starting()
 {
+    this->initialize();
+
     ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
 
     ::Ogre::CompositorChain* compChain =
@@ -112,20 +116,15 @@ void SCompositorParameter::doStart() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::doStop() throw(::fwTools::Failed)
+void SCompositorParameter::stopping()
 {
-    this->IParameter::doStop();
+    this->IParameter::stopping();
 
     // Association of a listener attached to this adaptor to the configured compositor
     m_compositor->removeListener(m_listener);
     delete m_listener;
 }
 
-//------------------------------------------------------------------------------
-
-void SCompositorParameter::doSwap() throw(::fwTools::Failed)
-{
-}
 //------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor

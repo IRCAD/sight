@@ -22,7 +22,24 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Managing interactor style for Ogre
+ * @brief   Manage interactor style for Ogre
+ *
+ * @section Signals Signals
+ * - \b pointClickedSignal(int) : Emitted when a point is clicked.
+ *
+ * @section Slots Slots
+ * - \b pointClickedSlot(int) : Transmit the clicked point.
+
+ * @section XML XML Configuration
+ * @code{.xml}
+        <service type="::visuOgreAdaptor::SInteractorStyle">
+            <config render="..." style="InteractorStyle" />
+       </service>
+   @endcode
+ * @subsection Configuration Configuration:
+ * - \b render: Layer on which the interactions will be done.
+ * - \b style: Style of the interactor depending on the type: 'Trackball', 'Fixed', 'Negato2D', 'Mesh', 'Video', or
+ * 'VR', default to 'Trackball'.
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
@@ -51,40 +68,24 @@ public:
     /** @} */
 
     /// Constructor. Creates signals and slots
-    VISUOGREADAPTOR_API SInteractorStyle() throw();
+    VISUOGREADAPTOR_API SInteractorStyle() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SInteractorStyle() throw();
+    VISUOGREADAPTOR_API virtual ~SInteractorStyle() noexcept;
 
 protected:
 
-    /**
-     * @brief Configuring method.
-     * Catch interaptor style
-     * @code{.xml}
-         <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-             <config render="layerID" type="InteractionType" style="InteractorStyle" />
-         </adaptor>
-       @endcode
-     * - \b render Layer on which the interactions will be done
-     * - \b type Type of the interactor either Movement or Selection
-     * - \b Style Style of the interactor depending on the type. if \b Movement, Default or Fixed can be used,
-     * if \b Selection, Mesh or Video can be used.
-
-     */
-    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
+    /// Select the interactor style
+    VISUOGREADAPTOR_API void configuring() override;
 
     /// Starting method
-    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void starting() override;
 
     /// Update the interactor
-    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void updating() override;
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
-
-    /// Swaping method, do nothing
-    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUOGREADAPTOR_API void stopping() override;
 
 private:
 
@@ -93,7 +94,7 @@ private:
      * @{
      */
 
-    /// SLOT : sends a signal when the interactor has recieved a clicked point signal
+    /// Slot: sends a signal when the interactor has recieved a clicked point signal
     void clickedPoint(fwData::Object::sptr obj);
 
     /**
@@ -120,9 +121,6 @@ private:
 
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
-
-    /// map containing all the classes associated to their xml designations (e.g. Default -> TrackballInteractor)
-    std::map<std::string, std::string> m_interactorStyles;
 };
 
 } //namespace visuOgreAdaptor
