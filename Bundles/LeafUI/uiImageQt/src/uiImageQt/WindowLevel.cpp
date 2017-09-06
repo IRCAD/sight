@@ -147,8 +147,14 @@ void WindowLevel::starting()
                      SLOT(onDynamicRangeSelectionChanged( QAction* )));
 
     ::fwData::TransferFunction::sptr tf = this->getInOut < ::fwData::TransferFunction >(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined.", tf);
-    this->setTransferFunction(tf);
+    if (tf)
+    {
+        this->setTransferFunction(tf);
+    }
+    else
+    {
+        this->createTransferFunction(image);
+    }
     this->installTFConnections();
 
     this->updating();
@@ -226,11 +232,25 @@ void WindowLevel::updating()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::swapping()
+void WindowLevel::swapping(const KeyType& key)
 {
-    this->removeTFConnections();
-    this->updating();
-    this->installTFConnections();
+    if (key == s_TF_INOUT)
+    {
+        this->removeTFConnections();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->installTFConnections();
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -57,7 +57,8 @@ namespace visuVTKAdaptor
  *      required)
  *    - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato
  *    - \b opacity (optional, default=1.0): opacity (0.0..1.0)
- * - \b tf [::fwData::TransferFunction] : group containing the TransferFunction used to display the images
+ * - \b tf [::fwData::TransferFunction](optional) : group containing the TransferFunction used to display the images, if
+ *      it is not set, the default image's transfer function is used (CT-GreyLevel)
  * @note There must be as much elements in the two groups
  *
  * @subsection Configuration Configuration:

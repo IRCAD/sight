@@ -228,13 +228,21 @@ void SImagesBlend::addImageAdaptors()
     size_t lastValidIndex = 0;
 
     const size_t nbImages = this->getKeyGroupSize(s_IMAGE_GROUP);
+    const size_t nbTFs    = this->getKeyGroupSize(s_TF_GROUP);
+    SLM_ASSERT("'" + s_TF_GROUP + "' group must have the same number of elements that '" + s_IMAGE_GROUP +"'",
+               nbTFs == 0 || nbImages == nbTFs);
     for(size_t i = 0; i < nbImages; ++i)
     {
-        ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
-        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, i);
+        ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
+        ::fwData::TransferFunction::sptr tf;
 
-        if (img && tf)
+        if (img)
         {
+            if (nbTFs > 0)
+            {
+                tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, i);
+            }
+
             const ImageInfo& info = m_imagesInfo[i];
 
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
@@ -251,9 +259,12 @@ void SImagesBlend::addImageAdaptors()
     // If Checkerboard is used and only one image is valid, we must duplicate the image adaptor to display the image
     if(addedImageCount == 1 && nullptr != vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId)))
     {
-        ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, lastValidIndex);
-        ::fwData::TransferFunction::sptr tf =
-            this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, lastValidIndex);
+        ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, lastValidIndex);
+        ::fwData::TransferFunction::sptr tf;
+        if (nbTFs > 0)
+        {
+            tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, lastValidIndex);
+        }
         const ImageInfo& info = m_imagesInfo[lastValidIndex];
         this->addImage(img, tf, info);
     }
@@ -319,7 +330,10 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunctio
     auto imageAdaptor = this->registerService< ::visuVTKAdaptor::SImage>("::visuVTKAdaptor::SImage");
     // register image
     imageAdaptor->registerInOut(img, SImage::s_IMAGE_INOUT, true);
-    imageAdaptor->registerInOut(tf, SImage::s_TF_INOUT, false, true);
+    if (tf)
+    {
+        imageAdaptor->registerInOut(tf, SImage::s_TF_INOUT, false, true);
+    }
 
     imageAdaptor->setRenderService(this->getRenderService());
     imageAdaptor->setRendererId( this->getRendererId() );

@@ -51,14 +51,15 @@ namespace uiImageQt
  * @code{.xml}
     <service uid="..." type="::uiImageQt::WindowLevel" autoConnect="yes">
         <inout key="image" uid="..."/>
-        <inout key="tf" uid="..."/>
+        <inout key="tf" uid="..." optional="yes" />
         <config autoWindowing="yes" enableSquareTF="no" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image on which the windowing will be changed
- * - \b tf [::fwData::TransferFunction]: current transfer function to modify
+ * - \b tf [::fwData::TransferFunction] (optional): current transfer function to modify, if it is not defined, the
+ *      editor uses the default image's transfer function (CT-GreyLevel)
  *
  * @subsection Configuration Configuration
  * - \b autoWindowing(optional, default no) : if 'yes', image windowing will be automatically compute from image pixel
@@ -97,8 +98,8 @@ protected:
     /// Update editor information from the image
     virtual void updating();
 
-    /// Swap of image
-    virtual void swapping();
+    /// Select the current tf
+    virtual void swapping(const KeyType& key);
 
     /// Parse the xml configuration
     virtual void configuring();
