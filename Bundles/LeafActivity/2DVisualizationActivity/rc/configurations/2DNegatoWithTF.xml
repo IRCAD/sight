@@ -4,17 +4,18 @@
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="landmarks" />
-        <param name="selectedTFKey" />
-        <param name="TFSelections" />
         <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="CrossTypeChannel" default="crossTypeChannel"/>
+
+        <!-- The object 'transferFunctionDeferred' is deferred, its id is given between configuration to
+             receive the signal emitted when the object is created. -->
+        <param name="transferFunctionDeferred" default="transferFunction" />
     </parameters>
     <config>
         <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
-        <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${transferFunctionDeferred}" type="::fwData::TransferFunction" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -78,13 +79,13 @@
 
         <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tf" uid="transferFunction" optional="yes" />
+            <inout key="tf" uid="${transferFunctionDeferred}" optional="yes" />
             <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" />
         </service>
 
         <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tf" uid="transferFunction" />
+            <inout key="tf" uid="${transferFunctionDeferred}" />
             <config renderer="default" picker="negatodefault" text="" />
         </service>
 
@@ -127,23 +128,7 @@
             <placeInScene uid="negato" />
         </service>
 
-        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
-           <inout key="source" uid="${TFSelections}">
-               <extract from="@values.${selectedTFKey}" />
-           </inout>
-           <out group="target">
-               <key uid="transferFunction"/>
-           </out>
-        </service>
-
         <!-- ************************************* Connections ************************************ -->
-
-        <!-- Extract the transfer function from the composite when it is added/changed. -->
-        <connect>
-            <signal>${TFSelections}/addedObjects</signal>
-            <signal>${TFSelections}/changedObjects</signal>
-            <slot>extractTF/update</slot>
-        </connect>
 
         <connect>
             <signal>snapshotNegatoEditor/snapped</signal>
@@ -162,7 +147,6 @@
         <!-- START AND STOP SERVICES -->
         <start uid="LockImageSrv" />
         <start uid="mainView" />
-        <start uid="extractTF" />
 
         <!-- negato adaptors -->
         <start uid="snapshot" />
@@ -174,7 +158,6 @@
         <start uid="nameAdaptor" />
         <start uid="imageSliceOrientationText" />
 
-        <update uid="extractTF" />
 
     </config>
 </extension>

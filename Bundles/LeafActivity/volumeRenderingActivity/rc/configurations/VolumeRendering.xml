@@ -22,7 +22,6 @@
         <object uid="${image}" type="::fwData::Image" src="ref" />
 
         <!-- Transfer function -->
-        <object uid="TFSelections" type="::fwData::Composite" />
         <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
 
         <!-- optional model series -->
@@ -206,9 +205,10 @@
             <inout key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <inout key="landmarks" uid="landmarks" />
-            <inout key="TFSelections" uid="TFSelections" />
             <parameter replace="WID_PARENT" by="tfEditor" />
-            <parameter replace="SelectedTFKey" by="SelectedTF" />
+            <!-- The object 'transferFunction' is deferred, its id is given between configuration to receive
+                 the signal emitted when the object is created. -->
+            <parameter replace="transferFunctionOutput" by="transferFunction" />
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
@@ -225,24 +225,7 @@
             <inout key="target" uid="landmarks" />
         </service>
 
-        <!-- Extract the transfer function from the composite when it is added/changed. -->
-        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
-           <inout key="source" uid="TFSelections">
-               <extract from="@values.SelectedTF" />
-           </inout>
-           <out group="target">
-               <key uid="transferFunction"/>
-           </out>
-        </service>
-
         <!-- ************************************* Connections ************************************ -->
-
-        <!-- Extract the transfer function from the composite when it is added/changed. -->
-        <connect>
-            <signal>TFSelections/addedObjects</signal>
-            <signal>TFSelections/changedObjects</signal>
-            <slot>extractTF/update</slot>
-        </connect>
 
         <connect>
             <signal>ActionSnapshotVR/snapped</signal>
@@ -264,7 +247,6 @@
         <start uid="mainView" />
         <start uid="tfEditor" />
         <start uid="extractLandmarks" />
-        <start uid="extractTF" />
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
@@ -278,7 +260,6 @@
         <start uid="image3DCursorAdaptor" />
 
         <update uid="extractLandmarks" />
-        <update uid="extractTF" />
 
     </config>
 </extension>

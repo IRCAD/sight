@@ -5,9 +5,11 @@
         <param name="image" />
         <param name="histogram" />
         <param name="landmarks" />
-        <param name="TFSelections" />
-        <param name="SelectedTFKey" />
         <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
+
+        <!-- The object 'transferFunctionOutput' is deferred, its id is given between configuration to
+             recieve the signal emitted when the object is created. -->
+        <param name="transferFunctionOutput" default="transferFunction" />
     </parameters>
 
     <config>
@@ -15,12 +17,11 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}"     type="::fwData::Image"     src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref"/>
 
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-        <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${transferFunctionOutput}" type="::fwData::TransferFunction" src="deferred" />
 
         <service uid="tfEditor" type="::gui::view::SDefaultView">
             <gui>
@@ -46,7 +47,7 @@
 
         <service uid="tfm" type="::uiTF::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
-            <out key="tf" uid="transferFunction" />
+            <out key="tf" uid="${transferFunctionOutput}" />
             <config useDefaultPath="no">
                 <path>${TFPath}</path>
             </config>
@@ -68,24 +69,20 @@
         <service uid="cfgNegato" type="::fwServices::SConfigController">
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
-            <inout key="TFSelections" uid="${TFSelections}" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="negatoView" />
             <parameter replace="selectedTFKey" by="${SelectedTFKey}" />
+            <!-- The object 'transferFunctionDeferred' is deferred, its id is given between configuration to
+                 receive the signal emitted when the object is created. -->
+            <parameter replace="transferFunctionDeferred" by="${transferFunctionOutput}" />
         </service>
 
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${image}"/>
             <inout key="histogram" uid="${histogram}"/>
-            <inout key="transferFunction" uid="transferFunction" />
+            <inout key="transferFunction" uid="${transferFunctionOutput}" />
             <parameter replace="WID_PARENT" by="tfScene"/>
-        </service>
-
-        <service uid="pushTFInComposite" type="::ctrlSelection::SManage">
-           <inout key="object" uid="transferFunction" />
-           <inout key="composite" uid="${TFSelections}" />
-           <compositeKey>${SelectedTFKey}</compositeKey>
         </service>
 
         <connect>
@@ -93,17 +90,10 @@
             <slot>fieldMgr/update</slot>
         </connect>
 
-        <!-- add or swap the TF in the composite when it is present in the config (the service is started when the TF exists) -->
-        <connect>
-            <signal>pushTFInComposite/started</signal>
-            <slot>pushTFInComposite/addOrSwap</slot>
-        </connect>
-
         <start uid="tfEditor" />
         <start uid="fieldMgr" />
         <start uid="tfWidget" />
         <start uid="cfgNegato" />
-        <start uid="pushTFInComposite" />
         <start uid="tfm" />
 
         <update uid="fieldMgr" />
