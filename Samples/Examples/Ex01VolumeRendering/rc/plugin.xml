@@ -282,7 +282,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <!-- End genericScene2 -->
 
-            <!-- This negato (negato1) uses the transfer function stores with key = SelectedTF in TFSelections -->
+            <!-- This negato (negato1) uses the transfer function selected in the editor -->
 
             <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
                 <scene>
