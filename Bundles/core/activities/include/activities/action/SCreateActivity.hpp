@@ -25,9 +25,9 @@ namespace action
  * @brief This action launchs an activity according to the given configuration
  *
  * This action works on a ::fwData::Vector. It proposes all the available activity according to the given configuration.
- * And then, send a signal with the activity identifier.
+ * And then, it sends a signal with the activity identifier.
  *
- * It should works with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
+ * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
@@ -39,8 +39,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SCreateActivity"
- * autoConnect="yes" >
+   <service uid="..." type="::activities::action::SCreateActivity" autoConnect="yes" >
        <!-- Filter mode 'include' allows all given activity id-s.
             Filter mode 'exclude' allows all activity id-s excepted given ones. -->
        <filter>
@@ -53,7 +52,7 @@ namespace action
    @endcode
  *
  * - \b filter (optional): it allows to filter the activity that can be proposed.
- *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
+ *    - \b mode: 'include' or 'exclude'. Defines if the activities in the following list are proposed (include) or not
  *      (exclude).
  *    - \b id: id of the activity
  */

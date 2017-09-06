@@ -28,11 +28,12 @@ namespace ctrlSelection
  * @section Slots Slots
  * - \b add() : Adds the object into the target (vector, seriesDB, composite), if target is a Composite, it is add at
  *   the key given by config.
- * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a compsite, the object is
+ * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a composite, the object is
  *   swapped.
  * - \b swapObj() : Only if target is a Composite : swaps the object into the composite with the key given by config.
  * - \b remove() : Removes the object.
  * - \b removeIfPresent() : Removes the object if it is present.
+ * - \b clear() : Removes all objects.
  *
  * @section XML XML Configuration
  *
@@ -62,7 +63,7 @@ namespace ctrlSelection
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b object [::fwData::Object]: object to add/swap/remove.
+ * - \b object [::fwData::Object]: object to add/swap/remove. Not needed when invoking clean slot.
  * - \b composite [::fwData::Composite] (optional): Composite where to add/swap/remove object.
  * - \b vector [::fwData::Vector] (optional): Vector where to add/remove object.
  * - \b seriesDB [::fwMedData::SeriesDB] (optional): SeriesDB where to add/remove object.
@@ -94,6 +95,7 @@ public:
     static const ::fwCom::Slots::SlotKeyType s_SWAP_OBJ_SLOT;
     static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
     static const ::fwCom::Slots::SlotKeyType s_REMOVE_IF_PRESENT_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT;
     /**
      * @}
      */
@@ -134,6 +136,9 @@ protected:
 
     /// Removes the object from the composite at the key given by config if it is present.
     void removeIfPresent();
+
+    /// Removes all objects.
+    void clear();
     /**
      * @}
      */
