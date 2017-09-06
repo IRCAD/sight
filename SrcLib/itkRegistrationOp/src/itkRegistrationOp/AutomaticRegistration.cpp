@@ -6,6 +6,8 @@
 
 #include "itkRegistrationOp/AutomaticRegistration.hpp"
 
+#include "itkRegistrationOp/RegistrationObserver.hxx"
+
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -41,88 +43,6 @@
 namespace itkRegistrationOp
 {
 
-/// Prints debug infos at each step of the optimizer.
-class IterationUpdateCommand : public ::itk::Command
-{
-public:
-    typedef  IterationUpdateCommand Self;
-    typedef ::itk::Command Superclass;
-    typedef ::itk::SmartPointer<Self>   Pointer;
-    itkNewMacro( Self );
-
-public:
-    typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
-
-    //------------------------------------------------------------------------------
-
-    void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
-    {
-        if(m_stop)
-        {
-            OptimizerType* optimizer = dynamic_cast< OptimizerType* >( caller );
-
-            // Force stop the optimizer by setting the minimum step to infinity.
-            optimizer->SetMinimumStepLength(std::numeric_limits<double>::max());
-        }
-
-        Execute( (const itk::Object*)caller, event);
-    }
-
-    //------------------------------------------------------------------------------
-
-    void Execute(const ::itk::Object* object, const ::itk::EventObject& event) override
-    {
-        if( ::itk::IterationEvent().CheckEvent( &event ) )
-        {
-            const OptimizerType* optimizer = dynamic_cast< const OptimizerType* >( object );
-
-            unsigned int itNum = optimizer->GetCurrentIteration();
-
-            std::string msg = "Number of iterations : " + std::to_string(itNum);
-            m_dialog(static_cast<float>(itNum)/static_cast<float>(m_maxIters), msg);
-            m_dialog.setMessage(msg);
-
-            OSLM_DEBUG("Number of iterations : " << itNum);
-            OSLM_DEBUG("Current value : " << optimizer->GetValue());
-            OSLM_DEBUG("Current parameters : " << optimizer->GetCurrentPosition() );
-        }
-    }
-
-    //------------------------------------------------------------------------------
-
-    void SetMaxIterations(unsigned long maxIters)
-    {
-        m_maxIters = maxIters;
-    }
-
-    //------------------------------------------------------------------------------
-
-    bool ForceStopped() const
-    {
-        return m_stop;
-    }
-
-    //------------------------------------------------------------------------------
-
-protected:
-
-    IterationUpdateCommand() :
-        m_dialog("Automatic Registration", "Registring, please be patient."),
-        m_stop(false)
-    {
-        m_dialog.setCancelCallback([this]()
-            {
-                this->m_stop = true;
-            });
-    }
-
-    ::fwGui::dialog::ProgressDialog m_dialog;
-
-    unsigned long m_maxIters;
-
-    bool m_stop;
-};
-
 //------------------------------------------------------------------------------
 
 struct RegistratorParameters
@@ -130,7 +50,7 @@ struct RegistratorParameters
     ::fwData::Image::csptr i_target;
     ::fwData::Image::csptr i_reference;
     ::fwData::TransformationMatrix3D::sptr o_trf;
-    AutomaticRegistration::MetricType i_metric;
+    MetricType i_metric;
     double i_minStep;
     double i_maxStep;
     unsigned long i_maxIters;
@@ -152,7 +72,7 @@ struct Registrator
 
         typedef ::itk::VersorRigid3DTransform< double > TransformType;
         typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
-        typedef ::itk:: LinearInterpolateImageFunction< ReferenceImageType, double > InterpolatorType;
+        typedef ::itk::LinearInterpolateImageFunction< ReferenceImageType, double > InterpolatorType;
         typedef ::itk::ImageRegistrationMethod< TargetImageType, ReferenceImageType > RegistrationType;
 
         const typename TargetImageType::Pointer targetImage =
@@ -168,18 +88,18 @@ struct Registrator
 
         switch(params.i_metric)
         {
-            case AutomaticRegistration::MEAN_SQUARES:
+            case MEAN_SQUARES:
                 metric = ::itk::MeanSquaresImageToImageMetric< TargetImageType, ReferenceImageType >::New();
                 break;
-            case AutomaticRegistration::NORMALIZED_CORRELATION:
+            case NORMALIZED_CORRELATION:
                 metric = ::itk::NormalizedCorrelationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
                 break;
-            case AutomaticRegistration::PATTERN_INTENSITY:
+            case PATTERN_INTENSITY:
                 metric =
                     ::itk::MeanReciprocalSquareDifferenceImageToImageMetric< TargetImageType,
                                                                              ReferenceImageType >::New();
                 break;
-            case AutomaticRegistration::MUTUAL_INFORMATION:
+            case MUTUAL_INFORMATION:
                 auto mutInfo =
                     ::itk::MattesMutualInformationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
                 mutInfo->SetNumberOfSpatialSamples(targetImage->GetLargestPossibleRegion().GetNumberOfPixels() * 0.5);
@@ -253,14 +173,14 @@ struct Registrator
         optimizer->SetMinimumStepLength( params.i_minStep );
         optimizer->SetNumberOfIterations( params.i_maxIters );
 
-        IterationUpdateCommand::Pointer observer = IterationUpdateCommand::New();
-        observer->SetMaxIterations( params.i_maxIters );
+        RegistrationObserver<OptimizerType>::Pointer observer = RegistrationObserver<OptimizerType>::New();
+        observer->setMaxIterations( params.i_maxIters );
         optimizer->AddObserver( itk::IterationEvent(), observer );
 
         registration->Update();
 
         // Set the new transform if the registration wasn't canceled by the user.
-        if(!observer->ForceStopped())
+        if(!observer->forceStopped())
         {
             auto parameters = registration->GetLastTransformParameters();
 

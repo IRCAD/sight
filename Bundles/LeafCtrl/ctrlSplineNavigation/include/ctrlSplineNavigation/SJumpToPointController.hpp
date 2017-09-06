@@ -40,10 +40,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SJumpToPointController)(::fwServices::IController) );
 
     /// Constructor.
-    CTRLSPLINENAVIGATION_API SJumpToPointController() throw();
+    CTRLSPLINENAVIGATION_API SJumpToPointController() noexcept;
 
     /// Destructor.
-    CTRLSPLINENAVIGATION_API virtual ~SJumpToPointController() throw();
+    CTRLSPLINENAVIGATION_API virtual ~SJumpToPointController() noexcept;
 
     /**
      * @name Slots.
@@ -56,10 +56,10 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void updating();
+    virtual void configuring();
     /**  @} */
 
     /**

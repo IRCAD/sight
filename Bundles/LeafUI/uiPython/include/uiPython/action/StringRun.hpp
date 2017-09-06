@@ -32,28 +32,28 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    UIPYTHON_API StringRun() throw();
+    UIPYTHON_API StringRun() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    UIPYTHON_API virtual ~StringRun() throw();
+    UIPYTHON_API virtual ~StringRun() noexcept;
 
 protected:
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
      */
-    UIPYTHON_API void configuring() throw( ::fwTools::Failed );
+    UIPYTHON_API void configuring();
 
-    UIPYTHON_API virtual void starting() throw(::fwTools::Failed);
+    UIPYTHON_API virtual void starting();
 
-    UIPYTHON_API virtual void stopping() throw(::fwTools::Failed);
+    UIPYTHON_API virtual void stopping();
 
     /**
      * @brief This method tries to close the window and reset root object.
      */
-    UIPYTHON_API virtual void updating() throw(::fwTools::Failed);
+    UIPYTHON_API virtual void updating();
 
     /*
      * @brief This method gives information about the class.

@@ -23,13 +23,13 @@ struct UICPR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    UICPR_API ~Plugin() throw();
+    UICPR_API ~Plugin() noexcept;
 
     /// Overrides
-    UICPR_API void start() throw(::fwRuntime::RuntimeException);
+    UICPR_API void start();
 
     /// Overrides
-    UICPR_API void stop() throw();
+    UICPR_API void stop() noexcept;
 
 };
 

@@ -1,0 +1,58 @@
+<plugin id="BeginnerTraining02" version="@DASH_VERSION@">
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>BeginnerTraining02Config</id>
+        <config>
+
+            <object uid="string" type="::fwData::String" />
+
+            <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>BeginnerTraining02 App</name>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="view" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="view" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view />
+                        <view />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="myEditorA" start="yes" />
+                    <view sid="myEditorB" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="myEditorA" type="::beginnerTraining::tuto02::SStringEditor" >
+                <inout key="editString" uid="string" />
+            </service>
+
+            <service uid="myEditorB" type="::beginnerTraining::tuto02::SStringEditor" >
+                <inout key="editString" uid="string" autoConnect="yes" />
+            </service>
+
+            <service uid="myReader" type="::beginnerTraining::tuto01::SStringReader" >
+                <inout key="targetString" uid="string" />
+                <file>@BUNDLE_PREFIX@/beginnerTraining_0-1/data.txt</file>
+            </service>
+
+            <start uid="myFrame" />
+            <start uid="myReader" />
+
+            <update uid="myReader" />
+            <update uid="myEditorA" />
+            <update uid="myEditorB" />
+
+        </config>
+    </extension>
+
+</plugin>

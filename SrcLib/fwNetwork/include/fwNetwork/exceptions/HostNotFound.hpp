@@ -25,7 +25,7 @@ public:
      * @name Constructor/Destructor.
      * @{ */
     HostNotFound(const std::string& message);
-    virtual ~HostNotFound() throw();
+    virtual ~HostNotFound() noexcept;
     /**  @} */
 };
 

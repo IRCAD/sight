@@ -23,13 +23,13 @@ struct CTRLSPLINENAVIGATION_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    CTRLSPLINENAVIGATION_API ~Plugin() throw();
+    CTRLSPLINENAVIGATION_API ~Plugin() noexcept;
 
     /// Overrides
-    CTRLSPLINENAVIGATION_API void start() throw(::fwRuntime::RuntimeException);
+    CTRLSPLINENAVIGATION_API void start();
 
     /// Overrides
-    CTRLSPLINENAVIGATION_API void stop() throw();
+    CTRLSPLINENAVIGATION_API void stop() noexcept;
 
 };
 

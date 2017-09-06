@@ -22,13 +22,13 @@ namespace visuNavigation
 struct VISUNAVIGATION_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor
-    VISUNAVIGATION_API ~Plugin() throw();
+    VISUNAVIGATION_API ~Plugin() noexcept;
 
     /// Overrides
-    VISUNAVIGATION_API void start() throw(::fwRuntime::RuntimeException);
+    VISUNAVIGATION_API void start();
 
     /// Overrides
-    VISUNAVIGATION_API void stop() throw();
+    VISUNAVIGATION_API void stop() noexcept;
 };
 
 

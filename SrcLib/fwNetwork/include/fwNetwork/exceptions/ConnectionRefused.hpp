@@ -25,7 +25,7 @@ public:
      * @name Constructor/Destructor.
      * @{ */
     ConnectionRefused(const std::string& message);
-    virtual ~ConnectionRefused() throw();
+    virtual ~ConnectionRefused() noexcept;
     /**  @} */
 };
 

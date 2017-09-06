@@ -37,13 +37,13 @@ SStringEditor::SStringEditor()
 
 //-----------------------------------------------------------------------------
 
-SStringEditor::~SStringEditor() throw()
+SStringEditor::~SStringEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SStringEditor::configuring() throw ( ::fwTools::Failed )
+void SStringEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize(); // start with this inherited function
@@ -51,7 +51,7 @@ void SStringEditor::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStringEditor::starting() throw ( ::fwTools::Failed )
+void SStringEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create(); // start with this inherited function
@@ -80,7 +80,7 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStringEditor::stopping() throw ( ::fwTools::Failed )
+void SStringEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -93,7 +93,7 @@ void SStringEditor::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStringEditor::updating() throw ( ::fwTools::Failed )
+void SStringEditor::updating()
 {
     // Update your textEditor from your associated object
     ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);

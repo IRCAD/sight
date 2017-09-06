@@ -19,13 +19,13 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start() throw( ::fwRuntime::RuntimeException )
+void Plugin::start()
 {
     SLM_TRACE_FUNC();
 
@@ -47,7 +47,7 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 
 //-----------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
     SLM_TRACE_FUNC();
 }

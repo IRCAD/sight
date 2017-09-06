@@ -25,13 +25,13 @@ struct BEGINNERTRAINING_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    BEGINNERTRAINING_API ~Plugin() throw();
+    BEGINNERTRAINING_API ~Plugin() noexcept;
 
     /// Overrides
-    BEGINNERTRAINING_API void start() throw(::fwRuntime::RuntimeException);
+    BEGINNERTRAINING_API void start();
 
     /// Overrides
-    BEGINNERTRAINING_API void stop() throw();
+    BEGINNERTRAINING_API void stop() noexcept;
 
 };
 

@@ -40,25 +40,25 @@ public:
     typedef ::fwCom::Signal< void () > TrigerredSignalType;
 
     /// Constructor. Initializes triggered signal
-    UILOGO_API SButton() throw ();
+    UILOGO_API SButton() noexcept;
 
     /// Destructor
-    UILOGO_API virtual ~SButton() throw ();
+    UILOGO_API virtual ~SButton() noexcept;
 
     /**
      * @brief This method launches the IEditor::starting method
      * Initializes button according to xml configuration
      */
-    UILOGO_API void starting() throw (::fwTools::Failed);
+    UILOGO_API void starting();
 
     /// This method launches the IEditor::stopping method
-    UILOGO_API void stopping() throw (::fwTools::Failed);
+    UILOGO_API void stopping();
 
     /// This method is used to update services. Sends triggered signal
-    UILOGO_API void updating() throw (::fwTools::Failed);
+    UILOGO_API void updating();
 
     /// This method is used to update services on notification. Do nothing
-    UILOGO_API void receiving( ) throw (::fwTools::Failed);
+    UILOGO_API void receiving( );
 
     /**
      * @brief Configure the service.
@@ -72,7 +72,7 @@ public:
             </service>
        @endcode
      */
-    UILOGO_API void configuring() throw (::fwTools::Failed);
+    UILOGO_API void configuring();
 
     /// This method is used to give information about the service. Do nothing
     UILOGO_API void info(std::ostream& _sstream);

@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>Register</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -9,9 +9,7 @@
         <param name="referenceImageUid" />
         <param name="transformUid" />
     </parameters>
-
     <config>
-
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
         <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
@@ -20,7 +18,6 @@
         <object uid="transformedImage" type="::fwData::Image" />
         <object uid="TFSelectionComposite" type="::fwData::Composite" />
         <object uid="TFTransformedComposite" type="::fwData::Composite" />
-        <object uid="viewport" type="::scene2D::data::Viewport" />
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
@@ -29,30 +26,32 @@
         <object uid="flipSagittalMatrix" type="::fwData::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
-                    1    0    0   0
-                    0   -1    0   0
-                    0    0   -1   0
-                    0    0    0   1
+                    1      0      0     0
+                    0     -1      0     0
+                    0      0     -1     0
+                    0      0      0     1
                 ]]>
             </matrix>
         </object>
+
         <object uid="flipFrontalMatrix" type="::fwData::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
-                    -1   0    0   0
-                    0    1    0   0
-                    0    0   -1   0
-                    0    0    0   1
+                   -1      0      0     0
+                    0      1      0     0
+                    0      0     -1     0
+                    0      0      0     1
                 ]]>
             </matrix>
         </object>
+
         <object uid="flipAxialMatrix" type="::fwData::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
-                   -1     0    0   0
-                    0    -1    0   0
-                    0     0    1   0
-                    0     0    0   1
+                    -1      0     0     0
+                     0     -1     0     0
+                     0      0     1     0
+                     0      0     0     1
                 ]]>
             </matrix>
         </object>
@@ -63,7 +62,6 @@
         <object uid="manualTransform" type="::fwData::TransformationMatrix3D" />
         <object uid="lastTransform" type="::fwData::TransformationMatrix3D" />
         <object uid="identity" type="::fwData::TransformationMatrix3D" />
-
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -74,8 +72,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="imagesAndManagersView" start="yes"/>
-                <view sid="ParamView"             start="yes"/>
+                <view sid="imagesAndManagersView" start="yes" />
+                <view sid="ParamView" start="yes" />
             </registry>
         </service>
 
@@ -89,9 +87,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="scenesView" start="yes"/>
-                <view sid="editorsView" start="yes"/>
-                <view sid="3dScene" start="yes"/>
+                <view sid="scenesView" start="yes" />
+                <view sid="editorsView" start="yes" />
+                <view sid="3dScene" start="yes" />
             </registry>
         </service>
 
@@ -104,8 +102,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="referenceScene" start="yes"/>
-                <view sid="transformedScene" start="yes"/>
+                <view sid="referenceScene" start="yes" />
+                <view sid="transformedScene" start="yes" />
             </registry>
         </service>
 
@@ -118,8 +116,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="referenceViewEditor" start="yes"/>
-                <view sid="targetViewEditor" start="yes"/>
+                <view sid="referenceViewEditor" start="yes" />
+                <view sid="targetViewEditor" start="yes" />
             </registry>
         </service>
 
@@ -134,7 +132,7 @@
             </gui>
             <registry>
                 <view wid="targetSceneEditor" />
-                <view sid="blendEditor" start="yes"/>
+                <view sid="blendEditor" start="yes" />
                 <view sid="checkerBoardCellSlider" start="yes" />
             </registry>
         </service>
@@ -145,7 +143,7 @@
             </parameters>
         </service>
 
-        <service uid="checkerBoardCellSlider" type="::guiQt::editor::SParameters" >
+        <service uid="checkerBoardCellSlider" type="::guiQt::editor::SParameters">
             <parameters>
                 <param type="int" name="Checkerboard # of cells" key="checkerBoardSlider" defaultValue="10" min="0" max="100" />
             </parameters>
@@ -170,7 +168,7 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <spacer />
+                    <spacer/>
                 </layout>
             </gui>
             <registry>
@@ -190,8 +188,8 @@
             <registry>
                 <view sid="automaticRegistrationView" start="yes" />
                 <view sid="LandmarkRegistrationView" start="yes" />
-                <view sid="manualRegistrationView"    start="yes" />
-                <view sid="TFView"                    start="yes" />
+                <view sid="manualRegistrationView" start="yes" />
+                <view sid="TFView" start="yes" />
             </registry>
         </service>
 
@@ -201,14 +199,14 @@
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
-                    <spacer />
+                    <spacer/>
                     <view proportion="0" />
                     <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <view sid="ResetRegistration" start="yes" />
-                <view sid="computeCenter" start="yes"/>
+                <view sid="computeCenter" start="yes" />
                 <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
             </registry>
@@ -218,7 +216,7 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
-                    <spacer />
+                    <spacer/>
                     <view proportion="0" />
                 </layout>
             </gui>
@@ -232,14 +230,14 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
-                    <view proportion="0" caption="Flip image"/>
-                    <spacer />
+                    <view proportion="0" caption="Flip image" />
+                    <spacer/>
                     <view proportion="0" />
                 </layout>
             </gui>
             <registry>
-                <view sid="transformEditor"       start="yes" />
-                <view sid="flipEditor"       start="yes" />
+                <view sid="transformEditor" start="yes" />
+                <view sid="flipEditor" start="yes" />
                 <view sid="applyManualTransform" start="yes" />
             </registry>
         </service>
@@ -255,8 +253,8 @@
             </gui>
             <registry>
                 <view sid="flipSagittalButton" start="yes" />
-                <view sid="flipFrontalButton"  start="yes" />
-                <view sid="flipAxialButton"    start="yes" />
+                <view sid="flipFrontalButton" start="yes" />
+                <view sid="flipAxialButton" start="yes" />
             </registry>
         </service>
 
@@ -266,26 +264,33 @@
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="1" />
-                    <view proportion="5" />
                     <view proportion="0" />
                 </layout>
             </gui>
             <registry>
-                <view sid="transformedTFSelector"  start="yes" />
-                <view sid="transformedTFWindow"    start="yes" />
-                <view sid="transformedTFEditor"    start="yes" />
+                <view sid="transformedTFSelector" start="yes" />
+                <view wid="tfWidget" />
                 <view sid="transformedWindowLevel" start="yes" />
             </registry>
         </service>
 
-        <service uid="computeCenter" type="::guiQt::editor::SSignalButton" >
+        <service uid="tfWidget" type="::fwServices::SConfigController">
+            <appConfig id="TransferFunctionWidget" />
+            <inout key="image" uid="transformedImage" />
+            <inout key="histogram" uid="Histogram" />
+            <inout key="TFSelections" uid="TFSelectionComposite" />
+            <parameter replace="WID_PARENT" uid="tfWidget" />
+            <parameter replace="SelectedTFKey" by="transformedTF" />
+        </service>
+
+        <service uid="computeCenter" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Fast registration</text>
             </config>
         </service>
 
-        <service uid="ResetRegistration" type="::guiQt::editor::SSignalButton" >
+        <service uid="ResetRegistration" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Reset registration</text>
@@ -308,133 +313,126 @@
             <inout key="landmarks" uid="targetPL" />
         </service>
 
-        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
-            <in key="referenceImage" uid="${referenceImageUid}" />
-            <in key="pointlist" uid="referencePL" />
+        <!-- *************************** Begin generic scene *************************** -->
 
+        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
-
                 <renderer id="default" background="#052833" />
-
-                <adaptor uid="referenceNegatoMPR" id="referenceNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="referenceImage">
-                    <config renderer="default" picker="picker" mode="2d" slices="1"
-                            sliceIndex="axial" selectedTFKey="referenceTF"
-                            tfSelectionFwID="TFSelectionComposite" />
-                </adaptor>
-
-                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-
-                <adaptor id="pickerInteractor" uid="referencePickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
-                    <config renderer="default" picker="picker" event="MOUSE_LEFT_UP"/>
-                </adaptor>
-
-                <adaptor id="pointListAdaptor" class="::visuVTKAdaptor::LabeledPointList" objectId="pointlist">
-                    <config renderer="default" picker="picker" color="#550066" radius="10"/>
-                </adaptor>
-
-                <connect>
-                    <signal>referencePickerInteractor/picked</signal>
-                    <slot>referenceLandmarkManager/createLandmark</slot>
-                </connect>
+                <adaptor uid="referenceNegatoMPR" />
+                <adaptor uid="referenceInteractorStyle" />
+                <adaptor uid="referencePickerInteractor" />
+                <adaptor uid="referencePointListAdaptor" />
             </scene>
         </service>
 
-        <service uid="transformedScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
-            <in key="targetImage" uid="${targetImageUid}" />
-            <in key="transformedImage" uid="transformedImage" />
-            <in key="pointlist" uid="targetPL" />
+        <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${referenceImageUid}" />
+            <inout key="tfSelection" uid="TFSelectionComposite" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="referenceTF" />
+        </service>
 
+        <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+        </service>
+
+        <service uid="referencePointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+            <inout key="pointList" uid="referencePL" />
+            <config renderer="default" picker="picker" color="#550066" radius="10" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="transformedScene" type="::fwRenderVTK::SRender" autoConnect="yes">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
                 <vtkObject id="imageCheckerboard" class="vtkImageCheckerboard" />
                 <renderer id="default" background="#052833" />
-
-                <adaptor uid="mixedNegatoMPR" id="mixedNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
-                    <config renderer="default" picker="picker" mode="2d" slices="1"
-                            sliceIndex="axial" vtkimagesource="imageBlend"/>
-                </adaptor>
-
-                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-
-                <!-- Adaptor to show background and front image merge in the same view. -->
-                <adaptor id="registrationImageAdaptor" uid="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
-                    <config vtkimageregister="imageBlend" checkerboardDivision="10">
-                        <image objectId="targetImage" tfalpha="no" selectedTFKey="targetTF" tfSelectionFwID="TFSelectionComposite" />
-                        <image objectId="transformedImage" tfalpha="no" selectedTFKey="transformedTF" tfSelectionFwID="TFSelectionComposite" />
-                    </config>
-                </adaptor>
-
-                <adaptor id="pickerInteractor" uid="targetPickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
-                    <config renderer="default" picker="picker" event="MOUSE_LEFT_UP"/>
-                </adaptor>
-
-                <adaptor id="pointListAdaptor" class="::visuVTKAdaptor::LabeledPointList" objectId="pointlist">
-                    <config renderer="default" picker="picker" color="#550066" radius="10"/>
-                </adaptor>
-
-                <connect>
-                    <signal>targetPickerInteractor/picked</signal>
-                    <slot>targetLandmarkManager/createLandmark</slot>
-                </connect>
-
-                <connect>
-                    <signal>blendMode/enumChanged</signal>
-                    <slot>registrationImageAdaptor/changeMode</slot>
-                </connect>
-
-                <connect>
-                    <signal>blendMode/enumChanged</signal>
-                    <slot>mixedNegatoMPR/changeImageSource</slot>
-                </connect>
-
-                <proxy channel="checkerBoardDivision">
-                    <slot>registrationImageAdaptor/changeCheckerboardDivision</slot>
-                </proxy>
+                <adaptor uid="mixedNegatoMPR" />
+                <adaptor uid="mixedInteractorStyle" />
+                <adaptor uid="registrationImageAdaptor" />
+                <adaptor uid="mixedPickerInteractor" />
+                <adaptor uid="mixedPointListAdaptor" />
             </scene>
         </service>
 
+        <service uid="mixedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
+        </service>
+
+        <service uid="mixedInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <!-- Adaptor to show background and front image merge in the same view. -->
+        <service uid="registrationImageAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+            <inout group="image" autoConnect="yes">
+                <key uid="${targetImageUid}" tfalpha="no" />
+                <key uid="transformedImage" tfalpha="no" />
+            </inout>
+            <inout group="tfSelection">
+                <key uid="TFSelectionComposite" selectedTFKey="targetTF" />
+                <key uid="TFSelectionComposite" selectedTFKey="transformedTF" />
+            </inout>
+            <config vtkimageregister="imageBlend" checkerboardDivision="10" />
+        </service>
+
+        <service uid="mixedPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+        </service>
+
+        <service uid="mixedPointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+            <inout key="pointList" uid="targetPL" />
+            <config renderer="default" picker="picker" color="#550066" radius="10" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="3dScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
-            <in key="targetImage" uid="${targetImageUid}" />
-            <in key="referenceImage" uid="${referenceImageUid}" />
-            <in key="transformedImage" uid="transformedImage" />
-            <in key="transform" uid="inverseFinalTransform" />
-
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />
-
-                <adaptor id="transformAdpt" class="::visuVTKAdaptor::Transform" objectId="transform">
-                    <config transform="registration" />
-                </adaptor>
-
-                <adaptor id="targetNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
-                    <config renderer="default" picker="picker" mode="3d" slices="3"
-                            sliceIndex="axial" selectedTFKey="targetTF" tfSelectionFwID="TFSelectionComposite"/>
-                </adaptor>
-
-                <adaptor id="referenceNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="referenceImage">
-                    <config renderer="default" picker="picker" mode="3d" slices="3"
-                            sliceIndex="axial" selectedTFKey="referenceTF" tfSelectionFwID="TFSelectionComposite" transform="registration"/>
-                </adaptor>
-
-                <adaptor id="transformedNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="transformedImage">
-                    <config renderer="default" picker="picker" mode="3d" slices="3"
-                            sliceIndex="axial" selectedTFKey="transformedTF" tfSelectionFwID="TFSelectionComposite"/>
-                </adaptor>
-
+                <adaptor uid="transformAdpt" />
+                <adaptor uid="targetNegatoMPR" />
+                <adaptor uid="3DreferenceNegatoMPR" />
+                <adaptor uid="transformedNegatoMPR" />
             </scene>
-
         </service>
+
+        <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="inverseFinalTransform" />
+            <config transform="registration" />
+        </service>
+
+        <service uid="targetNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <inout key="tfSelection" uid="TFSelectionComposite" />
+            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" selectedTFKey="targetTF" />
+        </service>
+
+        <service uid="3DreferenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${referenceImageUid}" />
+            <inout key="tfSelection" uid="TFSelectionComposite" />
+            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" selectedTFKey="referenceTF" transform="registration" />
+        </service>
+
+        <service uid="transformedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="transformedImage" />
+            <inout key="tfSelection" uid="TFSelectionComposite" />
+            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" selectedTFKey="transformedTF" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <service uid="transformedImageManager" type="::fwServices::SConfigController" autoConnect="no">
             <appConfig id="ImageManager" />
@@ -454,7 +452,7 @@
             <parameter replace="ADAPTOR_NEGATO" uid="mixedNegatoMPR" />
         </service>
 
-        <service uid="transformedTransparencySlider" type="::uiImage::ImageTransparency" autoConnect="yes">
+        <service uid="transformedTransparencySlider" type="::uiImageQt::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="transformedImage" />
             <shortcut value="V" />
         </service>
@@ -465,163 +463,69 @@
             <config selectedTFKey="transformedTF" />
         </service>
 
-        <service uid="transformedWindowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
-            <inout key="image" uid="transformedImage"/>
-            <inout key="TFSelections" uid="TFSelectionComposite"/>
-            <config selectedTFKey="transformedTF" autoWindowing="yes"/>
-        </service>
-
-        <service uid="transformedTFWindow" type="::scene2D::Render" autoConnect="yes">
-            <inout key="viewport" uid="viewport" />
-            <in key="Histogram" uid="Histogram" />
-            <scene>
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" />
-                <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                    <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                </adaptor>
-
-                <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                </adaptor>
-
-                <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                </adaptor>
-
-                <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                    <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
-                </adaptor>
-
-                <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="Histogram">
-                    <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                </adaptor>
-
-            </scene>
+        <service uid="transformedWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="transformedImage" />
+            <inout key="TFSelections" uid="TFSelectionComposite" />
+            <config selectedTFKey="transformedTF" autoWindowing="yes" />
         </service>
 
         <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-            <inout key="image" uid="${referenceImageUid}" />
+            <in key="image" uid="${referenceImageUid}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <service uid="transformedTFEditor" type="::scene2D::Render" autoConnect="yes">
-            <in key="image" uid="${referenceImageUid}" />
-            <inout key="viewport" uid="viewport" />
-            <in key="Histogram" uid="Histogram" />
-            <inout key="TFSelections" uid="TFSelectionComposite" />
-            <scene>
-
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
-
-                <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
-                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                    <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                </adaptor>
-
-                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                </adaptor>
-
-                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                </adaptor>
-
-                <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-                </adaptor>
-
-                <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="transformedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-                <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                    <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                </adaptor>
-
-                <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                    <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                    <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                    <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                    <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="Histogram">
-                    <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
-                </adaptor>
-
-            </scene>
-        </service>
-
-        <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="yes">
-            <inout key="matrix" uid="manualTransform"/>
-            <translation enabled="yes" min="-1500" max="1500"/>
+        <service uid="transformEditor" type="::uiVisuQt::STransformEditor" autoConnect="yes">
+            <inout key="matrix" uid="manualTransform" />
+            <translation enabled="yes" min="-1500" max="1500" />
             <rotation enabled="yes" min="-180" max="180" />
         </service>
 
-        <service uid="applyAutomaticTransform" type="::guiQt::editor::SSignalButton" >
+        <service uid="applyAutomaticTransform" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
             </config>
         </service>
 
-        <service uid="setAutoRegistrationMetric" type="::guiQt::editor::SParameters" >
+        <service uid="setAutoRegistrationMetric" type="::guiQt::editor::SParameters">
             <parameters>
+                <param type="double" name="min step" key="minStep" defaultValue="0.0001" min="0.00001" max="1." />
+                <param type="double" name="max step" key="maxStep" defaultValue="0.3" min="0.01" max="5." />
+                <param type="int" name="iterations" key="maxIterations" defaultValue="200" min="1" max="1000" />
                 <param type="enum" name="Mode" key="metric" defaultValue="NormalizedCorrelation" values="MeanSquares,NormalizedCorrelation,MutualInformation" />
             </parameters>
         </service>
 
-        <service uid="applyLandmarkTransform" type="::guiQt::editor::SSignalButton" >
+        <service uid="applyLandmarkTransform" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
             </config>
         </service>
 
-        <service uid="applyManualTransform" type="::guiQt::editor::SSignalButton" >
+        <service uid="applyManualTransform" type="::guiQt::editor::SSignalButton">
             <config>
-               <checkable>false</checkable>
-               <text>Apply</text>
+                <checkable>false</checkable>
+                <text>Apply</text>
             </config>
         </service>
 
-        <service uid="flipSagittalButton" type="::guiQt::editor::SSignalButton" >
+        <service uid="flipSagittalButton" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Sagittal</text>
             </config>
         </service>
 
-        <service uid="flipFrontalButton" type="::guiQt::editor::SSignalButton" >
+        <service uid="flipFrontalButton" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Frontal</text>
             </config>
         </service>
 
-        <service uid="flipAxialButton" type="::guiQt::editor::SSignalButton" >
+        <service uid="flipAxialButton" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Axial</text>
@@ -644,7 +548,7 @@
             <metric>NormalizedCorrelation</metric>
         </service>
 
-        <service uid="resampler" type="::opItkRegistration::SResampler" >
+        <service uid="resampler" type="::opItkRegistration::SResampler">
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
             <in key="target" uid="${targetImageUid}" />
@@ -652,23 +556,23 @@
         </service>
 
         <service uid="computeCenterTarget" type="::opItkRegistration::SImageCenter">
-            <in key="image" uid="${targetImageUid}"/>
-            <inout key="transform" uid="centerTransformTarget"/>
+            <in key="image" uid="${targetImageUid}" />
+            <inout key="transform" uid="centerTransformTarget" />
         </service>
 
         <service uid="computeCenterReference" type="::opItkRegistration::SImageCenter">
-            <in key="image" uid="${referenceImageUid}"/>
-            <inout key="transform" uid="centerTransformReference"/>
+            <in key="image" uid="${referenceImageUid}" />
+            <inout key="transform" uid="centerTransformReference" />
         </service>
 
         <service uid="computeCenterResampled" type="::opItkRegistration::SImageCenter" autoConnect="yes">
-            <in key="image" uid="transformedImage"/>
-            <inout key="transform" uid="centerTransformResampled"/>
+            <in key="image" uid="transformedImage" />
+            <inout key="transform" uid="centerTransformResampled" />
         </service>
 
         <service uid="alignCenter" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="centerTransformTarget" inverse="true"/>
+                <key uid="centerTransformTarget" inverse="true" />
                 <key uid="centerTransformReference" />
             </in>
             <inout key="output" uid="${transformUid}" />
@@ -676,33 +580,33 @@
 
         <service uid="inverseMat" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="${transformUid}" inverse="true" autoConnect="yes"/>
+                <key uid="${transformUid}" inverse="true" autoConnect="yes" />
             </in>
             <inout key="output" uid="inverseFinalTransform" />
         </service>
 
         <service uid="resetIdentity" type="::ctrlCamp::SCopy">
-            <in key="source" uid="identity"/>
+            <in key="source" uid="identity" />
             <inout key="target" uid="${transformUid}" />
         </service>
 
         <service uid="copyLastTransform" type="::ctrlCamp::SCopy">
-            <in key="source" uid="${transformUid}"/>
+            <in key="source" uid="${transformUid}" />
             <inout key="target" uid="lastTransform" />
         </service>
 
         <service uid="copyFlipAxial" type="::ctrlCamp::SCopy">
-            <in key="source" uid="flipAxialMatrix"/>
+            <in key="source" uid="flipAxialMatrix" />
             <inout key="target" uid="manualTransform" />
         </service>
 
         <service uid="copyFlipFrontal" type="::ctrlCamp::SCopy">
-            <in key="source" uid="flipFrontalMatrix"/>
+            <in key="source" uid="flipFrontalMatrix" />
             <inout key="target" uid="manualTransform" />
         </service>
 
         <service uid="copyFlipSagittal" type="::ctrlCamp::SCopy">
-            <in key="source" uid="flipSagittalMatrix"/>
+            <in key="source" uid="flipSagittalMatrix" />
             <inout key="target" uid="manualTransform" />
         </service>
 
@@ -747,6 +651,16 @@
         </connect>
 
         <connect>
+            <signal>setAutoRegistrationMetric/doubleChanged</signal>
+            <slot>automaticRegistration/setDoubleParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>setAutoRegistrationMetric/intChanged</signal>
+            <slot>automaticRegistration/setIntParameter</slot>
+        </connect>
+
+        <connect>
             <signal>applyAutomaticTransform/clicked</signal>
             <slot>automaticRegistration/update</slot>
         </connect>
@@ -782,11 +696,33 @@
             <slot>copyFlipAxial/update</slot>
         </connect>
 
-        <connect channel="checkerBoardDivision">
+        <connect>
             <signal>checkerBoardCellSlider/intChanged</signal>
+            <slot>registrationImageAdaptor/changeCheckerboardDivision</slot>
+        </connect>
+
+        <connect>
+            <signal>referencePickerInteractor/picked</signal>
+            <slot>referenceLandmarkManager/createLandmark</slot>
+        </connect>
+
+        <connect>
+            <signal>mixedPickerInteractor/picked</signal>
+            <slot>targetLandmarkManager/createLandmark</slot>
+        </connect>
+
+        <connect>
+            <signal>blendMode/enumChanged</signal>
+            <slot>registrationImageAdaptor/changeMode</slot>
+        </connect>
+
+        <connect>
+            <signal>blendMode/enumChanged</signal>
+            <slot>mixedNegatoMPR/changeImageSource</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
+
         <start uid="mainView" />
         <start uid="medicalImageTargetSrv" />
         <start uid="medicalImageTransformedSrv" />
@@ -809,10 +745,24 @@
         <start uid="copyLastTransform" />
         <start uid="resetIdentity" />
         <start uid="inverseMat" />
-
+        <start uid="tfWidget" />
+        <!-- VTK scene 'referenceScene' -->
+        <start uid="referenceNegatoMPR" />
+        <start uid="referenceInteractorStyle" />
+        <start uid="referencePickerInteractor" />
+        <start uid="referencePointListAdaptor" />
+        <!-- VTK scene 'transformedScene' -->
+        <start uid="mixedNegatoMPR" />
+        <start uid="mixedInteractorStyle" />
+        <start uid="registrationImageAdaptor" />
+        <start uid="mixedPickerInteractor" />
+        <start uid="mixedPointListAdaptor" />
+        <!-- VTK scene '3dScene' -->
+        <start uid="transformAdpt" />
+        <start uid="targetNegatoMPR" />
+        <start uid="3DreferenceNegatoMPR" />
+        <start uid="transformedNegatoMPR" />
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
-
     </config>
 </extension>
-

@@ -45,20 +45,20 @@ SImageCenter::~SImageCenter()
 
 //------------------------------------------------------------------------------
 
-void SImageCenter::configuring() throw( ::fwTools::Failed )
+void SImageCenter::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageCenter::starting() throw( ::fwTools::Failed )
+void SImageCenter::starting()
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SImageCenter::updating() throw( ::fwTools::Failed )
+void SImageCenter::updating()
 {
 
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
@@ -118,7 +118,7 @@ void SImageCenter::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SImageCenter::stopping() throw( ::fwTools::Failed )
+void SImageCenter::stopping()
 {
 
 }

@@ -16,7 +16,7 @@ ConnectionRefused::ConnectionRefused(const std::string& message) : ::fwNetwork::
 {
 }
 
-ConnectionRefused::~ConnectionRefused() throw()
+ConnectionRefused::~ConnectionRefused() noexcept
 {
 }
 

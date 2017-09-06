@@ -17,7 +17,7 @@ ContentNotFound::ContentNotFound(const std::string& message) : ::fwNetwork::exce
 
 }
 
-ContentNotFound::~ContentNotFound() throw()
+ContentNotFound::~ContentNotFound() noexcept
 {
 }
 

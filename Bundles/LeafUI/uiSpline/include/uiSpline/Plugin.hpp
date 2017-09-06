@@ -23,13 +23,13 @@ struct UISPLINE_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    UISPLINE_API ~Plugin() throw();
+    UISPLINE_API ~Plugin() noexcept;
 
     /// Overrides
-    UISPLINE_API void start() throw(::fwRuntime::RuntimeException);
+    UISPLINE_API void start();
 
     /// Overrides
-    UISPLINE_API void stop() throw();
+    UISPLINE_API void stop() noexcept;
 
 };
 

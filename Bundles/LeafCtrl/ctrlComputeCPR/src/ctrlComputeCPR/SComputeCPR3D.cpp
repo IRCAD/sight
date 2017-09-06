@@ -41,7 +41,7 @@ const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_UPDATE_SPLINE_SLOT  = "update
 
 //----------------------------------------------------------------------------------------------------------
 
-SComputeCPR3D::SComputeCPR3D() throw () : m_nbSplinePoints(0),
+SComputeCPR3D::SComputeCPR3D() noexcept : m_nbSplinePoints(0),
                                           m_angle(0.),
                                           m_spacing(0.),
                                           m_height(50.0)
@@ -54,13 +54,13 @@ SComputeCPR3D::SComputeCPR3D() throw () : m_nbSplinePoints(0),
 
 //----------------------------------------------------------------------------------------------------------
 
-SComputeCPR3D::~SComputeCPR3D() throw ()
+SComputeCPR3D::~SComputeCPR3D() noexcept
 {
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SComputeCPR3D::starting() throw (::fwTools::Failed)
+void SComputeCPR3D::starting()
 {
     // Get the source image to set the spacing of the CPR.
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
@@ -80,21 +80,21 @@ void SComputeCPR3D::starting() throw (::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------
 
-void SComputeCPR3D::stopping() throw (::fwTools::Failed)
+void SComputeCPR3D::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SComputeCPR3D::configuring() throw (fwTools::Failed)
+void SComputeCPR3D::configuring()
 {
     SLM_TRACE_FUNC();
 }
 
 //----------------------------------------------------------------------------------------------------------
 
-void SComputeCPR3D::updating() throw (::fwTools::Failed)
+void SComputeCPR3D::updating()
 {
 }
 

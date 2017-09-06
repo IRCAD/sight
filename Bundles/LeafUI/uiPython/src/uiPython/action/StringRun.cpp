@@ -23,19 +23,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPython::action::StringRun, ::f
 
 //-----------------------------------------------------------------------------
 
-StringRun::StringRun() throw()
+StringRun::StringRun() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-StringRun::~StringRun() throw()
+StringRun::~StringRun() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void StringRun::configuring() throw( ::fwTools::Failed )
+void StringRun::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -43,7 +43,7 @@ void StringRun::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StringRun::starting() throw( ::fwTools::Failed )
+void StringRun::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -51,7 +51,7 @@ void StringRun::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StringRun::stopping() throw( ::fwTools::Failed )
+void StringRun::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -66,7 +66,7 @@ void StringRun::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void StringRun::updating() throw( ::fwTools::Failed )
+void StringRun::updating()
 {
     ::fwData::String::sptr str = this->getObject< ::fwData::String >();
     ::fwPython::Interpreter python;

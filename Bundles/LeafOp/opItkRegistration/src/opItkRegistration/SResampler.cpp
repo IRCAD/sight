@@ -43,21 +43,21 @@ SResampler::~SResampler()
 
 //------------------------------------------------------------------------------
 
-void SResampler::configuring() throw( ::fwTools::Failed )
+void SResampler::configuring()
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SResampler::starting() throw( ::fwTools::Failed )
+void SResampler::starting()
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SResampler::updating() throw( ::fwTools::Failed )
+void SResampler::updating()
 {
     ::fwData::Image::csptr inImg = this->getInput< ::fwData::Image >(s_IMAGE_IN);
 
@@ -95,7 +95,7 @@ void SResampler::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SResampler::stopping() throw( ::fwTools::Failed )
+void SResampler::stopping()
 {
 
 }

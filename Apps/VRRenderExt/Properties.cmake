@@ -25,14 +25,14 @@ set( REQUIREMENTS
     uiIO
     uiGenericQt
     uiMedDataQt
-    appXml2
+    appXml
     activities
     ctrlSelection
     uiReconstructionQt
 
-    2DVisualizationActivity2
-    3DVisualizationActivity2
-    volumeRenderingActivity2
+    2DVisualizationActivity
+    3DVisualizationActivity
+    volumeRenderingActivity
     blendActivity
     ioActivity
     dicomFilteringActivity
@@ -49,4 +49,4 @@ set( REQUIREMENTS
     preferences
 )
 
-bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)

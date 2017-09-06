@@ -65,10 +65,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SSplinePointsEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UISPLINE_API SSplinePointsEditor () throw();
+    UISPLINE_API SSplinePointsEditor () noexcept;
 
     /// Destructor.
-    UISPLINE_API virtual ~SSplinePointsEditor () throw();
+    UISPLINE_API virtual ~SSplinePointsEditor () noexcept;
 
     /**
      * @name Signal types.
@@ -92,16 +92,16 @@ protected:
     /**
      * @name Overrides
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void updating();
     /**  @} */
 
     /**
      * @brief Overrides IService::configuring().
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Signal emitted when a spline point is selected.
     PointSelectedSignalType::sptr m_sigPointSelected;

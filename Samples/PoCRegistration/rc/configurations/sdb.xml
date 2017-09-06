@@ -1,0 +1,57 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>SDBPoCRegistration</id>
+    <parameters>
+        <param name="SERIESDB" />
+        <param name="WID_PARENT" />
+        <param name="DYNAMICVIEW_CHANNEL" default="channel" />
+        <param name="APP_NAME" />
+        <param name="PROGRESS_CHANNEL" />
+    </parameters>
+    <config>
+
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
+        <object uid="selections" type="::fwData::Vector" />
+
+        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Information" align="center" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="selector" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="selection" uid="selections" />
+        </service>
+
+        <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <in key="series" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                    <parameter replace="APP_NAME" uid="${APP_NAME}" />
+                    <parameter replace="PROGRESS_CHANNEL" uid="${PROGRESS_CHANNEL}" />
+                </parameters>
+            </config>
+        </service>
+
+        <connect>
+            <signal>selector/seriesDoubleClicked</signal>
+            <slot>action_newActivity/launchSeries</slot>
+        </connect>
+
+        <connect channel="${DYNAMICVIEW_CHANNEL}">
+            <signal>action_newActivity/activityLaunched</signal>
+        </connect>
+
+        <start uid="mainview" />
+        <start uid="action_newActivity" />
+
+    </config>
+</extension>

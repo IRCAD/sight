@@ -24,7 +24,7 @@ class UIPYTHON_CLASS_API Plugin : public ::fwRuntime::Plugin
 public:
 
     ///@brief  Destructor. Do nothing.
-    UIPYTHON_API virtual ~Plugin() throw();
+    UIPYTHON_API virtual ~Plugin() noexcept;
 
     /**
      * @brief This method is used by runtime to initialize the bundle.
@@ -34,12 +34,12 @@ public:
      * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the IHM.
      */
-    UIPYTHON_API void start() throw(::fwRuntime::RuntimeException);
+    UIPYTHON_API void start();
 
     /**
      * @brief This method is used by runtime to close the bundle. Do nothing.
      */
-    UIPYTHON_API void stop() throw();
+    UIPYTHON_API void stop() noexcept;
 
 };
 

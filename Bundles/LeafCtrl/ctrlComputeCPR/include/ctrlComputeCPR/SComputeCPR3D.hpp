@@ -50,10 +50,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SComputeCPR3D)(::fwServices::IController) );
 
     /// Constructor.
-    CTRLCOMPUTECPR_API SComputeCPR3D() throw();
+    CTRLCOMPUTECPR_API SComputeCPR3D() noexcept;
 
     /// Destructor.
-    CTRLCOMPUTECPR_API virtual ~SComputeCPR3D() throw();
+    CTRLCOMPUTECPR_API virtual ~SComputeCPR3D() noexcept;
 
     /**
      * @name Slot keys.
@@ -84,16 +84,16 @@ protected:
     /**
      * @name Overrides
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void updating();
     /**  @} */
 
     /**
      * @brief Overrides IService::configuring().
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// This method computes the mesh 3D of the CPR.
     void computeMesh();

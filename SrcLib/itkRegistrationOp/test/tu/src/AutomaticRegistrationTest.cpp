@@ -7,6 +7,7 @@
 #include "AutomaticRegistrationTest.hpp"
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+#include <itkRegistrationOp/Metric.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
@@ -101,7 +102,6 @@ typedef ::itk::Image< std::int16_t, 3> ImageType;
     ::fwItkIO::itkImageToFwDataImage(image, outputImage);
 
     return outputImage;
-
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void AutomaticRegistrationTest::identityTest()
 
     ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference,
                                                               mat,
-                                                              ::itkRegistrationOp::AutomaticRegistration::NORMALIZED_CORRELATION);
+                                                              ::itkRegistrationOp::NORMALIZED_CORRELATION);
 
     for(size_t i = 0; i < 4; ++i)
     {
@@ -186,7 +186,7 @@ void AutomaticRegistrationTest::rigidTransformTest()
     ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
-                                                 itkReg::AutomaticRegistration::MEAN_SQUARES,
+                                                 itkReg::MEAN_SQUARES,
                                                  0.00001, 0.3, 1000);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
@@ -224,7 +224,7 @@ void AutomaticRegistrationTest::translateTransformTest()
     ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
-                                                 itkReg::AutomaticRegistration::NORMALIZED_CORRELATION,
+                                                 itkReg::NORMALIZED_CORRELATION,
                                                  0.000001, 0.1, 500);
 
     for(size_t i = 0; i < 3; ++i)
@@ -260,7 +260,7 @@ void AutomaticRegistrationTest::rotationTransformTest()
     ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
-                                                 itkReg::AutomaticRegistration::MEAN_SQUARES,
+                                                 itkReg::MEAN_SQUARES,
                                                  0.000001, 0.3, 1500);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);

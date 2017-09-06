@@ -52,7 +52,7 @@ const std::string SSplinePointsEditor::s_FIELD_NAME = "PointName";
 
 //------------------------------------------------------------------------------
 
-SSplinePointsEditor::SSplinePointsEditor() throw() :
+SSplinePointsEditor::SSplinePointsEditor() noexcept :
     m_numberOfPoints(0),
     m_countPoint(0)
 {
@@ -67,13 +67,13 @@ SSplinePointsEditor::SSplinePointsEditor() throw() :
 
 //------------------------------------------------------------------------------
 
-SSplinePointsEditor::~SSplinePointsEditor() throw()
+SSplinePointsEditor::~SSplinePointsEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::starting() throw(::fwTools::Failed)
+void SSplinePointsEditor::starting()
 {
     this->create();
 
@@ -130,7 +130,7 @@ void SSplinePointsEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::stopping() throw(::fwTools::Failed)
+void SSplinePointsEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -148,14 +148,14 @@ void SSplinePointsEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::configuring() throw(::fwTools::Failed)
+void SSplinePointsEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::updating() throw(::fwTools::Failed)
+void SSplinePointsEditor::updating()
 {
 }
 

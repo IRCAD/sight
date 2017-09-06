@@ -1,0 +1,96 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>organManagerConfig</id>
+    <parameters>
+        <param name="modelSeriesUid" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <!-- defined by SConfigLauncher -->
+        <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
+    </parameters>
+    <config>
+        <!-- ***************************************** Begin Objects declaration ***************************************** -->
+        <object uid="${modelSeriesUid}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
+        <!-- ***************************************** End Objects declaration ***************************************** -->
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <!-- MAIN FRAME -->
+        <service uid="organManagerFrame" type="::gui::frame::SDefaultFrame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Organs Manager</name>
+                    <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                    <minSize width="400" height="600" />
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="multiViewOrgans" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiViewOrgans" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view minHeight="80" proportion="0" />
+                    <view minHeight="220" proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="listOrganEditor" start="yes" />
+                <view sid="organMaterialEditor" start="no" />
+                <view sid="representationEditor" start="no" />
+            </registry>
+        </service>
+
+        <!-- ***************************************** End layouts declaration ***************************************** -->
+        <!-- ***************************************** Begin services declarations    ************************************ -->
+        <service uid="updaterReconst" type="::ctrlSelection::updater::SObjFromSlot">
+            <out key="object" uid="reconstruction" />
+        </service>
+
+        <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes">
+            <inout key="modelSeries" uid="${modelSeriesUid}" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+            </columns>
+        </service>
+
+        <!-- ***************************************** End services declarations ***************************************** -->
+        <!-- ***************************************** Begin connections declarations    *************************************** -->
+        <connect>
+            <signal>listOrganEditor/reconstructionSelected</signal>
+            <slot>updaterReconst/addOrSwap</slot>
+        </connect>
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>organManagerFrame/closed</signal>
+        </connect>
+
+        <connect channel="${ModelDisplayChannel}">
+            <signal>listOrganEditor/recDisplayModified</signal>
+            <slot>listOrganEditor/showReconstructions</slot>
+        </connect>
+
+        <connect channel="${ModelRepresentationChannel}">
+            <signal>representationEditor/normalsModeModified</signal>
+        </connect>
+
+        <!-- ***************************************** End connections declarations    ***************************************** -->
+        <!-- START AND STOP SERVICES -->
+        <start uid="organManagerFrame" />
+        <start uid="updaterReconst" />
+        <start uid="representationEditor" />
+        <start uid="organMaterialEditor" />
+    </config>
+</extension>

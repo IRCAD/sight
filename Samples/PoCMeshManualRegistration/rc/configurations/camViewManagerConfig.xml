@@ -1,0 +1,98 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>camViewManagerConfig</id>
+    <parameters>
+        <param name="modelSeries" />
+        <param name="image" />
+        <param name="camPosMatrix" />
+        <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <!-- defined by SConfigLauncher -->
+    </parameters>
+    <config>
+        <!-- ***************************************** Begin Objects declaration ***************************************** -->
+        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${camPosMatrix}" type="::fwData::TransformationMatrix3D" src="ref" />
+        <!-- ***************************************** End Objects declaration ******************************************* -->
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <service uid="camViewManagerConfigFrame" type="::gui::frame::SDefaultFrame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Cam View</name>
+                    <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                    <minSize width="400" height="600" />
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="genericScene3" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ***************************************** End layouts declaration ***************************************** -->
+        <!-- ***************************************** Begin services declarations    ************************************ -->
+        <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="genericScene3" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="0.0" />
+                <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
+                <adaptor uid="camPosMatrixTransformAdaptor" />
+                <adaptor uid="modelSeriesAdaptor" />
+                <adaptor uid="MPRNegato3D" />
+                <adaptor uid="CamPosMatrix" />
+            </scene>
+        </service>
+
+        <service uid="camPosMatrixTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="${camPosMatrix}" />
+            <config renderer="default" picker="" transform="camPosMatrixTransform" />
+        </service>
+
+        <service uid="modelSeriesAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${modelSeries}" />
+            <config renderer="default" picker="" />
+        </service>
+
+        <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${image}" />
+            <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+        </service>
+
+        <service uid="CamPosMatrix" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+            <inout key="transform" uid="${camPosMatrix}" />
+            <config renderer="default" picker="" transform="camPosMatrixTransform" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <!-- ***************************************** End render scenes declaration ***************************************** -->
+        <!-- ***************************************** End services declarations    ************************************************ -->
+        <!-- ***************************************** Begin connections declarations    *************************************** -->
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>camViewManagerConfigFrame/closed</signal>
+        </connect>
+
+        <!-- ***************************************** End connections declarations    ***************************************** -->
+        <!-- START AND STOP SERVICES -->
+        <connect channel="${ModelRepresentationChannel}">
+            <slot>modelSeriesAdaptor/updateNormalMode</slot>
+        </connect>
+
+        <connect channel="${ModelDisplayChannel}">
+            <slot>modelSeriesAdaptor/showReconstructions</slot>
+        </connect>
+
+        <start uid="camViewManagerConfigFrame" />
+
+        <!-- genericScene3 -->
+        <start uid="camPosMatrixTransformAdaptor" />
+        <start uid="modelSeriesAdaptor" />
+        <start uid="MPRNegato3D" />
+        <start uid="CamPosMatrix" />
+    </config>
+</extension>

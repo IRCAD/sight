@@ -17,7 +17,7 @@ HostNotFound::HostNotFound(const std::string& message) : ::fwNetwork::exceptions
 
 }
 
-HostNotFound::~HostNotFound() throw()
+HostNotFound::~HostNotFound() noexcept
 {
 }
 

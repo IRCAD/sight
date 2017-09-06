@@ -39,18 +39,18 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SStringReader)(::io::IReader) );
 
     BEGINNERTRAINING_API SStringReader();
-    BEGINNERTRAINING_API virtual ~SStringReader() throw();
+    BEGINNERTRAINING_API virtual ~SStringReader() noexcept;
 
 protected:
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void starting() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void starting();
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void stopping() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void stopping();
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void updating() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void updating();
 
     /// Overrides io method
     BEGINNERTRAINING_API virtual void configureWithIHM();
