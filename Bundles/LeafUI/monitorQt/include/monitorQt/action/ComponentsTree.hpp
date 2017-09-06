@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,16 @@
 #ifndef __MONITORQT_ACTION_COMPONENTSTREE_HPP__
 #define __MONITORQT_ACTION_COMPONENTSTREE_HPP__
 
-#include <QDialog>
-#include <QPointer>
-#include <QObject>
-#include <QTreeWidget>
+#include "monitorQt/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "monitorQt/config.hpp"
+#include <QDialog>
+#include <QObject>
+#include <QPointer>
+#include <QTreeWidget>
 
-namespace monitor
+namespace monitorQt
 {
 namespace action
 {
@@ -29,27 +29,27 @@ class MONITORQT_CLASS_API ComponentsTree : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ComponentsTree)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (ComponentsTree)(::fwGui::IActionSrv) );
 
     /// Does nothing
-    MONITORQT_API ComponentsTree() throw();
+    MONITORQT_API ComponentsTree() noexcept;
 
     /// Does nothing
-    MONITORQT_API virtual ~ComponentsTree() throw();
+    MONITORQT_API virtual ~ComponentsTree() noexcept;
 
 protected:
 
     /// Calls classic IAction methods to configure
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Prepare dialog box
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Fill factory information in m_tree and show the dialog
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Delete dialog box
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
 private:
 
@@ -60,9 +60,8 @@ private:
     QPointer< QTreeWidget > m_treeContainer;
 };
 
-
 } // namespace action
-} // namespace monitor
+} // namespace monitorQt
 
 #endif //__MONITORQT_ACTION_COMPONENTSTREE_HPP__
 

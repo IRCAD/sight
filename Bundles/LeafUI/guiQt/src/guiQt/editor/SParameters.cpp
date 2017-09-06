@@ -52,7 +52,7 @@ static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_SIG     = "enumChanged
 
 //-----------------------------------------------------------------------------
 
-SParameters::SParameters() throw ()
+SParameters::SParameters() noexcept
 {
     newSignal< BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG);
     newSignal< ColorChangedSignalType>(COLOR_CHANGED_SIG);
@@ -70,20 +70,20 @@ SParameters::SParameters() throw ()
 
 //-----------------------------------------------------------------------------
 
-SParameters::~SParameters() throw ()
+SParameters::~SParameters() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SParameters::configuring() throw (::fwTools::Failed)
+void SParameters::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SParameters::starting() throw (::fwTools::Failed)
+void SParameters::starting()
 {
     this->create();
 
@@ -92,7 +92,7 @@ void SParameters::starting() throw (::fwTools::Failed)
     QGridLayout* layout = new QGridLayout();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
-    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("service.parameters");
+    const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("parameters");
 
     int row = 0;
 
@@ -193,13 +193,13 @@ void SParameters::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SParameters::updating() throw (::fwTools::Failed)
+void SParameters::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SParameters::stopping() throw (::fwTools::Failed)
+void SParameters::stopping()
 {
     this->destroy();
 }

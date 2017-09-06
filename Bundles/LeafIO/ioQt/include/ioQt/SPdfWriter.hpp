@@ -70,7 +70,7 @@ public:
     /**
      * @brief Destructor
      */
-    IOQT_API ~SPdfWriter() throw();
+    IOQT_API ~SPdfWriter() noexcept;
 
 protected:
 
@@ -84,14 +84,14 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IOQT_API virtual void starting() throw(::fwTools::Failed);
+    IOQT_API virtual void starting();
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IOQT_API virtual void stopping() throw(::fwTools::Failed);
+    IOQT_API virtual void stopping();
 
     /**
      * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
@@ -99,7 +99,7 @@ protected:
      * Gets the images or containers from their IDs.
      *
      */
-    IOQT_API virtual void configuring( ) throw(::fwTools::Failed);
+    IOQT_API virtual void configuring( );
 
     /**
      * @brief Configure the image path.
@@ -115,7 +115,7 @@ protected:
      * Loops over the containers list and the images list. Creates a new A4 page for each,
      * converts the containers and the images to QImage and writes them into the newly created PDF.
      */
-    IOQT_API void updating() throw(::fwTools::Failed);
+    IOQT_API void updating();
 
     /**
      * @brief Info method.

@@ -20,13 +20,13 @@ namespace ctrlHistory
 struct CTRLHISTORY_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    CTRLHISTORY_API ~Plugin() throw();
+    CTRLHISTORY_API ~Plugin() noexcept;
 
     /// Overrides start method. Does nothing.
-    CTRLHISTORY_API void start() throw( ::fwRuntime::RuntimeException );
+    CTRLHISTORY_API void start();
 
     /// Overrides stop method. Does nothing.
-    CTRLHISTORY_API void stop() throw();
+    CTRLHISTORY_API void stop() noexcept;
 
 };
 

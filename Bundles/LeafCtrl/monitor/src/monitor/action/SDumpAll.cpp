@@ -24,19 +24,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::SDumpAll, ::fwD
 
 //------------------------------------------------------------------------------
 
-SDumpAll::SDumpAll( ) throw()
+SDumpAll::SDumpAll( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SDumpAll::~SDumpAll() throw()
+SDumpAll::~SDumpAll() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDumpAll::updating( ) throw(::fwTools::Failed)
+void SDumpAll::updating( )
 {
     size_t nbBuffDumped = 0;
     ::fwMemory::BufferManager::BufferInfoMapType buffInfoMap;
@@ -69,20 +69,20 @@ void SDumpAll::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDumpAll::configuring() throw (::fwTools::Failed)
+void SDumpAll::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SDumpAll::starting() throw (::fwTools::Failed)
+void SDumpAll::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
-void SDumpAll::stopping() throw (::fwTools::Failed)
+void SDumpAll::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,7 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace action
 {
@@ -37,7 +36,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::uiMedData::action::SExportSeries" autoConnect="yes">
+        <service type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
             <inout key="series" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
@@ -49,13 +48,13 @@ namespace action
 class UIMEDDATAQT_CLASS_API SExportSeries : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SExportSeries)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SExportSeries)(::fwGui::IActionSrv) );
 
     /// Constructor
     UIMEDDATAQT_API SExportSeries();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SExportSeries() throw();
+    UIMEDDATAQT_API virtual ~SExportSeries() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -69,16 +68,16 @@ public:
 protected:
 
     /// This method is used to configure the service parameters
-    virtual void configuring() throw (::fwTools::Failed);
+    virtual void configuring();
 
     /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops service. Does nothing.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Adds the series specified by m_seriesId in the SeriesDB.
-    virtual void updating() throw (::fwTools::Failed);
+    virtual void updating();
 
     virtual void info( std::ostream& _sstream );
 
@@ -105,11 +104,11 @@ private:
     ::fwMedData::Series::sptr getSeries();
 
     /// fwID of the series to add in SeriesDB
-    /// @deprecated appXml2
+    /// @deprecated appXml
     std::string m_seriesId;
 };
 } // namespace action
-} // namespace uiMedData
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_ACTION_SEXPORTSERIES_HPP__
 

@@ -14,7 +14,7 @@ set( REQUIREMENTS
     visuVTKQt
     vtkSimpleMesh # contains a visualization service of mesh.
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoSignalSlotConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoSignalSlotConfig)

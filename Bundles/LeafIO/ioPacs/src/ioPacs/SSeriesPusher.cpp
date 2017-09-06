@@ -37,7 +37,7 @@ const ::fwCom::Signals::SignalKeyType SSeriesPusher::s_STOPPED_PROGRESS_SIG = "s
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::SSeriesPusher() throw() :
+SSeriesPusher::SSeriesPusher() noexcept :
     m_progressbarId("pushDicomProgressBar"),
     m_isPushing(false)
 {
@@ -53,7 +53,7 @@ SSeriesPusher::SSeriesPusher() throw() :
 }
 //------------------------------------------------------------------------------
 
-SSeriesPusher::~SSeriesPusher() throw()
+SSeriesPusher::~SSeriesPusher() noexcept
 {
 }
 
@@ -66,13 +66,13 @@ void SSeriesPusher::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::configuring() throw(::fwTools::Failed)
+void SSeriesPusher::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::starting() throw(::fwTools::Failed)
+void SSeriesPusher::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -89,13 +89,13 @@ void SSeriesPusher::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::stopping() throw(::fwTools::Failed)
+void SSeriesPusher::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::updating() throw(::fwTools::Failed)
+void SSeriesPusher::updating()
 {
     ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
 

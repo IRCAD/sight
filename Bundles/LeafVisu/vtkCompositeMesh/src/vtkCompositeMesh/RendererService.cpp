@@ -78,7 +78,7 @@ private:
     bool m_isMousePressed;
 };
 
-RendererService::RendererService() throw()
+RendererService::RendererService() noexcept
     : m_render( 0 ), m_bPipelineIsInit(false)
 {
     m_slotUpdateCamPosition = newSlot( s_UPDATE_CAM_POSITION_SLOT, &RendererService::updateCamPosition, this );
@@ -93,13 +93,13 @@ RendererService::RendererService() throw()
 
 //-----------------------------------------------------------------------------
 
-RendererService::~RendererService() throw()
+RendererService::~RendererService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void RendererService::starting() throw(fwTools::Failed)
+void RendererService::starting()
 {
     this->IGuiContainerSrv::create();
 
@@ -115,14 +115,14 @@ void RendererService::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::configuring() throw(::fwTools::Failed)
+void RendererService::configuring()
 {
     this->IGuiContainerSrv::initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void RendererService::stopping() throw(fwTools::Failed)
+void RendererService::stopping()
 {
     if( m_render == 0 )
     {
@@ -144,7 +144,7 @@ void RendererService::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updating() throw(fwTools::Failed)
+void RendererService::updating()
 {
     m_interactorManager->getInteractor()->Render();
 }

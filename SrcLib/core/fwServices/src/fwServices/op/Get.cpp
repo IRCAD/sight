@@ -14,7 +14,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed )
+::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType )
 {
     ::fwServices::IService::sptr service;
     auto services = ::fwServices::OSR::getServices( obj, serviceType );
@@ -25,7 +25,7 @@ namespace fwServices
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed )
+::fwServices::IService::sptr get( std::string uid )
 {
     OSLM_ASSERT("service does not exist with uid "<<uid, ::fwTools::fwID::exist(uid ));
     return ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( uid ) );

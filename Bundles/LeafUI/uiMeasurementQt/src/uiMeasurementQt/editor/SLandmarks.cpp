@@ -37,10 +37,11 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks );
 
+//------------------------------------------------------------------------------
+
 static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
 static const char* s_GROUP_PROPERTY_NAME                       = "group";
 static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
-static const float s_DEFAULT_POINT_SIZE                        = 10.;
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
@@ -53,7 +54,9 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup"
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
-SLandmarks::SLandmarks() throw() :
+//------------------------------------------------------------------------------
+
+SLandmarks::SLandmarks() noexcept :
     m_advancedMode(false)
 {
     newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
@@ -72,20 +75,29 @@ SLandmarks::SLandmarks() throw() :
 
 //------------------------------------------------------------------------------
 
-SLandmarks::~SLandmarks() throw()
+SLandmarks::~SLandmarks() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::configuring() throw(fwTools::Failed)
+void SLandmarks::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
+
+    m_defaultLandmarkSize = config.get_optional<float>("size").get_value_or(10.0);
+    OSLM_FATAL_IF(
+        "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
+        m_defaultLandmarkSize <= 0.f);
+
+    m_defaultLandmarkOpacity = config.get_optional<float>("opacity").get_value_or(1.0);
+    OSLM_FATAL_IF(
+        "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
+        m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
     const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
-
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
 
@@ -94,7 +106,7 @@ void SLandmarks::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::starting() throw(::fwTools::Failed)
+void SLandmarks::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -110,8 +122,8 @@ void SLandmarks::starting() throw(::fwTools::Failed)
     m_sizeSlider->setMinimum(1);
     m_sizeSlider->setMaximum(100);
     QLabel* sizeLabel = new QLabel(QString("Size"));
-    m_transparencySlider = new QSlider(Qt::Horizontal);
-    QLabel* transparencyLabel = new QLabel("Opacity");
+    m_opacitySlider = new QSlider(Qt::Horizontal);
+    QLabel* opacityLabel = new QLabel("Opacity");
     m_shapeSelector = new QComboBox();
     m_shapeSelector->addItem(QString("Cube"));
     m_shapeSelector->addItem(QString("Sphere"));
@@ -126,8 +138,8 @@ void SLandmarks::starting() throw(::fwTools::Failed)
     gridLayout->addWidget(m_visibilityCheckbox, 0, 1);
     gridLayout->addWidget(sizeLabel, 1, 0);
     gridLayout->addWidget(m_sizeSlider, 1, 1);
-    gridLayout->addWidget(transparencyLabel, 2, 0);
-    gridLayout->addWidget(m_transparencySlider, 2, 1);
+    gridLayout->addWidget(opacityLabel, 2, 0);
+    gridLayout->addWidget(m_opacitySlider, 2, 1);
     gridLayout->addWidget(shapeLabel, 3, 0);
     gridLayout->addWidget(m_shapeSelector, 3, 1);
     gridLayout->addWidget(m_removeButton, 4, 1);
@@ -166,7 +178,7 @@ void SLandmarks::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::updating() throw(::fwTools::Failed)
+void SLandmarks::updating()
 {
     m_treeWidget->blockSignals(true);
 
@@ -183,7 +195,7 @@ void SLandmarks::updating() throw(::fwTools::Failed)
     QObject::connect(m_treeWidget.data(), &QTreeWidget::itemChanged, this, &SLandmarks::onGroupNameEdited);
     QObject::connect(m_treeWidget.data(), &QTreeWidget::currentItemChanged, this, &SLandmarks::onSelectionChanged);
     QObject::connect(m_sizeSlider.data(), &QSlider::valueChanged, this, &SLandmarks::onSizeChanged);
-    QObject::connect(m_transparencySlider.data(), &QSlider::valueChanged, this, &SLandmarks::onTransparencyChanged);
+    QObject::connect(m_opacitySlider.data(), &QSlider::valueChanged, this, &SLandmarks::onOpacityChanged);
     QObject::connect(m_visibilityCheckbox.data(), &QCheckBox::stateChanged, this, &SLandmarks::onVisibilityChanged);
     QObject::connect(m_shapeSelector.data(), &QComboBox::currentTextChanged, this, &SLandmarks::onShapeChanged);
     QObject::connect(m_removeButton.data(), &QPushButton::clicked, this, &SLandmarks::onRemoveSelection);
@@ -194,7 +206,7 @@ void SLandmarks::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::stopping() throw(::fwTools::Failed)
+void SLandmarks::stopping()
 {
     this->destroy();
 }
@@ -211,11 +223,9 @@ void SLandmarks::onColorButton()
     SLM_ASSERT("container not instanced", container);
 
     const QColor oldColor = sender->property("color").value<QColor>();
-    const QColor colorQt  = QColorDialog::getColor(oldColor, container);
+    const QColor colorQt  = QColorDialog::getColor(oldColor, container, "Select Color", QColorDialog::ShowAlphaChannel);
     if(colorQt.isValid())
     {
-        const QString key = sender->property("key").toString();
-
         QPushButton* colorButton = dynamic_cast<QPushButton*>(sender);
         colorButton->setProperty("color", colorQt);
 
@@ -228,6 +238,8 @@ void SLandmarks::onColorButton()
         auto& group = landmarks->getGroup(groupName);
         ::fwData::Landmarks::ColorType color = {{colorQt.red()/255.f, colorQt.green()/255.f, colorQt.blue()/255.f,
                                                                       colorQt.alpha()/255.f}};
+
+        m_opacitySlider->setValue(static_cast<int>(color[3] * m_opacitySlider->maximum()));
 
         group.m_color = color;
 
@@ -378,8 +390,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* current, QTreeWidgetItem* p
         const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
         m_shapeSelector->setCurrentText(shapeText);
 
-        float transparency = group.m_color[3];
-        m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+        float opacity = group.m_color[3];
+        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     }
 
@@ -410,13 +422,13 @@ void SLandmarks::onSizeChanged(int newSize)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onTransparencyChanged(int newTransparency)
+void SLandmarks::onOpacityChanged(int newOpacity)
 {
     ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
-    const float sliderSize = static_cast<float>( m_transparencySlider->maximum() - m_transparencySlider->minimum());
+    const float sliderSize = static_cast<float>( m_opacitySlider->maximum() - m_opacitySlider->minimum());
 
-    const float realTransparency = static_cast<float>(newTransparency) / sliderSize;
+    const float realOpacity = static_cast<float>(newOpacity) / sliderSize;
 
     std::string groupName;
     if(currentSelection(groupName))
@@ -424,9 +436,18 @@ void SLandmarks::onTransparencyChanged(int newTransparency)
         const auto groupColor = landmarks->getGroup(groupName).m_color;
 
         ::fwData::Landmarks::ColorType newGroupColor
-            = {{groupColor[0], groupColor[1], groupColor[2], realTransparency}};
+            = {{groupColor[0], groupColor[1], groupColor[2], realOpacity}};
 
         landmarks->setGroupColor(groupName, newGroupColor);
+
+        QTreeWidgetItem* item    = getGroupItem(groupName);
+        QPushButton* colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+
+        QColor currentColor = colorButton->property("color").value<QColor>();
+        currentColor.setAlphaF(realOpacity);
+        colorButton->setProperty("color", currentColor);
+
+        setColorButtonIcon(colorButton, currentColor);
 
         auto sig = landmarks->signal< ::fwData::Landmarks::GroupModifiedSignalType >(
             ::fwData::Landmarks::s_GROUP_MODIFIED_SIG);
@@ -467,7 +488,7 @@ void SLandmarks::onShapeChanged(const QString& shape)
     if(currentSelection(groupName))
     {
         SLM_ASSERT("Shape must be 'Cube' or 'Sphere'.", shape == "Cube" || shape == "Sphere");
-        ::fwData::Landmarks::Shape s
+        const ::fwData::Landmarks::Shape s
             = (shape == "Cube") ? ::fwData::Landmarks::Shape::CUBE : ::fwData::Landmarks::Shape::SPHERE;
 
         landmarks->setGroupShape(groupName, s);
@@ -488,7 +509,7 @@ void SLandmarks::onAddNewGroup()
     ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
     const std::string groupName = this->generateNewGroupName();
-    landmarks->addGroup(groupName, this->generateNewColor(), s_DEFAULT_POINT_SIZE);
+    landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
 
     this->addGroup(groupName);
 
@@ -573,7 +594,7 @@ void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo pickingInfo)
         if(item == nullptr || !m_advancedMode) // No selection or simple mode, create a new group.
         {
             groupName = this->generateNewGroupName();
-            landmarks->addGroup(groupName, this->generateNewColor(), s_DEFAULT_POINT_SIZE);
+            landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
 
             this->addGroup(groupName);
 
@@ -701,8 +722,8 @@ void SLandmarks::renameGroup(std::string oldName, std::string newName)
 {
     m_treeWidget->blockSignals(true);
 
-    QString qtNewName     = QString::fromStdString(newName);
-    QTreeWidgetItem* item = getGroupItem(oldName);
+    const QString qtNewName = QString::fromStdString(newName);
+    QTreeWidgetItem* item   = getGroupItem(oldName);
     item->setData(0, s_GROUP_NAME_ROLE, qtNewName);
     QWidget* widget = m_treeWidget->itemWidget(item, 1);
     widget->setProperty(s_GROUP_PROPERTY_NAME, qtNewName);
@@ -747,11 +768,11 @@ void SLandmarks::modifyGroup(std::string name)
         m_sizeSlider->setValue(static_cast<int>(group.m_size));
         m_visibilityCheckbox->setChecked(group.m_visibility);
 
-        QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
+        const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
         m_shapeSelector->setCurrentText(shapeText);
 
-        float transparency = group.m_color[3];
-        m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+        const float opacity = group.m_color[3];
+        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
     }
 
 }
@@ -813,8 +834,8 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
     const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
     m_shapeSelector->setCurrentText(shapeText);
 
-    float transparency = group.m_color[3];
-    m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+    const float opacity = group.m_color[3];
+    m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
 
     m_groupEditorWidget->show();
     m_treeWidget->blockSignals(false);
@@ -836,9 +857,9 @@ std::string SLandmarks::generateNewGroupName() const
 {
     static size_t groupCount = 0;
 
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
-    ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
+    const ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
 
     const std::string newGroupNamePrefix = m_advancedMode ? "Group_" : "Point_";
 
@@ -855,7 +876,8 @@ std::string SLandmarks::generateNewGroupName() const
 
 std::array<float, 4> SLandmarks::generateNewColor()
 {
-    std::array<float, 4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, 1.f}};
+    const std::array<float,
+                     4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultLandmarkOpacity}};
     return color;
 }
 

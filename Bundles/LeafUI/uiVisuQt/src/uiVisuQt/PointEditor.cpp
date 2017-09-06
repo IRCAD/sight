@@ -32,27 +32,27 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite );
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
-PointEditor::PointEditor() throw()
+PointEditor::PointEditor() noexcept
 {
     newSlot(s_GET_INTERACTION_SLOT, &PointEditor::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
 
-PointEditor::~PointEditor() throw()
+PointEditor::~PointEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PointEditor::starting() throw(::fwTools::Failed)
+void PointEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -89,7 +89,7 @@ void PointEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointEditor::stopping() throw(::fwTools::Failed)
+void PointEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -98,7 +98,7 @@ void PointEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointEditor::configuring() throw(fwTools::Failed)
+void PointEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -106,13 +106,13 @@ void PointEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointEditor::updating() throw(::fwTools::Failed)
+void PointEditor::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PointEditor::swapping() throw(::fwTools::Failed)
+void PointEditor::swapping()
 {
     this->updating();
 }
@@ -137,5 +137,6 @@ void PointEditor::info( std::ostream& _sstream )
 }
 
 //------------------------------------------------------------------------------
-}
+
+} // namespace uiVisuQt
 

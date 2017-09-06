@@ -15,13 +15,13 @@ namespace editor
 {
 
 
-IEditor::IEditor() throw()
+IEditor::IEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-IEditor::~IEditor() throw()
+IEditor::~IEditor() noexcept
 {
 }
 

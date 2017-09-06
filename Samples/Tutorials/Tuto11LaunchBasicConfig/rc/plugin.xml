@@ -7,7 +7,7 @@
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>TutoLaunchBasicConfig</id>
         <config>
             <object uid="imageUid" type="::fwData::Image"/>

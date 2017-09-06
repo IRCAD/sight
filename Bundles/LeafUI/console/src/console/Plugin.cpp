@@ -19,13 +19,13 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     m_worker = ::fwThread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_worker);
@@ -35,7 +35,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 //-----------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
     if(m_worker)
     {
@@ -45,7 +45,7 @@ void Plugin::stop() throw()
 
 //-----------------------------------------------------------------------------
 
-int Plugin::run() throw()
+int Plugin::run() noexcept
 {
     m_worker->post( []() {::fwRuntime::profile::getCurrentProfile()->setup(); } );
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop

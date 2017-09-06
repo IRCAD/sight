@@ -53,7 +53,7 @@ std::vector< std::string > TransformationMatrix3DWriterService::getSupportedExte
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::starting( ) throw(::fwTools::Failed)
+void TransformationMatrix3DWriterService::starting( )
 {
     SLM_TRACE_FUNC();
 }
@@ -67,7 +67,7 @@ void TransformationMatrix3DWriterService::starting( ) throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::configuring() throw(::fwTools::Failed)
+void TransformationMatrix3DWriterService::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -102,14 +102,14 @@ void TransformationMatrix3DWriterService::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::stopping() throw(::fwTools::Failed)
+void TransformationMatrix3DWriterService::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
+void TransformationMatrix3DWriterService::updating()
 {
     SLM_TRACE_FUNC();
     if(this->hasLocationDefined())

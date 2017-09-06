@@ -17,7 +17,7 @@ namespace fwDataTools
 
 //-----------------------------------------------------------------------------
 
-AlgoMeshDeformation::AlgoMeshDeformation() throw() :
+AlgoMeshDeformation::AlgoMeshDeformation() noexcept :
     m_amplitude(40),
     m_step(0),
     m_direction(1),
@@ -30,7 +30,7 @@ AlgoMeshDeformation::AlgoMeshDeformation() throw() :
 
 //-----------------------------------------------------------------------------
 
-AlgoMeshDeformation::~AlgoMeshDeformation() throw()
+AlgoMeshDeformation::~AlgoMeshDeformation() noexcept
 {
 }
 

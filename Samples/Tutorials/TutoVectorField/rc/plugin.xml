@@ -1,188 +1,203 @@
-<plugin id="TutoVectorField" version="@DASH_VERSION@" >
-
+<plugin id="TutoVectorField" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoVectorField</id>
         <config>
+            <!-- ***************************************** Begin Objects declaration ***************************************** -->
+            <object uid="image" type="::fwData::Image" />
+            <!-- ***************************************** End Objects declaration ******************************************* -->
+            <!-- ***************************************** Begin layouts declaration ***************************************** -->
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>TutoVectorField</name>
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="multiViewScene1" start="yes" />
+                </registry>
+            </service>
 
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                </registry>
+            </service>
 
-            <object type="::fwData::Composite">
-                <service uid="IHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
-                    <gui>
-                        <frame>
-                            <name>TutoVectorField</name>
-                        </frame>
-                        <menuBar />
-                    </gui>
-                    <registry>
-                        <menuBar sid="menuBar" start="yes" />
-                        <view sid="multiView_scene1" start="yes" />
-                    </registry>
-                </service>
-                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
-                    <gui>
-                        <layout>
-                            <menu name="File" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menu sid="menu_File" start="yes" />
-                    </registry>
-                </service>
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <menuItem name="Save file" shortcut="Ctrl+S" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionOpenFile" start="yes" />
+                    <menuItem sid="actionSaveFile" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                    <gui>
-                        <layout>
-                            <menuItem name="Open file" shortcut="Ctrl+O" />
-                            <menuItem name="Save file" shortcut="Ctrl+S" />
-                            <separator />
-                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menuItem sid="action_openFile" start="yes" />
-                        <menuItem sid="action_saveFile" start="yes" />
-                        <menuItem sid="action_quit" start="yes" />
-                    </registry>
-                </service>
+            <service uid="actionOpenFile" type="::gui::action::SStarter">
+                <start uid="readerPathFile" />
+            </service>
 
-                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                    <start uid="readerPathFile" />
-                </service>
-                <service uid="action_saveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                    <start uid="writerPathFile" />
-                </service>
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+            <service uid="actionSaveFile" type="::gui::action::SStarter">
+                <start uid="writerPathFile" />
+            </service>
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::CardinalLayoutManager">
-                            <view align="center" />
-                            <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="genericScene" start="yes" />
-                        <view sid="multiView_scene1_bottom" start="yes" />
-                    </registry>
-                </service>
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="multiViewScene1" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" minWidth="400" minHeight="30" resizable="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="multiViewScene1Bottom" start="yes" />
+                </registry>
+            </service>
 
+            <service uid="multiViewScene1Bottom" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="0" minWidth="50" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliceListEditor" start="yes" />
+                    <view sid="showScanEditor" start="yes" />
+                    <view sid="sliderIndexEditor" start="yes" />
+                    <view sid="snapshotScene1Editor" start="yes" />
+                </registry>
+            </service>
 
-                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="horizontal" />
-                            <view proportion="0" minWidth="30" />
-                            <view proportion="0" minWidth="50" />
-                            <view proportion="1" />
-                            <view proportion="0" minWidth="30" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="sliceListEditor" start="yes" />
-                        <view sid="showScanEditor" start="yes" />
-                        <view sid="sliderIndexEditor" start="yes" />
-                        <view sid="snapshotScene1Editor" start="yes" />
-                    </registry>
-                </service>
+            <!-- ***************************************** End layouts declaration ***************************************** -->
+            <!-- ***************************************** Begin services declarations    ************************************ -->
+            <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
+                <in key="image" uid="image" />
+                <type mode="reader" />
+            </service>
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
+            <service uid="writerPathFile" type="::uiIO::editor::SIOSelector">
+                <type mode="writer" />
+            </service>
 
-                <!-- CompositeVisu description -->
-                <item key="compositeVisu">
-                    <object uid="compositeVisu" type="::fwData::Composite">
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
+                <toolTip>Manage slice visibility</toolTip>
+                <selected>3</selected>
+                <items>
+                    <item text="One slice" value="1" />
+                    <item text="three slices" value="3" />
+                </items>
+            </service>
 
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                    <iconWidth>40</iconWidth>
+                    <iconHeight>16</iconHeight>
+                    <checked>true</checked>
+                </config>
+            </service>
 
-                        <service uid="genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                            <scene>
-                                <picker id="picker" vtkclass="fwVtkCellPicker" />
+            <service uid="snapshotScene1Editor" type="::uiVisuQt::SnapshotEditor"  />
 
-                                <renderer id="default" background="0.5" />
+            <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
 
-                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                                    <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
-                                </adaptor>
+            <!-- This service convert a simple fwData::Image to medical Image -->
+            <service uid="medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+                <inout key="image" uid="image" />
+            </service>
 
-                                <adaptor uid="vectorFieldAdatpor" id="vectorFieldAdatporId" class="::visuVTKAdaptor::VectorField" objectId="image">
-                                    <config renderer="default" />
-                                </adaptor>
+            <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
+            <!-- *************************** Begin generic scene *************************** -->
 
-                                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                    <config renderer="default" />
-                                </adaptor>
+            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.5" />
+                    <adaptor uid="MPRNegato3D" />
+                    <adaptor uid="vectorFieldAdatporId" />
+                    <adaptor uid="snapshot" />
+                </scene>
+            </service>
 
-                                <connect>
-                                    <signal>snapshotScene1Editor/snapped</signal>
-                                    <slot>snapshotUID/snap</slot>
-                                </connect>
+            <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+                <inout key="image" uid="image" />
+                <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+            </service>
 
-                                <connect waitForKey="image">
-                                    <signal>showScanEditor/toggled</signal>
-                                    <slot>MPRNegatoScene3D/showSlice</slot>
-                                </connect>
+            <service uid="vectorFieldAdatporId" type="::visuVTKAdaptor::SVectorField" autoConnect="yes">
+                <in key="image" uid="image" />
+                <config renderer="default" />
+            </service>
 
-                                <connect waitForKey="image">
-                                    <signal>sliceListEditor/selected</signal>
-                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
-                                </connect>
-                            </scene>
-                        </service>
+            <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+                <config renderer="default" />
+            </service>
 
-                        <item key="image">
+            <!-- *************************** End generic scene *************************** -->
 
-                            <object uid="image" type="::fwData::Image">
+            <!-- ***************************************** Begin connections declarations    *************************************** -->
+            <connect>
+                <signal>showScanEditor/toggled</signal>
+                <slot>sliceListEditor/setEnabled</slot>
+            </connect>
 
-                                <service uid="readerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                                    <type mode="reader" />
-                                </service>
+            <connect channel="snap">
+                <signal>snapshotScene1Editor/snapped</signal>
+            </connect>
 
-                                <service uid="writerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                                    <type mode="writer" />
-                                </service>
+            <connect channel="scanEditor">
+                <signal>showScanEditor/toggled</signal>
+            </connect>
 
-                                <!-- This service convert a simple fwData::Image to medical Image -->
-                                <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+            <connect channel="sliceListEditor">
+                <signal>sliceListEditor/selected</signal>
+            </connect>
 
-                                <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
-                                    <toolTip>Manage slice visibility</toolTip>
-                                    <selected>3</selected>
-                                    <items>
-                                        <item text="One slice" value="1" />
-                                        <item text="three slices" value="3" />
-                                    </items>
-                                </service>
-                                <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
-                                    <config>
-                                        <checkable>true</checkable>
-                                        <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
-                                        <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
-                                        <iconWidth>40</iconWidth>
-                                        <iconHeight>16</iconHeight>
-                                        <checked>true</checked>
-                                    </config>
-                                </service>
-                                <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-                                    <sliceIndex>axial</sliceIndex>
-                                </service>
+            <!-- ***************************************** End connections declarations    ***************************************** -->
+            <connect channel="snap">
+                <slot>snapshot/snap</slot>
+            </connect>
 
-                                <connect>
-                                    <signal>showScanEditor/toggled</signal>
-                                    <slot>sliceListEditor/setEnabled</slot>
-                                </connect>
-                            </object>
-                        </item>
-                    </object>
-                </item>
+            <connect channel="scanEditor">
+                <slot>MPRNegato3D/showSlice</slot>
+            </connect>
 
-                <start uid="IHM" />
+            <connect channel="sliceListEditor">
+                <slot>MPRNegato3D/updateSliceMode</slot>
+            </connect>
 
-            </object>
+            <start uid="IHM" />
 
-
+            <!--  genericScene adaptors -->
+            <start uid="MPRNegato3D" />
+            <start uid="vectorFieldAdatporId" />
+            <start uid="snapshot" />
         </config>
     </extension>
-
 </plugin>

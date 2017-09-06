@@ -36,19 +36,19 @@ class UIMEASUREMENT_CLASS_API LoadLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro( (LoadLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API LoadLandmark() throw();
+    UIMEASUREMENT_API LoadLandmark() noexcept;
 
-    UIMEASUREMENT_API virtual ~LoadLandmark() throw();
+    UIMEASUREMENT_API virtual ~LoadLandmark() noexcept;
 
 protected:
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     void info(std::ostream& _sstream );
 

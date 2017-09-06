@@ -40,14 +40,17 @@
 
 #include <functional>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::WindowLevel, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image );
+
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
+static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "TFSelections";
 
 //------------------------------------------------------------------------------
 
-WindowLevel::WindowLevel() throw()
+WindowLevel::WindowLevel() noexcept
 {
     m_widgetDynamicRangeMin   = -1024.;
     m_widgetDynamicRangeWidth = 4000.;
@@ -59,15 +62,16 @@ WindowLevel::WindowLevel() throw()
 
 //------------------------------------------------------------------------------
 
-WindowLevel::~WindowLevel() throw()
+WindowLevel::~WindowLevel() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::starting() throw(::fwTools::Failed)
+void WindowLevel::starting()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -148,7 +152,7 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::stopping() throw(::fwTools::Failed)
+void WindowLevel::stopping()
 {
     this->removeTFConnections();
     QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
@@ -166,9 +170,8 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::configuring() throw(fwTools::Failed)
+void WindowLevel::configuring()
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("config");
@@ -196,24 +199,15 @@ void WindowLevel::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updating() throw(::fwTools::Failed)
+void WindowLevel::updating()
 {
-    SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
-    ::fwData::Composite::sptr tfSelection;
-    if( ::fwServices::IService::isVersion2() )
-    {
-        tfSelection = this->getInOut< ::fwData::Composite>("TFSelections");
-        this->setTFSelectionFwID(tfSelection->getID());
-    }
-    else
-    {
-        tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(this->getTFSelectionFwID()) );
-    }
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
     this->setTransferFunctionSelection(tfSelection);
 
     this->updateTransferFunction(image);
@@ -222,7 +216,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
         this->updateImageInfos(image);
 
         // test if service must use image grey level tf ( when another tf pool is defined )
-        if( m_useImageGreyLevelTF && !this->getTFSelectionFwID().empty() )
+        if( m_useImageGreyLevelTF  && tfSelection)
         {
             ::fwData::TransferFunction::sptr newTF = this->getImageGreyLevelTF();
             this->swapCurrentTFAndNotify( newTF );
@@ -245,7 +239,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::swapping() throw(::fwTools::Failed)
+void WindowLevel::swapping()
 {
     this->removeTFConnections();
     this->updating();
@@ -261,9 +255,10 @@ void WindowLevel::updatingTFPoints()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updatingTFWindowing(double window, double level)
+void WindowLevel::updatingTFWindowing(double /*window*/, double /*level*/)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     SLM_ASSERT("Image is not valid", imageIsValid);
@@ -357,7 +352,9 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
     double min               = m_widgetDynamicRangeMin;
     double max               = m_widgetDynamicRangeWidth + min;
     int index                = action->data().toInt();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     switch (index)
     {
@@ -425,7 +422,7 @@ void WindowLevel::onToggleTF(bool squareTF)
     else
     {
         // test if service must use image grey level tf ( when another tf pool is defined )
-        if( m_useImageGreyLevelTF && !this->getTFSelectionFwID().empty() )
+        if( m_useImageGreyLevelTF && this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT) )
         {
             newTF           = this->getImageGreyLevelTF();
             usedGreyLevelTF = true;
@@ -461,7 +458,8 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
 
     if (m_autoWindowing)
     {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
         double min, max;
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         this->updateImageWindowLevel(min, max);
@@ -532,7 +530,8 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 {
     ::fwData::TransferFunction::sptr defaultTF;
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     // Create pool
     ::fwDataTools::helper::Image helper(image);
@@ -554,25 +553,13 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF )
 {
     // Change TF
-    std::string tfSelectionFwID = this->getTFSelectionFwID();
-    ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
-    OSLM_ASSERT( "The object with the fwID " << tfSelectionFwID << " doesn't exist.", pool );
+    ::fwData::Composite::sptr pool = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
+    OSLM_ASSERT( "The object '" + s_TF_SELECTION_INOUT + "' doesn't exist.", pool );
     ::fwDataTools::helper::Composite compositeHelper( pool );
     compositeHelper.swap( this->getSelectedTFKey(), newTF );
 
     // Notify change
     compositeHelper.notify();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType WindowLevel::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------

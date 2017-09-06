@@ -80,12 +80,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SStarter() throw();
+    GUI_API SStarter() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SStarter() throw();
+    GUI_API virtual ~SStarter() noexcept;
 
 protected:
 
@@ -107,20 +107,20 @@ protected:
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating() throw (fwTools::Failed);
+    GUI_API void updating();
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
      */
-    GUI_API void configuring() throw( ::fwTools::Failed );
+    GUI_API void configuring();
 
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
     /**
      * @brief Uninitialized the service activity.
      * All services started by this action are stopped.
      */
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
 private:
     typedef ::fwTools::fwID::IDType IDSrvType;

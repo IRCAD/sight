@@ -28,7 +28,7 @@ public:
     FWPACSIO_API RequestFailure(const std::string& message);
 
     /// Destructor
-    FWPACSIO_API virtual ~RequestFailure() throw ();
+    FWPACSIO_API virtual ~RequestFailure() noexcept;
 
 };
 

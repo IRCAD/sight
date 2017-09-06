@@ -29,7 +29,7 @@ static const ::fwCom::Slots::SlotKeyType s_START_TIMER_SLOT = "startTimer";
 
 //------------------------------------------------------------------------------
 
-SIncrementArray::SIncrementArray() throw() :
+SIncrementArray::SIncrementArray() noexcept :
     m_periodInMillisec(500)
 {
     newSlot(s_START_TIMER_SLOT, &SIncrementArray::startTimer, this);
@@ -37,13 +37,13 @@ SIncrementArray::SIncrementArray() throw() :
 
 //------------------------------------------------------------------------------
 
-SIncrementArray::~SIncrementArray() throw()
+SIncrementArray::~SIncrementArray() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SIncrementArray::starting() throw( ::fwTools::Failed )
+void SIncrementArray::starting()
 {
     m_timer = m_associatedWorker->createTimer();
     m_timer->setFunction( std::bind(&SIncrementArray::updating, this) );
@@ -52,7 +52,7 @@ void SIncrementArray::starting() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SIncrementArray::stopping() throw( ::fwTools::Failed )
+void SIncrementArray::stopping()
 {
     if (m_timer->isRunning())
     {
@@ -63,7 +63,7 @@ void SIncrementArray::stopping() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SIncrementArray::updating() throw( ::fwTools::Failed )
+void SIncrementArray::updating()
 {
     ::fwData::Array::sptr array = this->getInOut< ::fwData::Array >("array");
     ::fwData::mt::ObjectWriteLock writeLock(array);
@@ -96,7 +96,7 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SIncrementArray::configuring() throw( ::fwTools::Failed )
+void SIncrementArray::configuring()
 {
 
 }

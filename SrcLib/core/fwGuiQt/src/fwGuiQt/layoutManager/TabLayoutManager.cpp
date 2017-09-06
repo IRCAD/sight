@@ -39,9 +39,10 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
-    m_tabWidget = new QTabWidget();
-
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    m_parentContainer->setLayout(layout);
+
+    m_tabWidget = new QTabWidget();
     layout->addWidget( m_tabWidget );
 
     const std::list< ViewInfo>& views = this->getViewsInfo();
@@ -66,13 +67,12 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         {
             idx = m_tabWidget->addTab( widget, QString::fromStdString(viewInfo.m_caption));
         }
+
         if (viewInfo.m_isSelect )
         {
             m_tabWidget->setCurrentIndex(idx);
         }
     }
-
-    m_parentContainer->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------

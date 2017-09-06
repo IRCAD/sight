@@ -33,19 +33,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opImageFilter::action::SThreshol
 
 //-----------------------------------------------------------------------------
 
-SThreshold::SThreshold() throw()
+SThreshold::SThreshold() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SThreshold::~SThreshold() throw()
+SThreshold::~SThreshold() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SThreshold::starting() throw ( ::fwTools::Failed )
+void SThreshold::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -53,7 +53,7 @@ void SThreshold::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SThreshold::stopping() throw ( ::fwTools::Failed )
+void SThreshold::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -61,7 +61,7 @@ void SThreshold::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SThreshold::configuring() throw ( ::fwTools::Failed )
+void SThreshold::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -120,7 +120,7 @@ struct ThresholdFilter
 
 //-----------------------------------------------------------------------------
 
-void SThreshold::updating() throw ( ::fwTools::Failed )
+void SThreshold::updating()
 {
     SLM_TRACE_FUNC();
 

@@ -107,7 +107,6 @@ if(ADDITIONAL_PROJECTS)
     endforeach()
 endif()
 
-
 if(ANDROID)
     set(BUNDLE_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
 elseif(DEBIAN_INSTALL)
@@ -293,7 +292,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
 
     if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" ) 
+        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" )
            AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             target_compile_definitions(${FWPROJECT_NAME}
                 PRIVATE SPYLOG_LEVEL_${FWPROJECT_NAME}=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
@@ -829,6 +828,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(PLATFORM)
     unset(USE_PCH_FROM_TARGET)
     unset(DISABLE_PCH)
+    unset(START_BEFORE)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -1001,6 +1001,8 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
         if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
             set(${NAME}_START "${START}")
         endif()
+        
+        set(${NAME}_START_BEFORE "${START_BEFORE}")
 
         list(APPEND PROJECT_LIST ${NAME})
     endif()

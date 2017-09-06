@@ -1,5 +1,5 @@
 <!-- This configuration allows to display an image in a  scene -->
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>Ex05ImageDisplaying</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -27,7 +27,7 @@
             <inout key="AS_UID" uid="${AS_UID}" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
-            <parameter replace="WID_PARENT" uid="${WID_PARENT}" />
+            <parameter replace="WID_PARENT" by="${WID_PARENT}" />
             <parameter replace="enabledPreviousChannel" by="${enabledPreviousChannel}" />
             <parameter replace="previousActivityChannel" by="${previousActivityChannel}" />
             <parameter replace="enabledNextChannel" by="${enabledNextChannel}" />

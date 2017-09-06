@@ -30,14 +30,14 @@ unsigned int TestService::s_UPDATE_COUNTER = 0;
 
 //------------------------------------------------------------------------------
 
-void TestService::starting() throw(::fwTools::Failed)
+void TestService::starting()
 {
     m_startOrder = s_START_COUNTER++;
 }
 
 //------------------------------------------------------------------------------
 
-void TestService::updating() throw(::fwTools::Failed)
+void TestService::updating()
 {
     m_updateOrder = s_UPDATE_COUNTER++;
 }

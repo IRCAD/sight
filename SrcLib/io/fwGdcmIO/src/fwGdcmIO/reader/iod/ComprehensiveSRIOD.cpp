@@ -43,7 +43,7 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
+void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);

@@ -18,7 +18,7 @@ NetworkInitializationFailure::NetworkInitializationFailure(const std::string& me
 
 // ----------------------------------------------------------------------------
 
-NetworkInitializationFailure::~NetworkInitializationFailure() throw()
+NetworkInitializationFailure::~NetworkInitializationFailure() noexcept
 {
 }
 

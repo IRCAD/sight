@@ -28,7 +28,7 @@ public:
     FWPACSIO_API TagMissing(const std::string& message);
 
     /// Destructor
-    FWPACSIO_API virtual ~TagMissing() throw ();
+    FWPACSIO_API virtual ~TagMissing() noexcept;
 
 };
 

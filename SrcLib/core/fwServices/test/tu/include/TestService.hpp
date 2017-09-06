@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,8 +32,8 @@ public:
     static unsigned int s_START_COUNTER;
     static unsigned int s_UPDATE_COUNTER;
 
-    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
-    TestService() throw() :
+    fwCoreServiceClassDefinitionsMacro( (TestService)(::fwServices::IService) );
+    TestService() noexcept :
         m_isUpdated(false),
         m_isUpdated2(false),
         m_isUpdatedMessage(false),
@@ -42,19 +42,25 @@ public:
     {
     }
 
-    virtual ~TestService() throw()
+    virtual ~TestService() noexcept
     {
     }
 
-    virtual void configuring() throw( ::fwTools::Failed ) final
+    //------------------------------------------------------------------------------
+
+    virtual void configuring() final
     {
     }
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed) final
+    virtual void starting() override;
+    //------------------------------------------------------------------------------
+
+    virtual void stopping() final
     {
     }
-    virtual void updating() throw(::fwTools::Failed);
-    virtual void info(std::ostream& _sstream )
+    virtual void updating() override;
+    //------------------------------------------------------------------------------
+
+    virtual void info(std::ostream& _sstream ) override
     {
         _sstream << "TestService";
     }
@@ -89,10 +95,14 @@ public:
         m_isUpdated2 = false;
     }
 
+    //------------------------------------------------------------------------------
+
     unsigned int getStartOrder() const
     {
         return m_startOrder;
     }
+
+    //------------------------------------------------------------------------------
 
     unsigned int getUpdateOrder() const
     {
@@ -114,7 +124,7 @@ class TestServiceImplementation : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation)(::fwServices::ut::TestService) );
 
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
@@ -125,37 +135,37 @@ public:
     typedef ::fwCom::Signal< void (const std::string&)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
-    TestServiceImplementation() throw()
+    TestServiceImplementation() noexcept
     {
         newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
         newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
     }
     //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation() throw()
+    virtual ~TestServiceImplementation() noexcept
     {
     }
 
     //-------------------------------------------------------------------------
-    virtual void starting() throw(::fwTools::Failed) final
+    virtual void starting() final
     {
         TestService::starting();
     }
 
     //-------------------------------------------------------------------------
-    virtual void updating() throw(::fwTools::Failed)override
+    virtual void updating() override
     {
         TestService::updating();
         m_isUpdated = true;
     }
 
     //-------------------------------------------------------------------------
-    void update2() throw(::fwTools::Failed)
+    void update2()
     {
         m_isUpdated2 = true;
     }
 
     //-------------------------------------------------------------------------
-    virtual void swapping(const KeyType& key) throw(::fwTools::Failed)override
+    virtual void swapping(const KeyType& key) override
     {
         m_swappedObjectKey = key;
         m_swappedObject    = this->getInput< ::fwData::Object>(key);
@@ -195,14 +205,14 @@ class TestServiceImplementation2 : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation2)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementation2)(::fwServices::ut::TestService) );
 
     //-------------------------------------------------------------------------
-    TestServiceImplementation2() throw()
+    TestServiceImplementation2() noexcept
     {
     }
     //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation2() throw()
+    virtual ~TestServiceImplementation2() noexcept
     {
     }
 };
@@ -214,7 +224,7 @@ class TestSrvAutoconnect : public TestService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestSrvAutoconnect)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro( (TestSrvAutoconnect)(::fwServices::ut::TestService) );
 
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_SIG_1;
@@ -226,19 +236,19 @@ public:
 
     //-------------------------------------------------------------------------
 
-    TestSrvAutoconnect() throw() :
+    TestSrvAutoconnect() noexcept :
         m_received(false)
     {
         newSignal<MsgSentSignalType>(s_SIG_1);
         newSlot(s_SLOT_1, &TestSrvAutoconnect::receiveSlot, this);
     }
     //-------------------------------------------------------------------------
-    virtual ~TestSrvAutoconnect() throw()
+    virtual ~TestSrvAutoconnect() noexcept
     {
     }
     //-------------------------------------------------------------------------
 
-    virtual void updating() throw(::fwTools::Failed)override
+    virtual void updating() override
     {
         m_isUpdated = true;
     }

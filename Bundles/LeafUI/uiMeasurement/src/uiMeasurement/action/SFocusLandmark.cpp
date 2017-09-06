@@ -44,7 +44,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SFocusLan
 
 //------------------------------------------------------------------------------
 
-SFocusLandmark::SFocusLandmark( ) throw() :
+SFocusLandmark::SFocusLandmark( ) noexcept :
     m_index(0),
     m_isSelected(false)
 {
@@ -56,13 +56,13 @@ SFocusLandmark::SFocusLandmark( ) throw() :
 
 //------------------------------------------------------------------------------
 
-SFocusLandmark::~SFocusLandmark() throw()
+SFocusLandmark::~SFocusLandmark() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SFocusLandmark::starting() throw ( ::fwTools::Failed )
+void SFocusLandmark::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
     this->setIsExecutable(m_isSelected);
@@ -70,21 +70,21 @@ void SFocusLandmark::starting() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SFocusLandmark::stopping() throw ( ::fwTools::Failed )
+void SFocusLandmark::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SFocusLandmark::configuring() throw ( ::fwTools::Failed )
+void SFocusLandmark::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SFocusLandmark::updating() throw(::fwTools::Failed)
+void SFocusLandmark::updating()
 {
     if (m_isSelected)
     {

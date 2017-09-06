@@ -89,7 +89,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-SRenderer::SRenderer() throw() :
+SRenderer::SRenderer() noexcept :
     m_render( 0 ),
     m_bPipelineIsInit(false)
 {
@@ -102,13 +102,13 @@ SRenderer::SRenderer() throw() :
 
 //-----------------------------------------------------------------------------
 
-SRenderer::~SRenderer() throw()
+SRenderer::~SRenderer() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::starting() throw(fwTools::Failed)
+void SRenderer::starting()
 {
     this->create();
 
@@ -139,14 +139,14 @@ void SRenderer::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::configuring() throw(::fwTools::Failed)
+void SRenderer::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::stopping() throw(fwTools::Failed)
+void SRenderer::stopping()
 {
     if( m_render == 0 )
     {
@@ -167,7 +167,7 @@ void SRenderer::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::updating() throw(fwTools::Failed)
+void SRenderer::updating()
 {
     m_interactorManager->getInteractor()->Render();
 }

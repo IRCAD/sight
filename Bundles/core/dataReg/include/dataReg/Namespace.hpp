@@ -29,7 +29,7 @@
         <requirement id="servicesReg" />
 
         <!-- Defines the App-config -->
-        <extension implements="::fwServices::registry::AppConfig2">
+        <extension implements="::fwServices::registry::AppConfig">
             <id>tutoBasicConfig</id><!-- identifier of the configuration -->
             <config>
 

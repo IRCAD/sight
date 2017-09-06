@@ -11,13 +11,13 @@ namespace gui
 namespace view
 {
 
-IView::IView() throw()
+IView::IView() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-IView::~IView() throw()
+IView::~IView() noexcept
 {
 }
 

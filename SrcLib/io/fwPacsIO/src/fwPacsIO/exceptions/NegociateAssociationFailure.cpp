@@ -18,7 +18,7 @@ NegociateAssociationFailure::NegociateAssociationFailure(const std::string& mess
 
 // ----------------------------------------------------------------------------
 
-NegociateAssociationFailure::~NegociateAssociationFailure() throw()
+NegociateAssociationFailure::~NegociateAssociationFailure() noexcept
 {
 }
 

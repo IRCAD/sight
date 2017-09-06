@@ -52,7 +52,7 @@ struct GenericExecutableFactory : public ExecutableFactory
      *
      * @return  a pointer to an executable instance
      */
-    IExecutable* createExecutable() const throw(RuntimeException)
+    IExecutable* createExecutable() const
     {
         IExecutable * result( 0 );
         try
@@ -81,7 +81,7 @@ struct GenericExecutableFactory : public ExecutableFactory
          *
          * @remark  Assignment forbidden for this class.
          */
-        void operator=(const GenericExecutableFactory&) throw()
+        void operator=(const GenericExecutableFactory&) noexcept
         {
         }
 

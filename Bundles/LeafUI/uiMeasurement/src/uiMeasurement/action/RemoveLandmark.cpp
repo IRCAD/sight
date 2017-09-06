@@ -38,13 +38,13 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveLan
 //------------------------------------------------------------------------------
 
 
-RemoveLandmark::RemoveLandmark( ) throw()
+RemoveLandmark::RemoveLandmark( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-RemoveLandmark::~RemoveLandmark() throw()
+RemoveLandmark::~RemoveLandmark() noexcept
 {
 }
 
@@ -109,7 +109,7 @@ void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Point::sptr 
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::updating( ) throw(::fwTools::Failed)
+void RemoveLandmark::updating( )
 {
     SLM_TRACE_FUNC();
 
@@ -148,21 +148,21 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::configuring() throw (::fwTools::Failed)
+void RemoveLandmark::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::starting() throw (::fwTools::Failed)
+void RemoveLandmark::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::stopping() throw (::fwTools::Failed)
+void RemoveLandmark::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

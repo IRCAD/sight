@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,12 +14,12 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwTools/Type.hpp>
 #include <fwTools/DynamicType.hpp>
+#include <fwTools/Type.hpp>
 
-#include <boost/shared_array.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/shared_array.hpp>
 
 #include <vector>
 
@@ -63,7 +63,6 @@ public:
     typedef ::boost::uint8_t BufferType;
     typedef ::boost::shared_array< BufferType > SharedArray;
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -73,13 +72,13 @@ public:
     /**
      * @brief Destructor
      */
-    FWDATA_API virtual ~Image() throw();
+    FWDATA_API virtual ~Image() noexcept;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );
@@ -91,22 +90,22 @@ public:
      * @brief get/set image spacing
      */
 
-    FWDATA_API const SpacingType &getSpacing() const;
-    FWDATA_API void setSpacing(const SpacingType &spacing);
+    FWDATA_API const SpacingType& getSpacing() const;
+    FWDATA_API void setSpacing(const SpacingType& spacing);
     /// @}
 
     /** @{
      *  @brief get/set image origin
      */
-    FWDATA_API const OriginType &getOrigin() const;
-    FWDATA_API void setOrigin(const OriginType &origin);
+    FWDATA_API const OriginType& getOrigin() const;
+    FWDATA_API void setOrigin(const OriginType& origin);
     /// @}
 
     /** @{
      * @brief get/set image size
      */
-    FWDATA_API const SizeType &getSize() const;
-    FWDATA_API void setSize(const SizeType &size);
+    FWDATA_API const SizeType& getSize() const;
+    FWDATA_API void setSize(const SizeType& size);
     /// @}
 
     /** @{
@@ -148,7 +147,7 @@ public:
      * @brief get/set image type
      */
     FWDATA_API void setType(::fwTools::Type type);
-    FWDATA_API void setType(const std::string &type);
+    FWDATA_API void setType(const std::string& type);
     FWDATA_API ::fwTools::Type getType() const;
     /// @}
 
@@ -165,13 +164,11 @@ public:
      *
      * @return Allocated size in bytes
      */
-    FWDATA_API size_t allocate() throw(::fwData::Exception);
+    FWDATA_API size_t allocate();
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                               const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
-    FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
-    throw(::fwData::Exception);
+                               const ::fwTools::Type& type, size_t numberOfComponents = 1);
+    FWDATA_API size_t allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents = 1);
     /// @}
-
 
     /// @brief return image size in bytes
     FWDATA_API size_t getSizeInBytes() const;
@@ -207,7 +204,7 @@ public:
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is removed
-    typedef ::fwCom::Signal< void (SPTR(::fwData::PointList)) > DistanceRemovedSignalType;
+    typedef ::fwCom::Signal< void (CSPTR(::fwData::PointList)) > DistanceRemovedSignalType;
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)

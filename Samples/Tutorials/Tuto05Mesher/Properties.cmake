@@ -16,7 +16,7 @@ set( REQUIREMENTS
     vtkSimpleMesh
     opVTKMesh # provides services to generate a mesh from an image.
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES MesherConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES MesherConfig)

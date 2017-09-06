@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>ImageMix</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -11,14 +11,11 @@
         <param name="frontImageUid" />
         <param name="patient_name" default="" />
     </parameters>
-
     <config>
-
         <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
         <object uid="${myBlendSelectionComposite}" type="::fwData::Composite" src="ref" />
         <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
-
         <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -32,7 +29,6 @@
                 <view sid="bottomView" start="yes" />
             </registry>
         </service>
-
 
         <service uid="bottomView" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
@@ -81,7 +77,7 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
-                    <spacer />
+                    <spacer/>
                 </layout>
             </gui>
             <registry>
@@ -95,7 +91,7 @@
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
-                    <spacer />
+                    <spacer/>
                 </layout>
             </gui>
             <registry>
@@ -104,21 +100,23 @@
             </registry>
         </service>
 
-        <service uid="snapshot" type="::uiVisu::SnapshotEditor" autoConnect="no">
+        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" autoConnect="no">
             <in key="object" uid="${myBlendSelectionComposite}" />
         </service>
+
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
             <in key="image" uid="${backgroundImageUid}" />
         </service>
+
         <!-- This service convert a stypee fwData::Image to medical Image -->
         <service uid="bg_medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
-        <service uid="slider" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
-        <service uid="bg_windowLevel" type="::uiImage::WindowLevel">
+        <service uid="bg_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
             <config selectedTFKey="${SELECTED_TF_KEYA}" />
@@ -127,78 +125,110 @@
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
             <in key="image" uid="${frontImageUid}" />
         </service>
+
         <!-- This service convert a stypee fwData::Image to medical Image -->
         <service type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="front_imageTransparency" type="::uiImage::ImageTransparency" autoConnect="yes">
+        <service uid="front_imageTransparency" type="::uiImageQt::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
             <shortcut value="V" />
         </service>
 
-        <service uid="front_windowLevel" type="::uiImage::WindowLevel">
+        <service uid="front_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
             <config selectedTFKey="${SELECTED_TF_KEYB}" />
         </service>
 
-
         <!-- Generic scene to show merging of backgroung and front images -->
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="blendGenericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="backgroundImage" uid="${backgroundImageUid}" />
-            <in key="frontImage" uid="${frontImageUid}" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
             <scene>
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
                 <renderer id="default" background="0.0" />
-
-                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
-                    <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
-                </adaptor>
-                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="bgImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
-                    <config renderer="default" picker="myPicker" />
-                </adaptor>
-                <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
-                    <config renderer="default" picker="myPicker" />
-                </adaptor>
-                <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                    <config renderer="default" />
-                </adaptor>
-
-                <!-- Adaptor to show background and front image merge in the same view. -->
-                <adaptor id="myImagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
-                    <config vtkimageregister="imageBlend">
-                        <image objectId="backgroundImage" tfalpha="no" selectedTFKey="${SELECTED_TF_KEYA}" tfSelectionFwID="TFSelections" />
-                        <image objectId="frontImage" tfalpha="yes" selectedTFKey="${SELECTED_TF_KEYB}" tfSelectionFwID="TFSelections" />
-                    </config>
-                </adaptor>
-
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="self">
-                    <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
-
-                <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
-                <adaptor id="myImagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
-                    <config renderer="default" picker="myPicker">
-                        <image objectId="backgroundImage" name="background" />
-                        <image objectId="frontImage" name="front" />
-                    </config>
-                </adaptor>
-
-                <connect>
-                    <signal>snapshot/snapped</signal>
-                    <slot>snapshotUID/snap</slot>
-                </connect>
+                <adaptor uid="MPRNegato3D" />
+                <adaptor uid="interactor" />
+                <adaptor uid="bgImagePicker" />
+                <adaptor uid="frontImagePicker" />
+                <adaptor uid="snapshotAdaptor" />
+                <adaptor uid="myImagesBlendAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="myImagesProbeCursor" />
             </scene>
         </service>
 
+        <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${backgroundImageUid}" />
+            <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
+        </service>
+
+        <service uid="interactor" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="bgImagePicker" type="::visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes">
+            <inout key="image" uid="${backgroundImageUid}" />
+            <config renderer="default" picker="myPicker" />
+        </service>
+
+        <service uid="frontImagePicker" type="::visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes">
+            <inout key="image" uid="${frontImageUid}" />
+            <config renderer="default" picker="myPicker" />
+        </service>
+
+        <service uid="snapshotAdaptor" type="::visuVTKAdaptor::SSnapshot">
+            <config renderer="default" />
+        </service>
+
+        <!-- Adaptor to show background and front image merge in the same view. -->
+        <service uid="myImagesBlendAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+            <inout group="image" autoConnect="yes">
+                <key uid="${backgroundImageUid}" tfalpha="no" />
+                <key uid="${frontImageUid}" tfalpha="yes" />
+            </inout>
+            <inout group="tfSelection">
+                <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYA}" />
+                <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYB}" />
+            </inout>
+            <config vtkimageregister="imageBlend" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText">
+            <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
+        <service uid="myImagesProbeCursor" type="::visuVTKAdaptor::SImagesProbeCursor">
+            <inout group="image" autoConnect="yes">
+                <key uid="${backgroundImageUid}" name="background" />
+                <key uid="${frontImageUid}" name="front" />
+            </inout>
+            <config renderer="default" picker="myPicker" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
         <!-- START AND STOP SERVICES -->
+        <connect>
+            <signal>snapshot/snapped</signal>
+            <slot>snapshotAdaptor/snap</slot>
+        </connect>
+
         <start uid="mainView" />
+
+        <!-- blendGenericScene adaptors -->
+        <start uid="interactor" />
+        <start uid="bgImagePicker" />
+        <start uid="frontImagePicker" />
+        <start uid="snapshotAdaptor" />
+        <start uid="myImagesBlendAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="myImagesProbeCursor" />
+        <start uid="MPRNegato3D" />
 
     </config>
 </extension>

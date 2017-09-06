@@ -36,7 +36,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SMeshWriter::SMeshWriter() throw()
+SMeshWriter::SMeshWriter() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
@@ -78,21 +78,21 @@ void SMeshWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::starting() throw(::fwTools::Failed)
+void SMeshWriter::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::stopping() throw(::fwTools::Failed)
+void SMeshWriter::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::configuring() throw(::fwTools::Failed)
+void SMeshWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -106,7 +106,7 @@ void SMeshWriter::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::updating() throw(::fwTools::Failed)
+void SMeshWriter::updating()
 {
     SLM_TRACE_FUNC();
 

@@ -49,7 +49,6 @@ Series::~Series()
 // ----------------------------------------------------------------------------
 
 ::fwMedData::Series::sptr Series::read(::fwMedData::DicomSeries::sptr dicomSeries)
-throw(::fwGdcmIO::exception::Failed)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Logger should not be null.", m_logger);

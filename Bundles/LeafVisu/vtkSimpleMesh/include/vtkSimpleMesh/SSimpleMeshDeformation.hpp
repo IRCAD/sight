@@ -48,24 +48,24 @@ public:
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_STOP_DEFORMATION_SLOT;
 
     /// Constructor
-    VTKSIMPLEMESH_API SSimpleMeshDeformation() throw();
+    VTKSIMPLEMESH_API SSimpleMeshDeformation() noexcept;
 
     /// Destructor
-    VTKSIMPLEMESH_API virtual ~SSimpleMeshDeformation() throw();
+    VTKSIMPLEMESH_API virtual ~SSimpleMeshDeformation() noexcept;
 
 protected:
 
     /// Starting method. Initialize timer.
-    VTKSIMPLEMESH_API virtual void starting() throw(fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void starting();
 
     /// Configuring method.
-    VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void configuring();
 
     /// Stopping method.
-    VTKSIMPLEMESH_API virtual void stopping() throw(fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void stopping();
 
     /// Updating method. Deforms the mesh
-    VTKSIMPLEMESH_API virtual void updating() throw(fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void updating();
 
     /// Starts mesh deformation
     VTKSIMPLEMESH_API void startDeformation();

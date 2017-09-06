@@ -22,7 +22,7 @@ class ImpossibleConversion : public fwAtomsPatch::exceptions::Base
 {
 public:
     ImpossibleConversion(const std::string& message);
-    virtual ~ImpossibleConversion() throw()
+    virtual ~ImpossibleConversion() noexcept
     {
     }
 };

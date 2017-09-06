@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,10 +57,10 @@ class vtkPoints;
 class FWRENDERVTK_CLASS_API fwVtkPicker : public vtkPicker
 {
 public:
-    FWRENDERVTK_API static fwVtkPicker *New();
+    FWRENDERVTK_API static fwVtkPicker* New();
 
-    vtkTypeMacro(fwVtkPicker,vtkPicker);
-    void PrintSelf(ostream& os, vtkIndent indent);
+    vtkTypeMacro(fwVtkPicker, vtkPicker);
+    void PrintSelf(ostream& os, vtkIndent indent) override;
 
     // Description:
     // Perform pick operation with selection point provided. Normally the
@@ -68,9 +68,7 @@ public:
     // the third value is =0. Return non-zero if something was successfully
     // picked.
     FWRENDERVTK_API virtual int Pick(double selectionX, double selectionY, double selectionZ,
-                                     vtkRenderer *renderer);
-
-
+                                     vtkRenderer* renderer) override;
 
     FWRENDERVTK_API int PickPolyData( double p1[3], double p2[3], vtkPolyData *polydata);
     FWRENDERVTK_API int Pick( double p1[3], double p2[3], vtkPropCollection *props);
@@ -78,7 +76,7 @@ public:
     // Perform pick operation with selection point provided. Normally the first
     // two values for the selection point are x-y pixel coordinate, and the
     // third value is =0. Return non-zero if something was successfully picked.
-    int Pick(double selectionPt[3], vtkRenderer *ren)
+    int Pick(double selectionPt[3], vtkRenderer* ren)
     {
         return this->Pick(selectionPt[0], selectionPt[1], selectionPt[2], ren);
     }
@@ -92,7 +90,5 @@ private:
     void operator=(const fwVtkPicker&); // Not implemented.
 };
 
-
 #endif //__FWRENDERVTK_VTK_FWVTKPICKER_HPP__
-
 

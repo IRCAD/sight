@@ -17,19 +17,19 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Float::Float( ) throw()
+Float::Float( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Float::Float( ::fwData::Object::Key key ) throw()
+Float::Float( ::fwData::Object::Key key ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Float::~Float() throw()
+Float::~Float() noexcept
 {
 }
 

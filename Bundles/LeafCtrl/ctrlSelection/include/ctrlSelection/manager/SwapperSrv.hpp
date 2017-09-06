@@ -36,10 +36,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SwapperSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SwapperSrv() throw();
+    CTRLSELECTION_API SwapperSrv() noexcept;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SwapperSrv() throw();
+    CTRLSELECTION_API virtual ~SwapperSrv() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -55,10 +55,10 @@ protected:
 
     /// Implements starting method derived from IService. Starts the managed services if their objects are in the composite.
     /// If the mode is "dummy", starts the the managed services on dummy objects if their objects are not in the composite.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Stops and erases all the managed services.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /**
      * @brief Implements configuring method derived from IService. .
@@ -108,13 +108,13 @@ protected:
      *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      * @li \b proxy : not mandatory, connects the signals/slots in a proxy
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void reconfiguring();
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

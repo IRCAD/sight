@@ -32,7 +32,7 @@ public:
      * Returns the value returned by boost::filesystem::temp_directory_path, or
      * if boost returns no valid dir, c:\\ on windows, /tmp on other systems
      */
-    FWTOOLS_API static const ::boost::filesystem::path &getTempPath() throw();
+    FWTOOLS_API static const ::boost::filesystem::path &getTempPath() noexcept;
 
     /**
      * @brief   Returns a unique per-process temporary folder.
@@ -43,7 +43,7 @@ public:
      * @return  created folder
      */
     FWTOOLS_API static const ::boost::filesystem::path getTemporaryFolder(
-        const std::string& subFolderPrefix = "" ) throw();
+        const std::string& subFolderPrefix = "" ) noexcept;
 
     /**
      * @brief   Returns the pid of a temporary folder
@@ -51,23 +51,23 @@ public:
      * the file name is a integer, this method will return this number.
      * Otherwise, zero will be returned
      */
-    FWTOOLS_API static int tempFolderPID(const ::boost::filesystem::path &dir) throw();
+    FWTOOLS_API static int tempFolderPID(const ::boost::filesystem::path &dir) noexcept;
 
     /**
      * @brief   Clean the zombie folders of old processes in given directory
      */
-    FWTOOLS_API static void cleanZombies(const ::boost::filesystem::path &dir) throw();
+    FWTOOLS_API static void cleanZombies(const ::boost::filesystem::path &dir) noexcept;
 
     /**
      *  @brief  Returns the pid of the current process
      */
-    FWTOOLS_API static int getPID() throw();
+    FWTOOLS_API static int getPID() noexcept;
 
     /**
      * @brief   Test if process is Active
      * @return  true if the process is running
      */
-    FWTOOLS_API static bool isProcessRunning(int pid) throw();
+    FWTOOLS_API static bool isProcessRunning(int pid) noexcept;
 
     /**
      * @brief Sets the temporary folder prefix.

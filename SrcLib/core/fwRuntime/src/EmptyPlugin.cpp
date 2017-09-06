@@ -12,12 +12,12 @@ namespace fwRuntime
 {
 
 
-void EmptyPlugin::start() throw(::fwRuntime::RuntimeException)
+void EmptyPlugin::start()
 {
 }
 
 
-void EmptyPlugin::stop() throw()
+void EmptyPlugin::stop() noexcept
 {
 }
 

@@ -47,7 +47,7 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcmIO::exception::Failed)
+void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
 {
     // Retrieve images
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);

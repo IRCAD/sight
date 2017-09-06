@@ -28,7 +28,7 @@ public:
     FWPACSIO_API NetworkInitializationFailure(const std::string& message);
 
     /// Destructor
-    FWPACSIO_API virtual ~NetworkInitializationFailure() throw ();
+    FWPACSIO_API virtual ~NetworkInitializationFailure() noexcept;
 
 };
 

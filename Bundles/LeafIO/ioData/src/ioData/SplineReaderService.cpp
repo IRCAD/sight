@@ -50,13 +50,13 @@ std::vector< std::string > SplineReaderService::getSupportedExtensions()
 
 //-----------------------------------------------------------------------------
 
-SplineReaderService::~SplineReaderService() throw()
+SplineReaderService::~SplineReaderService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SplineReaderService::configuring( ) throw(::fwTools::Failed)
+void SplineReaderService::configuring( )
 {
     SLM_TRACE_FUNC();
 
@@ -112,7 +112,7 @@ void SplineReaderService::configuring( ) throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SplineReaderService::updating() throw(::fwTools::Failed)
+void SplineReaderService::updating()
 {
     SLM_TRACE_FUNC();
     // Retrieve object

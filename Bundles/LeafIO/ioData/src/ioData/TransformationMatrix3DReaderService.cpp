@@ -59,14 +59,14 @@ std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExte
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::starting( ) throw(::fwTools::Failed)
+void TransformationMatrix3DReaderService::starting( )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::configuring() throw(::fwTools::Failed)
+void TransformationMatrix3DReaderService::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -100,14 +100,14 @@ void TransformationMatrix3DReaderService::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::stopping() throw(::fwTools::Failed)
+void TransformationMatrix3DReaderService::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
+void TransformationMatrix3DReaderService::updating()
 {
     SLM_TRACE_FUNC();
     if(this->hasLocationDefined())

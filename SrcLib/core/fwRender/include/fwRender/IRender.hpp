@@ -45,12 +45,12 @@ protected:
     /**
      * @brief   Constructor. Initialize default values.
      */
-    FWRENDER_API IRender() throw();
+    FWRENDER_API IRender() noexcept;
 
     /**
      * @brief   Destructor. Do nothing.
      */
-    FWRENDER_API virtual ~IRender() throw();
+    FWRENDER_API virtual ~IRender() noexcept;
 
 };
 

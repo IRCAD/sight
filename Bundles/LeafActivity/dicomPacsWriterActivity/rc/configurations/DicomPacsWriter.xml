@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>DicomPacsWriter</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -77,7 +77,7 @@
 
         <service uid="progressBarController" type="::ioPacs::SProgressBarController"  />
 
-        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
@@ -97,7 +97,7 @@
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="viewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

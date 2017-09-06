@@ -17,7 +17,7 @@ FilterFailure::FilterFailure(const std::string& message) : ::fwCore::Exception(m
 
 // ----------------------------------------------------------------------------
 
-FilterFailure::~FilterFailure() throw()
+FilterFailure::~FilterFailure() noexcept
 {
 }
 

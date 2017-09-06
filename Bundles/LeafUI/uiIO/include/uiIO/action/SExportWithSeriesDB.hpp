@@ -77,25 +77,25 @@ public:
     typedef ::fwCom::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
     /// @}
 
-    UIIO_API SExportWithSeriesDB() throw();
+    UIIO_API SExportWithSeriesDB() noexcept;
 
-    UIIO_API virtual ~SExportWithSeriesDB() throw();
+    UIIO_API virtual ~SExportWithSeriesDB() noexcept;
 
 protected:
 
     /**
      * @brief Configure action. Retrieves the IOSelector config.
      */
-    void configuring() throw( ::fwTools::Failed );
+    void configuring();
 
     /// Start action.
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Stop action.
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     void info(std::ostream &_sstream );
 

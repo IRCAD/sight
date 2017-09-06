@@ -9,13 +9,13 @@
 namespace fwAtoms
 {
 
-Exception::Exception(const std::string &message) throw()
+Exception::Exception(const std::string &message) noexcept
     : ::fwCore::Exception(message)
 {
 }
 
 
-Exception::~Exception() throw()
+Exception::~Exception() noexcept
 {
 }
 

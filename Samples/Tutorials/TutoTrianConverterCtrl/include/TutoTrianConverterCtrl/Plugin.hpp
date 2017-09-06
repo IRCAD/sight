@@ -24,20 +24,20 @@ class TUTOTRIANCONVERTERCTRL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Constructor.
-    TUTOTRIANCONVERTERCTRL_API Plugin() throw();
+    TUTOTRIANCONVERTERCTRL_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTOTRIANCONVERTERCTRL_API ~Plugin() throw();
+    TUTOTRIANCONVERTERCTRL_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    TUTOTRIANCONVERTERCTRL_API void start() throw(::fwRuntime::RuntimeException);
+    TUTOTRIANCONVERTERCTRL_API void start();
 
     /// Overrides stop method. Do nothing
-    TUTOTRIANCONVERTERCTRL_API void stop() throw();
+    TUTOTRIANCONVERTERCTRL_API void stop() noexcept;
 
-    TUTOTRIANCONVERTERCTRL_API void initialize() throw( ::fwRuntime::RuntimeException );
+    TUTOTRIANCONVERTERCTRL_API void initialize();
 
-    TUTOTRIANCONVERTERCTRL_API void uninitialize() throw();
+    TUTOTRIANCONVERTERCTRL_API void uninitialize() noexcept;
 
 private:
     ::fwData::Mesh::sptr m_mesh;

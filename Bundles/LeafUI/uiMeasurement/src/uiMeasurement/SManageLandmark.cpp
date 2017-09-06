@@ -28,7 +28,7 @@ const ::fwCom::Slots::SlotKeyType SManageLandmark::s_CLEAR_SLOT           = "cle
 
 // ----------------------------------------------------------------------------
 
-SManageLandmark::SManageLandmark() throw() :
+SManageLandmark::SManageLandmark() noexcept :
     m_counter(0)
 {
     newSlot(s_CREATE_LANDMARK_SLOT, &SManageLandmark::createLandmark, this);
@@ -37,25 +37,25 @@ SManageLandmark::SManageLandmark() throw() :
 
 // ----------------------------------------------------------------------------
 
-void SManageLandmark::configuring() throw (::fwTools::Failed)
+void SManageLandmark::configuring()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SManageLandmark::starting() throw (::fwTools::Failed)
+void SManageLandmark::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SManageLandmark::stopping() throw (fwTools::Failed)
+void SManageLandmark::stopping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SManageLandmark::updating() throw (::fwTools::Failed)
+void SManageLandmark::updating()
 {
 }
 

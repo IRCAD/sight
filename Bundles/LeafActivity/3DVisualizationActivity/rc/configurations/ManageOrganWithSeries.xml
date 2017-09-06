@@ -1,7 +1,6 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>OrganManagerWithSeries</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="ORGAN_MANAGER_MODELSERIES" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
         <param name="ICON_PATH" />
@@ -10,97 +9,85 @@
     </parameters>
     <config>
 
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
 
-        <object type="::fwData::Composite">
+        <!-- MAIN FRAME -->
+        <service uid="organManagerFrame" type="::gui::frame::SDefaultFrame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Organs Manager</name>
+                    <icon>${ICON_PATH}</icon>
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="multiViewOrgans" start="yes" />
+            </registry>
+        </service>
 
-            <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_organManagerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-                <window onclose="notify" />
-                <gui>
-                    <frame>
-                        <name>Organs Manager</name>
-                        <icon>${ICON_PATH}</icon>
-                        <style mode="STAY_ON_TOP" />
-                    </frame>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_multiViewOrgans" start="yes" />
-                </registry>
-            </service>
+        <service uid="multiViewOrgans" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager">
+                    <orientation value="vertical" />
+                    <view caption="Organs" expanded="true" />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="listOrganEditor" start="yes" />
+                <view sid="organMaterialEditor" start="no" />
+                <view sid="representationEditor" start="no" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_multiViewOrgans" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::ToolboxLayoutManager">
-                        <orientation value="vertical" />
-                        <view caption="Organs" expanded="true" />
-                        <view caption="Material" expanded="true" />
-                        <view caption="Representation" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_listOrganEditor" start="yes" />
-                    <view sid="${GENERIC_UID}_organMaterialEditor" start="no" />
-                    <view sid="${GENERIC_UID}_representationEditor" start="no" />
-                </registry>
-            </service>
+        <service uid="myUpdaterReconst" type="::ctrlSelection::updater::SObjFromSlot">
+            <out key="object" uid="reconstruction" />
+        </service>
 
-            <item key="selection">
-                <object type="::fwData::Composite">
+        <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <compositeKey>reconstruction</compositeKey>
-                    </service>
+        <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                        <mode type="dummy" />
-                        <config>
+        <service uid="listOrganEditor" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes">
+            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+                <volume_cc view="positive">@volume</volume_cc>
+            </columns>
+        </service>
 
-                            <object id="reconstruction" type="::fwData::Reconstruction">
-                                <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+        <connect>
+            <signal>listOrganEditor/reconstructionSelected</signal>
+            <slot>myUpdaterReconst/addOrSwap</slot>
+        </connect>
 
-                                <proxy channel="${ModelRepresentationChannel}">
-                                    <signal>${GENERIC_UID}_representationEditor/normalsModeModified</signal>
-                                </proxy>
-                            </object>
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>organManagerFrame/closed</signal>
+        </connect>
 
-                        </config>
-                    </service>
+        <connect channel="${ModelDisplayChannel}">
+            <signal>listOrganEditor/recDisplayModified</signal>
+            <slot>listOrganEditor/showReconstructions</slot>
+        </connect>
 
-                </object>
-            </item>
+        <connect channel="${ModelRepresentationChannel}">
+            <signal>representationEditor/normalsModeModified</signal>
+        </connect>
 
-            <item key="modelSeries">
-                <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
-                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
-                        <columns>
-                            <organ_name>@organ_name</organ_name>
-                            <volume_cc view="positive">@volume</volume_cc>
-                        </columns>
-                    </service>
-                </object>
-            </item>
+        <!-- START AND STOP SERVICES -->
+        <start uid="organManagerFrame" />
+        <start uid="myUpdaterReconst" />
 
-            <connect>
-                <signal>${GENERIC_UID}_listOrganEditor/reconstructionSelected</signal>
-                <slot>${GENERIC_UID}_myUpdaterReconst/addOrSwap</slot>
-            </connect>
-            
-            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
-                <signal>${GENERIC_UID}_organManagerFrame/closed</signal>
-            </proxy>
-
-            <proxy channel="${ModelDisplayChannel}">
-                <signal>${GENERIC_UID}_listOrganEditor/recDisplayModified</signal>
-                <slot>${GENERIC_UID}_listOrganEditor/showReconstructions</slot>
-            </proxy>
-
-            <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_organManagerFrame" />
-            <start uid="${GENERIC_UID}_myUpdaterReconst" />
-            <start uid="${GENERIC_UID}_myManagerForOrgansFrame" />
-
-        </object>
+        <!-- Deferred start -->
+        <start uid="organMaterialEditor" />
+        <start uid="representationEditor" />
 
     </config>
 </extension>

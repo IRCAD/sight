@@ -33,13 +33,13 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
@@ -57,7 +57,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 //-----------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 
@@ -70,7 +70,7 @@ void setup()
 
 //-----------------------------------------------------------------------------
 
-int Plugin::run() throw()
+int Plugin::run() noexcept
 {
     m_workerQt->post( std::bind( &setup ) );
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop

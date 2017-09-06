@@ -32,16 +32,16 @@ public:
     /**
      * @brief   destructor
      */
-    GUIQT_API ~Plugin() throw();
+    GUIQT_API ~Plugin() noexcept;
 
     // Overrides
-    GUIQT_API void start() throw(::fwRuntime::RuntimeException);
+    GUIQT_API void start();
 
     // Overrides
-    GUIQT_API void stop() throw();
+    GUIQT_API void stop() noexcept;
 
 
-    GUIQT_API int run() throw();
+    GUIQT_API int run() noexcept;
 
 protected:
 

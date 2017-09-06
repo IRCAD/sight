@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
 namespace ctrlCamp
 {
@@ -48,7 +48,7 @@ class CTRLCAMP_CLASS_API SCopy : public ::ctrlCamp::ICamp
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCopy)(::ctrlCamp::ICamp) );
+    fwCoreServiceClassDefinitionsMacro( (SCopy)(::ctrlCamp::ICamp) );
 
     /// Constructor
     CTRLCAMP_API SCopy();
@@ -65,16 +65,16 @@ protected:
     };
 
     /// Does nothing
-    CTRLCAMP_API virtual void starting() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void starting();
 
     //// Configure the service
-    CTRLCAMP_API virtual void configuring() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void configuring();
 
     /// Does nothing
-    CTRLCAMP_API virtual void stopping() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void stopping();
 
     /// Does nothing
-    CTRLCAMP_API virtual void updating() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void updating();
 
 private:
 
@@ -84,7 +84,7 @@ private:
     /// source object uid or sesh@ path
     std::string m_source;
 
-    /// sesh@ path for appXml2
+    /// sesh@ path for appXml
     std::string m_path;
 
     /// boolean to know if the object to copy is a sesh@ path or an object
@@ -98,6 +98,5 @@ private:
 };
 
 } // namespace ctrlCamp
-
 
 #endif /* __CTRLCAMP_SCOPY_HPP__ */

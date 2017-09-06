@@ -7,8 +7,8 @@
 #ifndef __CTRLSELECTION_WRAPPER_SIMAGESIGNALFORWARDER_HPP__
 #define __CTRLSELECTION_WRAPPER_SIMAGESIGNALFORWARDER_HPP__
 
-#include "ctrlSelection/IWrapperSrv.hpp"
 #include "ctrlSelection/config.hpp"
+#include "ctrlSelection/IWrapperSrv.hpp"
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
@@ -49,28 +49,28 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SImageSignalForwarder)(::ctrlSelection::IWrapperSrv) );
 
-    CTRLSELECTION_API SImageSignalForwarder() throw();
+    CTRLSELECTION_API SImageSignalForwarder() noexcept;
 
-    CTRLSELECTION_API virtual ~SImageSignalForwarder() throw();
+    CTRLSELECTION_API virtual ~SImageSignalForwarder() noexcept;
 
 protected:
 
     /// Implements starting method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Implements swapping method derived from IService. Convert the image.
-    CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void swapping();
 
     /**
      * @brief Configures the service.
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements updating method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );
@@ -89,7 +89,7 @@ private:
     void forwardLandmarkRemoved(SPTR(::fwData::Point) point);
     void forwardLandmarkDisplayed(bool display);
     void forwardDistanceAdded(SPTR(::fwData::PointList) pointList);
-    void forwardDistanceRemoved(SPTR(::fwData::PointList) pointList);
+    void forwardDistanceRemoved(CSPTR(::fwData::PointList) pointList);
     void forwardDistanceDisplayed(bool display);
     void forwardSliceIndexModified(int axial, int frontal, int sagittal);
     void forwardSliceTypeModified(int from, int to);

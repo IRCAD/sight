@@ -36,26 +36,26 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (CrossTypeAction)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIVISU_API CrossTypeAction() throw();
+    UIVISU_API CrossTypeAction() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~CrossTypeAction() throw();
+    UIVISU_API virtual ~CrossTypeAction() noexcept;
 
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Starts action
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops action
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Notifies message to change cross type
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
     /// Does nothing
-    void swapping() throw(::fwTools::Failed);
+    void swapping();
 
     /**
      * @brief Configure action.
@@ -66,7 +66,7 @@ protected:
        @endcode
      * - \b crossType : must be full, half or hide
      */
-    void configuring() throw(fwTools::Failed);
+    void configuring();
 
     virtual void info( std::ostream &_sstream );
 

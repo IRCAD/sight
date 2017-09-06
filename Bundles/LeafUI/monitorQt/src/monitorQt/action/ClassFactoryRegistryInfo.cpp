@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,33 +7,34 @@
 #include "monitorQt/action/ClassFactoryRegistryInfo.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <QHBoxLayout>
 
-namespace monitor
+namespace monitorQt
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ClassFactoryRegistryInfo, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::ClassFactoryRegistryInfo( ) throw()
+ClassFactoryRegistryInfo::ClassFactoryRegistryInfo( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() throw()
+ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::updating( ) throw(::fwTools::Failed)
+void ClassFactoryRegistryInfo::updating( )
 {
     m_tree->clearSelection();
     m_tree->clear();
@@ -54,18 +55,18 @@ void ClassFactoryRegistryInfo::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::configuring() throw (::fwTools::Failed)
+void ClassFactoryRegistryInfo::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
+void ClassFactoryRegistryInfo::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
-    QWidget *parent = qApp->activeWindow();
+    QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
     m_dialog->setWindowTitle("ServiceFactoryRegistry");
     m_dialog->setMinimumSize(800, 600);
@@ -86,7 +87,7 @@ void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ClassFactoryRegistryInfo::stopping() throw (::fwTools::Failed)
+void ClassFactoryRegistryInfo::stopping()
 {
     m_dialog->hide();
     delete m_tree;
@@ -99,5 +100,5 @@ void ClassFactoryRegistryInfo::stopping() throw (::fwTools::Failed)
 
 } // namespace action
 
-} // namespace monitor
+} // namespace monitorQt
 

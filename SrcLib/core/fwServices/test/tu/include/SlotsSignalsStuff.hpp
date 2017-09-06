@@ -89,13 +89,13 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() throw ( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
-    virtual void starting() throw ( ::fwTools::Failed );
-    virtual void stopping() throw ( ::fwTools::Failed );
-    virtual void swapping() throw ( ::fwTools::Failed );
-    virtual void updating() throw ( ::fwTools::Failed );
+    virtual void starting();
+    virtual void stopping();
+    virtual void swapping();
+    virtual void updating();
 };
 
 //------------------------------------------------------------------------------
@@ -114,25 +114,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() throw ( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() throw ( ::fwTools::Failed )
+    virtual void starting()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() throw ( ::fwTools::Failed )
+    virtual void stopping()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() throw ( ::fwTools::Failed )
+    virtual void swapping()
     {
     }
-    virtual void updating() throw ( ::fwTools::Failed );
+    virtual void updating();
 };
 
 //------------------------------------------------------------------------------
@@ -153,25 +153,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() throw ( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() throw ( ::fwTools::Failed )
+    virtual void starting()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() throw ( ::fwTools::Failed )
+    virtual void stopping()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() throw ( ::fwTools::Failed )
+    virtual void swapping()
     {
     }
-    virtual void updating() throw ( ::fwTools::Failed );
+    virtual void updating();
 
     ChangedSignalType::sptr m_sigChanged;
 };
@@ -199,25 +199,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() throw ( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() throw ( ::fwTools::Failed )
+    virtual void starting()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() throw ( ::fwTools::Failed )
+    virtual void stopping()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() throw ( ::fwTools::Failed )
+    virtual void swapping()
     {
     }
-    virtual void updating() throw ( ::fwTools::Failed );
+    virtual void updating();
 
     ChangeSlotType::sptr m_slotChange;
 
@@ -243,25 +243,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() throw ( ::fwTools::Failed )
+    virtual void configuring()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() throw ( ::fwTools::Failed )
+    virtual void starting()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() throw ( ::fwTools::Failed )
+    virtual void stopping()
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() throw ( ::fwTools::Failed )
+    virtual void swapping()
     {
     }
-    virtual void updating() throw ( ::fwTools::Failed );
+    virtual void updating();
 
     /// Slot to receive update
     void updateBuffer();

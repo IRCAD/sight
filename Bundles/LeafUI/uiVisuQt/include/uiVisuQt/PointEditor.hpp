@@ -1,13 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __UIVISUQT_POINTEDITOR_HPP__
 #define __UIVISUQT_POINTEDITOR_HPP__
-
-
 
 #include "uiVisuQt/config.hpp"
 
@@ -23,8 +21,7 @@
 #include <QObject>
 #include <QPointer>
 
-
-namespace uiVisu
+namespace uiVisuQt
 {
 
 /**
@@ -37,34 +34,32 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (PointEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API PointEditor() throw();
+    UIVISUQT_API PointEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~PointEditor() throw();
+    UIVISUQT_API virtual ~PointEditor() noexcept;
 
 protected:
-
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
-    void swapping() throw(::fwTools::Failed);
+    void swapping();
 
-    void configuring() throw( ::fwTools::Failed);
+    void configuring();
 
     /// Overrides
     virtual void info( std::ostream& _sstream );
-
 
 private:
 

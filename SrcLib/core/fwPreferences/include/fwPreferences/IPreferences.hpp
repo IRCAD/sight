@@ -25,12 +25,12 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (IPreferences)(::fwServices::IService) );
 
     /// Constructor
-    IPreferences() throw()
+    IPreferences() noexcept
     {
     }
 
     /// Destructor
-    virtual ~IPreferences() throw()
+    virtual ~IPreferences() noexcept
     {
     }
 };

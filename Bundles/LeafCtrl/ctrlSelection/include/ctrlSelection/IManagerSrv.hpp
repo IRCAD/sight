@@ -40,7 +40,7 @@ protected:
     /**
      * @brief Swaps the service from associated object to another object. Stops and starts this service.
      */
-    CTRLSELECTION_API virtual void swapping() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void swapping();
 
     typedef std::map< ObjectIdType, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
 

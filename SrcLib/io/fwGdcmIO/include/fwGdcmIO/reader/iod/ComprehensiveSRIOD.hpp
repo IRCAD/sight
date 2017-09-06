@@ -40,7 +40,7 @@ public:
     FWGDCMIO_API ~ComprehensiveSRIOD();
 
     //// Read DICOM file
-    FWGDCMIO_API void read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API void read(::fwMedData::Series::sptr series);
 
 
 };

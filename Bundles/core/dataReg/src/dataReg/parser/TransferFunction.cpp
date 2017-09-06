@@ -20,7 +20,7 @@ namespace parser
 
 // ------------------------------------------------------------------------------
 
-void TransferFunction::updating( ) throw(fwTools::Failed)
+void TransferFunction::updating( )
 {
     SLM_FATAL("This method is deprecated, and this shouldn't be used.");
 }

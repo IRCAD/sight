@@ -27,12 +27,12 @@ struct FWATOMS_CLASS_API Exception : public ::fwCore::Exception
      *
      * @param[in]   message a string containing the failure message
      */
-    FWATOMS_API Exception(const std::string &message) throw();
+    FWATOMS_API Exception(const std::string &message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
-    FWATOMS_API ~Exception() throw();
+    FWATOMS_API ~Exception() noexcept;
 
 
 };

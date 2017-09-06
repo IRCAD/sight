@@ -63,16 +63,16 @@ public:
 protected:
 
     /// Set memory and command boundaries.
-    CTRLHISTORY_API virtual void configuring() throw( ::fwTools::Failed );
+    CTRLHISTORY_API virtual void configuring();
 
     /// Notify if undo or redo are possible.
-    CTRLHISTORY_API virtual void starting() throw( ::fwTools::Failed );
+    CTRLHISTORY_API virtual void starting();
 
     /// Notify if undo or redo are possible.
-    CTRLHISTORY_API virtual void updating() throw( ::fwTools::Failed );
+    CTRLHISTORY_API virtual void updating();
 
     /// Clears the history.
-    CTRLHISTORY_API virtual void stopping() throw( ::fwTools::Failed );
+    CTRLHISTORY_API virtual void stopping();
 
 private:
 

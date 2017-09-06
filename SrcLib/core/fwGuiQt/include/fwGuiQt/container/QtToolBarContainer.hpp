@@ -43,9 +43,9 @@ public:
                                             (()),
                                             ::fwGui::factory::New< QtToolBarContainer > );
 
-    FWGUIQT_API QtToolBarContainer(::fwGui::GuiBaseObject::Key key) throw();
+    FWGUIQT_API QtToolBarContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 
-    FWGUIQT_API virtual ~QtToolBarContainer() throw();
+    FWGUIQT_API virtual ~QtToolBarContainer() noexcept;
 
 
     FWGUIQT_API virtual void clean();

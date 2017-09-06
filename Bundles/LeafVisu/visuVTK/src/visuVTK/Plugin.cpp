@@ -20,18 +20,18 @@ namespace visuVTK
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("visuVTK::Plugin");
 
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     SLM_TRACE_FUNC();
 
     ::fwRenderVTK::vtk::Instantiator::ClassInitialize();
 }
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
     ::fwRenderVTK::vtk::Instantiator::ClassFinalize();
 }

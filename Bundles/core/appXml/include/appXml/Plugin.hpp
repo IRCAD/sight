@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,11 @@
 #ifndef __APPXML_PLUGIN_HPP__
 #define __APPXML_PLUGIN_HPP__
 
-#include <fwRuntime/Plugin.hpp>
-#include <fwServices/AppConfigManager.hpp>
-
 #include "appXml/config.hpp"
+
+#include <fwRuntime/Plugin.hpp>
+
+#include <fwServices/AppConfigManager.hpp>
 
 namespace appXml
 {
@@ -22,20 +23,20 @@ class APPXML_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Constructor.
-    APPXML_API Plugin() throw();
+    APPXML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    APPXML_API ~Plugin() throw();
+    APPXML_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    APPXML_API void start() throw(::fwRuntime::RuntimeException);
+    APPXML_API void start();
 
     /// Overrides stop method. Do nothing
-    APPXML_API void stop() throw();
+    APPXML_API void stop() noexcept;
 
-    APPXML_API void initialize() throw( ::fwRuntime::RuntimeException );
+    APPXML_API void initialize();
 
-    APPXML_API void uninitialize() throw();
+    APPXML_API void uninitialize() noexcept;
 
 private:
     std::string m_configurationName;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,11 @@
 #ifndef __UIMEASUREMENT_ACTION_SHOWDISTANCE_HPP__
 #define __UIMEASUREMENT_ACTION_SHOWDISTANCE_HPP__
 
-#include <fwGui/IActionSrv.hpp>
-#include <fwData/Image.hpp>
 #include "uiMeasurement/config.hpp"
+
+#include <fwData/Image.hpp>
+
+#include <fwGui/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -23,19 +25,11 @@ class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ShowDistance)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (ShowDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API ShowDistance() throw();
+    UIMEASUREMENT_API ShowDistance() noexcept;
 
-    UIMEASUREMENT_API virtual ~ShowDistance() throw();
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_SHOW_DISTANCE_SLOT
-     */
-    UIMEASUREMENT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIMEASUREMENT_API virtual ~ShowDistance() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -46,19 +40,17 @@ public:
     UIMEASUREMENT_API virtual KeyConnectionsMap getAutoConnections() const;
 protected:
 
+    void swapping();
 
-    void swapping() throw(::fwTools::Failed);
+    void configuring();
 
-    void configuring() throw (::fwTools::Failed);
+    void starting();
 
-    void starting() throw (::fwTools::Failed);
+    void updating();
 
-    void updating() throw (::fwTools::Failed);
+    void stopping();
 
-    void stopping() throw (::fwTools::Failed);
-
-    void info(std::ostream &_sstream );
-
+    void info(std::ostream& _sstream );
 
 private:
 

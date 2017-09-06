@@ -11,7 +11,7 @@
 
 #include <fwData/Color.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkActor.h>
 #include <vtkLineSource.h>
@@ -28,28 +28,30 @@ namespace visuVTKAdaptor
  * - updateVisibility(bool) : update the line visibility
  * - updateLength(float) : update the line length
  *
+ * @section XML XML Configuration
  * @code{.xml}
-      <adaptor id="..." class="::visuVTKAdaptor::SLine" objectId="self">
-       <config renderer="default" length="..." width="..." transform="..." color="..." dotted="dot"/>
-      </adaptor>
+      <service uid="..." type="::visuVTKAdaptor::SLine">
+           <config renderer="default" length="..." width="..." transform="..." color="..." dotted="..."/>
+      </service>
      @endcode
  * @subsection Configuration Configuration
- * - \b renderer : defines the renderer to show the line.
- * - \b length : defines the length of the line.
- * - \b width : defines the width of the line.
- * - \b transform : transformation matrix applied to the line.
- * - \b color(#FFFFFF) : color of the line
- * - \b dotted : true if dotted line
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer(mandatory) : defines the renderer to show the line.
+ *    - \b transform(mandatory) : transformation matrix applied to the line.
+ *    - \b length(optional, default: 1) : defines the length of the line.
+ *    - \b width(optional, default: 1) : defines the width of the line.
+ *    - \b color(optional, default: #FFFFFF) : color of the line
+ *    - \b dotted (optional, default: false) : if true: dotted line
  */
 
-class VISUVTKADAPTOR_CLASS_API SLine : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API SLine : public ::fwRenderVTK::IAdaptor
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SLine)(::fwRenderVTK::IAdaptor) );
 
-    VISUVTKADAPTOR_API SLine() throw();
-    VISUVTKADAPTOR_API virtual ~SLine() throw();
+    VISUVTKADAPTOR_API SLine() noexcept;
+    VISUVTKADAPTOR_API virtual ~SLine() noexcept;
 
     /**
      * @name Slots API
@@ -70,11 +72,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doConfigure() throw(::fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
 private:
 

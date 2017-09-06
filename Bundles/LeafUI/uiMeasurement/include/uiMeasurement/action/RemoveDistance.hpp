@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,6 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-
 namespace uiMeasurement
 {
 
@@ -23,33 +22,32 @@ namespace action
 
 /**
  * @brief   This action removes distances.
- * @class   RemoveDistance
  */
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (RemoveDistance)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (RemoveDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API RemoveDistance() throw();
+    UIMEASUREMENT_API RemoveDistance() noexcept;
 
-    UIMEASUREMENT_API virtual ~RemoveDistance() throw();
+    UIMEASUREMENT_API virtual ~RemoveDistance() noexcept;
 
 protected:
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream );
+    UIMEASUREMENT_API void info(std::ostream& _sstream );
 
 private:
-    void notifyNewDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance);
+    void notifyNewDistance(const ::fwData::Image::csptr& image, const ::fwData::PointList::sptr& distance) const;
 
-    void notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance);
+    void notifyDeleteDistance(const ::fwData::Image::csptr& image, const ::fwData::PointList::csptr& distance) const;
 };
 
 } // namespace action

@@ -41,22 +41,22 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SIncrementArray)(::fwServices::IController) );
 
-    TUTO16MULTITHREADCONSOLE_API SIncrementArray() throw();
-    TUTO16MULTITHREADCONSOLE_API virtual ~SIncrementArray() throw();
+    TUTO16MULTITHREADCONSOLE_API SIncrementArray() noexcept;
+    TUTO16MULTITHREADCONSOLE_API virtual ~SIncrementArray() noexcept;
 
 protected:
 
     /// Initialize the timer
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stop and reset the timer
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Increment all the values of the current array
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Do nothing
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
     /// Slot: starts the timer

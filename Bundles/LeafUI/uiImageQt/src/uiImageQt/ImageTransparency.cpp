@@ -28,24 +28,24 @@
 #include <QLabel>
 #include <QWidget>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageTransparency, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::ImageTransparency, ::fwData::Image );
 
-ImageTransparency::ImageTransparency() throw()
-{
-}
-
-//------------------------------------------------------------------------------
-
-ImageTransparency::~ImageTransparency() throw()
+ImageTransparency::ImageTransparency() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::starting() throw(::fwTools::Failed)
+ImageTransparency::~ImageTransparency() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+void ImageTransparency::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -85,7 +85,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::stopping() throw(::fwTools::Failed)
+void ImageTransparency::stopping()
 {
     SLM_TRACE_FUNC();
     QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
@@ -97,7 +97,7 @@ void ImageTransparency::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::configuring() throw(fwTools::Failed)
+void ImageTransparency::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -114,7 +114,7 @@ void ImageTransparency::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::updating() throw(::fwTools::Failed)
+void ImageTransparency::updating()
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
@@ -157,7 +157,7 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::swapping() throw(::fwTools::Failed)
+void ImageTransparency::swapping()
 {
     this->updating();
 }

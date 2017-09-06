@@ -24,13 +24,13 @@ struct VISUVTK_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    VISUVTK_API void start() throw(::fwRuntime::RuntimeException);
+    VISUVTK_API void start();
 
     // Overrides
-    VISUVTK_API void stop() throw();
+    VISUVTK_API void stop() noexcept;
 
 };
 

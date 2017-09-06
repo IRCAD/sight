@@ -31,25 +31,25 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-namespace uiReconstruction
+namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::OrganMaterialEditor, ::fwData::Reconstruction );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor, ::fwData::Reconstruction );
 
-OrganMaterialEditor::OrganMaterialEditor() throw()
+OrganMaterialEditor::OrganMaterialEditor() noexcept
 {
     //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
 
-OrganMaterialEditor::~OrganMaterialEditor() throw()
+OrganMaterialEditor::~OrganMaterialEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::starting() throw(::fwTools::Failed)
+void OrganMaterialEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -91,7 +91,7 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
+void OrganMaterialEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -103,7 +103,7 @@ void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::configuring() throw(fwTools::Failed)
+void OrganMaterialEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -111,14 +111,14 @@ void OrganMaterialEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::updating() throw(::fwTools::Failed)
+void OrganMaterialEditor::updating()
 {
     this->refreshMaterial();
 }
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::swapping() throw(::fwTools::Failed)
+void OrganMaterialEditor::swapping()
 {
     this->updating();
 }

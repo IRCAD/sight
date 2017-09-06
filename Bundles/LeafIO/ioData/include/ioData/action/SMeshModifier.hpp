@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,13 @@
 #ifndef __IODATA_ACTION_SMESHMODIFIER_HPP__
 #define __IODATA_ACTION_SMESHMODIFIER_HPP__
 
-#include <fwServices/IService.hpp>
+#include "ioData/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
 #include <fwDataTools/AlgoMeshDeformation.hpp>
 
-#include "ioData/config.hpp"
+#include <fwGui/IActionSrv.hpp>
+
+#include <fwServices/IService.hpp>
 
 namespace ioData
 {
@@ -22,65 +23,63 @@ namespace action
 /**
  * @brief   This action modifies a mesh using specified functor in configuration.
  * The purpose is to test all possibilities provide by the new mesh structure.
- * @class   SMeshModifier
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service type="::ioData::action::SMeshModifier" >
+         <inout key="mesh" uid="..." />
+         <config functor="ShakeMeshPoint" />
+     </service>
+   @endcode
+ * @subsection InOut InOut
+ * - \b mesh [::fwData::Mesh]: mesh to modify.
+ * @subsection Configuration Configuration
+ * - \b functor
+ * Functor available :
+ *  - ShakeMeshPoint
+ *  - ColorizeMeshPoints
+ *  - ColorizeMeshCells
+ *  - ComputePointNormals
+ *  - ComputeCellNormals
+ *  - ShakePointNormals
+ *  - ShakeCellNormals
+ *  - MeshDeformation
  */
 class IODATA_CLASS_API SMeshModifier : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMeshModifier)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SMeshModifier)(::fwGui::IActionSrv) );
 
     /**
      * @brief Constructor. Do nothing.
      */
-    IODATA_API SMeshModifier() throw();
+    IODATA_API SMeshModifier() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    IODATA_API virtual ~SMeshModifier() throw();
+    IODATA_API virtual ~SMeshModifier() noexcept;
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
-     * @{
-     */
+    IODATA_API virtual void configuring();
 
-    /**
-     * @brief Configure the functor used to generate the mesh.
-     *
-     * Example of configuration :
-     * @code{.xml}
-         <service ... >
-             <config functor="ShakeMeshPoint" />
-         </service>
-        @endcode
-     * Functor available :
-     *  - ShakeMeshPoint
-     *  - ColorizeMeshPoints
-     *  - ColorizeMeshCells
-     *  - ComputePointNormals
-     *  - ComputeCellNormals
-     *  - ShakePointNormals
-     *  - ShakeCellNormals
-     *  - MeshDeformation
-     */
-    IODATA_API virtual void configuring() throw( ::fwTools::Failed );
+    IODATA_API virtual void starting();
 
-    IODATA_API virtual void starting() throw(::fwTools::Failed);
-
-    IODATA_API virtual void stopping() throw(::fwTools::Failed);
+    IODATA_API virtual void stopping();
 
     /**
      * @brief Process the action: modifies the mesh using the selected functor.
      */
-    IODATA_API virtual void updating() throw(::fwTools::Failed);
+    IODATA_API virtual void updating();
 
     /**
      * @brief This method gives information about the class.
      */
-    IODATA_API virtual void info(std::ostream &_sstream );
+    IODATA_API virtual void info(std::ostream& _sstream );
 
     ///@}
 
@@ -93,9 +92,7 @@ private:
     ::fwDataTools::AlgoMeshDeformation m_animator;
 };
 
-
 } // namespace action
 } // namespace ioData
-
 
 #endif /*__IODATA_ACTION_SMESHMODIFIER_HPP__*/

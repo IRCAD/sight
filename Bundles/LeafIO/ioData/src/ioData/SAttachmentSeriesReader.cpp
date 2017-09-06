@@ -124,7 +124,7 @@ std::vector< std::string > SAttachmentSeriesReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-void SAttachmentSeriesReader::configuring() throw(::fwTools::Failed)
+void SAttachmentSeriesReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -157,20 +157,12 @@ void SAttachmentSeriesReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SAttachmentSeriesReader::updating() throw(::fwTools::Failed)
+void SAttachmentSeriesReader::updating()
 {
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwMedData::SeriesDB::sptr seriesDB;
-        if (this->isVersion2())
-        {
-            seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-        }
-        else
-        {
-            seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-        }
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
 
         ::fwMedData::AttachmentSeries::sptr series = ::fwMedData::AttachmentSeries::New();
         const std::string instanceUID = ::fwTools::UUID::generateUUID();

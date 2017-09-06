@@ -211,7 +211,6 @@ const char* DicomData::convertToPresentationTypeString(::fwData::Material::Repre
 //------------------------------------------------------------------------------
 
 int DicomData::convertPointToFrameNumber(const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point)
-throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
     double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
@@ -233,7 +232,6 @@ throw(::fwGdcmIO::exception::Failed)
 //------------------------------------------------------------------------------
 
 double DicomData::convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image, int frameNumber)
-throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
     double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,18 @@
 #ifndef __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
 #define __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
 
-#include <QPointer>
-#include <QObject>
-
-#include <map>
-#include <string>
+#include "uiMedDataQt/config.hpp"
 
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include "uiMedDataQt/config.hpp"
+#include <QObject>
+#include <QPointer>
 
+#include <map>
+#include <string>
 
 class QListWidget;
 class QPushButton;
@@ -26,13 +26,23 @@ class QListWidgetItem;
 class QComboBox;
 class QCheckBox;
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
 
 /**
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service type="::uiMedDataQt::editor::SOrganTransformation">
+       <inout key="modelSeries" uid="..." />
+       <inout key="composite" uid="..." />
+   </service>
+   @endcode
+ * @subsection InOut InOut
+ * - \b modelSeries [::fwMedData::ModelSeries]: modelSeries to modify.
+ * - \b composite [::fwData::Composite]: composite.
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
                                                    public ::gui::editor::IEditor
@@ -43,10 +53,18 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SOrganTransformation)(::gui::editor::IEditor) );
 
     /// constructor
-    UIMEDDATAQT_API SOrganTransformation() throw();
+    UIMEDDATAQT_API SOrganTransformation() noexcept;
     /// destructor
-    UIMEDDATAQT_API virtual ~SOrganTransformation() throw();
+    UIMEDDATAQT_API virtual ~SOrganTransformation() noexcept;
 
+protected:
+
+    UIMEDDATAQT_API virtual void configuring();
+    UIMEDDATAQT_API virtual void starting();
+    UIMEDDATAQT_API virtual void stopping();
+    UIMEDDATAQT_API virtual void swapping();
+    UIMEDDATAQT_API virtual void updating();
+    UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -55,29 +73,15 @@ public:
      * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
      * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-protected:
-
-    /**
-     * @brief configures the service
-     * @code{.xml}
-       <service impl="::uiMedData::editor::SOrganTransformation" type="::gui::editor::IEditor" autoConnect="yes">
-           <TMSUid>MESHDB_UID</TMSUid>
-       </service>
-       @endcode
-     * - \b TMSUid = composite uid
-     */
-    UIMEDDATAQT_API virtual void configuring() throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void starting()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void stopping()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void swapping()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void updating()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private Q_SLOTS:
-    void onReconstructionCheck(QListWidgetItem *currentItem);
+    void onReconstructionCheck(QListWidgetItem* currentItem);
     void onResetClick();
     void onSaveClick();
     void onLoadClick();
@@ -90,13 +94,15 @@ private:
     void refresh();
     void notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat);
 
+    /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
+    void addMeshTransform();
+
     // ReconstructionMapType
     typedef ::std::map< ::std::string, ::fwData::Reconstruction::sptr > ReconstructionMapType;
     typedef ::std::map< ::std::string, ::fwData::TransformationMatrix3D::sptr> InnerMatMappingType;
     typedef ::std::map< ::std::string, InnerMatMappingType> SaveMappingType;
 
     ReconstructionMapType m_reconstructionMap;
-    ::std::string m_TMSUid;
     QPointer< QPushButton > m_saveButton;
     QPointer< QPushButton > m_loadButton;
     QPointer< QPushButton > m_resetButton;
@@ -110,7 +116,6 @@ private:
 };
 
 } // namespace editor
-} // namespace uiMedData
-
+} // namespace uiMedDataQt
 
 #endif // __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__

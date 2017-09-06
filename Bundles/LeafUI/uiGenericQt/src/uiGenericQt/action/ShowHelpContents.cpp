@@ -1,28 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QObject>
-#include <QApplication>
-#include <QDialog>
-#include <QHBoxLayout>
-#include <QSplitter>
-#include <QHelpEngine>
-#include <QHelpContentWidget>
-#include <QTextBrowser>
-
-#include <boost/filesystem/operations.hpp>
+#include "uiGenericQt/action/ShowHelpContents.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwServices/macros.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "uiGenericQt/action/ShowHelpContents.hpp"
+#include <fwServices/macros.hpp>
 
-namespace uiGeneric
+#include <boost/filesystem/operations.hpp>
+
+#include <QApplication>
+#include <QDialog>
+#include <QHBoxLayout>
+#include <QHelpContentWidget>
+#include <QHelpEngine>
+#include <QObject>
+#include <QSplitter>
+#include <QTextBrowser>
+
+namespace uiGenericQt
 {
 namespace action
 {
@@ -32,12 +34,15 @@ namespace action
 class HelpBrowser : public QTextBrowser
 {
 public:
-    HelpBrowser(QHelpEngine *helpEngine, QWidget *parent = 0)
-        : QTextBrowser(parent), helpEngine(helpEngine)
+    HelpBrowser(QHelpEngine* helpEngine, QWidget* parent = 0) :
+        QTextBrowser(parent),
+        helpEngine(helpEngine)
     {
     }
 
-    QVariant loadResource(int type, const QUrl &url)
+    //------------------------------------------------------------------------------
+
+    QVariant loadResource(int type, const QUrl& url)
     {
         if (url.scheme() == "qthelp")
         {
@@ -50,16 +55,15 @@ public:
     }
 
 private:
-    QHelpEngine *helpEngine;
+    QHelpEngine* helpEngine;
 };
 //------------------------------------------------------------------------------
 
-
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::ShowHelpContents, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-ShowHelpContents::ShowHelpContents( ) throw() :
+ShowHelpContents::ShowHelpContents( ) noexcept :
     m_bServiceIsConfigured(false),
     m_fsHelpPath("")
 {
@@ -67,20 +71,20 @@ ShowHelpContents::ShowHelpContents( ) throw() :
 
 //------------------------------------------------------------------------------
 
-ShowHelpContents::~ShowHelpContents() throw()
+ShowHelpContents::~ShowHelpContents() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::info(std::ostream &_sstream )
+void ShowHelpContents::info(std::ostream& _sstream )
 {
     _sstream << "Action for show help contents" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::configuring() throw(::fwTools::Failed)
+void ShowHelpContents::configuring()
 {
     /*
      * .qhp/.qch (source/binary) : Contains a table of contents,
@@ -101,7 +105,7 @@ void ShowHelpContents::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::updating() throw(::fwTools::Failed)
+void ShowHelpContents::updating()
 {
     SLM_TRACE_FUNC();
     SLM_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
@@ -123,13 +127,13 @@ void ShowHelpContents::updating() throw(::fwTools::Failed)
     }
     else
     {
-        QSplitter *helpPanel     = new QSplitter(Qt::Horizontal);
-        HelpBrowser *helpBrowser = new HelpBrowser(helpEngine, dialog);
+        QSplitter* helpPanel     = new QSplitter(Qt::Horizontal);
+        HelpBrowser* helpBrowser = new HelpBrowser(helpEngine, dialog);
         helpPanel->insertWidget(0, helpEngine->contentWidget());
         helpPanel->insertWidget(1, helpBrowser);
         helpPanel->setStretchFactor(1, 1);
 
-        QHBoxLayout *hLayout = new QHBoxLayout();
+        QHBoxLayout* hLayout = new QHBoxLayout();
         hLayout->addWidget(helpPanel);
         dialog->setLayout( hLayout );
         QObject::connect(helpEngine->contentWidget(), SIGNAL(linkActivated(const QUrl &)), helpBrowser,
@@ -141,20 +145,19 @@ void ShowHelpContents::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::starting() throw (::fwTools::Failed)
+void ShowHelpContents::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::stopping() throw (::fwTools::Failed)
+void ShowHelpContents::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-
 } // namespace action
-} // namespace uiGeneric
+} // namespace uiGenericQt

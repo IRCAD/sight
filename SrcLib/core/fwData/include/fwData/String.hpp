@@ -33,12 +33,12 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWDATA_API String(::fwData::Object::Key key) throw();
+    FWDATA_API String(::fwData::Object::Key key) noexcept;
 
     /**
      * @brief Destructor.
      */
-    FWDATA_API virtual ~String() throw();
+    FWDATA_API virtual ~String() noexcept;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );

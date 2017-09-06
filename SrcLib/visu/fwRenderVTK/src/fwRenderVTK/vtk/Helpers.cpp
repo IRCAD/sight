@@ -1,24 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <vtkMath.h>
-#include <vtkPoints.h>
-#include <vtkPicker.h>
-#include <vtkAssemblyNode.h>
-#include <vtkRenderer.h>
-#include <vtkCamera.h>
-#include <vtkAssemblyPath.h>
-#include <vtkProp3DCollection.h>
-
-#include <vtkOpenGLRenderWindow.h>
+#include "fwRenderVTK/vtk/Helpers.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
+#include <vtkAssemblyNode.h>
+#include <vtkAssemblyPath.h>
+#include <vtkCamera.h>
+#include <vtkMath.h>
+#include <vtkOpenGLRenderWindow.h>
+#include <vtkPicker.h>
+#include <vtkPoints.h>
+#include <vtkProp3DCollection.h>
+#include <vtkRenderer.h>
 
 namespace fwRenderVTK
 {
@@ -35,7 +33,7 @@ vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
     double distance = VTK_DOUBLE_MAX;
     renderer->GetActiveCamera()->GetPosition(camPosition);
 
-    for(vtkIdType i = 0; i<pts->GetNumberOfPoints (); i++)
+    for(vtkIdType i = 0; i < pts->GetNumberOfPoints(); i++)
     {
         double* point        = pts->GetPoint(i);
         double distancePtCam = vtkMath::Distance2BetweenPoints(point, camPosition);
@@ -64,9 +62,9 @@ vtkProp* getNearestPickedProp(vtkAbstractPropPicker* picker, vtkRenderer* render
     {
         vtkIdType id = getNearestPointId(vtkpicker->GetPickedPositions(), renderer);
 
-        if (id>-1 && vtkpicker->GetProp3Ds()->GetNumberOfItems() > id)
+        if (id > -1 && vtkpicker->GetProp3Ds()->GetNumberOfItems() > id)
         {
-            res = vtkProp::SafeDownCast(vtkpicker->GetProp3Ds()->GetItemAsObject(id));
+            res = vtkProp::SafeDownCast(vtkpicker->GetProp3Ds()->GetItemAsObject(static_cast<int>(id)));
         }
     }
     else
@@ -92,7 +90,7 @@ bool getNearestPickedPosition(vtkAbstractPropPicker* picker, vtkRenderer* render
         vtkPoints* pts = vtkpicker->GetPickedPositions();
         vtkIdType id   = getNearestPointId(pts, renderer);
 
-        if (id>-1)
+        if (id > -1)
         {
             point = pts->GetPoint(id);
         }
@@ -123,6 +121,8 @@ vtkSmartPointer<vtkShaderProgram>
 #else
 vtkSmartPointer<vtkShaderProgram2>
 #endif
+//------------------------------------------------------------------------------
+
 buildShader( vtkOpenGLRenderWindow* pWindow,
              const char* pcVertexShader,
              const char* pcFragmentShader )
@@ -135,7 +135,6 @@ buildShader( vtkOpenGLRenderWindow* pWindow,
         SLM_ERROR("Shader only supported using OpenGL.");
         return NULL;
     }
-
 
 #if VTK_MAJOR_VERSION >= 7
     vtkSmartPointer<vtkShaderProgram> pProgram = vtkSmartPointer<vtkShaderProgram>::New();
@@ -208,6 +207,8 @@ vtkSmartPointer<vtkShaderProgram>
 #else
 vtkSmartPointer<vtkShaderProgram2>
 #endif
+//------------------------------------------------------------------------------
+
 buildShaderFromFile( vtkRenderWindow* pWindow,
                      const char* pcVertexName,
                      const char* pcFragmentName )
@@ -280,6 +281,4 @@ buildShaderFromFile( vtkRenderWindow* pWindow,
 } //vtk
 
 } //fwRenderVTK
-
-
 

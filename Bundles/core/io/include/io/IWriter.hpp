@@ -106,9 +106,9 @@ public:
 
 protected:
 
-    IO_API IWriter() throw();
+    IO_API IWriter() noexcept;
 
-    IO_API virtual ~IWriter() throw();
+    IO_API virtual ~IWriter() noexcept;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -145,7 +145,7 @@ protected:
        </service>
        @endcode
      */
-    IO_API virtual void configuring() throw (fwTools::Failed);
+    IO_API virtual void configuring();
 
     /**
      * @brief Title of the window that will open when the `configureWithIHM` slot is called

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,8 +59,10 @@ public:
     FWSERVICES_API void addObjectFactory( const std::string& simpl,
                                           const std::string& oimpl);
 
+    /// Create a service from a factory type
     FWSERVICES_API SPTR(IService) create( const std::string& _srvImpl ) const;
 
+    /// Create a service from a factory type and verify that it is an inherited type of _srvType
     FWSERVICES_API SPTR(IService) create( const std::string& _srvType, const std::string& _srvImpl ) const;
 
     FWSERVICES_API void clearFactory();
@@ -136,5 +138,4 @@ private:
 } // namespace fwServices
 
 #endif // __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
-
 

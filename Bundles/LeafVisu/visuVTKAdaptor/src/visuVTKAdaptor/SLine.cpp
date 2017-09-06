@@ -21,7 +21,7 @@
 #include <vtkTexture.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SLine, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SLine);
 
 namespace visuVTKAdaptor
 {
@@ -32,7 +32,7 @@ const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_LENGTH_SLOT     = "updateLengt
 
 //------------------------------------------------------------------------------
 
-SLine::SLine() throw() :
+SLine::SLine() noexcept :
     m_lineActor(vtkSmartPointer<vtkActor>::New()),
     m_vtkLine(vtkSmartPointer<vtkLineSource>::New()),
     m_mapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
@@ -47,70 +47,57 @@ SLine::SLine() throw() :
 
 //------------------------------------------------------------------------------
 
-SLine::~SLine() throw()
+SLine::~SLine() noexcept
 {
     m_lineActor = 0;
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doStart() throw(fwTools::Failed)
+void SLine::starting()
 {
+    this->initialize();
+
     this->buildPipeline();
     this->addToRenderer( m_lineActor );
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doStop() throw(fwTools::Failed)
+void SLine::stopping()
 {
     this->removeAllPropFromRenderer();
     this->getRenderer()->RemoveActor(m_lineActor);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doSwap() throw(fwTools::Failed)
+void SLine::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SLine::doUpdate() throw(fwTools::Failed)
+void SLine::configuring()
 {
-}
+    this->configureParams();
 
-//------------------------------------------------------------------------------
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-void SLine::doConfigure() throw(fwTools::Failed)
-{
-    SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
-    if ( m_configuration->hasAttribute( "length" ) )
-    {
-        m_length = ::boost::lexical_cast<float>( m_configuration->getAttributeValue( "length" ) );
-    }
-    if ( m_configuration->hasAttribute( "width" ) )
-    {
-        m_width = ::boost::lexical_cast<float>( m_configuration->getAttributeValue( "width" ) );
-    }
-    if ( m_configuration->hasAttribute( "color" ) )
-    {
-        const std::string strColor = m_configuration->getAttributeValue("color");
+    m_length = config.get("length", 1.f);
+    m_width  = config.get("width", 1.f);
 
-        m_color = ::fwData::Color::New();
-        m_color->setRGBA(strColor);
-    }
-    else
+    const std::string strColor = config.get("color", "#FFFFFF");
+
+    m_color = ::fwData::Color::New();
+    m_color->setRGBA(strColor);
+
+    const std::string strLineOptions = config.get("dotted", "false");
+    if(strLineOptions == "true" || strLineOptions == "yes" || strLineOptions == "on" || strLineOptions == "1")
     {
-        m_color = ::fwData::Color::New(1.0f, 1.0f, 1.0f, 1.0f);
-    }
-    if ( m_configuration->hasAttribute( "dotted" ) )
-    {
-        const std::string strLineOptions = m_configuration->getAttributeValue("dotted");
-        if(strLineOptions == "true" || strLineOptions == "on" || strLineOptions == "1")
-        {
-            m_dotLine = true;
-        }
+        m_dotLine = true;
     }
 }
 
@@ -125,6 +112,7 @@ void SLine::updateVisibility(bool _isVisible)
 }
 
 //------------------------------------------------------------------------------
+
 void SLine::updateLine()
 {
     m_vtkLine->SetPoint2(0.0, 0.0, m_length);
@@ -148,6 +136,7 @@ void SLine::updateLine()
 }
 
 //------------------------------------------------------------------------------
+
 void SLine::buildPipeline()
 {
     vtkTransform* transform = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
@@ -209,6 +198,7 @@ void SLine::buildPipeline()
     this->setVtkPipelineModified();
 }
 //------------------------------------------------------------------------------
+
 void SLine::updateLength(float length)
 {
     m_length = length;

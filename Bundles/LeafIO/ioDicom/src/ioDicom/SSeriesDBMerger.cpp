@@ -23,13 +23,13 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicom::SSeriesDBMerger, ::fwDa
 
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::SSeriesDBMerger() throw()
+SSeriesDBMerger::SSeriesDBMerger() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::~SSeriesDBMerger() throw()
+SSeriesDBMerger::~SSeriesDBMerger() noexcept
 {
 }
 
@@ -42,25 +42,25 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::starting() throw(::fwTools::Failed)
+void SSeriesDBMerger::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::stopping() throw(::fwTools::Failed)
+void SSeriesDBMerger::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::configuring() throw(::fwTools::Failed)
+void SSeriesDBMerger::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::updating() throw(::fwTools::Failed)
+void SSeriesDBMerger::updating()
 {
     auto destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
     SLM_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);

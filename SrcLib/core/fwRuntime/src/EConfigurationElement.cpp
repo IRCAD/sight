@@ -38,14 +38,14 @@ void EConfigurationElement::addConfigurationElement( EConfigurationElement::sptr
 
 //------------------------------------------------------------------------------
 
-void EConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) throw()
+void EConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) noexcept
 {
     this->::fwRuntime::ConfigurationElement::setAttributeValue( name, value );
 }
 
 //------------------------------------------------------------------------------
 
-void EConfigurationElement::setValue(const std::string& value) throw()
+void EConfigurationElement::setValue(const std::string& value) noexcept
 {
     this->::fwRuntime::ConfigurationElement::setValue(value);
 }

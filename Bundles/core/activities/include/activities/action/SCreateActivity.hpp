@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,9 +25,9 @@ namespace action
  * @brief This action launchs an activity according to the given configuration
  *
  * This action works on a ::fwData::Vector. It proposes all the available activity according to the given configuration.
- * And then, send a signal with the activity identifier.
+ * And then, it sends a signal with the activity identifier.
  *
- * It should works with the ::uiMedData::editor::SActivityWizard that creates or updates the activitySeries.
+ * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
@@ -39,7 +39,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SCreateActivity" autoConnect="yes" >
+   <service uid="..." type="::activities::action::SCreateActivity" autoConnect="yes" >
        <!-- Filter mode 'include' allows all given activity id-s.
             Filter mode 'exclude' allows all activity id-s excepted given ones. -->
        <filter>
@@ -52,7 +52,7 @@ namespace action
    @endcode
  *
  * - \b filter (optional): it allows to filter the activity that can be proposed.
- *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
+ *    - \b mode: 'include' or 'exclude'. Defines if the activities in the following list are proposed (include) or not
  *      (exclude).
  *    - \b id: id of the activity
  */
@@ -61,13 +61,13 @@ class ACTIVITIES_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCreateActivity)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SCreateActivity)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SCreateActivity() throw();
+    ACTIVITIES_API SCreateActivity() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SCreateActivity() throw();
+    ACTIVITIES_API virtual ~SCreateActivity() noexcept;
 
     /**
      * @name Signals API
@@ -83,21 +83,21 @@ public:
 protected:
 
     ///This method launches the IAction::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Show activity selector.
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     typedef std::vector< std::string > KeysType;
 
@@ -135,6 +135,5 @@ private:
 
 } // namespace action
 } // namespace activities
-
 
 #endif // __ACTIVITIES_ACTION_SCREATEACTIVITY_HPP__

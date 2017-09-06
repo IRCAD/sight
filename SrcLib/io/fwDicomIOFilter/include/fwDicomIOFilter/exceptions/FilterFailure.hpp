@@ -29,7 +29,7 @@ public:
     FWDICOMIOFILTER_API FilterFailure(const std::string& message);
 
     /// Destructor
-    FWDICOMIOFILTER_API virtual ~FilterFailure() throw ();
+    FWDICOMIOFILTER_API virtual ~FilterFailure() noexcept;
 
 };
 

@@ -20,7 +20,7 @@ namespace parser
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3D::updating( ) throw(fwTools::Failed)
+void TransformationMatrix3D::updating( )
 {
     SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
 }

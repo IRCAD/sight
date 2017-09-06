@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>DicomPreview</id>
     <parameters>
         <param name="ICON_PATH" />
@@ -40,12 +40,12 @@
         </service>
 
         <!-- DICOM SELECTION -->
-        <service uid="dicomSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="dicomSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="selection" uid="dicomSelection" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>
 
-        <service uid="dicomViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="dicomViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="dicomSelection" />
             <parentView wid="dicomPreview" />
             <configs>

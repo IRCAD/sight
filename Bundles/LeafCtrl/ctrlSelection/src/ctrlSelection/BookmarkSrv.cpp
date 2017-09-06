@@ -19,20 +19,20 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv
 
 //-----------------------------------------------------------------------------
 
-BookmarkSrv::BookmarkSrv() throw()
+BookmarkSrv::BookmarkSrv() noexcept
 {
     //handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------
 
-BookmarkSrv::~BookmarkSrv() throw()
+BookmarkSrv::~BookmarkSrv() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::configuring()  throw ( ::fwTools::Failed )
+void BookmarkSrv::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("bookmark");
     SLM_ASSERT("Problem with configuration for BookmarkSrv type, one element \"bookmark\" must be present", m_configuration->findAllConfigurationElement(
@@ -60,14 +60,14 @@ void BookmarkSrv::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::starting()  throw ( ::fwTools::Failed )
+void BookmarkSrv::starting()
 {
     ::fwTools::Bookmarks::add( m_bookmarkName, this->getObject());
 }
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::stopping()  throw ( ::fwTools::Failed )
+void BookmarkSrv::stopping()
 {
     OSLM_WARN_IF("Bookmark \""<< m_bookmarkName << "\" already removed", ::fwTools::Bookmarks::exist( m_bookmarkName ));
     if(::fwTools::Bookmarks::exist( m_bookmarkName ))
@@ -78,19 +78,19 @@ void BookmarkSrv::stopping()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::swapping()  throw ( ::fwTools::Failed )
+void BookmarkSrv::swapping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::reconfiguring()  throw ( ::fwTools::Failed )
+void BookmarkSrv::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::updating() throw ( ::fwTools::Failed )
+void BookmarkSrv::updating()
 {
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@ const ::fwCom::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "serie
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::SSeriesSignal() throw()
+SSeriesSignal::SSeriesSignal() noexcept
 {
     m_sigSeriesAdded = newSignal< SeriesAddedSignalType >(s_SERIES_ADDED_SIG);
 
@@ -44,32 +44,32 @@ SSeriesSignal::SSeriesSignal() throw()
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::~SSeriesSignal() throw()
+SSeriesSignal::~SSeriesSignal() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::starting() throw(::fwTools::Failed)
+void SSeriesSignal::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::stopping() throw(::fwTools::Failed)
+void SSeriesSignal::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::configuring() throw(fwTools::Failed)
+void SSeriesSignal::configuring()
 {
 
-    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
 
     if(srvconfig.count("filter") == 1 )
     {
-        const ::fwServices::IService::ConfigType &configFilter = srvconfig.get_child("filter");
+        const ::fwServices::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -89,7 +89,7 @@ void SSeriesSignal::configuring() throw(fwTools::Failed)
 
 void SSeriesSignal::reportSeries(::fwMedData::SeriesDB::ContainerType addedSeries)
 {
-    for(const ::fwMedData::Series::sptr &series : addedSeries)
+    for(const ::fwMedData::Series::sptr& series : addedSeries)
     {
         const bool isIncludeMode = m_filterMode == "include";
 
@@ -109,7 +109,7 @@ void SSeriesSignal::reportSeries(::fwMedData::SeriesDB::ContainerType addedSerie
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::updating() throw(::fwTools::Failed)
+void SSeriesSignal::updating()
 {
 }
 

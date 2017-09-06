@@ -44,12 +44,12 @@ public:
     /**
      * @brief Constructor.
      */
-    UIMEASUREMENT_API SManageLandmark() throw ();
+    UIMEASUREMENT_API SManageLandmark() noexcept;
 
     /**
      * @brief Destructor.
      */
-    virtual ~SManageLandmark() throw ()
+    virtual ~SManageLandmark() noexcept
     {
     }
 
@@ -66,16 +66,16 @@ protected:
     /**
      * @brief This method is used to configure the service.
      */
-    UIMEASUREMENT_API void configuring() throw (fwTools::Failed);
+    UIMEASUREMENT_API void configuring();
 
     /// This method is used to initialize the service.
-    UIMEASUREMENT_API void starting() throw (fwTools::Failed);
+    UIMEASUREMENT_API void starting();
 
     /// Does nothing.
-    UIMEASUREMENT_API void stopping() throw (fwTools::Failed);
+    UIMEASUREMENT_API void stopping();
 
     /// Does nothing.
-    UIMEASUREMENT_API void updating() throw (fwTools::Failed);
+    UIMEASUREMENT_API void updating();
 
 private:
 

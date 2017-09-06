@@ -72,16 +72,16 @@ public:
 protected:
 
     /// Does nothing
-    CTRLCAMP_API virtual void starting() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void starting();
 
     /// Configure the service
-    CTRLCAMP_API virtual void configuring() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void configuring();
 
     /// Does nothing
-    CTRLCAMP_API virtual void stopping() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void stopping();
 
     /// Does nothing
-    CTRLCAMP_API virtual void updating() throw( ::fwTools::Failed );
+    CTRLCAMP_API virtual void updating();
 
 private:
 

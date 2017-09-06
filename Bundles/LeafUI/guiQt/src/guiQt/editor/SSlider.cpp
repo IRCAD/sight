@@ -37,7 +37,7 @@ const ::fwCom::Slots::SlotKeyType SSlider::s_SET_MAX_VALUE_SLIDER_SLOT = "setMax
 
 //------------------------------------------------------------------------------
 
-SSlider::SSlider() throw() :
+SSlider::SSlider() noexcept :
     m_value(0),
     m_minValue(0),
     m_maxValue(100),
@@ -57,12 +57,12 @@ SSlider::SSlider() throw() :
 
 //------------------------------------------------------------------------------
 
-SSlider::~SSlider() throw()
+SSlider::~SSlider() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
-void SSlider::configuring() throw(fwTools::Failed)
+void SSlider::configuring()
 {
     this->initialize();
 
@@ -136,7 +136,7 @@ void SSlider::configuring() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-void SSlider::starting() throw(::fwTools::Failed)
+void SSlider::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -212,7 +212,7 @@ void SSlider::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSlider::stopping() throw(::fwTools::Failed)
+void SSlider::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -222,13 +222,13 @@ void SSlider::stopping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SSlider::updating() throw(::fwTools::Failed)
+void SSlider::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSlider::swapping() throw(::fwTools::Failed)
+void SSlider::swapping()
 {
     this->updating();
 }

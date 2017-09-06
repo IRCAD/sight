@@ -11,7 +11,7 @@
 
 #include <fwData/Landmarks.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/vtk/fwHandleRepresentation3D.hpp>
 
 #include <fwThread/Timer.hpp>
@@ -46,33 +46,48 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <adaptor id="..." class="::visuVTKAdaptor::Landmarks" objectId="imageKey">
+        <service uid="..." type="::visuVTKAdaptor::Landmarks" autoConnect="yes">
+            <inout key="landmarks" uid="..." />
             <config renderer="default" picker="default" interaction="on" />
         </adaptor>
    @endcode
  *
+ * @subsection In-Out In-Out
+ * - \b landmarks [::fwData::Landmarks]: landmarks to display and move.
+ *
  * @subsection Configuration Configuration
- * - \b renderer: renderer used to display the landmarks
- * - \b picker: landmarks picker
- * - \b interaction (optional, default: on): if "on" interactions are enabled
+ * - \b config(mandatory) : contains the adaptor configuration
+ *    - \b renderer: renderer used to display the landmarks
+ *    - \b picker: landmarks picker
+ *    - \b interaction (optional, default: on): if "on" interactions are enabled
  */
-class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLandmarks)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SLandmarks)(::fwRenderVTK::IAdaptor) );
     fwCoreAllowSharedFromThis();
 
     /// Widget used to display and interact with landmarks.
     typedef vtkSmartPointer< vtkHandleWidget > LandmarkWidgetType;
     typedef vtkSmartPointer< vtkActor2D > LabelActorType;
 
-    VISUVTKADAPTOR_API SLandmarks() throw();
+    VISUVTKADAPTOR_API SLandmarks() noexcept;
 
-    VISUVTKADAPTOR_API virtual ~SLandmarks() throw();
+    VISUVTKADAPTOR_API virtual ~SLandmarks() noexcept;
 
     VISUVTKADAPTOR_API virtual void show(bool b = true);
+
+    /// Deselect the current point and emit the corresponding Landmarks signal
+    void deselect();
+
+protected:
+
+    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void stopping();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -82,19 +97,7 @@ public:
      * Connect Image::s_LANDMARK_REMOVED_SIG to this::s_UPDATE_LANDMARKS_SLOT
      * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_UPDATE_LANDMARKS_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
-
-    /// Deselect the current point and emit the corresponding Landmarks signal
-    void deselect();
-
-protected:
-
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-
-    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private:
 

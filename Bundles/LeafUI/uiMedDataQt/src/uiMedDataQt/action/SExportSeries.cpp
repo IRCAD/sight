@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,16 +26,14 @@
 
 #include <fwTools/Os.hpp>
 
-
-
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedData::action::SExportSeries, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::fwMedData::SeriesDB );
 
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
@@ -52,7 +50,7 @@ SExportSeries::SExportSeries()
 
 //------------------------------------------------------------------------------
 
-SExportSeries::~SExportSeries() throw()
+SExportSeries::~SExportSeries() noexcept
 {
 }
 
@@ -69,32 +67,17 @@ SExportSeries::~SExportSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::configuring() throw(::fwTools::Failed)
+void SExportSeries::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
-
-    if(!this->isVersion2())
-    {
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
-        m_seriesId = seriesCfg.front()->getValue();
-        SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
-    }
 }
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::starting() throw(::fwTools::Failed)
+void SExportSeries::starting()
 {
     this->actionServiceStarting();
-    ::fwMedData::SeriesDB::sptr seriesDB;
-    if(this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
 
     for( ::fwMedData::Series::sptr series :  seriesDB->getContainer() )
     {
@@ -107,25 +90,17 @@ void SExportSeries::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::stopping() throw(::fwTools::Failed)
+void SExportSeries::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::updating() throw(::fwTools::Failed)
+void SExportSeries::updating()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB;
-    if(this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
-    ::fwMedData::Series::sptr series = this->getSeries();
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
+    ::fwMedData::Series::sptr series     = this->getSeries();
 
     std::string description = series->getDescription();
 
@@ -180,19 +155,7 @@ void SExportSeries::info(std::ostream& _sstream )
 
 ::fwMedData::Series::sptr SExportSeries::getSeries()
 {
-    ::fwMedData::Series::sptr series;
-
-    if(this->isVersion2())
-    {
-        series = this->getInOut< ::fwMedData::Series>("series");
-    }
-    else
-    {
-        SLM_ASSERT("Object " << m_seriesId << " doesn't exist", ::fwTools::fwID::exist(m_seriesId));
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_seriesId);
-        series                      = ::fwMedData::Series::dynamicCast(obj);
-        SLM_ASSERT("Object " << m_seriesId << " is not a '::fwMedData::Series'", series);
-    }
+    ::fwMedData::Series::sptr series = this->getInOut< ::fwMedData::Series>("series");
     return series;
 }
 
@@ -225,4 +188,4 @@ void SExportSeries::checkRemovedSeries(::fwMedData::SeriesDB::ContainerType remo
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace uiMedData
+} // namespace uiMedDataQt

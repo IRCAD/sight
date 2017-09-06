@@ -4,280 +4,287 @@
     <requirement id="servicesReg" />
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>tutoGuiConfig</id>
+    <id>tutoGuiConfig</id>
         <config>
 
-        <object type="::fwData::Image">
-           <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no" >
-                <gui>
-                    <frame>
-                        <name>TutoGui</name>
-                        <icon>@BUNDLE_PREFIX@/TutoGui_0-1/tuto.ico</icon>
-                        <minSize width="800" height="600"/>
-                    </frame>
-                    <menuBar />
-                    <toolBar >
-                        <toolBitmapSize height= "32" width="32" />
-                    </toolBar>
-                </gui>
-                <registry>
-                    <menuBar sid="menuBar" start="yes" />
-                    <toolBar sid="toolBar" start="yes" />
-                    <view sid="view" start="yes" />
-                </registry>
-            </service>
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
+            <gui>
+                <frame>
+                    <name>TutoGui</name>
+                    <icon>@BUNDLE_PREFIX@/TutoGui_0-1/tuto.ico</icon>
+                    <minSize width="800" height="600"/>
+                </frame>
+                <menuBar />
+                <toolBar >
+                    <toolBitmapSize height= "32" width="32" />
+                </toolBar>
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="yes" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="view" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menu name="My Menu"/>
-                        <menu name="My Menu 2"/>
-                        <menu name="My Menu 3"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="myMenu" start="yes" />
-                    <menu sid="myMenu2" start="yes" />
-                </registry>
-            </service>
+        <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <gui>
+                <layout>
+                    <menu name="My Menu"/>
+                    <menu name="My Menu 2"/>
+                    <menu name="My Menu 3"/>
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="myMenu" start="yes" />
+                <menu sid="myMenu2" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menuItem name="start" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/start.svg" />
-                        <menuItem name="pause" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/pause.svg" />
-                        <menuItem name="stop"  icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/stop.svg" />
-                        <separator />
-                        <menuItem name="My item 1" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
-                        <separator />
-                        <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                        <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                        <separator />
-                        <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                        <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                        <separator />
-                        <menuItem name="start 2-3 / stop A-B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
-                        <menuItem name="start A-B / stop 2-3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
-                        <spacer/>
-                        <menu name="Test Hide/Show" start="yes" />
-                        <menuItem name="Quit" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/unreadable.png"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="start" start="yes" />
-                    <menuItem sid="pause" start="yes" />
-                    <menuItem sid="stop" start="yes" />
-                    <menuItem sid="item1" start="yes" />
-                    <menuItem sid="item2" start="no" />
-                    <menuItem sid="item3" start="no" />
-                    <menuItem sid="item4" start="no" />
-                    <menuItem sid="item5" start="no" />
-                    <menuItem sid="item16" start="yes" />
-                    <menuItem sid="item17" start="yes" />
-                    <menu sid="testHideShow" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
-                </registry>
-            </service>
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="start" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/start.svg" />
+                    <menuItem name="pause" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/pause.svg" />
+                    <menuItem name="stop"  icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/stop.svg" />
+                    <separator />
+                    <menuItem name="My item 1" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
+                    <separator />
+                    <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                    <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                    <separator />
+                    <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                    <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                    <separator />
+                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
+                    <menuItem name="start A-B / stop 2-3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
+                    <spacer/>
+                    <menu name="Test Hide/Show" start="yes" />
+                    <menuItem name="Quit" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/unreadable.png"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="start" start="yes" />
+                <menuItem sid="pause" start="yes" />
+                <menuItem sid="stop" start="yes" />
+                <menuItem sid="item1" start="yes" />
+                <menuItem sid="item2" start="no" />
+                <menuItem sid="item3" start="no" />
+                <menuItem sid="item4" start="no" />
+                <menuItem sid="item5" start="no" />
+                <menuItem sid="item16" start="yes" />
+                <menuItem sid="item17" start="yes" />
+                <menu sid="testHideShow" start="yes" />
+                <menuItem sid="actionQuit" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="testHideShow" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Play" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/start.svg" />
-                        <menuItem name="Pause" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/pause.svg" />
-                        <menuItem name="Stop" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/stop.svg" />
+        <service uid="testHideShow" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Play" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/start.svg" />
+                    <menuItem name="Pause" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/pause.svg" />
+                    <menuItem name="Stop" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/stop.svg" />
 
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="start" start="no" />
-                    <menuItem sid="pause" start="no" />
-                    <menuItem sid="stop" start="no" />
-                </registry>
-            </service>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="start" start="no" />
+                <menuItem sid="pause" start="no" />
+                <menuItem sid="stop" start="no" />
+            </registry>
+        </service>
 
-            <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menuItem name="My item 1" shortcut="1" style="check" />
-                        <separator />
-                        <menuItem name="My item 2" shortcut="2" style="radio" />
-                        <menuItem name="My item 3" shortcut="3" style="radio" />
-                        <separator />
-                        <menuItem name="My item A" shortcut="A" style="radio" />
-                        <menuItem name="My item B" shortcut="B" style="radio" />
-                        <separator />
-                        <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="item1" start="no" />
-                    <menuItem sid="item2" start="no" />
-                    <menuItem sid="item3" start="no" />
-                    <menuItem sid="item4" start="no" />
-                    <menuItem sid="item5" start="no" />
-                    <menuItem sid="actionQuit" start="no" />
-                </registry>
-            </service>
+        <service uid="myMenu" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="My item 1" shortcut="1" style="check" />
+                    <separator />
+                    <menuItem name="My item 2" shortcut="2" style="radio" />
+                    <menuItem name="My item 3" shortcut="3" style="radio" />
+                    <separator />
+                    <menuItem name="My item A" shortcut="A" style="radio" />
+                    <menuItem name="My item B" shortcut="B" style="radio" />
+                    <separator />
+                    <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="item1" start="no" />
+                <menuItem sid="item2" start="no" />
+                <menuItem sid="item3" start="no" />
+                <menuItem sid="item4" start="no" />
+                <menuItem sid="item5" start="no" />
+                <menuItem sid="actionQuit" start="no" />
+            </registry>
+        </service>
 
-            <service uid="myMenu2" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menuItem name="My item 1" style="check" />
-                        <separator />
-                        <menuItem name="start 2-3 / stop A-B" style="radio" />
-                        <menuItem name="start A-B / stop 2-3" style="radio" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="item1" start="no" />
-                    <menuItem sid="item16" start="no" />
-                    <menuItem sid="item17" start="no" />
-                </registry>
-            </service>
+        <service uid="myMenu2" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="My item 1" style="check" />
+                    <separator />
+                    <menuItem name="start 2-3 / stop A-B" style="radio" />
+                    <menuItem name="start A-B / stop 2-3" style="radio" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="item1" start="no" />
+                <menuItem sid="item16" start="no" />
+                <menuItem sid="item17" start="no" />
+            </registry>
+        </service>
 
-            <service uid="item1" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no">
-                <state active="true" />
-            </service>
-            <service uid="item2" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
-                <state active="true" />
-            </service>
-            <service uid="item3" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" />
-            <service uid="item4" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
-                <state active="false" />
-            </service>
-            <service uid="item5" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
-                <state active="true" />
-            </service>
+        <service uid="view" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view caption="view1" />
+                    <view caption="view2" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="myView" />
+                <view sid="subView2" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="start" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>start/hide</slot>
-                    <slot>stop/setExecutable</slot>
-                    <slot>pause/show</slot>
-                </slots>
-            </service>
+        <service uid="subView1" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view caption="view3" />
+                    <view caption="view4" />
+                    <view caption="view5" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="myView" />
+                <view sid="subView3" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="stop" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <state executable="false" />
-                <slots>
-                    <slot>start/show</slot>
-                    <slot>stop/setInexecutable</slot>
-                    <slot>pause/hide</slot>
-                </slots>
-            </service>
+        <service uid="subView2" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager" >
+                    <view caption="CardinalView1" align="center" />
+                    <view caption="CardinalView2" align="right" minWidth="400" />
+                    <view caption="CardinalView3" align="right" minWidth="400" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="view12" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="pause" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <state active="true" visible="false" />
-                <slots>
-                    <slot>start/show</slot>
-                    <slot>pause/hide</slot>
-                </slots>
-            </service>
+        <service uid="subView3" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::TabLayoutManager" >
+                    <view caption="TabView1"  />
+                    <view caption="TabView2" selected="yes" />
+                    <view caption="TabView3" />
+                </layout>
+            </gui>
+            <registry/>
+        </service>
 
-            <service uid="item16" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                <state active="true" />
-                <start uid="item2" />
-                <start uid="item3" />
-                <stop uid="item4" />
-                <stop uid="item5" />
-            </service>
-            <service uid="item17" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                <stop uid="item2" />
-                <stop uid="item3" />
-                <start uid="item4" />
-                <start uid="item5" />
-            </service>
+        <service uid="view12" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <toolBar sid="toolbar2" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+        <service uid="toolbar2" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" />
+                    <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" />
+                    <separator />
+                    <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png" />
+                    <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="item2" />
+                <menuItem sid="item3" />
+                <menuItem sid="item4" />
+                <menuItem sid="item5" />
+            </registry>
+        </service>
 
-            <service uid="view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="vertical" />
-                        <view caption="view1" />
-                        <view caption="view2" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view wid="myView" />
-                    <view sid="subView2" start="yes" />
-                </registry>
-            </service>
+        <!-- ***************************************** End layouts declaration ***************************************** -->
 
-            <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="horizontal" />
-                        <view caption="view3" />
-                        <view caption="view4" />
-                        <view caption="view5" />
-                    </layout>
-                </gui>
-                <registry>
-                    <parent wid="myView" />
-                    <view sid="subView3" start="yes" />
-                </registry>
-            </service>
+        <!-- ***************************************** Begin services declarations  ************************************ -->
 
+        <service uid="item1" type="::gui::action::SDoNothing" >
+            <state active="true" />
+        </service>
 
-            <service uid="subView2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager" >
-                        <view caption="CardinalView1" align="center" />
-                        <view caption="CardinalView2" align="right" minWidth="400" />
-                        <view caption="CardinalView3" align="right" minWidth="400" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="view12" start="yes" />
-                </registry>
-            </service>
+        <service uid="item2" type="::gui::action::SDoNothing" >
+            <state active="true" />
+        </service>
 
-            <service uid="subView3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
-                <gui>
-                    <layout type="::fwGui::TabLayoutManager" >
-                        <view caption="TabView1"  />
-                        <view caption="TabView2" selected="yes" />
-                        <view caption="TabView3" />
-                    </layout>
-                </gui>
-                <registry/>
-            </service>
+        <service uid="item3" type="::gui::action::SDoNothing" />
 
-            <service uid="view12" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="vertical" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <toolBar sid="toolbar2" start="yes" />
-                </registry>
-            </service>
+        <service uid="item4" type="::gui::action::SDoNothing" >
+            <state active="false" />
+        </service>
 
-            <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
-                <gui>
-                    <layout>
-                        <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                        <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                        <separator />
-                        <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                        <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="item2" />
-                    <menuItem sid="item3" />
-                    <menuItem sid="item4" />
-                    <menuItem sid="item5" />
-                </registry>
-            </service>
+        <service uid="item5" type="::gui::action::SDoNothing" >
+            <state active="true" />
+        </service>
 
-            <start uid="myFrame" />
-            <start uid="subView1" />
+        <service uid="start" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>start/hide</slot>
+                <slot>stop/setExecutable</slot>
+                <slot>pause/show</slot>
+            </slots>
+        </service>
 
-        </object>
+        <service uid="stop" type="::gui::action::SSlotCaller" >
+            <state executable="false" />
+            <slots>
+                <slot>start/show</slot>
+                <slot>stop/setInexecutable</slot>
+                <slot>pause/hide</slot>
+            </slots>
+        </service>
+
+        <service uid="pause" type="::gui::action::SSlotCaller" >
+            <state active="true" visible="false" />
+            <slots>
+                <slot>start/show</slot>
+                <slot>pause/hide</slot>
+            </slots>
+        </service>
+
+        <service uid="item16" type="::gui::action::SStarter" >
+            <state active="true" />
+            <start uid="item2" />
+            <start uid="item3" />
+            <stop uid="item4" />
+            <stop uid="item5" />
+        </service>
+
+        <service uid="item17" type="::gui::action::SStarter" >
+            <stop uid="item2" />
+            <stop uid="item3" />
+            <start uid="item4" />
+            <start uid="item5" />
+        </service>
+
+        <service uid="actionQuit" type="::gui::action::SQuit" />
+        <!-- ***************************************** End services declarations  ************************************************ -->
+
+        <start uid="myFrame" />
+        <start uid="subView1" />
 
         </config>
     </extension>

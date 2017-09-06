@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,7 +42,7 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::getField( const FieldNameType & name, ::fwData::Object::sptr defaultValue ) const
+::fwData::Object::sptr Object::getField( const FieldNameType& name, ::fwData::Object::sptr defaultValue ) const
 {
     ::fwData::Object::sptr object = defaultValue;
     FieldMapType::const_iterator iter = m_fields.find(name);
@@ -55,7 +55,7 @@ Object::~Object()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::csptr Object::getConstField( const FieldNameType & name ) const
+::fwData::Object::csptr Object::getConstField( const FieldNameType& name ) const
 {
     return this->getField(name);
 }
@@ -80,7 +80,7 @@ Object::FieldNameVectorType Object::getFieldNames() const
 
 //------------------------------------------------------------------------------
 
-void Object::setField( const FieldNameType & name, ::fwData::Object::sptr obj)
+void Object::setField( const FieldNameType& name, ::fwData::Object::sptr obj)
 {
     std::pair<FieldMapType::iterator, bool> res = m_fields.insert(FieldMapType::value_type(name, obj));
     if( !res.second )
@@ -91,14 +91,14 @@ void Object::setField( const FieldNameType & name, ::fwData::Object::sptr obj)
 
 //------------------------------------------------------------------------------
 
-void Object::setFields( const FieldMapType & fieldMap )
+void Object::setFields( const FieldMapType& fieldMap )
 {
     m_fields = fieldMap;
 }
 
 //------------------------------------------------------------------------------
 
-void Object::removeField( const FieldNameType & name )
+void Object::removeField( const FieldNameType& name )
 {
     FieldMapType::const_iterator iter = m_fields.find(name);
     OSLM_ASSERT("Field "<<name<<" not found.", iter != m_fields.end());
@@ -110,28 +110,28 @@ void Object::removeField( const FieldNameType & name )
 
 //------------------------------------------------------------------------------
 
-void Object::updateFields( const FieldMapType & fieldMap )
+void Object::updateFields( const FieldMapType& fieldMap )
 {
     m_fields.insert(fieldMap.begin(), fieldMap.end());
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldShallowCopy(const ::fwData::Object::csptr &source)
+void Object::fieldShallowCopy(const ::fwData::Object::csptr& source)
 {
     this->setFields(source->getFields());
 }
 
 //-----------------------------------------------------------------------------
 
-void Object::deepCopy(const ::fwData::Object::csptr &source)
+void Object::deepCopy(const ::fwData::Object::csptr& source)
 {
     DeepCopyCacheType cache;
     return this->cachedDeepCopy(source, cache);
 }
 //-----------------------------------------------------------------------------
 
-void Object::fieldDeepCopy(const ::fwData::Object::csptr &source)
+void Object::fieldDeepCopy(const ::fwData::Object::csptr& source)
 {
     DeepCopyCacheType cache;
     return this->fieldDeepCopy(source, cache);
@@ -139,11 +139,11 @@ void Object::fieldDeepCopy(const ::fwData::Object::csptr &source)
 
 //-----------------------------------------------------------------------------
 
-void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheType &cache)
+void Object::fieldDeepCopy(const ::fwData::Object::csptr& source, DeepCopyCacheType& cache)
 {
     m_fields.clear();
-    const ::fwData::Object::FieldMapType &sourceFields = source->getFields();
-    for(const ::fwData::Object::FieldMapType::value_type &elt : sourceFields)
+    const ::fwData::Object::FieldMapType& sourceFields = source->getFields();
+    for(const ::fwData::Object::FieldMapType::value_type& elt : sourceFields)
     {
         this->setField(elt.first, ::fwData::Object::copy(elt.second, cache));
     }
@@ -151,7 +151,7 @@ void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheT
 
 //-----------------------------------------------------------------------------
 
-void Object::shallowCopy(const ::fwData::Object::csptr &source )
+void Object::shallowCopy(const ::fwData::Object::csptr& source )
 {
     FwCoreNotUsedMacro(source);
     SLM_FATAL("shallowCopy not implemented for : " + this->getClassname() );
@@ -159,7 +159,7 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source)
+::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr& source)
 {
     DeepCopyCacheType cache;
     return Object::copy(source, cache);
@@ -167,7 +167,7 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr &source, Object::DeepCopyCacheType &cache)
+::fwData::Object::sptr Object::copy(const ::fwData::Object::csptr& source, Object::DeepCopyCacheType& cache)
 {
     ::fwData::Object::sptr obj;
 
@@ -177,7 +177,7 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 
         if (cacheItem == cache.end())
         {
-            obj = ::fwData::factory::New(source->className());
+            obj = ::fwData::factory::New(source->getClassname());
             cache.insert( DeepCopyCacheType::value_type(source, obj) );
             obj->cachedDeepCopy(source, cache);
         }
@@ -191,7 +191,5 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 }
 
 //-----------------------------------------------------------------------------
-
-
 
 } // namespace fwData

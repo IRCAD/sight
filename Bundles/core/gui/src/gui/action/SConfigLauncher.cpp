@@ -6,20 +6,13 @@
 
 #include "gui/action/SConfigLauncher.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwRuntime/Convert.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
-#include <fwTools/fwID.hpp>
+#include <boost/make_unique.hpp>
 
 namespace gui
 {
@@ -39,9 +32,9 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::SConfigLauncher() throw()
+SConfigLauncher::SConfigLauncher() noexcept
 {
-    m_configLauncher = ::fwServices::helper::ConfigLauncher::New();
+    m_configLauncher = ::boost::make_unique< ::fwServices::helper::ConfigLauncher>();
 
     m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
 
@@ -51,13 +44,13 @@ SConfigLauncher::SConfigLauncher() throw()
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::~SConfigLauncher() throw()
+SConfigLauncher::~SConfigLauncher() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::starting() throw(::fwTools::Failed)
+void SConfigLauncher::starting()
 {
 
     m_proxychannel = this->getID() + "_stopConfig";
@@ -70,7 +63,7 @@ void SConfigLauncher::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::stopping() throw(::fwTools::Failed)
+void SConfigLauncher::stopping()
 {
     this->stopConfig();
     this->actionServiceStopping();
@@ -78,74 +71,11 @@ void SConfigLauncher::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::configuring() throw(fwTools::Failed)
+void SConfigLauncher::configuring()
 {
     this->initialize();
 
-    if(this->isVersion2())
-    {
-        typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
-        typedef ::fwRuntime::EConfigurationElement::sptr EditableConfigType;
-
-        ConfigType cfg = this->getConfiguration();
-
-        ConfigType appCfg = cfg->findConfigurationElement("appConfig");
-        SLM_ASSERT("Missing 'appConfig' tag.", appCfg);
-        std::string appCfgId = appCfg->getAttributeValue("id");
-
-
-        EditableConfigType srvCfg    = ::fwRuntime::EConfigurationElement::New( "service" );
-        EditableConfigType newCfg    = srvCfg->addConfigurationElement("config");
-        EditableConfigType newAppCfg = newCfg->addConfigurationElement("appConfig");
-        newAppCfg->setAttributeValue("id", appCfgId);
-
-        EditableConfigType newParamsCfg = newAppCfg->addConfigurationElement("parameters");
-
-        const std::vector< ConfigType > inoutsCfg = cfg->find("inout");
-        for (const auto& inoutCfg : inoutsCfg)
-        {
-            std::string key = inoutCfg->getAttributeValue("key");
-            SLM_ASSERT("[" + appCfgId + "] Missing 'key' tag.", !key.empty());
-
-            std::string uid = inoutCfg->getAttributeValue("uid");
-            SLM_ASSERT("[" + appCfgId + "] Missing 'uid' tag.", !uid.empty());
-
-            EditableConfigType newParamCfg = newParamsCfg->addConfigurationElement("parameter");
-            newParamCfg->setAttributeValue("replace", key);
-
-            auto obj = this->getInOut< ::fwData::Object>(key);
-            newParamCfg->setAttributeValue("uid", obj->getID());
-        }
-
-        const std::vector< ConfigType > paramsCfg = cfg->find("parameter");
-        for (const auto& paramCfg : paramsCfg)
-        {
-            std::string replace = paramCfg->getAttributeValue("replace");
-            SLM_ASSERT("[" + appCfgId + "] Missing 'replace' tag.", !replace.empty());
-
-            EditableConfigType newParamCfg = newParamsCfg->addConfigurationElement("parameter");
-            newParamCfg->setAttributeValue("replace", replace);
-
-            std::string uid = paramCfg->getAttributeValue("uid");
-            if(!uid.empty())
-            {
-                newParamCfg->setAttributeValue("uid", uid);
-            }
-            else
-            {
-                std::string by = paramCfg->getAttributeValue("by");
-                SLM_ASSERT("[" + appCfgId + "] Missing 'uid' or 'by' tag.", !by.empty());
-
-                newParamCfg->setAttributeValue("by", by);
-            }
-        }
-
-        m_configLauncher->parseConfig(::fwRuntime::Convert::toPropertyTree(srvCfg));
-    }
-    else
-    {
-        m_configLauncher->parseConfig(this->getConfigTree());
-    }
+    m_configLauncher->parseConfig(this->getConfigTree(), this->getSptr());
 }
 
 //-----------------------------------------------------------------------------
@@ -170,7 +100,7 @@ void SConfigLauncher::setIsActive(bool isActive)
 
 //------------------------------------------------------------------------------
 
-void SConfigLauncher::updating() throw(::fwTools::Failed)
+void SConfigLauncher::updating()
 {
 }
 

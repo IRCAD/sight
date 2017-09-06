@@ -27,20 +27,20 @@ class TUTO02DATASERVICEBASICCTRL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Constructor.
-    TUTO02DATASERVICEBASICCTRL_API Plugin() throw();
+    TUTO02DATASERVICEBASICCTRL_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO02DATASERVICEBASICCTRL_API ~Plugin() throw();
+    TUTO02DATASERVICEBASICCTRL_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    TUTO02DATASERVICEBASICCTRL_API void start() throw(::fwRuntime::RuntimeException);
+    TUTO02DATASERVICEBASICCTRL_API void start();
 
     /// Overrides stop method. Do nothing
-    TUTO02DATASERVICEBASICCTRL_API void stop() throw();
+    TUTO02DATASERVICEBASICCTRL_API void stop() noexcept;
 
-    TUTO02DATASERVICEBASICCTRL_API void initialize() throw( ::fwRuntime::RuntimeException );
+    TUTO02DATASERVICEBASICCTRL_API void initialize();
 
-    TUTO02DATASERVICEBASICCTRL_API void uninitialize() throw();
+    TUTO02DATASERVICEBASICCTRL_API void uninitialize() noexcept;
 
 private:
     ::fwData::Image::sptr m_image;

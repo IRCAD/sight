@@ -51,7 +51,7 @@ IActivityView::~IActivityView()
 
 //------------------------------------------------------------------------------
 
-void IActivityView::configuring() throw(fwTools::Failed)
+void IActivityView::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ class QRangeSlider;
 }
 }
 
-namespace uiImage
+namespace uiImageQt
 {
 
 /**
@@ -49,19 +49,22 @@ namespace uiImage
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::uiImage::WindowLevel" autoConnect="yes">
+    <service uid="..." type="::uiImageQt::WindowLevel" autoConnect="yes">
         <inout key="image" uid="..."/>
-        <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" useImageGreyLevelTF="yes" />
+        <inout key="TFSelections" uid="..."/>
+        <config autoWindowing="yes" selectedTFKey="mySelectedTF" useImageGreyLevelTF="yes" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image on which the windowing will be changed
+ * - \b TFSelections [::fwData::Composite]: composite containing the selected transfer function
  *
  * @subsection Configuration Configuration
  *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
  *  intensity when this service receive BUFFER event
- *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
+ *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use
+ * default selection field.
  *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
  *
  */
@@ -73,23 +76,34 @@ Q_OBJECT
 
 public:
 
-
-    fwCoreServiceClassDefinitionsMacro ( (WindowLevel)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (WindowLevel)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API WindowLevel() throw();
+    UIIMAGEQT_API WindowLevel() noexcept;
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~WindowLevel() throw();
+    UIIMAGEQT_API virtual ~WindowLevel() noexcept;
+
+protected:
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * @brief Install the layout.
      */
-    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    virtual void starting();
+
+    /**
+     * @brief Destroy the layout.
+     */
+    virtual void stopping();
+
+    /// Update editor information from the image
+    virtual void updating();
+
+    /// Swap of image
+    virtual void swapping();
+
+    /// Parse the xml configuration
+    virtual void configuring();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -100,53 +114,16 @@ public:
      */
     UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
-protected:
-
-    /**
-     * @brief Install the layout.
-     */
-    virtual void starting() throw(::fwTools::Failed);
-
-    /**
-     * @brief Destroy the layout.
-     */
-    virtual void stopping() throw(::fwTools::Failed);
-
-    /// Update editor information from the image
-    virtual void updating() throw(::fwTools::Failed);
-
-    /// Swap of image
-    virtual void swapping() throw(::fwTools::Failed);
-
-    /**
-     * @brief Configure the editor.
-     *
-     * Example of configuration
-     * @code{.xml}
-         <service uid="windowLevel" impl="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoConnect="yes">
-             <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" useImageGreyLevelTF="yes" />
-         </service>
-       @endcode
-     * With :
-     *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
-     *  intensity when this service receive BUFFER event
-     *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
-     *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
-     */
-    virtual void configuring() throw(fwTools::Failed);
-
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream );
 
     virtual void setEnabled(bool enable);
-
 
     /// Called when transfer function points are modified.
     UIIMAGEQT_API virtual void updatingTFPoints();
 
     /// Called when transfer function windowing is modified.
     UIIMAGEQT_API virtual void updatingTFWindowing(double window, double level);
-
 
 protected Q_SLOTS:
 
@@ -205,6 +182,6 @@ private:
 
 };
 
-} // uiImage
+} // uiImageQt
 
 #endif /*__UIIMAGEQT_WINDOWLEVEL_HPP__*/

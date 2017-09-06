@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 
 #include "uiReconstructionQt/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
@@ -18,23 +16,21 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <gui/editor/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
 
 class QRadioButton;
 class QCheckBox;
 class QButtonGroup;
 class QAbstractButton;
 
-namespace uiReconstruction
+namespace uiReconstructionQt
 {
 
 /**
  * @brief   RepresentationEditor service.
- * @class   RepresentationEditor
- *
- * @date    2010.
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public QObject,
                                                           public ::gui::editor::IEditor
@@ -43,13 +39,13 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (RepresentationEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIRECONSTRUCTIONQT_API RepresentationEditor() throw();
+    UIRECONSTRUCTIONQT_API RepresentationEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() throw();
+    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() noexcept;
 
     /**
      * @name Signals API
@@ -62,23 +58,22 @@ public:
 
 protected:
 
-
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
     void notifyMaterial();
 
@@ -87,7 +82,6 @@ protected Q_SLOTS:
     void onChangeRepresentation( int id );
     void onChangeShading( int id );
     void onShowNormals(int state );
-
 
 private:
 
@@ -106,8 +100,7 @@ private:
 
 };
 
-} // uiReconstruction
+} // uiReconstructionQt
 
 #endif /*__UIRECONSTRUCTIONQT_REPRESENTATIONEDITOR_HPP__*/
-
 

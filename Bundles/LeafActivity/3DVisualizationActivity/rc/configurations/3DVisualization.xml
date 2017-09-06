@@ -1,282 +1,327 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>3DVisualization</id>
     <parameters>
+
+        <!-- activity parameters -->
         <param name="WID_PARENT" />
-        <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
-        <param name="modelSeriesUid" />
-        <param name="InputImageCompositeUID" />
+
+        <!-- data -->
+        <param name="modelSeries" />
+        <param name="imageComposite" />
+        <param name="landmarks" />
         <param name="patient_name"  default="" />
+        <param name="advancedLandmarksEditor" default="yes" />
+
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
+        <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="${imageComposite}" type="::fwData::Composite" src="ref" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+        <object uid="optionalInputImage" type="::fwData::Image" src="deferred" />
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Negato1" align="center" />
-                        <view caption="Negato2" align="right" minWidth="350" visible="no" />
-                        <view caption="Negato3" align="right" minWidth="350" visible="no" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                    <view wid="${GENERIC_UID}_view_negato1" />
-                    <view wid="${GENERIC_UID}_view_negato2" />
-                    <view wid="${GENERIC_UID}_view_negato3" />
-                </registry>
-            </service>
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <orientation value="horizontal" />
+                    <view align="center" />
+                    <view align="right"  />
+                    <view align="left" visible="false" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view wid="view_negato1" start="yes" />
+                <view sid="view_negato2_and_3" start="no" />
+                <view sid="landmarksEditor" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="3D MPR Axial view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-axial.png" />
-                        <menuItem name="3D MPR Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
-                        <menuItem name="3D MPR Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
-                        <separator />
-                        <menuItem name="New landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Add-landmark.png" />
-                        <menuItem name="Remove landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Remove-landmark.png" />
-                        <menuItem name="Load landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Load-landmark.png" />
-                        <menuItem name="Save landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Save-landmark.png" />
-                        <menuItem name="Focus landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Find-landmark.png" />
-                        <menuItem name="Hide/Show landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/View-landmark.png" />
-                        <separator />
-                        <menuItem name="Add distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/distance.png" />
-                        <menuItem name="Remove distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/RemoveDistance.png" />
-                        <menuItem name="Hide distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideDistance.png" style="check" />
-                        <separator />
-                        <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
-                        <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
-                        <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
-                        <separator />
-                        <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
-                        <separator />
-                        <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
-                        <spacer />
-                        <menu name="Visu 3D" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_AxialViewMPR3D" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_FrontalViewMPR3D" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_SagittalViewMPR3D" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionNewLandmark" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionRemoveLandmark" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionLoadLandmark" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionSaveLandmark" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionFocusLandmark" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionHideLandmark" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionAddDistance" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionRemoveDistance" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionHideDistance" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionHideCross" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionShowNormalCross" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionShowFullCross" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_organManager" start="no" />
-                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
-                    <menu sid="${GENERIC_UID}_menu" start="yes" />
-                </registry>
-            </service>
+        <service uid="view_negato2_and_3" type="::gui::view::SDefaultView">
+            <in key="image" uid="optionalInputImage" />
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="view_negato2" />
+                <view wid="view_negato3" />
+            </registry>
+        </service>
 
-
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" />
-                        <separator />
-                        <menuItem name="Axial view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-axial.png" />
-                        <menuItem name="Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
-                        <menuItem name="Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_organManager" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_AxialViewMPR3D" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_FrontalViewMPR3D" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_SagittalViewMPR3D" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-                <config>
-                    <appConfig id="OrganManagerWithSeries">
-                        <parameters>
-                            <parameter replace="ORGAN_MANAGER_MODELSERIES" by="${modelSeriesUid}" />
-                            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
-                            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
-                        </parameters>
-                    </appConfig>
-                </config>
-            </service>
-
-            <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
-                <config>
-                    <appConfig id="3DNegatoWithAcq">
-                        <parameters>
-                            <parameter replace="InputImageCompositeUID" by="@values.OptionalInputImageCompositeKey" />
-                            <parameter replace="modelSeriesUid" by="@values.modelSeriesKey" />
-                            <parameter replace="orientation" by="axial" />
-                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1" />
-                            <parameter replace="patient_name" by="${patient_name}" />
-                            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
-                            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
-                            <parameter replace="Medical3DCameraUID" by="${GENERIC_UID}_Medical3DCameraUID" />
-                            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
-                        </parameters>
-                    </appConfig>
-                </config>
-            </service>
-            
-            
-            <service uid="${GENERIC_UID}_action_SagittalViewMPR3D" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>${GENERIC_UID}_Medical3DCameraUID/setSagittal</slot>
-                </slots>
-            </service>
-
-            <service uid="${GENERIC_UID}_action_FrontalViewMPR3D" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>${GENERIC_UID}_Medical3DCameraUID/setFrontal</slot>
-                </slots>
-            </service>
-
-            <service uid="${GENERIC_UID}_action_AxialViewMPR3D" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>${GENERIC_UID}_Medical3DCameraUID/setAxial</slot>
-                </slots>
-            </service>
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="3D MPR Axial view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-axial.png" />
+                    <menuItem name="3D MPR Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
+                    <menuItem name="3D MPR Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
+                    <separator />
+                    <menuItem name="Load landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Load-landmark.png" />
+                    <menuItem name="Save landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Save-landmark.png" />
+                    <menuItem name="Focus landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Find-landmark.png" />
+                    <menuItem name="Display Landmarks editor" icon="@BUNDLE_PREFIX@/media_0-1/icons/View-landmark.png" style="check" />
+                    <separator />
+                    <menuItem name="Add distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/distance.png" />
+                    <menuItem name="Remove distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/RemoveDistance.png" />
+                    <menuItem name="Hide distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideDistance.png" style="check" />
+                    <separator />
+                    <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
+                    <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
+                    <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
+                    <separator />
+                    <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
+                    <separator />
+                    <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <spacer />
+                    <menu name="Visu 3D" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_AxialViewMPR3D" start="no" />
+                <menuItem sid="action_FrontalViewMPR3D" start="no" />
+                <menuItem sid="action_SagittalViewMPR3D" start="no" />
+                <menuItem sid="ActionLoadLandmark" start="yes" />
+                <menuItem sid="ActionSaveLandmark" start="yes" />
+                <menuItem sid="ActionSFocusLandmark" start="no" />
+                <menuItem sid="ActionEditLandmark" start="yes" />
+                <menuItem sid="ActionAddDistance" start="no" />
+                <menuItem sid="ActionRemoveDistance" start="no" />
+                <menuItem sid="ActionHideDistance" start="no" />
+                <menuItem sid="ActionHideCross" start="no" />
+                <menuItem sid="ActionShowNormalCross" start="no" />
+                <menuItem sid="ActionShowFullCross" start="no" />
+                <menuItem sid="action_organManager" start="no" />
+                <menuItem sid="ActionExportActivity" start="yes" />
+                <menu sid="menu" start="yes" />
+            </registry>
+        </service>
 
 
-            <item key="OptionalInputImageCompositeKey">
-                <object uid="${InputImageCompositeUID}" src="ref" type="::fwData::Composite">
+        <service uid="menu" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" />
+                    <separator />
+                    <menuItem name="Axial view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-axial.png" />
+                    <menuItem name="Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
+                    <menuItem name="Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_organManager" start="yes" />
+                <menuItem sid="action_AxialViewMPR3D" start="yes" />
+                <menuItem sid="action_FrontalViewMPR3D" start="yes" />
+                <menuItem sid="action_SagittalViewMPR3D" start="yes" />
+            </registry>
+        </service>
 
-                    <service uid="${GENERIC_UID}_2DViewManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
-                        <mode type="stop" />
-                        <config>
-                            <object id="OptionalInputImageKey" type="::fwData::Image">
+        <service uid="action_organManager" type="::gui::action::SConfigLauncher">
+            <appConfig id="OrganManagerWithSeries" />
+            <inout key="ORGAN_MANAGER_MODELSERIES" uid="${modelSeries}" />
+            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+        <service uid="cfgNegato1" type="::fwServices::SConfigController">
+            <appConfig id="3DNegatoWithAcq" />
+            <inout key="imageComposite" uid="${imageComposite}" />
+            <inout key="modelSeries" uid="${modelSeries}" />
+            <inout key="landmarks" uid="${landmarks}" />
+            <parameter replace="orientation" by="axial" />
+            <parameter replace="WID_PARENT" by="view_negato1" />
+            <parameter replace="patient_name" by="${patient_name}" />
+            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="setSagittalCameraChannel" by="setSagittalCameraChannel" />
+            <parameter replace="setFrontalCameraChannel" by="setFrontalCameraChannel" />
+            <parameter replace="setAxialCameraChannel" by="setAxialCameraChannel" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_cfgNegato2" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
-                                    <config>
-                                        <appConfig id="2DNegato">
-                                            <parameters>
-                                                <parameter replace="imageUid" by="self" />
-                                                <parameter replace="orientation" by="frontal" />
-                                                <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2" />
-                                                <parameter replace="patient_name" by="${patient_name}" />
-                                                <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
-                                            </parameters>
-                                        </appConfig>
-                                    </config>
-                                </service>
+        <service uid="action_SagittalViewMPR3D" type="::gui::action::SSignal" />
+        <service uid="action_FrontalViewMPR3D" type="::gui::action::SSignal" />
+        <service uid="action_AxialViewMPR3D" type="::gui::action::SSignal" />
 
-                                <service uid="${GENERIC_UID}_cfgNegato3" type="::fwServices::IController" impl="::fwServices::SConfigController" autoConnect="no">
-                                    <config>
-                                        <appConfig id="2DNegato">
-                                            <parameters>
-                                                <parameter replace="imageUid" by="self" />
-                                                <parameter replace="orientation" by="sagittal" />
-                                                <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3" />
-                                                <parameter replace="patient_name" by="${patient_name}" />
-                                                <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
-                                            </parameters>
-                                        </appConfig>
-                                    </config>
-                                </service>
+        <!-- Negato -->
 
+        <!-- This service extracts the image if it exists from the optional image parameter. -->
+        <service uid="extractImage" type="::gui::action::SPushObject" >
+            <inout key="source" uid="${imageComposite}" />
+            <out key="destination" uid="optionalInputImage" />
+            <push srcKey="OptionalInputImageKey" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_ActionFocusLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::FocusLandmark" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionNewLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddLandmark" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionRemoveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveLandmark" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionLoadLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::LoadLandmark" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionSaveLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::SaveLandmark" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionHideLandmark" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowLandmark" autoConnect="yes" />
-                                <service uid="${GENERIC_UID}_ActionAddDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::AddDistance" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionRemoveDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::RemoveDistance" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_ActionHideDistance" type="::fwGui::IActionSrv" impl="::uiMeasurement::action::ShowDistance" autoConnect="yes" />
+        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="optionalInputImage">
+                <extract from="@fields.m_landmarksId" />
+            </in>
+            <inout key="target" uid="${landmarks}"/>
+        </service>
 
-                                <service uid="${GENERIC_UID}_ActionHideCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
-                                    <crossType>hide</crossType>
-                                </service>
+        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
+            <inout key="image" uid="optionalInputImage" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_ActionShowNormalCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
-                                    <crossType>half</crossType>
-                                    <state active="true" />
-                                </service>
+        <service uid="cfgNegato2" type="::fwServices::SConfigController" >
+            <appConfig id="2DNegato" />
+            <inout key="image" uid="optionalInputImage" />
+            <inout key="landmarks" uid="${landmarks}" />
+            <parameter replace="WID_PARENT" by="view_negato2" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="orientation" by="frontal" />
+            <parameter replace="patient_name" by="${patient_name}" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_ActionShowFullCross" type="::fwGui::IActionSrv" impl="::uiVisu::action::CrossTypeAction" autoConnect="no">
-                                    <crossType>full</crossType>
-                                </service>
+        <service uid="cfgNegato3" type="::fwServices::SConfigController">
+            <appConfig id="2DNegato" />
+            <inout key="image" uid="optionalInputImage" />
+            <inout key="landmarks" uid="${landmarks}" />
+            <parameter replace="WID_PARENT" by="view_negato3" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="orientation" by="sagittal" />
+            <parameter replace="patient_name" by="${patient_name}" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                                
-                                <proxy channel="crossTypeChannel">
-                                    <signal>${GENERIC_UID}_ActionHideCross/crossTypeModified</signal>
-                                    <signal>${GENERIC_UID}_ActionShowNormalCross/crossTypeModified</signal>
-                                    <signal>${GENERIC_UID}_ActionShowFullCross/crossTypeModified</signal>
-                                </proxy>
+        <service uid="ActionSFocusLandmark" type="::uiMeasurement::action::SFocusLandmark" >
+            <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
+            <inout key="image" uid="optionalInputImage" />
+        </service>
 
-                            </object>
-                        </config>
-                    </service>
+        <service uid="ActionLoadLandmark" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>LoadLandmark/update</slot>
+            </slots>
+        </service>
 
+        <service uid="ActionSaveLandmark" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>SaveLandmark/update</slot>
+            </slots>
+        </service>
 
-                    <service uid="${GENERIC_UID}_2DLayoutManager" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
-                        <mode type="startAndUpdate" />
-                        <config>
-                            <object id="OptionalInputImageKey" type="::fwData::Image">
+        <service uid="LoadLandmark" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="${landmarks}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="LandmarksAtomsConfig" service="::ioAtoms::SReader" />
+        </service>
 
-                                <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::SModifyLayout" autoConnect="no">
-                                    <config>
-                                        <show wid="${GENERIC_UID}_view_negato2" />
-                                        <show wid="${GENERIC_UID}_view_negato3" />
-                                    </config>
-                                </service>
+        <service uid="SaveLandmark" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="${landmarks}" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="LandmarksAtomsConfig" service="::ioAtoms::SWriter" />
+        </service>
 
+        <service uid="ActionEditLandmark" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>landmarksEditor/setVisible</slot>
+            </slots>
+        </service>
+        <service uid="ActionAddDistance" type="::uiMeasurement::action::AddDistance">
+            <inout key="image" uid="optionalInputImage" />
+        </service>
+        <service uid="ActionRemoveDistance" type="::uiMeasurement::action::RemoveDistance" >
+            <inout key="image" uid="optionalInputImage" />
+        </service>
+        <service uid="ActionHideDistance" type="::uiMeasurement::action::ShowDistance" autoConnect="yes">
+            <inout key="image" uid="optionalInputImage" />
+        </service>
+        <service uid="ActionHideCross" type="::uiVisu::action::CrossTypeAction">
+        <inout key="image" uid="optionalInputImage" />
+            <crossType>hide</crossType>
+        </service>
+        <service uid="ActionShowNormalCross" type="::uiVisu::action::CrossTypeAction">
+            <inout key="image" uid="optionalInputImage" />
+            <crossType>half</crossType>
+            <state active="true" />
+        </service>
+        <service uid="ActionShowFullCross" type="::uiVisu::action::CrossTypeAction">
+            <inout key="image" uid="optionalInputImage" />
+            <crossType>full</crossType>
+        </service>
+        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="optionalInputImage" />
+        </service>
 
-                            </object>
-                        </config>
-                    </service>
+        <service uid="ActionExportActivity" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="series" uid="${AS_UID}" />
+        </service>
 
+        <service uid="landmarksEditor" type="::uiMeasurementQt::editor::SLandmarks" autoConnect="yes">
+            <inout key="landmarks" uid="${landmarks}" />
+            <advanced>${advancedLandmarksEditor}</advanced>
+        </service>
 
+        <connect channel="crossTypeChannel">
+            <signal>ActionHideCross/crossTypeModified</signal>
+            <signal>ActionShowNormalCross/crossTypeModified</signal>
+            <signal>ActionShowFullCross/crossTypeModified</signal>
+        </connect>
 
-                </object>
-            </item>
+        <connect channel="pickerChannel">
+            <slot>landmarksEditor/addPickedPoint</slot>
+        </connect>
 
+        <connect channel="setSagittalCameraChannel">
+            <signal>action_SagittalViewMPR3D/triggered</signal>
+        </connect>
 
+        <connect channel="setFrontalCameraChannel">
+            <signal>action_FrontalViewMPR3D/triggered</signal>
+        </connect>
 
+        <connect channel="setAxialCameraChannel">
+            <signal>action_AxialViewMPR3D/triggered</signal>
+        </connect>
 
-            <item key="seriesDB">
-                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
-                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
-                        <seriesId>${AS_UID}</seriesId>
-                    </service>
-                </object>
-            </item>
+        <!-- Shared channels between 3DNegatoWithAcq and OrganManagerWithSeries -->
+        <connect channel="ModelDisplayChannel" />
+        <connect channel="ModelRepresentationChannel" />
 
-            <item key="activitySeries">
-                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
-            </item>
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="extractImage" />
+        <start uid="cfgNegato1" />
 
-            <item key="modelSeriesKey">
-                <object uid="${modelSeriesUid}" src="ref" type="::fwMedData::ModelSeries" />
-            </item>
+        <start uid="LoadLandmark" />
+        <start uid="SaveLandmark" />
 
-            <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_cfgNegato1" />
-            <start uid="${GENERIC_UID}_2DViewManager" />
-            <start uid="${GENERIC_UID}_2DLayoutManager" />
+        <!-- Deferred start -->
+        <start uid="LockImageSrv" />
+        <start uid="view_negato2_and_3" />
+        <start uid="cfgNegato2" />
+        <start uid="cfgNegato3" />
+        <start uid="ActionAddDistance" />
+        <start uid="ActionRemoveDistance" />
+        <start uid="ActionHideDistance" />
+        <start uid="ActionHideCross" />
+        <start uid="ActionShowNormalCross" />
+        <start uid="ActionShowFullCross" />
+        <start uid="MedicalImageSrv" />
+        <start uid="ActionSFocusLandmark" />
 
-        </object>
+        <start uid="extractLandmarks" />
 
+        <update uid="extractImage" />
+        <update uid="extractLandmarks" />
 
     </config>
 </extension>

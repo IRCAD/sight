@@ -43,19 +43,19 @@ public:
        </service>
        @endcode
      * */
-    MEMORY_API virtual void configuring() throw ( ::fwTools::Failed );
+    MEMORY_API virtual void configuring();
 
     /// Overrides
-    MEMORY_API virtual void starting() throw ( ::fwTools::Failed );
+    MEMORY_API virtual void starting();
 
     /// Overrides
-    MEMORY_API virtual void stopping() throw ( ::fwTools::Failed );
+    MEMORY_API virtual void stopping();
 
     /// Overrides
-    MEMORY_API virtual void updating() throw ( ::fwTools::Failed );
+    MEMORY_API virtual void updating();
 
     /// Overrides
-    MEMORY_API virtual void swapping() throw ( ::fwTools::Failed );
+    MEMORY_API virtual void swapping();
 
 protected:
 

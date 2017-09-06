@@ -19,10 +19,18 @@ namespace fwServices
 {
 namespace registry
 {
+
 AppConfig::sptr AppConfig::s_currentAppConfig = AppConfig::New();
 ::fwCore::mt::Mutex AppConfig::s_idMutex;
 
 std::string AppConfig::s_mandatoryParameterIdentifier = "@mandatory@";
+
+AppConfig::UidDefinitionType AppConfig::s_uidDefinitionDictionary = { { "object", "uid" },
+                                                                      { "service", "uid" },
+                                                                      { "view", "sid" },
+                                                                      { "view", "wid" },
+                                                                      { "connect", "channel" }, };
+static const ::boost::regex s_isVariable( "\\${.*}.*" );
 
 //-----------------------------------------------------------------------------
 
@@ -42,7 +50,7 @@ AppConfig::~AppConfig()
 void AppConfig::parseBundleInformation()
 {
     auto extensions = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
-    for( const auto& ext :  extensions )
+    for( const auto& ext : extensions )
     {
         // Get id
         std::string configId = ext->findConfigurationElement("id")->getValue();
@@ -58,6 +66,11 @@ void AppConfig::parseBundleInformation()
         if ( ext->hasConfigurationElement("desc") )
         {
             desc = ext->findConfigurationElement("desc")->getValue();
+        }
+        unsigned long syntax = 1;
+        if ( ext->hasConfigurationElement("syntax") )
+        {
+            syntax = std::stoul( ext->findConfigurationElement("syntax")->getValue() );
         }
 
         AppInfo::ParametersType parameters;
@@ -82,7 +95,7 @@ void AppConfig::parseBundleInformation()
         }
 
         // Get config
-        ::fwRuntime::ConfigurationElement::csptr config = *(ext->findConfigurationElement("config")->begin());
+        ::fwRuntime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
 
         // Get bundle
         std::shared_ptr< ::fwRuntime::Bundle> bundle = ext->getBundle();
@@ -96,22 +109,18 @@ void AppConfig::parseBundleInformation()
 
 //-----------------------------------------------------------------------------
 
-void AppConfig::addAppInfo
-    (   const std::string& configId,
-    const std::string& group,
-    const std::string& desc,
-    const AppInfo::ParametersType& parameters,
-    ::fwRuntime::ConfigurationElement::csptr config,
-    const std::string bundleId,
-    const std::string bundleVersion)
+void AppConfig::addAppInfo( const std::string& configId,
+                            const std::string& group,
+                            const std::string& desc,
+                            const AppInfo::ParametersType& parameters,
+                            const ::fwRuntime::ConfigurationElement::csptr& config,
+                            const std::string& bundleId,
+                            const std::string& bundleVersion)
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
-    OSLM_DEBUG( "New app config registering : "
-                << " configId =" << configId
-                );
-
-    SLM_ASSERT("The app config with the id = "<< configId <<" already exists.", m_reg.find( configId ) == m_reg.end() );
+    SLM_DEBUG( "New app config registering : configId = " + configId );
+    SLM_ASSERT("The app config with the id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
     info->group         = group;
@@ -141,7 +150,8 @@ void AppConfig::clearRegistry()
 
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
     const std::string& configId,
-    const FieldAdaptorType fieldAdaptors ) const
+    const FieldAdaptorType fieldAdaptors,
+    bool autoPrefixId) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     // Get config template
@@ -154,25 +164,34 @@ void AppConfig::clearRegistry()
 
     FieldAdaptorType fields;
     AppInfo::ParametersType parameters = iter->second->parameters;
+
     for( AppInfo::ParametersType::value_type param :  parameters )
     {
         FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
-        std::stringstream key;
-        key << "\\$\\{" << param.first << "\\}";
+        const std::string key                 = "\\$\\{" + param.first + "\\}";
         if ( iter != fieldAdaptors.end() )
         {
-            fields[key.str()] = iter->second;
+            fields[key] = iter->second;
         }
         else if ( param.second != s_mandatoryParameterIdentifier)
         {
-            fields[key.str()] = param.second;
+            fields[key] = param.second;
         }
         else
         {
             FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
         }
     }
-    newConfig = this->adaptConfig(  iter->second->config, fields );
+
+    std::string autoPrefixName;
+    if(autoPrefixId)
+    {
+        autoPrefixName = this->getUniqueIdentifier(configId);
+    }
+
+    UidParameterReplaceType parameterReplaceAdaptors;
+    this->collectUIDForParameterReplace(iter->second->config, parameterReplaceAdaptors);
+    newConfig = this->adaptConfig(iter->second->config, fields, parameterReplaceAdaptors, autoPrefixName);
 
     return newConfig;
 }
@@ -180,11 +199,26 @@ void AppConfig::clearRegistry()
 //-----------------------------------------------------------------------------
 
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string& configId,
-                                                                              ::fwData::Composite::csptr replaceFields )
+                                                                              ::fwData::Composite::csptr replaceFields,
+                                                                              bool autoPrefixId )
 const
 {
     FieldAdaptorType fieldAdaptors = compositeToFieldAdaptor( replaceFields );
-    return this->getAdaptedTemplateConfig( configId, fieldAdaptors );
+    return this->getAdaptedTemplateConfig( configId, fieldAdaptors, autoPrefixId );
+}
+
+//-----------------------------------------------------------------------------
+
+std::shared_ptr< ::fwRuntime::Bundle > AppConfig::getBundle(const std::string& _configId)
+{
+    Registry::const_iterator iter = m_reg.find( _configId );
+    SLM_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
+
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(iter->second->bundleId,
+                                                                            iter->second->bundleVersion);
+
+    return bundle;
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +227,7 @@ std::vector< std::string > AppConfig::getAllConfigs() const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
-    for( Registry::value_type elem :  m_reg )
+    for( const Registry::value_type& elem :  m_reg )
     {
         ids.push_back( elem.first );
     }
@@ -206,7 +240,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string& gro
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
-    for( Registry::value_type elem :  m_reg )
+    for( const Registry::value_type& elem :  m_reg )
     {
         AppInfo::sptr info = elem.second;
         if(info->group == group)
@@ -252,23 +286,103 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr AppConfig::adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem,
-                                                                 const FieldAdaptorType& fieldAdaptors ) const
+void AppConfig::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                              UidParameterReplaceType& _replaceMap)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::EConfigurationElement::sptr result = ::fwRuntime::EConfigurationElement::New( _cfgElem->getName() );
-    result->setValue( this->adaptField( _cfgElem->getValue(), fieldAdaptors ) );
-
-    typedef std::map<std::string, std::string> MapAttributesType;
-    for( MapAttributesType::value_type attribute :  _cfgElem->getAttributes() )
+    const auto& name = _cfgElem->getName();
+    for( const auto& attribute :  _cfgElem->getAttributes() )
     {
-        result->setAttributeValue( attribute.first, this->adaptField( attribute.second, fieldAdaptors ) );
+        auto range = s_uidDefinitionDictionary.equal_range(name);
+
+        for (auto it = range.first; it != range.second; ++it)
+        {
+            if(it->second == attribute.first && !::boost::regex_match(attribute.second, s_isVariable ) )
+            {
+                _replaceMap.insert(attribute.second);
+            }
+        }
     }
 
-    for ( ::fwRuntime::ConfigurationElement::csptr subElem : _cfgElem->getElements())
+    for ( const auto& subElem : _cfgElem->getElements())
     {
-        result->addConfigurationElement( this->adaptConfig( subElem, fieldAdaptors ) );
+        collectUIDForParameterReplace( subElem, _replaceMap );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+::fwRuntime::EConfigurationElement::sptr AppConfig::adaptConfig(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                                                const FieldAdaptorType& _fieldAdaptors,
+                                                                const UidParameterReplaceType& _uidParameterReplace,
+                                                                const std::string& _autoPrefixId)
+{
+    ::fwRuntime::EConfigurationElement::sptr result = ::fwRuntime::EConfigurationElement::New( _cfgElem->getName() );
+    result->setValue( adaptField( _cfgElem->getValue(), _fieldAdaptors ) );
+
+    for( const auto& attribute :  _cfgElem->getAttributes() )
+    {
+        // Add the config prefix for unique identifiers
+        if(!_autoPrefixId.empty())
+        {
+            if(attribute.first == "uid" ||
+               attribute.first == "sid" ||
+               attribute.first == "wid" ||
+               attribute.first == "channel" )
+            {
+                // Detect if we have a variable name
+                if ( !::boost::regex_match( attribute.second, s_isVariable ) )
+                {
+                    // This is not a variable, add the prefix
+                    result->setAttributeValue( attribute.first,
+                                               _autoPrefixId + "_" + adaptField( attribute.second, _fieldAdaptors ));
+                    continue;
+                }
+            }
+            // Special case for <parameter replace="..." by="..." />
+            else if(attribute.first == "by")
+            {
+                // Detect if we have a variable name
+                if ( !::boost::regex_match( attribute.second, s_isVariable ) )
+                {
+                    // Look inside the map of potential replacements
+                    auto itParam = _uidParameterReplace.find(attribute.second);
+                    if(itParam != _uidParameterReplace.end())
+                    {
+                        result->setAttributeValue( attribute.first,
+                                                   _autoPrefixId + "_" +
+                                                   adaptField( attribute.second, _fieldAdaptors ));
+                        continue;
+                    }
+                }
+            }
+
+        }
+        result->setAttributeValue( attribute.first, adaptField( attribute.second, _fieldAdaptors ) );
+    }
+
+    for ( const auto& subElem : _cfgElem->getElements())
+    {
+        // Add the config prefix for unique identifiers in signal and slot sources
+        if( !_autoPrefixId.empty() && (subElem->getName() == "signal" || subElem->getName() == "slot" ) )
+        {
+            // Detect if we have a variable name
+            if ( !::boost::regex_match( subElem->getValue(), s_isVariable ) )
+            {
+                // This is not a variable, add the prefix
+                auto elt = ::fwRuntime::EConfigurationElement::New( subElem->getName() );
+                elt->setValue( _autoPrefixId + "_" + subElem->getValue() );
+
+                for (const auto& attr : subElem->getAttributes())
+                {
+                    elt->setAttributeValue(attr.first, attr.second);
+                }
+
+                result->addConfigurationElement( elt );
+                continue;
+            }
+        }
+
+        result->addConfigurationElement( adaptConfig( subElem, _fieldAdaptors, _uidParameterReplace, _autoPrefixId ) );
     }
 
     return result;
@@ -276,41 +390,30 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 
 //-----------------------------------------------------------------------------
 
-std::string AppConfig::adaptField( const std::string& _str, const FieldAdaptorType& fieldAdaptors ) const
+std::string AppConfig::adaptField( const std::string& _str, const FieldAdaptorType& _variablesMap )
 {
     std::string newStr = _str;
     if(!_str.empty())
     {
-        for(FieldAdaptorType::value_type fieldAdaptor :  fieldAdaptors)
+        // Discriminate first variable expressions only, looking through all keys of the replace map is not for free
+        // However we look inside the whole string instead of only at the beginning because we want  to replace "inner"
+        // variables as well, i.e. not only ${uid} but also uid${suffix}
+        if ( ::boost::regex_search(_str, s_isVariable ) )
         {
-            std::stringstream sstr;
-            sstr << "(.*)" << fieldAdaptor.first << "(.*)";
-            ::boost::regex machine_regex( sstr.str() );
-            if ( ::boost::regex_match( _str, machine_regex ) )
+            // Iterate over all variables
+            for(const auto& fieldAdaptor : _variablesMap )
             {
-                std::stringstream machine_format;
-                machine_format << "\\1" << fieldAdaptor.second << "\\2";
-                newStr = ::boost::regex_replace( newStr,
-                                                 machine_regex, machine_format.str(),
-                                                 ::boost::match_default | ::boost::format_sed );
+                const ::boost::regex varRegex( "(.*)" + fieldAdaptor.first + "(.*)" );
+                if ( ::boost::regex_match( _str, varRegex ) )
+                {
+                    const std::string varReplace("\\1" + fieldAdaptor.second + "\\2");
+                    newStr = ::boost::regex_replace( newStr, varRegex, varReplace,
+                                                     ::boost::match_default | ::boost::format_sed );
+                }
             }
         }
     }
     return newStr;
-}
-
-//-----------------------------------------------------------------------------
-
-std::shared_ptr< ::fwRuntime::Bundle > AppConfig::getBundle(const std::string& configId)
-{
-    Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
-               iter != m_reg.end());
-
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(iter->second->bundleId,
-                                                                            iter->second->bundleVersion);
-
-    return bundle;
 }
 
 //-----------------------------------------------------------------------------

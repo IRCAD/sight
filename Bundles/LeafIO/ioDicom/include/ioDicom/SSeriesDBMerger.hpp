@@ -41,24 +41,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv ) );
 
     /// Constructor
-    IODICOM_API SSeriesDBMerger() throw();
+    IODICOM_API SSeriesDBMerger() noexcept;
 
     /// Destructor
-    IODICOM_API virtual ~SSeriesDBMerger() throw();
+    IODICOM_API virtual ~SSeriesDBMerger() noexcept;
 
 protected:
 
     /// Do nothing.
-    IODICOM_API virtual void configuring() throw(::fwTools::Failed);
+    IODICOM_API virtual void configuring();
 
     /// Override
-    IODICOM_API virtual void starting() throw(::fwTools::Failed);
+    IODICOM_API virtual void starting();
 
     /// Override
-    IODICOM_API virtual void stopping() throw(::fwTools::Failed);
+    IODICOM_API virtual void stopping();
 
     /// Override
-    IODICOM_API void updating() throw(::fwTools::Failed);
+    IODICOM_API void updating();
 
     /// Override
     IODICOM_API void info(std::ostream& _sstream );

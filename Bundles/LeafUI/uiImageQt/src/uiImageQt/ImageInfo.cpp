@@ -29,27 +29,27 @@
 #include <QLabel>
 #include <QWidget>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageInfo, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::ImageInfo, ::fwData::Image );
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
-ImageInfo::ImageInfo() throw()
+ImageInfo::ImageInfo() noexcept
 {
     newSlot(s_GET_INTERACTION_SLOT, &ImageInfo::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
 
-ImageInfo::~ImageInfo() throw()
+ImageInfo::~ImageInfo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::starting() throw(::fwTools::Failed)
+void ImageInfo::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -72,7 +72,7 @@ void ImageInfo::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::stopping() throw(::fwTools::Failed)
+void ImageInfo::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -81,7 +81,7 @@ void ImageInfo::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::configuring() throw(fwTools::Failed)
+void ImageInfo::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -89,13 +89,13 @@ void ImageInfo::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::updating() throw(::fwTools::Failed)
+void ImageInfo::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::swapping() throw(::fwTools::Failed)
+void ImageInfo::swapping()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );

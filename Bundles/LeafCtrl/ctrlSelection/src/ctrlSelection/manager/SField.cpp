@@ -38,7 +38,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 //-----------------------------------------------------------------------------
 
-SField::SField() throw() : m_dummyStopMode(false)
+SField::SField() noexcept : m_dummyStopMode(false)
 {
     newSlot(s_ADD_FIELDS_SLOT, &SField::addFields, this);
     newSlot(s_CHANGE_FIELDS_SLOT, &SField::changeFields, this);
@@ -47,19 +47,19 @@ SField::SField() throw() : m_dummyStopMode(false)
 
 //-----------------------------------------------------------------------------
 
-SField::~SField() throw()
+SField::~SField() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SField::reconfiguring()  throw ( ::fwTools::Failed )
+void SField::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SField::updating() throw ( ::fwTools::Failed )
+void SField::updating()
 {
     this->stopping();
     this->starting();
@@ -73,7 +73,7 @@ void SField::info( std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void SField::stopping()  throw ( ::fwTools::Failed )
+void SField::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -110,7 +110,7 @@ void SField::stopping()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SField::configuring()  throw ( ::fwTools::Failed )
+void SField::configuring()
 {
     SLM_TRACE_FUNC();
     std::vector < ConfigurationType > vectMode = m_configuration->find("mode");
@@ -131,7 +131,7 @@ void SField::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SField::starting()  throw ( ::fwTools::Failed )
+void SField::starting()
 {
     SLM_TRACE_FUNC();
 

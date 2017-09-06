@@ -41,21 +41,21 @@ SBasicTest::SBasicTest() : m_updateFinished(false), m_swapFinished(false)
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::starting() throw ( ::fwTools::Failed )
+void SBasicTest::starting()
 {
     ::boost::this_thread::sleep_for(m_startRetarder);
 }
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::stopping() throw ( ::fwTools::Failed )
+void SBasicTest::stopping()
 {
     ::boost::this_thread::sleep_for(m_stopRetarder);
 }
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::swapping() throw ( ::fwTools::Failed )
+void SBasicTest::swapping()
 {
     ::boost::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;
@@ -63,7 +63,7 @@ void SBasicTest::swapping() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SBasicTest::updating() throw ( ::fwTools::Failed )
+void SBasicTest::updating()
 {
     ::boost::this_thread::sleep_for(m_updateRetarder);
     m_updateFinished = true;
@@ -72,7 +72,7 @@ void SBasicTest::updating() throw ( ::fwTools::Failed )
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-void SReaderTest::updating() throw ( ::fwTools::Failed )
+void SReaderTest::updating()
 {
     Buffer::sptr buff = this->getObject< Buffer >();
 
@@ -101,7 +101,7 @@ SShowTest::SShowTest() : m_receiveCount(0), m_changeCount(0)
 
 //------------------------------------------------------------------------------
 
-void SShowTest::updating() throw ( ::fwTools::Failed )
+void SShowTest::updating()
 {
     Buffer::sptr buffer = this->getObject<Buffer>();
     ::boost::this_thread::sleep_for(m_receiveRetarder);
@@ -133,7 +133,7 @@ SReader2Test::SReader2Test()
 
 //------------------------------------------------------------------------------
 
-void SReader2Test::updating() throw ( ::fwTools::Failed )
+void SReader2Test::updating()
 {
     // Emit object Modified
     SReader2Test::ChangedSignalType::sptr sig;
@@ -155,7 +155,7 @@ SShow2Test::SShow2Test() : m_receiveCount(0)
 
 //------------------------------------------------------------------------------
 
-void SShow2Test::updating() throw ( ::fwTools::Failed )
+void SShow2Test::updating()
 {
     Buffer::sptr buff = this->getObject< Buffer >();
 

@@ -20,19 +20,19 @@ namespace servicesReg
 struct SERVICESREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    SERVICESREG_API ~Plugin() throw();
+    SERVICESREG_API ~Plugin() noexcept;
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
-    SERVICESREG_API void start() throw(::fwRuntime::RuntimeException);
+    SERVICESREG_API void start();
 
     /// Overrides initialize method
-    SERVICESREG_API void initialize() throw( ::fwRuntime::RuntimeException );
+    SERVICESREG_API void initialize();
 
     /// Overrides uninitialize method
-    SERVICESREG_API void uninitialize() throw( ::fwRuntime::RuntimeException );
+    SERVICESREG_API void uninitialize();
 
     /// Overrides stop method. Do nothing
-    SERVICESREG_API void stop() throw();
+    SERVICESREG_API void stop() noexcept;
 
 };
 

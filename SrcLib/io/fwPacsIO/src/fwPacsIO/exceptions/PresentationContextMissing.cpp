@@ -18,7 +18,7 @@ PresentationContextMissing::PresentationContextMissing(const std::string& messag
 
 // ----------------------------------------------------------------------------
 
-PresentationContextMissing::~PresentationContextMissing() throw()
+PresentationContextMissing::~PresentationContextMissing() noexcept
 {
 }
 

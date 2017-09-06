@@ -50,7 +50,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    DATAREG_API virtual void updating( ) throw(fwTools::Failed);
+    DATAREG_API virtual void updating( );
 
 };
 

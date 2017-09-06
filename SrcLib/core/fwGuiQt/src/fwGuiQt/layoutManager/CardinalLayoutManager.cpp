@@ -155,7 +155,11 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             {
                 dockWidget->setWidget(insideWidget);
             }
-            dockWidget->setVisible(viewInfo.m_visible);
+
+            if(false == viewInfo.m_visible)
+            {
+                dockWidget->setVisible(false);
+            }
         }
 
         if(!viewInfo.m_isResizable)

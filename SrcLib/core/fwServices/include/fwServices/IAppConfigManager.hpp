@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include "fwServices/registry/AppInfo.hpp"
 
 #include <fwData/Composite.hpp>
+
 #include <fwTools/Object.hpp>
 
 namespace fwServices
@@ -50,7 +51,7 @@ public:
      * @param replaceFields the associations between the value and the pattern to replace in the config.
      */
     FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const FieldAdaptorType &replaceFields = FieldAdaptorType()) = 0;
+                                          const FieldAdaptorType& replaceFields = FieldAdaptorType()) = 0;
 
     /**
      * @brief Set configuration
@@ -58,7 +59,7 @@ public:
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      */
     FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const ::fwData::Composite::csptr &replaceFields) = 0;
+                                          const ::fwData::Composite::csptr& replaceFields) = 0;
 
     /// Get config root
     FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const = 0;
@@ -98,9 +99,6 @@ protected:
 
     /// Running state of the app config manager
     ConfigState m_state;
-
-    /// Tells which implementation we are running
-    static int s_VERSION;
 };
 
 //------------------------------------------------------------------------------

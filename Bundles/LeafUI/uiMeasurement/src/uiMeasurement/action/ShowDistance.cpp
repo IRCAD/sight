@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,6 @@
 
 #include <exception>
 
-
 namespace uiMeasurement
 {
 namespace action
@@ -36,14 +35,14 @@ static const ::fwCom::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
 //------------------------------------------------------------------------------
 
-ShowDistance::ShowDistance( ) throw()
+ShowDistance::ShowDistance( ) noexcept
 {
     newSlot(s_SHOW_DISTANCE_SLOT, &ShowDistance::showDistance, this);
 }
 
 //------------------------------------------------------------------------------
 
-ShowDistance::~ShowDistance() throw()
+ShowDistance::~ShowDistance() noexcept
 {
 }
 
@@ -56,7 +55,7 @@ void ShowDistance::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::updating() throw(::fwTools::Failed)
+void ShowDistance::updating()
 {
     SLM_TRACE_FUNC();
 
@@ -88,7 +87,7 @@ void ShowDistance::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::swapping() throw(::fwTools::Failed)
+void ShowDistance::swapping()
 {
     ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
     ::fwData::Boolean::sptr showDistances =
@@ -110,33 +109,23 @@ void ShowDistance::showDistance(bool isShown)
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::configuring() throw (::fwTools::Failed)
+void ShowDistance::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::starting() throw (::fwTools::Failed)
+void ShowDistance::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::stopping() throw (::fwTools::Failed)
+void ShowDistance::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
-}
-
-//------------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType ShowDistance::getObjSrvConnections() const
-{
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT ) );
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------

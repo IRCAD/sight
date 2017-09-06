@@ -43,14 +43,14 @@
 #include <QObject>
 #include <QVBoxLayout>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SActivityWizard, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ const ::fwCom::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG           
 
 //------------------------------------------------------------------------------
 
-SActivityWizard::SActivityWizard() throw() :
+SActivityWizard::SActivityWizard() noexcept :
     m_mode(Mode::CREATE),
     m_confirmUpdate(true),
     m_isCancelable(true)
@@ -79,13 +79,13 @@ SActivityWizard::SActivityWizard() throw() :
 
 //------------------------------------------------------------------------------
 
-SActivityWizard::~SActivityWizard() throw()
+SActivityWizard::~SActivityWizard() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SActivityWizard::configuring() throw(fwTools::Failed)
+void SActivityWizard::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
 
@@ -135,7 +135,7 @@ void SActivityWizard::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityWizard::starting() throw(::fwTools::Failed)
+void SActivityWizard::starting()
 {
     ::fwGui::IGuiContainerSrv::create();
 
@@ -193,7 +193,7 @@ void SActivityWizard::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityWizard::stopping() throw(::fwTools::Failed)
+void SActivityWizard::stopping()
 {
     m_activityDataView->clear();
 
@@ -211,7 +211,7 @@ void SActivityWizard::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityWizard::updating() throw(::fwTools::Failed)
+void SActivityWizard::updating()
 {
     auto as = this->getInOut< ::fwMedData::ActivitySeries>("activitySeries");
     if (as)
@@ -503,4 +503,4 @@ void SActivityWizard::onBuildActivity()
 //------------------------------------------------------------------------------
 
 } //namespace editor
-} //namespace uiMedData
+} //namespace uiMedDataQt

@@ -43,9 +43,9 @@ public:
                                             (()),
                                             ::fwGui::factory::New< QtMenuContainer > );
 
-    FWGUIQT_API QtMenuContainer(::fwGui::GuiBaseObject::Key key) throw();
+    FWGUIQT_API QtMenuContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 
-    FWGUIQT_API virtual ~QtMenuContainer() throw();
+    FWGUIQT_API virtual ~QtMenuContainer() noexcept;
 
 
     FWGUIQT_API virtual void clean();

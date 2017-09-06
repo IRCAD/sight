@@ -22,7 +22,7 @@ class UnknownVersion : public fwAtomsPatch::exceptions::Base
 {
 public:
     UnknownVersion(const std::string& message);
-    virtual ~UnknownVersion() throw()
+    virtual ~UnknownVersion() noexcept
     {
     }
 };

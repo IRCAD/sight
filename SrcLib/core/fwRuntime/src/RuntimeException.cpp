@@ -13,21 +13,21 @@ namespace fwRuntime
 {
 
 
-RuntimeException::RuntimeException(const RuntimeException& exception) throw()
+RuntimeException::RuntimeException(const RuntimeException& exception) noexcept
     : ::fwCore::Exception(std::string(exception.what()))
 {
     SLM_WARN( this->what() );
 }
 
 
-RuntimeException::RuntimeException(const std::string& message) throw()
+RuntimeException::RuntimeException(const std::string& message) noexcept
     : ::fwCore::Exception(message)
 {
     SLM_WARN( this->what() );
 }
 
 
-RuntimeException::~RuntimeException() throw()
+RuntimeException::~RuntimeException() noexcept
 {
 }
 

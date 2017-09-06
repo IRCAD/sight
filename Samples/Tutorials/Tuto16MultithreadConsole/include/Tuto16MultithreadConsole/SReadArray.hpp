@@ -33,22 +33,22 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SReadArray)(::fwServices::IController) );
 
-    TUTO16MULTITHREADCONSOLE_API SReadArray() throw();
-    TUTO16MULTITHREADCONSOLE_API virtual ~SReadArray() throw();
+    TUTO16MULTITHREADCONSOLE_API SReadArray() noexcept;
+    TUTO16MULTITHREADCONSOLE_API virtual ~SReadArray() noexcept;
 
 protected:
 
     /// Do nothing
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Do nothing
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Initialize the current ::fwData::Array with 10 values (0 to 9).
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Do nothing
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 };
 
 }  // namespace Tuto16MultithreadConsole

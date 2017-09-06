@@ -39,10 +39,10 @@
 
 #include <functional>
 
-namespace uiImage
+namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::SliceIndexPositionEditor, ::fwData::Image );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::fwData::Image );
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -56,7 +56,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 
 //------------------------------------------------------------------------------
 
-SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
+SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceIndexPositionEditor::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceIndexPositionEditor::updateSliceType, this);
@@ -64,13 +64,13 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
 
 //------------------------------------------------------------------------------
 
-SliceIndexPositionEditor::~SliceIndexPositionEditor() throw()
+SliceIndexPositionEditor::~SliceIndexPositionEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::starting()
 {
     this->create();
 
@@ -83,12 +83,12 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     m_sliceSelectorPanel->setEnable(false);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = std::bind( &::uiImage::SliceIndexPositionEditor::sliceIndexNotification, this,
+    changeIndexCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceIndexNotification, this,
                                      std::placeholders::_1);
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeTypeCallback;
-    changeTypeCallback = std::bind( &::uiImage::SliceIndexPositionEditor::sliceTypeNotification, this,
+    changeTypeCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceTypeNotification, this,
                                     std::placeholders::_1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     layout->addWidget( m_sliceSelectorPanel );
@@ -105,7 +105,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::stopping()
 {
     this->destroy();
     m_sliceSelectorPanel = nullptr;
@@ -113,7 +113,7 @@ void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
+void SliceIndexPositionEditor::configuring()
 {
     this->initialize();
 
@@ -147,7 +147,7 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::updating() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::updating()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -158,7 +158,7 @@ void SliceIndexPositionEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::swapping() throw(::fwTools::Failed)
+void SliceIndexPositionEditor::swapping()
 {
     this->updating();
 }

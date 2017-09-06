@@ -33,19 +33,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller, ::fwDa
 
 //-----------------------------------------------------------------------------
 
-SSlotCaller::SSlotCaller() throw()
+SSlotCaller::SSlotCaller() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SSlotCaller::~SSlotCaller() throw()
+SSlotCaller::~SSlotCaller() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::starting() throw( ::fwTools::Failed )
+void SSlotCaller::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -53,7 +53,7 @@ void SSlotCaller::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::stopping() throw( ::fwTools::Failed )
+void SSlotCaller::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -69,7 +69,7 @@ void SSlotCaller::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::updating() throw( ::fwTools::Failed )
+void SSlotCaller::updating()
 {
     SLM_TRACE_FUNC();
 
@@ -93,7 +93,7 @@ void SSlotCaller::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::configuring() throw( ::fwTools::Failed )
+void SSlotCaller::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();

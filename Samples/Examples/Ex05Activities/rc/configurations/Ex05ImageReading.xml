@@ -1,5 +1,5 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>Ex05ImageReading</id>
     <parameters>
         <param name="WID_PARENT" />

@@ -53,7 +53,7 @@ std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
 
 //------------------------------------------------------------------------------
 
-void ExtensionPoint::operator=( const ExtensionPoint & ) throw()
+void ExtensionPoint::operator=( const ExtensionPoint & ) noexcept
 {
 }
 

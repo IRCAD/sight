@@ -30,10 +30,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (STranslate)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API STranslate() throw();
+    CTRLSELECTION_API STranslate() noexcept;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~STranslate() throw();
+    CTRLSELECTION_API virtual ~STranslate() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -48,10 +48,10 @@ public:
 protected:
 
     /// Implements starting method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /**
      * @brief Configure the services : declare the events to react.
@@ -69,13 +69,13 @@ protected:
      *   - \b fromKey: key of the object in the source composite
      *   - \b toKey: key of the object in the current composite
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void reconfiguring();
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

@@ -18,13 +18,13 @@ class Plugin : public ::fwRuntime::Plugin
 public:
 
     /// PLugin destructor
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     /// This method is used by runtime to initialize the bundle.
-    void start() throw( ::fwRuntime::RuntimeException );
+    void start();
 
     /// This method is used by runtime to stop the bundle.
-    void stop() throw();
+    void stop() noexcept;
 
 };
 

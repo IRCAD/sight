@@ -31,25 +31,25 @@ public:
 
     ///Destructor
 
-    SPreferences() throw()
+    SPreferences() noexcept
     {
     }
-    virtual ~SPreferences() throw()
+    virtual ~SPreferences() noexcept
     {
     }
 
 protected:
 
     /// Starts service and loads preferences if exists.
-    PREFERENCES_API virtual void starting() throw( ::fwTools::Failed );
+    PREFERENCES_API virtual void starting();
 
     /// Stops service and saves preferences.
-    PREFERENCES_API virtual void stopping() throw( ::fwTools::Failed );
+    PREFERENCES_API virtual void stopping();
 
     /// Updates service and saves preferences.
-    PREFERENCES_API virtual void updating() throw( ::fwTools::Failed );
+    PREFERENCES_API virtual void updating();
 
-    PREFERENCES_API virtual void configuring() throw(::fwTools::Failed);
+    PREFERENCES_API virtual void configuring();
 
     /// preference file
     ::boost::filesystem::path m_prefFile;

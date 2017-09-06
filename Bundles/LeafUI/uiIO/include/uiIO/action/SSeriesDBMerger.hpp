@@ -60,9 +60,9 @@ public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
     typedef ::fwCom::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
 
-    UIIO_API SSeriesDBMerger() throw();
+    UIIO_API SSeriesDBMerger() noexcept;
 
-    UIIO_API virtual ~SSeriesDBMerger() throw();
+    UIIO_API virtual ~SSeriesDBMerger() noexcept;
 
 protected:
 
@@ -76,16 +76,16 @@ protected:
        @endcode
      * - \b IOSelectorSrvConfig: identifier of the ServiceConfig used for SIOSelector
      */
-    void configuring() throw( ::fwTools::Failed );
+    void configuring();
 
     /// Start action.
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Stop action.
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
     void info(std::ostream &_sstream );
 
 private:

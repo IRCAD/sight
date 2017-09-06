@@ -31,11 +31,11 @@ public:
     /**
      * @brief Constructor.
      */
-    FWGUIQT_API QtMainFrame() throw();
+    FWGUIQT_API QtMainFrame() noexcept;
 
 
     /// @brief Destructor.
-    FWGUIQT_API virtual ~QtMainFrame() throw();
+    FWGUIQT_API virtual ~QtMainFrame() noexcept;
 
     typedef ::boost::function0<void> CloseCallback;
     FWGUIQT_API void setCloseCallback(CloseCallback fct);

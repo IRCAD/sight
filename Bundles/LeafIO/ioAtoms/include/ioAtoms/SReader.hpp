@@ -45,7 +45,7 @@ public:
     SReader();
 
     /// Does nothing
-    virtual ~SReader() throw()
+    virtual ~SReader() noexcept
     {
     }
 
@@ -61,10 +61,10 @@ public:
 protected:
 
     /// Does nothing
-    IOATOMS_API void starting() throw(::fwTools::Failed);
+    IOATOMS_API void starting();
 
     /// Does nothing
-    IOATOMS_API void stopping() throw(::fwTools::Failed);
+    IOATOMS_API void stopping();
 
     /**
      * @brief Configures the reader.
@@ -107,12 +107,12 @@ protected:
      * @see ::io::IReader
      * @throw ::fwTools::Failed
      */
-    IOATOMS_API void configuring() throw(::fwTools::Failed);
+    IOATOMS_API void configuring();
 
     /**
      * @brief Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
      */
-    IOATOMS_API void updating() throw(::fwTools::Failed);
+    IOATOMS_API void updating();
 
     /// Returns managed path type, here service manages only single file
     IOATOMS_API ::io::IOPathType getIOPathType() const;

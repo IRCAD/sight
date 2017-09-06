@@ -41,9 +41,9 @@ public:
                                             (()),
                                             ::fwGui::factory::New< QtContainer > );
 
-    FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) throw();
+    FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 
-    FWGUIQT_API virtual ~QtContainer() throw();
+    FWGUIQT_API virtual ~QtContainer() noexcept;
 
     FWGUIQT_API virtual void setQtContainer(QWidget* container);
     FWGUIQT_API virtual QWidget* getQtContainer();

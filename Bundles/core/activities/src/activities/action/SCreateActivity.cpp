@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,11 +36,11 @@
 
 #include <QApplication>
 #include <QDialog>
-#include <QPushButton>
-#include <QListWidget>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QListWidget>
+#include <QPushButton>
 #include <QStandardItemModel>
+#include <QVBoxLayout>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
@@ -60,7 +60,7 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG  
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::SCreateActivity() throw()
+SCreateActivity::SCreateActivity() noexcept
 {
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
@@ -68,36 +68,36 @@ SCreateActivity::SCreateActivity() throw()
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::~SCreateActivity() throw()
+SCreateActivity::~SCreateActivity() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::starting() throw(::fwTools::Failed)
+void SCreateActivity::starting()
 {
     this->actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::stopping() throw(::fwTools::Failed)
+void SCreateActivity::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::configuring() throw(fwTools::Failed)
+void SCreateActivity::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
     typedef ::fwServices::IService::ConfigType ConfigType;
 
-    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree();
 
     if(srvconfig.count("filter") == 1 )
     {
-        const ::fwServices::IService::ConfigType &configFilter = srvconfig.get_child("filter");
+        const ::fwServices::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -115,17 +115,16 @@ void SCreateActivity::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer & infos )
+::fwActivities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
-    QWidget *parent = qApp->activeWindow();
+    QWidget* parent = qApp->activeWindow();
 
     QDialog* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
     dialog->resize(600, 400);
 
-
-    QStandardItemModel *model = new QStandardItemModel(dialog);
-    for( const ::fwActivities::registry::ActivityInfo &info :  infos)
+    QStandardItemModel* model = new QStandardItemModel(dialog);
+    for( const ::fwActivities::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -143,9 +142,8 @@ void SCreateActivity::configuring() throw(fwTools::Failed)
         model->appendRow(item);
     }
 
-
-    QListView * selectionList = new QListView();
-    selectionList->setIconSize(QSize(40,40));
+    QListView* selectionList = new QListView();
+    selectionList->setIconSize(QSize(40, 40));
     selectionList->setUniformItemSizes(true);
     selectionList->setModel(model);
 
@@ -158,11 +156,11 @@ void SCreateActivity::configuring() throw(fwTools::Failed)
     QPushButton* okButton     = new QPushButton("Ok");
     QPushButton* cancelButton = new QPushButton("Cancel");
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    QHBoxLayout* hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);
     hLayout->addWidget(cancelButton);
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
+    QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->addWidget(selectionList);
     vLayout->addLayout(hLayout);
 
@@ -175,7 +173,7 @@ void SCreateActivity::configuring() throw(fwTools::Failed)
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
-        QStandardItem *item      = model->itemFromIndex( currentIndex );
+        QStandardItem* item      = model->itemFromIndex( currentIndex );
         QVariant var             = item->data();
         info = var.value< ::fwActivities::registry::ActivityInfo >();
     }
@@ -217,7 +215,7 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::updating() throw(::fwTools::Failed)
+void SCreateActivity::updating()
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 

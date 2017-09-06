@@ -42,12 +42,12 @@ public:
     /**
      * @brief   constructor
      */
-    IOVTKGDCM_API SImageSeriesWriter() throw();
+    IOVTKGDCM_API SImageSeriesWriter() noexcept;
 
     /**
      * @brief   destructor
      */
-    IOVTKGDCM_API virtual ~SImageSeriesWriter() throw();
+    IOVTKGDCM_API virtual ~SImageSeriesWriter() noexcept;
 
     /// Propose select a directory where to save the DICOM files.
     IOVTKGDCM_API virtual void configureWithIHM();
@@ -55,16 +55,16 @@ public:
 protected:
 
     /// Does nothing
-    IOVTKGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void starting();
 
     /// Does nothing
-    IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void stopping();
 
     /// Does nothing
-    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed);
+    IOVTKGDCM_API virtual void configuring();
 
     /// Write the ImageSeries in DICOM format.
-    IOVTKGDCM_API void updating() throw(::fwTools::Failed);
+    IOVTKGDCM_API void updating();
 
     /// Return path type managed by the service, here FOLDER
     IOVTKGDCM_API ::io::IOPathType getIOPathType() const;

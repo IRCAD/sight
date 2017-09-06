@@ -21,13 +21,13 @@ struct ACTIVITIES_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    ACTIVITIES_API ~Plugin() throw();
+    ACTIVITIES_API ~Plugin() noexcept;
 
     // Overrides
-    ACTIVITIES_API void start() throw(::fwRuntime::RuntimeException);
+    ACTIVITIES_API void start();
 
     // Overrides
-    ACTIVITIES_API void stop() throw();
+    ACTIVITIES_API void stop() noexcept;
 
 };
 

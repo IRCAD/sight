@@ -13,7 +13,7 @@ namespace fwMemory
 
 
 void BufferMallocPolicy::allocate(BufferType &buffer,
-                                  BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+                                  BufferAllocationPolicy::SizeType size)
 {
     if (size > 0)
     {
@@ -30,7 +30,7 @@ void BufferMallocPolicy::allocate(BufferType &buffer,
 //------------------------------------------------------------------------------
 
 void BufferMallocPolicy::reallocate(BufferType &buffer,
-                                    BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+                                    BufferAllocationPolicy::SizeType size)
 {
     BufferType newBuffer;
     if (size > 0)
@@ -74,7 +74,7 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 
 void BufferNewPolicy::allocate(BufferType &buffer,
-                               BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+                               BufferAllocationPolicy::SizeType size)
 {
     try
     {
@@ -93,7 +93,7 @@ void BufferNewPolicy::allocate(BufferType &buffer,
 //------------------------------------------------------------------------------
 
 void BufferNewPolicy::reallocate(BufferType &buffer,
-                                 BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+                                 BufferAllocationPolicy::SizeType size)
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -124,7 +124,7 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 
 void BufferNoAllocPolicy::allocate(BufferType &buffer,
-                                   BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+                                   BufferAllocationPolicy::SizeType size)
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -135,7 +135,7 @@ void BufferNoAllocPolicy::allocate(BufferType &buffer,
 //------------------------------------------------------------------------------
 
 void BufferNoAllocPolicy::reallocate(BufferType &buffer,
-                                     BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+                                     BufferAllocationPolicy::SizeType size)
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);

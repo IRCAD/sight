@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>2DLocalPreviewConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -6,11 +6,9 @@
         <param name="FILE_CACHE" default="none" />
     </parameters>
     <config>
-
         <object uid="${objectID}" type="::fwMedData::DicomSeries" src="ref" />
         <object uid="image" type="::fwData::Image" src="deferred" />
-
-        <service uid="mainview" type="::gui::view::SDefaultView" >
+        <service uid="mainview" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -24,32 +22,45 @@
             </registry>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="image" uid="image" optional="yes"/>
-            <in key="dicomSeries" uid="${objectID}" />
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
-                <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="imageText" class="::visuVTKAdaptor::ImageText" objectId="image">
-                    <config renderer="default" picker="picker" text="" color="#FFFFFF" />
-                </adaptor>
-                <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                    <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
-                </adaptor>
-                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="dicomSeries">
-                    <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
-                </adaptor>
+                <adaptor uid="interactor4Negato" />
+                <adaptor uid="imageText" />
+                <adaptor uid="seriesAdaptor" />
+                <adaptor uid="nameAdaptor" />
             </scene>
         </service>
 
-        <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv" >
+        <service uid="interactor4Negato" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="imageText" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+            <inout key="image" uid="image" />
+            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+        </service>
+
+        <service uid="seriesAdaptor" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="image" />
+            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
+        </service>
+
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${objectID}" />
+            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
             <in key="image" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv" >
+        <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="image" />
         </service>
 
@@ -68,10 +79,13 @@
         </service>
 
         <start uid="mainview" />
-
         <!-- Deferred start -->
         <start uid="medicalImgConverter" />
         <start uid="imageDumpLocker" />
-
+        <!-- VTK scene 'gs' -->
+        <start uid="interactor4Negato" />
+        <start uid="imageText" />
+        <start uid="seriesAdaptor" />
+        <start uid="nameAdaptor" />
     </config>
 </extension>

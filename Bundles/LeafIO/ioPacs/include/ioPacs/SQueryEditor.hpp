@@ -52,24 +52,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SQueryEditor)( ::gui::editor::IEditor ) );
 
     /// Constructor
-    IOPACS_API SQueryEditor() throw();
+    IOPACS_API SQueryEditor() noexcept;
 
     /// Destructor
-    IOPACS_API virtual ~SQueryEditor() throw();
+    IOPACS_API virtual ~SQueryEditor() noexcept;
 
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring() throw(::fwTools::Failed);
+    IOPACS_API virtual void configuring();
 
     /// Override
-    IOPACS_API virtual void starting() throw(::fwTools::Failed);
+    IOPACS_API virtual void starting();
 
     /// Override
-    IOPACS_API virtual void stopping() throw(::fwTools::Failed);
+    IOPACS_API virtual void stopping();
 
     /// Override
-    IOPACS_API void updating() throw(::fwTools::Failed);
+    IOPACS_API void updating();
 
     /// Override
     IOPACS_API void info(std::ostream& _sstream );

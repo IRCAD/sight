@@ -22,19 +22,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SQuit, ::fwData::Ob
 
 //-----------------------------------------------------------------------------
 
-SQuit::SQuit() throw()
+SQuit::SQuit() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SQuit::~SQuit() throw()
+SQuit::~SQuit() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SQuit::configuring() throw( ::fwTools::Failed )
+void SQuit::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -42,7 +42,7 @@ void SQuit::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SQuit::starting() throw( ::fwTools::Failed )
+void SQuit::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -50,7 +50,7 @@ void SQuit::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SQuit::stopping() throw( ::fwTools::Failed )
+void SQuit::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -65,7 +65,7 @@ void SQuit::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void SQuit::updating() throw( ::fwTools::Failed )
+void SQuit::updating()
 {
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);

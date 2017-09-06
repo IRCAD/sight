@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 
 #include <gui/editor/IEditor.hpp>
 
-namespace uiImage
+namespace uiImageQt
 {
 
 /**
@@ -30,7 +30,7 @@ namespace uiImage
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+   <service uid="..." type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
       <inout key="image" uid="..."/>
       <sliceIndex>${orientationValue}</sliceIndex>
    </service>
@@ -47,14 +47,13 @@ class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEdit
 
 public:
 
-
-    fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SliceIndexPositionEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API SliceIndexPositionEditor() throw();
+    UIIMAGEQT_API SliceIndexPositionEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() throw();
+    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -75,31 +74,32 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update editor information from the image
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Swap of image
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the editor.
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
+       <service uid="slider_negato1" impl="::uiImageQt::SliceIndexPositionEditor" type="::gui::editor::IEditor"
+     * autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
        </service>
        @endcode
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream );
@@ -141,8 +141,7 @@ private:
 
 };
 
-} // uiImage
+} // uiImageQt
 
 #endif /*__UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__*/
-
 

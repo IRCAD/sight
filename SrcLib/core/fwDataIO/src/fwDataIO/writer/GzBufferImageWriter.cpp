@@ -12,9 +12,9 @@
 
 #include <fwDataTools/helper/Image.hpp>
 
-#include <zlib.h>
-
 #include <boost/cstdint.hpp>
+
+#include <zlib.h>
 
 #include <iostream>
 
@@ -46,7 +46,7 @@ void GzBufferImageWriter::write()
     assert( getFile().empty() == false );
 
     ::fwData::Image::sptr image = getConcreteObject();
-    OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className());
+    OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->getClassname());
 
     /// test if can open archive
     gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");

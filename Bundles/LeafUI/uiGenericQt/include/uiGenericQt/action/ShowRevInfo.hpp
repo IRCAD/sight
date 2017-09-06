@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,19 @@
 #ifndef __UIGENERICQT_ACTION_SHOWREVINFO_HPP__
 #define __UIGENERICQT_ACTION_SHOWREVINFO_HPP__
 
-#include <map>
-#include <set>
+#include "uiGenericQt/config.hpp"
+
+#include <fwGui/IActionSrv.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 #include <QObject>
 #include <QTextDocument>
 
-#include <boost/filesystem/path.hpp>
+#include <map>
+#include <set>
 
-#include <fwGui/IActionSrv.hpp>
-
-#include "uiGenericQt/config.hpp"
-
-namespace uiGeneric
+namespace uiGenericQt
 {
 
 namespace action
@@ -27,7 +27,6 @@ namespace action
 
 /**
  * @brief   This action show the revision info for bundle and lib.
- * @class   ShowRevInfo
  */
 class UIGENERICQT_CLASS_API ShowRevInfo : public QObject,
                                           public ::fwGui::IActionSrv
@@ -41,32 +40,32 @@ public:
     typedef std::pair<BundleNameSet, LibNameSet> BundleLibPairType;
     typedef std::map<std::string, BundleLibPairType> RevMapType;
 
-    fwCoreServiceClassDefinitionsMacro ( (ShowRevInfo)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (ShowRevInfo)( ::fwGui::IActionSrv) );
 
-    UIGENERICQT_API ShowRevInfo() throw();
+    UIGENERICQT_API ShowRevInfo() noexcept;
 
-    UIGENERICQT_API virtual ~ShowRevInfo() throw();
+    UIGENERICQT_API virtual ~ShowRevInfo() noexcept;
 
 protected:
 
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowRevInfo" autoConnect="no" />
+       <service type="::fwGui::IActionSrv" impl="::uiGenericQt::action::ShowRevInfo" autoConnect="no" />
        @endcode
      */
-    UIGENERICQT_API void configuring() throw( ::fwTools::Failed );
+    UIGENERICQT_API void configuring();
 
     /// Starts action
-    UIGENERICQT_API void starting() throw (::fwTools::Failed);
+    UIGENERICQT_API void starting();
 
     /// Show the frame
-    UIGENERICQT_API void updating() throw (::fwTools::Failed);
+    UIGENERICQT_API void updating();
 
     /// Stops action
-    UIGENERICQT_API void stopping() throw (::fwTools::Failed);
+    UIGENERICQT_API void stopping();
 
-    UIGENERICQT_API void info(std::ostream &_sstream );
+    UIGENERICQT_API void info(std::ostream& _sstream );
 
 private:
 
@@ -82,6 +81,6 @@ protected Q_SLOTS:
 };
 
 } // namespace action
-} // namespace uiGeneric
+} // namespace uiGenericQt
 
 #endif /*__UIGENERICQT_ACTION_SHOWREVINFO_HPP__*/

@@ -30,7 +30,7 @@ SDumpPolicy::~SDumpPolicy()
 
 //------------------------------------------------------------------------------
 
-void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
+void SDumpPolicy::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     std::vector < ConfigurationType > config = m_configuration->find("config");
@@ -64,7 +64,7 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SDumpPolicy::starting() throw ( ::fwTools::Failed )
+void SDumpPolicy::starting()
 {
     ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
     if (manager)
@@ -92,19 +92,19 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
+void SDumpPolicy::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDumpPolicy::updating() throw ( ::fwTools::Failed )
+void SDumpPolicy::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDumpPolicy::swapping() throw ( ::fwTools::Failed )
+void SDumpPolicy::swapping()
 {
     this->stopping();
     this->starting();

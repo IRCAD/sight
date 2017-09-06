@@ -35,12 +35,12 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioPacs::SQueryEditor, ::fwMed
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::SQueryEditor() throw()
+SQueryEditor::SQueryEditor() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-SQueryEditor::~SQueryEditor() throw()
+SQueryEditor::~SQueryEditor() noexcept
 {
 }
 
@@ -53,14 +53,14 @@ void SQueryEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::configuring() throw(::fwTools::Failed)
+void SQueryEditor::configuring()
 {
     ::fwGui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::starting() throw(::fwTools::Failed)
+void SQueryEditor::starting()
 {
     SLM_TRACE_FUNC();
     ::fwGui::IGuiContainerSrv::create();
@@ -109,7 +109,7 @@ void SQueryEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::stopping() throw(::fwTools::Failed)
+void SQueryEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -125,7 +125,7 @@ void SQueryEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::updating() throw(::fwTools::Failed)
+void SQueryEditor::updating()
 {
     SLM_TRACE_FUNC();
 }

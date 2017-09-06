@@ -24,12 +24,12 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SPacsConfiguration
 
 //------------------------------------------------------------------------------
 
-SPacsConfigurationInitializer::SPacsConfigurationInitializer() throw()
+SPacsConfigurationInitializer::SPacsConfigurationInitializer() noexcept
 {
 }
 //------------------------------------------------------------------------------
 
-SPacsConfigurationInitializer::~SPacsConfigurationInitializer() throw()
+SPacsConfigurationInitializer::~SPacsConfigurationInitializer() noexcept
 {
 }
 
@@ -42,7 +42,7 @@ void SPacsConfigurationInitializer::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationInitializer::starting() throw(::fwTools::Failed)
+void SPacsConfigurationInitializer::starting()
 {
     SLM_TRACE_FUNC();
     this->updating();
@@ -50,7 +50,7 @@ void SPacsConfigurationInitializer::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationInitializer::stopping() throw(::fwTools::Failed)
+void SPacsConfigurationInitializer::stopping()
 {
     SLM_TRACE_FUNC();
     this->updating();
@@ -99,7 +99,7 @@ std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr> getPreferenc
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationInitializer::configuring() throw(::fwTools::Failed)
+void SPacsConfigurationInitializer::configuring()
 {
     SLM_TRACE_FUNC();
 
@@ -191,7 +191,7 @@ void SPacsConfigurationInitializer::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationInitializer::updating() throw(::fwTools::Failed)
+void SPacsConfigurationInitializer::updating()
 {
     SLM_TRACE_FUNC();
     ::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration =

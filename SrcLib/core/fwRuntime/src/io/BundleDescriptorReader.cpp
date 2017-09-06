@@ -42,7 +42,7 @@ std::string BundleDescriptorReader::POINT("point");
 //------------------------------------------------------------------------------
 
 const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBundles(
-    const ::boost::filesystem::path& location) throw(RuntimeException)
+    const ::boost::filesystem::path& location)
 {
     // Normalizes the path.
     ::boost::filesystem::path normalizedPath(location);
@@ -84,8 +84,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::filesystem::path& location) throw(
-    RuntimeException)
+std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::filesystem::path& location)
 {
     std::shared_ptr<Bundle> bundle;
     // Get the descriptor location.
@@ -154,7 +153,6 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<Bundle> BundleDescriptorReader::createBundleFromXmlPlugin( const ::boost::filesystem::path & location )
-throw ( RuntimeException )
 {
     std::shared_ptr<Bundle> bundle;
     // Get the descriptor location.
@@ -224,7 +222,7 @@ throw ( RuntimeException )
 
 ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(xmlNodePtr node,
                                                                                const std::shared_ptr<Bundle> bundle)
-throw(RuntimeException)
+
 {
     //xmlKeepBlanksDefault(0);
     // Creates the configuration element.
@@ -278,8 +276,7 @@ throw(RuntimeException)
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr node,
-                                                                    const std::shared_ptr<Bundle> bundle) throw(
-    RuntimeException)
+                                                                    const std::shared_ptr<Bundle> bundle)
 {
     // Processes all extension attributes.
     xmlAttrPtr curAttr;
@@ -322,7 +319,6 @@ std::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr n
 
 BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processPoint(xmlNodePtr node,
                                                                                      const std::shared_ptr<Bundle> bundle)
-throw(RuntimeException)
 {
     // Creates the extension instance.
     xmlAttrPtr curAttr;
@@ -367,7 +363,7 @@ throw(RuntimeException)
 
 std::shared_ptr<ExtensionPoint> BundleDescriptorReader::processExtensionPoint(xmlNodePtr node,
                                                                               const std::shared_ptr<Bundle> bundle)
-throw(RuntimeException)
+
 {
     // Processes all extension attributes.
     xmlAttrPtr curAttr;
@@ -396,7 +392,7 @@ throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr node) throw(RuntimeException)
+std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr node)
 {
     // Processes all plugin attributes.
     xmlAttrPtr curAttr;
@@ -418,8 +414,7 @@ std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr n
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node,
-                                                              const ::boost::filesystem::path& location) throw(
-    RuntimeException)
+                                                              const ::boost::filesystem::path& location)
 {
     // Creates the bundle.
     std::shared_ptr<Bundle> bundle;
@@ -517,7 +512,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node,
 
 //------------------------------------------------------------------------------
 
-const std::string BundleDescriptorReader::processRequirement(xmlNodePtr node) throw(RuntimeException)
+const std::string BundleDescriptorReader::processRequirement(xmlNodePtr node)
 {
     // Processes all requirement attributes.
     xmlAttrPtr curAttr;

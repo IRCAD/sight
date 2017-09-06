@@ -27,26 +27,26 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SStarter, ::fwData:
 
 //-----------------------------------------------------------------------------
 
-SStarter::SStarter() throw()
+SStarter::SStarter() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SStarter::~SStarter() throw()
+SStarter::~SStarter() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SStarter::starting() throw( ::fwTools::Failed )
+void SStarter::starting()
 {
     this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
-void SStarter::stopping() throw( ::fwTools::Failed )
+void SStarter::stopping()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
@@ -77,7 +77,7 @@ void SStarter::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void SStarter::updating() throw( ::fwTools::Failed )
+void SStarter::updating()
 {
     for(size_t i = 0; i < m_uuidServices.size(); i++)
     {
@@ -181,7 +181,7 @@ void SStarter::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStarter::configuring() throw( ::fwTools::Failed )
+void SStarter::configuring()
 {
     this->initialize();
 

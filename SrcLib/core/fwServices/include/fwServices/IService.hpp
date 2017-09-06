@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -66,10 +66,10 @@ class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
 
 // to give to OSR an access on IService.m_associatedObject;
 friend class registry::ObjectService;
-friend class AppConfigManager2;
+friend class AppConfigManager;
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) );
+    fwCoreServiceClassDefinitionsMacro( (IService)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
 
     typedef ::boost::property_tree::ptree ConfigType;
@@ -92,8 +92,8 @@ public:
         std::string m_uid;
         std::string m_key;
         AccessType m_access;
-        bool m_autoConnect;
-        bool m_optional;
+        bool m_autoConnect { false };
+        bool m_optional { false };
     };
 
     /// Used to store a service configuration.
@@ -101,7 +101,7 @@ public:
     {
         std::string m_uid;
         std::string m_type;
-        bool m_globalAutoConnect;
+        bool m_globalAutoConnect { false };
         std::string m_worker;
         std::vector<ObjectServiceConfig> m_objects;
         std::map<std::string, size_t> m_groupSize;
@@ -219,7 +219,8 @@ public:
     FWSERVICES_API void setConfiguration( const ConfigType& ptree );
 
     /**
-     * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
+     * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does
+     * nothing otherwise.
      * @pre m_configurationState == UNCONFIGURED
      * @post m_configurationState == CONFIGURED
      * @note invoke checkConfiguration()
@@ -286,33 +287,32 @@ public:
      * @brief Return the global process status
      * @return m_globalState
      */
-    FWSERVICES_API GlobalStatus getStatus() const throw();
+    FWSERVICES_API GlobalStatus getStatus() const noexcept;
 
     /**
      * @brief Test if the service is started or not
      * @return true if m_globalState == STARTED
      */
-    FWSERVICES_API bool isStarted() const throw();
+    FWSERVICES_API bool isStarted() const noexcept;
 
     /**
      * @brief Test if the service is stopped or not
      * @return true if m_globalState == STOPPED
      */
-    FWSERVICES_API bool isStopped() const throw();
+    FWSERVICES_API bool isStopped() const noexcept;
 
     /**
      * @brief Return the configuration process status
      * @return m_configurationState
      */
-    FWSERVICES_API ConfigurationStatus getConfigurationStatus() const throw();
+    FWSERVICES_API ConfigurationStatus getConfigurationStatus() const noexcept;
 
     /**
      * @brief Return the update process status
      * @return m_updatingState
      */
-    FWSERVICES_API UpdatingStatus getUpdatingStatus() const throw();
+    FWSERVICES_API UpdatingStatus getUpdatingStatus() const noexcept;
     //@}
-
 
     /**
      * @name All concerning configuration
@@ -331,7 +331,6 @@ public:
      */
     FWSERVICES_API ConfigType getConfigTree() const;
 
-
 //    /**
 //     * @brief Check the configuration using XSD if possible
 //     * @return true if the configuration is validate or if
@@ -339,9 +338,7 @@ public:
 //     */
 //    FWSERVICES_API bool checkConfiguration() ;
 
-
     //@}
-
 
     /**
      * @name Optimized access to associated Object & Helper
@@ -457,6 +454,8 @@ public:
     class KeyConnectionsMap
     {
     public:
+        //------------------------------------------------------------------------------
+
         void push (const KeyType& key,
                    const ::fwCom::Signals::SignalKeyType& sig,
                    const ::fwCom::Slots::SlotKeyType& slot)
@@ -466,18 +465,26 @@ public:
 
         typedef std::map< KeyType, KeyConnectionsType> KeyConnectionsMapType;
 
+        //------------------------------------------------------------------------------
+
         KeyConnectionsMapType::const_iterator find(const KeyType& key) const
         {
             return m_keyConnectionsMap.find(key);
         }
+        //------------------------------------------------------------------------------
+
         KeyConnectionsMapType::const_iterator end() const
         {
             return m_keyConnectionsMap.cend();
         }
+        //------------------------------------------------------------------------------
+
         bool empty() const
         {
             return m_keyConnectionsMap.empty();
         }
+        //------------------------------------------------------------------------------
+
         size_t size() const
         {
             return m_keyConnectionsMap.size();
@@ -509,10 +516,6 @@ public:
      */
     FWSERVICES_API friend std::ostream& operator<<(std::ostream& _sstream, IService& _service);
 
-    /** Set/get the version of the service. Temporary, this should be removed when appXml is gone. */
-    FWSERVICES_API static void setVersion(int version);
-    FWSERVICES_API static bool isVersion2();
-
     /**
      * @brief Return the id of the object, throw if it is not found
      */
@@ -523,6 +526,26 @@ public:
      */
     FWSERVICES_API void setObjectId(const KeyType& _key, const IdType& _id);
     //@}
+
+    /**
+     * @brief Register an input object for this service
+     * @param[in] obj input object used by the service
+     * @param[in] key key of the object in the new adaptor
+     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @return
+     */
+    FWSERVICES_API void registerInput(const::fwData::Object::csptr& obj, const std::string& key,
+                                      const bool autoConnect = false);
+
+    /**
+     * @brief Register an in/out object for this service
+     * @param[in] obj in/out object used by the service
+     * @param[in] key key of the object in the new adaptor
+     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @return
+     */
+    FWSERVICES_API void registerInOut(const::fwData::Object::sptr& obj, const std::string& key,
+                                      const bool autoConnect = false);
 
 protected:
 
@@ -562,14 +585,14 @@ protected:
      * installs a button in a frame and show the frame.
      * @see start()
      */
-    FWSERVICES_API virtual void starting() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void starting() = 0;
 
     /**
      * @brief Uninitialize the service activity. The stop() method is always invoked before destroying a service.
      *
      * @see stop()
      */
-    FWSERVICES_API virtual void stopping() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void stopping() = 0;
 
     /**
      * @brief Swap the service from associated object to another object
@@ -579,7 +602,7 @@ protected:
      * @todo This method must have in parameter the new object or the old ?
      * @deprecated use swapping(const KeyType& key) instead
      */
-    virtual void swapping() throw ( ::fwTools::Failed )
+    virtual void swapping()
     {
     }
 
@@ -593,7 +616,7 @@ protected:
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?
      */
-    virtual void swapping(const KeyType& key) throw ( ::fwTools::Failed )
+    virtual void swapping(const KeyType& key)
     {
     }
 
@@ -601,20 +624,21 @@ protected:
      * @brief Configure the service before starting. Apply the configuration to service.
      * @see configure()
      */
-    FWSERVICES_API virtual void configuring() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void configuring() = 0;
 
     /**
      * @brief Reconfigure the service activity when is started.
      * @todo This method should be pure virtual
      * @see configure()
      */
-    FWSERVICES_API virtual void reconfiguring() throw ( ::fwTools::Failed );
+    FWSERVICES_API virtual void reconfiguring();
 
     /**
-     * @brief Perform some computations according to object (this service is attached to) attribute values and its internal state.
+     * @brief Perform some computations according to object (this service is attached to) attribute values and its
+     * internal state.
      * @see update()
      */
-    FWSERVICES_API virtual void updating() throw ( ::fwTools::Failed ) = 0;
+    FWSERVICES_API virtual void updating() = 0;
 
     /**
      * @brief Write information in a stream.
@@ -642,7 +666,6 @@ protected:
      * @todo this field must be private
      */
     ::fwData::Object::wptr m_associatedObject;
-
 
     /**
      * @name Slot API
@@ -725,11 +748,6 @@ private:
      * @brief Defines if the service is configured or not.
      */
     ConfigurationStatus m_configurationState;
-
-    /**
-     * @brief Defines if the service is part of a version 1 or a version 2 application.
-     */
-    static int s_version;
 
     /**
      * @brief Defines the configuration of the objects. Used for autoConnect.

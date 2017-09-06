@@ -65,7 +65,7 @@ template<typename T>
 T* createExecutableInstance(
     const std::shared_ptr<Extension>    extension,
     const std::string           & element = "executable",
-    const std::string           & attribute = "class" ) throw(RuntimeException)
+    const std::string           & attribute = "class" )
 {
     // Retrieves the right configuration element.
     std::shared_ptr<ConfigurationElement> elt( extension->findConfigurationElement(element) );
@@ -91,7 +91,7 @@ T* createExecutableInstance(
 template<typename T>
 T * createExecutableInstance(
     const std::shared_ptr<ConfigurationElement> element,
-    const std::string                       & attribute = "class" ) throw(RuntimeException)
+    const std::string                       & attribute = "class" )
 {
 
     // Retrieves the executable type.
@@ -130,7 +130,7 @@ template<typename OutputIterator>
 void getAllExtensionsForPoint(
     const std::string   & identifier,
     OutputIterator output
-    ) throw(RuntimeException)
+    )
 {
     std::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
 
@@ -155,7 +155,7 @@ template<typename OutputIterator>
 void getAllConfigurationElementsForPoint(
     const std::string   & identifier,
     OutputIterator output
-    ) throw(RuntimeException)
+    )
 {
     std::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
 
@@ -192,7 +192,7 @@ void getAllConfigurationElementsForPoint(
  *          elements
  */
 template<typename Container>
-const Container getAllConfigurationElementsForPoint(const std::string & identifier) throw(RuntimeException)
+const Container getAllConfigurationElementsForPoint(const std::string & identifier)
 {
     // Defines an insert iterator type for the container.
     typedef std::back_insert_iterator< Container > Inserter;
@@ -222,7 +222,7 @@ const Container getAllConfigurationElementsForPoint(const std::string & identifi
  */
 template< typename Container, typename T >
 const Container getAllExecutableForPoint( const std::string & identifier,
-                                          const std::string & attribute = "class" ) throw(RuntimeException)
+                                          const std::string & attribute = "class" )
 {
     // Defines the element container
     typedef std::vector< std::shared_ptr< ConfigurationElement > > ConfigurationElementContainer;
@@ -282,7 +282,7 @@ FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string & iden
  * @return  a system valid path
  */
 FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier,
-                                                                  const boost::filesystem::path &path) throw();
+                                                                  const boost::filesystem::path &path) noexcept;
 
 
 /**
@@ -294,7 +294,7 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::str
  * @return  a system valid path
  */
 FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
-                                                                   const boost::filesystem::path &path) throw();
+                                                                   const boost::filesystem::path &path) noexcept;
 
 
 /**
@@ -306,7 +306,7 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_p
  * @return  a system valid path
  */
 FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
-                                                                   const boost::filesystem::path &path) throw();
+                                                                   const boost::filesystem::path &path) noexcept;
 
 
 /**
@@ -318,7 +318,7 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_p
  * @return  a system valid path
  */
 FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecutable *executable,
-                                                                  const boost::filesystem::path &path) throw();
+                                                                  const boost::filesystem::path &path) noexcept;
 
 
 /**
@@ -326,7 +326,7 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecuta
  *
  * @param   directory   a path to the directory to explore for bundles
  */
-FWRUNTIME_API void addBundles( const boost::filesystem::path & directory ) throw(RuntimeException);
+FWRUNTIME_API void addBundles( const boost::filesystem::path & directory );
 
 
 /**
@@ -357,7 +357,7 @@ FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string & identifier
  *
  * @param   identifier  a string containing a bundle identifier
  */
-FWRUNTIME_API void startBundle(const std::string &identifier) throw(RuntimeException);
+FWRUNTIME_API void startBundle(const std::string &identifier);
 
 
 } // namespace fwRuntime

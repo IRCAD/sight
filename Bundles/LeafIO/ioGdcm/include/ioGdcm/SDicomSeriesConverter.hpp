@@ -35,12 +35,12 @@ public:
     /**
      * @brief Constructor
      */
-    IOGDCM_API SDicomSeriesConverter() throw();
+    IOGDCM_API SDicomSeriesConverter() noexcept;
 
     /**
      * @brief Destructor
      */
-    IOGDCM_API virtual ~SDicomSeriesConverter() throw();
+    IOGDCM_API virtual ~SDicomSeriesConverter() noexcept;
 
 protected:
 
@@ -54,16 +54,16 @@ protected:
        </service>
        @endcode
      */
-    IOGDCM_API virtual void configuring() throw(::fwTools::Failed);
+    IOGDCM_API virtual void configuring();
 
     /// Override
-    IOGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOGDCM_API virtual void starting();
 
     /// Override
-    IOGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOGDCM_API virtual void stopping();
 
     /// Override
-    IOGDCM_API void updating() throw(::fwTools::Failed);
+    IOGDCM_API void updating();
 
     /// Override
     IOGDCM_API void info(std::ostream& _sstream );

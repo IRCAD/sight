@@ -50,7 +50,7 @@ fwServicesRegisterMacro( ::gui::view::IActivityView, ::guiQt::editor::SDynamicVi
 
 //------------------------------------------------------------------------------
 
-SDynamicView::SDynamicView() throw() :
+SDynamicView::SDynamicView() noexcept :
     m_mainActivityClosable(true)
 {
     m_dynamicConfigStartStop = false;
@@ -63,13 +63,13 @@ SDynamicView::SDynamicView() throw() :
 
 //------------------------------------------------------------------------------
 
-SDynamicView::~SDynamicView() throw()
+SDynamicView::~SDynamicView() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::configuring() throw(fwTools::Failed)
+void SDynamicView::configuring()
 {
     this->::gui::view::IActivityView::configuring();
 
@@ -89,7 +89,7 @@ void SDynamicView::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::starting() throw(::fwTools::Failed)
+void SDynamicView::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -119,7 +119,7 @@ void SDynamicView::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::stopping() throw(::fwTools::Failed)
+void SDynamicView::stopping()
 {
     SLM_TRACE_FUNC();
     while(m_tabWidget->count())
@@ -134,13 +134,13 @@ void SDynamicView::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::updating() throw(::fwTools::Failed)
+void SDynamicView::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::swapping() throw(::fwTools::Failed)
+void SDynamicView::swapping()
 {
 }
 

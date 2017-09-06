@@ -28,7 +28,7 @@ public:
     FWPACSIO_API NegociateAssociationFailure(const std::string& message);
 
     /// Destructor
-    FWPACSIO_API virtual ~NegociateAssociationFailure() throw ();
+    FWPACSIO_API virtual ~NegociateAssociationFailure() noexcept;
 
 };
 

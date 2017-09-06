@@ -31,7 +31,7 @@ namespace parser
 
 //------------------------------------------------------------------------------
 
-void GenericField::updating( ) throw(fwTools::Failed)
+void GenericField::updating( )
 {
     SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
 }

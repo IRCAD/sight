@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __UIGENERICQT_ACTION_LAUNCHBROWSERACTIONSERVICE_HPP__
 #define __UIGENERICQT_ACTION_LAUNCHBROWSERACTIONSERVICE_HPP__
 
-#include <fwTools/Failed.hpp>
+#include "uiGenericQt/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "uiGenericQt/config.hpp"
+#include <fwTools/Failed.hpp>
 
-namespace uiGeneric
+namespace uiGenericQt
 {
 
 namespace action
@@ -21,44 +21,42 @@ namespace action
 
 /**
  * @brief   This action launch a browser on the url given in configuration.
- * @class   LaunchBrowserActionService
  */
 class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (LaunchBrowserActionService)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (LaunchBrowserActionService)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIGENERICQT_API LaunchBrowserActionService() throw();
+    UIGENERICQT_API LaunchBrowserActionService() noexcept;
 
     /// Destructor. Do nothing.
-    UIGENERICQT_API virtual ~LaunchBrowserActionService() throw();
+    UIGENERICQT_API virtual ~LaunchBrowserActionService() noexcept;
 
 protected:
-
 
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+       <service type="::fwGui::IActionSrv" impl="::uiGenericQt::action::LaunchBrowserActionService" autoConnect="no">
         <url>http://www.ircad.fr</url>
        </service>
        @endcode
      */
-    void configuring() throw( ::fwTools::Failed );
+    void configuring();
 
     /// Starts action
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Launch a browser on the url given in the configuration
-    void updating() throw(::fwTools::Failed);
+    void updating();
 
     /// Stops action
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
-    void info( std::ostream &_sstream );
+    void info( std::ostream& _sstream );
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
@@ -70,8 +68,7 @@ private:
 
 } // action
 
-} // uiGeneric
+} // uiGenericQt
 
 #endif /*__UIGENERICQT_ACTION_LAUNCHBROWSERACTIONSERVICE_HPP__*/
-
 

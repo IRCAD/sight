@@ -30,19 +30,19 @@ fwServicesRegisterMacro( ::io::IReader, ::ioDcmtk::SDicomTagSeriesDBReader, ::fw
 
 //------------------------------------------------------------------------------
 
-SDicomTagSeriesDBReader::SDicomTagSeriesDBReader() throw()
+SDicomTagSeriesDBReader::SDicomTagSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SDicomTagSeriesDBReader::~SDicomTagSeriesDBReader() throw()
+SDicomTagSeriesDBReader::~SDicomTagSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::configuring() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -71,14 +71,14 @@ void SDicomTagSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::starting() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::stopping() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -137,7 +137,7 @@ std::string SDicomTagSeriesDBReader::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
+void SDicomTagSeriesDBReader::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
@@ -148,15 +148,7 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
             if( seriesDB->size() > 0 )
             {
                 // Retrieve dataStruct associated with this service
-                ::fwMedData::SeriesDB::sptr associatedSeriesDB;
-                if(this->isVersion2())
-                {
-                    associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-                }
-                else
-                {
-                    associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-                }
+                auto associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
                 associatedSeriesDB->shallowCopy( seriesDB );
 
                 ::fwGui::Cursor cursor;
@@ -183,17 +175,7 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
 
 void SDicomTagSeriesDBReader::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::csptr seriesDB;
-    if(this->isVersion2())
-    {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
-    }
-    else
-    {
-        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    }
-
+    ::fwMedData::SeriesDB::csptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;

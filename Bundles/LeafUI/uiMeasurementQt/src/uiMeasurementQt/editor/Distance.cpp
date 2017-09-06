@@ -30,29 +30,33 @@
 #include <QIcon>
 #include <QVBoxLayout>
 
-namespace uiMeasurement
+namespace uiMeasurementQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurement::editor::Distance, ::fwData::Image );
+//------------------------------------------------------------------------------
+
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::fwData::Image );
 
 const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
-Distance::Distance() throw()
+//------------------------------------------------------------------------------
+
+Distance::Distance() noexcept
 {
     m_sigDistanceRequested = newSignal< DistanceRequestedSignalType >(s_DISTANCE_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-Distance::~Distance() throw()
+Distance::~Distance() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::starting() throw(::fwTools::Failed)
+void Distance::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -79,7 +83,7 @@ void Distance::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::stopping() throw(::fwTools::Failed)
+void Distance::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -90,7 +94,7 @@ void Distance::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::configuring() throw(fwTools::Failed)
+void Distance::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -105,13 +109,13 @@ void Distance::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::updating() throw(::fwTools::Failed)
+void Distance::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Distance::swapping() throw(::fwTools::Failed)
+void Distance::swapping()
 {
 
 }
@@ -129,15 +133,7 @@ void Distance::onDistanceButton()
     SLM_ASSERT("No scene UID!", !m_scenesUID.empty());
     SLM_TRACE_FUNC();
 
-    ::fwData::Image::sptr image;
-    if (this->isVersion2())
-    {
-        image = this->getInOut< ::fwData::Image >("image");
-    }
-    else
-    {
-        image = this->getObject< ::fwData::Image >();
-    }
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
     SLM_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
@@ -148,5 +144,5 @@ void Distance::onDistanceButton()
 
 //------------------------------------------------------------------------------
 } // namespace editor
-} // namespace uiMeasurement
+} // namespace uiMeasurementQt
 

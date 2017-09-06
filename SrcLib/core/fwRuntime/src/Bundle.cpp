@@ -296,7 +296,7 @@ const Version& Bundle::getVersion() const
 
 //------------------------------------------------------------------------------
 
-void Bundle::loadLibraries() throw(RuntimeException)
+void Bundle::loadLibraries()
 {
     // Ensure the bundle is enabled.
     if( m_enable == false )
@@ -348,7 +348,7 @@ void Bundle::loadLibraries() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Bundle::loadRequirements() throw(RuntimeException)
+void Bundle::loadRequirements()
 {
     try
     {
@@ -382,7 +382,7 @@ void Bundle::loadRequirements() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Bundle::start() throw(RuntimeException)
+void Bundle::start()
 {
     SLM_ASSERT("Bundle " + m_identifier + "_" + m_version.string() + " already started.",
                !m_started );
@@ -410,7 +410,7 @@ void Bundle::start() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Bundle::startPlugin() throw(RuntimeException)
+void Bundle::startPlugin()
 {
     SLM_ASSERT("Bundle " + m_identifier + "_" + m_version.string() + " plugin is already started.",
                !m_started );
@@ -460,7 +460,7 @@ void Bundle::startPlugin() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Bundle::stop() throw(RuntimeException)
+void Bundle::stop()
 {
     SLM_ASSERT("Bundle "+ m_identifier + "_" + m_version.string() + " not started.", m_started );
     SLM_ASSERT(m_identifier + "_" + m_version.string() + " : m_plugin not an intance.", m_plugin != 0 );
@@ -494,7 +494,7 @@ void Bundle::stop() throw(RuntimeException)
 }
 
 //------------------------------------------------------------------------------
-void Bundle::initialize() throw(RuntimeException)
+void Bundle::initialize()
 {
     SLM_ASSERT("Bundle '" + m_identifier + "_" + m_version.string() + "' not started.", m_started );
     SLM_ASSERT("Bundle '"+ m_identifier + "_" + m_version.string() + "' already initialized.", !m_initialized );
@@ -513,7 +513,7 @@ void Bundle::initialize() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Bundle::uninitialize() throw(RuntimeException)
+void Bundle::uninitialize()
 {
     SLM_ASSERT("Bundle '"+ m_identifier + "_" + m_version.string() + "' has not been started.", m_plugin );
     SLM_ASSERT("Bundle '"+ m_identifier + "_" + m_version.string() + "' not initialized.", m_initialized );

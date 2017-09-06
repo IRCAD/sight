@@ -41,6 +41,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    m_parentContainer->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
     Orientation orientation = this->getOrientation();
@@ -94,11 +95,12 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
                 layout->setStretchFactor(panel, viewInfo.m_proportion);
             }
 
-            subContainer->setVisible( viewInfo.m_visible );
+            if(false == viewInfo.m_visible)
+            {
+                subContainer->setVisible(false);
+            }
         }
     }
-
-    m_parentContainer->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------

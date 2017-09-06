@@ -74,7 +74,7 @@ protected:
     GUI_API virtual ~IActivityView();
 
     /// Parse the configuration
-    GUI_API virtual void configuring() throw(fwTools::Failed);
+    GUI_API virtual void configuring();
 
     /**
      * @brief Slot: Launch the given activity in a new tab.

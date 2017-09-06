@@ -17,45 +17,45 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlMemory::LockDumpSrv, :
 
 //-----------------------------------------------------------------------------
 
-LockDumpSrv::LockDumpSrv() throw()
+LockDumpSrv::LockDumpSrv() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-LockDumpSrv::~LockDumpSrv() throw()
+LockDumpSrv::~LockDumpSrv() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::starting()  throw ( ::fwTools::Failed )
+void LockDumpSrv::starting()
 {
     m_objLock = ::fwData::ObjectLock( this->getObject() );
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::stopping()  throw ( ::fwTools::Failed )
+void LockDumpSrv::stopping()
 {
     m_objLock = ::fwData::ObjectLock();
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::configuring()  throw ( ::fwTools::Failed )
+void LockDumpSrv::configuring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::reconfiguring()  throw ( ::fwTools::Failed )
+void LockDumpSrv::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::updating() throw ( ::fwTools::Failed )
+void LockDumpSrv::updating()
 {
 }
 

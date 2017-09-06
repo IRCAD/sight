@@ -33,7 +33,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlMemory::manager::Lo
 
 //-----------------------------------------------------------------------------
 
-LockDumpManagerSrv::LockDumpManagerSrv() throw()
+LockDumpManagerSrv::LockDumpManagerSrv() noexcept
 {
     newSlot(s_ADD_OBJECTS_SLOT, &LockDumpManagerSrv::addObjects, this);
     newSlot(s_CHANGE_OBJECTS_SLOT, &LockDumpManagerSrv::changeObjects, this);
@@ -42,7 +42,7 @@ LockDumpManagerSrv::LockDumpManagerSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-LockDumpManagerSrv::~LockDumpManagerSrv() throw()
+LockDumpManagerSrv::~LockDumpManagerSrv() noexcept
 {
 }
 
@@ -72,7 +72,7 @@ void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Co
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::starting()  throw ( ::fwTools::Failed )
+void LockDumpManagerSrv::starting()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     this->setDumpLockOnImages(m_lockedObjects, composite->getContainer(), true);
@@ -80,14 +80,14 @@ void LockDumpManagerSrv::starting()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::stopping()  throw ( ::fwTools::Failed )
+void LockDumpManagerSrv::stopping()
 {
     m_lockedObjects.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::configuring()  throw ( ::fwTools::Failed )
+void LockDumpManagerSrv::configuring()
 {
     ::fwRuntime::ConfigurationElementContainer updaters = m_configuration->findAllConfigurationElement("manageLockOn");
 
@@ -105,13 +105,13 @@ void LockDumpManagerSrv::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::reconfiguring()  throw ( ::fwTools::Failed )
+void LockDumpManagerSrv::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::updating() throw ( ::fwTools::Failed )
+void LockDumpManagerSrv::updating()
 {
 }
 

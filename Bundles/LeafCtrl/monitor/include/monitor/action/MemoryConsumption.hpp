@@ -25,10 +25,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (MemoryConsumption)(  ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITOR_API MemoryConsumption() throw();
+    MONITOR_API MemoryConsumption() noexcept;
 
     /// Does nothing
-    MONITOR_API virtual ~MemoryConsumption() throw();
+    MONITOR_API virtual ~MemoryConsumption() noexcept;
 
 protected:
 
@@ -47,16 +47,16 @@ protected:
      * @li mode : increase or decrease.
      * @li value : optional, consuming memory size in Mo (in "increase" mode).
      */
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Calls classic IAction methods to start
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Increase or decrease memory with size defined during configuration
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Calls classic IAction methods to stop
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
 private:
 

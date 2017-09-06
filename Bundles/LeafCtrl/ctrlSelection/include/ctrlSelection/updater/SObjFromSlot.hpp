@@ -43,10 +43,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SObjFromSlot)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SObjFromSlot() throw();
+    CTRLSELECTION_API SObjFromSlot() noexcept;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SObjFromSlot() throw();
+    CTRLSELECTION_API virtual ~SObjFromSlot() noexcept;
 
     /**
      * @name Slots
@@ -73,16 +73,16 @@ protected:
        @endcode
      * - \b compositeKey key of the object to manage into the composite (add/swap/remove)
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements starting method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

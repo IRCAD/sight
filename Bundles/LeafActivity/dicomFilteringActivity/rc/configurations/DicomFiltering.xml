@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>DicomFiltering</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -113,7 +113,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="activityHelp" type="::uiGeneric::action::LaunchBrowserActionService" >
+        <service uid="activityHelp" type="::uiGenericQt::action::LaunchBrowserActionService" >
             <url>@BUNDLE_PREFIX@/dicomFilteringActivity_0-1/quickstart.pdf</url>
         </service>
 
@@ -123,12 +123,12 @@
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
-        <service uid="readingSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="readingSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="selection" uid="readingSelection" />
             <inout key="seriesDB" uid="readingSeriesDB" />
         </service>
 
-        <service uid="readingViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="readingViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="readingSelection" />
             <parentView wid="readingPreview" />
             <configs>
@@ -154,12 +154,12 @@
         </service>
 
         <!-- LOADED SELECTION -->
-        <service uid="loadedSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="loadedSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="selection" uid="loadedSelection" />
             <inout key="seriesDB" uid="loadedSeriesDB" />
         </service>
 
-        <service uid="loadedViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="loadedViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="loadedSelection" />
             <parentView wid="loadedPreview" />
             <configs>

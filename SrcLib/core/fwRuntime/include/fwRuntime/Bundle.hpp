@@ -126,7 +126,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @todo    not implemented and not used !!!!!!!
      */
-    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type ) throw( RuntimeException );
+    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type );
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -332,9 +332,9 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @remark  The bundle must be enabled to be able to start.
      */
-    FWRUNTIME_API void start() throw(RuntimeException);
+    FWRUNTIME_API void start();
 
-    FWRUNTIME_API void stop() throw(RuntimeException);
+    FWRUNTIME_API void stop();
     //@}
 
 
@@ -343,9 +343,9 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @remark  The bundle and it's own dependencies must be started to be able to be initialized.
      */
-    FWRUNTIME_API void initialize() throw(RuntimeException);
+    FWRUNTIME_API void initialize();
 
-    FWRUNTIME_API void uninitialize() throw(RuntimeException);
+    FWRUNTIME_API void uninitialize();
     //@}
 
 
@@ -458,17 +458,17 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
         /**
          * @brief   Load bundle's library in the current process.
          */
-        void loadLibraries() throw(RuntimeException);
+        void loadLibraries();
 
         /**
          * @brief   load all requirement needed by the bundle to work
          */
-        void loadRequirements() throw(RuntimeException);
+        void loadRequirements();
 
         /**
          * @brief   Starts the plugin associated to the bundle.
          */
-        void startPlugin() throw(RuntimeException);
+        void startPlugin();
 
 };
 

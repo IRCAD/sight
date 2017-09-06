@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <cmath>
+#include "fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp"
 
 #include <vtkBitArray.h>
-#include <vtkObjectFactory.h>
 #include <vtkMath.h>
+#include <vtkObjectFactory.h>
 
-#include "fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp"
+#include <cmath>
+#include <iostream>
 
 vtkStandardNewMacro(fwVtkWindowLevelLookupTable);
 
 //----------------------------------------------------------------------------
-fwVtkWindowLevelLookupTable::fwVtkWindowLevelLookupTable(int sze, int ext)
-    : vtkLookupTable(sze, ext)
+fwVtkWindowLevelLookupTable::fwVtkWindowLevelLookupTable(int sze, int ext) :
+    vtkLookupTable(sze, ext)
 {
     this->Level  = (this->TableRange[0] + this->TableRange[1])/2;
     this->Window = (this->TableRange[1] - this->TableRange[0]);
@@ -40,15 +40,16 @@ fwVtkWindowLevelLookupTable::fwVtkWindowLevelLookupTable(int sze, int ext)
     this->InvertTable->Register(this);
     this->InvertTable->Delete();
     this->InvertTable->SetNumberOfComponents(4);
-    this->InvertTable->Allocate(4*sze,4*ext);
+    this->InvertTable->Allocate(4*sze, 4*ext);
 }
-
 
 fwVtkWindowLevelLookupTable::~fwVtkWindowLevelLookupTable()
 {
     this->InvertTable->UnRegister(this);
     this->InvertTable = NULL;
 }
+
+//------------------------------------------------------------------------------
 
 void fwVtkWindowLevelLookupTable::BuildInvert()
 {
@@ -63,13 +64,13 @@ void fwVtkWindowLevelLookupTable::BuildInvert()
 
     this->InvertTable->SetNumberOfTuples(this->NumberOfColors);
 
-    unsigned char *tableRgba, *invertTableRgba2;
+    unsigned char* tableRgba, * invertTableRgba2;
 
-    int n = this->NumberOfColors-1;
+    int n = static_cast<int>(this->NumberOfColors-1);
     for (int i = 0; i < this->NumberOfColors; i++)
     {
         tableRgba        = this->Table->GetPointer(4*i);
-        invertTableRgba2 = this->InvertTable->WritePointer(4*(n-i),4);
+        invertTableRgba2 = this->InvertTable->WritePointer(4*(n-i), 4);
 
         invertTableRgba2[0] = tableRgba[0];
         invertTableRgba2[1] = tableRgba[1];
@@ -81,8 +82,9 @@ void fwVtkWindowLevelLookupTable::BuildInvert()
 
 }
 
+//------------------------------------------------------------------------------
 
-unsigned char * fwVtkWindowLevelLookupTable::GetCurrentPointer(const vtkIdType id)
+unsigned char* fwVtkWindowLevelLookupTable::GetCurrentPointer(const vtkIdType id)
 {
     if(this->InverseVideo)
     {
@@ -95,11 +97,10 @@ unsigned char * fwVtkWindowLevelLookupTable::GetCurrentPointer(const vtkIdType i
     }
 }
 
-
 //----------------------------------------------------------------------------
 void fwVtkWindowLevelLookupTable::PrintSelf(ostream& os, vtkIndent indent)
 {
-    this->Superclass::PrintSelf(os,indent);
+    this->Superclass::PrintSelf(os, indent);
 
     os << indent << "Window: " << this->Window << "\n";
     os << indent << "Level: " << this->Level << "\n";
@@ -116,7 +117,6 @@ void fwVtkWindowLevelLookupTable::PrintSelf(ostream& os, vtkIndent indent)
        << this->RightClampValue[2] << ", "
        << this->RightClampValue[3] << ")\n";
 }
-
 
 //----------------------------------------------------------------------------
 // Apply log to value, with appropriate constraints.
@@ -157,16 +157,15 @@ inline double vtkApplyLogScale(double v, const double range[2],
     return v;
 }
 
-
 //----------------------------------------------------------------------------
 // Apply shift/scale to the scalar value v and do table lookup.
-inline unsigned char *vtkLinearLookup(double v,
-                                      unsigned char *table,
+inline unsigned char* vtkLinearLookup(double v,
+                                      unsigned char* table,
                                       double maxIndex,
                                       double shift, double scale,
-                                      unsigned char *nanColor,
-                                      unsigned char *leftColor,
-                                      unsigned char *rightColor
+                                      unsigned char* nanColor,
+                                      unsigned char* leftColor,
+                                      unsigned char* rightColor
                                       )
 {
 
@@ -189,7 +188,6 @@ inline unsigned char *vtkLinearLookup(double v,
        return &table[4*(unsigned int)(findx + 0.5f)];
      */
 }
-
 
 //----------------------------------------------------------------------------
 // There is a little more to this than simply taking the log10 of the
@@ -228,22 +226,20 @@ void fwVtkWindowLevelLookupTableLogRange(const double range[2], double logRange[
     }
 }
 
-
-
 //----------------------------------------------------------------------------
 // accelerate the mapping by copying the data in 32-bit chunks instead
 // of 8-bit chunks
 template<class T>
-void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *input,
-                                        unsigned char *output, int length,
+void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable* self, T* input,
+                                        unsigned char* output, int length,
                                         int inIncr, int outFormat)
 {
     int i           = length;
-    double *range   = self->GetTableRange();
+    double* range   = self->GetTableRange();
     double maxIndex = self->GetNumberOfColors() - 1;
     double shift, scale;
-    unsigned char *table = self->GetCurrentPointer(0);
-    unsigned char *cptr;
+    unsigned char* table = self->GetCurrentPointer(0);
+    unsigned char* cptr;
     double alpha;
 
     unsigned char nanColor[4];
@@ -257,9 +253,8 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
         selfRightColor[c] = static_cast<unsigned char>(self->GetRightClampValue()[c]*255.0);
     }
 
-
-    unsigned char *leftColor  = selfLeftColor;
-    unsigned char *rightColor = selfRightColor;
+    unsigned char* leftColor  = selfLeftColor;
+    unsigned char* rightColor = selfRightColor;
 
     if(self->GetClamping())
     {
@@ -543,20 +538,17 @@ void fwVtkWindowLevelLookupTableMapData(fwVtkWindowLevelLookupTable *self, T *in
 
 }
 
-
-
-
 //----------------------------------------------------------------------------
 // Although this is a relatively expensive calculation,
 // it is only done on the first render. Colors are cached
 // for subsequent renders.
 template<class T>
-void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable *self, T *input,
-                                       unsigned char *output, int length,
+void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable* self, T* input,
+                                       unsigned char* output, int length,
                                        int inIncr, int outFormat)
 {
     double tmp, sum;
-    double *mag;
+    double* mag;
     int i, j;
 
     mag = new double[length];
@@ -577,10 +569,9 @@ void fwVtkWindowLevelLookupTableMapMag(fwVtkWindowLevelLookupTable *self, T *inp
     delete [] mag;
 }
 
-
 //----------------------------------------------------------------------------
-void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void *input,
-                                                          unsigned char *output,
+void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void* input,
+                                                          unsigned char* output,
                                                           int inputDataType,
                                                           int numberOfValues,
                                                           int inputIncrement,
@@ -591,8 +582,8 @@ void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void *input,
         switch (inputDataType)
         {
             vtkTemplateMacro(
-                fwVtkWindowLevelLookupTableMapMag(this,static_cast<VTK_TT*>(input),output,
-                                                  numberOfValues,inputIncrement,outputFormat);
+                fwVtkWindowLevelLookupTableMapMag(this, static_cast<VTK_TT*>(input), output,
+                                                  numberOfValues, inputIncrement, outputFormat);
                 return
                 );
             case VTK_BIT:
@@ -608,26 +599,26 @@ void fwVtkWindowLevelLookupTable::MapScalarsThroughTable2(void *input,
         case VTK_BIT:
         {
             vtkIdType i, id;
-            vtkBitArray *bitArray = vtkBitArray::New();
-            bitArray->SetVoidArray(input,numberOfValues,1);
-            vtkUnsignedCharArray *newInput = vtkUnsignedCharArray::New();
+            vtkBitArray* bitArray = vtkBitArray::New();
+            bitArray->SetVoidArray(input, numberOfValues, 1);
+            vtkUnsignedCharArray* newInput = vtkUnsignedCharArray::New();
             newInput->SetNumberOfValues(numberOfValues);
-            for (id = i = 0; i<numberOfValues; i++, id += inputIncrement)
+            for (id = i = 0; i < numberOfValues; i++, id += inputIncrement)
             {
-                newInput->SetValue(i, bitArray->GetValue(id));
+                newInput->SetValue(i, static_cast<vtkUnsignedCharArray::ValueType>(bitArray->GetValue(id)));
             }
             fwVtkWindowLevelLookupTableMapData(this,
                                                static_cast<unsigned char*>(newInput->GetPointer(0)),
-                                               output,numberOfValues,
-                                               inputIncrement,outputFormat);
+                                               output, numberOfValues,
+                                               inputIncrement, outputFormat);
             newInput->Delete();
             bitArray->Delete();
         }
         break;
 
             vtkTemplateMacro(
-                fwVtkWindowLevelLookupTableMapData(this,static_cast<VTK_TT*>(input),output,
-                                                   numberOfValues,inputIncrement,outputFormat)
+                fwVtkWindowLevelLookupTableMapData(this, static_cast<VTK_TT*>(input), output,
+                                                   numberOfValues, inputIncrement, outputFormat)
                 );
         default:
             vtkErrorMacro(<< "MapImageThroughTable: Unknown input ScalarType");

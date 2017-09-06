@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,17 +34,15 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddLandmark, ::fwData::Image );
 
-
 //------------------------------------------------------------------------------
 
-
-AddLandmark::AddLandmark( ) throw()
+AddLandmark::AddLandmark( ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-AddLandmark::~AddLandmark() throw()
+AddLandmark::~AddLandmark() noexcept
 {
 }
 
@@ -68,7 +66,7 @@ bool defineLabel(std::string& name)
     ::fwGui::dialog::InputDialog inputDlg;
     inputDlg.setTitle("Label");
     inputDlg.setMessage("Which label for the point?");
-    inputDlg.setInput (name);
+    inputDlg.setInput(name);
     std::string inputText = inputDlg.getInput();
 
     if(!inputText.empty())
@@ -80,21 +78,13 @@ bool defineLabel(std::string& name)
     return res;
 }
 
-
 //------------------------------------------------------------------------------
 
-void AddLandmark::updating() throw(::fwTools::Failed)
+void AddLandmark::updating()
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image;
-    if (this->isVersion2())
-    {
-        image = this->getInOut< ::fwData::Image >("image");
-    }
-    else
-    {
-        image = this->getObject< ::fwData::Image >();
-    }
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >("image");
+
     if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
@@ -116,11 +106,11 @@ void AddLandmark::updating() throw(::fwTools::Failed)
         // create a new point
         ::fwData::Point::sptr newPoint = ::fwDataTools::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
         // transform slice to mm
-        std::transform( newPoint->getRefCoord().begin(),newPoint->getRefCoord().end(),
+        std::transform( newPoint->getRefCoord().begin(), newPoint->getRefCoord().end(),
                         image->getSpacing().begin(),
                         newPoint->getRefCoord().begin(),
                         std::multiplies<double>() );
-        std::transform( newPoint->getRefCoord().begin(),newPoint->getRefCoord().end(),
+        std::transform( newPoint->getRefCoord().begin(), newPoint->getRefCoord().end(),
                         image->getOrigin().begin(),
                         newPoint->getRefCoord().begin(),
                         std::plus<double>() );
@@ -142,21 +132,21 @@ void AddLandmark::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::configuring() throw (::fwTools::Failed)
+void AddLandmark::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::starting() throw (::fwTools::Failed)
+void AddLandmark::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::stopping() throw (::fwTools::Failed)
+void AddLandmark::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

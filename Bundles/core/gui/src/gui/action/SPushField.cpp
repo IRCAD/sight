@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,20 +36,20 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushField, ::fwDat
 
 //------------------------------------------------------------------------------
 
-SPushField::SPushField() throw()
+SPushField::SPushField() noexcept
 {
     newSlot(s_UPDATE_OBJECTS_SLOT, &SPushField::updateObjects, this);
 }
 
 //------------------------------------------------------------------------------
 
-SPushField::~SPushField() throw()
+SPushField::~SPushField() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SPushField::configuring() throw( ::fwTools::Failed)
+void SPushField::configuring()
 {
     this->initialize();
 
@@ -61,7 +61,7 @@ void SPushField::configuring() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPushField::starting() throw(::fwTools::Failed)
+void SPushField::starting()
 {
     this->actionServiceStarting();
     this->updateObjects();
@@ -69,14 +69,14 @@ void SPushField::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPushField::stopping() throw(::fwTools::Failed)
+void SPushField::stopping()
 {
     this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-void SPushField::updating() throw(::fwTools::Failed)
+void SPushField::updating()
 {
     ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
     SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
@@ -94,15 +94,11 @@ void SPushField::updating() throw(::fwTools::Failed)
 
 void SPushField::updateObjects()
 {
-    bool executable = true;
+    ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
+    SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
-    if(this->isVersion2())
-    {
-        ::fwData::Object::sptr objectSrc = this->getInOut< ::fwData::Object >(s_SOURCE_KEY);
-        SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    const bool executable = (objectSrc->getField(m_field) != nullptr);
 
-        executable = (objectSrc->getField(m_field) != nullptr);
-    }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 }
 

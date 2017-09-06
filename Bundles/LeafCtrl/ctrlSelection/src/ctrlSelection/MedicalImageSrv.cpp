@@ -25,13 +25,13 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImag
 
 //-----------------------------------------------------------------------------
 
-MedicalImageSrv::MedicalImageSrv() throw()
+MedicalImageSrv::MedicalImageSrv() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-MedicalImageSrv::~MedicalImageSrv() throw()
+MedicalImageSrv::~MedicalImageSrv() noexcept
 {
 }
 
@@ -39,16 +39,7 @@ MedicalImageSrv::~MedicalImageSrv() throw()
 
 void MedicalImageSrv::convertImage()
 {
-    ::fwData::Image::sptr pImg;
-
-    if (this->isVersion2())
-    {
-        pImg = this->getInOut< ::fwData::Image >("image");
-    }
-    else
-    {
-        pImg = this->getObject< ::fwData::Image >();
-    }
+    ::fwData::Image::sptr pImg = this->getInOut< ::fwData::Image >("image");
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         ::fwDataTools::helper::Image helper( pImg );
@@ -69,39 +60,39 @@ void MedicalImageSrv::convertImage()
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::starting()  throw ( ::fwTools::Failed )
+void MedicalImageSrv::starting()
 {
     this->convertImage();
 }
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::stopping()  throw ( ::fwTools::Failed )
+void MedicalImageSrv::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::swapping()  throw ( ::fwTools::Failed )
+void MedicalImageSrv::swapping()
 {
     this->convertImage();
 }
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::configuring()  throw ( ::fwTools::Failed )
+void MedicalImageSrv::configuring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::reconfiguring()  throw ( ::fwTools::Failed )
+void MedicalImageSrv::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::updating() throw ( ::fwTools::Failed )
+void MedicalImageSrv::updating()
 {
     this->convertImage();
 }

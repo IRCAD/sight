@@ -21,13 +21,33 @@ macro(profile_setup ${PROJECT})
     findRequirements(${PROJECT} ALL_REQUIREMENTS)
     list(REMOVE_DUPLICATES ALL_REQUIREMENTS)
     list(SORT ALL_REQUIREMENTS)
-
+    
+    # Manage bundle starting
+    # add a start for ctrl app
+    if(${PROJECT}_START) 
+        list(APPEND START_BUNDLES "${PROJECT}")
+    endif()
+    
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
-
         # get the start option of the current requirement if exists
         if(${CURRENT_REQUIREMENT}_START)
             list(APPEND START_BUNDLES "${CURRENT_REQUIREMENT}")
         endif()
+    endforeach()
+    
+    list(SORT START_BUNDLES)
+
+    # Manage bundle activation
+    foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
+    
+        # Ensure that we start this bundle before the "START_BEFORE"
+        foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
+            list(FIND START_BUNDLES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
+            if(NOT ${INDEX_START_BEFORE} EQUAL -1)
+                 list(INSERT START_BUNDLES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
+                 break()
+            endif()
+        endforeach()
 
         # to only consider bundles and app
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "BUNDLE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
@@ -53,12 +73,6 @@ macro(profile_setup ${PROJECT})
         endif()
     endforeach()
     string(REPLACE ";" "\n" ACTIVATE_LIST "${ACTIVATE_LIST}")
-
-    if(${PROJECT}_START) # add a start for ctrl app
-        list(APPEND START_BUNDLES "${PROJECT}")
-    endif()
-
-    list(SORT START_BUNDLES)
 
     foreach(CURRENT_BUNDLES ${START_BUNDLES})
         set(START_BUNDLE_LIST "${START_BUNDLE_LIST}\n    <start id=\"${CURRENT_BUNDLES}\" />")

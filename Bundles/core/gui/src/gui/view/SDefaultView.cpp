@@ -17,26 +17,26 @@ namespace view
 
 fwServicesRegisterMacro( ::gui::view::IView, ::gui::view::SDefaultView, ::fwData::Object );
 
-SDefaultView::SDefaultView() throw()
+SDefaultView::SDefaultView() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultView::~SDefaultView() throw()
+SDefaultView::~SDefaultView() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::configuring() throw( ::fwTools::Failed )
+void SDefaultView::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::starting() throw(::fwTools::Failed)
+void SDefaultView::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -44,7 +44,7 @@ void SDefaultView::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::stopping() throw(::fwTools::Failed)
+void SDefaultView::stopping()
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -59,7 +59,7 @@ void SDefaultView::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::updating() throw(::fwTools::Failed)
+void SDefaultView::updating()
 {
     SLM_TRACE_FUNC();
 }

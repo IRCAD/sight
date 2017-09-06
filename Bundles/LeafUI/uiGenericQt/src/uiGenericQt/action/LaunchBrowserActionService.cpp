@@ -10,14 +10,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QUrl>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
-namespace uiGeneric
+namespace uiGenericQt
 {
 
 namespace action
@@ -25,18 +25,18 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::LaunchBrowserActionService, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-LaunchBrowserActionService::LaunchBrowserActionService( ) throw()
+LaunchBrowserActionService::LaunchBrowserActionService( ) noexcept
 {
     m_url = "";
 }
 
 //------------------------------------------------------------------------------
 
-LaunchBrowserActionService::~LaunchBrowserActionService() throw()
+LaunchBrowserActionService::~LaunchBrowserActionService() noexcept
 {
 }
 
@@ -49,7 +49,7 @@ void LaunchBrowserActionService::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void LaunchBrowserActionService::configuring() throw( ::fwTools::Failed )
+void LaunchBrowserActionService::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IActionSrv::initialize();
@@ -63,7 +63,7 @@ void LaunchBrowserActionService::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::updating() throw( ::fwTools::Failed )
+void LaunchBrowserActionService::updating()
 {
     SLM_TRACE_FUNC();
 
@@ -86,14 +86,14 @@ void LaunchBrowserActionService::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::starting() throw (::fwTools::Failed)
+void LaunchBrowserActionService::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::stopping() throw (::fwTools::Failed)
+void LaunchBrowserActionService::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
@@ -101,4 +101,4 @@ void LaunchBrowserActionService::stopping() throw (::fwTools::Failed)
 
 } // namespace action
 
-} // namespace uiGeneric
+} // namespace uiGenericQt

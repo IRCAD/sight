@@ -34,13 +34,13 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesConverter::SDicomSeriesConverter() throw()
+SDicomSeriesConverter::SDicomSeriesConverter() noexcept
 {
     m_sigJobCreated = newSignal<JobCreatedSignal>( JOB_CREATED_SIGNAL );
 }
 //------------------------------------------------------------------------------
 
-SDicomSeriesConverter::~SDicomSeriesConverter() throw()
+SDicomSeriesConverter::~SDicomSeriesConverter() noexcept
 {
 }
 
@@ -53,7 +53,7 @@ void SDicomSeriesConverter::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesConverter::starting() throw(::fwTools::Failed)
+void SDicomSeriesConverter::starting()
 {
     // Get Destination SeriesDB
     m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
@@ -62,19 +62,19 @@ void SDicomSeriesConverter::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesConverter::stopping() throw(::fwTools::Failed)
+void SDicomSeriesConverter::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesConverter::configuring() throw(::fwTools::Failed)
+void SDicomSeriesConverter::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesConverter::updating() throw(::fwTools::Failed)
+void SDicomSeriesConverter::updating()
 {
     ::fwMedData::SeriesDB::csptr dicomSeriesDB = this->getInput< ::fwMedData::SeriesDB >("source");
     ::fwMedData::SeriesDB::sptr dummy          = ::fwMedData::SeriesDB::New();

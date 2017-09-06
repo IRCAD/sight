@@ -87,7 +87,7 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string &identifi
 //------------------------------------------------------------------------------
 
 const ::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier,
-                                                      const ::boost::filesystem::path &path) throw()
+                                                      const ::boost::filesystem::path &path) noexcept
 {
     Runtime *rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
@@ -97,7 +97,7 @@ const ::boost::filesystem::path getBundleResourcePath(const std::string& bundleI
 //------------------------------------------------------------------------------
 
 const ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
-                                                       const ::boost::filesystem::path &path) throw()
+                                                       const ::boost::filesystem::path &path) noexcept
 {
     return bundle->getLocation() / path;
 }
@@ -105,7 +105,7 @@ const ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> b
 //------------------------------------------------------------------------------
 
 const ::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
-                                                       const ::boost::filesystem::path &path) throw()
+                                                       const ::boost::filesystem::path &path) noexcept
 {
     return getBundleResourcePath(element->getBundle(), path);
 }
@@ -113,14 +113,14 @@ const ::boost::filesystem::path getBundleResourcePath( ConfigurationElement::spt
 //------------------------------------------------------------------------------
 
 const ::boost::filesystem::path getBundleResourcePath(const IExecutable *executable,
-                                                      const ::boost::filesystem::path &path) throw()
+                                                      const ::boost::filesystem::path &path) noexcept
 {
     return getBundleResourcePath(executable->getBundle(), path);
 }
 
 //------------------------------------------------------------------------------
 
-void addBundles( const ::boost::filesystem::path & directory) throw(RuntimeException)
+void addBundles( const ::boost::filesystem::path & directory)
 {
     Runtime * rntm = Runtime::getDefault();
     rntm->addBundles( directory );
@@ -151,7 +151,7 @@ std::shared_ptr< Bundle > findBundle( const std::string & identifier, const Vers
 
 //------------------------------------------------------------------------------
 
-void startBundle(const std::string &identifier) throw(RuntimeException)
+void startBundle(const std::string &identifier)
 {
     Runtime* rntm = Runtime::getDefault();
 

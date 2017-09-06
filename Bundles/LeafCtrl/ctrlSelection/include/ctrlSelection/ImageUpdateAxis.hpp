@@ -28,9 +28,9 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) );
 
-    CTRLSELECTION_API ImageUpdateAxis() throw();
+    CTRLSELECTION_API ImageUpdateAxis() noexcept;
 
-    CTRLSELECTION_API virtual ~ImageUpdateAxis() throw();
+    CTRLSELECTION_API virtual ~ImageUpdateAxis() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -43,13 +43,13 @@ public:
 protected:
 
     /// Calls updating().
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Does nothing.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /// Does nothing.
-    CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void swapping();
 
     /**
      * @brief Configures the service.
@@ -62,13 +62,13 @@ protected:
      * - \b uid : fwID of the ::fwData::Float to update
      * - \b orientation : image orientation (axial, frontal or sagittal)
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Does nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void reconfiguring();
 
     /// Updates the float from the image axis orientation.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

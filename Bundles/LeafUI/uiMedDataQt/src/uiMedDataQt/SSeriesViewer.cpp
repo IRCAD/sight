@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,12 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::uiMedData::SSeriesViewer, ::fwData::Vector);
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedDataQt::SSeriesViewer, ::fwData::Vector);
 
 //------------------------------------------------------------------------------
 
@@ -33,13 +33,13 @@ SSeriesViewer::SSeriesViewer()
 
 //------------------------------------------------------------------------------
 
-SSeriesViewer::~SSeriesViewer() throw()
+SSeriesViewer::~SSeriesViewer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::info(std::ostream &_sstream )
+void SSeriesViewer::info(std::ostream& _sstream )
 {
     // Update message
     _sstream << std::string("SSeriesViewer");
@@ -47,14 +47,14 @@ void SSeriesViewer::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::starting() throw(::fwTools::Failed)
+void SSeriesViewer::starting()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::stopping() throw(::fwTools::Failed)
+void SSeriesViewer::stopping()
 {
     if(m_configTemplateManager)
     {
@@ -65,7 +65,7 @@ void SSeriesViewer::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::updating() throw(::fwTools::Failed)
+void SSeriesViewer::updating()
 {
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
 
@@ -93,14 +93,14 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
 
-            for(const ReplaceValuesMapType::value_type &elt :  info.extractValues)
+            for(const ReplaceValuesMapType::value_type& elt :  info.extractValues)
             {
                 ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
                 OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }
 
-            for(const ReplaceValuesMapType::value_type &elt :  info.parameters)
+            for(const ReplaceValuesMapType::value_type& elt :  info.parameters)
             {
                 SLM_ASSERT("Value '" << elt.first << "' already used in extracted values.",
                            replaceMap.find(elt.first) == replaceMap.end());
@@ -119,21 +119,13 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::configuring() throw(::fwTools::Failed)
+void SSeriesViewer::configuring()
 {
     std::vector < ::fwRuntime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
     SLM_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
 
-    if(this->isVersion2())
-    {
-        m_parentView = viewCfg[0]->getAttributeValue("wid");
-        SLM_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
-    }
-    else
-    {
-        m_parentView = viewCfg[0]->getValue();
-        SLM_ASSERT("'parentView' value must not be empty ", !m_parentView.empty());
-    }
+    m_parentView = viewCfg[0]->getAttributeValue("wid");
+    SLM_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > configsCfg = m_configuration->find("configs");
     SLM_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);
@@ -141,7 +133,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
     std::vector < ::fwRuntime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
     SLM_ASSERT("Missing tag 'config'", !config.empty());
 
-    for(const ::fwRuntime::ConfigurationElement::sptr &elt :  config)
+    for(const ::fwRuntime::ConfigurationElement::sptr& elt :  config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
@@ -149,9 +141,9 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
         std::string seriesType = elt->getAttributeValue("type");
         SLM_ASSERT("'type' attribute must not be empty", !seriesType.empty());
         OSLM_ASSERT("Type " << seriesType << " is already defined.",
-                    m_seriesConfigs.find(seriesType)== m_seriesConfigs.end() );
+                    m_seriesConfigs.find(seriesType) == m_seriesConfigs.end() );
 
-        for(const ::fwRuntime::ConfigurationElement::sptr &extractElt :  elt->find("extract"))
+        for(const ::fwRuntime::ConfigurationElement::sptr& extractElt :  elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SLM_ASSERT("'path' attribute must not be empty", !path.empty());
@@ -160,7 +152,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
             info.extractValues[pattern] = path;
         }
 
-        for(const ::fwRuntime::ConfigurationElement::sptr &param :  elt->find("parameter"))
+        for(const ::fwRuntime::ConfigurationElement::sptr& param :  elt->find("parameter"))
         {
             std::string replace = param->getAttributeValue("replace");
             SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());
@@ -191,4 +183,4 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-} // namespace uiMedData
+} // namespace uiMedDataQt

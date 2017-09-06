@@ -19,19 +19,19 @@ namespace frame
 fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame, ::fwData::Object );
 
 
-SDefaultFrame::SDefaultFrame() throw()
+SDefaultFrame::SDefaultFrame() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultFrame::~SDefaultFrame() throw()
+SDefaultFrame::~SDefaultFrame() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::configuring() throw( ::fwTools::Failed )
+void SDefaultFrame::configuring()
 {
     SLM_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
     this->initialize();
@@ -39,7 +39,7 @@ void SDefaultFrame::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::starting() throw(::fwTools::Failed)
+void SDefaultFrame::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -47,7 +47,7 @@ void SDefaultFrame::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::stopping() throw(::fwTools::Failed)
+void SDefaultFrame::stopping()
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -62,7 +62,7 @@ void SDefaultFrame::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::updating() throw(::fwTools::Failed)
+void SDefaultFrame::updating()
 {
     SLM_TRACE_FUNC();
 }

@@ -36,12 +36,12 @@ public:
     /**
      * @brief constructor
      */
-    IOPACS_API SProgressBarController() throw();
+    IOPACS_API SProgressBarController() noexcept;
 
     /**
      * @brief destructor
      */
-    IOPACS_API virtual ~SProgressBarController() throw();
+    IOPACS_API virtual ~SProgressBarController() noexcept;
 
 protected:
 
@@ -55,16 +55,16 @@ protected:
        </service>
        @endcode
      */
-    IOPACS_API virtual void configuring() throw(::fwTools::Failed);
+    IOPACS_API virtual void configuring();
 
     /// Override
-    IOPACS_API virtual void starting() throw(::fwTools::Failed);
+    IOPACS_API virtual void starting();
 
     /// Override
-    IOPACS_API virtual void stopping() throw(::fwTools::Failed);
+    IOPACS_API virtual void stopping();
 
     /// Override
-    IOPACS_API void updating() throw(::fwTools::Failed);
+    IOPACS_API void updating();
 
     /// Override
     IOPACS_API void info(std::ostream& _sstream );

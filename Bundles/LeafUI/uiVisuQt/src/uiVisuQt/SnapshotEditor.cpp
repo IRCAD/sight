@@ -31,29 +31,32 @@
 #include <QString>
 #include <QWidget>
 
-namespace uiVisu
+namespace uiVisuQt
 {
+
+//------------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwData::Object );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::SnapshotEditor );
 
-SnapshotEditor::SnapshotEditor() throw()
+//------------------------------------------------------------------------------
+
+SnapshotEditor::SnapshotEditor() noexcept
 {
     m_sigSnapped = newSignal< SnappedSignalType >(s_SNAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-SnapshotEditor::~SnapshotEditor() throw()
+SnapshotEditor::~SnapshotEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::starting() throw(::fwTools::Failed)
+void SnapshotEditor::starting()
 {
-    SLM_TRACE_FUNC();
     this->create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer
@@ -77,29 +80,27 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::stopping() throw(::fwTools::Failed)
+void SnapshotEditor::stopping()
 {
-    SLM_TRACE_FUNC();
-
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::configuring() throw(fwTools::Failed)
+void SnapshotEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::updating() throw(::fwTools::Failed)
+void SnapshotEditor::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::swapping() throw(::fwTools::Failed)
+void SnapshotEditor::swapping()
 {
 
 }
@@ -168,4 +169,4 @@ std::string SnapshotEditor::requestFileName()
 }
 //------------------------------------------------------------------------------
 
-}// namespace uiVisu
+} // namespace uiVisuQt

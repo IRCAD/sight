@@ -43,12 +43,12 @@ public:
      * @brief   constructor
      *
      */
-    IOGDCM_API SSeriesDBReader() throw();
+    IOGDCM_API SSeriesDBReader() noexcept;
 
     /**
      * @brief   destructor
      */
-    IOGDCM_API virtual ~SSeriesDBReader() throw();
+    IOGDCM_API virtual ~SSeriesDBReader() noexcept;
 
 protected:
 
@@ -89,16 +89,16 @@ protected:
         </extension>
        @endcode
      */
-    IOGDCM_API virtual void configuring() throw (fwTools::Failed);
+    IOGDCM_API virtual void configuring();
 
     /// Override
-    IOGDCM_API virtual void starting() throw(::fwTools::Failed);
+    IOGDCM_API virtual void starting();
 
     /// Override
-    IOGDCM_API virtual void stopping() throw(::fwTools::Failed);
+    IOGDCM_API virtual void stopping();
 
     /// Override
-    IOGDCM_API void updating() throw(::fwTools::Failed);
+    IOGDCM_API void updating();
 
     /// Override
     IOGDCM_API void info(std::ostream& _sstream );

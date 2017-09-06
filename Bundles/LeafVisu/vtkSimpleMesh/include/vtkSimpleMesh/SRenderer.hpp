@@ -72,12 +72,12 @@ public:
     /**
      * @brief    Constructor
      */
-    VTKSIMPLEMESH_API SRenderer() throw();
+    VTKSIMPLEMESH_API SRenderer() noexcept;
 
     /**
      * @brief    Destructor
      */
-    VTKSIMPLEMESH_API virtual ~SRenderer() throw();
+    VTKSIMPLEMESH_API virtual ~SRenderer() noexcept;
 
 
     /// This method is used to notify that the VTK camera position is updated.
@@ -101,13 +101,13 @@ protected:
      * This method is used to initialize the service.
      * Initialize VTK renderer and qt containers
      */
-    VTKSIMPLEMESH_API virtual void starting() throw(fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void starting();
 
 
     /**
      * @brief This method is used to configure the service. Initialize the qt container.
      */
-    VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void configuring();
 
 
     /**
@@ -115,7 +115,7 @@ protected:
      *
      * Destroy the VTK renderer and the qt container
      */
-    VTKSIMPLEMESH_API virtual void stopping() throw(fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void stopping();
 
     /**
      * @brief Updating method.
@@ -123,7 +123,7 @@ protected:
      * This method is used to update the service.
      * Make a render if necessary
      */
-    VTKSIMPLEMESH_API virtual void updating() throw(fwTools::Failed);
+    VTKSIMPLEMESH_API virtual void updating();
 
     /// @brief vtk renderer
     vtkRenderer* m_render;

@@ -22,31 +22,31 @@ namespace Tuto16MultithreadConsole
 
 //------------------------------------------------------------------------------
 
-SShowArray::SShowArray() throw()
+SShowArray::SShowArray() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShowArray::~SShowArray() throw()
+SShowArray::~SShowArray() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowArray::starting() throw( ::fwTools::Failed )
+void SShowArray::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowArray::stopping() throw( ::fwTools::Failed )
+void SShowArray::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowArray::updating() throw( ::fwTools::Failed )
+void SShowArray::updating()
 {
     ::fwData::Array::csptr array = this->getInput< ::fwData::Array >("array");
     ::fwData::mt::ObjectReadLock readLock(array);
@@ -63,7 +63,7 @@ void SShowArray::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SShowArray::configuring() throw( ::fwTools::Failed )
+void SShowArray::configuring()
 {
 }
 

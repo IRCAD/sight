@@ -13,14 +13,14 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Bundle> Executable::getBundle() const throw()
+std::shared_ptr<Bundle> Executable::getBundle() const noexcept
 {
     return m_bundle;
 }
 
 //------------------------------------------------------------------------------
 
-const ConfigurationElement::sptr Executable::getInitializationData() const throw()
+const ConfigurationElement::sptr Executable::getInitializationData() const noexcept
 {
     return m_initializationData;
 }
@@ -34,7 +34,7 @@ void Executable::setBundle( std::shared_ptr< Bundle > bundle )
 
 //------------------------------------------------------------------------------
 
-void Executable::setInitializationData( const ConfigurationElement::sptr element ) throw()
+void Executable::setInitializationData( const ConfigurationElement::sptr element ) noexcept
 {
     m_initializationData = element;
 }

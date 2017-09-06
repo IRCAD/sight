@@ -34,7 +34,7 @@ static const std::string s_MESH_KEY = "mesh";
 
 //-----------------------------------------------------------------------------
 
-SSimpleMeshDeformation::SSimpleMeshDeformation() throw()
+SSimpleMeshDeformation::SSimpleMeshDeformation() noexcept
 {
     newSlot(s_START_DEFORMATION_SLOT, &SSimpleMeshDeformation::startDeformation, this);
     newSlot(s_STOP_DEFORMATION_SLOT, &SSimpleMeshDeformation::stopDeformation, this);
@@ -42,13 +42,13 @@ SSimpleMeshDeformation::SSimpleMeshDeformation() throw()
 
 //-----------------------------------------------------------------------------
 
-SSimpleMeshDeformation::~SSimpleMeshDeformation() throw()
+SSimpleMeshDeformation::~SSimpleMeshDeformation() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::starting() throw(fwTools::Failed)
+void SSimpleMeshDeformation::starting()
 {
     SLM_ASSERT("No valid worker for mesh deformation", m_associatedWorker);
     m_timer = m_associatedWorker->createTimer();
@@ -61,20 +61,20 @@ void SSimpleMeshDeformation::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::configuring() throw(::fwTools::Failed)
+void SSimpleMeshDeformation::configuring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::stopping() throw(fwTools::Failed)
+void SSimpleMeshDeformation::stopping()
 {
     this->stopDeformation();
 }
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
+void SSimpleMeshDeformation::updating()
 {
     SLM_TRACE_FUNC();
 

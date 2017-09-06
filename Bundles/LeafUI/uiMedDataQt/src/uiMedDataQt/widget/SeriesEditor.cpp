@@ -1,27 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string.hpp>
+#include "uiMedDataQt/widget/SeriesEditor.hpp"
 
-#include <QFormLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QGroupBox>
-#include <QPushButton>
-#include <QLineEdit>
+#include "uiMedDataQt/constants.hpp"
+#include "uiMedDataQt/InsertSeries.hpp"
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
-#include "uiMedDataQt/constants.hpp"
-#include "uiMedDataQt/widget/SeriesEditor.hpp"
-#include "uiMedDataQt/InsertSeries.hpp"
+#include <boost/algorithm/string.hpp>
 
-namespace uiMedData
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+namespace uiMedDataQt
 {
 namespace widget
 {
@@ -90,7 +91,8 @@ void ListInput::onSelectionChanged()
 }
 //-----------------------------------------------------------------------------
 
-SeriesEditor::SeriesEditor(QWidget *parent) : QWidget(parent)
+SeriesEditor::SeriesEditor(QWidget* parent) :
+    QWidget(parent)
 {
     m_modality    = new QLineEdit();
     m_date        = new QLineEdit();
@@ -176,7 +178,6 @@ void SeriesEditor::onDescChanged(const QString& text)
     m_description->setPalette(m_palette);
 }
 
-
 //-----------------------------------------------------------------------------
 
 void SeriesEditor::setSeries(SPTR(::fwMedData::Series)series)
@@ -205,7 +206,7 @@ void SeriesEditor::setSeries(SPTR(::fwMedData::Series)series)
 
 SPTR(::fwMedData::Series) SeriesEditor::getSeries()
 {
-    ::fwMedData::Series::sptr series = ::uiMedData::InsertSeries::New();
+    ::fwMedData::Series::sptr series = ::uiMedDataQt::InsertSeries::New();
     series->setModality(m_modality->text().trimmed().toStdString());
     series->setDate(m_date->text().trimmed().toStdString());
     series->setTime(m_time->text().trimmed().toStdString());
@@ -234,5 +235,5 @@ bool SeriesEditor::isValid() const
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedData
+} // namespace uiMedDataQt
 

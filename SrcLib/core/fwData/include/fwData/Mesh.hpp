@@ -162,26 +162,25 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0)
-    throw(::fwData::Exception);
+    FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0);
 
     /// Allocates normals array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointNormals() throw(::fwData::Exception);
+    FWDATA_API size_t allocatePointNormals();
 
     /// Allocates colors array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception);
+    FWDATA_API size_t allocatePointColors(ColorArrayTypes t);
 
     /// Allocates texCoords array according to the number of points of the mesh.
-    FWDATA_API size_t allocatePointTexCoords() throw(::fwData::Exception);
+    FWDATA_API size_t allocatePointTexCoords();
 
     /// Allocates normals array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellNormals() throw(::fwData::Exception);
+    FWDATA_API size_t allocateCellNormals();
 
     /// Allocates colors array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception);
+    FWDATA_API size_t allocateCellColors(ColorArrayTypes t);
 
     /// Allocates texCoords array according to the number of cells of the mesh.
-    FWDATA_API size_t allocateCellTexCoords() throw(::fwData::Exception);
+    FWDATA_API size_t allocateCellTexCoords();
 
 
     /**
@@ -197,7 +196,7 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API bool adjustAllocatedMemory() throw(::fwData::Exception);
+    FWDATA_API bool adjustAllocatedMemory();
 
     /// Sets the internal corresponding array
     FWDATA_API void setPointsArray           (const ::fwData::Array::sptr& array);

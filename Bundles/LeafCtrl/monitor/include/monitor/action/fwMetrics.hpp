@@ -25,24 +25,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (fwMetrics)( ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITOR_API fwMetrics() throw();
+    MONITOR_API fwMetrics() noexcept;
 
     /// Does nothing
-    MONITOR_API virtual ~fwMetrics() throw();
+    MONITOR_API virtual ~fwMetrics() noexcept;
 
 protected:
 
     /// Calls classic IAction methods to configure
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Calls classic IAction methods to start
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Show metrics in a dialog message box
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Calls classic IAction methods to stop
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 };
 
 } // namespace action

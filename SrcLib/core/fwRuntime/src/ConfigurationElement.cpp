@@ -47,14 +47,14 @@ ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bund
 
 //------------------------------------------------------------------------------
 
-const std::shared_ptr<Bundle> ConfigurationElement::getBundle() const throw()
+const std::shared_ptr<Bundle> ConfigurationElement::getBundle() const noexcept
 {
     return m_bundle;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getAttributeValue(const std::string& name) const throw()
+const std::string ConfigurationElement::getAttributeValue(const std::string& name) const noexcept
 {
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     return foundPos == m_attributes.end() ? std::string() : foundPos->second;
@@ -62,7 +62,7 @@ const std::string ConfigurationElement::getAttributeValue(const std::string& nam
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getExistingAttributeValue(const std::string& name) const throw(NoSuchAttribute)
+const std::string ConfigurationElement::getExistingAttributeValue(const std::string& name) const
 {
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
@@ -75,7 +75,7 @@ const std::string ConfigurationElement::getExistingAttributeValue(const std::str
 //------------------------------------------------------------------------------
 
 const ConfigurationElement::AttributePair ConfigurationElement::getSafeAttributeValue(const std::string& name) const
-throw()
+noexcept
 {
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
@@ -90,21 +90,21 @@ throw()
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getName() const throw()
+const std::string ConfigurationElement::getName() const noexcept
 {
     return m_name;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getValue() const throw()
+const std::string ConfigurationElement::getValue() const noexcept
 {
     return m_value;
 }
 
 //------------------------------------------------------------------------------
 
-bool ConfigurationElement::hasAttribute(const std::string& name) const throw()
+bool ConfigurationElement::hasAttribute(const std::string& name) const noexcept
 {
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     return foundPos != m_attributes.end();
@@ -112,28 +112,28 @@ bool ConfigurationElement::hasAttribute(const std::string& name) const throw()
 
 //------------------------------------------------------------------------------
 
-const std::map<std::string, std::string> ConfigurationElement::getAttributes() const throw()
+const std::map<std::string, std::string> ConfigurationElement::getAttributes() const noexcept
 {
     return m_attributes;
 }
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) throw()
+void ConfigurationElement::setAttributeValue(const std::string& name, const std::string& value) noexcept
 {
     m_attributes[name] = value;
 }
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElement::setValue(const std::string& value) throw()
+void ConfigurationElement::setValue(const std::string& value) noexcept
 {
     m_value = value;
 }
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElement::operator=(const ConfigurationElement&) throw()
+void ConfigurationElement::operator=(const ConfigurationElement&) noexcept
 {
 }
 

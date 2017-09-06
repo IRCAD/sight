@@ -29,7 +29,7 @@ public:
     FWPACSIO_API Base(const std::string& message);
 
     /// Destructor
-    FWPACSIO_API virtual ~Base() throw ();
+    FWPACSIO_API virtual ~Base() noexcept;
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,9 @@
 #ifndef __VTKGDCMIO_UT_IMAGESERIESWRITERTEST_HPP__
 #define __VTKGDCMIO_UT_IMAGESERIESWRITERTEST_HPP__
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace vtkGdcmIO
 {
@@ -28,6 +29,8 @@ public:
 
     void writeReadTest();
 
+    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
+    int m_medDataCampVersion;
 };
 
 } // namespace ut

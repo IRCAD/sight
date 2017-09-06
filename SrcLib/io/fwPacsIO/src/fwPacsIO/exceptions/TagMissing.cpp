@@ -18,7 +18,7 @@ TagMissing::TagMissing(const std::string& message) :
 
 // ----------------------------------------------------------------------------
 
-TagMissing::~TagMissing() throw()
+TagMissing::~TagMissing() noexcept
 {
 }
 

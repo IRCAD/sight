@@ -1,40 +1,48 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>3DSimpleConfig</id>
+    <id>3DSimpleConfig2</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="objectID" />
     </parameters>
     <config>
-        <object type="::fwData::Composite">
-            <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                </registry>
-                <scene>
-                    <picker id="picker" vtkclass="fwVtkCellPicker" />
-                    <renderer id="default" background="0.0" />
+        <object uid="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
+        <!-- *************************** Begin generic scene *************************** -->
 
-                    <adaptor id="modelAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                        <config renderer="default" picker="picker" autoresetcamera="yes" />
-                    </adaptor>
+        <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <registry>
+                <parent wid="${WID_PARENT}" />
+            </registry>
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="0.0" />
 
-                    <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeries">
-                        <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
-                    </adaptor>
-                    <adaptor id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-                </scene>
-            </service>
+                <adaptor uid="modelAdaptor" />
+                <adaptor uid="nameAdaptor" />
+                <adaptor uid="orientationMarker" />
+            </scene>
+        </service>
 
-            <item key="modelSeries">
-                <object type="::fwMedData::ModelSeries" uid="${objectID}" src="ref">
-                </object>
-            </item>
+        <service uid="modelAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+            <in key="model" uid="${objectID}" />
+            <config renderer="default" picker="picker" autoresetcamera="yes" />
+        </service>
 
-            <start uid="${GENERIC_UID}_gs" />
-        </object>
+        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+            <in key="object" uid="${objectID}" />
+            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+        </service>
+
+        <service uid="orientationMarker" type="::visuVTKAdaptor::SOrientationMarker">
+            <config renderer="default" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <start uid="gs" />
+
+        <!-- gs adaptors -->
+        <start uid="modelAdaptor" />
+        <start uid="nameAdaptor" />
+        <start uid="orientationMarker" />
     </config>
 </extension>
-

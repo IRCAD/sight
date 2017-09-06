@@ -21,16 +21,16 @@ namespace patchMedicalData
 struct PATCHMEDICALDATA_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    PATCHMEDICALDATA_API ~Plugin() throw();
+    PATCHMEDICALDATA_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    PATCHMEDICALDATA_API void start() throw( ::fwRuntime::RuntimeException );
+    PATCHMEDICALDATA_API void start();
 
     /// Overrides stop method. Do nothing
-    PATCHMEDICALDATA_API void stop() throw();
+    PATCHMEDICALDATA_API void stop() noexcept;
 
 };
 

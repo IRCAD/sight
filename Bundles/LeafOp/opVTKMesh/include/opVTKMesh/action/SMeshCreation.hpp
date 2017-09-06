@@ -50,21 +50,21 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SMeshCreation)(::fwGui::IActionSrv) );
 
-    OPVTKMESH_API SMeshCreation() throw();
+    OPVTKMESH_API SMeshCreation() noexcept;
 
-    OPVTKMESH_API virtual ~SMeshCreation() throw();
+    OPVTKMESH_API virtual ~SMeshCreation() noexcept;
 
 protected:
 
-    OPVTKMESH_API void starting() throw ( ::fwTools::Failed );
+    OPVTKMESH_API void starting();
 
-    OPVTKMESH_API void stopping() throw ( ::fwTools::Failed );
+    OPVTKMESH_API void stopping();
 
     /// Configure the service.
-    OPVTKMESH_API void configuring() throw ( ::fwTools::Failed );
+    OPVTKMESH_API void configuring();
 
     /// Process the mesh creation from the image.
-    OPVTKMESH_API void updating() throw ( ::fwTools::Failed );
+    OPVTKMESH_API void updating();
 
 private:
 

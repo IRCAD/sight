@@ -24,16 +24,16 @@
 
 #include "uiGenericQt/action/SShowAbout.hpp"
 
-namespace uiGeneric
+namespace uiGenericQt
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::SShowAbout, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-SShowAbout::SShowAbout( ) throw() :
+SShowAbout::SShowAbout( ) noexcept :
     m_bServiceIsConfigured(false),
     m_fsAboutPath(""),
     m_title("About"),
@@ -43,7 +43,7 @@ SShowAbout::SShowAbout( ) throw() :
 
 //------------------------------------------------------------------------------
 
-SShowAbout::~SShowAbout() throw()
+SShowAbout::~SShowAbout() noexcept
 {
 }
 
@@ -56,7 +56,7 @@ void SShowAbout::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::configuring() throw(::fwTools::Failed)
+void SShowAbout::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 
@@ -96,7 +96,7 @@ void SShowAbout::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::updating( ) throw(::fwTools::Failed)
+void SShowAbout::updating( )
 {
     SLM_TRACE_FUNC();
     SLM_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured );
@@ -144,14 +144,14 @@ void SShowAbout::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::starting() throw (::fwTools::Failed)
+void SShowAbout::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::stopping() throw (::fwTools::Failed)
+void SShowAbout::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }
@@ -166,4 +166,4 @@ void SShowAbout::onUrlClicked(const QUrl& url )
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace uiGeneric
+} // namespace uiGenericQt

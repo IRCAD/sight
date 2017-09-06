@@ -53,13 +53,13 @@ TransferFunctionEditor::TransferFunctionEditor() :
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-TransferFunctionEditor::~TransferFunctionEditor() throw ()
+TransferFunctionEditor::~TransferFunctionEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
+void TransferFunctionEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -72,18 +72,7 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
         m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
         SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
     }
-    if(!this->isVersion2())
-    {
-        if ( configuration->hasAttribute("tfSelectionFwID") )
-        {
-            m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
-            SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
-        }
-    }
-    else
-    {
-        m_tfSelectionFwID = this->getInOut< ::fwData::Composite>("TFSelections")->getID();
-    }
+    m_tfSelectionFwID = this->getInOut< ::fwData::Composite>("TFSelections")->getID();
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > pathsCfg = configuration->find("path");
     for(::fwRuntime::ConfigurationElement::sptr cfg :  pathsCfg)
@@ -110,7 +99,7 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
+void TransferFunctionEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -180,14 +169,14 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
+void TransferFunctionEditor::updating()
 {
     this->updateTransferFunctionPreset();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
+void TransferFunctionEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -623,9 +612,7 @@ void TransferFunctionEditor::updateTransferFunction()
 
 ::fwData::Composite::sptr TransferFunctionEditor::getTFSelection() const
 {
-    ::fwData::Composite::sptr tfSelection = this->isVersion2() ? this->getInOut< ::fwData::Composite>("TFSelections")
-                                            : ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(
-                                                                                   m_tfSelectionFwID ));
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TFSelections");
     return tfSelection;
 }
 
@@ -643,8 +630,7 @@ void TransferFunctionEditor::updateTransferFunction()
 
 fwData::Composite::sptr TransferFunctionEditor::getTFPool()
 {
-    return this->isVersion2() ? this->getInOut< ::fwData::Composite>("transferFunctions")
-           : this->getObject< ::fwData::Composite > ();
+    return this->getInOut< ::fwData::Composite>("transferFunctions");
 }
 
 //------------------------------------------------------------------------------

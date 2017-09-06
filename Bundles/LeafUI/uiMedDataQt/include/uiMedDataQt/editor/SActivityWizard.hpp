@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,16 +22,16 @@
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <gui/editor/IEditor.hpp>
+
+#include <QLabel>
 #include <QPointer>
 #include <QPushButton>
-#include <QLabel>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
@@ -59,7 +59,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service impl="::uiMedData::editor::SActivityWizard">
+   <service impl="::uiMedDataQt::editor::SActivityWizard">
      <ioSelectorConfig>config</ioSelectorConfig>
      <activitySeries>seriesUid</activitySeries>
      <confirm>true</confirm>
@@ -88,13 +88,13 @@ class UIMEDDATAQT_CLASS_API SActivityWizard : public QObject,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SActivityWizard)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SActivityWizard)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIMEDDATAQT_API SActivityWizard() throw();
+    UIMEDDATAQT_API SActivityWizard() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEDDATAQT_API virtual ~SActivityWizard() throw();
+    UIMEDDATAQT_API virtual ~SActivityWizard() noexcept;
 
     /**
      * @name Slot API
@@ -122,19 +122,18 @@ public:
 protected:
 
     ///This method creates the editor gui.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method destroys the editor gui.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Update the activity if it is defined in the configuration, else does nothing.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Initialize the editor.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
-
 
     enum class Mode : std::uint8_t
     {
@@ -191,7 +190,6 @@ private:
     bool m_confirmUpdate; ///< if true, the editor proposes a confirmation dialog when the activity is updated.
     bool m_isCancelable;  /// true if the cancel button is proposed
 
-
     ActivityCreatedSignalType::sptr m_sigActivityCreated; ///< Signal emitted when the activitySeries is created
     ActivityCreatedSignalType::sptr m_sigActivityUpdated; ///< Signal emitted when the activitySeries is updated
     CanceledSignalType::sptr m_sigCanceled;               /// Signal emitted when the creation is canceled.
@@ -199,7 +197,6 @@ private:
 };
 
 } //editor
-} // uiMedData
-
+} // uiMedDataQt
 
 #endif // __UIMEDDATAQT_EDITOR_SACTIVITYWIZARD_HPP__

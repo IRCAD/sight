@@ -1,26 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwCore/base.hpp>
+
 #include <vtkObjectFactory.h>
 #include <vtkOutputWindow.h>
-
-#include <fwCore/base.hpp>
 
 class vtkOutputWindowToSpyLog : public vtkOutputWindow
 {
 public:
 
-    vtkTypeMacro(vtkOutputWindowToSpyLog,vtkObject);
+    vtkTypeMacro(vtkOutputWindowToSpyLog, vtkObject);
     // Description:
     // Print ObjectFactor to stream.
-    virtual void PrintSelf(ostream& os, vtkIndent indent);
+    virtual void PrintSelf(ostream& os, vtkIndent indent) override;
 
     static vtkOutputWindowToSpyLog* New();
 
-    virtual void DisplayText(const char*);
+    virtual void DisplayText(const char*) override;
 
 protected:
     vtkOutputWindowToSpyLog();
@@ -30,7 +30,6 @@ private:
     vtkOutputWindowToSpyLog(const vtkOutputWindowToSpyLog&);  // Not implemented.
     void operator=(const vtkOutputWindowToSpyLog&);  // Not implemented.
 };
-
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +64,6 @@ void vtkOutputWindowToSpyLog::DisplayText(const char* txt)
 }
 
 //------------------------------------------------------------------------------
-
 
 class InitializeVtkOutputWindow
 {

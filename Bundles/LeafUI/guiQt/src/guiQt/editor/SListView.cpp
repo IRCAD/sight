@@ -34,7 +34,7 @@ const ::fwCom::Slots::SlotKeyType SListView::s_REMOVE_ITEM_SLOT = "removeItem";
 
 //------------------------------------------------------------------------------
 
-SListView::SListView() throw()
+SListView::SListView() noexcept
 {
     newSignal< ItemAddedSignalType>(s_ITEM_ADDED_SIG);
     newSignal< ItemRemovedSignalType>(s_ITEM_REMOVED_SIG);
@@ -46,7 +46,7 @@ SListView::SListView() throw()
 
 //------------------------------------------------------------------------------
 
-SListView::~SListView() throw()
+SListView::~SListView() noexcept
 {
 }
 
@@ -72,14 +72,14 @@ bool SListView::eventFilter(QObject* watched, QEvent* event)
 }
 
 //------------------------------------------------------------------------------
-void SListView::configuring() throw(fwTools::Failed)
+void SListView::configuring()
 {
     this->initialize();
 
 }
 
 //------------------------------------------------------------------------------
-void SListView::starting() throw(::fwTools::Failed)
+void SListView::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -100,7 +100,7 @@ void SListView::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SListView::stopping() throw(::fwTools::Failed)
+void SListView::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -108,13 +108,13 @@ void SListView::stopping() throw(::fwTools::Failed)
 }
 //------------------------------------------------------------------------------
 
-void SListView::updating() throw(::fwTools::Failed)
+void SListView::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SListView::swapping() throw(::fwTools::Failed)
+void SListView::swapping()
 {
     this->updating();
 }

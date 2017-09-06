@@ -42,7 +42,7 @@ Runtime::~Runtime()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addBundle( std::shared_ptr< Bundle > bundle ) throw(RuntimeException)
+void Runtime::addBundle( std::shared_ptr< Bundle > bundle )
 {
     m_bundles.insert( bundle );
     std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(),
@@ -62,7 +62,7 @@ void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
 
 //------------------------------------------------------------------------------
 
-void Runtime::addBundles( const ::boost::filesystem::path& repository ) throw(RuntimeException)
+void Runtime::addBundles( const ::boost::filesystem::path& repository )
 {
     try
     {
@@ -92,7 +92,7 @@ Runtime::BundleIterator Runtime::bundlesEnd()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExecutableFactory( std::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException)
+void Runtime::addExecutableFactory( std::shared_ptr< ExecutableFactory > factory )
 {
     // Ensures no registered factory has the same identifier.
     const std::string type( factory->getType() );
@@ -133,7 +133,7 @@ std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExtension( std::shared_ptr<Extension> extension) throw(RuntimeException)
+void Runtime::addExtension( std::shared_ptr<Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(extension->getIdentifier());
@@ -173,7 +173,7 @@ Runtime::ExtensionIterator Runtime::extensionsEnd()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExtensionPoint( std::shared_ptr<ExtensionPoint> point) throw(RuntimeException)
+void Runtime::addExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 {
     // Asserts no registered extension point has the same identifier.
     const std::string identifier(point->getIdentifier());
@@ -274,7 +274,7 @@ std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string& 
 
 //------------------------------------------------------------------------------
 
-IExecutable* Runtime::createExecutableInstance( const std::string& type ) throw( RuntimeException )
+IExecutable* Runtime::createExecutableInstance( const std::string& type )
 {
     std::shared_ptr< ExecutableFactory > factory;
 
@@ -296,8 +296,7 @@ IExecutable* Runtime::createExecutableInstance( const std::string& type ) throw(
 //------------------------------------------------------------------------------
 
 IExecutable* Runtime::createExecutableInstance( const std::string& type,
-                                                ConfigurationElement::sptr configurationElement ) throw(
-    RuntimeException )
+                                                ConfigurationElement::sptr configurationElement )
 {
     std::shared_ptr< ExecutableFactory > factory;
 

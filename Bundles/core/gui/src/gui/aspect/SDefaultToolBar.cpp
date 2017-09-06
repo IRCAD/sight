@@ -16,19 +16,19 @@ namespace gui
 namespace aspect
 {
 
-SDefaultToolBar::SDefaultToolBar() throw()
+SDefaultToolBar::SDefaultToolBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultToolBar::~SDefaultToolBar() throw()
+SDefaultToolBar::~SDefaultToolBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::starting()  throw ( ::fwTools::Failed )
+void SDefaultToolBar::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -36,7 +36,7 @@ void SDefaultToolBar::starting()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::stopping()  throw ( ::fwTools::Failed )
+void SDefaultToolBar::stopping()
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -44,7 +44,7 @@ void SDefaultToolBar::stopping()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::configuring()  throw ( ::fwTools::Failed )
+void SDefaultToolBar::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -52,7 +52,7 @@ void SDefaultToolBar::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::updating() throw ( ::fwTools::Failed )
+void SDefaultToolBar::updating()
 {
     SLM_TRACE_FUNC();
 }

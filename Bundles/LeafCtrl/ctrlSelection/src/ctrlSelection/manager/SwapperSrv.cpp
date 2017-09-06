@@ -40,7 +40,7 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 //-----------------------------------------------------------------------------
 
-SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
+SwapperSrv::SwapperSrv() noexcept : m_dummyStopMode(false)
 {
     newSlot(s_ADD_OBJECTS_SLOT, &SwapperSrv::addObjects, this);
     newSlot(s_CHANGE_OBJECTS_SLOT, &SwapperSrv::changeObjects, this);
@@ -49,19 +49,19 @@ SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 
 //-----------------------------------------------------------------------------
 
-SwapperSrv::~SwapperSrv() throw()
+SwapperSrv::~SwapperSrv() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::reconfiguring()  throw ( ::fwTools::Failed )
+void SwapperSrv::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::updating() throw ( ::fwTools::Failed )
+void SwapperSrv::updating()
 {
     stopping();
     starting();
@@ -75,7 +75,7 @@ void SwapperSrv::info( std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
+void SwapperSrv::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -113,7 +113,7 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
+void SwapperSrv::configuring()
 {
     SLM_TRACE_FUNC();
     std::vector < ConfigurationType > vectMode = m_configuration->find("mode");
@@ -134,7 +134,7 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::starting()  throw ( ::fwTools::Failed )
+void SwapperSrv::starting()
 {
     SLM_TRACE_FUNC();
 

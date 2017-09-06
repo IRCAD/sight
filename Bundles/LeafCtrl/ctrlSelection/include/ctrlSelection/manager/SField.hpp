@@ -31,10 +31,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SField)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SField() throw();
+    CTRLSELECTION_API SField() noexcept;
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SField() throw();
+    CTRLSELECTION_API virtual ~SField() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -52,10 +52,10 @@ protected:
     // composite.
     /// If the mode is "dummy", starts the the managed services on dummy fields if their fields are not in the
     // composite.
-    CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void starting();
 
     /// Implements stopping method derived from IService. Stops and erases all the managed services.
-    CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void stopping();
 
     /**
      * @brief Implements configuring method derived from IService. .
@@ -93,13 +93,13 @@ protected:
      * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
      * @li worker: optional, allows to manage the service in another thread.
      */
-    CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void configuring();
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void reconfiguring()  throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void reconfiguring();
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
+    CTRLSELECTION_API virtual void updating();
 
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream& _sstream );

@@ -16,13 +16,13 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtToolBarContainer::QtToolBarContainer(::fwGui::GuiBaseObject::Key key) throw()
+QtToolBarContainer::QtToolBarContainer(::fwGui::GuiBaseObject::Key key) noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtToolBarContainer::~QtToolBarContainer() throw()
+QtToolBarContainer::~QtToolBarContainer() noexcept
 {
 }
 

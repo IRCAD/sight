@@ -55,20 +55,20 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
 
 //------------------------------------------------------------------------------
 
-MemoryConsumption::MemoryConsumption( ) throw() :
+MemoryConsumption::MemoryConsumption( ) noexcept :
     m_isIncreaseMode(true), m_memorySizeInBytes(1024*1024*256)     // 256 Mo
 {
 }
 
 //------------------------------------------------------------------------------
 
-MemoryConsumption::~MemoryConsumption() throw()
+MemoryConsumption::~MemoryConsumption() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void MemoryConsumption::updating() throw(::fwTools::Failed)
+void MemoryConsumption::updating()
 {
     if(m_isIncreaseMode)
     {
@@ -86,7 +86,7 @@ void MemoryConsumption::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MemoryConsumption::configuring() throw (::fwTools::Failed)
+void MemoryConsumption::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
 
@@ -109,13 +109,13 @@ void MemoryConsumption::configuring() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MemoryConsumption::starting() throw (::fwTools::Failed)
+void MemoryConsumption::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
-void MemoryConsumption::stopping() throw (::fwTools::Failed)
+void MemoryConsumption::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

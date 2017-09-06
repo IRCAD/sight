@@ -18,11 +18,11 @@ IPlugin::~IPlugin()
 }
 
 
-void IPlugin::initialize() throw(::fwRuntime::RuntimeException)
+void IPlugin::initialize()
 {
 }
 
-void IPlugin::uninitialize() throw(::fwRuntime::RuntimeException)
+void IPlugin::uninitialize()
 {
 }
 

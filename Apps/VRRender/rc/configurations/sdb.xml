@@ -1,5 +1,5 @@
 
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>SDBVRRender</id>
     <parameters>
         <param name="SERIESDB" />
@@ -66,12 +66,12 @@
             <in key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
-        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="activityCreator" type="::uiMedData::editor::SActivityWizard">
+        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <ioSelectorConfig>FullSDBReaderIOSelectorConfig</ioSelectorConfig>
             <icons>
@@ -80,7 +80,7 @@
             </icons>
         </service>
 
-        <service uid="seriesViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="seriesViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
@@ -89,7 +89,7 @@
                 </config>
                 <config id="3DSimpleConfig2" type="::fwMedData::ModelSeries" />
                 <config id="ActivityCreatorConfig" type="::fwMedData::ActivitySeries">
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                 </config>
             </configs>
         </service>
@@ -97,7 +97,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -113,7 +113,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -128,7 +128,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -142,7 +142,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="SERIESDB" by="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -173,7 +173,7 @@
                 <parameters>
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="VRRender" />
-                    <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
+                    <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>
@@ -188,7 +188,7 @@
                 <parameters>
                     <parameter replace="SERIESDB" by="${SERIESDB}"  />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                    <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
+                    <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>

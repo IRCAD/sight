@@ -27,23 +27,23 @@ class IOITK_CLASS_API SImageSeriesWriter : public ::io::IWriter
 public:
     fwCoreServiceClassDefinitionsMacro( (SImageSeriesWriter)( ::io::IWriter) );
 
-    IOITK_API SImageSeriesWriter() throw();
+    IOITK_API SImageSeriesWriter() noexcept;
 
-    IOITK_API virtual ~SImageSeriesWriter() throw();
+    IOITK_API virtual ~SImageSeriesWriter() noexcept;
 
 protected:
 
     /// Override
-    IOITK_API virtual void starting() throw(::fwTools::Failed);
+    IOITK_API virtual void starting();
 
     /// Override
-    IOITK_API virtual void stopping() throw(::fwTools::Failed);
+    IOITK_API virtual void stopping();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed);
+    IOITK_API virtual void configuring();
 
     /// Override
-    IOITK_API void updating() throw(::fwTools::Failed);
+    IOITK_API void updating();
 
     /// Override
     IOITK_API void info(std::ostream& _sstream );

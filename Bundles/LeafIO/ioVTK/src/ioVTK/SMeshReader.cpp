@@ -44,7 +44,7 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SMeshReader::SMeshReader() throw()
+SMeshReader::SMeshReader() noexcept
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >(JOB_CREATED_SIGNAL);
 }
@@ -81,21 +81,21 @@ void SMeshReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::starting() throw(::fwTools::Failed)
+void SMeshReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::stopping() throw(::fwTools::Failed)
+void SMeshReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::configuring() throw(::fwTools::Failed)
+void SMeshReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -149,7 +149,7 @@ void SMeshReader::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::M
 
 //------------------------------------------------------------------------------
 
-void SMeshReader::updating() throw(::fwTools::Failed)
+void SMeshReader::updating()
 {
     SLM_TRACE_FUNC();
 

@@ -20,7 +20,7 @@ set( REQUIREMENTS
     visuVTKQt
     opVTKMesh
     fwlauncher
-    appXml2
+    appXml
 )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)

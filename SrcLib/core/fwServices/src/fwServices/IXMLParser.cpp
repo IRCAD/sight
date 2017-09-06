@@ -19,19 +19,19 @@ IXMLParser::~IXMLParser()
 {
 }
 
-void IXMLParser::starting() throw(::fwTools::Failed)
+void IXMLParser::starting()
 {
 }
 
-void IXMLParser::stopping() throw(::fwTools::Failed)
+void IXMLParser::stopping()
 {
 }
 
-void IXMLParser::configuring() throw(::fwTools::Failed)
+void IXMLParser::configuring()
 {
 }
 
-void IXMLParser::updating() throw(::fwTools::Failed)
+void IXMLParser::updating()
 {
     ::fwRuntime::ConfigurationElement::Iterator configEltIter;
     for(configEltIter = this->m_configuration->begin(); !(configEltIter == this->m_configuration->end());

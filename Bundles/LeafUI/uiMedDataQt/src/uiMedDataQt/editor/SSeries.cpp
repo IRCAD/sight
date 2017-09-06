@@ -37,12 +37,12 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace uiMedData
+namespace uiMedDataQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSeries, ::fwData::Vector );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SSeries, ::fwData::Vector );
 
 const ::fwCom::Signals::SignalKeyType SSeries::s_EXPORT_SLOT         = "export";
 const ::fwCom::Signals::SignalKeyType SSeries::s_SERIES_EXPORTED_SIG = "seriesExported";
@@ -69,13 +69,13 @@ SSeries::SSeries()
 
 //------------------------------------------------------------------------------
 
-SSeries::~SSeries() throw()
+SSeries::~SSeries() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSeries::starting() throw(::fwTools::Failed)
+void SSeries::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -85,10 +85,10 @@ void SSeries::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_patientEditor   = new ::uiMedData::widget::PatientEditor();
-    m_studyEditor     = new ::uiMedData::widget::StudyEditor();
-    m_equipmentEditor = new ::uiMedData::widget::EquipmentEditor();
-    m_seriesEditor    = new ::uiMedData::widget::SeriesEditor();
+    m_patientEditor   = new ::uiMedDataQt::widget::PatientEditor();
+    m_studyEditor     = new ::uiMedDataQt::widget::StudyEditor();
+    m_equipmentEditor = new ::uiMedDataQt::widget::EquipmentEditor();
+    m_seriesEditor    = new ::uiMedDataQt::widget::SeriesEditor();
 
     QVBoxLayout* studyEquipmentLayout = new QVBoxLayout();
     studyEquipmentLayout->addWidget(m_studyEditor);
@@ -116,14 +116,14 @@ void SSeries::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeries::stopping() throw(::fwTools::Failed)
+void SSeries::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SSeries::updating() throw(::fwTools::Failed)
+void SSeries::updating()
 {
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
     SLM_ASSERT("Failed to retrieve vector", vector);
@@ -233,7 +233,7 @@ void SSeries::onExportClicked()
 
 //------------------------------------------------------------------------------
 
-void SSeries::configuring() throw(::fwTools::Failed)
+void SSeries::configuring()
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
@@ -265,5 +265,5 @@ void SSeries::configuring() throw(::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 }   // namespace editor
-}   // namespace uiMedData
+}   // namespace uiMedDataQt
 

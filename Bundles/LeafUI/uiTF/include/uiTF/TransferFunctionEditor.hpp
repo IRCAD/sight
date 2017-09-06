@@ -41,7 +41,7 @@ public:
     UITF_API TransferFunctionEditor();
 
     /// Basic destructor, do nothing.
-    UITF_API virtual ~TransferFunctionEditor() throw ();
+    UITF_API virtual ~TransferFunctionEditor() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -74,16 +74,16 @@ protected:
      * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF bundle.
      * - \b path (optional): path to a directory containing tf files.
      */
-    UITF_API virtual void configuring() throw( ::fwTools::Failed );
+    UITF_API virtual void configuring();
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
-    UITF_API virtual void starting() throw( ::fwTools::Failed );
+    UITF_API virtual void starting();
 
     /// Update the TransferFunctionEditor, do nothing.
-    UITF_API virtual void updating() throw( ::fwTools::Failed );
+    UITF_API virtual void updating();
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
-    UITF_API virtual void stopping() throw( ::fwTools::Failed );
+    UITF_API virtual void stopping();
 
     /**
      * @brief Initialize the transfer functions.

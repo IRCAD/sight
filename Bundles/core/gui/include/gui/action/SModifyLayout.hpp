@@ -37,12 +37,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SModifyLayout() throw();
+    GUI_API SModifyLayout() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SModifyLayout() throw();
+    GUI_API virtual ~SModifyLayout() noexcept;
 
 protected:
 
@@ -65,7 +65,7 @@ protected:
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating() throw (fwTools::Failed);
+    GUI_API void updating();
 
     /**
      * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
@@ -92,11 +92,11 @@ protected:
      *
      * The action in the menu/toolbar must be checkable (style="check").
      */
-    GUI_API void configuring() throw( ::fwTools::Failed );
+    GUI_API void configuring();
 
-    GUI_API virtual void starting() throw(::fwTools::Failed);
+    GUI_API virtual void starting();
 
-    GUI_API virtual void stopping() throw(::fwTools::Failed);
+    GUI_API virtual void stopping();
 
 private:
 

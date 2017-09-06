@@ -85,13 +85,13 @@ public:
 protected:
 
     /// Install the container.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroy the container.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
 private:
 

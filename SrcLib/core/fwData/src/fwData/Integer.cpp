@@ -16,13 +16,13 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Integer::Integer(::fwData::Object::Key key ) throw()
+Integer::Integer(::fwData::Object::Key key ) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-Integer::~Integer() throw()
+Integer::~Integer() noexcept
 {
 }
 

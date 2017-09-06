@@ -32,28 +32,28 @@ fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferen
 
 //-----------------------------------------------------------------------------
 
-void SPreferences::starting() throw (::fwTools::Failed)
+void SPreferences::starting()
 {
     this->load();
 }
 
 //-----------------------------------------------------------------------------
 
-void SPreferences::stopping() throw (::fwTools::Failed)
+void SPreferences::stopping()
 {
     this->save();
 }
 
 //-----------------------------------------------------------------------------
 
-void SPreferences::updating() throw (::fwTools::Failed)
+void SPreferences::updating()
 {
     this->save();
 }
 
 //-----------------------------------------------------------------------------
 
-void SPreferences::configuring() throw(::fwTools::Failed)
+void SPreferences::configuring()
 {
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("filename");
     SLM_ASSERT("The <filename> element must exist.", !vectConfig.empty() );

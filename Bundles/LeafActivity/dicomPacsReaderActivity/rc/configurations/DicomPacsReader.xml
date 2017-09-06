@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>DicomPacsReader</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -130,7 +130,7 @@
         </service>
 
         <!-- PREVIEW -->
-        <service uid="previewSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="previewSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="selection" uid="previewSelections" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
@@ -147,23 +147,23 @@
             <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomPacsReaderConfig" />
         </service>
 
-        <service uid="pacsViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="pacsViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
                 <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
-                    <parameter replace="PACS_CONFIGURATION" uid="pacsConfiguration" />
+                    <parameter replace="PACS_CONFIGURATION" by="pacsConfiguration" />
                 </config>
             </configs>
         </service>
 
         <!-- LOCAL -->
-        <service uid="localSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="localSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="localSeriesDB" />
             <inout key="selection" uid="localSelections" />
         </service>
 
-        <service uid="localViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+        <service uid="localViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>

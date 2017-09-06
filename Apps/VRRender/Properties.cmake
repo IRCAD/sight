@@ -11,9 +11,8 @@ set( REQUIREMENTS
     guiQt
 
     activities
-    appXml2
+    appXml
     memory
-    ctrlMemory
     fwlauncher
 
     io
@@ -27,9 +26,9 @@ set( REQUIREMENTS
     uiGenericQt
     uiMedDataQt
 
-    2DVisualizationActivity2
-    3DVisualizationActivity2
-    volumeRenderingActivity2
+    2DVisualizationActivity
+    3DVisualizationActivity
+    volumeRenderingActivity
     blendActivity
     ioActivity
 
@@ -55,4 +54,4 @@ bundleParam(guiQt
         ${BUNDLE_PREFIX}/style_0-1/darkstyle.rcc 
         ${BUNDLE_PREFIX}/style_0-1/darkstyle.qss
 )
-bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

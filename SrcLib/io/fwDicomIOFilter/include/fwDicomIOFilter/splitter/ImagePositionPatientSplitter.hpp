@@ -35,9 +35,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
-    throw(::fwDicomIOFilter::exceptions::FilterFailure);
-
+        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const;
 

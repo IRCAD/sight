@@ -25,7 +25,7 @@ class GUI_CLASS_API Plugin : public ::fwRuntime::Plugin
 public:
 
     ///@brief  Destructor. Do nothing.
-    GUI_API virtual ~Plugin() throw();
+    GUI_API virtual ~Plugin() noexcept;
 
     /**
      * @brief This method is used by runtime to initialize the bundle.
@@ -35,12 +35,12 @@ public:
      * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
-    GUI_API void start() throw(::fwRuntime::RuntimeException);
+    GUI_API void start();
 
     /**
      * @brief This method is used by runtime to close the bundle. Do nothing.
      */
-    GUI_API void stop() throw();
+    GUI_API void stop() noexcept;
 
 };
 

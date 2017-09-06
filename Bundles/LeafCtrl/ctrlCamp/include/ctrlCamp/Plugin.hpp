@@ -20,15 +20,15 @@ namespace ctrlCamp
 struct CTRLCAMP_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    CTRLCAMP_API ~Plugin() throw();
+    CTRLCAMP_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      */
-    CTRLCAMP_API void start() throw( ::fwRuntime::RuntimeException );
+    CTRLCAMP_API void start();
 
     /// Overrides stop method. Do nothing
-    CTRLCAMP_API void stop() throw();
+    CTRLCAMP_API void stop() noexcept;
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
 
 #include "TestServices.hpp"
 
-#include <fwServices/AppConfigManager2.hpp>
+#include <fwServices/AppConfigManager.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
@@ -16,6 +16,8 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
+
+#include <fwRuntime/Convert.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ConfigParserTest );
@@ -26,6 +28,8 @@ namespace fwServices
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void ConfigParserTest::setUp()
 {
@@ -51,7 +55,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwRuntime::ConfigurationElement::sptr config = buildObjectConfig();
 
     // Create the object and its services from the configuration
-    ::fwServices::AppConfigManager2::sptr configManager = ::fwServices::AppConfigManager2::New();
+    ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
     auto image = ::fwData::Image::dynamicCast(configManager->getConfigRoot());
@@ -86,38 +90,48 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
 ::fwRuntime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+    ::fwServices::IService::ConfigType config;
 
     // Configuration on fwTools::Object which uid is objectUUID
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "objectUUID");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
+    ::fwServices::IService::ConfigType objCfg;
+    objCfg.add("<xmlattr>.uid", "objectUUID");
+    objCfg.add("<xmlattr>.type", "::fwData::Image");
+    config.add_child("object", objCfg);
 
     // Object's service A
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
-    serviceA->setAttributeValue( "uid", "myTestService1" );
-    serviceA->setAttributeValue( "type", "::fwServices::ut::TestServiceImplementationImage" );
+    ::fwServices::IService::ConfigType serviceA;
+    serviceA.add("<xmlattr>.uid", "myTestService1");
+    serviceA.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementationImage");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataServiceA = serviceA->addConfigurationElement("in");
-    dataServiceA->setAttributeValue( "key", "data" );
-    dataServiceA->setAttributeValue( "uid", "objectUUID" );
+    ::fwServices::IService::ConfigType dataServiceA;
+    dataServiceA.add("<xmlattr>.key", "data");
+    dataServiceA.add("<xmlattr>.uid", "objectUUID");
+    serviceA.add_child("in", dataServiceA);
+    config.add_child("service", serviceA);
 
     // Object's service B
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
-    serviceB->setAttributeValue( "uid", "myTestService2" );
-    serviceB->setAttributeValue( "type", "::fwServices::ut::TestServiceImplementationImage" );
+    ::fwServices::IService::ConfigType serviceB;
+    serviceB.add("<xmlattr>.uid", "myTestService2");
+    serviceB.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementationImage");
+    config.add_child("service", serviceB);
 
     // Start method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
-    startA->setAttributeValue( "uid", "myTestService1" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
-    startB->setAttributeValue( "uid", "myTestService2" );
+    ::fwServices::IService::ConfigType startA;
+    startA.add("<xmlattr>.uid", "myTestService1");
+    config.add_child("start", startA);
+    ::fwServices::IService::ConfigType startB;
+    startB.add("<xmlattr>.uid", "myTestService2");
+    config.add_child("start", startB);
 
     // Update method from object's services
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
-    updateA->setAttributeValue( "uid", "myTestService1" );
+    ::fwServices::IService::ConfigType update1;
+    update1.add("<xmlattr>.uid", "myTestService1");
+    config.add_child("update", update1);
 
-    return cfg;
+    ::fwServices::IService::ConfigType serviceCfg;
+    serviceCfg.add_child("config", config);
+
+    return ::fwRuntime::Convert::fromPropertyTree(serviceCfg);
 }
 
 //------------------------------------------------------------------------------

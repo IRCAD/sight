@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,60 +7,67 @@
 #ifndef __UIVISUQT_BASICFLOATEDITOR_HPP__
 #define __UIVISUQT_BASICFLOATEDITOR_HPP__
 
-#include <QObject>
-#include <QPointer>
-#include <QLineEdit>
+#include "uiVisuQt/config.hpp"
 
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiVisuQt/config.hpp"
+#include <QLineEdit>
+#include <QObject>
+#include <QPointer>
 
-namespace uiVisu
+namespace uiVisuQt
 {
 
 /**
  * @brief   BasicFloatEditor service permits to edit a float value.
- * @class   BasicFloatEditor
+ * * @section XML XML Configuration
  *
- * @date    2011.
+ * @code{.xml}
+   <service type="::uiVisuQt::BasicFloatEditor">
+       <inout key="float" uid="..." />
+   </service>
+   @endcode
+ * @subsection InOut InOut
+ * - \b float [::fwData::Float]: float.
  */
+
 class UIVISUQT_CLASS_API BasicFloatEditor : public QObject,
                                             public ::gui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (BasicFloatEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (BasicFloatEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API BasicFloatEditor() throw();
+    UIVISUQT_API BasicFloatEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~BasicFloatEditor() throw();
+    UIVISUQT_API virtual ~BasicFloatEditor() noexcept;
 
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Install the layout.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroy the layout.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Do nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Do nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /// Configure the editor. Do nothing.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
 
@@ -77,8 +84,7 @@ private:
 
 };
 
-} // uiVisu
+} // uiVisuQt
 
 #endif // __UIVISUQT_BASICFLOATEDITOR_HPP__
-
 

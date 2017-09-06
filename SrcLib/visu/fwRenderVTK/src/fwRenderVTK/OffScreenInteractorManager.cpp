@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,9 @@
 #include <fwRenderVTK/registry/macros.hpp>
 
 #include <vtkObjectFactory.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkRenderer.h>
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ class vtkOffscreenRenderWindowInteractor : public vtkRenderWindowInteractor
 {
 public:
     static vtkOffscreenRenderWindowInteractor* New();
-    vtkTypeMacro(vtkOffscreenRenderWindowInteractor,vtkRenderWindowInteractor)
+    vtkTypeMacro(vtkOffscreenRenderWindowInteractor, vtkRenderWindowInteractor)
 
 protected:
     vtkOffscreenRenderWindowInteractor()
@@ -77,7 +77,7 @@ void OffScreenInteractorManager::installInteractor(unsigned int width, unsigned 
 {
     m_renderWindow = vtkRenderWindow::New();
     m_renderWindow->SetOffScreenRendering( 1 );
-    m_renderWindow->SetSize(width, height);
+    m_renderWindow->SetSize(static_cast<int>(width), static_cast<int>(height));
 
     m_interactor = vtkOffscreenRenderWindowInteractor::New();
     m_interactor->SetRenderWindow(m_renderWindow);

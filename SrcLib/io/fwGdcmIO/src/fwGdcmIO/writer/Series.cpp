@@ -48,7 +48,7 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::write() throw (::fwGdcmIO::exception::Failed)
+void Series::write()
 {
     ::fwMedData::Series::sptr series = this->getConcreteObject();
     SLM_ASSERT("::fwMedData::Series not instanced", series);

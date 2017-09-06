@@ -44,7 +44,7 @@ public:
 protected:
 
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement );
-    void updating() throw( fwTools::Failed );
+    void updating();
 
     std::vector< ::fwServices::IAppConfigManager::sptr > m_ctmContainer;
 };

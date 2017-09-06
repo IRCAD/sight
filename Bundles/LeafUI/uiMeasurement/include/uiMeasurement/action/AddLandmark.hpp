@@ -35,19 +35,19 @@ class UIMEASUREMENT_CLASS_API AddLandmark : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (AddLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API AddLandmark() throw();
+    UIMEASUREMENT_API AddLandmark() noexcept;
 
-    UIMEASUREMENT_API virtual ~AddLandmark() throw();
+    UIMEASUREMENT_API virtual ~AddLandmark() noexcept;
 
 protected:
 
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
     UIMEASUREMENT_API void info(std::ostream& _sstream );
 

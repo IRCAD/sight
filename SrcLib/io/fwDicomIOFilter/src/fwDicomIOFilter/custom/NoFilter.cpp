@@ -48,7 +48,7 @@ std::string NoFilter::getDescription() const
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
     const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
-const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+const
 {
     DicomSeriesContainerType result;
     result.push_back(series);

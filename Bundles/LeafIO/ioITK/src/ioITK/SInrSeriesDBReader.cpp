@@ -44,13 +44,13 @@ fwServicesRegisterMacro( ::io::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData
 
 //------------------------------------------------------------------------------
 
-SInrSeriesDBReader::SInrSeriesDBReader() throw()
+SInrSeriesDBReader::SInrSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SInrSeriesDBReader::~SInrSeriesDBReader() throw()
+SInrSeriesDBReader::~SInrSeriesDBReader() noexcept
 {
 }
 
@@ -63,7 +63,7 @@ SInrSeriesDBReader::~SInrSeriesDBReader() throw()
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::configuring() throw(::fwTools::Failed)
+void SInrSeriesDBReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -139,7 +139,7 @@ bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFile, :
 
 //------------------------------------------------------------------------------
 
-void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
+void SInrSeriesDBReader::updating()
 {
     SLM_TRACE_FUNC();
 

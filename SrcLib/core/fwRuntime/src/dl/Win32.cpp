@@ -18,7 +18,7 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Win32::Win32( const boost::filesystem::path & modulePath ) throw() :
+Win32::Win32( const boost::filesystem::path & modulePath ) noexcept :
     Native(modulePath),
     m_handle  ( 0 )
 {
@@ -26,14 +26,14 @@ Win32::Win32( const boost::filesystem::path & modulePath ) throw() :
 
 //------------------------------------------------------------------------------
 
-bool Win32::isLoaded() const throw()
+bool Win32::isLoaded() const noexcept
 {
     return m_handle != 0;
 }
 
 //------------------------------------------------------------------------------
 
-void * Win32::getSymbol( const std::string& name ) const throw(RuntimeException)
+void * Win32::getSymbol( const std::string& name ) const
 {
     FARPROC symbol;
 
@@ -47,7 +47,7 @@ void * Win32::getSymbol( const std::string& name ) const throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Win32::load() throw(RuntimeException)
+void Win32::load()
 {
     if(m_handle == 0)
     {
@@ -71,7 +71,7 @@ void Win32::load() throw(RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Win32::unload() throw(RuntimeException)
+void Win32::unload()
 {
     if(m_handle != 0)
     {

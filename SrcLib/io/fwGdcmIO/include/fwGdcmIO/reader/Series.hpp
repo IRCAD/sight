@@ -36,8 +36,7 @@ public:
     FWGDCMIO_API ~Series();
 
     //// Read DICOM file
-    FWGDCMIO_API ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::sptr dicomSeries)
-    throw(::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::sptr dicomSeries);
 
     /// Get Logger
     const ::fwLog::Logger::sptr& getLogger() const

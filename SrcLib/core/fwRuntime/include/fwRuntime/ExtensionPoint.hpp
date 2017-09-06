@@ -166,7 +166,7 @@ struct ExtensionPoint : public BundleElement
          *
          * @remark  Assignment is forbidden for this class.
          */
-        void operator=(const ExtensionPoint&) throw();
+        void operator=(const ExtensionPoint&) noexcept;
 
 };
 

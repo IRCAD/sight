@@ -42,8 +42,6 @@ const ::fwCom::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 
 const std::string IService::s_DEFAULT_OBJECT = "defaultObject";
 
-int IService::s_version = 1;
-
 //-----------------------------------------------------------------------------
 
 IService::IService() :
@@ -103,7 +101,7 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
     // Handle compatibility with new behavior
     if(m_associatedObject.expired())
     {
-        // If we have an appXml2 but with an old service definition, we consider that the old primary object is the
+        // If we have an appXml but with an old service definition, we consider that the old primary object is the
         // first one in the map
         if(!m_inputsMap.empty())
         {
@@ -123,6 +121,36 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
         }
     }
     return m_associatedObject.lock();
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect)
+{
+    ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INPUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    m_serviceConfig.m_objects.push_back(objConfig);
+}
+
+//------------------------------------------------------------------------------
+
+void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect)
+{
+    ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
+
+    ObjectServiceConfig objConfig;
+    objConfig.m_key         = key;
+    objConfig.m_access      = AccessType::INOUT;
+    objConfig.m_autoConnect = autoConnect;
+    objConfig.m_optional    = false;
+
+    m_serviceConfig.m_objects.push_back(objConfig);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,7 +211,10 @@ void IService::setConfiguration( const ConfigType& ptree )
 {
     ::fwRuntime::ConfigurationElement::sptr ce;
 
-    ce = ::fwRuntime::Convert::fromPropertyTree(ptree);
+    ConfigType serviceConfig;
+    serviceConfig.add_child("service", ptree);
+
+    ce = ::fwRuntime::Convert::fromPropertyTree(serviceConfig);
 
     SLM_ASSERT( "Invalid ConfigurationElement", ce );
 
@@ -201,22 +232,38 @@ void IService::setConfiguration( const ConfigType& ptree )
 
 IService::ConfigType IService::getConfigTree() const
 {
-    return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
-}
+    const auto configTree = ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
 
-////-----------------------------------------------------------------------------
+    // This is in case we get the configuration from a ::fwServices::registry::ServiceConfig
+    const auto srvConfig = configTree.get_child_optional("config");
+
+    if(srvConfig.is_initialized())
+    {
+        return srvConfig.value();
+    }
+    else
+    {
+        return configTree.get_child("service");
+    }
+}
 
 //-----------------------------------------------------------------------------
 
 void IService::configure()
 {
-    //SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
     if( m_configurationState == UNCONFIGURED )
     {
         m_configurationState = CONFIGURING;
         if( m_globalState == STOPPED )
         {
-            this->configuring();
+            try
+            {
+                this->configuring();
+            }
+            catch (std::exception& e)
+            {
+                SLM_FATAL("Error while configuring service '" + this->getID() + "' : " + e.what());
+            }
         }
         else if( m_globalState == STARTED )
         {
@@ -228,7 +275,7 @@ void IService::configure()
 
 //-----------------------------------------------------------------------------
 
-void IService::reconfiguring() throw ( ::fwTools::Failed )
+void IService::reconfiguring()
 {
     OSLM_FATAL(
         "If this method (reconfiguring) is called, it must be overriden in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
@@ -311,12 +358,10 @@ IService::SharedFutureType IService::update()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT(
-            "INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->className(),
-            m_globalState == STARTED );
-        OSLM_ASSERT(
-            "INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->className(),
-            m_updatingState == NOTUPDATING );
+        OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
+                    "' of type '" << this->getClassname() << "'", m_globalState == STARTED );
+        OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
+                    "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
         PackagedTaskType task( ::boost::bind(&IService::updating, this) );
         UniqueFutureType ufuture = task.get_future();
@@ -406,35 +451,35 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
 
 //-----------------------------------------------------------------------------
 
-IService::GlobalStatus IService::getStatus() const throw()
+IService::GlobalStatus IService::getStatus() const noexcept
 {
     return m_globalState;
 }
 
 //-----------------------------------------------------------------------------
 
-bool IService::isStarted() const throw()
+bool IService::isStarted() const noexcept
 {
     return (m_globalState == STARTED);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IService::isStopped() const throw()
+bool IService::isStopped() const noexcept
 {
     return (m_globalState == STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
-IService::ConfigurationStatus IService::getConfigurationStatus() const throw()
+IService::ConfigurationStatus IService::getConfigurationStatus() const noexcept
 {
     return m_configurationState;
 }
 
 //-----------------------------------------------------------------------------
 
-IService::UpdatingStatus IService::getUpdatingStatus() const throw()
+IService::UpdatingStatus IService::getUpdatingStatus() const noexcept
 {
     return m_updatingState;
 }
@@ -663,20 +708,6 @@ std::ostream& operator<<(std::ostream& _ostream, IService& _service)
 {
     _service.info( _ostream );
     return _ostream;
-}
-
-//-----------------------------------------------------------------------------
-
-bool IService::isVersion2()
-{
-    return s_version == 2;
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::setVersion(int version)
-{
-    s_version = version;
 }
 
 //-----------------------------------------------------------------------------

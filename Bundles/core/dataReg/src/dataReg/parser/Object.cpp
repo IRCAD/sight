@@ -53,7 +53,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
 
 //------------------------------------------------------------------------------
 
-void Object::updating( ) throw(fwTools::Failed)
+void Object::updating( )
 {
     SLM_FATAL("This method is deprecated, and thus, shouldn't be used.");
 }
@@ -102,14 +102,8 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
 
                 // Create and manage object config
                 ::fwServices::IAppConfigManager::sptr ctm = ::fwServices::IAppConfigManager::New();
-                if( ::fwServices::IService::isVersion2())
-                {
-                    ctm->::fwServices::IAppConfigManager::setConfig( elem );
-                }
-                else
-                {
-                    ctm->::fwServices::IAppConfigManager::setConfig( *( elem->getElements().begin() ) );
-                }
+                ctm->::fwServices::IAppConfigManager::setConfig( elem );
+
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
                 ::fwData::Object::sptr localObj = ctm->getConfigRoot();

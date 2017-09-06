@@ -33,7 +33,7 @@ static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
 //------------------------------------------------------------------------------
 
-SExportWithSeriesDB::SExportWithSeriesDB( ) throw() :
+SExportWithSeriesDB::SExportWithSeriesDB( ) noexcept :
     m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
 {
     m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
@@ -42,7 +42,7 @@ SExportWithSeriesDB::SExportWithSeriesDB( ) throw() :
 
 //------------------------------------------------------------------------------
 
-SExportWithSeriesDB::~SExportWithSeriesDB() throw()
+SExportWithSeriesDB::~SExportWithSeriesDB() noexcept
 {
 }
 
@@ -55,7 +55,7 @@ void SExportWithSeriesDB::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::configuring() throw( ::fwTools::Failed )
+void SExportWithSeriesDB::configuring()
 {
     this->::fwGui::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
@@ -69,7 +69,7 @@ void SExportWithSeriesDB::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::updating( ) throw(::fwTools::Failed)
+void SExportWithSeriesDB::updating( )
 {
     ::fwGui::LockAction lock(this->getSptr());
     ::fwMedData::Series::sptr series = this->getObject< ::fwMedData::Series >();
@@ -111,7 +111,7 @@ void SExportWithSeriesDB::updating( ) throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::starting() throw (::fwTools::Failed)
+void SExportWithSeriesDB::starting()
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 
@@ -122,7 +122,7 @@ void SExportWithSeriesDB::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::stopping() throw (::fwTools::Failed)
+void SExportWithSeriesDB::stopping()
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
 }

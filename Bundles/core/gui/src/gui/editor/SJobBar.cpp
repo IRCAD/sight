@@ -29,7 +29,7 @@ static const ::fwCom::Signals::SignalKeyType ENDED_SIGNAL   = "ended";
 
 //-----------------------------------------------------------------------------
 
-SJobBar::SJobBar() throw()
+SJobBar::SJobBar() noexcept
 {
     newSlot( SHOW_JOB_SLOT, &SJobBar::showJob, this );
 
@@ -39,19 +39,19 @@ SJobBar::SJobBar() throw()
 
 //-----------------------------------------------------------------------------
 
-SJobBar::~SJobBar() throw()
+SJobBar::~SJobBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::starting() throw( ::fwTools::Failed )
+void SJobBar::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::stopping() throw( ::fwTools::Failed )
+void SJobBar::stopping()
 {
 }
 
@@ -64,13 +64,13 @@ void SJobBar::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::updating() throw( ::fwTools::Failed )
+void SJobBar::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::configuring() throw( ::fwTools::Failed )
+void SJobBar::configuring()
 {
 }
 

@@ -14,12 +14,14 @@
 
 #include <fwData/Composite.hpp>
 
+#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/Extension.hpp>
 
 #include <fwTools/Object.hpp>
 
 #include <map>
+#include <unordered_set>
 
 namespace fwServices
 {
@@ -36,6 +38,9 @@ class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject
 
 public:
 
+    /// Associations of <pattern, value>.
+    typedef std::map< std::string, std::string > FieldAdaptorType;
+
     fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), (()), new AppConfig);
 
     /// Destructor
@@ -49,6 +54,14 @@ public:
     FWSERVICES_API void parseBundleInformation();
 
     /**
+     * @brief Parses bundle information to retrieve configuration declaration.
+     * @warning This method must be launch only once. The same extension will not be parsed twice.
+     * @note This method is thread safe.
+     */
+    FWSERVICES_API void parseBundleInformation(
+        const std::vector< std::shared_ptr< ::fwRuntime::Extension > >& extensions);
+
+    /**
      * @brief Register a new config.
      * @param configId the identifier of the registered config.
      * @param type the type of the added config. It can be TEMPLATE, STANDARD or PARAMETERS.
@@ -58,13 +71,13 @@ public:
      * @param config the registered config.
      * @note This method is thread safe
      */
-    FWSERVICES_API void addAppInfo (   const std::string& configId,
-                                       const std::string& group,
-                                       const std::string& desc,
-                                       const AppInfo::ParametersType& parameters,
-                                       ::fwRuntime::ConfigurationElement::csptr config,
-                                       const std::string bundleId,
-                                       const std::string bundleVersion);
+    FWSERVICES_API void addAppInfo( const std::string& configId,
+                                    const std::string& group,
+                                    const std::string& desc,
+                                    const AppInfo::ParametersType& parameters,
+                                    const ::fwRuntime::ConfigurationElement::csptr& config,
+                                    const std::string& bundleId,
+                                    const std::string& bundleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -73,8 +86,8 @@ public:
      * @note This method is thread safe.
      */
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
-                                                                                      const FieldAdaptorType replaceFields =
-                                                                                          FieldAdaptorType() ) const;
+                                                                                      const FieldAdaptorType replaceFields,
+                                                                                      bool autoPrefixId ) const;
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -83,14 +96,15 @@ public:
      * @note This method is thread safe.
      */
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string& configId,
-                                                                                      ::fwData::Composite::csptr replaceFields )
+                                                                                      ::fwData::Composite::csptr replaceFields,
+                                                                                      bool autoPrefixId )
     const;
 
     /**
      * @brief Retrieves the bunble from the config id
      * @param configId the config identifier
      */
-    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string& configId);
+    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string& _configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.
@@ -123,7 +137,7 @@ protected:
 
     typedef std::map< std::string, AppInfo::sptr > Registry;
 
-    /// Container of <configId, appConfig information>
+    /// Container of <configId, AppConfig information>
     Registry m_reg;
 
     /// Constructor
@@ -131,15 +145,22 @@ protected:
 
 private:
 
+    typedef std::unordered_set< std::string > UidParameterReplaceType;
+
     /// Convert the composite into map <pattern, value>.
     FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
 
+    static void collectUIDForParameterReplace(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                              UidParameterReplaceType& replaceMap);
+
     /// Adapts the configuration : replace field thanks to field adaptors
-    ::fwRuntime::EConfigurationElement::sptr adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem,
-                                                          const FieldAdaptorType& fieldAdaptors ) const;
+    static ::fwRuntime::EConfigurationElement::sptr adaptConfig(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                                                const FieldAdaptorType& _fieldAdaptors,
+                                                                const UidParameterReplaceType& _uidParameterReplace,
+                                                                const std::string& _autoPrefixId );
 
     /// Adapts field thanks to field adaptors
-    std::string adaptField( const std::string& _str, const FieldAdaptorType& fieldAdaptors ) const;
+    static std::string adaptField(const std::string& _str, const FieldAdaptorType& _variablesMap );
 
     /// Used to protect the registry access.
     mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
@@ -152,6 +173,10 @@ private:
 
     /// The static identifier for mandatory parameters.
     static std::string s_mandatoryParameterIdentifier;
+
+    /// Associations of <tag id, generic-uid attribute>.
+    typedef std::multimap< std::string, std::string > UidDefinitionType;
+    static UidDefinitionType s_uidDefinitionDictionary;
 };
 
 } // namespace registry

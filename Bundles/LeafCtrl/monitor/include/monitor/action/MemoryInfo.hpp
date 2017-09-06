@@ -25,24 +25,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (MemoryInfo)( ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITOR_API MemoryInfo() throw();
+    MONITOR_API MemoryInfo() noexcept;
 
     /// Does nothing
-    MONITOR_API virtual ~MemoryInfo() throw();
+    MONITOR_API virtual ~MemoryInfo() noexcept;
 
 protected:
 
     /// Calls classic IAction methods to configure
-    void configuring() throw (::fwTools::Failed);
+    void configuring();
 
     /// Calls classic IAction methods to start
-    void starting() throw (::fwTools::Failed);
+    void starting();
 
     /// Shows in a message box few memory information
-    void updating() throw (::fwTools::Failed);
+    void updating();
 
     /// Calls classic IAction methods to stop
-    void stopping() throw (::fwTools::Failed);
+    void stopping();
 
 };
 

@@ -55,7 +55,7 @@ static const ::fwCom::Signals::SignalKeyType FILES_ADDED_SIGNAL = "filesAdded";
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesDBReader::SDicomSeriesDBReader() throw() :
+SDicomSeriesDBReader::SDicomSeriesDBReader() noexcept :
     m_sigJobCreated(JobCreatedSignal::New()),
     m_sigFilesAdded(FilesAddedSignal::New()),
     m_cancelled(false),
@@ -70,13 +70,13 @@ SDicomSeriesDBReader::SDicomSeriesDBReader() throw() :
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesDBReader::~SDicomSeriesDBReader() throw()
+SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::configuring() throw (fwTools::Failed)
+void SDicomSeriesDBReader::configuring()
 {
     ::io::IReader::configuring();
 
@@ -159,14 +159,14 @@ void SDicomSeriesDBReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::starting() throw(::fwTools::Failed)
+void SDicomSeriesDBReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::stopping() throw(::fwTools::Failed)
+void SDicomSeriesDBReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
@@ -327,7 +327,7 @@ bool hasEnoughSpaceToCopy(const std::vector< ::boost::filesystem::path >& files,
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
+void SDicomSeriesDBReader::updating()
 {
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )

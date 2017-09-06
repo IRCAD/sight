@@ -12,12 +12,12 @@ set( REQUIREMENTS
     guiQt
 
     fwlauncher
-    appXml2
+    appXml
 
     patchMedicalData
     filterVRRender
 
-    2DVisualizationActivity2
+    2DVisualizationActivity
     vtkSimpleNegato
 
     activities
@@ -27,7 +27,6 @@ set( REQUIREMENTS
     ioVTK
 
     uiMedDataQt
-    ctrlMemory
 
     media
 
@@ -35,4 +34,4 @@ set( REQUIREMENTS
     ctrlCamp
 )
 
-bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES Ex05Base Ex05AppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES Ex05Base Ex05AppBase)

@@ -32,7 +32,6 @@ IFilter::FilterType IComposite::getFilterType() const
 
 IComposite::DicomSeriesContainerType IComposite::apply(
     const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
-throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
     result.push_back(series);

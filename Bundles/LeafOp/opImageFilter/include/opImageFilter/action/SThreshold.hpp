@@ -42,21 +42,21 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SThreshold)(::fwGui::IActionSrv) );
 
-    OPIMAGEFILTER_API SThreshold() throw();
+    OPIMAGEFILTER_API SThreshold() noexcept;
 
-    OPIMAGEFILTER_API virtual ~SThreshold() throw();
+    OPIMAGEFILTER_API virtual ~SThreshold() noexcept;
 
 protected:
 
-    OPIMAGEFILTER_API void starting() throw ( ::fwTools::Failed );
+    OPIMAGEFILTER_API void starting();
 
-    OPIMAGEFILTER_API void stopping() throw ( ::fwTools::Failed );
+    OPIMAGEFILTER_API void stopping();
 
     /// Configure the service.
-    OPIMAGEFILTER_API void configuring() throw ( ::fwTools::Failed );
+    OPIMAGEFILTER_API void configuring();
 
     /// Apply the threshold.
-    OPIMAGEFILTER_API void updating() throw ( ::fwTools::Failed );
+    OPIMAGEFILTER_API void updating();
 };
 
 

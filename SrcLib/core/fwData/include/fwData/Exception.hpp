@@ -28,12 +28,12 @@ public:
      *
      * @param[in]   message a string containing the failure message
      */
-    FWDATA_API Exception(const std::string &message) throw();
+    FWDATA_API Exception(const std::string &message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
-    FWDATA_API ~Exception() throw();
+    FWDATA_API ~Exception() noexcept;
 };
 
 } // namespace fwData

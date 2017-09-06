@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>ImageManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -46,13 +46,13 @@
         </service>
 
         <!-- Editor to manage slice index and image orientation (axial, frontal, sagittal) -->
-        <service uid="selectorSliderNegatoImage" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="selectorSliderNegatoImage" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${IMAGE_UID}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
         <!-- Editor to manage image windowing -->
-        <service uid="windowLevelImage" type="::uiImage::WindowLevel" autoConnect="yes">
+        <service uid="windowLevelImage" type="::uiImageQt::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${IMAGE_UID}" />
             <inout key="TFSelections" uid="${TF_IMAGE}" />
             <config selectedTFKey="${TF_KEY}" />

@@ -38,10 +38,10 @@ public:
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    FWGUIQT_API SliceSelector( QWidget* const parent = nullptr) throw();
+    FWGUIQT_API SliceSelector( QWidget* const parent = nullptr) noexcept;
 
     /// @brief Destructor.
-    FWGUIQT_API virtual ~SliceSelector() throw();
+    FWGUIQT_API virtual ~SliceSelector() noexcept;
 
     FWGUIQT_API void setSliceRange( int min, int max );
 
@@ -69,7 +69,7 @@ protected Q_SLOTS:
      * @brief Event handler for a slice index change.
      * @param value current value of the slice index slider.
      */
-    FWGUIQT_API void onSliceIndexChange( int value ) throw();
+    FWGUIQT_API void onSliceIndexChange( int value ) noexcept;
 
 private:
 

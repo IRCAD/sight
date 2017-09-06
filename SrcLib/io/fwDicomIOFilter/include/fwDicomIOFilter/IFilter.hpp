@@ -70,8 +70,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
-    throw(::fwDicomIOFilter::exceptions::FilterFailure) = 0;
+        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const = 0;
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const = 0;

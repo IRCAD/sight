@@ -112,41 +112,41 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (DynamicView)(::gui::view::IView) );
 
     /// Constructor. Do nothing.
-    GUIQT_API DynamicView() throw();
+    GUIQT_API DynamicView() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~DynamicView() throw();
+    GUIQT_API virtual ~DynamicView() noexcept;
 
 protected:
 
     /**
      * @brief Install the container.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the container.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Update
      *
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Swap
      *
      * Update the editors.
      */
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the view
      * @see fwGui::IGuiContainerSrv::initialize()
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     virtual void info( std::ostream &_sstream );
 

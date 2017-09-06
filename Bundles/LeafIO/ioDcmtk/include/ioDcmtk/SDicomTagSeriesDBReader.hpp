@@ -48,26 +48,26 @@ public:
      * @brief   constructor
      *
      */
-    IODCMTK_API SDicomTagSeriesDBReader() throw();
+    IODCMTK_API SDicomTagSeriesDBReader() noexcept;
 
     /**
      * @brief   destructor
      */
-    IODCMTK_API virtual ~SDicomTagSeriesDBReader() throw();
+    IODCMTK_API virtual ~SDicomTagSeriesDBReader() noexcept;
 
 protected:
 
     /// Override
-    IODCMTK_API virtual void starting() throw(::fwTools::Failed);
+    IODCMTK_API virtual void starting();
 
     /// Override
-    IODCMTK_API virtual void stopping() throw(::fwTools::Failed);
+    IODCMTK_API virtual void stopping();
 
     /// Override
-    IODCMTK_API virtual void configuring() throw(::fwTools::Failed);
+    IODCMTK_API virtual void configuring();
 
     /// Override
-    IODCMTK_API void updating() throw(::fwTools::Failed);
+    IODCMTK_API void updating();
 
     /// Override
     IODCMTK_API void info(std::ostream& _sstream );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,6 @@
 // .SECTION See Also
 // vtkBoxWidget2 vtkBoxWidget
 
-
 #ifndef __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 #define __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 
@@ -61,7 +60,6 @@ class vtkBox;
 class vtkDoubleArray;
 class vtkMatrix4x4;
 
-
 class FWRENDERVTK_CLASS_API fwVtkBoxRepresentation : public vtkBoxRepresentation
 {
 public:
@@ -71,26 +69,25 @@ public:
 
     // Description:
     // Standard methods for the class.
-    vtkTypeMacro(fwVtkBoxRepresentation,vtkBoxRepresentation);
-    void PrintSelf(ostream& os, vtkIndent indent);
+    vtkTypeMacro(fwVtkBoxRepresentation, vtkBoxRepresentation);
+    void PrintSelf(ostream& os, vtkIndent indent) override;
 
     // Description:
     // Control the behavior of the widget. Translation, rotation, and
     // scaling can all be enabled and disabled.
-    vtkSetMacro(TranslationEnabled,int);
-    vtkGetMacro(TranslationEnabled,int);
-    vtkBooleanMacro(TranslationEnabled,int);
-    vtkSetMacro(ScalingEnabled,int);
-    vtkGetMacro(ScalingEnabled,int);
-    vtkBooleanMacro(ScalingEnabled,int);
-    vtkSetMacro(RotationEnabled,int);
-    vtkGetMacro(RotationEnabled,int);
-    vtkBooleanMacro(RotationEnabled,int);
+    vtkSetMacro(TranslationEnabled, int);
+    vtkGetMacro(TranslationEnabled, int);
+    vtkBooleanMacro(TranslationEnabled, int);
+    vtkSetMacro(ScalingEnabled, int);
+    vtkGetMacro(ScalingEnabled, int);
+    vtkBooleanMacro(ScalingEnabled, int);
+    vtkSetMacro(RotationEnabled, int);
+    vtkGetMacro(RotationEnabled, int);
+    vtkBooleanMacro(RotationEnabled, int);
 
 //  // Description:
 //  // These are methods that satisfy vtkWidgetRepresentation's API.
-    virtual void WidgetInteraction(double e[2]);
-
+    virtual void WidgetInteraction(double e[2]) override;
 
 protected:
     fwVtkBoxRepresentation();

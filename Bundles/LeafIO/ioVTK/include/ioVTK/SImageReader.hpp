@@ -36,7 +36,7 @@ class IOVTK_CLASS_API SImageReader : public ::io::IReader
 {
 
 public:
-    ~SImageReader() throw()
+    ~SImageReader() noexcept
     {
     }
 
@@ -54,20 +54,20 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    IOVTK_API SImageReader() throw();
+    IOVTK_API SImageReader() noexcept;
 
 protected:
 
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /// Method called when the service is started, does nothing.
-    IOVTK_API virtual void starting() throw ( ::fwTools::Failed );
+    IOVTK_API virtual void starting();
 
     /// Method called when the service is stopped, does nothing.
-    IOVTK_API virtual void stopping() throw ( ::fwTools::Failed );
+    IOVTK_API virtual void stopping();
 
     /// Method called when the service is stopped, does nothing.
-    IOVTK_API virtual void configuring() throw ( ::fwTools::Failed );
+    IOVTK_API virtual void configuring();
 
     /**
      * @brief Updating method execute the read process.
@@ -75,7 +75,7 @@ protected:
      * This method is used to update the service.
      * The image is read.
      */
-    IOVTK_API void updating() throw(::fwTools::Failed);
+    IOVTK_API void updating();
 
     /// Info method gives some informations on service.
     IOVTK_API void info(std::ostream& _sstream );

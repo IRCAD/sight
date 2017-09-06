@@ -197,7 +197,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     srv->stop().wait();
     ::fwServices::OSR::unregisterService(srv);
 
-    CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), seriesDB->size());
 }
 
 //------------------------------------------------------------------------------

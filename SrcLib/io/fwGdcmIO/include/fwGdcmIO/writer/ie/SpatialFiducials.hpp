@@ -62,7 +62,7 @@ protected:
     /**
      * @brief Write image landmarks into sequence
      */
-    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence) throw(::fwGdcmIO::exception::Failed);
+    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
 
     /**
      * @brief Write image distances into sequence
@@ -74,10 +74,7 @@ protected:
      * @param[in] frameNumber Frame Number
      * @param[in] referencedImageSequence Destination sequence
      */
-    void addReferencedImage(int frameNumber,
-                            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::fwGdcmIO::
-                                                                                                           exception::
-                                                                                                           Failed);
+    void addReferencedImage(int frameNumber, ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence);
 };
 
 } // namespace ie

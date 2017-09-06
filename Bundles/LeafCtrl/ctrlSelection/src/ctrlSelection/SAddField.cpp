@@ -19,21 +19,21 @@ namespace ctrlSelection
 
 // ----------------------------------------------------------------------------
 
-SAddField::SAddField() throw()
+SAddField::SAddField() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-SAddField::~SAddField() throw()
+SAddField::~SAddField() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SAddField::configuring() throw (::fwTools::Failed)
+void SAddField::configuring()
 {
-    auto srvConfig = this->getConfigTree().get_child("service");
+    auto srvConfig = this->getConfigTree();
 
     BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, srvConfig.equal_range("inout"))
     {
@@ -54,19 +54,19 @@ void SAddField::configuring() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SAddField::starting() throw (::fwTools::Failed)
+void SAddField::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SAddField::stopping() throw (fwTools::Failed)
+void SAddField::stopping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SAddField::updating() throw (::fwTools::Failed)
+void SAddField::updating()
 {
     ::fwData::Object::sptr target = this->getInOut< ::fwData::Object>("target");
     SLM_ASSERT("Missing 'target' object", target);

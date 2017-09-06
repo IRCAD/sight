@@ -120,7 +120,7 @@ Extension::Validity Extension::validate()
 
 //------------------------------------------------------------------------------
 
-void Extension::operator=(const Extension&) throw()
+void Extension::operator=(const Extension&) noexcept
 {
 }
 

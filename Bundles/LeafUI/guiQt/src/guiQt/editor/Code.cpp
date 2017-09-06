@@ -36,20 +36,20 @@ const std::string Code::CPP    = "Cpp";
 
 //------------------------------------------------------------------------------
 
-Code::Code() throw() :
+Code::Code() noexcept :
     m_language(PYTHON)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Code::~Code() throw()
+Code::~Code() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Code::starting() throw(::fwTools::Failed)
+void Code::starting()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
@@ -84,7 +84,7 @@ void Code::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Code::stopping() throw(::fwTools::Failed)
+void Code::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -95,7 +95,7 @@ void Code::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Code::configuring() throw(fwTools::Failed)
+void Code::configuring()
 {
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::initialize();
@@ -114,7 +114,7 @@ void Code::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Code::updating() throw(::fwTools::Failed)
+void Code::updating()
 {
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
     SLM_ASSERT("The given string object is null", stringObj);
@@ -125,7 +125,7 @@ void Code::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Code::swapping() throw(::fwTools::Failed)
+void Code::swapping()
 {
     this->updating();
 }

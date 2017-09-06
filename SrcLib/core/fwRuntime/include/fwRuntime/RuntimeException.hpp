@@ -33,19 +33,19 @@ struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
      *
      * @param[in]   exception   an exception instance to copy
      */
-    FWRUNTIME_API RuntimeException(const RuntimeException& exception) throw();
+    FWRUNTIME_API RuntimeException(const RuntimeException& exception) noexcept;
 
     /**
      * @brief       Constructor.
      *
      * @param[in]   message a string containing the exception message
      */
-    FWRUNTIME_API RuntimeException(const std::string& message) throw();
+    FWRUNTIME_API RuntimeException(const std::string& message) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
      */
-    FWRUNTIME_API virtual ~RuntimeException() throw();
+    FWRUNTIME_API virtual ~RuntimeException() noexcept;
 
 };
 

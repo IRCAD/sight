@@ -39,27 +39,27 @@ class IOITK_CLASS_API SInrSeriesDBReader : public ::io::IReader
 public:
     fwCoreServiceClassDefinitionsMacro( (SInrSeriesDBReader)( ::io::IReader) );
 
-    IOITK_API SInrSeriesDBReader() throw();
+    IOITK_API SInrSeriesDBReader() noexcept;
 
-    IOITK_API virtual ~SInrSeriesDBReader() throw();
+    IOITK_API virtual ~SInrSeriesDBReader() noexcept;
 
 protected:
 
     /// Does nothing.
-    virtual void starting() throw(::fwTools::Failed)
+    virtual void starting()
     {
     }
 
     /// Does nothing.
-    virtual void stopping() throw(::fwTools::Failed)
+    virtual void stopping()
     {
     }
 
     /// Calls base class implementation
-    virtual void configuring() throw(::fwTools::Failed);
+    virtual void configuring();
 
     /// Reads inr files specified by user (configure or configureWithIHM) and pushes them into SeriesDB.
-    IOITK_API virtual void updating() throw(::fwTools::Failed);
+    IOITK_API virtual void updating();
 
     /**
      * @brief Configure the inr files path.

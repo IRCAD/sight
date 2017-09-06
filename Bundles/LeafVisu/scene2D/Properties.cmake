@@ -10,6 +10,7 @@ set( DEPENDENCIES
     fwDataTools
     fwGuiQt
     fwRender
+    fwRenderQt
     fwRuntime
     fwServices
     fwGui

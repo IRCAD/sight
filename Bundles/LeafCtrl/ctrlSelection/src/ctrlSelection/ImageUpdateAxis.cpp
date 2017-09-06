@@ -28,13 +28,13 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::ImageUpdate
 
 //-----------------------------------------------------------------------------
 
-ImageUpdateAxis::ImageUpdateAxis() throw()
+ImageUpdateAxis::ImageUpdateAxis() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageUpdateAxis::~ImageUpdateAxis() throw()
+ImageUpdateAxis::~ImageUpdateAxis() noexcept
 {
 }
 
@@ -56,26 +56,26 @@ void ImageUpdateAxis::updateSliceType(int from, int to)
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::starting()  throw ( ::fwTools::Failed )
+void ImageUpdateAxis::starting()
 {
     this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::stopping()  throw ( ::fwTools::Failed )
+void ImageUpdateAxis::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::swapping()  throw ( ::fwTools::Failed )
+void ImageUpdateAxis::swapping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::configuring()  throw ( ::fwTools::Failed )
+void ImageUpdateAxis::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("axis");
     SLM_ASSERT("Problem with configuration for ImageUpdateAxis type, one element \"axis\" must be present", m_configuration->findAllConfigurationElement(
@@ -111,13 +111,13 @@ void ImageUpdateAxis::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::reconfiguring()  throw ( ::fwTools::Failed )
+void ImageUpdateAxis::reconfiguring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::updating() throw ( ::fwTools::Failed )
+void ImageUpdateAxis::updating()
 {
     OSLM_ASSERT("Missing object " << m_floatID, ::fwTools::fwID::exist(m_floatID));
     ::fwData::Float::sptr dataFloat = ::fwData::Float::dynamicCast(::fwTools::fwID::getObject(m_floatID));

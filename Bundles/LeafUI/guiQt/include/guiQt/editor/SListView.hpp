@@ -48,10 +48,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SListView)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    GUIQT_API SListView() throw();
+    GUIQT_API SListView() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SListView() throw();
+    GUIQT_API virtual ~SListView() noexcept;
 
     /**@name Signals API
      * @{
@@ -92,19 +92,19 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroys the layout
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /// Configure the service
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

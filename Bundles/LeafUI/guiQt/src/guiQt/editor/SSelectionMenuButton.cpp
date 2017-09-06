@@ -50,7 +50,7 @@ static const ::fwCom::Slots::SlotKeyType s_SET_ENABLED_SIG = "setEnabled";
 static const ::fwCom::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
 static const ::fwCom::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
 
-SSelectionMenuButton::SSelectionMenuButton() throw() :
+SSelectionMenuButton::SSelectionMenuButton() noexcept :
     m_text(">"),
     m_selection(0)
 {
@@ -63,13 +63,13 @@ SSelectionMenuButton::SSelectionMenuButton() throw() :
 
 //------------------------------------------------------------------------------
 
-SSelectionMenuButton::~SSelectionMenuButton() throw()
+SSelectionMenuButton::~SSelectionMenuButton() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::configuring() throw(fwTools::Failed)
+void SSelectionMenuButton::configuring()
 {
     this->initialize();
 
@@ -108,7 +108,7 @@ void SSelectionMenuButton::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::starting() throw(::fwTools::Failed)
+void SSelectionMenuButton::starting()
 {
     this->create();
 
@@ -147,7 +147,7 @@ void SSelectionMenuButton::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::stopping() throw(::fwTools::Failed)
+void SSelectionMenuButton::stopping()
 {
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
     for (QAction* action : m_actionGroup->actions())
@@ -160,13 +160,13 @@ void SSelectionMenuButton::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::updating() throw(::fwTools::Failed)
+void SSelectionMenuButton::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::swapping() throw(::fwTools::Failed)
+void SSelectionMenuButton::swapping()
 {
 
 }

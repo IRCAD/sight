@@ -29,19 +29,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout, ::fw
 
 //-----------------------------------------------------------------------------
 
-SModifyLayout::SModifyLayout() throw()
+SModifyLayout::SModifyLayout() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SModifyLayout::~SModifyLayout() throw()
+SModifyLayout::~SModifyLayout() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SModifyLayout::starting() throw( ::fwTools::Failed )
+void SModifyLayout::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -49,7 +49,7 @@ void SModifyLayout::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SModifyLayout::stopping() throw( ::fwTools::Failed )
+void SModifyLayout::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -64,7 +64,7 @@ void SModifyLayout::info(std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
-void SModifyLayout::updating() throw( ::fwTools::Failed )
+void SModifyLayout::updating()
 {
     SLM_TRACE_FUNC();
 
@@ -154,7 +154,7 @@ void SModifyLayout::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SModifyLayout::configuring() throw( ::fwTools::Failed )
+void SModifyLayout::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();

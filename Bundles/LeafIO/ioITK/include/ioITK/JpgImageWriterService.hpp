@@ -29,9 +29,9 @@ class IOITK_CLASS_API JpgImageWriterService : public ::io::IWriter
 public:
     fwCoreServiceClassDefinitionsMacro( (JpgImageWriterService)( ::io::IWriter) );
 
-    IOITK_API JpgImageWriterService() throw();
+    IOITK_API JpgImageWriterService() noexcept;
 
-    IOITK_API virtual ~JpgImageWriterService() throw();
+    IOITK_API virtual ~JpgImageWriterService() noexcept;
 
     IOITK_API static void saveImage(
         const ::boost::filesystem::path& imgPath,
@@ -40,16 +40,16 @@ public:
 protected:
 
     /// Override
-    IOITK_API virtual void starting() throw(::fwTools::Failed);
+    IOITK_API virtual void starting();
 
     /// Override
-    IOITK_API virtual void stopping() throw(::fwTools::Failed);
+    IOITK_API virtual void stopping();
 
     /// Override
-    IOITK_API virtual void configuring() throw(::fwTools::Failed);
+    IOITK_API virtual void configuring();
 
     /// Override
-    IOITK_API void updating() throw(::fwTools::Failed);
+    IOITK_API void updating();
 
     /// Override
     IOITK_API void info(std::ostream& _sstream );

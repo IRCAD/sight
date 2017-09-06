@@ -62,7 +62,7 @@ const ::fwCom::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG     
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::SCreateActivity() throw()
+SCreateActivity::SCreateActivity() noexcept
 {
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     newSignal< LoadRequestedSignalType >(s_LOAD_REQUESTED_SIG);
@@ -70,23 +70,21 @@ SCreateActivity::SCreateActivity() throw()
 
 //------------------------------------------------------------------------------
 
-SCreateActivity::~SCreateActivity() throw()
+SCreateActivity::~SCreateActivity() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::configuring() throw(fwTools::Failed)
+void SCreateActivity::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 
-    typedef ::fwServices::IService::ConfigType ConfigType;
+    const auto cfg = this->getConfigTree();
 
-    const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
-
-    if(srvconfig.count("filter") == 1 )
+    if(cfg.count("filter") == 1 )
     {
-        const ::fwServices::IService::ConfigType& configFilter = srvconfig.get_child("filter");
+        const ::fwServices::IService::ConfigType& configFilter = cfg.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -94,17 +92,17 @@ void SCreateActivity::configuring() throw(fwTools::Failed)
                    mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
-        BOOST_FOREACH( const ConfigType::value_type &v,  configFilter.equal_range("id") )
+        BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
         {
             m_keys.push_back(v.second.get<std::string>(""));
         }
     }
-    SLM_ASSERT("A maximum of 1 <filter> tag is allowed", srvconfig.count("filter") < 2);
+    SLM_ASSERT("A maximum of 1 <filter> tag is allowed", cfg.count("filter") < 2);
 }
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::starting() throw(::fwTools::Failed)
+void SCreateActivity::starting()
 {
     fwGui::IGuiContainerSrv::create();
 
@@ -205,7 +203,7 @@ void SCreateActivity::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::stopping() throw(::fwTools::Failed)
+void SCreateActivity::stopping()
 {
     this->disconnect();
     this->destroy();
@@ -213,7 +211,7 @@ void SCreateActivity::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCreateActivity::updating() throw(::fwTools::Failed)
+void SCreateActivity::updating()
 {
 }
 

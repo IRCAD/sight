@@ -25,7 +25,7 @@ public:
     /**
      * @brief   Destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     /**
      * @brief Start method.
@@ -33,14 +33,14 @@ public:
      * @exception ::fwRuntime::RuntimeException.
      * This method is used by runtime to initialize the bundle.
      */
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
 
     /**
      * @brief Stop method.
      *
      * This method is used by runtime to stop the bundle.
      */
-    void stop() throw();
+    void stop() noexcept;
 
 };
 

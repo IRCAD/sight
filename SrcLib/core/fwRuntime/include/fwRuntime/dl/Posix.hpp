@@ -34,18 +34,18 @@ struct Posix : public Native
      *
      * @param[in]   modulePath  a path to the module to manage
      */
-    Posix( const boost::filesystem::path & modulePath ) throw();
+    Posix( const boost::filesystem::path & modulePath ) noexcept;
 
     /**
      * @brief   Destructor.
      */
-    ~Posix() throw();
+    ~Posix() noexcept;
 
 
     /**
      * @see ::fwRuntime::dl::Native#isLoaded
      */
-    bool isLoaded() const throw();
+    bool isLoaded() const noexcept;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -54,17 +54,17 @@ struct Posix : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol( const std::string & name ) const throw(RuntimeException);
+    void* getSymbol( const std::string & name ) const;
 
     /**
      * @see ::fwRuntime::dl::Native#load
      */
-    void load() throw(RuntimeException);
+    void load();
 
     /**
      * @see ::fwRuntime::dl::Native#unload
      */
-    void unload() throw(RuntimeException);
+    void unload();
 
 
     private:

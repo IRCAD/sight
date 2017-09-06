@@ -16,7 +16,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig2.hpp>
+#include <fwServices/registry/AppConfig.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -45,7 +45,7 @@ SActivityView::~SActivityView()
 
 //------------------------------------------------------------------------------
 
-void SActivityView::starting() throw(::fwTools::Failed)
+void SActivityView::starting()
 {
     this->::fwGui::IGuiContainerSrv::create();
 
@@ -78,7 +78,7 @@ void SActivityView::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityView::stopping() throw(::fwTools::Failed)
+void SActivityView::stopping()
 {
     if (m_configManager && m_configManager->isStarted())
     {
@@ -95,7 +95,7 @@ void SActivityView::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityView::updating() throw(::fwTools::Failed)
+void SActivityView::updating()
 {
 }
 
@@ -117,7 +117,7 @@ void SActivityView::launchActivity(::fwMedData::ActivitySeries::sptr activitySer
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"]       = activitySeries->getID();
         replaceMap[ "WID_PARENT" ] = m_wid;
-        std::string genericUidAdaptor = ::fwServices::registry::AppConfig2::getUniqueIdentifier(info.appConfig.id);
+        std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
         replaceMap["GENERIC_UID"] = genericUidAdaptor;
         try
         {

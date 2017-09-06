@@ -97,22 +97,22 @@ public:
     typedef ::fwCom::Signal< void (std::string, std::string) > EnumChangedSignalType;
 
     /// Constructor. Initializes signals
-    GUIQT_API SParameters() throw ();
+    GUIQT_API SParameters() noexcept;
 
     /// Destructor. Does nothing
-    GUIQT_API virtual ~SParameters() throw ();
+    GUIQT_API virtual ~SParameters() noexcept;
 
     /// Configure the editor.
-    GUIQT_API void configuring() throw (::fwTools::Failed);
+    GUIQT_API void configuring();
 
     /// Initializes Qt input widgets for parameters according to xml configuration
-    GUIQT_API void starting() throw (::fwTools::Failed);
+    GUIQT_API void starting();
 
     /// This method launches the IEditor::stopping method
-    GUIQT_API void stopping() throw (::fwTools::Failed);
+    GUIQT_API void stopping();
 
     /// This method is used to update services. Does nothing
-    GUIQT_API void updating() throw (::fwTools::Failed);
+    GUIQT_API void updating();
 
 private Q_SLOTS:
 

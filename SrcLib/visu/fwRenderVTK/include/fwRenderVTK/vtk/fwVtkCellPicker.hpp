@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,12 +31,12 @@
 #ifndef __FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__
 #define __FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__
 
-#include <vector>
+#include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
-#include "fwRenderVTK/config.hpp"
+#include <vector>
 
 class vtkGenericCell;
 class vtkPolyData;
@@ -44,9 +44,9 @@ class vtkPolyData;
 class FWRENDERVTK_CLASS_API fwVtkCellPicker : public fwVtkPicker
 {
 public:
-    FWRENDERVTK_API static fwVtkCellPicker *New();
-    vtkTypeMacro(fwVtkCellPicker,fwVtkPicker);
-    void PrintSelf(ostream& os, vtkIndent indent);
+    FWRENDERVTK_API static fwVtkCellPicker* New();
+    vtkTypeMacro(fwVtkCellPicker, fwVtkPicker);
+    void PrintSelf(ostream& os, vtkIndent indent) override;
 
     // Description:
     // Get the id of the picked cell. If CellId = -1, nothing was picked.
@@ -59,7 +59,7 @@ public:
     // Description:
     // Get the parametric coordinates of the picked cell. Only valid if
     // pick was made.
-    vtkGetVectorMacro(PCoords, double,3);
+    vtkGetVectorMacro(PCoords, double, 3);
 
     typedef std::vector< std::pair<int, fwVec3d> > PickedCellType;
 
@@ -75,11 +75,11 @@ protected:
 
     virtual double IntersectWithLine(double p1[3], double p2[3], double tol,
                                      vtkAssemblyPath *path, vtkProp3D *p,
-                                     vtkAbstractMapper3D *m);
-    void Initialize();
+                                     vtkAbstractMapper3D *m) override;
+    void Initialize() override;
 
 private:
-    vtkGenericCell *Cell; //used to accelerate picking
+    vtkGenericCell* Cell; //used to accelerate picking
 
 private:
     fwVtkCellPicker(const fwVtkCellPicker&);  // Not implemented.

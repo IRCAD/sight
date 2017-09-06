@@ -25,13 +25,13 @@ public:
     /**
      * @brief   destructor
      */
-    UITF_API ~Plugin() throw();
+    UITF_API ~Plugin() noexcept;
 
     // Overrides
-    UITF_API void start() throw(::fwRuntime::RuntimeException);
+    UITF_API void start();
 
     // Overrides
-    UITF_API void stop() throw();
+    UITF_API void stop() noexcept;
 
 };
 

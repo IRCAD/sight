@@ -62,10 +62,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SActivitySequencer)(::fwServices::IController) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SActivitySequencer() throw();
+    ACTIVITIES_API SActivitySequencer() noexcept;
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SActivitySequencer() throw();
+    ACTIVITIES_API virtual ~SActivitySequencer() noexcept;
 
     /// Connect the service to the SeriesDB signals
     ACTIVITIES_API virtual KeyConnectionsMap getAutoConnections() const;
@@ -84,10 +84,10 @@ public:
 protected:
 
     /// Do nothing
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Do nothing
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /**
      * @brief Analyse the series contained in the current seriesDB.
@@ -96,10 +96,10 @@ protected:
      * - else, the activity data is stored in m_requirements
      * - the last activity is launched
      */
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Parse XML configuration
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

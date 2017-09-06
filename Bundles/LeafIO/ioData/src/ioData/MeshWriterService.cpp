@@ -47,7 +47,7 @@ std::vector< std::string > MeshWriterService::getSupportedExtensions()
 
 //-----------------------------------------------------------------------------
 
-MeshWriterService::~MeshWriterService() throw()
+MeshWriterService::~MeshWriterService() noexcept
 {
 }
 
@@ -60,7 +60,7 @@ MeshWriterService::~MeshWriterService() throw()
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::configuring() throw(::fwTools::Failed)
+void MeshWriterService::configuring()
 {
     ::io::IWriter::configuring();
 }
@@ -94,7 +94,7 @@ void MeshWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::updating() throw(::fwTools::Failed)
+void MeshWriterService::updating()
 {
     SLM_TRACE_FUNC();
     if(this->hasLocationDefined())

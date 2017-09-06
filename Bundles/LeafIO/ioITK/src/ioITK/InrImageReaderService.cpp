@@ -33,13 +33,13 @@ fwServicesRegisterMacro( ::io::IReader, ::ioITK::InrImageReaderService, ::fwData
 
 //------------------------------------------------------------------------------
 
-InrImageReaderService::InrImageReaderService() throw()
+InrImageReaderService::InrImageReaderService() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-InrImageReaderService::~InrImageReaderService() throw()
+InrImageReaderService::~InrImageReaderService() noexcept
 {
 }
 
@@ -52,7 +52,7 @@ InrImageReaderService::~InrImageReaderService() throw()
 //
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::configuring() throw(::fwTools::Failed)
+void InrImageReaderService::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -131,7 +131,7 @@ bool InrImageReaderService::createImage( const ::boost::filesystem::path& inrFil
 
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::updating() throw(::fwTools::Failed)
+void InrImageReaderService::updating()
 {
     SLM_TRACE_FUNC();
 
