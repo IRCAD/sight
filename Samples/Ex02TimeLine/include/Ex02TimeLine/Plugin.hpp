@@ -24,13 +24,13 @@ class EX02TIMELINE_CLASS_API Plugin : public ::fwRuntime::Plugin
 public:
 
     /// PLugin destructor
-    EX02TIMELINE_API ~Plugin() throw();
+    EX02TIMELINE_API ~Plugin() noexcept;
 
     /// This method is used by runtime to initialize the bundle.
-    EX02TIMELINE_API void start() throw( ::fwRuntime::RuntimeException );
+    EX02TIMELINE_API void start();
 
     /// This method is used by runtime to stop the bundle.
-    EX02TIMELINE_API void stop() throw();
+    EX02TIMELINE_API void stop() noexcept;
 
 };
 

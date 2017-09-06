@@ -19,7 +19,7 @@ ZeroMQPlayer::~ZeroMQPlayer()
 
 }
 
-void ZeroMQPlayer::configure(int argc, char** argv) throw (std::runtime_error)
+void ZeroMQPlayer::configure(int argc, char** argv)
 {
     if (argc == 0)
     {
@@ -39,7 +39,7 @@ INetworkPlayer::sptr ZeroMQPlayer::create(FunctionType const& playFunction)
     return INetworkPlayer::sptr(player);
 }
 
-void ZeroMQPlayer::play(std::istream& stream) throw (std::runtime_error)
+void ZeroMQPlayer::play(std::istream& stream)
 {
     m_socket.start (m_host);
     m_playFunction(stream, m_socket);

@@ -52,7 +52,7 @@ SOpenIGTLinkListener::~SOpenIGTLinkListener()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::configuring() throw (::fwTools::Failed)
+void SOpenIGTLinkListener::configuring()
 {
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
     if (m_configuration->findConfigurationElement("server"))
@@ -83,7 +83,7 @@ void SOpenIGTLinkListener::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
+void SOpenIGTLinkListener::runClient()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
@@ -164,7 +164,7 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
+void SOpenIGTLinkListener::starting()
 {
     ::fwData::Object::sptr obj  = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
     ::arData::TimeLine::sptr tl = ::arData::TimeLine::dynamicCast(obj);
@@ -194,7 +194,7 @@ void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::stopping() throw (::fwTools::Failed)
+void SOpenIGTLinkListener::stopping()
 {
     m_client.disconnect();
     m_clientFuture.wait();

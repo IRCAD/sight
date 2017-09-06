@@ -35,7 +35,7 @@ namespace videoCalibration
 
 // ----------------------------------------------------------------------------
 
-SExtrinsic::SExtrinsic() throw () : m_width(0),
+SExtrinsic::SExtrinsic() noexcept : m_width(0),
                                     m_height(0),
                                     m_camIndex(1)
 {
@@ -44,14 +44,14 @@ SExtrinsic::SExtrinsic() throw () : m_width(0),
 
 // ----------------------------------------------------------------------------
 
-SExtrinsic::~SExtrinsic() throw ()
+SExtrinsic::~SExtrinsic() noexcept
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SExtrinsic::configuring() throw (fwTools::Failed)
+void SExtrinsic::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr cfg1 = m_configuration->findConfigurationElement("calibrationInfo1ID");
     SLM_ASSERT("Tag 'calibrationInfo1ID' not found.", cfg1);
@@ -89,19 +89,19 @@ void SExtrinsic::configuring() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SExtrinsic::starting() throw (fwTools::Failed)
+void SExtrinsic::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SExtrinsic::stopping() throw (fwTools::Failed)
+void SExtrinsic::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SExtrinsic::swapping() throw (fwTools::Failed)
+void SExtrinsic::swapping()
 {
     this->stopping();
     this->starting();
@@ -109,7 +109,7 @@ void SExtrinsic::swapping() throw (fwTools::Failed)
 
 //--------------------------------------------------------------------- ---------
 
-void SExtrinsic::updating() throw (fwTools::Failed)
+void SExtrinsic::updating()
 {
     ::arData::CameraSeries::sptr camSeries = this->getObject< ::arData::CameraSeries >();
 

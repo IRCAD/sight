@@ -38,7 +38,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "update
 
 // ----------------------------------------------------------------------------
 
-SOpenCVIntrinsic::SOpenCVIntrinsic() throw () :
+SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept :
     m_width(11),
     m_height(8),
     m_squareSize(20.0)
@@ -48,13 +48,13 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() throw () :
 
 // ----------------------------------------------------------------------------
 
-SOpenCVIntrinsic::~SOpenCVIntrinsic() throw ()
+SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::configuring() throw (fwTools::Failed)
+void SOpenCVIntrinsic::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
@@ -76,20 +76,20 @@ void SOpenCVIntrinsic::configuring() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::starting() throw (fwTools::Failed)
+void SOpenCVIntrinsic::starting()
 {
     this->updateChessboardSize();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::stopping() throw (fwTools::Failed)
+void SOpenCVIntrinsic::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::swapping() throw (fwTools::Failed)
+void SOpenCVIntrinsic::swapping()
 {
     this->stopping();
     this->starting();
@@ -97,7 +97,7 @@ void SOpenCVIntrinsic::swapping() throw (fwTools::Failed)
 
 //--------------------------------------------------------------------- ---------
 
-void SOpenCVIntrinsic::updating() throw (fwTools::Failed)
+void SOpenCVIntrinsic::updating()
 {
     ::arData::CalibrationInfo::csptr calInfo = this->getInput< ::arData::CalibrationInfo>("calibrationInfo");
     ::arData::Camera::sptr cam               = this->getInOut< ::arData::Camera >("camera");

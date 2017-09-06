@@ -14,7 +14,7 @@
 arlCore::Tags::Tags( arlCore::PlaneSystem& universe, const std::string& name ) :
     m_universe(universe)
 {
-    setName(name);
+    //setName(name);
     //VAG FIXME setOK(true);
 }
 

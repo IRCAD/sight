@@ -48,7 +48,7 @@ void Socket::deleteMessage(void* data, void* hint)
 
 //------------------------------------------------------------------------------
 
-void Socket::sendObject(::fwData::Object::sptr data) throw (::fwCore::Exception)
+void Socket::sendObject(::fwData::Object::sptr data)
 {
     ::igtl::MessageBase::Pointer igtlMsg = m_dataConverter->fromFwObject(data);
     igtlMsg->SetDeviceName (m_deviceNameOut.c_str());
@@ -63,7 +63,7 @@ void Socket::sendObject(::fwData::Object::sptr data) throw (::fwCore::Exception)
 
 //------------------------------------------------------------------------------
 
-bool Socket::receiveObject(::fwData::Object::sptr obj) throw(::fwCore::Exception)
+bool Socket::receiveObject(::fwData::Object::sptr obj)
 {
     ::igtl::MessageBase::Pointer msg;
     ::zmq::message_t response;

@@ -22,10 +22,10 @@ public:
     fwCoreServiceClassDefinitionsMacro((SIntrinsic)(::videoCalibration::ICalibration));
 
     /// Constructor.
-    VIDEOCALIBRATION_API SIntrinsic() throw ();
+    VIDEOCALIBRATION_API SIntrinsic() noexcept;
 
     /// Destructor.
-    VIDEOCALIBRATION_API virtual ~SIntrinsic() throw ();
+    VIDEOCALIBRATION_API virtual ~SIntrinsic() noexcept;
 
 protected:
 
@@ -41,19 +41,19 @@ protected:
      * - \b calibrationInfoID: FwId of calibrationInfo.
      * - \b board : defines the number of square in 2 dimensions of the chessboard.
      */
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Calls stopping and starting.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void swapping();
 
     /// Computes intrinsic calibration
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Removes connections
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
 private:
 

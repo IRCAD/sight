@@ -48,7 +48,7 @@ public:
      * @brief log received object into the output stream
      * @throw std::runtime_error
      */
-    void log(std::ostream& outputStream) throw (std::runtime_error);
+    void log(std::ostream& outputStream);
 
     /**
      * @brief configure the logger(zmq connect str)
@@ -56,7 +56,7 @@ public:
      * @param[in] argc number of arguments
      * @param[in] argv arguments
      */
-    void configure(int argc, char** argv) throw (std::runtime_error);
+    void configure(int argc, char** argv);
 
     /**
      * @brief create a new instance of ZeroMQLogger

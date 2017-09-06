@@ -11,14 +11,14 @@ namespace arServices
 
 // ----------------------------------------------------------------------------
 
-ISynchronizer::ISynchronizer() throw ()
+ISynchronizer::ISynchronizer() noexcept
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-ISynchronizer::~ISynchronizer() throw ()
+ISynchronizer::~ISynchronizer() noexcept
 {
 
 }

@@ -27,12 +27,12 @@ public:
     /**
      * @brief Constructor.
      */
-    ARSERVICES_API ISynchronizer() throw ();
+    ARSERVICES_API ISynchronizer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    ARSERVICES_API virtual ~ISynchronizer() throw ();
+    ARSERVICES_API virtual ~ISynchronizer() noexcept;
 
 };
 

@@ -55,7 +55,7 @@ public:
      * @return an fwData::Integer converted from an igtl::RawMessage
      */
     void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                          ::fwData::Object::sptr& dest) const throw (::igtlProtocol::exception::Conversion)
+                          ::fwData::Object::sptr& dest) const
     {
         RawMessage::Pointer msg;
         typename FwDataObjectType::sptr obj;

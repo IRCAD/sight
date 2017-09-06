@@ -48,7 +48,7 @@ public:
      * @brief log receive object from network to outputStream
      * @throw std::runtime_error
      */
-    void log(std::ostream& outputStream) throw (std::runtime_error);
+    void log(std::ostream& outputStream);
 
     /**
      * @brief configure OpenIGTLinkLogger(hostname + port)
@@ -57,7 +57,7 @@ public:
      * @param[in] argv arguments
      * @throw std::runtime_error
      */
-    void configure(int argc, char** argv) throw (std::runtime_error);
+    void configure(int argc, char** argv);
 
     /**
      * @brief create a OpenIGTLinkLogger with a user-defined function

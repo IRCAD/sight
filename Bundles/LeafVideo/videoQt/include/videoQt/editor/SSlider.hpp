@@ -40,10 +40,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SSlider)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    VIDEOQT_API SSlider() throw();
+    VIDEOQT_API SSlider() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOQT_API virtual ~SSlider() throw();
+    VIDEOQT_API virtual ~SSlider() noexcept;
 
     /**@name Signals API
      * @{
@@ -73,16 +73,16 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroys the layout
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the service
@@ -91,7 +91,7 @@ protected:
         <service uid="..." type="::gui::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
        @endcode
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Signal when the position os the slider changed
     PositionChangedSignalType::sptr m_sigPositionChanged;

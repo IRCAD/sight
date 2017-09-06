@@ -27,20 +27,20 @@ SAtomNetworkWriter::SAtomNetworkWriter()
 
 //-----------------------------------------------------------------------------
 
-SAtomNetworkWriter::~SAtomNetworkWriter() throw()
+SAtomNetworkWriter::~SAtomNetworkWriter() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkWriter::configuring() throw (::fwTools::Failed)
+void SAtomNetworkWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkWriter::starting() throw (::fwTools::Failed)
+void SAtomNetworkWriter::starting()
 {
 }
 
@@ -56,13 +56,13 @@ void SAtomNetworkWriter::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkWriter::stopping() throw (::fwTools::Failed)
+void SAtomNetworkWriter::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkWriter::updating() throw (::fwTools::Failed)
+void SAtomNetworkWriter::updating()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::sptr obj;
@@ -96,7 +96,7 @@ void SAtomNetworkWriter::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkWriter::swapping() throw (::fwTools::Failed)
+void SAtomNetworkWriter::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

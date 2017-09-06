@@ -21,16 +21,16 @@ namespace maths
 struct MATHS_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    MATHS_API ~Plugin() throw();
+    MATHS_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    MATHS_API void start() throw( ::fwRuntime::RuntimeException );
+    MATHS_API void start();
 
     /// Overrides stop method. Do nothing
-    MATHS_API void stop() throw();
+    MATHS_API void stop() noexcept;
 
 };
 

@@ -33,9 +33,7 @@ public:
      *
      * @return an fwData::Image converted from an igtl::ImageMessage
      */
-    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                                           ::fwData::Object::sptr& dest) const throw (::igtlProtocol::exception::
-                                                                                      Conversion);
+    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src, ::fwData::Object::sptr& dest) const;
 
     /**
      * @brief convert a ::fwData::Line to an igtl::PositionMessage

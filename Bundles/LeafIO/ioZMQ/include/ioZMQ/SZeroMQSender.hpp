@@ -50,23 +50,23 @@ protected:
      *
      * @see ZeroMQConfigurationParser for the format of the configuration
      */
-    IOZMQ_API virtual void configuring() throw (::fwTools::Failed);
+    IOZMQ_API virtual void configuring();
 
     /**
      * @brief start the socket in a thread
      */
-    IOZMQ_API virtual void starting() throw (::fwTools::Failed);
+    IOZMQ_API virtual void starting();
 
     /**
      * @brief stop the socket
      */
-    IOZMQ_API virtual void stopping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void stopping();
 
 
     /**
      * @brief change the port of the service work only in tcp mode
      */
-    IOZMQ_API void setPort(::boost::uint16_t const port) throw (::fwTools::Failed);
+    IOZMQ_API void setPort(::boost::uint16_t const port);
 
     /**
      * @brief slot method to update configuration

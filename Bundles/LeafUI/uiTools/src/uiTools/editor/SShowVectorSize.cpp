@@ -33,14 +33,14 @@ namespace uiTools
 namespace editor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
+const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
+const ::fwCom::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector );
 
 //-----------------------------------------------------------------------------
 
-SShowVectorSize::SShowVectorSize() throw() :
+SShowVectorSize::SShowVectorSize() noexcept :
     m_vectorSize(0),
     m_textToShow("")
 {
@@ -51,13 +51,13 @@ SShowVectorSize::SShowVectorSize() throw() :
 
 //------------------------------------------------------------------------------
 
-SShowVectorSize::~SShowVectorSize() throw()
+SShowVectorSize::~SShowVectorSize() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::starting() throw(::fwTools::Failed)
+void SShowVectorSize::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -76,33 +76,31 @@ void SShowVectorSize::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::stopping() throw(::fwTools::Failed)
+void SShowVectorSize::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::configuring() throw(fwTools::Failed)
+void SShowVectorSize::configuring()
 {
     this->initialize();
-    if(m_configuration->findConfigurationElement("text"))
-    {
-        std::string configText = m_configuration->findConfigurationElement("text")->getValue();
-        m_textToShow = QString::fromStdString(configText);
-    }
+
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    m_textToShow                              = QString::fromStdString(config.get< std::string >("text", ""));
 
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::updating() throw(::fwTools::Failed)
+void SShowVectorSize::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::swapping() throw(::fwTools::Failed)
+void SShowVectorSize::swapping()
 {
 
 }
@@ -133,11 +131,11 @@ void SShowVectorSize::removeObjects(::fwData::Vector::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SShowVectorSize::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push("vector", ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
+    connections.push("vector", ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
 
     return connections;
 }

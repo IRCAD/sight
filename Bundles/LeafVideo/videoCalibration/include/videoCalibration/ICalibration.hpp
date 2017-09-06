@@ -23,10 +23,10 @@ public:
     fwCoreServiceClassDefinitionsMacro((ICalibration)(fwServices::IService));
 
     /// Constructor.
-    VIDEOCALIBRATION_API ICalibration() throw ();
+    VIDEOCALIBRATION_API ICalibration() noexcept;
 
     /// Destructor.
-    VIDEOCALIBRATION_API virtual ~ICalibration() throw ();
+    VIDEOCALIBRATION_API virtual ~ICalibration() noexcept;
 };
 } // namespace videoCalibration
 

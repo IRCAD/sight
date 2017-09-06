@@ -19,14 +19,14 @@ OpenIGTLinkLogger::~OpenIGTLinkLogger()
 
 }
 
-void OpenIGTLinkLogger::log(std::ostream& outputStream) throw (std::runtime_error)
+void OpenIGTLinkLogger::log(std::ostream& outputStream)
 {
     m_client.connect(m_host, m_port);
     m_logFunction(outputStream, m_client);
     m_client.disconnect();
 }
 
-void OpenIGTLinkLogger::configure(int argc, char** argv) throw (std::runtime_error)
+void OpenIGTLinkLogger::configure(int argc, char** argv)
 {
     if (argc < 2)
     {

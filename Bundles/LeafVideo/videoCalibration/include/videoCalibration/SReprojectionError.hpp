@@ -72,22 +72,22 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
 private:
 

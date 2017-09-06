@@ -49,14 +49,14 @@ public:
      * @param[in] argc number of arguments
      * @param[in] argv arguments
      */
-    void configure(int argc, char** argv) throw (std::runtime_error);
+    void configure(int argc, char** argv);
 
     /**
      * @brief play the matrix sequence in the input stream
      *
      * @param[in] stream input stream
      */
-    void play(std::istream& stream) throw (std::runtime_error);
+    void play(std::istream& stream);
 
 
     /**

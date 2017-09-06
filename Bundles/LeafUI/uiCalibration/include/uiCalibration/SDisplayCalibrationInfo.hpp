@@ -60,24 +60,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SDisplayCalibrationInfo)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
-    UICALIBRATION_API SDisplayCalibrationInfo() throw();
+    UICALIBRATION_API SDisplayCalibrationInfo() noexcept;
 
     /// Destructor. Does nothing.
-    UICALIBRATION_API virtual ~SDisplayCalibrationInfo() throw();
+    UICALIBRATION_API virtual ~SDisplayCalibrationInfo() noexcept;
 
 protected:
 
     /// Starts the config
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops the config
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream& _sstream );

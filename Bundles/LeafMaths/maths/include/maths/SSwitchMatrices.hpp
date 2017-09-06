@@ -57,12 +57,12 @@ public:
     /**
      * @brief Constructor.
      */
-    MATHS_API SSwitchMatrices() throw ();
+    MATHS_API SSwitchMatrices() noexcept;
 
     /**
      * @brief Destructor.
      */
-    virtual ~SSwitchMatrices() throw ()
+    virtual ~SSwitchMatrices() noexcept
     {
     }
 
@@ -75,27 +75,27 @@ public:
 protected:
 
     /// This method is used to configure the service.
-    MATHS_API void configuring() throw (fwTools::Failed);
+    MATHS_API void configuring();
 
     /// This method is used to initialize the service.
-    MATHS_API void starting() throw (fwTools::Failed);
+    MATHS_API void starting();
 
     /// Does nothing.
-    MATHS_API void stopping() throw (fwTools::Failed);
+    MATHS_API void stopping();
 
     /// Does nothing.
-    void swapping() throw (fwTools::Failed)
+    void swapping()
     {
     }
 
     /// Does nothing.
-    MATHS_API void updating() throw (fwTools::Failed);
+    MATHS_API void updating();
 
     /// Switch to next Matrix
-    MATHS_API void switchMatrix() throw (fwTools::Failed);
+    MATHS_API void switchMatrix();
 
     /// Switch to Matrix "index"
-    MATHS_API void switchToMatrix(size_t index) throw (fwTools::Failed);
+    MATHS_API void switchToMatrix(size_t index);
 
 
 private:

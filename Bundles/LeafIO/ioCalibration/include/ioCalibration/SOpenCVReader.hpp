@@ -37,7 +37,7 @@ protected:
 
     /// configure with IHM
     ///
-    IOCALIBRATION_API void configureWithIHM() throw(::fwTools::Failed);
+    IOCALIBRATION_API void configureWithIHM();
 
     /**
      * @brief Prompt a dialog to define file location.
@@ -48,19 +48,19 @@ protected:
     /**
      * @brief Configures the service.
      */
-    IOCALIBRATION_API void configuring() throw (::fwTools::Failed);
+    IOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    IOCALIBRATION_API void starting() throw (::fwTools::Failed);
+    IOCALIBRATION_API void starting();
 
     /// Calls stopping and starting.
-    IOCALIBRATION_API void swapping() throw (::fwTools::Failed);
+    IOCALIBRATION_API void swapping();
 
     /// Computes intrinsic calibration
-    IOCALIBRATION_API void updating() throw (::fwTools::Failed);
+    IOCALIBRATION_API void updating();
 
     /// Removes connections
-    IOCALIBRATION_API void stopping() throw (::fwTools::Failed);
+    IOCALIBRATION_API void stopping();
 
     /// Returns managed path type, here service manages only single file
     IOCALIBRATION_API ::io::IOPathType getIOPathType() const;

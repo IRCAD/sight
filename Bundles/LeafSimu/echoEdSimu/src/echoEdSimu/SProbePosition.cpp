@@ -24,38 +24,38 @@ const ::fwCom::Signals::SignalKeyType SProbePosition::s_POSITION_MODIFIED_SIG = 
 
 //------------------------------------------------------------------------------
 
-SProbePosition::SProbePosition() throw()
+SProbePosition::SProbePosition() noexcept
 {
     m_sigPositionChanged = newSignal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-SProbePosition::~SProbePosition() throw()
+SProbePosition::~SProbePosition() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbePosition::starting() throw(::fwTools::Failed)
+void SProbePosition::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbePosition::stopping() throw(::fwTools::Failed)
+void SProbePosition::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbePosition::configuring() throw(::fwTools::Failed)
+void SProbePosition::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbePosition::updating() throw(::fwTools::Failed)
+void SProbePosition::updating()
 {
     const int s_minI = 95;
     const int s_maxI = 194;

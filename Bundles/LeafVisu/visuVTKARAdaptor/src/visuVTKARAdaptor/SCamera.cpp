@@ -29,11 +29,15 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SCamera,
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SCamera,
                          ::fwData::TransformationMatrix3D );
 
 namespace visuVTKARAdaptor
 {
+
+static const ::fwServices::IService::KeyType s_CAMERA_IN       = "camera";
+static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
+
 //------------------------------------------------------------------------------
 
 class CameraCallback : public ::vtkCommand
@@ -72,39 +76,43 @@ static const double s_farPlane  = 10000;
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SCamera::s_POSITION_MODIFIED_SIG = "positionModified";
+typedef ::fwCom::Signal<void ()> PositionModifiedSignalType;
 
-const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
+static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG = "positionModified";
+
+static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
+SCamera::SCamera() noexcept :
     m_transOrig(nullptr),
     m_cameraCommand(CameraCallback::New(this))
 {
     newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-    m_slotCalibrate = newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
+    newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
 }
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() throw()
+SCamera::~SCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doConfigure() throw(fwTools::Failed)
+void SCamera::configuring()
 {
     SLM_TRACE_FUNC();
-    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
-    m_cameraUID = m_configuration->getAttributeValue("cameraUID");
+
+    this->configureParams();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStart() throw(fwTools::Failed)
+void SCamera::starting()
 {
+    this->initialize();
+
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
 
     double position[] = { 0.0, 0.0, 0.0 };
@@ -122,44 +130,33 @@ void SCamera::doStart() throw(fwTools::Failed)
 
     camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
 
-    if (!m_cameraUID.empty())
-    {
-        m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
-        SLM_ASSERT("Missing camera", m_camera);
+    this->calibrate();
 
-        m_connections.connect(m_camera, ::arData::Camera::s_MODIFIED_SIG,
-                              this->getSptr(), s_CALIBRATE_SLOT);
-        m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
-                              this->getSptr(), s_CALIBRATE_SLOT);
-
-        this->calibrate();
-    }
     this->updateFromTMatrix3D();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doUpdate() throw(fwTools::Failed)
+void SCamera::updating()
 {
     this->updateFromTMatrix3D();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doSwap() throw(fwTools::Failed)
+void SCamera::swapping()
 {
-    this->doStop();
-    this->doStart();
+    this->stopping();
+    this->starting();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStop() throw(fwTools::Failed)
+void SCamera::stopping()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
     m_transOrig->Delete();
-    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +166,7 @@ void SCamera::updateFromVtk()
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
 
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr trf = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
@@ -180,9 +177,9 @@ void SCamera::updateFromVtk()
     trans->Concatenate(m_transOrig);
     vtkMatrix4x4* mat = trans->GetMatrix();
 
-    for (int lt = 0; lt < 4; lt++)
+    for (std::uint8_t lt = 0; lt < 4; lt++)
     {
-        for (int ct = 0; ct < 4; ct++)
+        for (std::uint8_t ct = 0; ct < 4; ct++)
         {
             trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
         }
@@ -201,18 +198,31 @@ void SCamera::updateFromVtk()
 
 //-----------------------------------------------------------------------------
 
+fwServices::IService::KeyConnectionsMap SCamera::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_CAMERA_IN, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_IN, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_TRANSFORM_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SCamera::updateFromTMatrix3D()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
 
-    ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr transMat =
+        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
-    for (int lt = 0; lt < 4; lt++)
+    for (std::uint8_t lt = 0; lt < 4; lt++)
     {
-        for (int ct = 0; ct < 4; ct++)
+        for (std::uint8_t ct = 0; ct < 4; ct++)
         {
             mat->SetElement(lt, ct, transMat->getCoefficient(lt, ct));
         }
@@ -253,13 +263,15 @@ void SCamera::updateFromTMatrix3D()
 
 void SCamera::calibrate()
 {
-    if ( m_camera )
+    ::arData::Camera::csptr cameraCalibration = this->getInput< ::arData::Camera >(s_CAMERA_IN);
+
+    if ( cameraCalibration )
     {
         vtkCamera* camera = this->getRenderer()->GetActiveCamera();
         camera->RemoveObserver(m_cameraCommand);
 
-        double fy = m_camera->getFy();
-        camera->SetViewAngle(2.0 * atan(m_camera->getHeight() / 2.0 / fy) * 180./ vtkMath::Pi());
+        const double fy = cameraCalibration->getFy();
+        camera->SetViewAngle(2.0 * atan(cameraCalibration->getHeight() / 2.0 / fy) * 180./ vtkMath::Pi());
 
         this->updateFromTMatrix3D();
         camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);

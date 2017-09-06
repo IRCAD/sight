@@ -57,7 +57,7 @@ public:
     /**
      * @brief write buffer in archive buffer
      */
-    void archive() throw(::fwZip::exception::Write);
+    void archive();
 
     /**
      * @brief writter to write data in archive entry
@@ -111,7 +111,7 @@ public:
      * @throw ::fwZip::exception::Write when file cannot be opened
      */
     IGTLPROTOCOL_API void putFile(const ::boost::filesystem::path& sourceFile,
-                                  const ::boost::filesystem::path& path) throw(::fwZip::exception::Write);
+                                  const ::boost::filesystem::path& path);
 
     /**
      * @brief Create folder in archive
@@ -128,7 +128,7 @@ public:
     /**
      * @brief write all data stored in archive
      */
-    IGTLPROTOCOL_API void writeArchive() throw(::fwZip::exception::Write);
+    IGTLPROTOCOL_API void writeArchive();
 
 public:
     /**

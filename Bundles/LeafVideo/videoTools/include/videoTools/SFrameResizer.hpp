@@ -28,10 +28,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SFrameResizer)(::fwServices::IOperator) );
 
     /// Constructor.
-    VIDEOTOOLS_API SFrameResizer() throw();
+    VIDEOTOOLS_API SFrameResizer() noexcept;
 
     /// Destructor. Does nothing
-    VIDEOTOOLS_API virtual ~SFrameResizer() throw();
+    VIDEOTOOLS_API virtual ~SFrameResizer() noexcept;
 
 protected:
 
@@ -50,17 +50,17 @@ protected:
      * - \b ratio : ratio (x,y) of the resize operation as a percentage.
      * - \b interpolation(optional) : method to use amongst : nearest(default), linear, area, cubic, lanczos4.
      */
-    VIDEOTOOLS_API virtual void configuring()  throw ( ::fwTools::Failed );
+    VIDEOTOOLS_API virtual void configuring();
 
     /// Grab timelines.
-    VIDEOTOOLS_API virtual void starting()  throw ( ::fwTools::Failed );
+    VIDEOTOOLS_API virtual void starting();
 
     /// Stopping method.
-    VIDEOTOOLS_API virtual void stopping()  throw ( ::fwTools::Failed );
+    VIDEOTOOLS_API virtual void stopping();
 
     /// Called when a new buffer is pushed inside the input timeline. A new buffer containing the
     /// resied image is pushed inside the output timeline.
-    VIDEOTOOLS_API virtual void updating() throw ( ::fwTools::Failed );
+    VIDEOTOOLS_API virtual void updating();
 
 private:
 

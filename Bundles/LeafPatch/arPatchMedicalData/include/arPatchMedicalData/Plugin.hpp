@@ -21,16 +21,16 @@ namespace arPatchMedicalData
 struct ARPATCHMEDICALDATA_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    ARPATCHMEDICALDATA_API ~Plugin() throw();
+    ARPATCHMEDICALDATA_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    ARPATCHMEDICALDATA_API void start() throw( ::fwRuntime::RuntimeException );
+    ARPATCHMEDICALDATA_API void start();
 
     /// Overrides stop method. Do nothing
-    ARPATCHMEDICALDATA_API void stop() throw();
+    ARPATCHMEDICALDATA_API void stop() noexcept;
 
 };
 

@@ -45,8 +45,7 @@ StringConverter::~StringConverter()
 //-----------------------------------------------------------------------------
 
 void StringConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                      ::fwData::Object::sptr& destObj) const throw (::igtlProtocol::exception::
-                                                                                    Conversion)
+                                      ::fwData::Object::sptr& destObj) const
 {
     FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a ::fwData::String"),
                           destObj->getClassname() != StringConverter::s_FWDATA_OBJECT_TYPE);

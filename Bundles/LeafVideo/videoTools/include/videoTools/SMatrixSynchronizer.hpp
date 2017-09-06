@@ -35,12 +35,12 @@ public:
     /**
      * @brief Constructor.
      */
-    VIDEOTOOLS_API SMatrixSynchronizer() throw ();
+    VIDEOTOOLS_API SMatrixSynchronizer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    VIDEOTOOLS_API virtual ~SMatrixSynchronizer() throw ()
+    VIDEOTOOLS_API virtual ~SMatrixSynchronizer() noexcept
     {
     }
 
@@ -64,16 +64,16 @@ protected:
      *
      */
 
-    VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
+    VIDEOTOOLS_API void configuring();
 
     /// This method is used to initialize the service.
-    VIDEOTOOLS_API void starting() throw (fwTools::Failed);
+    VIDEOTOOLS_API void starting();
 
     /// Does nothing.
-    VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
+    VIDEOTOOLS_API void stopping();
 
     /// Does nothing.
-    VIDEOTOOLS_API void updating() throw (fwTools::Failed)
+    VIDEOTOOLS_API void updating()
     {
     }
 

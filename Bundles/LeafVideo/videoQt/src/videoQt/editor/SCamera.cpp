@@ -43,25 +43,28 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera );
 
+const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
+
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
+SCamera::SCamera() noexcept :
     m_bVideoSupport(false),
-    m_numCreateCameras(0)
+    m_numCreateCameras(0),
+    m_sigConfiguredCameras(newSignal<ConfiguredCamerasSignalType>(s_CONFIGURED_CAMERAS_SIG))
 {
 }
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() throw()
+SCamera::~SCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::configuring() throw(fwTools::Failed)
+void SCamera::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_bVideoSupport    = (config.get<std::string>("videoSupport", "no") == "yes");
     m_numCreateCameras = config.get<size_t>("createCameraNumber", 0);
@@ -71,7 +74,7 @@ void SCamera::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::starting() throw(::fwTools::Failed)
+void SCamera::starting()
 {
     this->create();
 
@@ -128,20 +131,20 @@ void SCamera::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::stopping() throw(::fwTools::Failed)
+void SCamera::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::updating() throw(::fwTools::Failed)
+void SCamera::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::swapping() throw(::fwTools::Failed)
+void SCamera::swapping()
 {
     this->updating();
 }
@@ -225,6 +228,7 @@ void SCamera::onChooseFile()
             sig->asyncEmit();
         }
     }
+    m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -252,6 +256,7 @@ void SCamera::onChooseStream()
             sig->asyncEmit();
         }
     }
+    m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -275,33 +280,27 @@ void SCamera::onChooseDevice()
             sig->asyncEmit();
         }
     }
+    m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-std::vector< ::arData::Camera::sptr > SCamera::getCameras()
+std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
 {
     std::vector< ::arData::Camera::sptr > cameras;
-    if (this->isVersion2())
+
+    auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    if(cameraSeries)
     {
-        auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
-        if(cameraSeries)
+        const size_t numCameras = cameraSeries->getNumberOfCameras();
+        for(size_t i = 0; i < numCameras; ++i)
         {
-            const size_t numCameras = cameraSeries->getNumberOfCameras();
-            for(size_t i = 0; i < numCameras; ++i)
-            {
-                cameras.push_back(cameraSeries->getCamera(i));
-            }
-        }
-        else
-        {
-            cameras.push_back(this->getInOut< ::arData::Camera >("camera"));
+            cameras.push_back(cameraSeries->getCamera(i));
         }
     }
     else
     {
-        // TODO: When removing this appXml1 branch we can make the method const
-        cameras.push_back(this->getObject< ::arData::Camera >());
+        cameras.push_back(this->getInOut< ::arData::Camera >("camera"));
     }
 
     return cameras;

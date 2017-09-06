@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>calIntrinsicView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -8,17 +8,12 @@
         <param name="videoGrabberImpl" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
-
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
-
         <object uid="FrameTL" type="::arData::FrameTL" />
-
         <!-- ******************************* UI declaration *********************************** -->
-
-        <service uid="intrinsicCameraView" type="::gui::view::SDefaultView" >
+        <service uid="intrinsicCameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -34,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="CalibrationInfoView" type="::gui::view::SDefaultView" >
+        <service uid="CalibrationInfoView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
@@ -49,10 +44,10 @@
             </registry>
         </service>
 
-        <service uid="intrinsicCamera" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="intrinsicCamera" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <editor />
+                    <editor/>
                     <menuItem name="Add" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
                     <menuItem name="Remove" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/remove.svg" />
                     <menuItem name="Reset" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg" />
@@ -73,47 +68,45 @@
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
-
-        <service uid="ActionAdd" type="::gui::action::SSlotCaller" >
+        <service uid="ActionAdd" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>ChessboardDetector/detectPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::gui::action::SSlotCaller" >
+        <service uid="ActionReset" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationInfoEditor/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::gui::action::SSlotCaller" >
+        <service uid="ActionRemove" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationInfoEditor/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionEdition" type="::gui::action::SSlotCaller" >
+        <service uid="ActionEdition" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>intrinsicEdition/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller" >
+        <service uid="ActionGoOpenCV" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>OpenCVIntrinsicCal/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller" >
+        <service uid="ActionDisplayImage" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationInfoEditor/getSelection</slot>
             </slots>
         </service>
 
         <!-- ******************************* Services ***************************************** -->
-
-        <service uid="cameraLauncher" type="::fwServices::SConfigController" >
+        <service uid="cameraLauncher" type="::fwServices::SConfigController">
             <appConfig id="calCameraView" />
             <inout key="camera" uid="${camera}" />
             <inout key="timeLine" uid="FrameTL" />
@@ -121,13 +114,13 @@
             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
 
-        <service uid="Status" type="::uiTools::editor::SStatus" >
+        <service uid="Status" type="::uiTools::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector"  worker="intr_chess_checker">
+        <service uid="ChessboardDetector" type="::videoCalibration::SChessBoardDetector" worker="intr_chess_checker">
             <in group="timeline">
                 <key uid="FrameTL" />
             </in>
@@ -137,7 +130,7 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
-        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo" >
+        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
@@ -151,16 +144,15 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
-        <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="${camera}" />
+        <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+            <in key="camera" uid="${camera}" />
         </service>
 
-        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition"  >
-            <inout key="camera" uid="${camera}" />
+        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition">
+            <in key="camera" uid="${camera}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
-
         <connect>
             <signal>FrameTL/objectPushed</signal>
             <slot>ChessboardDetector/checkPoints</slot>

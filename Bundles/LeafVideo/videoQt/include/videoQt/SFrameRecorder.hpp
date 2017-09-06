@@ -66,10 +66,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SFrameRecorder)(::fwServices::IController) );
 
     /// Contructor. Do nothing.
-    VIDEOQT_API SFrameRecorder() throw();
+    VIDEOQT_API SFrameRecorder() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOQT_API virtual ~SFrameRecorder() throw();
+    VIDEOQT_API virtual ~SFrameRecorder() noexcept;
 
     /**
      * @name Slots API
@@ -92,16 +92,16 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Does nothing.
-    VIDEOQT_API virtual void starting() throw( ::fwTools::Failed );
+    VIDEOQT_API virtual void starting();
 
     /// Does nothing.
-    VIDEOQT_API virtual void stopping() throw( ::fwTools::Failed );
+    VIDEOQT_API virtual void stopping();
 
     /// Does nothing.
-    VIDEOQT_API virtual void updating() throw(::fwTools::Failed);
+    VIDEOQT_API virtual void updating();
 
     /// Parse the configuration
-    VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );
+    VIDEOQT_API virtual void configuring();
 
 private:
 

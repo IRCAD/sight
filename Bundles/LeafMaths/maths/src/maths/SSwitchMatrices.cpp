@@ -29,7 +29,7 @@ const ::fwServices::IService::KeyType s_MATRIX_INPUT  = "matrix";
 
 // ----------------------------------------------------------------------------
 
-SSwitchMatrices::SSwitchMatrices() throw () :
+SSwitchMatrices::SSwitchMatrices() noexcept :
     m_indexOfDesiredMatrix(0)
 {
     newSlot(s_SWITCH_SLOT, &SSwitchMatrices::switchMatrix, this);
@@ -38,26 +38,26 @@ SSwitchMatrices::SSwitchMatrices() throw () :
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::configuring() throw (::fwTools::Failed)
+void SSwitchMatrices::configuring()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::starting() throw (fwTools::Failed)
+void SSwitchMatrices::starting()
 {
     this->updating();
 }
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::stopping() throw (fwTools::Failed)
+void SSwitchMatrices::stopping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::updating() throw (fwTools::Failed)
+void SSwitchMatrices::updating()
 {
     ::fwData::TransformationMatrix3D::sptr matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_OUTPUT);
 
@@ -74,7 +74,7 @@ void SSwitchMatrices::updating() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::switchMatrix() throw (fwTools::Failed)
+void SSwitchMatrices::switchMatrix()
 {
     ++m_indexOfDesiredMatrix;
     if(m_indexOfDesiredMatrix >= this->getKeyGroupSize(s_MATRIX_INPUT))
@@ -86,7 +86,7 @@ void SSwitchMatrices::switchMatrix() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::switchToMatrix(size_t index) throw (fwTools::Failed)
+void SSwitchMatrices::switchToMatrix(size_t index)
 {
     if(index < this->getKeyGroupSize(s_MATRIX_INPUT))
     {

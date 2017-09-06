@@ -96,7 +96,7 @@ public:
     ARDATA_API Camera( ::fwData::Object::Key key );
 
     /// Destructor
-    ARDATA_API virtual ~Camera() throw();
+    ARDATA_API virtual ~Camera() noexcept;
 
     ARDATA_API static PixelFormat getPixelFormat(const std::string& name);
 

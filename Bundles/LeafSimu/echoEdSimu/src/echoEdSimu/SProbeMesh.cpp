@@ -29,19 +29,19 @@ fwServicesRegisterMacro( ::arServices::ISimulator, ::echoEdSimu::SProbeMesh, ::f
 
 //-----------------------------------------------------------------------------
 
-SProbeMesh::SProbeMesh() throw()
+SProbeMesh::SProbeMesh() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SProbeMesh::~SProbeMesh() throw()
+SProbeMesh::~SProbeMesh() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbeMesh::updating() throw(::fwTools::Failed)
+void SProbeMesh::updating()
 {
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
 
@@ -175,25 +175,25 @@ void SProbeMesh::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SProbeMesh::stopping() throw(::fwTools::Failed)
+void SProbeMesh::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbeMesh::configuring() throw(fwTools::Failed)
+void SProbeMesh::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbeMesh::starting() throw(::fwTools::Failed)
+void SProbeMesh::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProbeMesh::swapping() throw(::fwTools::Failed)
+void SProbeMesh::swapping()
 {
 
 }

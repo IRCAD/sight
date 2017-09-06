@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,9 +27,8 @@ fwServicesRegisterMacro( ::arServices::ISimulator, ::echoEdSimu::SImageManager, 
 const std::string s_ctPath   = "./Data/CTImages";
 const std::string s_echoPath = "./Data/EchoImages";
 
-const ::fwCom::Slots::SlotKeyType SImageManager::s_UPDATE_CRANIOCAUDAL_SLOT = "updateCranioCaudal";
-const ::fwCom::Slots::SlotKeyType SImageManager::s_UPDATE_RADIAL_SLOT       = "updateRadial";
-const ::fwCom::Slots::SlotKeyType SImageManager::s_UPDATE_BOTH_SLOT         = "updateBoth";
+const ::fwCom::Slots::SlotKeyType SImageManager::s_UPDATE_SINGLE_SLOT = "updateSingle";
+const ::fwCom::Slots::SlotKeyType SImageManager::s_UPDATE_BOTH_SLOT   = "updateBoth";
 
 const std::string s_ctImageKey   = "echoCTImage";
 const std::string s_echoImageKey = "echoImage";
@@ -41,30 +40,29 @@ const int s_maxJ = 259;
 
 //-----------------------------------------------------------------------------
 
-SImageManager::SImageManager() throw() :
+SImageManager::SImageManager() noexcept :
     m_cranioCaudalIndex(s_minI),
     m_radialIndex(s_minJ)
 {
-    newSlot( s_UPDATE_CRANIOCAUDAL_SLOT, &SImageManager::updateCranioCaudalImage, this );
-    newSlot( s_UPDATE_RADIAL_SLOT, &SImageManager::updateRadialImage, this );
+    newSlot( s_UPDATE_SINGLE_SLOT, &SImageManager::updateSingle, this );
     newSlot( s_UPDATE_BOTH_SLOT, &SImageManager::updateBoth, this );
 }
 
 //------------------------------------------------------------------------------
 
-SImageManager::~SImageManager() throw()
+SImageManager::~SImageManager() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::configuring() throw(fwTools::Failed)
+void SImageManager::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::starting() throw(::fwTools::Failed)
+void SImageManager::starting()
 {
     m_ctImage   = this->getInOut< ::fwData::Image >(s_ctImageKey);
     m_echoImage = this->getInOut< ::fwData::Image >(s_echoImageKey);
@@ -72,38 +70,38 @@ void SImageManager::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SImageManager::stopping() throw(::fwTools::Failed)
+void SImageManager::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::updateCranioCaudalImage(int i)
+void SImageManager::updateSingle(int i, std::string key)
 {
-    updateBoth(i, m_radialIndex);
+    if(key == "craniocaudal")
+    {
+        this->updateBoth(i, m_radialIndex);
+    }
+    else if(key == "radial")
+    {
+        this->updateBoth(m_cranioCaudalIndex, i);
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::updateRadialImage(int j)
-{
-    updateBoth(m_cranioCaudalIndex, j);
-}
-
-//------------------------------------------------------------------------------
-
-void SImageManager::load(::boost::filesystem::path dir, ImagesVecType & images)
+void SImageManager::load(::boost::filesystem::path dir, ImagesVecType& images)
 {
     unsigned int dI = s_maxI - s_minI +1;
     unsigned int dJ = s_maxJ - s_minJ +1;
 
     images.resize(dI);
 
-    for (unsigned int i = 0; i<dI; ++i)
+    for (unsigned int i = 0; i < dI; ++i)
     {
         images[i].resize(dJ);
         const unsigned int idI = i + s_minI;
-        for (unsigned int j = 0; j<dJ; ++j)
+        for (unsigned int j = 0; j < dJ; ++j)
         {
             const unsigned int idJ = j + s_minJ;
             std::stringstream str;
@@ -126,13 +124,13 @@ void SImageManager::load(::boost::filesystem::path dir, ImagesVecType & images)
 
 //------------------------------------------------------------------------------
 
-void SImageManager::updating() throw(::fwTools::Failed)
+void SImageManager::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::swapping() throw(::fwTools::Failed)
+void SImageManager::swapping()
 {
 }
 

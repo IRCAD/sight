@@ -122,33 +122,33 @@ public:
     /**
      * @brief Constructor.
      */
-    TRACKERARUCO_API SArucoTracker() throw ();
+    TRACKERARUCO_API SArucoTracker() noexcept;
 
     /**
      * @brief Destructor.
      */
-    TRACKERARUCO_API virtual ~SArucoTracker() throw ();
+    TRACKERARUCO_API virtual ~SArucoTracker() noexcept;
 
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    TRACKERARUCO_API void configuring() throw (fwTools::Failed);
+    TRACKERARUCO_API void configuring();
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    TRACKERARUCO_API void starting() throw (fwTools::Failed);
+    TRACKERARUCO_API void starting();
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    TRACKERARUCO_API void updating() throw (fwTools::Failed);
+    TRACKERARUCO_API void updating();
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    TRACKERARUCO_API void stopping() throw (fwTools::Failed);
+    TRACKERARUCO_API void stopping();
 
     /// Detect marker
     TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp);

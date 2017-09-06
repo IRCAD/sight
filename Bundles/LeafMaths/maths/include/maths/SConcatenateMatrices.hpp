@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,6 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwServices/IController.hpp>
-
 
 namespace maths
 {
@@ -56,43 +55,34 @@ public:
     /**
      * @brief Constructor.
      */
-    MATHS_API SConcatenateMatrices() throw ();
+    MATHS_API SConcatenateMatrices() noexcept;
 
     /**
      * @brief Destructor.
      */
-    virtual ~SConcatenateMatrices() throw ()
+    virtual ~SConcatenateMatrices() noexcept
     {
     }
 
 protected:
     /// This method is used to configure the service.
-    MATHS_API void configuring() throw (fwTools::Failed);
+    MATHS_API void configuring();
 
     /// This method is used to initialize the service.
-    MATHS_API void starting() throw (fwTools::Failed);
+    MATHS_API void starting();
 
     /// Does nothing.
-    MATHS_API void stopping() throw (fwTools::Failed);
+    MATHS_API void stopping();
 
     /// Does nothing.
-    MATHS_API void updating() throw (fwTools::Failed);
+    MATHS_API void updating();
 
 private:
 
-    struct TransformMatrix
-    {
-        ::fwData::TransformationMatrix3D::sptr m_matrix;
-        std::string m_uid;
-        bool m_inverse;
-        bool m_connect;
-    };
+    typedef std::vector< bool > InvertVectorType;
 
-    typedef std::vector< TransformMatrix > MatrixVectorType;
-
-    MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
-
-    ::fwCom::helper::SigSlotConnection m_connections; ///< connection to matrices
+    /// Vector to specify if matrix must be inverted.
+    InvertVectorType m_invertVector;
 };
 
 } //namespace maths

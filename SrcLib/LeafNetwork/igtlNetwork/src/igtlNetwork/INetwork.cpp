@@ -31,7 +31,7 @@ INetwork::~INetwork()
 
 //------------------------------------------------------------------------------
 
-bool INetwork::sendObject (::fwData::Object::sptr obj) throw (::fwCore::Exception)
+bool INetwork::sendObject (::fwData::Object::sptr obj)
 {
     igtl::MessageBase::Pointer msg;
 
@@ -43,7 +43,7 @@ bool INetwork::sendObject (::fwData::Object::sptr obj) throw (::fwCore::Exceptio
 
 //------------------------------------------------------------------------------
 
-bool INetwork::sendMsg (igtl::MessageBase::Pointer msg) throw (::fwCore::Exception)
+bool INetwork::sendMsg (igtl::MessageBase::Pointer msg)
 {
     msg->SetDeviceName(m_deviceNameOut.c_str());
     msg->Pack();
@@ -52,7 +52,7 @@ bool INetwork::sendMsg (igtl::MessageBase::Pointer msg) throw (::fwCore::Excepti
 
 //------------------------------------------------------------------------------
 
-bool INetwork::receiveObject(::fwData::Object::sptr obj) throw (::fwCore::Exception)
+bool INetwork::receiveObject(::fwData::Object::sptr obj)
 {
     ::igtl::MessageHeader::Pointer headerMsg;
     ::igtl::MessageBase::Pointer msg;
@@ -120,7 +120,6 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj) throw (::fwCore::Except
 //------------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer INetwork::receiveBody (::igtl::MessageHeader::Pointer const headerMsg)
-throw (::fwCore::Exception)
 {
     int unpackResult;
     int result;

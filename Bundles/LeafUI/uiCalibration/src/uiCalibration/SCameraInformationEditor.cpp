@@ -8,53 +8,42 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
-
-#include <fwData/Boolean.hpp>
-#include <fwData/Integer.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwThread/Worker.hpp>
-
-#include <fwTools/Object.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
 
-#include <algorithm>
 #include <sstream>
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera);
-const ::fwCom::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
 
-SCameraInformationEditor::SCameraInformationEditor() throw ()
-{
-    m_slotUpdateInfos = ::fwCom::newSlot(&SCameraInformationEditor::updateInformations, this);
-    ::fwCom::HasSlots::m_slots(s_UPDATE_INFOS_SLOT, m_slotUpdateInfos);
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera);
 
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+const ::fwCom::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
+
+// -------------------------------------------------------------------------
+
+SCameraInformationEditor::SCameraInformationEditor() noexcept
+{
+    newSlot(s_UPDATE_INFOS_SLOT, &SCameraInformationEditor::updateInformations, this);
 }
 
 // -------------------------------------------------------------------------
 
-void SCameraInformationEditor::configuring() throw (fwTools::Failed)
+void SCameraInformationEditor::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 }
 
 // -------------------------------------------------------------------------
 
-void SCameraInformationEditor::starting() throw (fwTools::Failed)
+void SCameraInformationEditor::starting()
 {
     fwGui::IGuiContainerSrv::create();
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -114,14 +103,14 @@ void SCameraInformationEditor::starting() throw (fwTools::Failed)
 
 // -------------------------------------------------------------------------
 
-void SCameraInformationEditor::stopping() throw (fwTools::Failed)
+void SCameraInformationEditor::stopping()
 {
     this->destroy();
 }
 
 // -------------------------------------------------------------------------
 
-void SCameraInformationEditor::swapping() throw (::fwTools::Failed)
+void SCameraInformationEditor::swapping()
 {
     updateInformations();
 }
@@ -130,7 +119,7 @@ void SCameraInformationEditor::swapping() throw (::fwTools::Failed)
 
 void SCameraInformationEditor::updateInformations()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >("camera");
     std::stringstream out;
 
     m_description->setText(QString::fromStdString(camera->getDescription()));
@@ -240,11 +229,14 @@ void SCameraInformationEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SCameraInformationEditor::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::arData::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT ) );
-    connections.push_back( std::make_pair( ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT ) );
+
+    KeyConnectionsMap connections;
+
+    connections.push( "camera", ::arData::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT );
+    connections.push( "camera", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT );
+
     return connections;
 }
 

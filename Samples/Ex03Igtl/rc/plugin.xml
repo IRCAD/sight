@@ -1,24 +1,20 @@
-<plugin id="Ex03Igtl" version="@DASH_VERSION@" >
-
+<plugin id="Ex03Igtl" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="preferences" />
-
-    <extension implements="::fwServices::registry::AppConfig2">
+    <extension implements="::fwServices::registry::AppConfig">
         <id>Ex03IgtlConfig</id>
         <config>
-
             <object uid="objectMeshUid" type="::fwData::Mesh" />
             <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
-
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Ex03Igtl</name>
                         <icon>@BUNDLE_PREFIX@/Ex03Igtl_@DASH_VERSION@/tuto.ico</icon>
                     </frame>
-                    <toolBar />
+                    <toolBar/>
                 </gui>
                 <registry>
                     <toolBar sid="toolbar" start="yes" />
@@ -26,18 +22,18 @@
                 </registry>
             </service>
 
-            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar"  >
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                    <editor />
+                        <editor/>
                         <menuItem name="Load mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
                         <separator/>
-                        <menuItem name="start sender" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Sending.svg"/>
-                        <menuItem name="stop sender"  icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Sending.svg"/>
+                        <menuItem name="start sender" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Sending.svg" />
+                        <menuItem name="stop sender" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Sending.svg" />
                         <menuItem name="configure sender" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
                         <separator/>
-                        <menuItem name="start listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Receiving.svg"/>
-                        <menuItem name="stop listener"  icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Receiving.svg"/>
+                        <menuItem name="start listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Receiving.svg" />
+                        <menuItem name="stop listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Receiving.svg" />
                         <menuItem name="configure listener" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
                         <separator/>
                     </layout>
@@ -53,17 +49,17 @@
                 </registry>
             </service>
 
-            <service uid="actionLoadMesh" type="::gui::action::SSlotCaller" >
+            <service uid="actionLoadMesh" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>objectMeshReader/update</slot>
                 </slots>
             </service>
 
-            <service uid="startServer" type="::gui::action::SStarter" >
+            <service uid="startServer" type="::gui::action::SStarter">
                 <start uid="matrixNetworkSender" />
             </service>
 
-            <service uid="stopServer" type="::gui::action::SStarter" >
+            <service uid="stopServer" type="::gui::action::SStarter">
                 <state executable="false" />
                 <stop uid="matrixNetworkSender" />
             </service>
@@ -77,11 +73,11 @@
                 </preference>
             </service>
 
-            <service uid="startClient" type="::gui::action::SStarter" >
+            <service uid="startClient" type="::gui::action::SStarter">
                 <start uid="matrixNetworkListener" />
             </service>
 
-            <service uid="stopClient" type="::gui::action::SStarter" >
+            <service uid="stopClient" type="::gui::action::SStarter">
                 <state executable="false" />
                 <stop uid="matrixNetworkListener" />
             </service>
@@ -101,33 +97,39 @@
                 </preference>
             </service>
 
+            <!-- *************************** Begin generic scene *************************** -->
+
             <service uid="3DView" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <in key="identityMatrix" uid="identityMatrix" />
-                <in key="objectMesh" uid="objectMeshUid" />
                 <scene>
                     <renderer id="default" layer="1" background="0.0" />
                     <renderer id="background" layer="0" background="0.0" />
-
-                    <adaptor id="camera" class="::visuVTKAdaptor::Camera2" objectId="identityMatrix">
-                        <config renderer="default"/>
-                    </adaptor>
-
-                    <adaptor id="markerObjectMesh" class="::visuVTKAdaptor::Mesh" objectId="objectMesh">
-                        <config renderer="default" picker="" transform="trackingObjectMatrixTransform" autoresetcamera="no" />
-                    </adaptor>
+                    <adaptor uid="camera" />
+                    <adaptor uid="markerObjectMesh" />
                 </scene>
             </service>
 
-            <service uid="objectMeshReader" type="::uiIO::editor::SIOSelector" >
+            <service uid="camera" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="identityMatrix" />
+                <config renderer="default" />
+            </service>
+
+            <service uid="markerObjectMesh" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="objectMeshUid" />
+                <config renderer="default" picker="" transform="trackingObjectMatrixTransform" autoresetcamera="no" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <service uid="objectMeshReader" type="::uiIO::editor::SIOSelector">
                 <inout key="target" uid="objectMeshUid" />
             </service>
 
-            <service uid="matrixNetworkListener" type="::ioIGTL::SOpenIGTLinkListener" >
+            <service uid="matrixNetworkListener" type="::ioIGTL::SOpenIGTLinkListener">
                 <inout key="target" uid="identityMatrix" />
                 <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
             </service>
 
-            <service uid="matrixNetworkSender" type="::ioIGTL::SOpenIGTLinkSender" >
+            <service uid="matrixNetworkSender" type="::ioIGTL::SOpenIGTLinkSender">
                 <in key="target" uid="identityMatrix" />
                 <port>%SERVER_PORT_KEY%</port>
             </service>
@@ -158,10 +160,10 @@
 
             <start uid="mainFrame" />
             <start uid="objectMeshReader" />
-
+            <!-- VTK scene '3DView' -->
+            <start uid="camera" />
+            <start uid="markerObjectMesh" />
             <update uid="startServer" />
-
         </config>
     </extension>
-
 </plugin>

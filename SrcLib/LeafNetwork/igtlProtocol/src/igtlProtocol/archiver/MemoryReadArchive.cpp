@@ -137,7 +137,7 @@ MemoryReadArchive::~MemoryReadArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) MemoryReadArchive::getFile(const ::boost::filesystem::path &path) throw(::fwZip::exception::Read)
+SPTR(std::istream) MemoryReadArchive::getFile(const ::boost::filesystem::path &path)
 {
     if (m_streams.find(path.string()) != m_streams.end())
     {

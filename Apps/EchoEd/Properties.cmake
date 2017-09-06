@@ -29,10 +29,11 @@ set( REQUIREMENTS
     videoQt
     videoTools
 
-    appXml2
+    appXml
     fwlauncher
     patchMedicalData
     preferences
+    uiPreferences
 
     visuVTKAdaptor
     visuVTKARAdaptor
@@ -40,4 +41,4 @@ set( REQUIREMENTS
 
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES EchoEdConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES EchoEdConfig)

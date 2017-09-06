@@ -33,7 +33,7 @@ public:
     IOIGTL_API SImageNetworkReader();
 
     /// Destructor
-    IOIGTL_API virtual ~SImageNetworkReader() throw();
+    IOIGTL_API virtual ~SImageNetworkReader() noexcept;
 
     /// Overrides
     IOIGTL_API ::io::IOPathType getIOPathType() const;
@@ -41,25 +41,25 @@ public:
     /**
      * @brief configure the server address to receive the image
      */
-    IOIGTL_API virtual void configureWithIHM() throw (::fwTools::Failed);
+    IOIGTL_API virtual void configureWithIHM();
 
 protected:
     /// Overrides
-    IOIGTL_API virtual void configuring() throw (::fwTools::Failed);
+    IOIGTL_API virtual void configuring();
 
     /// Overrides
-    IOIGTL_API virtual void starting() throw (::fwTools::Failed);
+    IOIGTL_API virtual void starting();
 
     /// Overrides
-    IOIGTL_API virtual void stopping() throw (::fwTools::Failed);
+    IOIGTL_API virtual void stopping();
 
     /**
      * @brief connect to the server, receive the image and close the connection
      */
-    IOIGTL_API virtual void updating() throw (::fwTools::Failed);
+    IOIGTL_API virtual void updating();
 
     /// Overrides
-    IOIGTL_API virtual void swapping() throw (::fwTools::Failed);
+    IOIGTL_API virtual void swapping();
 
 private:
 

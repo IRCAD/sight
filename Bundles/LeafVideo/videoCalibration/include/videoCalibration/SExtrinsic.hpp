@@ -22,10 +22,10 @@ public:
     fwCoreServiceClassDefinitionsMacro((SExtrinsic)(::videoCalibration::ICalibration));
 
     /// Constructor.
-    VIDEOCALIBRATION_API SExtrinsic() throw ();
+    VIDEOCALIBRATION_API SExtrinsic() noexcept;
 
     /// Destructor.
-    VIDEOCALIBRATION_API virtual ~SExtrinsic() throw ();
+    VIDEOCALIBRATION_API virtual ~SExtrinsic() noexcept;
 
 protected:
 
@@ -45,19 +45,19 @@ protected:
      *      (from camera[0] to camera[index]).
      * - \b board : defines the number of square in 2 dimensions of the chessboard.
      */
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Calls stopping and starting.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void swapping();
 
     /// Computes intrinsic calibration
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Removes connections
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
 private:
 

@@ -49,7 +49,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IGTLNETWORK_API bool receiveObject(::fwData::Object::sptr dest) throw (::fwCore::Exception);
+    IGTLNETWORK_API bool receiveObject(::fwData::Object::sptr dest);
 
     /**
      * @brief generic method to receive message the type of the message is determined by response header
@@ -57,7 +57,7 @@ public:
      * @return a smart pointer of igtl::MessageHeader and a pointer on igtlMessageBase
      */
     IGTLNETWORK_API bool receiveMsg(::igtl::MessageHeader::Pointer headerMsg,
-                                    ::igtl::MessageBase::Pointer msg) throw (::fwCore::Exception);
+                                    ::igtl::MessageBase::Pointer msg);
 
     /**
      * @brief generic method to send a object the type of object is determined by classname
@@ -65,13 +65,13 @@ public:
      *        a sigpipe signal
      * @param[in] dest object to send
      */
-    IGTLNETWORK_API bool sendObject (::fwData::Object::sptr dest) throw (::fwCore::Exception);
+    IGTLNETWORK_API bool sendObject (::fwData::Object::sptr dest);
 
     /**
      * @brief generic method to send a igtl Msg, this method is usefull for redirect message
      * @param[in] msg message to send
      */
-    IGTLNETWORK_API bool sendMsg (::igtl::MessageBase::Pointer msg) throw (::fwCore::Exception);
+    IGTLNETWORK_API bool sendMsg (::igtl::MessageBase::Pointer msg);
 
     /**
      * @brief receive header
@@ -86,8 +86,7 @@ public:
      *
      *  @return Message
      */
-    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header) throw (::fwCore::
-                                                                                                            Exception);
+    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header);;
 
     /**
      * @brief get socket

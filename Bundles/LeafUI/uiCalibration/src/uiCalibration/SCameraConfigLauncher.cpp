@@ -30,55 +30,46 @@ namespace uiCalibration
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::fwData::Composite);
 
-SCameraConfigLauncher::SCameraConfigLauncher() throw()
-{
-    m_intrinsicLauncher = ::fwServices::helper::ConfigLauncher::New();
-    m_extrinsicLauncher = ::fwServices::helper::ConfigLauncher::New();
-}
-
-//------------------------------------------------------------------------------
-
-SCameraConfigLauncher::~SCameraConfigLauncher() throw()
+SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
+SCameraConfigLauncher::~SCameraConfigLauncher() noexcept
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SCameraConfigLauncher::configuring()
 {
     this->initialize();
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
 
     SLM_ASSERT("There must be one (and only one) <config/> element.",
-               configuration.get_child("service").count("config") == 1 );
-    const ::fwServices::IService::ConfigType& srvconfig = configuration.get_child("service");
+               configuration.count("config") == 1 );
+    const ::fwServices::IService::ConfigType& srvconfig = configuration;
     const ::fwServices::IService::ConfigType& config    = srvconfig.get_child("config");
 
     const ::fwServices::IService::ConfigType& intrinsic = config.get_child("intrinsic");
-
     const ::fwServices::IService::ConfigType& extrinsic = config.get_child("extrinsic");
 
-    // ConfigLauncher needs ptree configuration with service.config.appConfig
-    ::fwServices::IService::ConfigType cameraConfig;
-    ::fwServices::IService::ConfigType extrinsicConfig;
-    cameraConfig.add_child("service.config", intrinsic);
-    extrinsicConfig.add_child("service.config", extrinsic);
-
-    m_intrinsicLauncher->parseConfig(cameraConfig);
-    m_extrinsicLauncher->parseConfig(extrinsicConfig);
+    m_intrinsicLauncher.parseConfig(intrinsic, this->getSptr());
+    m_extrinsicLauncher.parseConfig(extrinsic,  this->getSptr());
 }
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
+void SCameraConfigLauncher::starting()
 {
     this->create();
 
     m_cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
-    SLM_ASSERT("Missing CameraSeries: " + m_cameraSeriesKey, m_cameraSeries);
+    SLM_ASSERT("Missing cameraSeries.", m_cameraSeries);
 
     m_activitySeries = this->getInOut< ::fwMedData::ActivitySeries >("activitySeries");
-    SLM_ASSERT("Missing ActivitySeries: " + m_activitySeriesKey, m_activitySeries);
+    SLM_ASSERT("Missing activitySeries.", m_activitySeries);
 
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
@@ -103,7 +94,7 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
 
     qtContainer->setLayout( layout );
 
-    size_t nbCam = m_cameraSeries->getNumberOfCameras();
+    const size_t nbCam = m_cameraSeries->getNumberOfCameras();
 
     if (nbCam == 0)
     {
@@ -135,23 +126,23 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::stopping() throw(::fwTools::Failed)
+void SCameraConfigLauncher::stopping()
 {
-    m_intrinsicLauncher->stopConfig();
-    m_extrinsicLauncher->stopConfig();
+    m_intrinsicLauncher.stopConfig();
+    m_extrinsicLauncher.stopConfig();
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::updating() throw(::fwTools::Failed)
+void SCameraConfigLauncher::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::swapping() throw(::fwTools::Failed)
+void SCameraConfigLauncher::swapping()
 {
 }
 
@@ -241,7 +232,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
     const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    OSLM_ASSERT("Bad index: " << index, index >= 0 && index < m_cameraSeries->getNumberOfCameras());
+    OSLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
         this->startExtrinsicConfig(index);
@@ -268,16 +259,16 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
     replaceMap["camera"]          = camera->getID();
     replaceMap["calibrationInfo"] = calibInfo->getID();
 
-    m_extrinsicLauncher->stopConfig();
-    m_intrinsicLauncher->stopConfig();
-    m_intrinsicLauncher->startConfig(this->getSptr(), replaceMap);
+    m_extrinsicLauncher.stopConfig();
+    m_intrinsicLauncher.stopConfig();
+    m_intrinsicLauncher.startConfig(this->getSptr(), replaceMap);
 }
 
 //------------------------------------------------------------------------------
 
 void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 {
-    size_t cameraIdx = std::max(index, size_t(1));
+    const size_t cameraIdx = std::max(index, size_t(1));
 
     ::arData::Camera::sptr camera1 = m_cameraSeries->getCamera(0);
     ::arData::Camera::sptr camera2 = m_cameraSeries->getCamera(cameraIdx);
@@ -315,9 +306,9 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
         replaceMap["calibrationInfo2"] = calibInfo2->getID();
         replaceMap["camIndex"]         = std::to_string(index);
 
-        m_extrinsicLauncher->stopConfig();
-        m_intrinsicLauncher->stopConfig();
-        m_extrinsicLauncher->startConfig(this->getSptr(), replaceMap);
+        m_extrinsicLauncher.stopConfig();
+        m_intrinsicLauncher.stopConfig();
+        m_extrinsicLauncher.startConfig(this->getSptr(), replaceMap);
     }
     else
     {

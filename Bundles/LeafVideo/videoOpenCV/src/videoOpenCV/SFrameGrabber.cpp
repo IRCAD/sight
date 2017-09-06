@@ -45,7 +45,7 @@ fwServicesRegisterMacro( ::arServices::IGrabber, ::videoOpenCV::SFrameGrabber, :
 
 // -----------------------------------------------------------------------------
 
-SFrameGrabber::SFrameGrabber() throw() :
+SFrameGrabber::SFrameGrabber() noexcept :
     m_loopVideo(false),
     m_isInitialized(false),
     m_fps(30),
@@ -62,28 +62,28 @@ SFrameGrabber::SFrameGrabber() throw() :
 
 // -----------------------------------------------------------------------------
 
-SFrameGrabber::~SFrameGrabber() throw()
+SFrameGrabber::~SFrameGrabber() noexcept
 {
 }
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::starting() throw(::fwTools::Failed)
+void SFrameGrabber::starting()
 {
 }
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::stopping() throw(::fwTools::Failed)
+void SFrameGrabber::stopping()
 {
     this->stopCamera();
 }
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
+void SFrameGrabber::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
 
@@ -98,7 +98,7 @@ void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 
 // -----------------------------------------------------------------------------
 
-void SFrameGrabber::updating() throw ( ::fwTools::Failed )
+void SFrameGrabber::updating()
 {
 }
 

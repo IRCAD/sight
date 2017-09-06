@@ -51,13 +51,13 @@ INetworkSender::~INetworkSender()
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::configuring() throw (::fwTools::Failed)
+void INetworkSender::configuring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::starting() throw (::fwTools::Failed)
+void INetworkSender::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -66,7 +66,7 @@ void INetworkSender::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::stopping() throw (::fwTools::Failed)
+void INetworkSender::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -75,7 +75,7 @@ void INetworkSender::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::updating() throw (::fwTools::Failed)
+void INetworkSender::updating()
 {
     SLM_TRACE_FUNC();
     this->sendObject(this->getObject());
@@ -96,7 +96,7 @@ void INetworkSender::sendData (::fwData::Object::sptr obj)
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::swapping() throw (::fwTools::Failed)
+void INetworkSender::swapping()
 {
     SLM_TRACE_FUNC();
 

@@ -78,7 +78,7 @@ protected:
     ///@brief ITracker destructor. Do nothing.
     ARSERVICES_API virtual ~ITracker();
 
-    ARSERVICES_API virtual void configuring() throw (::fwTools::Failed);
+    ARSERVICES_API virtual void configuring();
 
     /**
      * @brief This method calls tracking.

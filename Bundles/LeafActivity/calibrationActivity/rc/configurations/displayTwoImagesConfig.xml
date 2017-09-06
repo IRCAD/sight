@@ -1,20 +1,19 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>displayTwoImagesConfig</id>
     <parameters>
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <!-- defined by SConfigLauncher -->
         <param name="imageId1" />
         <param name="imageId2" />
         <param name="pointListId1" />
         <param name="pointListId2" />
     </parameters>
     <config>
-
-        <object uid="${imageId1}" src='ref' type="::fwData::Image" />
-        <object uid="${imageId2}" src='ref' type="::fwData::Image" />
-        <object uid="${pointListId1}" src='ref' type="::fwData::PointList" />
-        <object uid="${pointListId2}" src='ref' type="::fwData::PointList" />
-
-        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame" >
+        <object uid="${imageId1}" src="ref" type="::fwData::Image" />
+        <object uid="${imageId2}" src="ref" type="::fwData::Image" />
+        <object uid="${pointListId1}" src="ref" type="::fwData::PointList" />
+        <object uid="${pointListId2}" src="ref" type="::fwData::PointList" />
+        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -27,12 +26,12 @@
             </registry>
         </service>
 
-        <service uid="myDefaultView" type="::gui::view::SDefaultView" >
+        <service uid="myDefaultView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view />
-                    <view />
+                    <view/>
+                    <view/>
                 </layout>
             </gui>
             <registry>
@@ -41,49 +40,74 @@
             </registry>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="viewImage1" type="::fwRenderVTK::SRender" autoConnect="yes">
-
-            <in key="imageKey" uid="${imageId1}" />
-            <in key="pointListKey" uid="${pointListId1}" />
-
             <scene>
                 <renderer id="default" background="0.0" />
-                <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-                    <config renderer="default" imageId="imageKey" color="#00FF00" />
-                </adaptor>
+                <adaptor uid="interactor2D1" />
+                <adaptor uid="video1" />
+                <adaptor uid="points1" />
             </scene>
         </service>
+
+        <service uid="interactor2D1" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="video1" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="${imageId1}" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="points1" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
+            <in key="pointlist" uid="${pointListId1}" />
+            <in key="image" uid="${imageId1}" />
+            <config renderer="default" color="#00FF00" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <!-- *************************** Begin generic scene *************************** -->
 
         <service uid="viewImage2" type="::fwRenderVTK::SRender" autoConnect="yes">
-
-            <in key="imageKey" uid="${imageId2}" />
-            <in key="pointListKey" uid="${pointListId2}" />
-
             <scene>
                 <renderer id="default" background="0.0" />
-                <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
-                <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-                    <config renderer="default" imageId="imageKey" color="#00FF00" />
-                </adaptor>
+                <adaptor uid="interactor2D2" />
+                <adaptor uid="video2" />
+                <adaptor uid="points2" />
             </scene>
         </service>
+
+        <service uid="interactor2D2" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="video2" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="${imageId2}" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="points2" type="::visuVTKARAdaptor::SPointList" autoConnect="yes">
+            <in key="pointlist" uid="${pointListId2}" />
+            <in key="image" uid="${imageId2}" />
+            <config renderer="default" color="#00FF00" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>BasicViewerFrame/closed</signal>
         </connect>
 
         <start uid="BasicViewerFrame" />
-
+        <!-- VTK scene 'viewImage1' -->
+        <start uid="interactor2D1" />
+        <start uid="video1" />
+        <start uid="points1" />
+        <!-- VTK scene 'viewImage2' -->
+        <start uid="interactor2D2" />
+        <start uid="video2" />
+        <start uid="points2" />
     </config>
 </extension>

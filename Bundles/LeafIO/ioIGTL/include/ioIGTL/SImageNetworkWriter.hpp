@@ -33,7 +33,7 @@ public:
     IOIGTL_API SImageNetworkWriter();
 
     /// Destructor
-    IOIGTL_API virtual ~SImageNetworkWriter() throw();
+    IOIGTL_API virtual ~SImageNetworkWriter() noexcept;
 
     /// Overrides
     IOIGTL_API ::io::IOPathType getIOPathType() const;
@@ -45,21 +45,21 @@ public:
 protected:
 
     /// Overrides
-    IOIGTL_API virtual void configuring() throw (::fwTools::Failed);
+    IOIGTL_API virtual void configuring();
 
     /// Overrides
-    IOIGTL_API virtual void starting() throw (::fwTools::Failed);
+    IOIGTL_API virtual void starting();
 
     /// Overrides
-    IOIGTL_API virtual void stopping() throw (::fwTools::Failed);
+    IOIGTL_API virtual void stopping();
 
     /**
      * @brief when a client is connected it send image and close the connection
      */
-    IOIGTL_API virtual void updating() throw (::fwTools::Failed);
+    IOIGTL_API virtual void updating();
 
     /// Overrides
-    IOIGTL_API virtual void swapping() throw (::fwTools::Failed);
+    IOIGTL_API virtual void swapping();
 
 private:
 

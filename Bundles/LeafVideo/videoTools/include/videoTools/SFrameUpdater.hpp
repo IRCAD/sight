@@ -59,24 +59,24 @@ public:
     static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
 
     /// Constructor
-    VIDEOTOOLS_API SFrameUpdater() throw();
+    VIDEOTOOLS_API SFrameUpdater() noexcept;
 
     /// Destructorin
-    VIDEOTOOLS_API virtual ~SFrameUpdater() throw();
+    VIDEOTOOLS_API virtual ~SFrameUpdater() noexcept;
 
 protected:
 
     /// Starting method. Initialize timer.
-    VIDEOTOOLS_API virtual void starting() throw(fwTools::Failed);
+    VIDEOTOOLS_API virtual void starting();
 
     /// Configuring method.
-    VIDEOTOOLS_API virtual void configuring() throw(::fwTools::Failed);
+    VIDEOTOOLS_API virtual void configuring();
 
     /// Stopping method.
-    VIDEOTOOLS_API virtual void stopping() throw(fwTools::Failed);
+    VIDEOTOOLS_API virtual void stopping();
 
     /// Updating method. Deforms the mesh
-    VIDEOTOOLS_API virtual void updating() throw(fwTools::Failed);
+    VIDEOTOOLS_API virtual void updating();
 
     /// Update frame slots
     VIDEOTOOLS_API virtual void updateFrame( ::fwCore::HiResClock::HiResClockType timestamp );

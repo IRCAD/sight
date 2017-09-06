@@ -51,10 +51,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SMatrixWriter)(::io::IWriter) );
 
     /// Constructor.
-    IOTIMELINE_API SMatrixWriter() throw();
+    IOTIMELINE_API SMatrixWriter() noexcept;
 
     /// Destructor. Does nothing
-    IOTIMELINE_API virtual ~SMatrixWriter() throw();
+    IOTIMELINE_API virtual ~SMatrixWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     IOTIMELINE_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
@@ -68,16 +68,16 @@ public:
 protected:
 
     /// Does nothing
-    IOTIMELINE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void configuring();
 
     /// Does nothing
-    IOTIMELINE_API virtual void starting()  throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void starting();
 
     /// Does nothing
-    IOTIMELINE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void stopping();
 
     /// Does nothing
-    IOTIMELINE_API virtual void updating() throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void updating();
 
 private:
 

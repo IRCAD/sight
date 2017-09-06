@@ -1,11 +1,9 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>cameraView</id>
     <config>
-
         <object uid="cameraObj" type="::arData::Camera" />
         <object uid="frame" type="::fwData::Image" />
         <object uid="timeline" type="::arData::FrameTL" />
-
         <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame">
             <window onclose="notify" />
             <gui>
@@ -17,14 +15,14 @@
             <registry>
                 <view sid="cameraView" start="yes" />
             </registry>
-
         </service>
+
         <service uid="cameraView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
-                <toolBar />
+                <toolBar/>
             </gui>
             <registry>
                 <toolBar sid="toolBar" start="yes" />
@@ -35,7 +33,7 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <editor />
+                    <editor/>
                     <menuItem name="Start camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
                     <menuItem name="Stop camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
                 </layout>
@@ -59,18 +57,26 @@
             </slots>
         </service>
 
+        <!-- *************************** Begin generic scene *************************** -->
+
         <service uid="camera" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="frame" uid="frame" />
             <scene autoRender="false">
                 <renderer id="default" background="0.0" />
-                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
-                    <config renderer="default" />
-                </adaptor>
-                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
+                <adaptor uid="videoAdapter" />
+                <adaptor uid="interactorStyle" />
             </scene>
         </service>
+
+        <service uid="videoAdapter" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+            <in key="frame" uid="frame" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
 
         <service uid="VideoGrabber" type="::videoQt::SFrameGrabber">
             <in key="camera" uid="cameraObj" />
@@ -78,7 +84,7 @@
         </service>
 
         <service uid="FrameUpdater" type="::videoTools::SFrameUpdater">
-            <in key="frameTL" uid="timeline" autoConnect="yes"/>
+            <in key="frameTL" uid="timeline" autoConnect="yes" />
             <inout key="frame" uid="frame" />
         </service>
 
@@ -95,6 +101,8 @@
         <start uid="BasicViewerFrame" />
         <start uid="VideoGrabber" />
         <start uid="FrameUpdater" />
-
+        <!-- VTK scene 'camera' -->
+        <start uid="videoAdapter" />
+        <start uid="interactorStyle" />
     </config>
 </extension>

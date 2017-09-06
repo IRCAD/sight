@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>activitySelector</id>
     <parameters>
         <param name="SERIESDB" />
@@ -30,7 +30,7 @@
         </service>
 
         <!-- Editor to create/update an activity. -->
-        <service uid="activityCreator" type="::uiMedData::editor::SActivityWizard" >
+        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" >
             <inout key="series" uid="${SERIESDB}" />
             <ioSelectorConfig>ARFullSDBReaderIOSelectorConfig</ioSelectorConfig>
             <confirm>false</confirm>

@@ -50,17 +50,17 @@ protected:
      *
      * @see ZeroMQConfigurationParser for the format of the configuration
      */
-    IOZMQ_API virtual void configuring() throw (::fwTools::Failed);
+    IOZMQ_API virtual void configuring();
 
     /**
      * @brief start the socket
      */
-    IOZMQ_API virtual void starting() throw (::fwTools::Failed);
+    IOZMQ_API virtual void starting();
 
     /**
      * @brief stop the socket
      */
-    IOZMQ_API virtual void stopping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void stopping();
 
     /**
      * @brief slot method to update configuration
@@ -73,7 +73,7 @@ protected:
                                           ::zmqNetwork::Socket::SocketMode const sockMode,
                                           std::string const& host);
 
-    IOZMQ_API void setHost(std::string const& host, boost::uint16_t const port) throw (::fwTools::Failed);
+    IOZMQ_API void setHost(std::string const& host, boost::uint16_t const port);
 
 private:
     /**

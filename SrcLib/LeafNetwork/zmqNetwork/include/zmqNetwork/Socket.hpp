@@ -79,7 +79,7 @@ public:
      *
      * @param[in] data data to send
      */
-    ZMQNETWORK_API void sendObject(::fwData::Object::sptr data) throw (::fwCore::Exception);
+    ZMQNETWORK_API void sendObject(::fwData::Object::sptr data);
 
     /**
      * @brief method to receive fwData object from network
@@ -87,7 +87,7 @@ public:
      * @throw ::fwCore::Exception
      * @return object received null if response size equal 0
      */
-    ZMQNETWORK_API bool receiveObject(::fwData::Object::sptr obj) throw (::fwCore::Exception);
+    ZMQNETWORK_API bool receiveObject(::fwData::Object::sptr obj);
 
     /**
      * @brief start socket (connect or bind)

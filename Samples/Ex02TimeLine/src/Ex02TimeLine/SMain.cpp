@@ -19,31 +19,31 @@ namespace Ex02TimeLine
 
 //------------------------------------------------------------------------------
 
-SMain::SMain() throw()
+SMain::SMain() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SMain::~SMain() throw()
+SMain::~SMain() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SMain::starting() throw( ::fwTools::Failed )
+void SMain::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SMain::stopping() throw( ::fwTools::Failed )
+void SMain::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SMain::updating() throw( ::fwTools::Failed )
+void SMain::updating()
 {
     // This allows us to block the main thread...
     getchar();
@@ -51,13 +51,13 @@ void SMain::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SMain::configuring() throw( ::fwTools::Failed )
+void SMain::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SMain::swapping( ) throw( ::fwTools::Failed )
+void SMain::swapping( )
 {
 
 }

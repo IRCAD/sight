@@ -20,13 +20,13 @@ struct IONETWORK_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    IONETWORK_API ~Plugin() throw();
+    IONETWORK_API ~Plugin() noexcept;
 
     /// Overrides
-    IONETWORK_API void start() throw(::fwRuntime::RuntimeException);
+    IONETWORK_API void start();
 
     /// Overrides
-    IONETWORK_API void stop() throw();
+    IONETWORK_API void stop() noexcept;
 
 };
 

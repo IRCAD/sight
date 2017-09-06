@@ -29,44 +29,44 @@ const ::fwCom::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
 
 // ----------------------------------------------------------------------------
 
-SMarkerToPoint::SMarkerToPoint() throw ()
+SMarkerToPoint::SMarkerToPoint() noexcept
 {
     newSlot( s_ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this );
 }
 
 // ----------------------------------------------------------------------------
 
-SMarkerToPoint::~SMarkerToPoint() throw ()
+SMarkerToPoint::~SMarkerToPoint() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMarkerToPoint::configuring() throw (fwTools::Failed)
+void SMarkerToPoint::configuring()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMarkerToPoint::starting() throw (fwTools::Failed)
+void SMarkerToPoint::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMarkerToPoint::swapping() throw (fwTools::Failed)
+void SMarkerToPoint::swapping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMarkerToPoint::updating() throw (fwTools::Failed)
+void SMarkerToPoint::updating()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMarkerToPoint::stopping() throw (fwTools::Failed)
+void SMarkerToPoint::stopping()
 {
 }
 

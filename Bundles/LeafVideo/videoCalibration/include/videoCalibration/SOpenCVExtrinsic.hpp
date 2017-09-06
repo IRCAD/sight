@@ -45,27 +45,27 @@ public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::videoCalibration::ICalibration));
 
     /// Constructor.
-    VIDEOCALIBRATION_API SOpenCVExtrinsic() throw ();
+    VIDEOCALIBRATION_API SOpenCVExtrinsic() noexcept;
 
     /// Destructor.
-    VIDEOCALIBRATION_API virtual ~SOpenCVExtrinsic() throw ();
+    VIDEOCALIBRATION_API virtual ~SOpenCVExtrinsic() noexcept;
 
 protected:
 
     /// Configures the service.
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Calls stopping and starting.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void swapping();
 
     /// Computes intrinsic calibration
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Removes connections
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
 private:
 

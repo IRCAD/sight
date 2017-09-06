@@ -17,11 +17,11 @@ namespace arPatchMedicalData
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::arPatchMedicalData::Plugin");
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     //Hack: force link with arStructuralPatch
     ::arStructuralPatch::PatchLoader::loadPatches();
@@ -32,7 +32,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     ::arMDSemanticPatch::PatchLoader::loadPatches();
 }
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

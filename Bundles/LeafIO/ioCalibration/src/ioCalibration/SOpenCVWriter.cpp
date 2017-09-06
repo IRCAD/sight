@@ -39,14 +39,14 @@ SOpenCVWriter::~SOpenCVWriter()
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::configuring() throw (::fwTools::Failed)
+void SOpenCVWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::configureWithIHM() throw (::fwTools::Failed)
+void SOpenCVWriter::configureWithIHM()
 {
     this->defineLocationGUI();
 }
@@ -88,21 +88,21 @@ bool SOpenCVWriter::defineLocationGUI()
 
 //----------------------------------------------------------------------------
 
-void SOpenCVWriter::starting() throw (::fwTools::Failed)
+void SOpenCVWriter::starting()
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::stopping() throw (::fwTools::Failed)
+void SOpenCVWriter::stopping()
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::updating() throw (::fwTools::Failed)
+void SOpenCVWriter::updating()
 {
 
     ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >("target");
@@ -192,7 +192,7 @@ void SOpenCVWriter::updating() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::swapping() throw (::fwTools::Failed)
+void SOpenCVWriter::swapping()
 {
     this->stop();
     this->start();

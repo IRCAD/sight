@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCalibration/SDisplayCalibrationInfo.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <arData/CalibrationInfo.hpp>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
@@ -16,10 +17,8 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig2.hpp>
+#include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/Proxy.hpp>
-
-#include <arData/CalibrationInfo.hpp>
 
 #include <sstream>
 
@@ -40,7 +39,7 @@ static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
 
 //------------------------------------------------------------------------------
 
-SDisplayCalibrationInfo::SDisplayCalibrationInfo() throw ()
+SDisplayCalibrationInfo::SDisplayCalibrationInfo() noexcept
 {
     newSlot( s_DISPLAY_IMAGE_SLOT, &SDisplayCalibrationInfo::displayImage, this );
     newSlot(s_STOP_CONFIG_SLOT, &SDisplayCalibrationInfo::stopConfig, this);
@@ -48,20 +47,20 @@ SDisplayCalibrationInfo::SDisplayCalibrationInfo() throw ()
 
 //------------------------------------------------------------------------------
 
-SDisplayCalibrationInfo::~SDisplayCalibrationInfo() throw ()
+SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::starting() throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::starting()
 {
     m_proxychannel = this->getID() + "_stopConfig";
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::stopping() throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::stopping()
 {
     if (m_configMgr)
     {
@@ -74,13 +73,13 @@ void SDisplayCalibrationInfo::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::configuring() throw (fwTools::Failed)
+void SDisplayCalibrationInfo::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::updating() throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::updating()
 {
 }
 
@@ -96,7 +95,7 @@ void SDisplayCalibrationInfo::stopConfig()
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::info(std::ostream &_sstream)
+void SDisplayCalibrationInfo::info(std::ostream& _sstream)
 {
 }
 
@@ -108,7 +107,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
     {
         // Grab images from our composite data
         ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
-        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
+        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
         ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
@@ -136,7 +135,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
         config =
-            ::fwServices::registry::AppConfig2::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
+            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
         m_configMgr = ::fwServices::IAppConfigManager::New();

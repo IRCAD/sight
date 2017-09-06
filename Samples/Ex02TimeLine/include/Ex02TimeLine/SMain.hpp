@@ -24,25 +24,25 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SMain)(::fwServices::IService) );
 
-    EX02TIMELINE_API SMain() throw();
-    EX02TIMELINE_API virtual ~SMain() throw();
+    EX02TIMELINE_API SMain() noexcept;
+    EX02TIMELINE_API virtual ~SMain() noexcept;
 
 protected:
 
     /// Does nothing.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Does nothing.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing.
-    virtual void swapping() throw ( ::fwTools::Failed );
+    virtual void swapping();
 
     /// Contains one input instruction to block the main thread.
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing.
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

@@ -36,7 +36,7 @@ const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2d::SPoseFrom2d() throw () :
+SPoseFrom2d::SPoseFrom2d() noexcept :
     m_lastTimestamp(0),
     m_patternWidth(80),
     m_isInitialized(false),
@@ -47,22 +47,22 @@ SPoseFrom2d::SPoseFrom2d() throw () :
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2d::~SPoseFrom2d() throw ()
+SPoseFrom2d::~SPoseFrom2d() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::configuring() throw (::fwTools::Failed)
+void SPoseFrom2d::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
     m_patternWidth                            = config.get<double>("patternWidth", 80);
     OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::starting() throw (::fwTools::Failed)
+void SPoseFrom2d::starting()
 {
     //3D Points
     const double halfWidth = m_patternWidth * .5;
@@ -75,7 +75,7 @@ void SPoseFrom2d::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::stopping() throw (::fwTools::Failed)
+void SPoseFrom2d::stopping()
 {
     for(const ::arlCore::Camera* cam : m_arlCameras)
     {
@@ -91,7 +91,7 @@ void SPoseFrom2d::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::updating() throw (::fwTools::Failed)
+void SPoseFrom2d::updating()
 {
 }
 

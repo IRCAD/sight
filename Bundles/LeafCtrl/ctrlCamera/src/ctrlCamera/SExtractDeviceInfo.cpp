@@ -41,7 +41,7 @@ SExtractDeviceInfo::~SExtractDeviceInfo()
 
 //-----------------------------------------------------------------------------
 
-void SExtractDeviceInfo::configuring() throw( ::fwTools::Failed )
+void SExtractDeviceInfo::configuring()
 {
     ConfigurationType configCfg = m_configuration->findConfigurationElement("configId");
     ::fwRuntime::ConfigurationElement::csptr deviceConfig;
@@ -70,13 +70,13 @@ void SExtractDeviceInfo::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractDeviceInfo::starting() throw( ::fwTools::Failed )
+void SExtractDeviceInfo::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SExtractDeviceInfo::updating() throw( ::fwTools::Failed )
+void SExtractDeviceInfo::updating()
 {
     ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >("camera");
     SLM_ASSERT("Camera 'camera' not found.", camera);
@@ -206,7 +206,7 @@ void SExtractDeviceInfo::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SExtractDeviceInfo::stopping() throw( ::fwTools::Failed )
+void SExtractDeviceInfo::stopping()
 {
 }
 

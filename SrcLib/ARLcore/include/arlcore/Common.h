@@ -9,8 +9,8 @@
 
 //#include <float.h>
 #include <boost/cstdint.hpp>
-#include <fwTools/Object.hpp>
 #include <fwCore/macros.hpp>
+#include <fwTools/Object.hpp>
 #include <ARLcore/config.hpp>
 
 //#include <arlcore/Type.h>

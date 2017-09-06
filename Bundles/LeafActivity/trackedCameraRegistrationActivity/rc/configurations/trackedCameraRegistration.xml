@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>TrackedCameraRegistration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -18,7 +18,7 @@
 
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
 
-        <object uid="rgbCamera" type="::arData::Camera" src="deferred" /> 
+        <object uid="rgbCamera" type="::arData::Camera" src="deferred" />
         <object uid="senseCamera" type="::arData::Camera" />
 
         <object uid="senseFrameTLColor" type="::arData::FrameTL" />
@@ -101,8 +101,8 @@
         <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="start" icon="@BUNDLE_PREFIX@/rdMedia_0-1/icons/start.svg" />
-                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/rdMedia_0-1/icons/stop.svg" />
+                    <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start.svg" />
+                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop.svg" />
                     <separator />
                     <menuItem name="Compute registration matrix" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg"/>
                     <menuItem name="Switch matrices" style="check" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg"/>
@@ -131,7 +131,7 @@
             <inout key="frameTL" uid="rgbFrameTLColor" />
             <inout key="imageVideo" uid="rgbImageVideo" />
             <inout key="markerMesh" uid="${markerMesh}" />
-            
+
             <inout key="matrixTL" uid="rgbMatrixTL" />
             <inout key="tagMatrix1" uid="currentTag1Matrix" />
             <inout key="tagMatrix2" uid="rgbTag2Matrix" />
@@ -147,7 +147,7 @@
             <inout key="frameTL" uid="senseFrameTLColor" />
             <inout key="imageVideo" uid="senseImageVideo" />
             <inout key="markerMesh" uid="${markerMesh}" />
-            
+
             <inout key="matrixTL" uid="senseMatrixTL" />
             <inout key="tagMatrix1" uid="senseTag1Matrix" />
             <inout key="tagMatrix2" uid="senseTag2Matrix" />

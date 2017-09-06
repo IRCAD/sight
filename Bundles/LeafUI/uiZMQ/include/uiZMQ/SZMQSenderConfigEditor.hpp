@@ -24,7 +24,7 @@ public:
     UIZMQ_API SZMQSenderConfigEditor();
 
     /// Destructor
-    UIZMQ_API virtual ~SZMQSenderConfigEditor() throw();
+    UIZMQ_API virtual ~SZMQSenderConfigEditor() noexcept;
 
     void initPatternBox();
 

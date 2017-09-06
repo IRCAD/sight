@@ -1,6 +1,7 @@
 fwLoadProperties()
 
-find_package(PCL REQUIRED)
+fwQuickFindPCL()
+
 find_package(Boost COMPONENTS regex REQUIRED)
 
 fwInclude(
@@ -11,4 +12,3 @@ fwLink(
     ${PCL_LIBRARIES}
     ${Boost_REGEX_LIBRARY}
 )
-

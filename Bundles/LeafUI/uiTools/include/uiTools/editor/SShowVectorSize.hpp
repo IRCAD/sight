@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,8 +15,8 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QPointer>
 #include <QLabel>
+#include <QPointer>
 
 class QPushButton;
 
@@ -27,8 +27,23 @@ namespace editor
 {
 
 /**
- * @brief   SShowVectorSize service show the size of a fwData::Vector
- * @class   SShowVectorSize
+ * @brief  SShowVectorSize service show the size of a fwData::Vector
+ *
+ * @code{.xml}
+    <service uid="..." type="::gui::editor::IEditor" impl="::uiTools::editor::SShowVectorSize" autoConnect="yes">
+        <in key="vector" uid="..." autoConnect="yes"/>
+        <text> my text </text>
+    </service>
+   @endcode
+ * - \b text (optional, by default "") : the text to show before size of the vector
+ *
+ * @subsection Inputs Inputs
+ * - \b vector [::fwData::Vector]: input vector.
+ *
+ * @subsection Slots Slots
+ * -\b addObjects(::fwData::Vector::ContainerType): increment displayed size of the vector.
+ * -\b removeObjects(::fwData::Vector::ContainerType ): decrement displayed size of the vector.
+ *
  */
 class UITOOLS_CLASS_API SShowVectorSize : public QObject,
                                           public ::gui::editor::IEditor
@@ -36,22 +51,22 @@ class UITOOLS_CLASS_API SShowVectorSize : public QObject,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShowVectorSize)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SShowVectorSize)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UITOOLS_API SShowVectorSize() throw();
+    UITOOLS_API SShowVectorSize() noexcept;
 
     /// Destructor. Do nothing.
-    UITOOLS_API virtual ~SShowVectorSize() throw();
+    UITOOLS_API virtual ~SShowVectorSize() noexcept;
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
-     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
+     * @name Slots API
+     * @{
      */
-    UITOOLS_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT;
+
+    /** @} */
 
 protected:
 
@@ -60,42 +75,34 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
-
-    /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
-
-    /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
-
-    /**
-     * @brief Configure the service
-     *
-     * @code{.xml}
-        <service uid="..." type="::gui::editor::IEditor" impl="::uiTools::editor::SShowVectorSize" autoConnect="yes">
-            <text> my text </text>
-        </service>
-       @endcode
-     * - \b text (optional, by default "") : the text to show before size of the vector
-     * - \b
-     */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void stopping();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void updating();
 
+    /// Overrides
+    virtual void swapping();
+
+    /// connect fwData::Vector's signals to SShowVector
+    virtual KeyConnectionsMap getAutoConnections() const;
+
+    /// Configures the service
+    virtual void configuring();
+
+    /// Overrides
+    virtual void info( std::ostream& _sstream );
 
 private:
 
-    /// Slot: add objects
+    /// SLOT: add objects
     void addObjects(::fwData::Vector::ContainerType objects);
 
-    /// Slot: remove objects
+    /// SLOT: remove objects
     void removeObjects(::fwData::Vector::ContainerType objects);
 
     size_t m_vectorSize; ///< size of the vector
@@ -107,5 +114,4 @@ private:
 } // namespace uiTools
 
 #endif /*__UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__*/
-
 

@@ -27,7 +27,7 @@ SZMQListenerConfigEditor::SZMQListenerConfigEditor() :
 
 //-----------------------------------------------------------------------------
 
-SZMQListenerConfigEditor::~SZMQListenerConfigEditor() throw()
+SZMQListenerConfigEditor::~SZMQListenerConfigEditor() noexcept
 {
 }
 

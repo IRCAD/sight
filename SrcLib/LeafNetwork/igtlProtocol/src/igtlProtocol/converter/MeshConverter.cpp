@@ -261,7 +261,6 @@ igtlFloat32 MeshConverter::toIgtlFloat32 (unsigned char colorComponent)
 
 void MeshConverter::fromIgtlMessage (::igtl::MessageBase::Pointer const src,
                                      ::fwData::Object::sptr& destObj) const
-throw (::igtlProtocol::exception::Conversion)
 {
     SLM_TRACE_FUNC();
 

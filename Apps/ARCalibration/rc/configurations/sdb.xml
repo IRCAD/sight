@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig2">
+<extension implements="::fwServices::registry::AppConfig">
     <id>SDBARCalibration</id>
     <parameters>
         <param name="SERIESDB" />
@@ -28,7 +28,7 @@
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>

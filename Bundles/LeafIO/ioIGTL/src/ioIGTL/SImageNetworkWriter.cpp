@@ -28,26 +28,26 @@ SImageNetworkWriter::SImageNetworkWriter()
 
 //-----------------------------------------------------------------------------
 
-SImageNetworkWriter::~SImageNetworkWriter() throw()
+SImageNetworkWriter::~SImageNetworkWriter() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::configuring() throw (::fwTools::Failed)
+void SImageNetworkWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::starting() throw (::fwTools::Failed)
+void SImageNetworkWriter::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::stopping() throw (::fwTools::Failed)
+void SImageNetworkWriter::stopping()
 {
     if (m_server.isStarted())
     {
@@ -79,7 +79,7 @@ void SImageNetworkWriter::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::updating() throw (::fwTools::Failed)
+void SImageNetworkWriter::updating()
 {
     ::fwData::Image::sptr img;
     ::fwGui::dialog::MessageDialog msgDialog;
@@ -118,7 +118,7 @@ void SImageNetworkWriter::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::swapping() throw (::fwTools::Failed)
+void SImageNetworkWriter::swapping()
 {
     // Classic default approach to update service when object change
     this->stopping();

@@ -48,7 +48,7 @@ SZeroMQListener::~SZeroMQListener()
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQListener::setHost(std::string const& host, ::boost::uint16_t const port) throw (::fwTools::Failed)
+void SZeroMQListener::setHost(std::string const& host, ::boost::uint16_t const port)
 {
     std::stringstream stream;
 
@@ -58,7 +58,7 @@ void SZeroMQListener::setHost(std::string const& host, ::boost::uint16_t const p
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQListener::configuring() throw (::fwTools::Failed)
+void SZeroMQListener::configuring()
 {
     try
     {
@@ -125,7 +125,7 @@ void SZeroMQListener::updateConfiguration(::zmqNetwork::Socket::PatternMode cons
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQListener::starting() throw (::fwTools::Failed)
+void SZeroMQListener::starting()
 {
     std::function<void() > task = std::bind (&SZeroMQListener::runReceiver, this);
 
@@ -136,7 +136,7 @@ void SZeroMQListener::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQListener::stopping() throw (::fwTools::Failed)
+void SZeroMQListener::stopping()
 {
     m_socket->terminate();
     m_receiveWorker->stop();

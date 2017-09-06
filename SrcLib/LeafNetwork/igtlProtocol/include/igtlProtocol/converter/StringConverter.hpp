@@ -33,9 +33,7 @@ public:
      *
      * @return an fwData::String converted from an igtl::StringMessage
      */
-    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                                           ::fwData::Object::sptr& dest) const
-    throw (::igtlProtocol::exception::Conversion);
+    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src, ::fwData::Object::sptr& dest) const;
 
     /**
      * @brief convert a fwData::String to a igtl::StringMessage

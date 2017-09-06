@@ -44,7 +44,7 @@ const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
-SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
+SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
     m_tolerance(500.),
     m_imagesInitialized(false),
     m_timeStep(33),
@@ -56,56 +56,9 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::configuring() throw (::fwTools::Failed)
+void SFrameMatrixSynchronizer::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    if(!this->isVersion2())
-    {
-        ConfigurationType framesConfig = m_configuration->findConfigurationElement("frames");
-        SLM_FATAL_IF("Missing \"frames\" tag.", !framesConfig);
-
-        std::vector< ConfigurationType > frameCfgs = framesConfig->find("frame");
-        for(ConfigurationType cfg : frameCfgs)
-        {
-            std::string frameTL = cfg->getAttributeValue("from");
-            std::string frame   = cfg->getAttributeValue("to");
-            SLM_ASSERT("Missing attribute 'from' and/or 'to'", !frameTL.empty() && !frame.empty());
-            m_frameKeys[frameTL] = frame;
-        }
-
-        ConfigurationType matricesConfig = m_configuration->findConfigurationElement("matrices");
-        SLM_WARN_IF("Missing \"matrices\" tag.", !matricesConfig);
-
-        if (matricesConfig)
-        {
-            std::vector< ConfigurationType > timelineCfgs = matricesConfig->find("timeline");
-            SLM_ASSERT("Missing 'timeline' tag", !timelineCfgs.empty());
-
-            for(ConfigurationType timelineCfg : timelineCfgs)
-            {
-                const std::string matrixTL = timelineCfg->getAttributeValue("from");
-                SLM_ASSERT("Missing attribute 'from'", !matrixTL.empty());
-
-                MatrixVectorType& matrixVector              = m_matrixKeys[matrixTL];
-                std::vector< ConfigurationType > matrixCfgs = timelineCfg->find("matrix");
-
-                SLM_ASSERT("Missing 'matrix' tag", !matrixCfgs.empty() );
-
-                for(ConfigurationType cfg : matrixCfgs)
-                {
-                    const std::string index = cfg->getAttributeValue("index");
-                    const int id            = ::boost::lexical_cast< int >(index);
-
-                    const std::string matrix = cfg->getAttributeValue("to");
-
-                    SLM_ASSERT("Missing attribute 'index' and/or 'to'", !index.empty() && !matrix.empty() );
-
-                    matrixVector.push_back(std::make_pair(matrix, id));
-                }
-            }
-        }
-    }
 
     ConfigurationType framerateConfig = m_configuration->findConfigurationElement("framerate");
     SLM_WARN_IF("Missing \"framerate\" tag.", !framerateConfig );
@@ -124,71 +77,39 @@ void SFrameMatrixSynchronizer::configuring() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
+void SFrameMatrixSynchronizer::starting()
 {
-    if(this->isVersion2())
+    const size_t numFrameTLs = this->getKeyGroupSize(s_FRAMETL_INPUT);
+    const size_t numImages   = this->getKeyGroupSize(s_IMAGE_INOUT);
+    SLM_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
+
+    for(size_t i = 0; i < numFrameTLs; ++i)
     {
-        const size_t numFrameTLs = this->getKeyGroupSize(s_FRAMETL_INPUT);
-        const size_t numImages   = this->getKeyGroupSize(s_IMAGE_INOUT);
-        SLM_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
-
-        for(size_t i = 0; i < numFrameTLs; ++i)
-        {
-            // TODO: replace by a vector when appXml is removed
-            m_frameTLs["frame" + std::to_string(i)] = this->getInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i);
-            m_images["frame" + std::to_string(i)]   = this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i);
-        }
-
-        const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
-
-        m_totalOutputMatrices = 0;
-        for(size_t i = 0; i < numMatrixTLs; ++i)
-        {
-            // Get the group corresponding to the 'i' Matrix TimeLine. The name of this group is matrices0 for example.
-            // if ever the group is not found 'getKeyGroupSize' will assert.
-            const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT+std::to_string(i));
-
-            m_matrixTLs["matrixTL" + std::to_string(i)] = this->getInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i);
-
-            MatrixKeyVectorType matricesVector;
-            for(size_t j = 0; j < numMatrices; ++j)
-            {
-                matricesVector.push_back(
-                    std::make_pair(this->getInOut< ::fwData::TransformationMatrix3D >(
-                                       s_MATRICES_INOUT+std::to_string(i), j), j));
-            }
-            m_totalOutputMatrices                     += numMatrices;
-            m_matrices["matrixTL" + std::to_string(i)] = matricesVector;
-        }
+        // TODO: replace by a vector when appXml is removed
+        m_frameTLs["frame" + std::to_string(i)] = this->getInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i);
+        m_images["frame" + std::to_string(i)]   = this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i);
     }
-    else
+
+    const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
+
+    m_totalOutputMatrices = 0;
+    for(size_t i = 0; i < numMatrixTLs; ++i)
     {
-        ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
-        for(FrameKeysType::value_type elt : m_frameKeys)
+        // Get the group corresponding to the 'i' Matrix TimeLine. The name of this group is matrices0 for example.
+        // if ever the group is not found 'getKeyGroupSize' will assert.
+        const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT+std::to_string(i));
+
+        m_matrixTLs["matrixTL" + std::to_string(i)] = this->getInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i);
+
+        MatrixKeyVectorType matricesVector;
+        for(size_t j = 0; j < numMatrices; ++j)
         {
-            ::arData::FrameTL::sptr frameTL = comp->at< ::arData::FrameTL >(elt.first);
-            SLM_ASSERT("::arData::FrameTL is not valid", frameTL);
-            ::fwData::Image::sptr frame = comp->at< ::fwData::Image >(elt.second);
-            SLM_ASSERT("::fwData::Image is not valid", frame);
-
-            m_frameTLs[elt.first] = frameTL;
-            m_images[elt.first]   = frame;
+            matricesVector.push_back(
+                std::make_pair(this->getInOut< ::fwData::TransformationMatrix3D >(
+                                   s_MATRICES_INOUT+std::to_string(i), j), j));
         }
-
-        for(MatrixKeysType::value_type elt : m_matrixKeys)
-        {
-            ::arData::MatrixTL::sptr matrixTL = comp->at< ::arData::MatrixTL >(elt.first);
-
-            m_matrixTLs[elt.first] = matrixTL;
-            MatrixKeyVectorType& matrixVector = m_matrices[elt.first];
-
-            for(MatrixVectorType::value_type mat : elt.second)
-            {
-                ::fwData::TransformationMatrix3D::sptr matrix =
-                    comp->at< ::fwData::TransformationMatrix3D >(mat.first);
-                matrixVector.push_back(std::make_pair(matrix, mat.second));
-            }
-        }
+        m_totalOutputMatrices                     += numMatrices;
+        m_matrices["matrixTL" + std::to_string(i)] = matricesVector;
     }
 
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
@@ -202,7 +123,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::stopping() throw (fwTools::Failed)
+void SFrameMatrixSynchronizer::stopping()
 {
     m_timer->stop();
 
@@ -409,7 +330,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::updating() throw (fwTools::Failed)
+void SFrameMatrixSynchronizer::updating()
 {
 }
 

@@ -34,20 +34,20 @@ SImageNetworkReader::SImageNetworkReader()
 
 //-----------------------------------------------------------------------------
 
-SImageNetworkReader::~SImageNetworkReader() throw()
+SImageNetworkReader::~SImageNetworkReader() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkReader::configuring() throw (::fwTools::Failed)
+void SImageNetworkReader::configuring()
 {
     ::io::IReader::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkReader::configureWithIHM() throw (::fwTools::Failed)
+void SImageNetworkReader::configureWithIHM()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     std::string portStr;
@@ -72,19 +72,19 @@ void SImageNetworkReader::configureWithIHM() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkReader::starting() throw (::fwTools::Failed)
+void SImageNetworkReader::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkReader::stopping() throw (::fwTools::Failed)
+void SImageNetworkReader::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkReader::updating() throw (::fwTools::Failed)
+void SImageNetworkReader::updating()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::sptr obj;
@@ -119,7 +119,7 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkReader::swapping() throw (::fwTools::Failed)
+void SImageNetworkReader::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

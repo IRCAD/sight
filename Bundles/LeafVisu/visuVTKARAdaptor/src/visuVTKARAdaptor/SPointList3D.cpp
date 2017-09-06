@@ -1,11 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
-
-/* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,80 +7,68 @@
 #include "visuVTKARAdaptor/SPointList3D.hpp"
 
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <vtkPoints.h>
-#include <vtkSphereSource.h>
-#include <vtkSmartPointer.h>
-#include <vtkGlyph3D.h>
-#include <vtkCubeSource.h>
 #include <vtkActor.h>
+#include <vtkCubeSource.h>
+#include <vtkGlyph3D.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
 #include <vtkTransform.h>
 
-#include <boost/lexical_cast.hpp>
-
-#include <iterator>
-#include <algorithm>
-#include <functional>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SPointList3D, ::fwData::PointList );
+fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SPointList3D, ::fwData::PointList );
 
 namespace visuVTKARAdaptor
 {
 
+static const ::fwServices::IService::KeyType s_POINTLIST_IN = "pointList";
+
 //------------------------------------------------------------------------------
 
-SPointList3D::SPointList3D() throw() :
+SPointList3D::SPointList3D() noexcept :
     m_radius(3.)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SPointList3D::~SPointList3D() throw()
+SPointList3D::~SPointList3D() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doConfigure() throw(fwTools::Failed)
+void SPointList3D::configuring()
 {
-
     SLM_TRACE_FUNC();
 
-    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setTransformId( m_configuration->getAttributeValue("transform") );
+    this->configureParams();
 
-    std::string hexaColor = m_configuration->getAttributeValue("color");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    std::string hexaColor = config.get< std::string >("color");
+
     m_ptColor = ::fwData::Color::New();
     if (!hexaColor.empty())
     {
         m_ptColor->setRGBA(hexaColor);
     }
 
-    std::string radiusStr = m_configuration->getAttributeValue("radius");
-    if (!radiusStr.empty())
-    {
-        m_radius = ::boost::lexical_cast<double>(radiusStr);
-    }
+    m_radius = config.get<double>("radius", m_radius);
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doStart() throw(fwTools::Failed)
+void SPointList3D::starting()
 {
-    ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
-
-    if (pl)
-    {
-        m_connections.connect(pl, ::fwData::PointList::s_POINT_ADDED_SIG, this->getSptr(), s_UPDATE_SLOT);
-    }
+    this->initialize();
 
     m_points = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
@@ -104,8 +86,11 @@ void SPointList3D::doStart() throw(fwTools::Failed)
 
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue());
-    actor->GetProperty()->SetOpacity(m_ptColor->alpha());
+    actor->GetProperty()->SetColor(static_cast<double>(m_ptColor->red()),
+                                   static_cast<double>(m_ptColor->green()),
+                                   static_cast<double>(m_ptColor->blue()));
+
+    actor->GetProperty()->SetOpacity(static_cast<double>(m_ptColor->alpha()));
 
     if (!this->getTransformId().empty())
     {
@@ -114,19 +99,19 @@ void SPointList3D::doStart() throw(fwTools::Failed)
 
     this->addToRenderer(actor);
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doUpdate() throw(fwTools::Failed)
+void SPointList3D::updating()
 {
     m_points->Reset();
 
-    ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
+    ::fwData::PointList::csptr pl = this->getInput< ::fwData::PointList >(s_POINTLIST_IN);
 
     {
-        ::fwData::mt::ObjectReadLock lock (pl);
+        ::fwData::mt::ObjectReadLock lock(pl);
 
         for( ::fwData::Point::sptr pt : pl->getPoints() )
         {
@@ -137,23 +122,35 @@ void SPointList3D::doUpdate() throw(fwTools::Failed)
     m_points->Modified();
 
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doSwap() throw(fwTools::Failed)
+void SPointList3D::swapping()
 {
-    this->doStop();
-    this->doStart();
+    this->stopping();
+    this->starting();
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doStop() throw(fwTools::Failed)
+void SPointList3D::stopping()
 {
     this->removeAllPropFromRenderer();
 }
 
+//------------------------------------------------------------------------------
+
+fwServices::IService::KeyConnectionsMap SPointList3D::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_IN, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
+
+    return connections;
+}
 
 //------------------------------------------------------------------------------
 

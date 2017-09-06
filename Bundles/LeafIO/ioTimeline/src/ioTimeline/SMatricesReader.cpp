@@ -42,13 +42,14 @@ static const ::fwCom::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
 
 //------------------------------------------------------------------------------
 
-SMatricesReader::SMatricesReader() throw() :
+SMatricesReader::SMatricesReader() noexcept :
     m_isPlaying(false),
     m_filestream(nullptr),
     m_tsMatricesCount(0),
     m_createNewTS(false),
     m_fps(30),
-    m_oneShot(false)
+    m_oneShot(false),
+    m_useTimelapse(false)
 {
 
     m_worker = ::fwThread::Worker::New();
@@ -62,7 +63,7 @@ SMatricesReader::SMatricesReader() throw() :
 
 //------------------------------------------------------------------------------
 
-SMatricesReader::~SMatricesReader() throw()
+SMatricesReader::~SMatricesReader() noexcept
 {
     if(nullptr != m_filestream)
     {
@@ -80,14 +81,16 @@ SMatricesReader::~SMatricesReader() throw()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::configuring() throw(::fwTools::Failed)
+void SMatricesReader::configuring()
 {
     ::io::IReader::configuring();
 
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
     OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
+
+    m_useTimelapse = config.get<bool>("useTimelapse", false);
 
     m_createNewTS = config.get<bool>("createTimestamp", false);
 
@@ -96,7 +99,7 @@ void SMatricesReader::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::starting() throw(::fwTools::Failed)
+void SMatricesReader::starting()
 {
 
 }
@@ -137,14 +140,14 @@ void SMatricesReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::stopping() throw(::fwTools::Failed)
+void SMatricesReader::stopping()
 {
     this->stopReading();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::updating() throw(::fwTools::Failed)
+void SMatricesReader::updating()
 {
 }
 
@@ -272,7 +275,26 @@ void SMatricesReader::startReading()
         {
             m_timer = m_worker->createTimer();
 
-            ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
+            ::fwThread::Timer::TimeDurationType duration;
+            if(m_useTimelapse)
+            {
+                m_timer->setOneShot(true);
+                if(m_tsMatrices.size() >= 2)
+                {
+                    duration =
+                        ::boost::chrono::milliseconds(static_cast<uint64_t>(m_tsMatrices[1].timestamp -
+                                                                            m_tsMatrices[0].timestamp));
+                }
+                else
+                {
+                    // Only one matrix to read, might as well just read it ASAP.
+                    duration = ::boost::chrono::milliseconds(0);
+                }
+            }
+            else
+            {
+                duration = ::boost::chrono::milliseconds(1000/m_fps);
+            }
 
             m_timer->setFunction(std::bind(&SMatricesReader::readMatrices, this));
             m_timer->setDuration(duration);
@@ -320,8 +342,9 @@ void SMatricesReader::pause()
 
 void SMatricesReader::readMatrices()
 {
-    if(m_tsMatricesCount < m_tsMatrices.size())
+    if(m_tsMatricesCount + 1 < m_tsMatrices.size())
     {
+        const auto tStart = ::fwCore::HiResClock::getTimeInMilliSec();
         ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL>(s_MATRIXTL);
 
         TimeStampedMatrices currentMatrices = m_tsMatrices[m_tsMatricesCount];
@@ -342,11 +365,44 @@ void SMatricesReader::readMatrices()
         matrixBuf = matrixTL->createBuffer(timestamp);
         matrixTL->pushObject(matrixBuf);
 
+        OSLM_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
         for(unsigned int i = 0; i < currentMatrices.matrices.size(); ++i)
         {
             float mat[16];
             std::copy(currentMatrices.matrices[i].begin(), currentMatrices.matrices[i].end(), &mat[0]);
             matrixBuf->setElement(mat, i);
+        }
+
+        if(m_useTimelapse)
+        {
+            const auto elapsedTime          = ::fwCore::HiResClock::getTimeInMilliSec() - tStart;
+            const std::size_t currentMatrix = m_tsMatricesCount;
+            const double currentTime        = m_tsMatrices[currentMatrix].timestamp + elapsedTime;
+            double nextDuration             = m_tsMatrices[m_tsMatricesCount + 1].timestamp - currentTime;
+
+            // If the next matrix delay is already passed, drop the matrices and check the next one.
+            while (nextDuration < elapsedTime && (m_tsMatricesCount + 1) < m_tsMatrices.size())
+            {
+                nextDuration = m_tsMatrices[m_tsMatricesCount + 1].timestamp - currentTime;
+                ++m_tsMatricesCount;
+                SLM_DEBUG("Skipping a matrix");
+            }
+
+            // If it is the last matrix array: stop the timer or loop
+            if (m_tsMatricesCount+1 == m_tsMatrices.size())
+            {
+                m_timer->stop();
+            }
+            else
+            {
+                nextDuration = m_tsMatrices[m_tsMatricesCount + 1].timestamp -
+                               currentTime;
+                ::fwThread::Timer::TimeDurationType duration =
+                    ::boost::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
+                m_timer->stop();
+                m_timer->setDuration(duration);
+                m_timer->start();
+            }
         }
 
         //Notify

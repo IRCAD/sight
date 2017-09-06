@@ -63,12 +63,12 @@ public:
     /**
      * @brief Constructor.
      */
-    REGISTRATIONCV_API SPoseFrom2d() throw ();
+    REGISTRATIONCV_API SPoseFrom2d() noexcept;
 
     /**
      * @brief Destructor.
      */
-    REGISTRATIONCV_API virtual ~SPoseFrom2d() throw ();
+    REGISTRATIONCV_API virtual ~SPoseFrom2d() noexcept;
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
@@ -77,22 +77,22 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    REGISTRATIONCV_API void configuring() throw (fwTools::Failed);
+    REGISTRATIONCV_API void configuring();
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    REGISTRATIONCV_API void starting() throw (fwTools::Failed);
+    REGISTRATIONCV_API void starting();
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    REGISTRATIONCV_API void updating() throw (fwTools::Failed);
+    REGISTRATIONCV_API void updating();
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    REGISTRATIONCV_API void stopping() throw (fwTools::Failed);
+    REGISTRATIONCV_API void stopping();
 
     /// Register matrix slot
     void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp);

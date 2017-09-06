@@ -17,14 +17,14 @@ const ::fwCom::Slots::SlotKeyType IRegisterer::s_COMPUTE_REGISTRATION_SLOT = "co
 
 // ----------------------------------------------------------------------------
 
-IRegisterer::IRegisterer() throw ()
+IRegisterer::IRegisterer() noexcept
 {
     newSlot(s_COMPUTE_REGISTRATION_SLOT, &IRegisterer::computeRegistration, this);
 }
 
 // ----------------------------------------------------------------------------
 
-IRegisterer::~IRegisterer() throw ()
+IRegisterer::~IRegisterer() noexcept
 {
 }
 

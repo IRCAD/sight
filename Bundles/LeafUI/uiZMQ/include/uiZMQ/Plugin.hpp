@@ -22,13 +22,13 @@ struct UIZMQ_CLASS_API Plugin :
 {
 
     /// Destructor
-    UIZMQ_API ~Plugin() throw();
+    UIZMQ_API ~Plugin() noexcept;
 
     /// Overrides
-    UIZMQ_API void start() throw(::fwRuntime::RuntimeException);
+    UIZMQ_API void start();
 
     /// Overrides
-    UIZMQ_API void stop() throw();
+    UIZMQ_API void stop() noexcept;
 
 };
 

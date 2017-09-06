@@ -38,7 +38,7 @@ static const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
 
 //-----------------------------------------------------------------------------
 
-SFrameRecorder::SFrameRecorder() throw() : m_count(0),
+SFrameRecorder::SFrameRecorder() noexcept : m_count(0),
                                            m_isRecording(false),
                                            m_isPaused(false)
 {
@@ -59,26 +59,26 @@ SFrameRecorder::SFrameRecorder() throw() : m_count(0),
 
 //-----------------------------------------------------------------------------
 
-SFrameRecorder::~SFrameRecorder() throw()
+SFrameRecorder::~SFrameRecorder() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameRecorder::starting() throw(::fwTools::Failed)
+void SFrameRecorder::starting()
 {
     ::boost::filesystem::create_directories(m_path);
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameRecorder::stopping() throw(::fwTools::Failed)
+void SFrameRecorder::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameRecorder::configuring()  throw ( ::fwTools::Failed )
+void SFrameRecorder::configuring()
 {
     ConfigurationType config = m_configuration->findConfigurationElement("path");
     SLM_ASSERT("Missing <path> tag", config);
@@ -88,7 +88,7 @@ void SFrameRecorder::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SFrameRecorder::updating() throw ( ::fwTools::Failed )
+void SFrameRecorder::updating()
 {
 }
 

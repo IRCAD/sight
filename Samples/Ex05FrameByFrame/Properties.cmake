@@ -11,7 +11,7 @@ set( REQUIREMENTS
     guiQt
     servicesReg
     fwlauncher
-    appXml2
+    appXml
     visuVTK
     visuVTKQt
     visuVTKAdaptor
@@ -23,4 +23,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex05FrameByFrameConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex05FrameByFrameConfig)

@@ -33,7 +33,7 @@ namespace videoCalibration
 
 // ----------------------------------------------------------------------------
 
-SIntrinsic::SIntrinsic() throw () :
+SIntrinsic::SIntrinsic() noexcept :
     m_width(0),
     m_height(0)
 {
@@ -42,14 +42,14 @@ SIntrinsic::SIntrinsic() throw () :
 
 // ----------------------------------------------------------------------------
 
-SIntrinsic::~SIntrinsic() throw ()
+SIntrinsic::~SIntrinsic() noexcept
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SIntrinsic::configuring() throw (fwTools::Failed)
+void SIntrinsic::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr cfg = m_configuration->findConfigurationElement("calibrationInfoID");
     SLM_ASSERT("Tag 'calibrationInfoID' not found.", cfg);
@@ -73,19 +73,19 @@ void SIntrinsic::configuring() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SIntrinsic::starting() throw (fwTools::Failed)
+void SIntrinsic::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SIntrinsic::stopping() throw (fwTools::Failed)
+void SIntrinsic::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SIntrinsic::swapping() throw (fwTools::Failed)
+void SIntrinsic::swapping()
 {
     this->stopping();
     this->starting();
@@ -93,7 +93,7 @@ void SIntrinsic::swapping() throw (fwTools::Failed)
 
 //--------------------------------------------------------------------- ---------
 
-void SIntrinsic::updating() throw (fwTools::Failed)
+void SIntrinsic::updating()
 {
     ::arData::Camera::sptr cam = this->getObject< ::arData::Camera >();
 

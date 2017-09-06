@@ -28,7 +28,7 @@ const ::fwCom::Slots::SlotKeyType IGrabber::s_SET_POSITION_VIDEO_SLOT = "setPosi
 
 // ----------------------------------------------------------------------------
 
-IGrabber::IGrabber() throw ()
+IGrabber::IGrabber() noexcept
 {
     //Declare all signals
     newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
@@ -47,7 +47,7 @@ IGrabber::IGrabber() throw ()
 
 // ----------------------------------------------------------------------------
 
-IGrabber::~IGrabber() throw ()
+IGrabber::~IGrabber() noexcept
 {
 
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -30,7 +30,7 @@ namespace videoTools
 const ::fwCom::Slots::SlotKeyType SFrameUpdater::s_UPDATE_FRAME_SLOT        = "updateFrame";
 const ::fwCom::Signals::SignalKeyType SFrameUpdater::s_RENDER_REQUESTED_SIG = "renderRequested";
 
-SFrameUpdater::SFrameUpdater() throw() :
+SFrameUpdater::SFrameUpdater() noexcept :
     m_lastTimestamp(0),
     m_lastMatrixUpdatedKey(""),
     m_imageInitialized(false)
@@ -46,7 +46,7 @@ SFrameUpdater::SFrameUpdater() throw() :
 
 //-----------------------------------------------------------------------------
 
-SFrameUpdater::~SFrameUpdater() throw()
+SFrameUpdater::~SFrameUpdater() noexcept
 {
 }
 
@@ -64,65 +64,30 @@ SFrameUpdater::~SFrameUpdater() throw()
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::starting() throw(fwTools::Failed)
+void SFrameUpdater::starting()
 {
     m_imageInitialized = false;
 
-    if(!this->isVersion2())
-    {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        m_frameTL                           = ::arData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
-        OSLM_ASSERT("The timeline \"" << m_frameTL << "\" is not valid.", m_frameTL);
-
-        m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
-        OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
-
-        m_connections.connect( ::arData::FrameTL::constCast(m_frameTL),
-                               ::arData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
-                               ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
-    }
-    else
-    {
-        m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
-        m_image   = this->getInOut< ::fwData::Image>("frame");
-    }
-
+    m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
+    m_image   = this->getInOut< ::fwData::Image>("frame");
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::configuring() throw(::fwTools::Failed)
+void SFrameUpdater::configuring()
 {
-    if(!this->isVersion2())
-    {
-        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-        SLM_ASSERT("The service ::videoTools::SFrameUpdater must have a \"config\" element.",config);
-
-
-        //frameTLKey
-        ::fwRuntime::ConfigurationElement::sptr configframeTLKey = config->findConfigurationElement("frameTLKey");
-        SLM_ASSERT("The frame timeline of the service ::videoTools::SFrameUpdater is not specified "
-                   "(frameTLKey element is missing)", configframeTLKey);
-        m_frameTLKey = configframeTLKey->getValue();
-
-        //image
-        ::fwRuntime::ConfigurationElement::sptr configImage = config->findConfigurationElement("imageKey");
-        SLM_ASSERT("The image key of the service ::videoTools::SFrameUpdater is not specified "
-                   "(imageKey element is missing)", configImage);
-        m_imageKey = configImage->getValue();
-    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::stopping() throw(::fwTools::Failed)
+void SFrameUpdater::stopping()
 {
     m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::updating() throw(::fwTools::Failed)
+void SFrameUpdater::updating()
 {
 }
 
@@ -147,10 +112,10 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
             m_image->allocate(size, m_frameTL->getType(), m_frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(3,0);
+            ::fwData::Image::OriginType origin(3, 0);
 
             m_image->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(3,voxelSize);
+            ::fwData::Image::SpacingType spacing(3, voxelSize);
             m_image->setSpacing(spacing);
             m_image->setWindowWidth(1);
             m_image->setWindowCenter(0);
@@ -211,6 +176,5 @@ void SFrameUpdater::requestRender()
 {
     m_sigRenderRequested->asyncEmit();
 }
-
 
 } //namespace videoTools

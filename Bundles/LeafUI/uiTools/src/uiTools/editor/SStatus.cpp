@@ -38,7 +38,7 @@ const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT = "toggleGree
 
 //-----------------------------------------------------------------------------
 
-SStatus::SStatus() throw() :
+SStatus::SStatus() noexcept :
     m_isCircular(false),
     m_width(20),
     m_height(20)
@@ -60,13 +60,13 @@ SStatus::SStatus() throw() :
 
 //------------------------------------------------------------------------------
 
-SStatus::~SStatus() throw()
+SStatus::~SStatus() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SStatus::starting() throw(::fwTools::Failed)
+void SStatus::starting()
 {
     this->create();
 
@@ -89,14 +89,14 @@ void SStatus::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SStatus::stopping() throw(::fwTools::Failed)
+void SStatus::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SStatus::configuring() throw(fwTools::Failed)
+void SStatus::configuring()
 {
     this->initialize();
 
@@ -149,13 +149,13 @@ void SStatus::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SStatus::updating() throw(::fwTools::Failed)
+void SStatus::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SStatus::swapping() throw(::fwTools::Failed)
+void SStatus::swapping()
 {
 
 }

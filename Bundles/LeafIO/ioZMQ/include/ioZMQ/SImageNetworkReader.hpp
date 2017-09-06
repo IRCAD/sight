@@ -29,7 +29,7 @@ public:
     IOZMQ_API SImageNetworkReader();
 
     /// Destructor
-    IOZMQ_API virtual ~SImageNetworkReader() throw();
+    IOZMQ_API virtual ~SImageNetworkReader() noexcept;
 
     /**
      * @brief Show a input dialog box which you can enter a host in zeromq format
@@ -42,20 +42,20 @@ public:
 protected:
 
     /// Overrides
-    IOZMQ_API virtual void configuring() throw (::fwTools::Failed);
+    IOZMQ_API virtual void configuring();
 
     /// Overrides
-    IOZMQ_API virtual void starting() throw (::fwTools::Failed);
+    IOZMQ_API virtual void starting();
 
     /// Overrides
-    IOZMQ_API virtual void stopping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void stopping();
 
     /// Overrides
-    IOZMQ_API virtual void updating() throw (::fwTools::Failed);
+    IOZMQ_API virtual void updating();
 
 
     /// Overrides
-    IOZMQ_API virtual void swapping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void swapping();
 private:
 
     /// Socket to receive image data

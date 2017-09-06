@@ -27,7 +27,7 @@ public:
     UIZMQ_API SZMQListenerConfigEditor();
 
     /// Destructor
-    UIZMQ_API virtual ~SZMQListenerConfigEditor() throw();
+    UIZMQ_API virtual ~SZMQListenerConfigEditor() noexcept;
 
     /**
      * @brief method to init pattern box with listener pattern

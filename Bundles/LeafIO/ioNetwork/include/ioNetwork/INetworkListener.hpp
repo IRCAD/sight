@@ -78,19 +78,19 @@ public:
 
 protected:
     /// Overrides
-    IONETWORK_API virtual void configuring() throw (::fwTools::Failed);
+    IONETWORK_API virtual void configuring();
 
     /// Overrides
-    IONETWORK_API virtual void starting() throw (::fwTools::Failed);
+    IONETWORK_API virtual void starting();
 
     /// Overrides
-    IONETWORK_API virtual void stopping() throw (::fwTools::Failed);
+    IONETWORK_API virtual void stopping();
 
     /// Overrides
-    IONETWORK_API virtual void updating() throw (::fwTools::Failed);
+    IONETWORK_API virtual void updating();
 
     /// Overrides
-    IONETWORK_API virtual void swapping() throw (::fwTools::Failed);
+    IONETWORK_API virtual void swapping();
 
     /**
      * @brief notify application the object has updated use the s_MODIFIED_SIG signal from Object

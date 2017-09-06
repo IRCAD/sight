@@ -29,7 +29,7 @@ const ::fwCom::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
 
 // -----------------------------------------------------------------------------
 
-SScan::SScan() throw() :
+SScan::SScan() noexcept :
     m_streams(nullptr),
     m_capture(false),
     m_pause(false)
@@ -46,20 +46,20 @@ SScan::SScan() throw() :
 
 // -----------------------------------------------------------------------------
 
-SScan::~SScan() throw()
+SScan::~SScan() noexcept
 {
 
 }
 
 // -----------------------------------------------------------------------------
 
-void SScan::configuring()  throw ( ::fwTools::Failed )
+void SScan::configuring()
 {
 }
 
 // -----------------------------------------------------------------------------
 
-void SScan::starting() throw(::fwTools::Failed)
+void SScan::starting()
 {
     m_depthTL           = this->getInOut< ::arData::FrameTL>("frameTLDepth");
     m_colorTL           = this->getInOut< ::arData::FrameTL>("frameTLColors");
@@ -150,7 +150,7 @@ void SScan::starting() throw(::fwTools::Failed)
 
 // -----------------------------------------------------------------------------
 
-void SScan::stopping() throw(::fwTools::Failed)
+void SScan::stopping()
 {
     this->stopCamera();
 
@@ -180,7 +180,7 @@ void SScan::stopping() throw(::fwTools::Failed)
 
 // -----------------------------------------------------------------------------
 
-void SScan::updating() throw ( ::fwTools::Failed )
+void SScan::updating()
 {
 }
 

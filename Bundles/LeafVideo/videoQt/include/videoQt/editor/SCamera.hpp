@@ -11,13 +11,15 @@
 
 #include <arData/Camera.hpp>
 
-#include <QComboBox>
-#include <QObject>
-#include <QPointer>
+#include <fwCom/Signal.hpp>
 
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
+
+#include <QComboBox>
+#include <QObject>
+#include <QPointer>
 
 namespace videoQt
 {
@@ -69,27 +71,33 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SCamera)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    VIDEOQT_API SCamera() throw();
+    VIDEOQT_API SCamera() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOQT_API virtual ~SCamera() throw();
+    VIDEOQT_API virtual ~SCamera() noexcept;
+
+    /// Type of the 'configuredCameras' signal
+    using ConfiguredCamerasSignalType = ::fwCom::Signal<void()>;
+
+    /// Key of the 'configuredCameras' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
 
 protected:
 
     /// Configure the service
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Installs the layout
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroys the layout
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
 protected Q_SLOTS:
 
@@ -103,7 +111,7 @@ private:
     void onChooseDevice();
 
     /// Retrieve camera objects according to the XML configuration
-    std::vector< ::arData::Camera::sptr > getCameras();
+    std::vector< ::arData::Camera::sptr > getCameras() const;
 
     /// Combobox for camera selection
     QPointer<QComboBox> m_devicesComboBox;
@@ -113,6 +121,9 @@ private:
 
     /// Number of cameras to create when using a camera series as input
     size_t m_numCreateCameras;
+
+    /// Signal emitted when the cameraSeries has been configured
+    ConfiguredCamerasSignalType::sptr m_sigConfiguredCameras;
 };
 
 } // editor

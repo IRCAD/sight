@@ -19,14 +19,14 @@ ZeroMQLogger::~ZeroMQLogger()
 
 }
 
-void ZeroMQLogger::log(std::ostream& outputStream) throw (std::runtime_error)
+void ZeroMQLogger::log(std::ostream& outputStream)
 {
     m_socket.start(m_connectStr);
     m_logFunction(outputStream, m_socket);
     m_socket.stop();
 }
 
-void ZeroMQLogger::configure(int argc, char** argv) throw (std::runtime_error)
+void ZeroMQLogger::configure(int argc, char** argv)
 {
     if (argc == 0)
     {

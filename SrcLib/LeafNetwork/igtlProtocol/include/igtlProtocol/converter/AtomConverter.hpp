@@ -33,9 +33,7 @@ public:
      *
      * @return an object converted from atom
      */
-    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                                           ::fwData::Object::sptr& dest) const
-    throw (::igtlProtocol::exception::Conversion);
+    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src, ::fwData::Object::sptr& dest) const;
 
     /**
      * @brief convert a fwData::Object to a RawMessage contain an atom serialized object

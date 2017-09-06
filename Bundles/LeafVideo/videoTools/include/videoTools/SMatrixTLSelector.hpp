@@ -43,12 +43,12 @@ public:
     /**
      * @brief Constructor.
      */
-    VIDEOTOOLS_API SMatrixTLSelector() throw ();
+    VIDEOTOOLS_API SMatrixTLSelector() noexcept;
 
     /**
      * @brief Destructor.
      */
-    virtual ~SMatrixTLSelector() throw ()
+    virtual ~SMatrixTLSelector() noexcept
     {
     }
 
@@ -100,16 +100,16 @@ protected:
 
        @endcode
      */
-    VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
+    VIDEOTOOLS_API void configuring();
 
     /// This method is used to initialize the service.
-    VIDEOTOOLS_API void starting() throw (fwTools::Failed);
+    VIDEOTOOLS_API void starting();
 
     /// Does nothing.
-    VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
+    VIDEOTOOLS_API void stopping();
 
     /// Does nothing.
-    void updating() throw (fwTools::Failed)
+    void updating()
     {
     }
 

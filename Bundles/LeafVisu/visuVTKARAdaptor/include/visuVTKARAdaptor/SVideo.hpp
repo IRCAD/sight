@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_SVIDEOADAPTER_HPP__
-#define __VISUVTKARADAPTOR_SVIDEOADAPTER_HPP__
+#ifndef __VISUVTKARADAPTOR_SVIDEO_HPP__
+#define __VISUVTKARADAPTOR_SVIDEO_HPP__
 
 #include "visuVTKARAdaptor/config.hpp"
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/IAdaptor.hpp>
 
 #include <vtkLookupTable.h>
 #include <vtkSmartPointer.h>
@@ -19,16 +19,11 @@
 class vtkImageData;
 class vtkImageActor;
 
-namespace arData
-{
-class Camera;
-}
-
 namespace visuVTKARAdaptor
 {
 
 /**
- * @brief   Adaptor to render a video frame from a 2D-image.
+ * @brief   Adaptor rendering a video frame from a 2D-image.
  *
  * @section Slots Slots
  * - \b updateImage() : update the image content.
@@ -39,30 +34,39 @@ namespace visuVTKARAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
-        <config renderer="default" cameraUID="..." reverse="true" />
-       </adaptor>
+        <service type="::visuVTKARAdaptor::SVideo" autoConnect="yes" >
+            <in key="frame" uid="..." />
+            <in key="camera" uid="..." />
+            <inout key="tfSelection" uid="..." />
+            <config renderer="default" reversed="true" selectedTFKey="..." />
+        </service>
    @endcode
- * @subsection Configuration Configuration::
- * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
- * - \b cameraUID (optional) : defines the uid of the camera used to place video plane.
- * - \b reverse (optional)(default: true) : if true, the actor is rotated in z and y axis.
- * - \b tfSelectionFwID (optional) : ID of a composite containing transfer functions
- * - \b selectedTFKey (optional) : key of the transfer function within the tfSelection to pass the image through
+ * @subsection Input Input
+ * - \b frame [::fwData::Image]: frame displayed.
+ * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
+ *
+ * @subsection In-Out In-Out
+ * - \b tfSelection [::fwData::Composite] (optional): a composite containing transfer functions that can be
+ * applied to the video.
+ *
+ * @subsection Configuration Configuration
+ * - \b renderer : ID of the renderer the adaptor must use
+ * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
+ * - \b selectedTFKey (optional) : key of the transfer function within the tfSelection applied to the image
  *      when rendering
  */
-class VISUVTKARADAPTOR_CLASS_API SVideoAdapter : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                                 public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKARADAPTOR_CLASS_API SVideo : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                          public ::fwRenderVTK::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SVideoAdapter)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderVTK::IAdaptor) );
 
     /// Constructor
-    SVideoAdapter() throw();
+    SVideo() noexcept;
 
     /// Destructor
-    virtual ~SVideoAdapter() throw();
+    virtual ~SVideo() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -72,25 +76,28 @@ public:
      * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
      * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     *
+     * Connect Camera::s_MODIFIED_SIG to this::s_CALIBRATE_SLOT
+     * Connect Camera::s_INTRINSIC_CALIBRATED_SIG to this::s_CALIBRATE_SLOT
      */
-    VISUVTKARADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VISUVTKARADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Create the actor and mapper used to show the video frame.
-    VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void starting();
 
     /// Configure the adaptor.
-    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void configuring();
 
     /// Calls doUpdate()
-    VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void swapping();
 
     /// Updated the frame from the current Image.
-    VISUVTKARADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void updating();
 
     /// Removes the actor from the renderer
-    VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void stopping();
 
     /**
      *  @brief Called when transfer function points are modified.
@@ -122,15 +129,11 @@ private:
 
     bool m_isTextureInit; /// true if the texture is initialized
 
-    std::string m_cameraUID; ///< uid of the camera
-
-    bool m_reverse; ///< if true, the actor is rotated in z and y axis.
+    bool m_reverse; ///< if true, the actor is rotated by 180° along the z and y axis.
 
     bool m_hasTF; ///< True if the adaptor uses a transfer function
-
-    CSPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
 };
 
 } //namespace visuVTKARAdaptor
 
-#endif /* __VISUVTKARADAPTOR_SVIDEOADAPTER_HPP__ */
+#endif /* __VISUVTKARADAPTOR_SVIDEO_HPP__ */

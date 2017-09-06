@@ -69,7 +69,7 @@ ImageConverter::~ImageConverter()
 //-----------------------------------------------------------------------------
 
 void ImageConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                     ::fwData::Object::sptr& dest) const throw (::igtlProtocol::exception::Conversion)
+                                     ::fwData::Object::sptr& dest) const
 {
     FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination type must be a fwData::Image"),
                           dest->getClassname() != ImageConverter::s_FWDATA_OBJECT_TYPE);

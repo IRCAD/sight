@@ -23,13 +23,13 @@ struct VISUVTKARADAPTOR_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    VISUVTKARADAPTOR_API void start() throw(::fwRuntime::RuntimeException);
+    VISUVTKARADAPTOR_API void start();
 
     // Overrides
-    VISUVTKARADAPTOR_API void stop() throw();
+    VISUVTKARADAPTOR_API void stop() noexcept;
 
 };
 

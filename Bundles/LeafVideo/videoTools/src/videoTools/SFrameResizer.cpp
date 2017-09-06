@@ -22,19 +22,19 @@ namespace videoTools
 fwServicesRegisterMacro( ::fwServices::IOperator, ::videoTools::SFrameResizer, ::fwData::Composite);
 
 //------------------------------------------------------------------------------
-SFrameResizer::SFrameResizer() throw()
+SFrameResizer::SFrameResizer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SFrameResizer::~SFrameResizer() throw()
+SFrameResizer::~SFrameResizer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameResizer::configuring() throw(::fwTools::Failed)
+void SFrameResizer::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr config;
 
@@ -86,7 +86,7 @@ void SFrameResizer::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SFrameResizer::starting() throw(::fwTools::Failed)
+void SFrameResizer::starting()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
@@ -101,14 +101,14 @@ void SFrameResizer::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SFrameResizer::stopping() throw(::fwTools::Failed)
+void SFrameResizer::stopping()
 {
     m_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameResizer::updating() throw(::fwTools::Failed)
+void SFrameResizer::updating()
 {
     // Retrieves the last timestamp
     ::fwCore::HiResClock::HiResClockType timestamp = m_inputTL->getNewerTimestamp();
