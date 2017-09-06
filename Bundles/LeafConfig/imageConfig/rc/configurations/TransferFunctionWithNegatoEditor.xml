@@ -71,7 +71,6 @@
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" by="negatoView" />
-            <parameter replace="selectedTFKey" by="${SelectedTFKey}" />
             <!-- The object 'transferFunctionDeferred' is deferred, its id is given between configuration to
                  receive the signal emitted when the object is created. -->
             <parameter replace="transferFunctionDeferred" by="${transferFunctionOutput}" />

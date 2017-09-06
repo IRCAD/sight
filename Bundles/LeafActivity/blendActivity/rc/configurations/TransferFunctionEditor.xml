@@ -3,17 +3,15 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="TF_COMPOSITE_ID" />
-        <param name="SELECTED_TF_KEY" />
-        <param name="myImage" />
+        <param name="image" />
         <param name="patient_name" default="" />
+        <param name="transferFunction" />
     </parameters>
     <config>
         <object uid="Histogram" type="::fwData::Histogram" />
-        <object uid="${myImage}" type="::fwData::Image" src="ref" />
-        <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
+        <object uid="${image}" type="::fwData::Image" src="ref" />
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${transferFunction}" type="::fwData::TransferFunction" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -97,24 +95,24 @@
         </service>
 
         <service uid="MPRNegato2" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${myImage}" />
-            <inout key="tf" uid="TF" />
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunction}" optional="yes" />
             <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial"/>
         </service>
 
         <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
-            <inout key="image" uid="${myImage}" />
-            <inout key="tf" uid="TF" />
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunction}" optional="yes" />
             <config renderer="default" picker="negato2default" text="" />
         </service>
 
         <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
-            <inout key="image" uid="${myImage}" />
+            <inout key="image" uid="${image}" />
             <config filter="true" renderer="default" picker="negato2default" />
         </service>
 
         <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
-            <in key="object" uid="${myImage}" />
+            <in key="object" uid="${image}" />
             <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
@@ -122,45 +120,37 @@
 
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
-            <inout key="image" uid="${myImage}" />
+            <inout key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
-            <inout key="transferFunction" uid="TF" />
+            <inout key="transferFunction" uid="${transferFunction}" />
             <parameter replace="WID_PARENT" by="tfWidget" />
-            <parameter replace="SelectedTFKey" by="${SELECTED_TF_KEY}" />
         </service>
 
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
-            <in key="image" uid="${myImage}" />
+            <in key="image" uid="${image}" />
         </service>
 
         <service uid="fieldMgr" type="::gui::action::SPushField">
-            <inout key="source" uid="${myImage}" />
+            <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />
         </service>
 
         <service uid="tfSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
             <inout key="tfPool" uid="TFSet" />
-            <out key="tf" uid="TF" />
+            <out key="tf" uid="${transferFunction}" />
         </service>
 
         <!-- Editors for Negato2 -->
         <service uid="slider" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="image" uid="${myImage}" />
+            <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-            <in key="image" uid="${myImage}" />
+            <in key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
-        </service>
-
-        <!-- add the TF in the selection composite to be transfered in other configuration -->
-        <service uid="addTFinSelection" type="::ctrlSelection::SManage">
-           <inout key="object" uid="TF" />
-           <inout key="composite" uid="${TF_COMPOSITE_ID}" />
-           <compositeKey>${SELECTED_TF_KEY}</compositeKey>
         </service>
 
         <!--************************** Connections **************************** -->
@@ -168,12 +158,6 @@
         <connect>
             <signal>snapshotEditor/snapped</signal>
             <slot>snapshot1/snap</slot>
-        </connect>
-
-        <!-- add or swap the TF in the composite when it is present in the config (the service is started when the TF exists) -->
-        <connect>
-            <signal>addTFinSelection/started</signal>
-            <slot>addTFinSelection/addOrSwap</slot>
         </connect>
 
         <!--************************** Starts **************************** -->
@@ -187,7 +171,6 @@
         <start uid="tfWidget" />
         <!-- Deferred start -->
         <start uid="tfSelector" />
-        <start uid="addTFinSelection" />
 
         <!-- genericScene adaptors -->
         <start uid="snapshot1" />
