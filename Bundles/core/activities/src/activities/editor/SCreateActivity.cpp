@@ -33,7 +33,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -81,8 +80,7 @@ void SCreateActivity::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 
-    typedef ::fwServices::IService::ConfigType ConfigType;
-    ConfigType cfg = this->getConfigTree();
+    const auto cfg = this->getConfigTree();
 
     if(cfg.count("filter") == 1 )
     {
@@ -94,7 +92,7 @@ void SCreateActivity::configuring()
                    mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
-        BOOST_FOREACH( const ConfigType::value_type &v,  configFilter.equal_range("id") )
+        BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
         {
             m_keys.push_back(v.second.get<std::string>(""));
         }
