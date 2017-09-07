@@ -31,7 +31,10 @@ namespace visuOgreAdaptor
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
-
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ *      window and level
+ *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SNegato3D">
@@ -43,7 +46,9 @@ namespace visuOgreAdaptor
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *
  * @subsection Configuration Configuration:
  * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
@@ -94,11 +99,11 @@ protected:
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Called when transfer function points are modified.
-    VISUOGREADAPTOR_API virtual void updatingTFPoints();
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function windowing is modified.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
 private:
 

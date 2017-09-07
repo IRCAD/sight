@@ -126,8 +126,11 @@ void SNegato3D::starting()
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
     this->setTransferFunction(tf);
 
-    this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
-    this->createTransferFunction(this->getImage());
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+    this->updateImageInfos(image);
+    this->createTransferFunction(image);
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
@@ -218,7 +221,7 @@ void SNegato3D::swapping(const KeyType& key)
             this->createTransferFunction(image);
         }
         this->installTFConnections();
-        this->updatingTFPoints();
+        this->updateTFPoints();
     }
 }
 
@@ -245,7 +248,8 @@ void SNegato3D::newImage()
 {
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Image::sptr image = this->getImage();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
@@ -258,7 +262,7 @@ void SNegato3D::newImage()
     this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
 
     // Update tranfer function in Gpu programs
-    this->updatingTFPoints();
+    this->updateTFPoints();
 
     if (m_autoResetCamera)
     {
@@ -277,10 +281,10 @@ void SNegato3D::changeSliceType(int _from, int _to)
     this->getRenderService()->makeCurrent();
 
     // Update TF
-    this->updatingTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
+    this->updateTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
 
     // Update threshold if necessary
-    this->updatingTFPoints();
+    this->updateTFPoints();
 
     this->requestRender();
 }
@@ -289,7 +293,8 @@ void SNegato3D::changeSliceType(int _from, int _to)
 
 void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    ::fwData::Image::sptr image = this->getImage();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     float sliceIndex[3] = {
         static_cast<float>(_sagittalIndex ) / (static_cast<float>(image->getSize()[0] - 1)),
@@ -321,7 +326,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 //-----------------------------------------------------------------------------
 
-void SNegato3D::updatingTFPoints()
+void SNegato3D::updateTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -340,7 +345,7 @@ void SNegato3D::updatingTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SNegato3D::updatingTFWindowing(double window, double level)
+void SNegato3D::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -353,7 +358,8 @@ void SNegato3D::updatingTFWindowing(double window, double level)
 
 void SNegato3D::setPlanesOpacity()
 {
-    ::fwData::Image::sptr image = this->getImage();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     const std::string TRANSPARENCY_FIELD = "TRANSPARENCY";
     const std::string VISIBILITY_FIELD   = "VISIBILITY";

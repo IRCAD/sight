@@ -210,7 +210,7 @@ void SVolumeRender::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updatingTFPoints()
+void SVolumeRender::updateTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -233,7 +233,7 @@ void SVolumeRender::updatingTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updatingTFWindowing(double window, double level)
+void SVolumeRender::updateTFWindowing(double window, double level)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -362,7 +362,7 @@ void SVolumeRender::starting()
     this->initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
 
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
     {
         this->newImage();
@@ -374,7 +374,7 @@ void SVolumeRender::starting()
 
     if (m_autoResetCamera )
     {
-        if(this->getImage()->getField("cameraTransform"))
+        if(image->getField("cameraTransform"))
         {
             this->getLayer()->computeCameraParameters();
         }
@@ -449,7 +449,7 @@ void SVolumeRender::swapping(const KeyType& key)
             this->createTransferFunction(image);
         }
         this->installTFConnections();
-        this->updatingTFPoints();
+        this->updateTFPoints();
     }
 }
 
@@ -457,18 +457,19 @@ void SVolumeRender::swapping(const KeyType& key)
 
 void SVolumeRender::newImage()
 {
-    this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+    this->updateImageInfos(image);
 
     this->getRenderService()->makeCurrent();
-
-    ::fwData::Image::sptr image = this->getImage();
 
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    this->createTransferFunction(this->getImage());
+    this->createTransferFunction(image);
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -585,7 +586,10 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
         if(m_preIntegratedRendering)
         {
-            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+            m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
         }
 
         this->requestRender();
@@ -682,7 +686,10 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
     if(m_preIntegratedRendering)
     {
-        m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 
@@ -1099,7 +1106,10 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+            m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
         }
 
         this->requestRender();

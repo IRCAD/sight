@@ -60,6 +60,9 @@ namespace visuOgreAdaptor
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
  * - \b setColorParameter(array<uint8_t, 4>, string): Calls a color parameter slot according to the given key.
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -77,7 +80,8 @@ namespace visuOgreAdaptor
  * - \b image [::fwData::Image]: input volume data.
  * @subsection In-Out In-Out
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
@@ -167,11 +171,11 @@ protected:
     /// Retrieves the current transfer function
     VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
-    /// Slot called on TF update.
-    VISUOGREADAPTOR_API virtual void updatingTFPoints();
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
 
-    /// Slot called on TF window update.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
