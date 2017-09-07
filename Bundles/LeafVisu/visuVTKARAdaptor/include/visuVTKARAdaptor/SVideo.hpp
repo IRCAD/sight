@@ -39,7 +39,7 @@ namespace visuVTKARAdaptor
             <in key="frame" uid="..." />
             <in key="camera" uid="..." />
             <in key="tf" uid="..." optional="yes" />
-            <config renderer="default" reversed="true" selectedTFKey="..." />
+            <config renderer="default" reversed="true" />
         </service>
    @endcode
  * @subsection Input Input
