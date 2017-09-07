@@ -46,6 +46,10 @@ namespace uiImageQt
  *
  * This is represented by two sliders to modify the min and max values of windowing
  *
+ * @section Slots Slots
+ * - \b updateTFPoints() : update the slider according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the slider according to the new window and level
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -58,8 +62,9 @@ namespace uiImageQt
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image on which the windowing will be changed
- * - \b tf [::fwData::TransferFunction] (optional): current transfer function to modify, if it is not defined, the
- *      editor uses the default image's transfer function (CT-GreyLevel)
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration
  * - \b autoWindowing(optional, default no) : if 'yes', image windowing will be automatically compute from image pixel
@@ -88,21 +93,21 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Update editor information from the image
-    virtual void updating();
+    virtual void updating() override;
 
     /// Select the current tf
-    virtual void swapping(const KeyType& key);
+    virtual void swapping(const KeyType& key) override;
 
     /// Parse the xml configuration
-    virtual void configuring();
+    virtual void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -111,18 +116,16 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream& _sstream );
+    UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
 
-    virtual void setEnabled(bool enable);
+    /// Slot: Updates the slider position
+    UIIMAGEQT_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function points are modified.
-    UIIMAGEQT_API virtual void updatingTFPoints();
-
-    /// Called when transfer function windowing is modified.
-    UIIMAGEQT_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: Updates the slider position
+    UIIMAGEQT_API virtual void updateTFWindowing(double window, double level) override;
 
 protected Q_SLOTS:
 

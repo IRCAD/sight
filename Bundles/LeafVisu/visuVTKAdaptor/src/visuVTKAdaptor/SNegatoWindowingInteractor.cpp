@@ -270,8 +270,10 @@ void SNegatoWindowingInteractor::startWindowing( )
 
     this->updating();
 
-    m_initialLevel  = this->getLevel();
-    m_initialWindow = this->getWindow();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
+    m_initialLevel  = tf->getLevel();
+    m_initialWindow = tf->getWindow();
 }
 
 //------------------------------------------------------------------------------

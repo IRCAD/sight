@@ -26,21 +26,24 @@ namespace visuVTKAdaptor
  *
  * @section Slots Slots
  * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
+ * - \b updateTFPoints() : update the displayed information according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed information according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SImageText">
-        <inout key="image" uid="..." />
+       <inout key="image" uid="..." />
        <inout key="tf" uid="..." optional="yes" />
-        <config renderer="default" text="@patient.name" color="#ff0000" fontSize="16" />
+       <config renderer="default" text="@patient.name" color="#ff0000" fontSize="16" />
    </service>
    @endcode
  * or
  * @code{.xml}
    <service type="::visuVTKAdaptor::SImageText">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
+       <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" vAlign='top' hAlign='center'>
        <text>SText to display<text>
    </service>
@@ -49,7 +52,8 @@ namespace visuVTKAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
@@ -95,11 +99,11 @@ protected:
      */
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
 
-    /// Update tranfer function points
-    VISUVTKADAPTOR_API virtual void updatingTFPoints();
+    /// Update the text according to the new windowing
+    VISUVTKADAPTOR_API virtual void updateTFPoints();
 
-    /// Update transfer function windowing
-    VISUVTKADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    /// Update the text according to the new windowing
+    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level);
 
     /**
      * @name Slots

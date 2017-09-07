@@ -12,7 +12,6 @@
 #include <fwCom/Slot.hxx>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -36,7 +35,6 @@ namespace scene2D
 namespace adaptor
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT       = "tf";
 static const ::fwServices::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
@@ -48,7 +46,6 @@ STransferFunction::STransferFunction() noexcept :
     m_capturedCircle(nullptr),
     m_pointSize(10.f)
 {
-    this->installTFSlots(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +84,8 @@ void STransferFunction::configuring()
 void STransferFunction::buildTFPoints()
 {
     // Get the selected tf of the image
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
 
     // Clear the tf points map
     m_TFPoints.clear();
@@ -159,7 +157,6 @@ void STransferFunction::buildCircles()
 QGraphicsEllipseItem* STransferFunction::buildCircle(::fwData::TransferFunction::TFValueType value,
                                                      ::fwData::TransferFunction::TFColor color)
 {
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
     Point2DType valColor(value, color.a );
     Point2DType coord = this->mapAdaptorToScene(valColor, m_xAxis, m_yAxis);
 
@@ -182,7 +179,8 @@ QGraphicsEllipseItem* STransferFunction::buildCircle(::fwData::TransferFunction:
 
 void STransferFunction::buildLinesAndPolygons()
 {
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
 
     // Remove line and polygon items from the scene and clear the lines and polygons vector
     for( QGraphicsItem* linesAndPolygons : m_linesAndPolygons)
@@ -283,7 +281,9 @@ void STransferFunction::buildLinearLinesAndPolygons()
 {
     SLM_ASSERT("Circles must not be empty", !m_circles.empty());
 
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
+
     ::fwRenderQt::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
     QVector<QPointF> vect;
@@ -456,7 +456,9 @@ void STransferFunction::buildLayer()
 void STransferFunction::updateImageTF()
 {
     // Get the selected tf of the image
-    ::fwData::TransferFunction::sptr selectedTF        = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr selectedTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", selectedTF);
+
     ::fwData::TransferFunction::TFValuePairType minMax = selectedTF->getMinMaxTFValues();
     ::fwData::TransferFunction::TFValueType window     = selectedTF->getWindow();
     ::fwData::TransferFunction::TFValueType wlMin      = selectedTF->getWLMinMax().first;
@@ -486,7 +488,7 @@ void STransferFunction::updateImageTF()
     auto sig = selectedTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
         ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFPoints));
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
@@ -504,21 +506,13 @@ void STransferFunction::starting()
     m_circlePen.setCosmetic( true );
     m_circlePen.setWidthF( 0 );
 
-    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' is not defined", tf);
-    this->setTransferFunction(tf);
-
     this->updating();
-    this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
 
 void STransferFunction::updating()
 {
-//    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-//    this->updateImageInfos(image);
-
     // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it
     // to the scene
     this->buildTFPoints();
@@ -527,26 +521,10 @@ void STransferFunction::updating()
     this->buildLayer();
 }
 
-//------------------------------------------------------------------------------
-
-void STransferFunction::updatingTFPoints()
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void STransferFunction::updatingTFWindowing(double /*window*/, double /*level*/)
-{
-    this->updating();
-}
-
 //-----------------------------------------------------------------------------
 
 void STransferFunction::stopping()
 {
-    this->removeTFConnections();
-
     // Clear the items vectors and remove the layer (and all its children) from the scene
     for (auto circleIt = m_circles.begin(); circleIt != m_circles.end(); ++circleIt )
     {
@@ -874,8 +852,6 @@ void STransferFunction::rightButtonEvent(::fwData::TransferFunction::TFValueType
 
 void STransferFunction::doubleClickEvent( ::fwRenderQt::data::Event& _event)
 {
-    ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
-
     // Get the x and y position in the scene coordinates
     const double x = this->getScene2DRender()->mapToScene(_event.getCoord()).getX();
     const double y = this->getScene2DRender()->mapToScene(_event.getCoord()).getY();
@@ -962,8 +938,9 @@ double STransferFunction::pointValue(QGraphicsEllipseItem* circle)
 ::fwServices::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_INOUT, ::fwData::TransferFunction::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_INOUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TF_INOUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push( s_VIEWPORT_INPUT, ::fwRenderQt::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }

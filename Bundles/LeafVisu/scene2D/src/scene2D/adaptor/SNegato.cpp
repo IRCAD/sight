@@ -324,6 +324,29 @@ void SNegato::updating()
     this->updateBufferFromImage( m_qimg );
 }
 
+//------------------------------------------------------------------------------
+
+void SNegato::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        this->removeTFConnections();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            this->setTransferFunction(tf);
+        }
+        else
+        {
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("Missing image", image);
+            this->createTransferFunction(image);
+        }
+        this->installTFConnections();
+        this->updating();
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void SNegato::updateSliceIndex(int axial, int frontal, int sagittal)
@@ -389,14 +412,14 @@ void SNegato::updateBuffer()
 
 //------------------------------------------------------------------------------
 
-void SNegato::updatingTFPoints()
+void SNegato::updateTFPoints()
 {
     this->updateBufferFromImage( m_qimg );
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato::updatingTFWindowing(double window, double level)
+void SNegato::updateTFWindowing(double window, double level)
 {
     this->updateBufferFromImage( m_qimg );
 }

@@ -328,42 +328,6 @@ void MedicalImageAdaptor::setTransferFunction(const ::fwData::TransferFunction::
 
 //------------------------------------------------------------------------------
 
-double MedicalImageAdaptor::getWindow() const
-{
-    return this->getTransferFunction()->getWindow();
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::setWindow( double window )
-{
-    this->getTransferFunction()->setWindow( window );
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::setWindowLevel( double windowMin, double windowMax )
-{
-    ::fwData::TransferFunction::TFValuePairType minMax(windowMin, windowMax);
-    this->getTransferFunction()->setWLMinMax( minMax );
-}
-
-//------------------------------------------------------------------------------
-
-double MedicalImageAdaptor::getLevel() const
-{
-    return this->getTransferFunction()->getLevel();
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::setLevel( double level )
-{
-    this->getTransferFunction()->setLevel( level );
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageAdaptor::installTFConnections()
 {
     ::fwCom::Connection connection;
@@ -396,28 +360,14 @@ void MedicalImageAdaptor::installTFSlots(::fwCom::HasSlots* hasslots)
 
 void MedicalImageAdaptor::updateTFPoints()
 {
-    this->updatingTFPoints();
+    SLM_ASSERT("This methods (updateTFPoints) must be reimplemented in subclass to manage TF modifications", false);
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::updateTFWindowing(double window, double level)
+void MedicalImageAdaptor::updateTFWindowing(double /*window*/, double /*level*/)
 {
-    this->updatingTFWindowing(window, level);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::updatingTFPoints()
-{
-    SLM_ASSERT("This methods (updatingTFPoints) must be reimplemented in subclass to manage TF modifications", false);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::updatingTFWindowing(double /*window*/, double /*level*/)
-{
-    SLM_ASSERT("This methods (updatingTFWindowing) must be reimplemented in subclass to manage TF modifications",
+    SLM_ASSERT("This methods (updateTFWindowing) must be reimplemented in subclass to manage TF modifications",
                false);
 }
 

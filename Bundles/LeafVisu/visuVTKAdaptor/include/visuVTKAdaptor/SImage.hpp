@@ -36,8 +36,8 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::Image" autoConnect="yes">
-       <inout key="image" uid="..." />
+   <service type="::visuVTKAdaptor::Image">
+       <inout key="image" uid="..." autoConnect="yes" />
        <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" picker="negatodefault" transform="trf" tfalpha="yes" vtkimageregister="imgSource"
                opacity="1.0" />
@@ -46,7 +46,8 @@ namespace visuVTKAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
@@ -57,7 +58,6 @@ namespace visuVTKAdaptor
  *    - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato.
  *    - \b vtkimageregister (optional): source image, used for blend
  *    - \b opacity (optional, default=1.0): actor opacity (float)
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API SImage : public ::fwDataTools::helper::MedicalImageAdaptor,
                                         public ::fwRenderVTK::IAdaptor
@@ -125,14 +125,13 @@ protected:
 
     /// Slot: Update image opacity and visibility
     void updateImageOpacity();
-    void updateWindowing();
-    void updateImageTransferFunction( ::fwData::Image::sptr image );
+    void updateImageTransferFunction();
 
-    /// Called when transfer function points are modified.
-    VISUVTKADAPTOR_API virtual void updatingTFPoints();
+    /// Slot: update the displayed lookup table
+    VISUVTKADAPTOR_API virtual void updateTFPoints();
 
-    /// Called when transfer function windowing is modified.
-    VISUVTKADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: update the windowing of the displayed lookup table
+    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level);
 
 private:
 

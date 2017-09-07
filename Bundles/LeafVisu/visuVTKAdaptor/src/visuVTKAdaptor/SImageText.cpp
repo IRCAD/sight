@@ -104,8 +104,10 @@ void SImageText::updating()
         size_t frontalIndex  = static_cast<size_t>(m_frontalIndex->value());
         size_t sagittalIndex = static_cast<size_t>(m_sagittalIndex->value());
 
-        double min = this->getLevel() - this->getWindow()/2.0;
-        double max = this->getLevel() + this->getWindow()/2.0;
+        ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
+        double min = tf->getLevel() - tf->getWindow()/2.0;
+        double max = tf->getLevel() + tf->getWindow()/2.0;
 
         double window = max - min;
         double level  = min + window*0.5;
@@ -158,14 +160,14 @@ void SImageText::updateSliceIndex(int axial, int frontal, int sagittal)
 
 //------------------------------------------------------------------------------
 
-void SImageText::updatingTFPoints()
+void SImageText::updateTFPoints()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageText::updatingTFWindowing(double /*window*/, double /*level*/)
+void SImageText::updateTFWindowing(double /*window*/, double /*level*/)
 {
     this->updating();
 }

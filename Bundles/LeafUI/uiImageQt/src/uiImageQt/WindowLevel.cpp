@@ -255,14 +255,14 @@ void WindowLevel::swapping(const KeyType& key)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updatingTFPoints()
+void WindowLevel::updateTFPoints()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updatingTFWindowing(double /*window*/, double /*level*/)
+void WindowLevel::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", pTF);
@@ -493,17 +493,6 @@ bool WindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
     }
     widget->setPalette(palette);
     return ok;
-}
-
-//------------------------------------------------------------------------------
-
-void WindowLevel::setEnabled(bool enable)
-{
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
-    container->setEnabled(enable);
 }
 
 //------------------------------------------------------------------------------

@@ -104,7 +104,7 @@ void SImage::updating()
     {
         this->updateImage(image);
         this->buildPipeline();
-        this->updateImageTransferFunction(image);
+        this->updateImageTransferFunction();
         this->updateImageOpacity();
     }
 
@@ -136,25 +136,23 @@ void SImage::swapping(const KeyType& key)
 
 //------------------------------------------------------------------------------
 
-void SImage::updatingTFPoints()
+void SImage::updateTFPoints()
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Missing image", image);
-
-    this->updateImageTransferFunction(image);
+    this->updateImageTransferFunction();
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SImage::updatingTFWindowing(double window, double level)
+void SImage::updateTFWindowing(double window, double level)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
 
-    this->setWindow(window);
-    this->setLevel(level);
-    this->updateWindowing();
+    m_lut->SetWindow(window);
+    m_lut->SetLevel(level);
+    m_lut->Modified();
+    this->setVtkPipelineModified();
     this->requestRender();
 }
 
@@ -187,25 +185,15 @@ void SImage::updateImage( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void SImage::updateWindowing()
-{
-    m_lut->SetWindow(this->getWindow());
-    m_lut->SetLevel(this->getLevel());
-    m_lut->Modified();
-    this->setVtkPipelineModified();
-}
-
-//------------------------------------------------------------------------------
-
-void SImage::updateImageTransferFunction( ::fwData::Image::sptr image )
+void SImage::updateImageTransferFunction()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
 
     m_lut->SetClamping( !tf->getIsClamped() );
-
-    this->updateWindowing();
+    m_lut->SetWindow(tf->getWindow());
+    m_lut->SetLevel(tf->getLevel());
 
     this->setVtkPipelineModified();
 }
@@ -216,7 +204,9 @@ void SImage::updateImageOpacity()
 {
     if (m_imagePortId >= 0)
     {
-        ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+        ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", img);
+
         if(img->getField( "TRANSPARENCY" ) )
         {
             ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );

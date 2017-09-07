@@ -31,7 +31,9 @@ namespace adaptor
  * - \b updateSliceType() : update image slice type
  * - \b updateBuffer() : update image buffer
  * - \b updateVisibility() : update image visibility
- *
+ * - \b updateTFPoints() : update the displayed image according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed image according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  *
@@ -39,13 +41,15 @@ namespace adaptor
    <service uid="negato" type="::scene2D::adaptor::SNegato" autoConnect="yes">
        <inout key="image" uid="..." />
        <inout key="tf" uid="..." />
-       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" selectedTFKey="tfKey"/>
+       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tf [::fwData::TransferFunction]: TransferFunction use to display the image.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -55,7 +59,6 @@ namespace adaptor
  *    - \b opacity (optional, default=1.0): adaptor opacity (float)
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
- *    - \b selectedTFKey: key of the transfer function to use in negato
  */
 class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
                                   public ::fwRenderQt::IAdaptor
@@ -78,21 +81,23 @@ public:
      * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_VISIBILITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    SCENE2D_API void configuring();
-    SCENE2D_API void starting();
-    SCENE2D_API void updating();
-    SCENE2D_API void stopping();
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API void configuring() override;
+    SCENE2D_API void starting() override;
+    SCENE2D_API void updating() override;
+    SCENE2D_API void stopping() override;
+    /// Retrives the current transfer function
+    SCENE2D_API void swapping(const KeyType& key) override;
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
-    /// Called when transfer function points are modified.
-    SCENE2D_API virtual void updatingTFPoints();
+    /// Slot: updates the displayed image
+    SCENE2D_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function windowing is modified.
-    SCENE2D_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: updates the displayed image
+    SCENE2D_API virtual void updateTFWindowing(double window, double level) override;
 
 private:
 

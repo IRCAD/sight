@@ -21,7 +21,7 @@
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImageSeries);
 
 static const ::fwServices::IService::KeyType s_IMAGE_SERIES_INOUT = "imageSeries";
-static const ::fwServices::IService::KeyType s_TF_INOUT           = "transferFunction";
+static const ::fwServices::IService::KeyType s_TF_INOUT           = "tf";
 
 namespace visuVTKAdaptor
 {

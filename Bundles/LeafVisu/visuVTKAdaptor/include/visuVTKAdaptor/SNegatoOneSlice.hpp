@@ -34,8 +34,7 @@ namespace visuVTKAdaptor
        <inout key="image" uid="..." />
        <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" picker="negatodefault" sliceIndex="axial"
-               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
-               selectedTFKey="tkKey" />
+               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0" />
    </service>
    @endcode
  * @subsection In-Out In-Out

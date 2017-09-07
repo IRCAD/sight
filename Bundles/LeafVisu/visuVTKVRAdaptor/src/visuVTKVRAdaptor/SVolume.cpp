@@ -337,7 +337,7 @@ void SVolume::swapping(const KeyType& key)
 
 //------------------------------------------------------------------------------
 
-void SVolume::updatingTFPoints()
+void SVolume::updateTFPoints()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);
@@ -346,7 +346,7 @@ void SVolume::updatingTFPoints()
 
 //------------------------------------------------------------------------------
 
-void SVolume::updatingTFWindowing(double /*window*/, double /*level*/)
+void SVolume::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);

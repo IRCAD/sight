@@ -35,8 +35,8 @@ namespace visuVTKVRAdaptor
  * - \b resetBoxWidget() : reset the clipping box widget around the volume.
  * - \b activateBoxClipping(bool) : show/hide clipping box.
  * - \b show(bool) : show/hide the volume.
- * - \b updateTFPoints() : update the displayed transfer function according to the new points
- * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ * - \b updateTFPoints() : updates the volume transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : updates the volume transfer function according to the new
  *      window and level
  *
  * @section XML XML Configuration
@@ -51,7 +51,8 @@ namespace visuVTKVRAdaptor
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
  * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use
@@ -61,7 +62,6 @@ namespace visuVTKVRAdaptor
  * - \b reductionFactor (optional, [0-1]) : factor to resample the original image.
  * - \b cropBoxTransform (optional) : vtkTransform applied to the cropping box.
  * - \b transform (optional) : vtkTransform applied to the volume.
- * - \b selectedTFKey (optional) : key of the transfer funtion in the tf composite.
  */
 class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::fwRenderVTK::IAdaptor
@@ -108,11 +108,11 @@ protected:
     VISUVTKVRADAPTOR_API void updating();
     VISUVTKVRADAPTOR_API void swapping(const KeyType& key);
 
-    /// Called when transfer function points are modified.
-    VISUVTKVRADAPTOR_API virtual void updatingTFPoints();
+    /// Slot: updates the volume transfer function
+    VISUVTKVRADAPTOR_API virtual void updateTFPoints();
 
-    /// Called when transfer function windowing is modified.
-    VISUVTKVRADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: updates the volume transfer function
+    VISUVTKVRADAPTOR_API virtual void updateTFWindowing(double window, double level);
 
     /// Slot: reset the clipping box widget around the volume
     void resetBoxWidget();

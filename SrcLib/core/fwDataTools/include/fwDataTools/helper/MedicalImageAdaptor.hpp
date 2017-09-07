@@ -29,6 +29,12 @@ namespace helper
 
 /**
  * @brief   Helpers for medical image.
+ *
+ * @section Slots Slots
+ *
+ * The two slots must be reimplemented by the services managing transfer function
+ * - \b updateTFPoints(): called when the transfer function points are modified
+ * - \b updateTFWindowing(double window, double level): called when the transfer function windowing is modified
  */
 class FWDATATOOLS_CLASS_API MedicalImageAdaptor
 {
@@ -58,21 +64,6 @@ public:
 
     /// Set the current TransferFunction
     FWDATATOOLS_API void setTransferFunction( const ::fwData::TransferFunction::sptr& tf );
-
-    /// Get the window of the selected tf
-    FWDATATOOLS_API double getWindow() const;
-
-    /// Set the window of the selected tf
-    FWDATATOOLS_API void setWindow( double window );
-
-    /// Set the window level of the selected tf from window min/max
-    FWDATATOOLS_API void setWindowLevel( double windowMin, double windowMax );
-
-    /// Get the level of the selected tf
-    FWDATATOOLS_API double getLevel() const;
-
-    /// Set the level of the selected tf
-    FWDATATOOLS_API void setLevel( double level );
 
 protected:
 
@@ -115,9 +106,6 @@ protected:
      */
     FWDATATOOLS_API void getCurrentSliceCenter(double center[3]);
 
-    // Retrieve the grey level from an image from physical world
-    //float getPixelvalue( double worldPosition[3]);
-
     /**
      * @brief Convert world coordinates to slice index coordinates
      * @param[in] world : coordinate in the world
@@ -138,6 +126,9 @@ protected:
      * @param[out] world : coordinate in the world
      */
     FWDATATOOLS_API void sliceIndexToWorld(const int index[3], double world[3] );
+
+    /// Return the image
+    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
 
     /**
      * @brief Get the image spacing.
@@ -183,9 +174,6 @@ protected:
     /// Get the slice index
     FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
-    /// Get the current transfer function
-    FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
-
     /// Update the image information (slice index, min/max,...)
     FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
 
@@ -198,8 +186,8 @@ protected:
      */
     FWDATATOOLS_API void createTransferFunction( ::fwData::Image::sptr image );
 
-    /// Return the image
-    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
+    /// Get the current transfer function
+    FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
 
     /**
      * @name Connections to transfer function
@@ -213,20 +201,6 @@ protected:
     FWDATATOOLS_API void removeTFConnections();
 
     /**
-     *  @brief Called when transfer function points are modified.
-     *
-     *  It must be reimplemented to upadte TF.
-     */
-    FWDATATOOLS_API virtual void updatingTFPoints();
-
-    /**
-     *  @brief Called when transfer function windowing is modified.
-     *
-     *  It must be reimplemented to upadte TF.
-     */
-    FWDATATOOLS_API virtual void updatingTFWindowing(double window, double level);
-
-    /**
      * @brief Install the slots to managed TF modifications.
      *
      * Creates slots to listen TF selection Composite and TransferFunction signals.
@@ -236,23 +210,10 @@ protected:
     FWDATATOOLS_API void installTFSlots(::fwCom::HasSlots* hasslots);
 
     /// Slot: called when transfer function points are modified
-    void updateTFPoints();
+    FWDATATOOLS_API virtual void updateTFPoints();
 
     /// Slot: called when transfer function windowing is modified
-    void updateTFWindowing(double window, double level);
-
-    /// Image orientation
-    Orientation m_orientation;
-
-    /// Current image
-    ::fwData::Image::wptr m_weakImage;
-
-    /// Axial slice index
-    ::fwData::Integer::sptr m_axialIndex;
-    /// Frontal slice index
-    ::fwData::Integer::sptr m_frontalIndex;
-    /// Sagittal slice index
-    ::fwData::Integer::sptr m_sagittalIndex;
+    FWDATATOOLS_API virtual void updateTFWindowing(double window, double level);
 
     typedef ::fwCom::Slot<void ()> UpdateTFPointsSlotType;
     typedef ::fwCom::Slot<void (double, double)> UpdateTFWindowingSlotType;
@@ -266,24 +227,27 @@ protected:
      * @}
      */
 
+    /// Image orientation
+    Orientation m_orientation;
+
+    /// Axial slice index
+    ::fwData::Integer::sptr m_axialIndex;
+    /// Frontal slice index
+    ::fwData::Integer::sptr m_frontalIndex;
+    /// Sagittal slice index
+    ::fwData::Integer::sptr m_sagittalIndex;
+
 private:
 
-    ::fwCom::helper::SigSlotConnection m_tfConnections;
+    /// Current image
+    ::fwData::Image::wptr m_weakImage;
 
     /// Transfer function selection
     ::fwData::TransferFunction::wptr m_transferFunction;
+
+    /// Connections to the transfer function
+    ::fwCom::helper::SigSlotConnection m_tfConnections;
 };
-
-struct Image0 {};
-struct Image1 {};
-
-template < typename IMAGEID >
-class FWDATATOOLS_CLASS_API MedicalImageAdaptorTpl : public MedicalImageAdaptor
-{
-};
-
-typedef MedicalImageAdaptorTpl<Image0> MedicalImageAdaptorImg0;
-typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
 
 //------------------------------------------------------------------------------
 template< typename FLOAT_ARRAY_3 >
