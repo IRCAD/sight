@@ -1,3 +1,14 @@
+<!--
+Example:
+
+<service uid="..." type="::fwServices::SConfigController">
+    <appConfig id="TransferFunctionWidget" />
+    <inout key="image" uid="..."/>
+    <inout key="histogram" uid="..."/>
+    <inout key="transferFunction" uid="..." />
+    <parameter replace="WID_PARENT" by="..."/>
+</service>
+-->
 <extension implements="::fwServices::registry::AppConfig">
     <id>TransferFunctionWidget</id>
     <parameters>
@@ -6,7 +17,7 @@
         <param name="histogram" />
         <param name="transferFunction" />
     </parameters>
-
+    <desc>This configuration displays the transfer function in a scene2D editor.</desc>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->

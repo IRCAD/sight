@@ -441,8 +441,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <service uid="imageEditorsManager" type="::fwServices::SConfigController">
                 <appConfig id="ImageManager" />
-                <inout key="IMAGE_UID" uid="imageUID" />
-                <inout key="TF_UID" uid="TF" />
+                <inout key="image" uid="imageUID" />
+                <inout key="transferFunction" uid="TF" />
                 <parameter replace="WID_PARENT" by="multiView_scene1_editors" />
             </service>
 

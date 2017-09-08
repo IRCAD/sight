@@ -1,3 +1,19 @@
+<!--
+Example:
+
+<service uid="..." type="::fwServices::SConfigController">
+    <appConfig id="TransferFunctionWithNegatoEditor" />
+    <inout key="image" uid="..." />
+    <inout key="histogram" uid="..." />
+    <inout key="landmarks" uid="..." />
+    <parameter replace="WID_PARENT" by="..." />
+    <parameter replace="transferFunctionOutput" by="..." />
+</service>
+
+Note: The object 'transferFunctionOutput' is deferred and created by this configuration.
+      Its id is given between configuration to receive the signal emitted when the object is created (it is an internal
+      mechanism of AppConfigManager).
+-->
 <extension implements="::fwServices::registry::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
@@ -8,10 +24,10 @@
         <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
 
         <!-- The object 'transferFunctionOutput' is deferred, its id is given between configuration to
-             recieve the signal emitted when the object is created. -->
+             receive the signal emitted when the object is created. -->
         <param name="transferFunctionOutput" default="transferFunction" />
     </parameters>
-
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->

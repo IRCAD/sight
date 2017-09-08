@@ -406,8 +406,7 @@ void SNegatoMPR::set3dMode( bool enabled )
         adaptorSrv->setOrientation((Orientation) axis);
     }
 
-    auto negatoAdaptor          = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
-    auto negatoWindowingAdaptor = ::visuVTKAdaptor::SNegatoWindowingInteractor::dynamicCast(service);
+    auto negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
 
     if (negatoAdaptor)
     {
