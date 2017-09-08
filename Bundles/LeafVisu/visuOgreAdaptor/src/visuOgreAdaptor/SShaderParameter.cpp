@@ -46,7 +46,7 @@ void SShaderParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_materialName = config.get<std::string>("materialName", "");
     OSLM_ERROR_IF("material attribute not set", m_materialName.empty());

@@ -75,7 +75,7 @@ void SRender::configuring()
 {
     this->initialize();
 
-    const ConfigType config = this->getConfigTree().get_child("service");
+    const ConfigType config = this->getConfigTree();
 
     SLM_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
 
@@ -113,7 +113,7 @@ void SRender::starting()
 
     this->create();
 
-    const ConfigType config = this->getConfigTree().get_child("service");
+    const ConfigType config = this->getConfigTree();
 
     SLM_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
 

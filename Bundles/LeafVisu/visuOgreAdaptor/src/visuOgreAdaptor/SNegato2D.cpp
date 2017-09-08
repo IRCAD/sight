@@ -65,7 +65,7 @@ void SNegato2D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     if(config.count("sliceIndex"))
     {

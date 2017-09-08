@@ -50,7 +50,7 @@ void SReconstruction::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // The transform attribute is mandatory in the XML configuration
     this->setTransformId(config.get<std::string>("transform"));

@@ -46,8 +46,8 @@ void SCompositorParameterEditor::configuring()
 
     auto config = this->getConfigTree();
 
-    m_renderID = config.get<std::string>("service.render.<xmlattr>.uid", "");
-    m_layerID  = config.get<std::string>("service.layer.<xmlattr>.id", "");
+    m_renderID = config.get<std::string>("render.<xmlattr>.uid", "");
+    m_layerID  = config.get<std::string>("layer.<xmlattr>.id", "");
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ void SCompositorParameterEditor::updateGuiInfo()
 
             if(!paramConfig.empty())
             {
-                editorConfig.add_child("service.parameters.param", paramConfig);
+                editorConfig.add_child("parameters.param", paramConfig);
             }
         }
     }

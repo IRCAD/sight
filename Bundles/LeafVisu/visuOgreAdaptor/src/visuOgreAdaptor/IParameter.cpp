@@ -97,7 +97,7 @@ void IParameter::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("service.config.<xmlattr>");
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_paramName = config.get<std::string>("parameter", "");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
