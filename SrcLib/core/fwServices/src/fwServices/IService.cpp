@@ -264,7 +264,7 @@ void IService::configure()
             }
             catch (std::exception& e)
             {
-                SLM_FATAL("Error while configuring service '" + this->getID() + "' : " + e.what());
+                SLM_ERROR("Error while configuring service '" + this->getID() + "' : " + e.what());
             }
         }
         else if( m_globalState == STARTED )
@@ -295,20 +295,34 @@ IService::SharedFutureType IService::start()
         this->connectToConfig();
 
         PackagedTaskType task( std::bind(&IService::starting, this) );
-        UniqueFutureType ufuture = task.get_future();
+        SharedFutureType future = task.get_future();
 
         m_globalState = STARTING;
         task();
-        m_globalState = STARTED;
 
-        ufuture.get();
+        try
+        {
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while STARTING service '" + this->getID() + "' : " + e.what());
+            SLM_ERROR("Service '" + this->getID() + "' is still STOPPED.");
+            m_globalState = STOPPED;
+            this->disconnectFromConfig();
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        m_globalState = STARTED;
 
         this->autoConnect();
 
         auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
         sig->asyncEmit();
 
-        return std::move(ufuture);
+        return future;
     }
     else
     {
@@ -327,20 +341,34 @@ IService::SharedFutureType IService::stop()
         this->autoDisconnect();
 
         PackagedTaskType task( std::bind(&IService::stopping, this) );
-        UniqueFutureType ufuture = task.get_future();
+        SharedFutureType future = task.get_future();
 
         m_globalState = STOPPING;
         task();
-        m_globalState = STOPPED;
 
-        ufuture.get();
+        try
+        {
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while STOPPING service '" + this->getID() + "' : " + e.what());
+            SLM_ERROR("Service '" + this->getID() + "' is still STARTED.");
+            m_globalState = STARTED;
+            this->autoConnect();
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        m_globalState = STOPPED;
 
         auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
         sig->asyncEmit();
 
         this->disconnectFromConfig();
 
-        return std::move(ufuture);
+        return future;
     }
     else
     {
@@ -360,18 +388,29 @@ IService::SharedFutureType IService::update()
                     "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
         PackagedTaskType task( std::bind(&IService::updating, this) );
-        UniqueFutureType ufuture = task.get_future();
+        SharedFutureType future = task.get_future();
 
         m_updatingState = UPDATING;
         task();
         m_updatingState = NOTUPDATING;
 
-        ufuture.get();
+        try
+        {
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while UPDATING service '" + this->getID() + "' : " + e.what());
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
 
         auto sig = this->signal<StartedSignalType>(s_UPDATED_SIG);
         sig->asyncEmit();
 
-        return std::move(ufuture);
+        return future;
     }
     else
     {
@@ -392,16 +431,27 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
             m_globalState != STARTED);
 
         PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
-        UniqueFutureType ufuture = task.get_future();
+        SharedFutureType future = task.get_future();
 
         m_globalState = SWAPPING;
         ::fwServices::OSR::swapService( _obj, this->getSptr() );
         task();
         m_globalState = STARTED;
 
-        ufuture.get();
+        try
+        {
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
 
-        return std::move(ufuture);
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+
+        return future;
     }
     else
     {
@@ -422,15 +472,26 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
 
         auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
         PackagedTaskType task( fn );
-        UniqueFutureType ufuture = task.get_future();
+        SharedFutureType future = task.get_future();
 
         m_globalState = SWAPPING;
         task();
         m_globalState = STARTED;
 
-        ufuture.get();
+        try
+        {
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
 
-        return std::move(ufuture);
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+
+        return future;
     }
     else
     {
