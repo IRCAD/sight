@@ -1,33 +1,33 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "opPOCMesher/CGoGNMesher.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwIGG/Mesher.hpp>
+#include <fwIGG/Mesher.hxx>
+
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
-#include <fwIGG/Mesher.hpp>
-#include <fwIGG/Mesher.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -81,8 +81,8 @@ void CGoGNMesher::stopping()
 void CGoGNMesher::configuring()
 {
     const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
-    SLM_ASSERT("You must have one <config/> element.", srvConfig.get_child("service").count("config") == 1 );
-    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("service.config");
+    SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
+    const ::fwServices::IService::ConfigType& config = srvConfig.get_child("config");
 
     if(config.count("valueMin") == 1)
     {
@@ -197,7 +197,6 @@ void CGoGNMesher::updating()
     reconstruction->setIsVisible(true);
 
     reconstruction->setMesh(mesh);
-
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
     recs.push_back(reconstruction);
