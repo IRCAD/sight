@@ -48,7 +48,7 @@ ITracker::~ITracker()
 
 void ITracker::configuring()
 {
-    const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    const ::fwServices::IService::ConfigType config = this->getConfigTree();
     if (config.count("dropObj"))
     {
         const std::string dropStr = config.get< std::string >("dropObj");

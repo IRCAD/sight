@@ -41,7 +41,7 @@ SProducer::~SProducer() noexcept
 
 void SProducer::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_message      = config.get<std::string>("message");
     m_senderId     = config.get<unsigned int>("id");

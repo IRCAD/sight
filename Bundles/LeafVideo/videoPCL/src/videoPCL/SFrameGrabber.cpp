@@ -68,7 +68,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
 

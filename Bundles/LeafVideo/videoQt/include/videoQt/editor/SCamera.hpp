@@ -11,6 +11,8 @@
 
 #include <arData/Camera.hpp>
 
+#include <fwCom/Signal.hpp>
+
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
@@ -74,6 +76,12 @@ public:
     /// Destructor. Do nothing.
     VIDEOQT_API virtual ~SCamera() noexcept;
 
+    /// Type of the 'configuredCameras' signal
+    using ConfiguredCamerasSignalType = ::fwCom::Signal<void()>;
+
+    /// Key of the 'configuredCameras' signal
+    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
+
 protected:
 
     /// Configure the service
@@ -113,6 +121,9 @@ private:
 
     /// Number of cameras to create when using a camera series as input
     size_t m_numCreateCameras;
+
+    /// Signal emitted when the cameraSeries has been configured
+    ConfiguredCamerasSignalType::sptr m_sigConfiguredCameras;
 };
 
 } // editor

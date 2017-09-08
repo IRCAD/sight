@@ -40,7 +40,7 @@ SOpenIGTLinkSender::~SOpenIGTLinkSender()
 
 void SOpenIGTLinkSender::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_portConfig = config.get("port", "4242");
     m_deviceName = config.get("deviceName", "");
