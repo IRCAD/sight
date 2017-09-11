@@ -359,7 +359,7 @@ std::string DictionaryReader::extension()
 
 ::boost::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
-    std::string dicoPath = std::string("./share/") + PRJ_NAME +"_"+ FWDATAIO_VER + "/OrganDictionary.dic";
+    std::string dicoPath = RC_PREFIX "/" PRJ_NAME "_" FWDATAIO_VER "/OrganDictionary.dic";
     return dicoPath;
 }
 

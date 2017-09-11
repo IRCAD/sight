@@ -57,7 +57,7 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
     // Ready the dictionary
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(m_structureDictionary);
-    dictionaryReader->setFile("./share/fwDataIO_0-2/OrganDictionary.dic");
+    dictionaryReader->setFile(RC_PREFIX "/fwDataIO_0-2/OrganDictionary.dic");
     try
     {
         dictionaryReader->read();

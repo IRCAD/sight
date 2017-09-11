@@ -25,7 +25,7 @@ void Dictionary::loadDictionary()
     if (!dcmDataDict.isDictionaryLoaded())
     {
         ::boost::filesystem::path full_path(::boost::filesystem::initial_path< ::boost::filesystem::path >());
-        std::string dicoPath = full_path.string() + "/share/fwDcmtkTools_0-1/dicom.dic";
+        std::string dicoPath = RC_PREFIX "/fwDcmtkTools_0-1/dicom.dic";
         bool loaded          = dcmDataDict.wrlock().loadDictionary(dicoPath.c_str());
         dcmDataDict.unlock();
         SLM_ERROR_IF("Unable to load DICOM dictionary !", loaded);

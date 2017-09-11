@@ -108,11 +108,15 @@ if(ADDITIONAL_PROJECTS)
     endforeach()
 endif()
 
+set(RC_PREFIX "share")
+
 if(ANDROID)
     set(BUNDLE_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
 elseif(DEBIAN_INSTALL)
-    #To make a debian package we should install our bundle in /usr/share/...
-    set(BUNDLE_PREFIX "share/Bundles")
+    # For debian packaging we install our bundle in /usr/lib/x86_64-linux-gnu/...
+    set(BUNDLE_PREFIX "${CMAKE_INSTALL_LIBDIR}/fw4spl")
+    # The resources currently goes in the same place for now
+    set(RC_PREFIX "${CMAKE_INSTALL_LIBDIR}/fw4spl")
 else()
     set(BUNDLE_PREFIX "Bundles")
 endif()
@@ -187,6 +191,7 @@ else()
 endif()
 
 add_definitions(-DBUNDLE_PREFIX="${BUNDLE_PREFIX}")
+add_definitions(-DRC_PREFIX="${RC_PREFIX}")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -386,7 +391,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -440,7 +445,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${RC_PREFIX}/tu_exec_${DIRNAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -507,7 +512,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
 
     endif()
@@ -663,7 +668,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL)
-        createResourcesInstallTarget( "${BUNDLE_DIR}" ${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION} )
+        createResourcesInstallTarget( "${BUNDLE_DIR}" ${RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION} )
     endif()
     fwBundleExtra()
 endmacro()
@@ -1002,7 +1007,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
         if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
             set(${NAME}_START "${START}")
         endif()
-        
+
         set(${NAME}_START_BEFORE "${START_BEFORE}")
 
         list(APPEND PROJECT_LIST ${NAME})

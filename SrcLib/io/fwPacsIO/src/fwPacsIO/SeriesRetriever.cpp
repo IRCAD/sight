@@ -62,7 +62,7 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
 
     // Load configuration
     ::boost::filesystem::path cfgPath(::boost::filesystem::initial_path< ::boost::filesystem::path >());
-    cfgPath = cfgPath / "share/fwPacsIO_0-1/storescp.cfg";
+    cfgPath = cfgPath / RC_PREFIX "/fwPacsIO_0-1/storescp.cfg";
     SLM_ASSERT("storescp.cfg not found !", ::boost::filesystem::exists(cfgPath));
     this->loadAssociationCfgFile(cfgPath.string().c_str());
     this->setAndCheckAssociationProfile("Default");
