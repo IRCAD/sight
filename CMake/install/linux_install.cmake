@@ -55,8 +55,9 @@ macro(linux_install PRJ_NAME)
     set(CPACK_PACKAGE_VERSION "${VERSION}")
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
+        string(TOLOWER ${PRJ_NAME} APP_NAME)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     endif()
 
     if(NOT USE_SYSTEM_LIB)
