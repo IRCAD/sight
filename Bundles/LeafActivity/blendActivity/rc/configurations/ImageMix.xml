@@ -187,7 +187,7 @@
                 <key uid="${backgroundImageUid}" tfalpha="no" />
                 <key uid="${frontImageUid}" tfalpha="yes" />
             </inout>
-            <inout group="tf">
+            <inout group="tf" optional="yes">
                 <key uid="${tfBackgroundImage}" />
                 <key uid="${tfFrontImage}" />
             </inout>

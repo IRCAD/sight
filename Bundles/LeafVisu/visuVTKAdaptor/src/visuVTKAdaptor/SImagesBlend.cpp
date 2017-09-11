@@ -33,6 +33,7 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/regex.h>
 
 #include <vtkImageBlend.h>
 #include <vtkImageCheckerboard.h>
@@ -101,6 +102,8 @@ void SImagesBlend::starting()
 void SImagesBlend::stopping()
 {
     this->removeImageAdaptors();
+    m_imageAlgorithm = nullptr;
+    m_imagesInfo.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -148,6 +151,41 @@ void SImagesBlend::configuring()
 
     // Get the default division count for checkerboard algorithm
     m_checkerboardDivision = config.get<int>("checkerboardDivision", 10);
+}
+
+//------------------------------------------------------------------------------
+
+void SImagesBlend::swapping(const KeyType& key)
+{
+    const std::string regexStr = "([[:word:]]+)#([[:digit:]]+)";
+    ::boost::regex re(regexStr);
+    ::boost::smatch match;
+    if( ::boost::regex_match(key, match, re) )
+    {
+        const std::string group   = match[1];
+        const unsigned long index = std::stoul(match[2]);
+
+        if (group == s_TF_GROUP && this->getRegisteredServices().size() > index)
+        {
+            ::fwServices::IService::wptr wsrv = this->getRegisteredServices()[index];
+
+            if (!wsrv.expired())
+            {
+                ::fwData::TransferFunction::sptr tf  = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, index);
+                ::fwServices::IService::sptr service = wsrv.lock();
+                if (tf)
+                {
+                    service->registerInOut(tf, SImage::s_TF_INOUT, true, true);
+                    service->swapKey(SImage::s_TF_INOUT, nullptr);
+                }
+                else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
+                {
+                    ::fwServices::OSR::unregisterService(SImage::s_TF_INOUT, AccessType::INOUT, service);
+                    service->swapKey(SImage::s_TF_INOUT, nullptr);
+                }
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -231,6 +269,7 @@ void SImagesBlend::addImageAdaptors()
     const size_t nbTFs    = this->getKeyGroupSize(s_TF_GROUP);
     SLM_ASSERT("'" + s_TF_GROUP + "' group must have the same number of elements that '" + s_IMAGE_GROUP +"'",
                nbTFs == 0 || nbImages == nbTFs);
+
     for(size_t i = 0; i < nbImages; ++i)
     {
         ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
@@ -344,8 +383,6 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunctio
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
     imageAdaptor->setImageOpacity(info.m_imageOpacity);
     imageAdaptor->setAllowAlphaInTF(info.m_useTFAlfa);
-
-    m_registeredImages[img->getID()] = imageAdaptor;
 
     imageAdaptor->start();
 }

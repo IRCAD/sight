@@ -201,7 +201,9 @@ void SNegatoOneSlice::updating()
 
 void SNegatoOneSlice::swapping(const KeyType& key)
 {
-    if (key == s_TF_INOUT)
+    if (key == s_TF_INOUT
+        &&  nullptr == vtkImageBlend::SafeDownCast(this->getImageSource())
+        && nullptr == vtkImageCheckerboard::SafeDownCast(this->getImageSource()))
     {
         IAdaptor::sptr imageAdaptor = this->getImageAdaptor();
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);

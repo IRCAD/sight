@@ -45,7 +45,7 @@ namespace visuVTKAdaptor
             <key uid="..." tfalpha="no" />
             <key uid="..." tfalpha="yes" opacity="0.5" />
         </inout>
-        <inout group="tf">
+        <inout group="tf" optional="yes">
             <key uid="..." />
             <key uid="..." />
         </inout>
@@ -109,6 +109,7 @@ protected:
     VISUVTKADAPTOR_API void starting();
     VISUVTKADAPTOR_API void updating();
     VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void swapping(const KeyType& key);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -140,10 +141,6 @@ private:
     typedef std::vector< ImageInfo > ImageInfoMap;
     /// Map containing the image displaying information
     ImageInfoMap m_imagesInfo;
-
-    /// map <fwId, adaptor>
-    typedef std::map< std::string, ::fwRenderVTK::IAdaptor::sptr > RegisteredImageMap;
-    RegisteredImageMap m_registeredImages;
 
     /// Holds the vtkImageblend or vtkimageCheckerboard algorithms
     vtkThreadedImageAlgorithm* m_imageAlgorithm;
