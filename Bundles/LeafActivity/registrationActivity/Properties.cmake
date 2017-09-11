@@ -21,5 +21,6 @@ set( REQUIREMENTS
     visuVTKQt
     imageConfig
     opItkRegistration
-    )
+    opVTKSlicer
+)
 
