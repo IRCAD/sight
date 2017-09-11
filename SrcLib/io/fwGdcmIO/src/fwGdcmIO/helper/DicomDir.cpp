@@ -163,11 +163,11 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
 
                     const ::boost::filesystem::path path = root / file;
                     OSLM_WARN_IF("Unable to find path :" << path, !::boost::filesystem::exists(path));
-                    OSLM_WARN_IF("Dicomdir is badly formated. Skipping path :" << path, !currentSeries);
+                    OSLM_WARN_IF("Dicomdir is badly formatted. Skipping path :" << path, !currentSeries);
 
                     if(!currentSeries || file.empty())
                     {
-                        logger->warning("DICOMDIR file is badly formated. Instances may be missing");
+                        logger->warning("DICOMDIR file is badly formatted. Instances may be missing");
                     }
                     else if(::boost::filesystem::exists(path))
                     {
