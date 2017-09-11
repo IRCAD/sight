@@ -7,6 +7,7 @@ enable_testing()
 
 include(CheckVariableExists)
 include(CMakeParseArguments)
+include(GNUInstallDirs)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
@@ -515,7 +516,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         install(
             TARGETS ${FWPROJECT_NAME}
             RUNTIME DESTINATION bin
-            LIBRARY DESTINATION ${LIBRARY_OUTPUT_DIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             OPTIONAL NAMELINK_SKIP
             )
     endif()
