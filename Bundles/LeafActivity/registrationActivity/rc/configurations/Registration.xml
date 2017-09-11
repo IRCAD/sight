@@ -380,11 +380,6 @@
             </scene>
         </service>
 
-        <service uid="mixedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${targetImageUid}" />
-            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
-        </service>
-
         <service uid="mixedInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
@@ -395,11 +390,16 @@
                 <key uid="${targetImageUid}" tfalpha="no" />
                 <key uid="transformedImage" tfalpha="no" />
             </inout>
-            <inout group="tf">
+            <inout group="tf" optional="yes">
                 <key uid="targetTransferFunction" />
                 <key uid="transformedTransferFunction" />
             </inout>
             <config vtkimageregister="imageBlend" checkerboardDivision="10" />
+        </service>
+
+        <service uid="mixedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
         </service>
 
         <service uid="mixedPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
@@ -766,9 +766,9 @@
         <start uid="referencePickerInteractor" />
         <start uid="referencePointListAdaptor" />
         <!-- VTK scene 'transformedScene' -->
+        <start uid="registrationImageAdaptor" />
         <start uid="mixedNegatoMPR" />
         <start uid="mixedInteractorStyle" />
-        <start uid="registrationImageAdaptor" />
         <start uid="mixedPickerInteractor" />
         <start uid="mixedPointListAdaptor" />
         <!-- VTK scene '3dScene' -->
