@@ -25,6 +25,8 @@ namespace opVTKSlicer
 /**
  * @brief Operator computing a 2D slice from a 3D image.
  *
+ * @section Slots Slots
+ * - \b updateSliceType(int, int) : change slice
  *
  * @section XML XML Configuration
  *
@@ -58,8 +60,10 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SPlaneSlicer)(::fwServices::IOperator) );
 
+    /// Constructor.
     OPVTKSLICER_API SPlaneSlicer() noexcept;
 
+    /// Destructor.
     OPVTKSLICER_API virtual ~SPlaneSlicer() noexcept;
 
 protected:
@@ -70,9 +74,13 @@ protected:
     OPVTKSLICER_API virtual void stopping() override;
 
     /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
+     * @brief Returns proposals to connect service slots to associated object signals.
      *
+     * Connect image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect imageExtent::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect axes::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     OPVTKSLICER_API virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -81,17 +89,20 @@ private:
     /// Set the extent based on the extentImage and orientation.
     void setReslicerExtent();
 
+    /// Set the plane axes using the input transform.
     void setReslicerAxes();
 
+    /// Modify the input matrix to align the plane with the current extent image slice.
     void setSliceAxes(vtkMatrix4x4* vtkMat) const;
 
+    /// Slot: called when the extent image orientation.
     void updateSliceOrientation(int from, int to);
 
+    /// Slicing orientation. Determines the two axes defining the plane.
     ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
 
+    /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
-
-    double m_opacity;
 };
 
 } //namespace opVTKSlicer

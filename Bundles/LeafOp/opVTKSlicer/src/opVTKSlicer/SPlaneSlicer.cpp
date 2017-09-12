@@ -40,8 +40,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSlice
 //------------------------------------------------------------------------------
 
 SPlaneSlicer::SPlaneSlicer() noexcept :
-    m_reslicer(::vtkImageReslice::New()),
-    m_opacity(1.)
+    m_reslicer(::vtkImageReslice::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateSliceOrientation, this);
 }
@@ -100,8 +99,6 @@ void SPlaneSlicer::configuring()
 
     const auto& config = srvConf.get_child("config.<xmlattr>");
 
-    m_opacity = config.get<double>("opacity", m_opacity);
-
     const std::string& orientation = config.get<std::string>("orientation", "");
 
     if(orientation == "axial")
@@ -128,8 +125,11 @@ void SPlaneSlicer::configuring()
 {
     KeyConnectionsMap connections;
 
+    connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_AXES_IN, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -181,6 +181,8 @@ void SPlaneSlicer::setReslicerAxes()
     // TODO: const correct function signature in fwVtkIO.
     vtkMatrix4x4* axesMatrix(::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
 
+    axesMatrix->Invert();
+
     // permutate axes.
     switch (m_orientation)
     {
@@ -192,8 +194,8 @@ void SPlaneSlicer::setReslicerAxes()
                 const double y = axesMatrix->GetElement(i, 1);
                 const double z = axesMatrix->GetElement(i, 2);
                 axesMatrix->SetElement(i, 0, y);
-                axesMatrix->SetElement(i, 1, z);
-                axesMatrix->SetElement(i, 2, x);
+                axesMatrix->SetElement(i, 1, -z);
+                axesMatrix->SetElement(i, 2, -x);
             }
             break;
         case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
@@ -202,12 +204,14 @@ void SPlaneSlicer::setReslicerAxes()
             {
                 const double y = axesMatrix->GetElement(i, 1);
                 const double z = axesMatrix->GetElement(i, 2);
-                axesMatrix->SetElement(i, 1, z);
+                axesMatrix->SetElement(i, 1, -z);
                 axesMatrix->SetElement(i, 2, y);
             }
             break;
         case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break; // Nothing to do.
     }
+
+    SLM_FATAL_IF("BOOM", axesMatrix->Determinant() < 0);
 
     this->setSliceAxes(axesMatrix);
     m_reslicer->SetResliceAxes(axesMatrix);
@@ -239,8 +243,13 @@ void SPlaneSlicer::setSliceAxes(vtkMatrix4x4* vtkMat) const
 
     const uint8_t axis = static_cast<uint8_t>(m_orientation);
 
-    const double oldTrans = vtkMat->GetElement(axis, 3);
-    vtkMat->SetElement(axis, 3, oldTrans + spacing[axis] * static_cast<double>(idx));
+    const double trans = spacing[axis] * static_cast<double>(idx);
+
+    vtkMatrix4x4* transMat = vtkMatrix4x4::New();
+    transMat->Identity();
+    transMat->SetElement(axis, 3, trans);
+
+    vtkMatrix4x4::Multiply4x4(vtkMat, transMat, vtkMat);
 }
 
 //------------------------------------------------------------------------------
