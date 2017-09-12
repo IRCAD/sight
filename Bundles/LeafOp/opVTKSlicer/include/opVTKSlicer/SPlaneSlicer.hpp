@@ -29,7 +29,7 @@ namespace opVTKSlicer
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SImagePlaneSlice" autoConnect="yes">
+   <service type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
        <in key="image" uid="..." />
        <in key="imageExtent" uid="..." />
        <in key="axes" uid="..." />
@@ -92,7 +92,6 @@ private:
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 
     double m_opacity;
-
 };
 
 } //namespace opVTKSlicer

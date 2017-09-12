@@ -128,8 +128,8 @@ void SPlaneSlicer::configuring()
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
 
     return connections;
 }
@@ -147,7 +147,7 @@ void SPlaneSlicer::setReslicerExtent()
     const auto& spacing = extentImg->getSpacing();
 
     // cast size_t to int.
-    std::vector<int> intSize;
+    std::vector<int> intSize(size.size());
     std::transform(size.begin(), size.end(), intSize.begin(), [](size_t s){ return static_cast<int>(s) - 1; });
 
     switch (m_orientation)
@@ -217,7 +217,7 @@ void SPlaneSlicer::setReslicerAxes()
 
 void SPlaneSlicer::setSliceAxes(vtkMatrix4x4* vtkMat) const
 {
-    auto image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    auto image = this->getInput< ::fwData::Image >(s_EXTENT_IN);
 
     ::fwData::Object::sptr index;
     switch (m_orientation)
