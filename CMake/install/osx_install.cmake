@@ -50,7 +50,7 @@ function(osx_install PRJ_NAME)
             file(INSTALL \"${CMAKE_INSTALL_PREFIX}/Bundles\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
         endif()
         if (EXISTS ${CMAKE_INSTALL_PREFIX}/plugins)
-            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
+            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
         endif()
     " COMPONENT ApplicationBundle)
 
