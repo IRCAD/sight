@@ -10,3 +10,8 @@ set( DEPENDENCIES
     fwServices
 )
 set( REQUIREMENTS )
+
+if(UNIX)
+    set( PLUGINS
+        xcbglintegrations)
+endif()
