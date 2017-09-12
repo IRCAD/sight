@@ -55,7 +55,8 @@ static const ::fwServices::IService::KeyType s_TF_SELECTION_GROUP = "tfSelection
 
 SImagesBlend::SImagesBlend() noexcept :
     m_imageAlgorithm(nullptr),
-    m_checkerboardDivision(10)
+    m_checkerboardDivision(10),
+    m_zDivision(m_checkerboardDivision)
 {
     newSlot(s_CHANGE_MODE_SLOT, &SImagesBlend::changeMode, this);
     newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &SImagesBlend::changeCheckerboardDivision, this);
@@ -89,7 +90,7 @@ void SImagesBlend::starting()
         {
             // Set the number of subdivision
             imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                    m_checkerboardDivision);
+                                                    m_zDivision);
 
             // Assign as an vtkThreadedImageAlgorithm
             m_imageAlgorithm = imageCheckerboard;
@@ -195,6 +196,10 @@ bool SImagesBlend::checkImageInformations()
                 size    = img->getSize();
                 spacing = img->getSpacing();
                 origin  = img->getOrigin();
+                if(size[2] <= 1)
+                {
+                    m_zDivision = 1;
+                }
             }
             else
             {
@@ -317,7 +322,7 @@ void SImagesBlend::changeMode(std::string _value, std::string _key)
             {
                 // Set the number of subdivision
                 imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                        m_checkerboardDivision);
+                                                        m_zDivision);
 
                 // Assign as an vtkThreadedImageAlgorithm
                 m_imageAlgorithm = imageCheckerboard;
@@ -370,7 +375,7 @@ void SImagesBlend::changeCheckerboardDivision(const int division)
     {
         // Set the number of subdivision
         imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                m_checkerboardDivision);
+                                                m_zDivision);
 
         // Assign as an vtkThreadedImageAlgorithm
         m_imageAlgorithm = imageCheckerboard;
