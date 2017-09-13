@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,18 @@
 #ifndef __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
 #define __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
 
-#include <map>
-#include <string>
-
-#include <boost/property_tree/ptree.hpp>
+#include "fwActivities/config.hpp"
 
 #include <fwCore/BaseObject.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
-#include "fwActivities/config.hpp"
+#include <boost/property_tree/ptree.hpp>
+
+#include <map>
+#include <string>
 
 namespace fwData
 {
@@ -29,7 +29,6 @@ namespace fwRuntime
 {
 struct Extension;
 }
-
 
 namespace fwActivities
 {
@@ -44,11 +43,13 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfigParam
     ActivityAppConfigParam()
     {
     }
-    FWACTIVITIES_API ActivityAppConfigParam(const ConfigType &config);
+    FWACTIVITIES_API ActivityAppConfigParam(const ConfigType& config);
+
+    //------------------------------------------------------------------------------
 
     bool isSeshat() const
     {
-        return (by.substr(0,1) == "@") || (by.substr(0,1) == "!");
+        return (by.substr(0, 1) == "@") || (by.substr(0, 1) == "!");
     }
 
     std::string replace;
@@ -62,7 +63,7 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfig
     ActivityAppConfig()
     {
     }
-    FWACTIVITIES_API ActivityAppConfig(const ConfigType &config);
+    FWACTIVITIES_API ActivityAppConfig(const ConfigType& config);
 
     std::string id;
     ActivityAppConfigParamsType parameters;
@@ -73,7 +74,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirementKey
     ActivityRequirementKey()
     {
     }
-    FWACTIVITIES_API ActivityRequirementKey(const ConfigType &config);
+    FWACTIVITIES_API ActivityRequirementKey(const ConfigType& config);
 
     std::string key;
     std::string path;
@@ -84,7 +85,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
     ActivityRequirement()
     {
     }
-    FWACTIVITIES_API ActivityRequirement(const ConfigType &config);
+    FWACTIVITIES_API ActivityRequirement(const ConfigType& config);
 
     typedef std::vector< ActivityRequirementKey > KeyType;
 
@@ -140,7 +141,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png</icon>
+        <icon>media_0-1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
@@ -154,7 +155,8 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
                  <desc>Description of the required data....</desc>
                  <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>
-            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true" />
+            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
+ * create="true" />
             <!--# ...-->
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
@@ -182,7 +184,7 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     {
     }
 
-    FWACTIVITIES_API ActivityInfo(const SPTR(::fwRuntime::Extension) &ext);
+    FWACTIVITIES_API ActivityInfo(const SPTR(::fwRuntime::Extension)& ext);
 
     FWACTIVITIES_API bool usableWith(DataCountType dataCount) const;
 
@@ -205,7 +207,6 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
 
         RequirementsMinMaxCount m_requirementCount;
 };
-
 
 /**
  * @brief This class allows to register all the configuration parameters which has the point extension
@@ -234,25 +235,25 @@ public:
      * @{
      **/
     FWACTIVITIES_API void parseBundleInformation();
-    FWACTIVITIES_API void parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) > &extensions);
+    FWACTIVITIES_API void parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) >& extensions);
     ///@}
 
     /**
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    FWACTIVITIES_API const ActivityInfo getInfo( const std::string & extensionId ) const;
+    FWACTIVITIES_API const ActivityInfo getInfo( const std::string& extensionId ) const;
 
     /**
      * @brief Tests if we have information about operator
      * @note This method is thread safe.
      */
-    FWACTIVITIES_API bool hasInfo( const std::string & extensionId ) const;
+    FWACTIVITIES_API bool hasInfo( const std::string& extensionId ) const;
 
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const SPTR(::fwData::Vector) &data ) const;
+    FWACTIVITIES_API ActivityInfo::DataCountType getDataCount( const SPTR(::fwData::Vector)& data ) const;
 
     /**
      * @brief Get all infos
@@ -264,7 +265,7 @@ public:
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    FWACTIVITIES_API ActivitiesType getInfos( const SPTR(::fwData::Vector) &data ) const;
+    FWACTIVITIES_API ActivitiesType getInfos( const SPTR(::fwData::Vector)& data ) const;
 
     /**
      * @brief Get all keys
@@ -294,7 +295,6 @@ protected:
     /// The global instance of the app config parameters.
     static Activities::sptr s_activities;
 
-
 };
 
 } // namespace registry
@@ -302,5 +302,4 @@ protected:
 } // namespace fwActivities
 
 #endif // __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
-
 

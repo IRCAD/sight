@@ -1,21 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/IToolBarLayoutManager.cpp
- * @brief This file defines the implementation of the base class for managing a toolbar.
- *
- *
- * @date 2009-2010
- */
+#include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
+
+#include <fwRuntime/operations.hpp>
 
 #include <boost/lexical_cast.hpp>
-
-
-#include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
 
 namespace fwGui
 {
@@ -43,7 +36,6 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
                 configuration->getName() == "layout");
 
-
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
     {
@@ -62,13 +54,13 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( toolBarItem->hasAttribute("icon") )
             {
-                info.m_icon = toolBarItem->getExistingAttributeValue("icon");
+                info.m_icon = ::fwRuntime::getBundleResourceFilePath(toolBarItem->getAttributeValue("icon"));
             }
 
             if( toolBarItem->hasAttribute("icon2") )
             {
                 SLM_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
-                info.m_icon2 = toolBarItem->getExistingAttributeValue("icon2");
+                info.m_icon2 = ::fwRuntime::getBundleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
             }
 
             if( toolBarItem->hasAttribute("style") )
@@ -113,7 +105,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( (*iter)->hasAttribute("icon") )
             {
-                info.m_icon = (*iter)->getExistingAttributeValue("icon");
+                info.m_icon = ::fwRuntime::getBundleResourceFilePath((*iter)->getExistingAttributeValue("icon" ));
             }
             m_actionInfo.push_back( info );
         }
@@ -173,6 +165,4 @@ std::vector< ::fwGui::container::fwContainer::sptr > IToolBarLayoutManager::getC
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
 

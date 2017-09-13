@@ -21,25 +21,25 @@ macro(profile_setup ${PROJECT})
     findRequirements(${PROJECT} ALL_REQUIREMENTS)
     list(REMOVE_DUPLICATES ALL_REQUIREMENTS)
     list(SORT ALL_REQUIREMENTS)
-    
+
     # Manage bundle starting
     # add a start for ctrl app
-    if(${PROJECT}_START) 
+    if(${PROJECT}_START)
         list(APPEND START_BUNDLES "${PROJECT}")
     endif()
-    
+
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
         # get the start option of the current requirement if exists
         if(${CURRENT_REQUIREMENT}_START)
             list(APPEND START_BUNDLES "${CURRENT_REQUIREMENT}")
         endif()
     endforeach()
-    
+
     list(SORT START_BUNDLES)
 
     # Manage bundle activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
-    
+
         # Ensure that we start this bundle before the "START_BEFORE"
         foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
             list(FIND START_BUNDLES ${CURRENT_START_BEFORE} INDEX_START_BEFORE )
@@ -78,7 +78,8 @@ macro(profile_setup ${PROJECT})
         set(START_BUNDLE_LIST "${START_BUNDLE_LIST}\n    <start id=\"${CURRENT_BUNDLES}\" />")
     endforeach()
 
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile.xml.in"    "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/profile.xml")
+    configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile.xml.in"
+                    "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/profile.xml")
 endmacro()
 
 function(findRequirements FWPROJECT_NAME)

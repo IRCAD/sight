@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,12 @@
 #ifndef __FWGUI_IFRAMESRV_HPP__
 #define __FWGUI_IFRAMESRV_HPP__
 
-
-#include "fwGui/config.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/registrar/ViewRegistrar.hpp"
-#include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 #include "fwGui/builder/IMenuBarBuilder.hpp"
 #include "fwGui/builder/IToolBarBuilder.hpp"
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/layoutManager/IFrameLayoutManager.hpp"
+#include "fwGui/registrar/ViewRegistrar.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -41,7 +40,7 @@ namespace fwGui
      <gui>
          <frame>
              <name>My App</name>
-             <icon>@BUNDLE_PREFIX@/myApp_1-0/icon.ico</icon>
+             <icon>myApp_1-0/icon.ico</icon>
              <minSize width="800" height="600" />
              <style mode="MODAL" />
          </frame>
@@ -71,7 +70,7 @@ class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IFrameSrv)(::fwServices::IService) );
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
@@ -103,7 +102,6 @@ public:
     /**
      * @}
      */
-
 
 protected:
 
@@ -171,5 +169,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_IFRAMESRV_HPP__*/
-
 

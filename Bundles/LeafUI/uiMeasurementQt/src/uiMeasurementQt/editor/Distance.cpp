@@ -65,7 +65,7 @@ void Distance::starting()
         this->getContainer() );
 
     namespace fs = ::boost::filesystem;
-    fs::path pathImageDist(std::string(BUNDLE_PREFIX) + "/uiMeasurementQt_0-1/distance.png");
+    fs::path pathImageDist = ::fwRuntime::getBundleResourceFilePath("uiMeasurementQt", "distance.png");
     OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));

@@ -82,7 +82,7 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::Confi
 
 xmlNodePtr Convert::runningBundlesToXml( )
 {
-    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_PREFIX ) );
+    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_RC_PREFIX ) );
     std::set< std::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles;
     ::fwRuntime::Runtime* tmp_runtime = ::fwRuntime::Runtime::getDefault();
 
@@ -300,7 +300,7 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
 
     std::string xml = sstr.str();
 
-    xmlDocPtr doc = xmlParseMemory(xml.c_str(), xml.size());
+    xmlDocPtr doc = xmlParseMemory(xml.c_str(), static_cast<int>(xml.size()));
 
     if (doc == NULL)
     {

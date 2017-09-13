@@ -41,39 +41,36 @@ SPTR( Bundle ) Bundle::getLoadingBundle()
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle( const boost::filesystem::path& location,
+Bundle::Bundle( const ::boost::filesystem::path& location,
                 const std::string& id,
                 const std::string& version ) :
-    m_location( location ),
-    m_identifier( id ),
-    m_version( version ),
-    m_enable( false ),
-    m_started( false ),
-    m_initialized( false )
-
+    Bundle(location, id, version, "")
 {
-    // Post-condition.
-    assert( m_location.is_complete() == true );
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle(
-    const boost::filesystem::path& location,
-    const std::string& id,
-    const std::string& version,
-    const std::string& c ) :
-    m_location( location ),
+Bundle::Bundle( const ::boost::filesystem::path& location,
+                const std::string& id,
+                const std::string& version,
+                const std::string& c ) :
+    m_resourcesLocation( location.lexically_normal() ),
     m_identifier( id ),
     m_version( version ),
-    m_class( c ),
-    m_enable( false ),
-    m_started( false ),
-    m_initialized( false )
-
+    m_class( c )
 {
     // Post-condition.
-    assert( m_location.is_complete() == true );
+    SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_complete() == true );
+
+    // Starting from FW4SPL 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
+    std::string strLocation       = location.c_str();
+    const std::string strRCPrefix = BUNDLE_RC_PREFIX;
+    const auto itBundle           = strLocation.find(strRCPrefix);
+    if(itBundle != std::string::npos)
+    {
+        strLocation.replace(itBundle, strRCPrefix.length(), std::string(BUNDLE_LIB_PREFIX));
+    }
+    m_libraryLocation = ::boost::filesystem::path(strLocation);
 }
 
 //------------------------------------------------------------------------------
@@ -275,9 +272,16 @@ const std::string& Bundle::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-const boost::filesystem::path& Bundle::getLocation() const
+const ::boost::filesystem::path& Bundle::getLibraryLocation() const
 {
-    return m_location;
+    return m_libraryLocation;
+}
+
+//------------------------------------------------------------------------------
+
+const ::boost::filesystem::path& Bundle::getResourcesLocation() const
+{
+    return m_resourcesLocation;
 }
 
 //------------------------------------------------------------------------------

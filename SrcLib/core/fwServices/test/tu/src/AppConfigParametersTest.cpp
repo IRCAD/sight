@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/Bundle.hpp>
+#include "AppConfigParametersTest.hpp"
 
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
 
+#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Runtime.hpp>
+
 #include <fwTest/helper/Thread.hpp>
 
-#include "AppConfigParametersTest.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfigParametersTest );
@@ -25,17 +25,14 @@ namespace fwServices
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void AppConfigParametersTest::setUp()
 {
     // Set up context before running a test.
     //Bundles location
-    ::boost::filesystem::path bundlesLocation = ::boost::filesystem::current_path() /
-                                                ::boost::filesystem::path(BUNDLE_PREFIX);
-    CPPUNIT_ASSERT(::boost::filesystem::exists(bundlesLocation));
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
-
-    // Read bundles
-    runtime->addBundles(bundlesLocation);
+    runtime->addDefaultBundles();
 
     ::boost::filesystem::path location = ::boost::filesystem::current_path() / "share/tu_exec_fwServices_0-0";
     if( !::boost::filesystem::exists( location ) )
@@ -44,17 +41,14 @@ void AppConfigParametersTest::setUp()
     }
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 
-    runtime->addBundles(location);
-    CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
-
     std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
-    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'",bundle);
+    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", bundle);
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnable());
 
     // Test bundle servicesReg
     std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigParametersTest");
-    CPPUNIT_ASSERT_MESSAGE("'AppConfigParametersTest' bundle not found",bundle2);
+    CPPUNIT_ASSERT_MESSAGE("'AppConfigParametersTest' bundle not found", bundle2);
     bundle2->setEnable(true);
     CPPUNIT_ASSERT(bundle2->isEnable());
 
@@ -95,7 +89,7 @@ void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
 {
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i = 0; i<nbThreads; ++i)
+    for (int i = 0; i < nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
@@ -103,7 +97,7 @@ void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
         threads.push_back(thread);
     }
 
-    for (int i = 0; i<nbThreads; ++i)
+    for (int i = 0; i < nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;

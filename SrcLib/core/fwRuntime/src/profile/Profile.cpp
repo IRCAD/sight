@@ -210,7 +210,7 @@ void Profile::setParams(const Profile::ParamsContainer& params)
         delete[] m_argv;
     }
 
-    m_argc = m_params.size();
+    m_argc = static_cast<int>(m_params.size());
     // allocate memory for an array of character strings
     m_argv = new char*[m_params.size()];
 

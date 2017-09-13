@@ -87,6 +87,7 @@ function(plugin_setup ${PROJECT})
         set(PROJECT_LIBRARY "    <library name=\"${PROJECT_NAME}\" />")
     endif()
 
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin.xml.in"    "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/plugin.xml")
+    configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin.xml.in"
+                    "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/plugin.xml")
 
 endfunction()

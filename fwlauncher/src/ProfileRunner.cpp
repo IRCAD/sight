@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1, std::string(BUNDLE_PREFIX) + "/")),
+        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1, std::string(BUNDLE_RC_PREFIX) + "/")),
         "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
@@ -247,19 +247,19 @@ int main(int argc, char* argv[])
 
         while ( fs::extension(execPath) != ".app"
                 && execPath != execPath.parent_path()
-                && !fs::is_directory( execPath / fs::path(BUNDLE_PREFIX))
+                && !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX))
                 )
         {
             execPath = execPath.parent_path();
         }
 
-        if ( fs::is_directory( execPath / "Contents" / fs::path(BUNDLE_PREFIX) ) )
+        if ( fs::is_directory( execPath / "Contents" / fs::path(BUNDLE_RC_PREFIX) ) )
         {
             execPath = execPath / "Contents";
         }
         else
         {
-            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(BUNDLE_PREFIX) ));
+            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(BUNDLE_RC_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);

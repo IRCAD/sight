@@ -1,18 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWRUNTIME_OPERATIONS_HPP__
 #define __FWRUNTIME_OPERATIONS_HPP__
-
-#include <iterator>
-#include <memory>
-#include <string>
-#include <boost/filesystem/path.hpp>
-
-#include <fwCore/base.hpp>
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
@@ -22,6 +15,14 @@
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <boost/filesystem/path.hpp>
+
+#include <iterator>
+#include <memory>
+#include <string>
 
 namespace fwRuntime
 {
@@ -33,11 +34,8 @@ class Profile;
 }
 }
 
-
-
 namespace fwRuntime
 {
-
 
 /**
  * @brief       Retrieves the extension point having the specified identifier.
@@ -46,9 +44,7 @@ namespace fwRuntime
  *
  * @return      a pointer to the found extension point or null if none
  */
-FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::string & identifier );
-
-
+FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::string& identifier );
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
@@ -64,8 +60,8 @@ FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::str
 template<typename T>
 T* createExecutableInstance(
     const std::shared_ptr<Extension>    extension,
-    const std::string           & element = "executable",
-    const std::string           & attribute = "class" )
+    const std::string& element = "executable",
+    const std::string& attribute = "class" )
 {
     // Retrieves the right configuration element.
     std::shared_ptr<ConfigurationElement> elt( extension->findConfigurationElement(element) );
@@ -78,7 +74,6 @@ T* createExecutableInstance(
     return createExecutableInstance<T>( elt, attribute );
 }
 
-
 /**
  * @brief       Creates an executable instance for the specifed configuration element.
  *
@@ -89,9 +84,9 @@ T* createExecutableInstance(
  * @return      a shared pointer to the built executable object
  */
 template<typename T>
-T * createExecutableInstance(
+T* createExecutableInstance(
     const std::shared_ptr<ConfigurationElement> element,
-    const std::string                       & attribute = "class" )
+    const std::string& attribute = "class" )
 {
 
     // Retrieves the executable type.
@@ -102,11 +97,11 @@ T * createExecutableInstance(
     const std::string type( element->getExistingAttributeValue(attribute) );
 
     // Creates the executable instance.
-    Runtime                         * rntm      ( Runtime::getDefault()                         );
-    std::auto_ptr< IExecutable >    executable  ( rntm->createExecutableInstance(type, element) );
+    Runtime* rntm( Runtime::getDefault()                         );
+    std::auto_ptr< IExecutable >    executable( rntm->createExecutableInstance(type, element) );
 
     // Converts the executable instance to the right type.
-    T * result = dynamic_cast<T*>( executable.get() );
+    T* result = dynamic_cast<T*>( executable.get() );
     if( result == 0 )
     {
         throw RuntimeException( "Executable creation failed. Bad cast" );
@@ -117,8 +112,6 @@ T * createExecutableInstance(
     return result;
 }
 
-
-
 /**
  * @brief   Retrieves all extensions for the point having the specified
  *          identifier.
@@ -128,7 +121,7 @@ T * createExecutableInstance(
  */
 template<typename OutputIterator>
 void getAllExtensionsForPoint(
-    const std::string   & identifier,
+    const std::string& identifier,
     OutputIterator output
     )
 {
@@ -141,8 +134,6 @@ void getAllExtensionsForPoint(
     point->getAllExtensions( output );
 }
 
-
-
 /**
  * @brief   Retrieves all configuration elements for the point having the
  *          specified identifier.
@@ -153,7 +144,7 @@ void getAllExtensionsForPoint(
  */
 template<typename OutputIterator>
 void getAllConfigurationElementsForPoint(
-    const std::string   & identifier,
+    const std::string& identifier,
     OutputIterator output
     )
 {
@@ -174,11 +165,10 @@ void getAllConfigurationElementsForPoint(
     }
     else
     {
-        OSLM_DEBUG ( "IGNORING getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
+        OSLM_DEBUG( "IGNORING getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
     }
 
 }
-
 
 /**
  * @brief   Retrieves all configuration elements for the point having the
@@ -192,7 +182,7 @@ void getAllConfigurationElementsForPoint(
  *          elements
  */
 template<typename Container>
-const Container getAllConfigurationElementsForPoint(const std::string & identifier)
+const Container getAllConfigurationElementsForPoint(const std::string& identifier)
 {
     // Defines an insert iterator type for the container.
     typedef std::back_insert_iterator< Container > Inserter;
@@ -205,7 +195,6 @@ const Container getAllConfigurationElementsForPoint(const std::string & identifi
     // The job is done!
     return elements;
 }
-
 
 /**
  * @brief   Retrieves all executable objects for the point having the specified identifier
@@ -221,8 +210,8 @@ const Container getAllConfigurationElementsForPoint(const std::string & identifi
  * @return  a container containing shared pointers to all created executable instances
  */
 template< typename Container, typename T >
-const Container getAllExecutableForPoint( const std::string & identifier,
-                                          const std::string & attribute = "class" )
+const Container getAllExecutableForPoint( const std::string& identifier,
+                                          const std::string& attribute = "class" )
 {
     // Defines the element container
     typedef std::vector< std::shared_ptr< ConfigurationElement > > ConfigurationElementContainer;
@@ -248,9 +237,8 @@ const Container getAllExecutableForPoint( const std::string & identifier,
     return result;
 }
 
-
 /**
- * @brief   Retrieves the configuation element with the given identifier for the
+ * @brief   Retrieve the configuation element with the given identifier for the
  *          given extension point
  *
  * @param   identifier          a string containing the configuration element identifier
@@ -258,20 +246,26 @@ const Container getAllExecutableForPoint( const std::string & identifier,
  *
  * @return  a shared pointer to the found configuration element or null if none
  */
-FWRUNTIME_API std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & identifier,
-                                                                                const std::string & pointIdentifier );
-
-
+FWRUNTIME_API std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string& identifier,
+                                                                                const std::string& pointIdentifier );
 
 /**
- * @brief   Retrieves the extension having the specified identifier.
+ * @brief   Retrieve the extension having the specified identifier.
  *
  * @param   identifier  a string containing an extension identifier
  *
  * @return  a shared pointer to the found extension or null if none
  */
-FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string & identifier );
+FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string& identifier );
 
+/**
+ * @brief   Retrieve the filesystem valid path of resources of a bundle.
+ *
+ * @param   bundleIdentifier    a string containing a bundle identifier
+ *
+ * @return  a system valid path
+ */
+FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the bundle having the specified identifier.
@@ -281,12 +275,33 @@ FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string & iden
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier,
-                                                                  const boost::filesystem::path &path) noexcept;
-
+FWRUNTIME_API const boost::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
+                                                                      const boost::filesystem::path& path) noexcept;
 
 /**
- * @brief   Retreives a filesystem valid path for a path relative to the specified bundle.
+ * @brief   Retrieve a filesystem valid path for a resource path whose first element is a bundle identifier.
+ * For instance for "bundle-0.2/dir/file.txt", the function returns
+ * "/home/login/f4s/build/share/bundle-0.2/dir/file.txt"
+ *
+ * @param   path                relative path whose first element is a bundle identifier
+ *
+ * @return  a system valid path
+ */
+FWRUNTIME_API const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
+ * For instance for "fwLib-0.2/dir/file.txt", the function returns
+ * "/home/login/f4s/build/share/fwLib-0.2/dir/file.txt"
+ *
+ * @param   path                relative path whose first element is a bundle identifier
+ *
+ * @return  a system valid path
+ */
+FWRUNTIME_API const ::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept;
+
+/**
+ * @brief   Retrieve a filesystem valid path for a path relative to the specified bundle.
  *
  * @param   bundle  a pointer to a bundle instance
  * @param   path    a path relative to the bundle
@@ -294,11 +309,10 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::str
  * @return  a system valid path
  */
 FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
-                                                                   const boost::filesystem::path &path) noexcept;
-
+                                                                   const boost::filesystem::path& path) noexcept;
 
 /**
- * @brief   Retreives a filesystem valid path for a path relative to the bundle of the specified configuration element.
+ * @brief   Retrieve a filesystem valid path for a path relative to the bundle of the specified configuration element.
  *
  * @param   element a shared pointer to a configuration element instance
  * @param   path    a path relative to the bundle
@@ -306,28 +320,25 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_p
  * @return  a system valid path
  */
 FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
-                                                                   const boost::filesystem::path &path) noexcept;
-
+                                                                   const boost::filesystem::path& path) noexcept;
 
 /**
- * @brief   Retrieves a filesystem valid path for a path relative to the specified executable instance.
+ * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
  *
  * @param   executable  a pointer to an executable instance
  * @param   path        a path relative to the bundle
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecutable *executable,
-                                                                  const boost::filesystem::path &path) noexcept;
-
+FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecutable* executable,
+                                                                  const boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Loads all bundles that can be found in the specified directory.
  *
  * @param   directory   a path to the directory to explore for bundles
  */
-FWRUNTIME_API void addBundles( const boost::filesystem::path & directory );
-
+FWRUNTIME_API void addBundles( const boost::filesystem::path& directory );
 
 /**
  * @brief   Starts the given bundle set profile.
@@ -336,9 +347,7 @@ FWRUNTIME_API void addBundles( const boost::filesystem::path & directory );
  *
  * @return  a shared pointer to the started profile
  */
-FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( const boost::filesystem::path & path );
-
-
+FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( const boost::filesystem::path& path );
 
 /**
  * @brief   Retrieves the bundle with the given identifier and version
@@ -348,19 +357,15 @@ FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( con
  *
  * @return  a shared pointer to the found bundle, or empty when none
  */
-FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string & identifier, const Version & version = Version() );
-
-
+FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string& identifier, const Version& version = Version() );
 
 /**
  * @brief   Starts the bundle specified by the given identifier.
  *
  * @param   identifier  a string containing a bundle identifier
  */
-FWRUNTIME_API void startBundle(const std::string &identifier);
-
+FWRUNTIME_API void startBundle(const std::string& identifier);
 
 } // namespace fwRuntime
-
 
 #endif // __FWRUNTIME_OPERATIONS_HPP__

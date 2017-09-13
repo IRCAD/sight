@@ -101,7 +101,7 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension)& ext) :
     id(ext->findConfigurationElement("id")->getValue()),
     title(ext->findConfigurationElement("title")->getValue()),
     description(ext->findConfigurationElement("desc")->getValue()),
-    icon(ext->findConfigurationElement("icon")->getValue()),
+    icon(::fwRuntime::getBundleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
     tabInfo(title),
     bundleId(ext->getBundle()->getIdentifier()),
     bundleVersion(ext->getBundle()->getVersion().string()),

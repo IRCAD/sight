@@ -108,17 +108,17 @@ if(ADDITIONAL_PROJECTS)
     endforeach()
 endif()
 
-set(RC_PREFIX "share")
+# For debian packaging we install our bundle in /usr/lib/x86_64-linux-gnu/...
+set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}")
+# The resources currently goes in the same place for now
+set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}")
 
 if(ANDROID)
-    set(BUNDLE_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
+    set(BUNDLE_LIB_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
 elseif(DEBIAN_INSTALL)
-    # For debian packaging we install our bundle in /usr/lib/x86_64-linux-gnu/...
-    set(BUNDLE_PREFIX "${CMAKE_INSTALL_LIBDIR}/fw4spl")
-    # The resources currently goes in the same place for now
-    set(RC_PREFIX "${CMAKE_INSTALL_LIBDIR}/fw4spl")
-else()
-    set(BUNDLE_PREFIX "Bundles")
+    # For debian packaging we add a subdirectory to sort out the bundles
+    set(BUNDLE_LIB_PREFIX "${BUNDLE_LIB_PREFIX}/fw4spl")
+    set(BUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}/fw4spl")
 endif()
 
 # Set warning level and function export visibility on Unix
@@ -189,9 +189,6 @@ else()
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
-
-add_definitions(-DBUNDLE_PREFIX="${BUNDLE_PREFIX}")
-add_definitions(-DRC_PREFIX="${RC_PREFIX}")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -327,7 +324,8 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
                              -DFWPROJECT_NAME="${FWPROJECT_NAME}"
                              -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
                              -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
-                             -DBUNDLE_PREFIX="${BUNDLE_PREFIX}"
+                             -DBUNDLE_LIB_PREFIX="${BUNDLE_LIB_PREFIX}"
+                             -DBUNDLE_RC_PREFIX="${BUNDLE_RC_PREFIX}"
                              -DTARGET_TYPE="${TARGET_TYPE}"
                              -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
             )
@@ -391,7 +389,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -445,7 +443,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${RC_PREFIX}/tu_exec_${DIRNAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/tu_exec_${DIRNAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -512,7 +510,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
 
     endif()
@@ -572,7 +570,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
+    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
         add_library(${FWPROJECT_NAME} ${ARGN}
@@ -599,8 +597,8 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             qt_plugins_setup() # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION ${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
-                LIBRARY DESTINATION ${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
+                RUNTIME DESTINATION ${BUNDLE_LIB_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
+                LIBRARY DESTINATION ${BUNDLE_LIB_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
                 OPTIONAL NAMELINK_SKIP
                 )
         endif()
@@ -640,7 +638,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         if(MSVC_IDE)
             # create the launch config for the current app
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
+            set(PROFILE "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
             if(NOT DEBUGGER_ENVIRONMENT)
@@ -658,18 +656,34 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
                 "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
                 IMMEDIATE @ONLY)
         endif()
+        if(UNIX)
+            # Install shortcut
+            string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
+
+            set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
+            set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
+            set(PROFILE_PATH "${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
+
+            configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+            file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
+                FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+        endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
 
+    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/share/${FWPROJECT_NAME}_${DASH_VERSION}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${BUNDLE_DIR}" )
+        createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL)
-        createResourcesInstallTarget( "${BUNDLE_DIR}" ${RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION} )
+        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
     endif()
+
     fwBundleExtra()
 endmacro()
 

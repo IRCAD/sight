@@ -7,6 +7,7 @@
 #include "fwRuntime/io/ProfileReader.hpp"
 
 #include "fwRuntime/io/Validator.hpp"
+#include "fwRuntime/operations.hpp"
 #include "fwRuntime/profile/Activater.hpp"
 #include "fwRuntime/profile/Profile.hpp"
 #include "fwRuntime/profile/Starter.hpp"
@@ -52,10 +53,7 @@ std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( c
     }
 
     // Validation
-    std::ostringstream fileLocation;
-    fileLocation << RC_PREFIX << "/fwRuntime_" <<  FWRUNTIME_VER << "/profile.xsd";
-    const ::boost::filesystem::path profileXSDLocation(
-        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
+    auto profileXSDLocation = ::fwRuntime::getLibraryResourceFilePath("fwRuntime_" FWRUNTIME_VER "/profile.xsd");
 
     Validator validator(profileXSDLocation);
 

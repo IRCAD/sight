@@ -97,11 +97,18 @@ struct Runtime
     FWRUNTIME_API void unregisterBundle( std::shared_ptr< Bundle > bundle );
 
     /**
-     * @brief       Adds all bundle found in t he given path.
+     * @brief       Adds all bundle found in the given path.
      *
      * @param[in]   repository  a path that may containing bundles
      */
     FWRUNTIME_API void addBundles( const ::boost::filesystem::path& repository );
+
+    /**
+     * @brief       Adds all bundle found at the default location.
+     *
+     * @remark      The given bundle state will be altered according to the current configuration rules.
+     */
+    FWRUNTIME_API void addDefaultBundles();
 
     /**
      * @brief   Retrieves the iterator on the begining of the bundle collection.
@@ -305,7 +312,7 @@ struct Runtime
         BundleContainer m_bundles;                        ///< Contains all bundles.
         PluginContainer m_plugins;                        ///< Contains all plugins.
 
-        ::boost::filesystem::path m_workingPath; ///< Path wehre Bundles and share folder are located.
+        ::boost::filesystem::path m_workingPath; ///< Path where Bundles and share folder are located.
 
         /**
          * @brief   Constructor.

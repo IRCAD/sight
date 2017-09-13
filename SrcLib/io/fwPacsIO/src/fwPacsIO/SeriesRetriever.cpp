@@ -1,22 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwPacsIO/SeriesRetriever.hpp"
-#include "fwPacsIO/exceptions/RequestFailure.hpp"
 
-#include <fwThread/Worker.hpp>
-#include <fwTools/System.hpp>
+#include "fwPacsIO/exceptions/RequestFailure.hpp"
 
 #include <fwDcmtkTools/Dictionary.hpp>
 
-#include <dcmtk/dcmnet/diutil.h>
+#include <fwRuntime/operations.hpp>
+
+#include <fwThread/Worker.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
+
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 namespace fwPacsIO
 {
@@ -61,8 +64,8 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
     this->setPort(applicationport);
 
     // Load configuration
-    ::boost::filesystem::path cfgPath(::boost::filesystem::initial_path< ::boost::filesystem::path >());
-    cfgPath = cfgPath / RC_PREFIX "/fwPacsIO_0-1/storescp.cfg";
+    ::boost::filesystem::path cfgPath =
+        ::fwRuntime::getLibraryResourceFilePath("fwPacsIO_" FWPACSIO_VER "/storescp.cfg");
     SLM_ASSERT("storescp.cfg not found !", ::boost::filesystem::exists(cfgPath));
     this->loadAssociationCfgFile(cfgPath.string().c_str());
     this->setAndCheckAssociationProfile("Default");

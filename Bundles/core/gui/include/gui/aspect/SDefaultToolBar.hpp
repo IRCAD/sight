@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,6 @@
 #include <fwCore/base.hpp>
 
 #include <fwGui/IToolBarSrv.hpp>
-
 
 namespace gui
 {
@@ -27,7 +26,7 @@ class GUI_CLASS_API SDefaultToolBar : public ::fwGui::IToolBarSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDefaultToolBar)(::fwGui::IToolBarSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SDefaultToolBar)(::fwGui::IToolBarSrv) );
 
     /// Constructor. Do nothing.
     GUI_API SDefaultToolBar() noexcept;
@@ -70,11 +69,11 @@ protected:
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
-                   <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                   <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="radio" icon="TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="TutoGui_0-1/icons/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -110,7 +109,7 @@ protected:
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream );
     ///@}
 
 };

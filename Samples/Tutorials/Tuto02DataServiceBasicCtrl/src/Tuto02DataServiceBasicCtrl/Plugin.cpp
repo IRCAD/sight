@@ -10,6 +10,7 @@
 #include "fwServices/registry/ServiceFactory.hpp"
 
 #include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/op/Add.hpp>
@@ -64,9 +65,10 @@ void Plugin::initialize()
 
     ::fwServices::IService::ConfigType frameConfig;
 
+    auto iconPath = ::fwRuntime::getBundleResourceFilePath("Tuto02DataServiceBasicCtrl", "tuto.ico");
+
     frameConfig.put("gui.frame.name", "tutoDataServiceBasicCtrl");
-    frameConfig.put("gui.frame.icon", std::string(
-                        BUNDLE_PREFIX) + "/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
+    frameConfig.put("gui.frame.icon", "Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 

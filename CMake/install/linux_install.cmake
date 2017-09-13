@@ -54,12 +54,6 @@ macro(linux_install PRJ_NAME)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
 
-    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        string(TOLOWER ${PRJ_NAME} APP_NAME)
-        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-    endif()
-
     if(NOT USE_SYSTEM_LIB)
         #Copy the qt font directory inside install/libs
         install( DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")

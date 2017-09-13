@@ -38,7 +38,7 @@
                     <gui>
                         <frame>
                             <name>tutoBasicApplicationName</name>
-                            <icon>@BUNDLE_PREFIX@/Tuto01Basic_0-1/tuto.ico</icon>
+                            <icon>Tuto01Basic_0-1/tuto.ico</icon>
                             <minSize width="800" height="600" />
                         </frame>
                     </gui>

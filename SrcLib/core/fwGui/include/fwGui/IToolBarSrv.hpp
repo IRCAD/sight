@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,11 @@
 #ifndef __FWGUI_ITOOLBARSRV_HPP__
 #define __FWGUI_ITOOLBARSRV_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "fwGui/config.hpp"
-
-#include "fwGui/registrar/ToolBarRegistrar.hpp"
 #include "fwGui/layoutManager/IToolBarLayoutManager.hpp"
+#include "fwGui/registrar/ToolBarRegistrar.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
@@ -25,7 +24,7 @@ class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IToolBarSrv)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IToolBarSrv)(::fwServices::IService) );
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -58,11 +57,11 @@ protected:
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout hideAction="false">
-                   <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                   <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="radio" icon="TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="TutoGui_0-1/icons/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -92,7 +91,8 @@ protected:
      *   - The order of the item in each section (gui and registry) must be the same.\n
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
-     *  @see ::fwGui::registrar::ToolBarRegistrar::initialize(), ::fwGui::layoutManager::IToolBarLayoutManager::initialize()
+     *  @see ::fwGui::registrar::ToolBarRegistrar::initialize(),
+     *::fwGui::layoutManager::IToolBarLayoutManager::initialize()
      */
     FWGUI_API void initialize();
 
@@ -119,5 +119,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_ITOOLBARSRV_HPP__*/
-
 

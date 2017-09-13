@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,13 +12,13 @@
 #ifndef __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
 #define __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwGui/GuiBaseObject.hpp"
+#include "fwGui/config.hpp"
 #include "fwGui/container/fwMenu.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
-#include "fwGui/config.hpp"
+
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -55,7 +55,7 @@ public:
             m_name(""),
             m_shortcut(""),
             m_icon(""),
-            m_isCheckable (false),
+            m_isCheckable(false),
             m_isRadio(false),
             m_type(DEFAULT),
             m_isSeparator(false),
@@ -65,7 +65,7 @@ public:
 
         std::string m_name;
         std::string m_shortcut;
-        std::string m_icon;
+        ::boost::filesystem::path m_icon;
         bool m_isCheckable;
         bool m_isRadio;
         ActionType m_type;
@@ -99,7 +99,7 @@ public:
        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
-                    <menuItem name="My item 1" shortcut="1" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" />
+                    <menuItem name="My item 1" shortcut="1" style="check" icon="TutoGui_0-1/icons/system.png" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
                     <menuItem name="My item 3" shortcut="3" style="radio" />
@@ -124,7 +124,8 @@ public:
      *  - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *  - \b shortcut : give the shortcut for this menu item.
      *  - \b style {check|radio} : give the style of the menu item.
-     *  - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the value is DEFAULT.
+     *  - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the
+     * value is DEFAULT.
      *   - \b icon : give the path of the icon file
      * - \<menu name="My menu" /\> :
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
@@ -142,7 +143,6 @@ public:
      * @pre services using this actions must be stopped before.
      */
     FWGUI_API virtual void destroyLayout() = 0;
-
 
     /**
      * @brief Set the action visibility.
@@ -191,5 +191,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__*/
-
 

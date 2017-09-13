@@ -7,6 +7,8 @@
 
 #include "visuVTKAdaptor/SOrientationMarker.hpp"
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
@@ -25,6 +27,8 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SOrientation
 namespace visuVTKAdaptor
 {
 
+//-----------------------------------------------------------------------------
+
 SOrientationMarker::SOrientationMarker() :
     m_hAlign("left")
 {
@@ -36,10 +40,10 @@ void SOrientationMarker::starting()
 {
     this->initialize();
 
-    std::string file = std::string(BUNDLE_PREFIX) +
-                       "/visuVTKAdaptor_0-1/human.vtk";
+    auto filePath = ::fwRuntime::getBundleResourceFilePath("visuVTKAdaptor", "human.vtk");
+
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
-    reader->SetFileName( file.c_str() );
+    reader->SetFileName( filePath.string().c_str() );
     reader->Update();
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);

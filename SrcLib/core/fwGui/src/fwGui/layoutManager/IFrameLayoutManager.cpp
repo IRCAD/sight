@@ -11,6 +11,8 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -66,7 +68,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
 
     if(!icon.empty())
     {
-        m_frameInfo.m_iconPath = ::boost::filesystem::path( icon.at(0)->getValue() );
+        m_frameInfo.m_iconPath = ::fwRuntime::getBundleResourceFilePath(icon.at(0)->getValue());
         OSLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
                     ::boost::filesystem::exists(m_frameInfo.m_iconPath));
     }
