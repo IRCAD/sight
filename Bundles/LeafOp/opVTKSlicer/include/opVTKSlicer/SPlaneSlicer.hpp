@@ -27,6 +27,7 @@ namespace opVTKSlicer
  *
  * @section Slots Slots
  * - \b updateSliceType(int, int) : change slice
+ * - \b updateDefaultValue() : set the image minimum as the reslicer background value.
  *
  * @section XML XML Configuration
  *
@@ -78,6 +79,7 @@ protected:
      *
      * Connect image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_DEFAULT_VALUE_SLOT
      * Connect imageExtent::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect axes::s_MODIFIED_SIG to this::s_UPDATE_SLOT
@@ -93,10 +95,13 @@ private:
     void setReslicerAxes();
 
     /// Modify the input matrix to align the plane with the current extent image slice.
-    void setSliceAxes(vtkMatrix4x4* vtkMat) const;
+    void applySliceTranslation(vtkMatrix4x4* vtkMat) const;
 
     /// Slot: called when the extent image orientation.
     void updateSliceOrientation(int from, int to);
+
+    /// Slot: sets the reslicer default value which is the minimum value of the input image.
+    void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
     ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;

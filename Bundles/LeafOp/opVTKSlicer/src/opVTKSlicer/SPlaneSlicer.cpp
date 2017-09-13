@@ -17,6 +17,7 @@
 #include <fwData/Point.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
@@ -35,7 +36,8 @@ static const ::fwServices::IService::KeyType s_EXTENT_IN = "imageExtent";
 static const ::fwServices::IService::KeyType s_AXES_IN   = "axes";
 static const ::fwServices::IService::KeyType s_SLICE_OUT = "slice";
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
 
 //------------------------------------------------------------------------------
 
@@ -43,6 +45,7 @@ SPlaneSlicer::SPlaneSlicer() noexcept :
     m_reslicer(::vtkImageReslice::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateSliceOrientation, this);
+    newSlot(s_UPDATE_DEFAULT_VALUE_SLOT, &SPlaneSlicer::updateDefaultValue, this);
 }
 
 //------------------------------------------------------------------------------
@@ -57,6 +60,8 @@ void SPlaneSlicer::starting()
 {
     m_reslicer->SetOutputDimensionality(2);
     m_reslicer->SetInterpolationModeToLinear();
+
+    updateDefaultValue();
 
     this->updating();
 }
@@ -127,6 +132,7 @@ void SPlaneSlicer::configuring()
 
     connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT);
     connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_EXTENT_IN, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
     connections.push(s_AXES_IN, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
@@ -174,7 +180,6 @@ void SPlaneSlicer::setReslicerExtent()
 
 void SPlaneSlicer::setReslicerAxes()
 {
-    ::fwData::Image::csptr extentImg             = this->getInput< ::fwData::Image >(s_EXTENT_IN);
     ::fwData::TransformationMatrix3D::csptr axes = this->getInput< ::fwData::TransformationMatrix3D>(s_AXES_IN);
 
     SLM_ASSERT("No axes found.", axes);
@@ -182,15 +187,7 @@ void SPlaneSlicer::setReslicerAxes()
     // TODO: const correct function signature in fwVtkIO.
     vtkMatrix4x4* axesMatrix(::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
 
-    //axesMatrix->Invert();
-
-    const auto& size    = extentImg->getSize();
-    const auto& origin  = extentImg->getOrigin();
-    const auto& spacing = extentImg->getSpacing();
-
-    std::array<double, 3> center = {{ origin[0],
-                                      origin[1],
-                                      origin[2] }};
+    this->applySliceTranslation(axesMatrix);
 
     // permutate axes.
     switch (m_orientation)
@@ -202,13 +199,9 @@ void SPlaneSlicer::setReslicerAxes()
                 const double x = axesMatrix->GetElement(i, 0);
                 const double y = axesMatrix->GetElement(i, 1);
                 const double z = axesMatrix->GetElement(i, 2);
-                axesMatrix->SetElement(i, 0, -y);
-                axesMatrix->SetElement(i, 1, -z);
+                axesMatrix->SetElement(i, 0, y);
+                axesMatrix->SetElement(i, 1, z);
                 axesMatrix->SetElement(i, 2, x);
-
-                center = {{ origin[0],
-                            origin[1] + spacing[1] * size[1],
-                            origin[2] + spacing[2] * size[2] }};
             }
             break;
         case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
@@ -217,30 +210,19 @@ void SPlaneSlicer::setReslicerAxes()
             {
                 const double y = axesMatrix->GetElement(i, 1);
                 const double z = axesMatrix->GetElement(i, 2);
-                axesMatrix->SetElement(i, 1, -z);
+                axesMatrix->SetElement(i, 1, z);
                 axesMatrix->SetElement(i, 2, y);
-
-                center = {{ origin[0],
-                            origin[1],
-                            origin[2] + spacing[2] * size[2] }};
             }
             break;
         case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break; // Nothing to do.
     }
 
-    axesMatrix->SetElement(0, 3, center[0]);
-    axesMatrix->SetElement(1, 3, center[1]);
-    axesMatrix->SetElement(2, 3, center[2]);
-
-    SLM_FATAL_IF("BOOM", axesMatrix->Determinant() < 0);
-
-    this->setSliceAxes(axesMatrix);
     m_reslicer->SetResliceAxes(axesMatrix);
 }
 
 //------------------------------------------------------------------------------
 
-void SPlaneSlicer::setSliceAxes(vtkMatrix4x4* vtkMat) const
+void SPlaneSlicer::applySliceTranslation(vtkMatrix4x4* vtkMat) const
 {
     auto image = this->getInput< ::fwData::Image >(s_EXTENT_IN);
 
@@ -261,16 +243,17 @@ void SPlaneSlicer::setSliceAxes(vtkMatrix4x4* vtkMat) const
     const int idx = ::fwData::Integer::dynamicCast(index)->value();
 
     const auto& spacing = image->getSpacing();
+    const auto& origin  = image->getOrigin();
 
     const uint8_t axis = static_cast<uint8_t>(m_orientation);
 
-    const double trans = spacing[axis] * static_cast<double>(idx);
+    const double trans = spacing[axis] * static_cast<double>(idx) + origin[axis];
 
     vtkMatrix4x4* transMat = vtkMatrix4x4::New();
     transMat->Identity();
     transMat->SetElement(axis, 3, trans);
 
-    vtkMatrix4x4::Multiply4x4(transMat, vtkMat, vtkMat);
+    vtkMatrix4x4::Multiply4x4(vtkMat, transMat, vtkMat);
 }
 
 //------------------------------------------------------------------------------
@@ -288,6 +271,20 @@ void SPlaneSlicer::updateSliceOrientation(int from, int to)
 
     this->updating();
 }
+
+//------------------------------------------------------------------------------
+
+void SPlaneSlicer::updateDefaultValue()
+{
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    SLM_ASSERT("No 'image' found.", image);
+
+    double min, max;
+    ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+
+    m_reslicer->SetBackgroundLevel(min);
+}
+
 //------------------------------------------------------------------------------
 
 } //namespace opVTKSlicer
