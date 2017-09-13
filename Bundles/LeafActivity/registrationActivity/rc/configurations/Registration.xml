@@ -466,7 +466,7 @@
         </service>
 
         <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="inverseFinalTransform" />
+            <inout key="tm3d" uid="${transformUid}" />
             <config transform="registration" />
         </service>
 
@@ -569,7 +569,7 @@
         <service uid="transformedPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${referenceImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
-            <in key="axes" uid="${transformUid}" />
+            <in key="axes" uid="inverseFinalTransform" />
             <inout key="slice" uid="transformedSlice" />
             <config orientation="axial" />
         </service>
@@ -627,7 +627,7 @@
 
         <service uid="resampler" type="::opItkRegistration::SResampler">
             <in key="imageIn" uid="${referenceImageUid}" />
-            <in key="transform" uid="${transformUid}" />
+            <in key="transform" uid="inverseFinalTransform" />
             <in key="target" uid="${targetImageUid}" />
             <inout key="imageOut" uid="transformedImage" />
         </service>

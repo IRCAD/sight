@@ -174,6 +174,7 @@ void SPlaneSlicer::setReslicerExtent()
 
 void SPlaneSlicer::setReslicerAxes()
 {
+    ::fwData::Image::csptr extentImg             = this->getInput< ::fwData::Image >(s_EXTENT_IN);
     ::fwData::TransformationMatrix3D::csptr axes = this->getInput< ::fwData::TransformationMatrix3D>(s_AXES_IN);
 
     SLM_ASSERT("No axes found.", axes);
@@ -181,7 +182,15 @@ void SPlaneSlicer::setReslicerAxes()
     // TODO: const correct function signature in fwVtkIO.
     vtkMatrix4x4* axesMatrix(::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
 
-    axesMatrix->Invert();
+    //axesMatrix->Invert();
+
+    const auto& size    = extentImg->getSize();
+    const auto& origin  = extentImg->getOrigin();
+    const auto& spacing = extentImg->getSpacing();
+
+    std::array<double, 3> center = {{ origin[0],
+                                      origin[1],
+                                      origin[2] }};
 
     // permutate axes.
     switch (m_orientation)
@@ -193,9 +202,13 @@ void SPlaneSlicer::setReslicerAxes()
                 const double x = axesMatrix->GetElement(i, 0);
                 const double y = axesMatrix->GetElement(i, 1);
                 const double z = axesMatrix->GetElement(i, 2);
-                axesMatrix->SetElement(i, 0, y);
+                axesMatrix->SetElement(i, 0, -y);
                 axesMatrix->SetElement(i, 1, -z);
-                axesMatrix->SetElement(i, 2, -x);
+                axesMatrix->SetElement(i, 2, x);
+
+                center = {{ origin[0],
+                            origin[1] + spacing[1] * size[1],
+                            origin[2] + spacing[2] * size[2] }};
             }
             break;
         case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
@@ -206,10 +219,18 @@ void SPlaneSlicer::setReslicerAxes()
                 const double z = axesMatrix->GetElement(i, 2);
                 axesMatrix->SetElement(i, 1, -z);
                 axesMatrix->SetElement(i, 2, y);
+
+                center = {{ origin[0],
+                            origin[1],
+                            origin[2] + spacing[2] * size[2] }};
             }
             break;
         case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break; // Nothing to do.
     }
+
+    axesMatrix->SetElement(0, 3, center[0]);
+    axesMatrix->SetElement(1, 3, center[1]);
+    axesMatrix->SetElement(2, 3, center[2]);
 
     SLM_FATAL_IF("BOOM", axesMatrix->Determinant() < 0);
 
@@ -249,7 +270,7 @@ void SPlaneSlicer::setSliceAxes(vtkMatrix4x4* vtkMat) const
     transMat->Identity();
     transMat->SetElement(axis, 3, trans);
 
-    vtkMatrix4x4::Multiply4x4(vtkMat, transMat, vtkMat);
+    vtkMatrix4x4::Multiply4x4(transMat, vtkMat, vtkMat);
 }
 
 //------------------------------------------------------------------------------
