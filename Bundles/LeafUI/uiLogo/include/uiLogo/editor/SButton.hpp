@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #include "uiLogo/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 
@@ -32,8 +32,7 @@ class UILOGO_CLASS_API SButton : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SButton)(::gui::editor::IEditor) );
-
+    fwCoreServiceClassDefinitionsMacro( (SButton)(::gui::editor::IEditor) );
 
     /// Triggered signal type
 
@@ -66,7 +65,7 @@ public:
      *
      * @code{.xml}
             <service uid="${GENERIC_UID}_logo_button" impl="::uiLogo::editor::SButton" autoConnect="no">
-                <image>@BUNDLE_PREFIX@/media_0-1/icons/*.png</image>
+                <image>media_0-1/icons/*.png</image>
                 <label>Label</label>
                 <tooltip>Tooltip</tooltip>
             </service>
