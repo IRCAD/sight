@@ -37,9 +37,9 @@
             <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
             <object uid="imageUID" type="::fwData::Image" />
             <object uid="maskUID" type="::fwData::Image" />
-            <object uid="TFSelections" type="::fwData::Composite" />
 
             <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
+            <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -193,31 +193,34 @@
                 <inout key="modelSeriesUID" uid="modelSeriesUID" />
                 <inout key="cameraTF" uid="cameraTF_UID" />
                 <inout key="imageUID" uid="imageUID" />
-                <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreSceneView" />
                 <parameter replace="genericSceneUID" uid="genericSceneUID" />
-                <parameter replace="selectedTFKey" by="SelectedTF" />
+                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
+                     configuration to receive the signal emitted when the object is created. -->
+                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
                 <inout key="imageUID" uid="imageUID" />
-                <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
-                <parameter replace="selectedTFKey" by="SelectedTF" />
+                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
+                     configuration to receive the signal emitted when the object is created. -->
+                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
                 <appConfig id="OgreVolumeRendering" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
-                <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
                 <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
-                <parameter replace="selectedTFKey" by="SelectedTF" />
+                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
+                     configuration to receive the signal emitted when the object is created. -->
+                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -237,10 +240,11 @@
                 <appConfig id="OgreHistogramManager" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
-                <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="histogramView" />
                 <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
-                <parameter replace="selectedTFKey" by="SelectedTF" />
+                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
+                     configuration to receive the signal emitted when the object is created. -->
+                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">

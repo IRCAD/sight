@@ -4,19 +4,19 @@
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="maskUID" />
-        <param name="TFSelections" />
         <param name="idvrEnumParamChannel" />
         <param name="idvrBoolParamChannel" />
         <param name="idvrDoubleParamChannel" />
         <param name="idvrColorParamChannel" />
-        <param name="selectedTFKey" />
+        <!-- The object 'TF' is deferred, its id is given between configuration to
+             receive the signal emitted when the object is created. -->
+        <param name="TF" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
         <object uid="${maskUID}" type="::fwData::Image" src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
-        <object uid="TF" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
@@ -63,7 +63,7 @@
 
         <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
-<!--            <inout key="tf" uid="TF" optional="yes" />-->
+            <inout key="tf" uid="${TF}" optional="yes" />
             <inout key="mask" uid="${maskUID}" autoConnect="yes" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" />
         </service>
@@ -92,15 +92,6 @@
                 <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
                 <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />
             </parameters>
-        </service>
-
-        <service uid="extractTF" type="::ctrlCamp::SExtractObj" >
-           <inout key="source" uid="${TFSelections}">
-               <extract from="@values.${selectedTFKey}" />
-           </inout>
-           <out group="target">
-               <key uid="TF"/>
-           </out>
         </service>
 
         <!-- ************************************* Connections ************************************ -->
@@ -150,22 +141,13 @@
             <slot>volumeRender/setColorParameter</slot>
         </connect>
 
-        <connect>
-            <signal>${TFSelections}/addedObjects</signal>
-            <signal>${TFSelections}/changedObjects</signal>
-            <slot>extractTF/update</slot>
-        </connect>
-
         <!-- *************************************** Starts ************************************ -->
 
         <start uid="OgreVolumeRendering" />
-        <start uid="extractTF" />
 
         <!-- Ogre scene 'volumeRenderingScene' -->
         <start uid="interactorAdaptor" />
         <start uid="volumeRender" />
-
-        <update uid="extractTF" />
 
     </config>
 </extension>
