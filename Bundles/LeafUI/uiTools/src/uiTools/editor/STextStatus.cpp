@@ -116,7 +116,7 @@ void STextStatus::setIntParameter(int _val)
 void STextStatus::setDoubleParameter(double _val)
 {
     QString str;
-    str.setNum(_val);
+    str.setNum(_val, 'g', 8); // 8 decimals precision
     m_labelValue->setText(str);
 }
 
