@@ -91,7 +91,6 @@ void SPoseFrom2d::updating()
 
 void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
-
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
     if(!m_isInitialized)
@@ -172,6 +171,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 }
                 else if(markers.size() == 2)
                 {
+
                     Rt = this->cameraPoseFromStereo(markers[0], markers[1]);
                 }
                 else
@@ -180,9 +180,9 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                     continue;
                 }
 
-                for (unsigned int i = 0; i < 4; ++i)
+                for (std::uint8_t i = 0; i < 4; ++i)
                 {
-                    for (unsigned int j = 0; j < 4; ++j)
+                    for (std::uint8_t j = 0; j < 4; ++j)
                     {
                         matrixValues[4*i+j] = Rt(i, j);
                     }
@@ -205,6 +205,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
                 sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
                     ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+
                 sig->asyncEmit(timestamp);
 
             }
@@ -298,10 +299,10 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(const SPoseFrom2d::Marker& _
                                                     const SPoseFrom2d::Marker& _markerCam2) const
 {
 
-    ::cv::Matx44f pose = ::calibration3d::helper::cameraPoseStereo(m_cameras[0].intrinsicMat, m_cameras[0].distCoef,
+    ::cv::Matx44f pose = ::calibration3d::helper::cameraPoseStereo(m_3dModel, m_cameras[0].intrinsicMat,
+                                                                   m_cameras[0].distCoef,
                                                                    m_cameras[1].intrinsicMat, m_cameras[1].distCoef,
                                                                    _markerCam1.corners2D, _markerCam2.corners2D,
-                                                                   m_cameras[0].imageSize,
                                                                    m_extrinsic.rotation, m_extrinsic.translation);
 
     return pose;
@@ -324,7 +325,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 {
     KeyConnectionsMap connections;
 
-    connections.push( "markerTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
+    connections.push( s_MARKERTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
 
     return connections;
 }
