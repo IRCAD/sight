@@ -50,17 +50,10 @@ endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
-if(UNIX AND NOT APPLE)
-    option(DEBIAN_INSTALL "Install apps in a Debian-way" OFF)
-endif()
+option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
 
-if(DEBIAN_INSTALL)
-    set(USE_SYSTEM_LIB CACHE BOOL ON)
-else()
-    option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
-    if(NOT USE_SYSTEM_LIB)
-        set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
-    endif()
+if(NOT USE_SYSTEM_LIB)
+    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
 endif()
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
@@ -108,18 +101,18 @@ if(ADDITIONAL_PROJECTS)
     endforeach()
 endif()
 
-# For debian packaging we install our bundle in /usr/lib/x86_64-linux-gnu/...
-set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}")
-# The resources currently goes in the same place for now
-set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}")
-
 if(ANDROID)
     set(BUNDLE_LIB_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
-elseif(DEBIAN_INSTALL)
+    set(BUNDLE_RC_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
+else()
+
     # For debian packaging we add a subdirectory to sort out the bundles
-    set(BUNDLE_LIB_PREFIX "${BUNDLE_LIB_PREFIX}/fw4spl")
-    set(BUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}/fw4spl")
+    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+    set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
 endif()
+
+mark_as_advanced(BUNDLE_LIB_PREFIX)
+mark_as_advanced(BUNDLE_RC_PREFIX)
 
 # Set warning level and function export visibility on Unix
 if(UNIX)
@@ -384,7 +377,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/share/${FWPROJECT_NAME}_${DASH_VERSION}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
@@ -431,14 +424,14 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
     if(fwCppunitTest_BUNDLE)
-        add_definitions(-DBUNDLE_TEST_PROFILE=\"share/tu_exec_${fwCppunitTest_BUNDLE}_0-0/profile.xml\")
+        add_definitions(-DBUNDLE_TEST_PROFILE=\"${BUNDLE_RC_PREFIX}/tu_exec_${fwCppunitTest_BUNDLE}_0-0/profile.xml\")
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
         string(REGEX REPLACE "Test$" "" DIRNAME "${FWPROJECT_NAME}")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/share/tu_exec_${DIRNAME}_${DASH_VERSION}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/tu_exec_${DIRNAME}_${DASH_VERSION}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/tu/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
@@ -505,7 +498,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/share/${FWPROJECT_NAME}_${DASH_VERSION}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
@@ -672,7 +665,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
 
-    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/share/${FWPROJECT_NAME}_${DASH_VERSION}")
+    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )

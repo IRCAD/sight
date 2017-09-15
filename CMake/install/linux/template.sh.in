@@ -11,7 +11,7 @@ me=$(dirname $(readlink -f "$0"))
 bindir="$me"
 rootdir=`cd "$me/.." ; pwd`
 libdir="$rootdir/lib"
-bundledir="$rootdir/share"
+bundledir="$rootdir/@BUNDLE_RC_PREFIX@"
 
 # export LD_LIBRARY_PATH
 LD_LIBRARY_PATH=$libdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
