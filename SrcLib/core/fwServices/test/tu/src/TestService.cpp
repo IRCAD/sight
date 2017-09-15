@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,14 +32,46 @@ unsigned int TestService::s_UPDATE_COUNTER = 0;
 
 void TestService::starting()
 {
+    if(m_raiseException)
+    {
+        throw ::fwCore::Exception("start error");
+    }
     m_startOrder = s_START_COUNTER++;
+}
+
+//------------------------------------------------------------------------------
+
+void TestService::stopping()
+{
+    if(m_raiseException)
+    {
+        throw ::fwCore::Exception("stop error");
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void TestService::updating()
 {
+    if(m_raiseException)
+    {
+        throw ::fwCore::Exception("update error");
+    }
     m_updateOrder = s_UPDATE_COUNTER++;
+}
+
+//------------------------------------------------------------------------------
+
+TestServiceImplementation::TestServiceImplementation() noexcept
+{
+    newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
+    newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
+}
+
+//------------------------------------------------------------------------------
+
+TestServiceImplementation::~TestServiceImplementation() noexcept
+{
 }
 
 //------------------------------------------------------------------------------
