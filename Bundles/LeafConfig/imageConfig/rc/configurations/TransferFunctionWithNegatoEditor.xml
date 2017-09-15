@@ -63,6 +63,7 @@ Note: The object 'transferFunctionOutput' is deferred and created by this config
 
         <service uid="tfm" type="::uiTF::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
+            <in key="currentTF" uid="${transferFunctionOutput}" optional="yes"/>
             <out key="tf" uid="${transferFunctionOutput}" />
             <config useDefaultPath="no">
                 <path>${TFPath}</path>

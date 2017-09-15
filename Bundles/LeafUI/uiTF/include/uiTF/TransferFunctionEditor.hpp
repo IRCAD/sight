@@ -35,6 +35,7 @@ namespace uiTF
  *
  * @code{.xml}
    <service type="::uiTF::TransferFunctionEditor">
+       <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />
        <config useDefaultPath="yes">
@@ -44,7 +45,13 @@ namespace uiTF
        </config>
    </service>
    @endcode
-
+ *
+ * @subsection Input Input
+ * - \b currentTF [::fwData::TransferFunction](optional) : current transfer function used to change editor selection. It
+ *      should be the same TF as the output.
+ *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
+ *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
+ *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
  * - \b tfPool [::fwData::Composite]: composite containing the transfer function.
  * @subsection Output Output
@@ -82,6 +89,9 @@ protected:
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping();
 
+    /// Selects the current transfer function
+    UITF_API void swapping(const KeyType& key);
+
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
@@ -112,9 +122,6 @@ protected:
 
     /// Update the TF preset from the TF pool
     UITF_API void updateTransferFunctionPreset();
-
-    /// Get the current transfer function
-    UITF_API ::fwData::TransferFunction::sptr getSelectedTransferFunction() const;
 
 private Q_SLOTS:
 

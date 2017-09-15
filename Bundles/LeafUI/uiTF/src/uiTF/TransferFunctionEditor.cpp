@@ -24,6 +24,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <io/ioTypes.hpp>
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
 
@@ -41,36 +42,39 @@
 namespace uiTF
 {
 
-static const ::fwServices::IService::KeyType s_TF_POOL_INOUT = "tfPool";
-static const ::fwServices::IService::KeyType s_TF_OUTPUT     = "tf";
+static const ::fwServices::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+static const ::fwServices::IService::KeyType s_TF_OUTPUT        = "tf";
+static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor);
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 TransferFunctionEditor::TransferFunctionEditor()
 {
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 TransferFunctionEditor::~TransferFunctionEditor() noexcept
 {
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::configuring()
 {
     this->initialize();
 
-    const ConfigType config = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfigTree();
 
     bool useDefaultPath = true;
-    if (config.count("config"))
+    if (srvConfig.count("config"))
     {
+        const ConfigType config = srvConfig.get_child("config");
+
         BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &pathCfg, config.equal_range("path"))
         {
             const ::boost::filesystem::path path(pathCfg.second.get_value<std::string>());
@@ -90,7 +94,7 @@ void TransferFunctionEditor::configuring()
     }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::starting()
 {
@@ -159,14 +163,14 @@ void TransferFunctionEditor::starting()
     this->initTransferFunctions();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::updating()
 {
     this->updateTransferFunctionPreset();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::stopping()
 {
@@ -182,7 +186,17 @@ void TransferFunctionEditor::stopping()
     this->destroy();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void TransferFunctionEditor::swapping(const KeyType& key)
+{
+    if (key == s_CURRENT_TF_INPUT)
+    {
+        this->updateTransferFunctionPreset();
+    }
+}
+
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::presetChoice(int index)
 {
@@ -196,7 +210,7 @@ void TransferFunctionEditor::presetChoice(int index)
     m_deleteButton->setEnabled(isEnabled);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::deleteTF()
 {
@@ -240,11 +254,11 @@ void TransferFunctionEditor::deleteTF()
     }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::newTF()
 {
-    std::string newName = this->getSelectedTransferFunction()->getName();
+    std::string newName = m_selectedTF->getName();
     if( this->hasTransferFunctionName(newName) )
     {
         newName = this->createTransferFunctionName(newName);
@@ -261,9 +275,8 @@ void TransferFunctionEditor::newTF()
         if(!this->hasTransferFunctionName(newName))
         {
             ::fwData::TransferFunction::sptr pNewTransferFunction;
-            ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
 
-            pNewTransferFunction = ::fwData::Object::copy(selectedTF);
+            pNewTransferFunction = ::fwData::Object::copy(m_selectedTF);
             pNewTransferFunction->setName(newName);
 
             ::fwData::Composite::sptr poolTF = this->getInOut< ::fwData::Composite >(s_TF_POOL_INOUT);
@@ -288,7 +301,7 @@ void TransferFunctionEditor::newTF()
     }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::reinitializeTFPool()
 {
@@ -315,7 +328,7 @@ void TransferFunctionEditor::reinitializeTFPool()
     }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::renameTF()
 {
@@ -370,7 +383,7 @@ void TransferFunctionEditor::renameTF()
     }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::importTF()
 {
@@ -407,15 +420,14 @@ void TransferFunctionEditor::importTF()
     }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::exportTF()
 {
-    ::fwData::TransferFunction::sptr tf = this->getSelectedTransferFunction();
-    ::fwServices::IService::sptr srv    =
+    ::fwServices::IService::sptr srv =
         ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SWriter");
 
-    ::fwServices::OSR::registerService(tf, srv);
+    ::fwServices::OSR::registerService(m_selectedTF, srv);
 
     ::io::IWriter::sptr writer = ::io::IWriter::dynamicCast(srv);
     writer->start();
@@ -425,7 +437,7 @@ void TransferFunctionEditor::exportTF()
     ::fwServices::OSR::unregisterService(srv);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::initTransferFunctions()
 {
@@ -517,22 +529,25 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
         m_pTransferFunctionPreset->addItem( elt.first.c_str() );
     }
 
-    int index = m_pTransferFunctionPreset->findText( QString::fromStdString(defaultTFName) );
-    index                                       = std::max(index, 0);
-    ::fwData::TransferFunction::sptr selectedTF = this->getSelectedTransferFunction();
-    if(selectedTF)
+    std::string currentTFName = defaultTFName;
+    ::fwData::TransferFunction::csptr tf = this->getInput< ::fwData::TransferFunction >(s_CURRENT_TF_INPUT);
+
+    if (tf)
     {
-        std::string tfName = selectedTF->getName();
-        int tmpIdx         = m_pTransferFunctionPreset->findText(QString::fromStdString(tfName));
-        if(tmpIdx >= 0)
-        {
-            index = tmpIdx;
-        }
+        currentTFName = tf->getName();
     }
+    else if (m_selectedTF)
+    {
+        currentTFName = m_selectedTF->getName();
+    }
+
+    int index = m_pTransferFunctionPreset->findText( QString::fromStdString(currentTFName) );
+    index = std::max(index, 0);
+
     this->presetChoice(index);
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 bool TransferFunctionEditor::hasTransferFunctionName(const std::string& _sName) const
 {
@@ -541,7 +556,7 @@ bool TransferFunctionEditor::hasTransferFunctionName(const std::string& _sName) 
     return poolTF->find(_sName) != poolTF->end();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 std::string TransferFunctionEditor::createTransferFunctionName(const std::string& _sBasename) const
 {
@@ -560,7 +575,7 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
     return newName;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void TransferFunctionEditor::updateTransferFunction()
 {
@@ -574,18 +589,11 @@ void TransferFunctionEditor::updateTransferFunction()
 
     ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
 
-    if(newSelectedTF && this->getSelectedTransferFunction() != newSelectedTF)
+    if(newSelectedTF && m_selectedTF != newSelectedTF)
     {
         this->setOutput(s_TF_OUTPUT, newSelectedTF);
         m_selectedTF = ::fwData::TransferFunction::dynamicCast(newSelectedTF);
     }
-}
-
-//------------------------------------------------------------------------------
-
-::fwData::TransferFunction::sptr TransferFunctionEditor::getSelectedTransferFunction() const
-{
-    return m_selectedTF;
 }
 
 //------------------------------------------------------------------------------
@@ -600,6 +608,6 @@ void TransferFunctionEditor::updateTransferFunction()
     return connections;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 } // end namespace
