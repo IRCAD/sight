@@ -6,7 +6,11 @@
 
 #include "calibration3d/helper.hpp"
 
+#include "calibration3d/ReprojectionError.hpp"
+
 #include "fwCore/spyLog.hpp"
+
+#include <ceres/ceres.h>
 
 namespace calibration3d
 {
@@ -40,7 +44,9 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     totalPoints += n;
 
     errorAndProjectedPoints.first = std::sqrt(totalErr/totalPoints);
+
     return errorAndProjectedPoints;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -71,35 +77,96 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 
 //-----------------------------------------------------------------------------
 
-::cv::Matx44f cameraPoseStereo(const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
+::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Point3f>& _objectPoints,
+                               const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
                                const ::cv::Mat _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
                                const std::vector< ::cv::Point2f >& _imgPoints1,
                                const std::vector< ::cv::Point2f >& _imgPoints2,
-                               const ::cv::Size _imgSize, const ::cv::Mat _R, const ::cv::Mat _T)
+                               const ::cv::Mat _R, const ::cv::Mat _T)
 {
 
-    ::cv::Mat R1, R2, P1, P2, Q;
-    ::cv::stereoRectify(_cameraMatrix1, _distCoeffs1, _cameraMatrix2, _distCoeffs2, _imgSize, _R, _T, R1, R2, P1, P2,
-                        Q);
+    //1. initialize solution with solvePnP
+    ::cv::Mat rvec, tvec, R, T;
+    T = ::cv::Mat::eye(4, 4, CV_64F);
 
-    SLM_ASSERT("There should be the same number of points in the two views",
-               _imgPoints1.size() == _imgPoints2.size());
+    ::cv::Mat cam1R = ::cv::Mat::eye(3, 3, CV_64F);
+    ::cv::Mat cam1T = ::cv::Mat::zeros(3, 1, CV_64F);
 
-    ::cv::Mat p3d;
-    std::vector< ::cv::Point3f > p3d_corrected;
-    ::cv::triangulatePoints(P1, P2, _imgPoints1, _imgPoints2, p3d);
+    ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false, CV_ITERATIVE);
 
-    for(int i = 0; i < p3d.size[0]; ++i)
+    std::vector<double> optimVector;
+    //rotation
+    optimVector.push_back(rvec.at<double>(0));
+    optimVector.push_back(rvec.at<double>(1));
+    optimVector.push_back(rvec.at<double>(2));
+    //translation
+    optimVector.push_back(tvec.at<double>(0));
+    optimVector.push_back(tvec.at<double>(1));
+    optimVector.push_back(tvec.at<double>(2));
+
+    //2. Creation of ceres problem
+    //Minimization of sum of reprojection error for each points in each images
+
+    ::ceres::Problem problem;
+
+    //Cost function for image 1
+    for(size_t i = 0; i < _imgPoints1.size(); ++i)
     {
-        ::cv::Point3f p;
-        p.x = p3d.at<float>(i, 0) / p3d.at<float>(i, 3);
-        p.y = p3d.at<float>(i, 1) / p3d.at<float>(i, 3);
-        p.z = p3d.at<float>(i, 2) / p3d.at<float>(i, 3);
+        ::ceres::CostFunction* cost_function = ReprojectionError::Create(_cameraMatrix1,
+                                                                         _distCoeffs1,
+                                                                         _imgPoints1[i],
+                                                                         _objectPoints[i],
+                                                                         cam1R,
+                                                                         cam1T);
 
-        p3d_corrected.push_back(p);
+        problem.AddResidualBlock(cost_function,
+                                 NULL,
+                                 optimVector.data()
+                                 );
+
     }
 
-    return ::cv::Matx44f();
+//    //image 2
+    for(size_t i = 0; i < _imgPoints2.size(); ++i)
+    {
+        ::ceres::CostFunction* cost_function = ReprojectionError::Create(_cameraMatrix2,
+                                                                         _distCoeffs2,
+                                                                         _imgPoints2[i],
+                                                                         _objectPoints[i],
+                                                                         _R,
+                                                                         _T);
+
+        problem.AddResidualBlock(cost_function,
+                                 NULL,
+                                 optimVector.data()
+                                 );
+    }
+
+    // Make Ceres automatically detect the bundle structure. Note that the
+    // standard solver, SPARSE_NORMAL_CHOLESKY, also works fine but it is slower
+    // for standard bundle adjustment problems.
+    ::ceres::Solver::Options options;
+    options.trust_region_strategy_type   = ceres::LEVENBERG_MARQUARDT;
+    options.minimizer_progress_to_stdout = false;
+    options.gradient_tolerance           = 1e-16;
+    options.function_tolerance           = 1e-16;
+    options.max_num_iterations           = 100;
+    options.num_threads                  = 4;
+
+    ::ceres::Solver::Summary summary;
+    ::ceres::Solve(options, &problem, &summary);
+
+    SLM_DEBUG("Ceres report : "+ summary.FullReport());
+
+    ::cv::Mat finalRVec = (::cv::Mat_<double>(3, 1) <<optimVector[0], optimVector[1], optimVector[2] );
+    ::cv::Mat finalTVec = (::cv::Mat_<double>(3, 1) <<optimVector[3], optimVector[4], optimVector[5] );
+
+    ::cv::Rodrigues(finalRVec, R); //Rotation vec. to matrix
+
+    T( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = R * 1; // copies R into T
+    T( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = finalTVec * 1; // copies tvec into T
+
+    return ::cv::Matx44f(T);
 }
 
 //-----------------------------------------------------------------------------

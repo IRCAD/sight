@@ -42,7 +42,7 @@ CALIBRATION3D_API ErrorAndPointsType computeReprojectionError( const std::vector
                                                                const ::cv::Mat& _distCoeffs);
 
 /**
- * @brief cameraPoseMonocular
+ * @brief cameraPoseMonocular compute pose from monocular camera
  * @param _objectPoints: vector of 3d points corresponding to the object
  * @param _imagePoints: vector of 2d points
  * @param _cameraMatrix: camera matrix (fx, fy, cx, cy)
@@ -56,11 +56,25 @@ CALIBRATION3D_API ::cv::Matx44f cameraPoseMonocular(const std::vector< ::cv::Poi
                                                     const ::cv::Mat& _distCoeffs,
                                                     const int _flag = CV_ITERATIVE);
 
-CALIBRATION3D_API ::cv::Matx44f cameraPoseStereo(const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
+/**
+ * @brief cameraPoseStereo compute pose from stereo camera
+ * @param _objectPoints: vector of 3d points corresponding to the object
+ * @param _cameraMatrix1: camera matrix (fx, fy, cx, cy) for reference camera
+ * @param _distCoeffs1: distorsion coefficients of camera1
+ * @param _cameraMatrix2: camera matrix (fx, fy, cx, cy) for second camera
+ * @param _distCoeffs2: distorsion coefficients of camera2
+ * @param _imgPoints1: vector of 2d points in camera 1
+ * @param _imgPoints2: vector of 2d points in camera 2
+ * @param _R: rotation matrix from camera1 to camera2
+ * @param _T: translation vector from camera1 to camera2
+ * @return
+ */
+CALIBRATION3D_API ::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Point3f>& _objectPoints,
+                                                 const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
                                                  const ::cv::Mat _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
                                                  const std::vector< ::cv::Point2f >& _imgPoints1,
-                                                 const std::vector< ::cv::Point2f >& _imgPoints2,
-                                                 const ::cv::Size _imgSize, const ::cv::Mat _R, const ::cv::Mat _T);
+                                                 const std::vector< ::cv::Point2f >& _imgPoints2, const ::cv::Mat _R,
+                                                 const ::cv::Mat _T);
 
 }
 
