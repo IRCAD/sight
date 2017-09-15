@@ -12,6 +12,8 @@
 
 #include <ceres/ceres.h>
 
+#include <thread>
+
 namespace calibration3d
 {
 namespace helper
@@ -151,7 +153,10 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     options.gradient_tolerance           = 1e-16;
     options.function_tolerance           = 1e-16;
     options.max_num_iterations           = 100;
-    options.num_threads                  = 4;
+
+    int numthreads = std::thread::hardware_concurrency() / 2;
+
+    options.num_threads = numthreads;
 
     ::ceres::Solver::Summary summary;
     ::ceres::Solve(options, &problem, &summary);
