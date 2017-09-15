@@ -309,7 +309,7 @@
             <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
                 <in key="matrixTL" uid="matrixTL" autoConnect="yes" /> <!-- automaticaly updates when matrixTL is modified -->
                 <in key="markerTL" uid="tagTL" />
-                <in key="frameTL" uid="frameTL" />
+                <inout key="frameTL" uid="frameTL" />
                 <in key="camera" uid="camera" />
                 <in key="extrinsic" uid="matrix" />
                 <patternWidth>60</patternWidth>
