@@ -296,7 +296,6 @@ void WorkerQtTest::basicTimerTest()
         ::fwThread::Worker::FutureType future = m_worker->getFuture();
         future.wait();
 
-        CPPUNIT_ASSERT( future.has_value() );
         CPPUNIT_ASSERT_EQUAL( 0, boost::any_cast<int>( future.get() ) );
     }
 }

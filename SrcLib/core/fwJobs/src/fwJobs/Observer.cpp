@@ -62,7 +62,7 @@ void Observer::finish()
 IJob::SharedFuture Observer::runImpl()
 {
     ::fwCore::mt::ReadLock lock(m_mutex);
-    return std::move(m_finishTask.get_future());
+    return m_finishTask.get_future();
 }
 
 } //namespace fwJobs

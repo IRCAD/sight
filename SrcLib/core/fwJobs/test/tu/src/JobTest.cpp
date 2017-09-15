@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// for std::async to use lambda's return types
-#define BOOST_RESULT_OF_USE_DECLTYPE
-
 #include "JobTest.hpp"
 
 #include <fwJobs/Aggregator.hpp>
@@ -21,12 +18,11 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <boost/chrono/duration.hpp>
-
 #include <exception>
 #include <functional>
 #include <future>
 #include <string>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwJobs::ut::JobTest );
@@ -97,8 +93,6 @@ void JobTest::APIAndStateTest()
         CPPUNIT_ASSERT_NO_THROW( job.wait() );
 
         CPPUNIT_ASSERT( job.run().valid() );
-        CPPUNIT_ASSERT( job.run().is_ready() );
-        CPPUNIT_ASSERT( !job.run().has_value() );
     }
 
     {
@@ -122,7 +116,7 @@ void JobTest::APIAndStateTest()
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
         ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
                 {
-                    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(30) );
+                    ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
                     CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::CANCELING, runningJob.getState() );
                 }, worker );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::WAITING, job.getState() );
@@ -245,7 +239,7 @@ void JobTest::GenericCallbackTest()
             job.setTotalWorkUnits( loops );
             job.run();
             CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, job.getState() );
-            ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(30) );
+            ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
             job.cancel();
             job.wait();
             CPPUNIT_ASSERT( ::fwJobs::IJob::CANCELING == job.getState()
@@ -421,7 +415,7 @@ void JobTest::AggregationTest()
         jobs2->add(job4);
 
         auto future = jobs2->run();
-        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(30) );
+        ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
         jobs2->cancel();
         jobs2->wait();
 
@@ -698,7 +692,7 @@ void JobTest::ObserverTest()
                                );
             job.setTotalWorkUnits(loops);
             job.run();
-            ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(30) );
+            ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
             job.cancel().wait();
             CPPUNIT_ASSERT( progress > job.getDoneWorkUnits() );
         }
@@ -721,7 +715,7 @@ void JobTest::ObserverTest()
                                );
             job.setTotalWorkUnits(loops);
             job.run();
-            ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(30) );
+            ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
             job.cancel().wait();
             CPPUNIT_ASSERT( progress > job.getDoneWorkUnits() );
         }
