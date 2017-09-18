@@ -53,6 +53,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_PACKAGE_NAME "${PRJ_NAME}_${${PRJ_NAME}_DASH_VERSION}")
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
+    set(CPACK_BUNDLE_RC_PREFIX "${BUNDLE_RC_PREFIX}")
 
     set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
 
@@ -62,7 +63,7 @@ macro(win_install PRJ_NAME)
     unset(CPACK_NSIS_MUI_ICON CACHE)
     unset(CPACK_NSIS_MUI_UNIICON CACHE)
     unset(CPACK_RESOURCE_FILE_LICENSE CACHE)
-    
+
     find_file(CPACK_PACKAGE_ICON "banner_nsis.bmp" PATHS
               "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}
               NO_SYSTEM_ENVIRONMENT_PATH)
