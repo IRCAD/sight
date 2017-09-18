@@ -8,7 +8,7 @@
 
 #include "calibration3d/ReprojectionError.hpp"
 
-#include "fwCore/spyLog.hpp"
+#include <fwCore/spyLog.hpp>
 
 #include <ceres/ceres.h>
 
@@ -120,7 +120,6 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                                                          _objectPoints[i],
                                                                          cam1R,
                                                                          cam1T);
-
         problem.AddResidualBlock(cost_function,
                                  NULL,
                                  optimVector.data()
@@ -128,7 +127,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 
     }
 
-//    //image 2
+    //image 2
     for(size_t i = 0; i < _imgPoints2.size(); ++i)
     {
         ::ceres::CostFunction* cost_function = ReprojectionError::Create(_cameraMatrix2,
@@ -137,7 +136,6 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                                                          _objectPoints[i],
                                                                          _R,
                                                                          _T);
-
         problem.AddResidualBlock(cost_function,
                                  NULL,
                                  optimVector.data()
@@ -148,10 +146,11 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     // standard solver, SPARSE_NORMAL_CHOLESKY, also works fine but it is slower
     // for standard bundle adjustment problems.
     ::ceres::Solver::Options options;
+    options.linear_solver_type           = ::ceres::DENSE_QR;
     options.trust_region_strategy_type   = ceres::LEVENBERG_MARQUARDT;
     options.minimizer_progress_to_stdout = false;
-    options.gradient_tolerance           = 1e-16;
-    options.function_tolerance           = 1e-16;
+    options.gradient_tolerance           = 1e-8;
+    options.function_tolerance           = 1e-8;
     options.max_num_iterations           = 100;
 
     int numthreads = std::thread::hardware_concurrency() / 2;
@@ -163,8 +162,8 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 
     SLM_DEBUG("Ceres report : "+ summary.FullReport());
 
-    ::cv::Mat finalRVec = (::cv::Mat_<double>(3, 1) <<optimVector[0], optimVector[1], optimVector[2] );
-    ::cv::Mat finalTVec = (::cv::Mat_<double>(3, 1) <<optimVector[3], optimVector[4], optimVector[5] );
+    ::cv::Mat finalRVec = ( ::cv::Mat_<double>(3, 1) <<optimVector[0], optimVector[1], optimVector[2] );
+    ::cv::Mat finalTVec = ( ::cv::Mat_<double>(3, 1) <<optimVector[3], optimVector[4], optimVector[5] );
 
     ::cv::Rodrigues(finalRVec, R); //Rotation vec. to matrix
 

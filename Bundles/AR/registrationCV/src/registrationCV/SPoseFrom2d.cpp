@@ -108,7 +108,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
             {
                 auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
                 ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
-                if(timestamp == 0)
+                if(timestamp <= 0.)
                 {
                     OSLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
                     return;
@@ -270,9 +270,9 @@ void SPoseFrom2d::initialize()
             m_extrinsic.rotation    = ::cv::Mat::eye(3, 3, CV_64F);
             m_extrinsic.translation = ::cv::Mat::eye(3, 1, CV_64F);
 
-            for (unsigned int i = 0; i < 3; ++i)
+            for (std::uint8_t i = 0; i < 3; ++i)
             {
-                for (unsigned int j = 0; j < 3; ++j)
+                for (std::uint8_t j = 0; j < 3; ++j)
                 {
                     m_extrinsic.rotation.at<double>(i, j)  = extrinsicMatrix->getCoefficient(i, j);
                     m_extrinsic.Matrix4x4.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
