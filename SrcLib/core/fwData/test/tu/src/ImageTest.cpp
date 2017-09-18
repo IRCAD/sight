@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@
 #include <map>
 #include <ostream>
 #include <vector>
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ImageTest );
@@ -68,9 +67,8 @@ void ImageTest::testGetterSetter()
     img1->setWindowCenter(WINDOWCENTER);
     img1->setWindowWidth( WINDOWWIDTH );
 
-
     // check
-    CPPUNIT_ASSERT_EQUAL(img1->getNumberOfDimensions(),DIMENSION);
+    CPPUNIT_ASSERT_EQUAL(img1->getNumberOfDimensions(), DIMENSION);
 
     CPPUNIT_ASSERT(img1->getType() == TYPE);
 
@@ -80,16 +78,16 @@ void ImageTest::testGetterSetter()
 
     CPPUNIT_ASSERT(img1->getSize() == VECTORSIZE);
 
-    CPPUNIT_ASSERT_EQUAL(img1->getWindowCenter(),WINDOWCENTER);
+    CPPUNIT_ASSERT_EQUAL(img1->getWindowCenter(), WINDOWCENTER);
 
-    CPPUNIT_ASSERT_EQUAL(img1->getWindowWidth(),WINDOWWIDTH);
+    CPPUNIT_ASSERT_EQUAL(img1->getWindowWidth(), WINDOWWIDTH);
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::testAllocation()
 {
-    const ::boost::uint8_t DIMENSION = 3;
+    const std::uint8_t DIMENSION = 3;
     ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
     ::fwData::Image::SizeType VECTORSIZE(DIMENSION);
     VECTORSIZE[0] = 14;
@@ -120,7 +118,6 @@ void ImageTest::testAllocation()
     CPPUNIT_ASSERT(array->getSizeInBytes() == SIZE);
     CPPUNIT_ASSERT(img2->getSizeInBytes() == SIZE);
 
-
     ::fwData::Image::sptr img3 = ::fwData::Image::New();
     img3->allocate(VECTORSIZE, TYPE);
 
@@ -135,7 +132,7 @@ void ImageTest::testAllocation()
 
 void ImageTest::testReallocation()
 {
-    const ::boost::uint8_t DIMENSION = 3;
+    const std::uint8_t DIMENSION = 3;
     ::fwTools::Type TYPE1 = ::fwTools::Type::create("int16");
     ::fwTools::Type TYPE2 = ::fwTools::Type::create("int64");
     ::fwTools::Type TYPE3 = ::fwTools::Type::create("uint8");
@@ -216,7 +213,7 @@ void ImageTest::testSetGetPixel()
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwDataTools::helper::Image imgHelper(img);
 
-    const ::boost::uint8_t DIMENSION = 3;
+    const std::uint8_t DIMENSION = 3;
     ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
     ::fwData::Image::SizeType VECTORSIZE(DIMENSION);
     VECTORSIZE[0] = 10;
@@ -236,15 +233,15 @@ void ImageTest::testSetGetPixel()
         *iter = count++;
     }
 
-    for (unsigned int x = 0; x<VECTORSIZE[0]; ++x)
+    for (unsigned int x = 0; x < VECTORSIZE[0]; ++x)
     {
-        for (unsigned int y = 0; y<VECTORSIZE[1]; ++y)
+        for (unsigned int y = 0; y < VECTORSIZE[1]; ++y)
         {
-            for (unsigned int z = 0; z<VECTORSIZE[2]; ++z)
+            for (unsigned int z = 0; z < VECTORSIZE[2]; ++z)
             {
                 short val = static_cast<short>(x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1]);
                 ::fwData::Image::IndexType index = val;
-                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(x,y,z)));
+                CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(x, y, z)));
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
                 ::fwData::Image::BufferType* buffer =
                     reinterpret_cast< ::fwData::Image::BufferType* >(imgHelper.getBuffer());
@@ -252,17 +249,17 @@ void ImageTest::testSetGetPixel()
 
                 std::stringstream ss;
                 ss << val;
-                CPPUNIT_ASSERT_EQUAL( ss.str(), imgHelper.getPixelAsString(x,y,z));
+                CPPUNIT_ASSERT_EQUAL( ss.str(), imgHelper.getPixelAsString(x, y, z));
             }
         }
     }
 
     // test 2 : use setPixelBuffer
-    for (unsigned int x = 0; x<VECTORSIZE[0]; ++x)
+    for (unsigned int x = 0; x < VECTORSIZE[0]; ++x)
     {
-        for (unsigned int y = 0; y<VECTORSIZE[1]; ++y)
+        for (unsigned int y = 0; y < VECTORSIZE[1]; ++y)
         {
-            for (unsigned int z = 0; z<VECTORSIZE[2]; ++z)
+            for (unsigned int z = 0; z < VECTORSIZE[2]; ++z)
             {
                 ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
                 short val = static_cast<short>(index * 2);

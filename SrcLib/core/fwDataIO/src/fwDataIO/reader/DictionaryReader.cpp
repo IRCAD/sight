@@ -17,7 +17,6 @@ static std::stringstream spiritDebugStream;
   #define BOOST_SPIRIT_DEBUG
 #endif
 
-#include <boost/cstdint.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>

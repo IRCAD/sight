@@ -15,8 +15,6 @@
 
 #include <zlib.h>
 
-#include <boost/cstdint.hpp>
-
 #include <iostream>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzBufferImageReader );

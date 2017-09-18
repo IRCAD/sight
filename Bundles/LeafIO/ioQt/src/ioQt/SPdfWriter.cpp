@@ -244,10 +244,10 @@ QImage SPdfWriter::convertFwImageToQImage(::fwData::Image::sptr fwImage)
         const int height                          = static_cast<int>(dimension[1]);
 
         QImage qImage(width, height, QImage::Format_ARGB32);
-        ::boost::uint8_t* qImageBuffer = qImage.bits();
+        std::uint8_t* qImageBuffer = qImage.bits();
 
         ::fwDataTools::helper::Image imgHelper(fwImage);
-        const ::boost::uint8_t* fwImageBuffer = reinterpret_cast< const ::boost::uint8_t*>( imgHelper.getBuffer() );
+        const std::uint8_t* fwImageBuffer = reinterpret_cast< const std::uint8_t*>( imgHelper.getBuffer() );
 
         const unsigned int size = static_cast<unsigned int>( width * height) * 4;
         for(unsigned int idx = 0; idx < size; idx += 4)

@@ -46,7 +46,7 @@ static void setValue( Numeric::ValueType& v,
                           ::boost::mpl::and_< std::is_signed<T>, std::is_integral<T> >::value
                           , T>::type value )
 {
-    v = static_cast< ::boost::int64_t>(value);
+    v = static_cast< std::int64_t>(value);
 }
 
 //------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ static void setValue( Numeric::ValueType& v,
                           ::boost::mpl::and_< std::is_unsigned<T>, std::is_integral<T> >::value
                           , T>::type value )
 {
-    v = static_cast< ::boost::uint64_t>(value);
+    v = static_cast< std::uint64_t>(value);
 }
 
 //------------------------------------------------------------------------------

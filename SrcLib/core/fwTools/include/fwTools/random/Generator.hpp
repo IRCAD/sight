@@ -35,7 +35,7 @@ namespace random
  * @return returns a random value uniformly distributed in the range [min..max)
  */
 template <typename T>
-T getValue(T min, T max, ::boost::uint32_t seedVal = std::time(NULL))
+T getValue(T min, T max, std::uint32_t seedVal = std::time(NULL))
 {
     SLM_ASSERT("Wrong min/max value", min <= max);
     typedef typename ::boost::mpl::if_<
@@ -61,7 +61,7 @@ T getValue(T min, T max, ::boost::uint32_t seedVal = std::time(NULL))
  * @pre  CONTAINER type same as template T
  */
 template <typename T, typename CONTAINER>
-void fillContainer(T min, T max, CONTAINER& randContainer, ::boost::uint32_t seedVal = std::time(NULL))
+void fillContainer(T min, T max, CONTAINER& randContainer, std::uint32_t seedVal = std::time(NULL))
 {
     SLM_ASSERT("Wrong min/max value", min <= max);
     SLM_ASSERT("Container type not same as T", (std::is_same< T, typename CONTAINER::value_type>::value) );

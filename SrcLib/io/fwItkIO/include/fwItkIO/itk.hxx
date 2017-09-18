@@ -27,12 +27,12 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
     SLM_ASSERT("_dataImage not instanced", _dataImage);
 
     // Add by arnaud
-    ::boost::uint8_t dim = ITKIMAGE::ImageDimension;
+    std::uint8_t dim = ITKIMAGE::ImageDimension;
     ::fwData::Image::SpacingType _vSpacing(dim, 1);
     ::fwData::Image::OriginType _vOrigin(dim, 0);
     ::fwData::Image::SizeType _vSize(dim, 0);
 
-    for (boost::uint8_t d = 0; d < dim; ++d)
+    for (std::uint8_t d = 0; d < dim; ++d)
     {
         // _vOrigin[d] = itkImage->GetBufferedRegion().GetIndex()[d];
         _vOrigin[d]  = itkImage->GetOrigin()[d];
@@ -100,7 +100,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
 
     // update spacing information ; workaround due to GetSpacing const
     typename ITKIMAGE::SpacingType spacing = itkImage->GetSpacing();
-    for (boost::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
+    for (std::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
     {
         spacing[d] = imageData->getSpacing()[d];
     }
@@ -115,7 +115,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
     itk::ImageRegion< ITKIMAGE::ImageDimension > itkRegion;
 
     unsigned long nbpixels = 1;
-    for (::boost::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
+    for (std::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
         itkRegion.SetSize( d,   static_cast<unsigned long>(imageData->getSize()[d]) );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,18 @@
 #ifndef __FWDCMTKIO_READER_MAIN_IMAGELAZYREADER_HPP__
 #define __FWDCMTKIO_READER_MAIN_IMAGELAZYREADER_HPP__
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/helper/Codec.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
+
 #include <fwTools/Type.hpp>
 
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
+#include <dcmtk/dcmnet/diutil.h>
 
 namespace fwDcmtkIO
 {
@@ -81,7 +80,6 @@ public:
         }
     }
 
-
 protected:
 
     /**
@@ -105,12 +103,12 @@ protected:
         //Copy the temporary buffer to the final buffer
         if (imageType == ::fwTools::Type::s_INT8)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int8_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int8_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT16)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int16_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int16_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT32)
@@ -120,27 +118,27 @@ protected:
         }
         else if (imageType == ::fwTools::Type::s_INT64)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int64_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int64_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT8)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint8_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint8_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT16)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint16_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint16_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT32)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint32_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint32_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT64)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint64_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::uint64_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_FLOAT)
@@ -193,7 +191,6 @@ protected:
         // Decompress data set if compressed
         dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
 
-
         if(sizeof(T) == 1)
         {
             const Uint8* pixelData;
@@ -229,19 +226,16 @@ protected:
             }
         }
 
-
         // Clean up codecs
         ::fwDcmtkIO::helper::Codec::cleanup();
 
         return tempoBuffer;
     }
 
-
 };
 
 } //main
 } //reader
 } //fwDcmtkIO
-
 
 #endif /* __FWDCMTKIO_READER_MAIN_IMAGELAZYREADER_HPP__ */

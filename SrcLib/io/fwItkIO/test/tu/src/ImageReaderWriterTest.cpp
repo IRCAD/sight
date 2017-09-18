@@ -1,22 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include "ImageReaderWriterTest.hpp"
+
+#include "helper.hpp"
+
+#include <fwItkIO/ImageReader.hpp>
+#include <fwItkIO/ImageWriter.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
-#include <fwItkIO/ImageWriter.hpp>
-#include <fwItkIO/ImageReader.hpp>
-
-#include "helper.hpp"
-#include "ImageReaderWriterTest.hpp"
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageReaderWriterTest );
@@ -51,33 +52,32 @@ void ImageReaderWriterTest::testSaveLoadInr()
     this->checkSaveLoadInr( image );
 }
 
-
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::stressTestInr()
 {
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int8_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int8_t >();
 //    this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< ::boost::uint8_t >();
+    type = ::fwTools::Type::create< std::uint8_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< ::boost::int16_t >();
+    type = ::fwTools::Type::create< std::int16_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< ::boost::uint16_t >();
+    type = ::fwTools::Type::create< std::uint16_t >();
     this->stressTestInrWithType(type, 5);
 
     type = ::fwTools::Type::create< ::boost::int32_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< ::boost::uint32_t >();
+    type = ::fwTools::Type::create< std::uint32_t >();
     this->stressTestInrWithType(type, 5);
 
-//    type = ::fwTools::Type::create< ::boost::int64_t >();
+//    type = ::fwTools::Type::create< std::int64_t >();
 //    this->stressTestInrWithType(type, 5);
 
-//    type = ::fwTools::Type::create< ::boost::uint64_t >();
+//    type = ::fwTools::Type::create< std::uint64_t >();
 //    this->stressTestInrWithType(type, 5);
 
     type = ::fwTools::Type::create< float >();
@@ -104,7 +104,7 @@ void ImageReaderWriterTest::stressTestInrWithType(::fwTools::Type type, int nbTe
 void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
 {
     // inr only support image origin (0,0,0)
-    ::fwData::Image::OriginType origin(3,0);
+    ::fwData::Image::OriginType origin(3, 0);
     image->setOrigin(origin);
 
     // save image in inr
@@ -125,7 +125,6 @@ void ImageReaderWriterTest::checkSaveLoadInr( ::fwData::Image::sptr image )
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     ::fwItkIO::ut::helper::roundSpacing(image2);
-
 
     ::fwTest::helper::ExcludeSetType exclude;
     exclude.insert("window_center");

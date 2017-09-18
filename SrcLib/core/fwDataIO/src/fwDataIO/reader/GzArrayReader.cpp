@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,13 +12,9 @@
 
 #include <zlib.h>
 
-#include <boost/cstdint.hpp>
-
 #include <iostream>
 
-
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzArrayReader );
-
 
 namespace fwDataIO
 {
@@ -46,7 +42,7 @@ void GzArrayReader::read()
     assert( ::fwData::location::SingleFile::dynamicCast(m_location) );
     ::boost::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
 
-    assert( file.empty() ==  false );
+    assert( file.empty() == false );
 
     ::fwData::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->resize(array->getSize());

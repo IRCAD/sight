@@ -362,7 +362,7 @@ QVariant InfoTableModel::data(const QModelIndex& index, int role) const
     {
         if (index.column() == 0)
         {
-            ::boost::uint64_t sysMem;
+            std::uint64_t sysMem;
             ::fwMemory::BufferManager::SizeType bufferManagerMem;
             switch (index.row())
             {

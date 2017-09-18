@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __FWATOMS_NUMERIC_HPP__
 #define __FWATOMS_NUMERIC_HPP__
 
-#include <string>
+#include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
+#include "fwAtoms/factory/new.hpp"
 
-#include <boost/cstdint.hpp>
 #include <boost/blank.hpp>
 #include <boost/variant/variant.hpp>
 
-#include "fwAtoms/config.hpp"
-#include "fwAtoms/Base.hpp"
-#include "fwAtoms/factory/new.hpp"
+#include <string>
 
 namespace fwAtoms
 {
@@ -29,7 +28,6 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Numeric >);
 
-
     typedef enum
     {
         EMPTY = 0,
@@ -39,7 +37,7 @@ public:
         DOUBLE
     } NumericType;
 
-    typedef ::boost::variant< ::boost::blank, ::boost::int64_t, ::boost::uint64_t, float, double > ValueType;
+    typedef ::boost::variant< ::boost::blank, std::int64_t, std::uint64_t, float, double > ValueType;
 
     /**
      * @brief Constructor
@@ -55,7 +53,6 @@ public:
     virtual ~Numeric()
     {
     }
-
 
     /**
      * @brief Build a new numeric type
@@ -91,7 +88,7 @@ public:
      *
      * @return
      */
-    const ValueType &getVariant() const
+    const ValueType& getVariant() const
     {
         return m_value;
     }
@@ -104,7 +101,7 @@ public:
     /**
      * @brief Sets Numeric's value from given string, using Numeric::valueFromString
      */
-    FWATOMS_API void setFromString(const std::string &s, NumericType type = EMPTY);
+    FWATOMS_API void setFromString(const std::string& s, NumericType type = EMPTY);
 
     /**
      * @brief Retuns a ValueType from a std::string
@@ -119,7 +116,7 @@ public:
      *
      * @return a ValueType containing the numeric value
      */
-    FWATOMS_API static ValueType valueFromString(const std::string &s, NumericType type = EMPTY);
+    FWATOMS_API static ValueType valueFromString(const std::string& s, NumericType type = EMPTY);
 
     /**
      * @brief Returns the held value static_casted to T
@@ -132,8 +129,6 @@ public:
     template <typename T>
     T getValue() const;
 
-
-
 protected:
 
     ValueType m_value;
@@ -141,8 +136,6 @@ protected:
 };
 
 }
-
-
 
 #endif /* __FWATOMS_NUMERIC_HPP__ */
 

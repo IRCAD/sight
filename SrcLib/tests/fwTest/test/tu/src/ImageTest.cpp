@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ImageTest.hpp"
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
 #include <fwTest/generator/Image.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
 #include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
@@ -52,7 +54,7 @@ void ImageTest::tearDown()
 void ImageTest::generator3DTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    const ::boost::uint8_t dim = 3;
+    const std::uint8_t dim = 3;
     ::fwData::Image::SizeType size(dim);
     size[0] = 10;
     size[1] = 15;
@@ -80,7 +82,7 @@ void ImageTest::generator3DTest()
 void ImageTest::generator2DTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    const ::boost::uint8_t dim = 2;
+    const std::uint8_t dim = 2;
     ::fwData::Image::SizeType size(dim);
     size[0] = 10;
     size[1] = 15;
@@ -90,7 +92,7 @@ void ImageTest::generator2DTest()
     std::vector<double> origin(dim);
     origin[0]            = -45.6;
     origin[1]            = 25.97;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int16_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
     CPPUNIT_ASSERT(image->getSize() == size);
@@ -116,28 +118,28 @@ void ImageTest::deepCopyTest()
 
 void ImageTest::stressTest()
 {
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int8_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int8_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::uint8_t >();
+    type = ::fwTools::Type::create< std::uint8_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::int16_t >();
+    type = ::fwTools::Type::create< std::int16_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::uint16_t >();
+    type = ::fwTools::Type::create< std::uint16_t >();
     this->stressTestWithType(type, 10);
 
     type = ::fwTools::Type::create< ::boost::int32_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::uint32_t >();
+    type = ::fwTools::Type::create< std::uint32_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::int64_t >();
+    type = ::fwTools::Type::create< std::int64_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::uint64_t >();
+    type = ::fwTools::Type::create< std::uint64_t >();
     this->stressTestWithType(type, 10);
 
     type = ::fwTools::Type::create< float >();
