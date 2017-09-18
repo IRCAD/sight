@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #include "arData/FrameTL.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
 
-#include <boost/bind.hpp>
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
+
 #include <boost/pool/pool.hpp>
 
 fwDataRegisterMacro( ::arData::FrameTL );
@@ -86,5 +86,4 @@ void FrameTL::initPoolSize(unsigned int maxElementNum)
 }
 
 } // namespace arData
-
 

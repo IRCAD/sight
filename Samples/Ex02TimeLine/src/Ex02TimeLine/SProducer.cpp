@@ -55,7 +55,7 @@ void SProducer::starting()
 {
     m_timer = m_associatedWorker->createTimer();
     m_timer->setFunction( std::bind(&SProducer::updating, this) );
-    m_timer->setDuration( ::boost::chrono::milliseconds( m_period ) );
+    m_timer->setDuration( std::chrono::milliseconds( m_period ) );
 
     m_timer->start();
 

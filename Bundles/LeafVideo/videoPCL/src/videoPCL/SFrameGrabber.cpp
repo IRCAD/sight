@@ -236,7 +236,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
 
         m_timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000/m_fps);
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
         m_timer->setDuration(duration);

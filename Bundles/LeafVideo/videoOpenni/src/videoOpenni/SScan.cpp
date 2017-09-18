@@ -345,7 +345,7 @@ void SScan::takeSnapshot()
         m_status = m_depthStream.start();
         OSLM_ERROR_IF("Couldn't start depth stream." << ::openni::OpenNI::getExtendedError(),
                       m_status != ::openni::STATUS_OK);
-        m_slotPresentFrame->asyncRun().wait_for(::boost::chrono::seconds(5));
+        m_slotPresentFrame->asyncRun().wait_for(std::chrono::seconds(5));
         m_depthStream.stop();
     }
 
@@ -355,7 +355,7 @@ void SScan::takeSnapshot()
         m_status = m_colorStream.start();
         OSLM_ERROR_IF("Couldn't start color stream." << ::openni::OpenNI::getExtendedError(),
                       m_status != ::openni::STATUS_OK);
-        m_slotPresentFrame->asyncRun().wait_for(::boost::chrono::seconds(5));
+        m_slotPresentFrame->asyncRun().wait_for(std::chrono::seconds(5));
         m_colorStream.stop();
     }
 
@@ -365,7 +365,7 @@ void SScan::takeSnapshot()
         m_status = m_irStream.start();
         OSLM_ERROR_IF("Couldn't start IR stream." << ::openni::OpenNI::getExtendedError(),
                       m_status != ::openni::STATUS_OK);
-        m_slotPresentFrame->asyncRun().wait_for(::boost::chrono::seconds(5));
+        m_slotPresentFrame->asyncRun().wait_for(std::chrono::seconds(5));
         m_irStream.stop();
     }
 

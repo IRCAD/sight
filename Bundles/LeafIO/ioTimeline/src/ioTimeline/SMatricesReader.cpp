@@ -22,7 +22,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/chrono.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -282,18 +281,18 @@ void SMatricesReader::startReading()
                 if(m_tsMatrices.size() >= 2)
                 {
                     duration =
-                        ::boost::chrono::milliseconds(static_cast<uint64_t>(m_tsMatrices[1].timestamp -
-                                                                            m_tsMatrices[0].timestamp));
+                        std::chrono::milliseconds(static_cast<uint64_t>(m_tsMatrices[1].timestamp -
+                                                                        m_tsMatrices[0].timestamp));
                 }
                 else
                 {
                     // Only one matrix to read, might as well just read it ASAP.
-                    duration = ::boost::chrono::milliseconds(0);
+                    duration = std::chrono::milliseconds(0);
                 }
             }
             else
             {
-                duration = ::boost::chrono::milliseconds(1000/m_fps);
+                duration = std::chrono::milliseconds(1000/m_fps);
             }
 
             m_timer->setFunction(std::bind(&SMatricesReader::readMatrices, this));
@@ -398,7 +397,7 @@ void SMatricesReader::readMatrices()
                 nextDuration = m_tsMatrices[m_tsMatricesCount + 1].timestamp -
                                currentTime;
                 ::fwThread::Timer::TimeDurationType duration =
-                    ::boost::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
+                    std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
                 m_timer->stop();
                 m_timer->setDuration(duration);
                 m_timer->start();

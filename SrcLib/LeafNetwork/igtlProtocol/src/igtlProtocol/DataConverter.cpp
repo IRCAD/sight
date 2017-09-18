@@ -1,24 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/DataConverter.hpp"
+
 #include "igtlProtocol/converter/AtomConverter.hpp"
 
 #include <fwCore/util/LazyInstantiator.hpp>
+
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 
-#include <boost/thread/mutex.hpp>
-
-#include <igtl/igtlStatusMessage.h>
 #include <igtl/igtlCapabilityMessage.h>
-
+#include <igtl/igtlStatusMessage.h>
 
 namespace igtlProtocol
 {
+
+//------------------------------------------------------------------------------
 
 DataConverter::sptr DataConverter::getInstance()
 {
