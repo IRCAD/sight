@@ -15,7 +15,6 @@
 
 #include <fwTools/Stringizer.hpp>
 
-#include <boost/bind.hpp>           // for ProgessHandler
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>  // for ProgessHandler

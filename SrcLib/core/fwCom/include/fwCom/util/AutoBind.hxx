@@ -10,7 +10,6 @@
 #error fwCom/util/AutoBind.hpp not included
 #endif
 
-#include <boost/bind.hpp>
 #include <boost/function_types/function_arity.hpp>
 
 namespace fwCom

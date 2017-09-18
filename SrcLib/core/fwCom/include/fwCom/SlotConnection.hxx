@@ -13,8 +13,6 @@
 
 #include "fwCom/SlotRun.hpp"
 
-#include <boost/bind.hpp>
-
 namespace fwCom
 {
 

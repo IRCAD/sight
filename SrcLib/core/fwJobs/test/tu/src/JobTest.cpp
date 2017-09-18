@@ -14,8 +14,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwTest/Exception.hpp>
-
 #include <fwThread/Worker.hpp>
 
 #include <exception>
@@ -116,7 +114,7 @@ void JobTest::APIAndStateTest()
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
         ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
                 {
-                    ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
+                    std::this_thread::sleep_for( std::chrono::milliseconds(30) );
                     CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::CANCELING, runningJob.getState() );
                 }, worker );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::WAITING, job.getState() );
@@ -137,7 +135,7 @@ void JobTest::APIAndStateTest()
         ::fwJobs::Observer job( "Observer" );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, job.getState() );
 
-        auto future = ::std::async(
+        auto future = std::async(
             [&job]() -> bool
                 {
                     bool except = true;
@@ -239,7 +237,7 @@ void JobTest::GenericCallbackTest()
             job.setTotalWorkUnits( loops );
             job.run();
             CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, job.getState() );
-            ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
+            std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel();
             job.wait();
             CPPUNIT_ASSERT( ::fwJobs::IJob::CANCELING == job.getState()
@@ -415,7 +413,7 @@ void JobTest::AggregationTest()
         jobs2->add(job4);
 
         auto future = jobs2->run();
-        ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
+        std::this_thread::sleep_for( std::chrono::milliseconds(30) );
         jobs2->cancel();
         jobs2->wait();
 
@@ -692,7 +690,7 @@ void JobTest::ObserverTest()
                                );
             job.setTotalWorkUnits(loops);
             job.run();
-            ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
+            std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel().wait();
             CPPUNIT_ASSERT( progress > job.getDoneWorkUnits() );
         }
@@ -715,7 +713,7 @@ void JobTest::ObserverTest()
                                );
             job.setTotalWorkUnits(loops);
             job.run();
-            ::std::this_thread::sleep_for( ::std::chrono::milliseconds(30) );
+            std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel().wait();
             CPPUNIT_ASSERT( progress > job.getDoneWorkUnits() );
         }

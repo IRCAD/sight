@@ -16,9 +16,6 @@
 #include <fwThread/Timer.hpp>
 #include <fwThread/Worker.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-
 #include <QDir>
 #include <QEvent>
 #include <QFont>
@@ -62,8 +59,6 @@ const int WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType(
 class WorkerQt : public ::fwThread::Worker
 {
 public:
-    typedef ::boost::thread ThreadType;
-
     WorkerQt();
 
     void init( int& argc, char** argv, bool guiEnabled = true );
@@ -295,7 +290,7 @@ void TimerQt::setDuration(TimeDurationType duration)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     m_timerQt->setInterval( static_cast<int>(
-                                ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
+                                std::chrono::duration_cast< std::chrono::milliseconds >(duration).count())
                             );
 }
 

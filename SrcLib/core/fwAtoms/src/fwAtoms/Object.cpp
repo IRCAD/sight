@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Object.hpp"
 
-#include <fwCamp/UserObject.hpp>
+#include "fwAtoms/registry/macros.hpp"
 
-#include <boost/type_traits.hpp>
+#include <fwCamp/UserObject.hpp>
 
 fwAtomsRegisterMacro( ::fwAtoms::Object );
 
@@ -18,7 +17,7 @@ namespace fwAtoms
 
 //------------------------------------------------------------------------------
 
-void Object::setAttribute(const std::string& key, const Base::sptr &value)
+void Object::setAttribute(const std::string& key, const Base::sptr& value)
 {
     m_attributes[key] = value;
 }
@@ -84,7 +83,6 @@ std::string Object::getMetaInfo(const std::string& key) const
     return "";
 }
 
-
 //------------------------------------------------------------------------------
 
 void Object::setMetaInfos(const MetaInfosType& metaInfos)
@@ -119,8 +117,6 @@ void Object::clearMetaInfo()
 {
     m_metaInfos.clear();
 }
-
-
 
 }  // namespace fwAtoms
 

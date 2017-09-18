@@ -561,7 +561,7 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
 
     m_timer = m_associatedWorker->createTimer();
 
-    ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(500);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
 
     const std::array<double, 3> color1 = {{color[0], color[1], color[2]}};
     const std::array<double, 3> color2 = {{0., 1., 0.}};

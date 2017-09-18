@@ -29,8 +29,6 @@
 
 #include <io/IReader.hpp>
 
-#include <boost/bind.hpp>
-
 namespace ioVtkGdcm
 {
 

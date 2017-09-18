@@ -41,7 +41,7 @@ Job::Job(const std::string& name, Job::Task task, const ::fwThread::Worker::sptr
 
 IJob::SharedFuture Job::runImpl()
 {
-    // No need to lock : m_task & m_worker only writable in contructor
+    // No need to lock : m_task & m_worker only writable in constructor
     if(m_task)
     {
         // workaround because of vs2010 issue : http://goo.gl/WHEkQ5
@@ -73,9 +73,7 @@ IJob::SharedFuture Job::runImpl()
         this->finish();
     }
 
-    return std::move(::std::async( []()
-        {
-        } ));
+    return ::std::async( []() {} );
 }
 
 //------------------------------------------------------------------------------

@@ -9,7 +9,6 @@
 
 #include <boost/any.hpp>
 #include <boost/asio/io_service.hpp>
-#include <boost/thread.hpp>
 #include <future>
 
 #include <fwCore/base.hpp>
@@ -19,7 +18,7 @@
 
 namespace fwThread
 {
-typedef ::boost::thread::id ThreadIdType;
+typedef std::thread::id ThreadIdType;
 
 /// Returns the current thread id
 FWTHREAD_API ThreadIdType getCurrentThreadId();

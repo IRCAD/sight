@@ -18,11 +18,6 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/chrono/duration.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/typeof/typeof.hpp>
-
 #include <functional>
 #include <future>
 
@@ -326,21 +321,21 @@ struct B
 
     //------------------------------------------------------------------------------
 
-    ::boost::thread::id waitSeconds(const unsigned int nbSeconds)
+    std::thread::id waitSeconds(const unsigned int nbSeconds)
     {
         ::fwCore::mt::WriteLock lock(m_mutex);
-        ::boost::thread::id oldId = m_threadId;
-        m_threadId = ::boost::this_thread::get_id();
+        std::thread::id oldId = m_threadId;
+        m_threadId = std::this_thread::get_id();
         m_firstRun = false;
 
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(nbSeconds));
+        std::this_thread::sleep_for( std::chrono::seconds(nbSeconds));
 
         return oldId;
     }
 
     bool m_firstRun;
 
-    ::boost::thread::id m_threadId;
+    std::thread::id m_threadId;
 
     ::fwCore::mt::ReadWriteMutex m_mutex;
 };
@@ -355,7 +350,7 @@ void SlotTest::workerSwapTest()
     bool exceptionThrown = false;
     while(!exceptionThrown)
     {
-        typedef ::boost::thread::id Signature (const unsigned int);
+        typedef std::thread::id Signature (const unsigned int);
 
         B b;
 
@@ -364,7 +359,7 @@ void SlotTest::workerSwapTest()
 
         ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
 
-        CPPUNIT_ASSERT(b.m_threadId == ::boost::thread::id());
+        CPPUNIT_ASSERT(b.m_threadId == std::thread::id());
 
         m0->setWorker(w1);
         ::fwCom::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
@@ -372,7 +367,7 @@ void SlotTest::workerSwapTest()
 
         {
             ::fwCore::mt::ReadLock lock(b.m_mutex);
-            if(b.m_threadId == ::boost::thread::id())
+            if(b.m_threadId == std::thread::id())
             {
                 exceptionThrown = true;
                 CPPUNIT_ASSERT_THROW( future1.get(), fwCom::exception::WorkerChanged );
@@ -386,7 +381,7 @@ void SlotTest::workerSwapTest()
 
     //Tests weakcalls to hold slot worker while running weakcall (asyncRun test)
     {
-        typedef ::boost::thread::id Signature (const unsigned int);
+        typedef std::thread::id Signature (const unsigned int);
 
         B b;
 
@@ -395,7 +390,7 @@ void SlotTest::workerSwapTest()
 
         ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
 
-        CPPUNIT_ASSERT(b.m_threadId == ::boost::thread::id());
+        CPPUNIT_ASSERT(b.m_threadId == std::thread::id());
 
         m0->setWorker(w1);
         ::fwCom::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
@@ -418,7 +413,7 @@ void SlotTest::workerSwapTest()
 
     //Tests weakcalls to hold slot worker while running weakcall (asyncCall test)
     {
-        typedef ::boost::thread::id Signature (const unsigned int);
+        typedef std::thread::id Signature (const unsigned int);
 
         B b;
 
@@ -427,7 +422,7 @@ void SlotTest::workerSwapTest()
 
         ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
 
-        CPPUNIT_ASSERT(b.m_threadId == ::boost::thread::id());
+        CPPUNIT_ASSERT(b.m_threadId == std::thread::id());
 
         m0->setWorker(w1);
         ::fwCom::Slot< Signature >::SharedFutureType future1 = m0->asyncCall(1);
@@ -446,7 +441,7 @@ void SlotTest::workerSwapTest()
         future2.wait();
 
         CPPUNIT_ASSERT(b.m_threadId == w2->getThreadId());
-        CPPUNIT_ASSERT(future1.get() == ::boost::thread::id());
+        CPPUNIT_ASSERT(future1.get() == std::thread::id());
         CPPUNIT_ASSERT(future2.get() == w1->getThreadId());
 
     }

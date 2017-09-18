@@ -21,7 +21,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
 

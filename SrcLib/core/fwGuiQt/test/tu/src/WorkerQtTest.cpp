@@ -17,11 +17,6 @@
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
 
-#include <boost/bind.hpp>
-#include <boost/chrono/duration.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/typeof/typeof.hpp>
-
 #include <cppunit/Exception.h>
 
 #include <QApplication>
@@ -53,7 +48,7 @@ struct TestHandler
 
     void nextStep()
     {
-        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(50));
+        std::this_thread::sleep_for( std::chrono::milliseconds(50));
         this->nextStepNoSleep();
     }
 
@@ -192,9 +187,7 @@ void WorkerQtTest::postFromOutsideTest()
 {
     TestHandler handler;
 
-    ::boost::thread testThread(
-        std::bind(&runFromOutsideTest, std::ref(handler), m_worker)
-        );
+    std::thread testThread(std::bind(&runFromOutsideTest, std::ref(handler), m_worker));
 
     m_worker->getFuture().wait();
 
@@ -277,7 +270,7 @@ void WorkerQtTest::basicTimerTest()
 
         ::fwThread::Timer::sptr timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(10);
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(10);
 
         int i = 1;
         timer->setFunction(

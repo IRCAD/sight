@@ -11,8 +11,6 @@
 
 #include <fwCom/Signals.hpp>
 
-#include <boost/chrono/duration.hpp>
-
 namespace fwServices
 {
 namespace ut
@@ -34,11 +32,11 @@ public:
     {
     }
 
-    ::boost::chrono::milliseconds m_startRetarder;
-    ::boost::chrono::milliseconds m_stopRetarder;
-    ::boost::chrono::milliseconds m_updateRetarder;
-    ::boost::chrono::milliseconds m_receiveRetarder;
-    ::boost::chrono::milliseconds m_swapRetarder;
+    std::chrono::milliseconds m_startRetarder;
+    std::chrono::milliseconds m_stopRetarder;
+    std::chrono::milliseconds m_updateRetarder;
+    std::chrono::milliseconds m_receiveRetarder;
+    std::chrono::milliseconds m_swapRetarder;
 };
 
 //------------------------------------------------------------------------------

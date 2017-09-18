@@ -11,8 +11,6 @@
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
-#include <boost/bind.hpp>
-#include <boost/chrono/duration.hpp>
 
 namespace fwThread
 {
@@ -36,7 +34,7 @@ public:
     typedef ::boost::asio::io_service IOServiceType;
     typedef ::boost::asio::io_service::work WorkType;
     typedef std::shared_ptr< WorkType > WorkPtrType;
-    typedef ::boost::thread ThreadType;
+    typedef std::thread ThreadType;
 
     WorkerAsio();
 
@@ -224,7 +222,7 @@ SPTR(Worker) Worker::defaultFactory()
 
 TimerAsio::TimerAsio(::boost::asio::io_service& ioSrv) :
     m_timer(ioSrv),
-    m_duration(::boost::chrono::seconds(1)),
+    m_duration(std::chrono::seconds(1)),
     m_oneShot(false),
     m_running(false)
 {
@@ -269,7 +267,7 @@ void TimerAsio::rearmNoLock(TimeDurationType duration)
 {
     this->cancelNoLock();
     ::boost::posix_time::time_duration d =
-        ::boost::posix_time::microseconds(boost::chrono::duration_cast<boost::chrono::microseconds>(duration).count());
+        ::boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
     m_timer.expires_from_now( d );
     m_timer.async_wait( std::bind(&TimerAsio::call, this, std::placeholders::_1));
 }

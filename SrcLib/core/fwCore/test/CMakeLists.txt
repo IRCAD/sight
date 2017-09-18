@@ -1,11 +1,10 @@
 fwLoadProperties()
 
-find_package(Boost COMPONENTS chrono regex REQUIRED)
-    
+find_package(Boost COMPONENTS regex REQUIRED)
+
 fwInclude(
 )
 fwLink(
-    ${Boost_CHRONO_LIBRARY}
     ${Boost_REGEX_LIBRARY}
 )
 if(NOT WIN32 AND NOT APPLE)
@@ -14,7 +13,3 @@ if(NOT WIN32 AND NOT APPLE)
         pthread
     )
 endif()
-
-
-
-

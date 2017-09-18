@@ -26,6 +26,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/thread/futures/wait_for_all.hpp>
 
 namespace fwServices
 {

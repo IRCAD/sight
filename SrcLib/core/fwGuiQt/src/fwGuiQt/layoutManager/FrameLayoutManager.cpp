@@ -12,7 +12,6 @@
 
 #include <fwGui/registry/macros.hpp>
 
-#include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
 #include <QApplication>

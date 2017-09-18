@@ -8,8 +8,6 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/bind.hpp>
-
 namespace fwGui
 {
 namespace dialog

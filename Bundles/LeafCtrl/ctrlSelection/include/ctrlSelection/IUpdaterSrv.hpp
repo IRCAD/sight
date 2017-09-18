@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,25 +7,21 @@
 #ifndef __CTRLSELECTION_IUPDATERSRV_HPP__
 #define __CTRLSELECTION_IUPDATERSRV_HPP__
 
-#include <boost/tuple/tuple.hpp>
+#include "ctrlSelection/config.hpp"
 
 #include <fwData/Composite.hpp>
 
 #include <fwServices/IService.hpp>
 
-#include "ctrlSelection/config.hpp"
-
+#include <tuple>
 
 namespace ctrlSelection
 {
 
 /**
- * @class   IUpdaterSrv
  * @brief   An updater is attached on a composite. It is use to add, swap and remove object in the composite when it
  * receives specific message (declared in configuration) and sends corresponding message message.
  * It work mainly with a IManager.
- *
- * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API IUpdaterSrv : public ::fwServices::IService
 {
@@ -43,7 +39,7 @@ public:
         ADD_OR_SWAP
     };
 
-    fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IUpdaterSrv)(::fwServices::IService) );
 
     ///@brief IUpdaterSrv constructor. Do nothing.
     CTRLSELECTION_API IUpdaterSrv();
@@ -71,17 +67,20 @@ protected:
      * Sample of declaration configuration :
      *
      * @code{.xml}
-         <update compositeKey="reconstructionKey" onEvent="NEW_RECONSTRUCTION" fromUID="modelSeriesUid" actionType="ADD_OR_SWAP" />
+         <update compositeKey="reconstructionKey" onEvent="NEW_RECONSTRUCTION" fromUID="modelSeriesUid"
+     * actionType="ADD_OR_SWAP" />
          <update compositeKey="reconstructionKey" onEvent="CLEAR" fromUID="modelSeriesUid" actionType="REMOVE" />
        @endcode
-     * Here, when the updater receives a message with the NEW_RECONSTRUCTION event from the object "modelSeriesUid" the object reconstructionKey is added or swapped in the composite.
-     * When the updater receives a message with the CLEAR event from the object "modelSeriesUid" the object reconstructionKey is removed from the composite
+     * Here, when the updater receives a message with the NEW_RECONSTRUCTION event from the object "modelSeriesUid" the
+     * object reconstructionKey is added or swapped in the composite.
+     * When the updater receives a message with the CLEAR event from the object "modelSeriesUid" the object
+     * reconstructionKey is removed from the composite
      *
      * The actionType can be : ADD, ADD_OR_SWAP, SWAP, REMOVE, REMOVE_IF_PRESENT and DO_NOTHING
      */
     void configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
 
-    typedef std::vector < ::boost::tuple< std::string, std::string, std::string, ActionType > > ManagedEvents;
+    typedef std::vector < std::tuple< std::string, std::string, std::string, ActionType > > ManagedEvents;
 
     /// List of the managed event
     ManagedEvents m_managedEvents;

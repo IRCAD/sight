@@ -11,8 +11,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <boost/chrono/duration.hpp>
-
 #include <exception>
 #include <iostream>
 
@@ -41,7 +39,7 @@ void TaskHandlerTest::tearDown()
 
 int copy(int val)
 {
-    ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+    std::this_thread::sleep_for( std::chrono::seconds(1));
     return val;
 }
 

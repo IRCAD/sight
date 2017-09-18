@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/chrono/duration.hpp>
+#include "ProxyTest.hpp"
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/Proxy.hpp>
@@ -13,8 +13,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-
-#include "ProxyTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ProxyTest );
@@ -49,6 +47,8 @@ struct ProxyTestClass
     {
     }
 
+    //------------------------------------------------------------------------------
+
     int sum(int a, int b)
     {
         OSLM_INFO("SUM " << a << " + " << b);
@@ -56,12 +56,16 @@ struct ProxyTestClass
         return a+b;
     }
 
+    //------------------------------------------------------------------------------
+
     int square (int a)
     {
         OSLM_INFO("SQUARE " << a );
         ++m_methodSquare;
         return a*a;
     }
+
+    //------------------------------------------------------------------------------
 
     void doNothing()
     {
@@ -107,7 +111,7 @@ void ProxyTest::basicTest()
     CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), slot3->getNumberOfConnections());
     sig->asyncEmit(3, 5);
 
-    ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+    std::this_thread::sleep_for( std::chrono::seconds(1));
 
     CPPUNIT_ASSERT_EQUAL(1, testObject.m_methodSum);
     CPPUNIT_ASSERT_EQUAL(1, testObject.m_methodSquare);
@@ -115,7 +119,7 @@ void ProxyTest::basicTest()
 
     sig2->asyncEmit(8, 2, 'x');
 
-    ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+    std::this_thread::sleep_for( std::chrono::seconds(1));
 
     CPPUNIT_ASSERT_EQUAL(2, testObject.m_methodSum);
     CPPUNIT_ASSERT_EQUAL(2, testObject.m_methodSquare);

@@ -11,11 +11,8 @@
 #include <fwCom/util/convert_function_type.hpp>
 #include <fwCom/util/remove_last_arg.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/typeof/typeof.hpp>
-
 #include <functional>
+#include <type_traits>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::UtilTest );
@@ -77,10 +74,10 @@ void UtilTest::convertFunctionTypeTest ()
 
     typedef void F2 (int, float);
 
-    CPPUNIT_ASSERT( ( boost::is_same< F2, ::fwCom::util::convert_function_type< CM2C >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F2, ::fwCom::util::convert_function_type< CM2 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F2, ::fwCom::util::convert_function_type< BF2 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F2, ::fwCom::util::convert_function_type< F2* >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F2, ::fwCom::util::convert_function_type< CM2C >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F2, ::fwCom::util::convert_function_type< CM2 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F2, ::fwCom::util::convert_function_type< BF2 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F2, ::fwCom::util::convert_function_type< F2* >::type >::value ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -98,16 +95,16 @@ void UtilTest::removeLastArgTest ()
     typedef long long F1 (int*);
     typedef long long F0 ();
 
-    CPPUNIT_ASSERT( ( boost::is_same< F8, ::fwCom::util::remove_last_arg< F9 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F7, ::fwCom::util::remove_last_arg< F8 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F6, ::fwCom::util::remove_last_arg< F7 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F5, ::fwCom::util::remove_last_arg< F6 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F4, ::fwCom::util::remove_last_arg< F5 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F3, ::fwCom::util::remove_last_arg< F4 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F2, ::fwCom::util::remove_last_arg< F3 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F1, ::fwCom::util::remove_last_arg< F2 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F0, ::fwCom::util::remove_last_arg< F1 >::type >::value ) );
-    CPPUNIT_ASSERT( ( boost::is_same< F0, ::fwCom::util::remove_last_arg< F0 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F8, ::fwCom::util::remove_last_arg< F9 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F7, ::fwCom::util::remove_last_arg< F8 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F6, ::fwCom::util::remove_last_arg< F7 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F5, ::fwCom::util::remove_last_arg< F6 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F4, ::fwCom::util::remove_last_arg< F5 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F3, ::fwCom::util::remove_last_arg< F4 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F2, ::fwCom::util::remove_last_arg< F3 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F1, ::fwCom::util::remove_last_arg< F2 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F0, ::fwCom::util::remove_last_arg< F1 >::type >::value ) );
+    CPPUNIT_ASSERT( ( std::is_same< F0, ::fwCom::util::remove_last_arg< F0 >::type >::value ) );
 
 }
 

@@ -118,7 +118,9 @@ IJob::SharedFuture IJob::cancel()
 
             if(nextState == CANCELED)
             {
-                m_runFuture = SharedFuture();
+                // If we use the default constructor, the future is not valid and we will not be able to wait for it
+                // Thus we build a dummy future to get a valid one
+                m_runFuture = std::async( []() {} );
             }
         }
     }

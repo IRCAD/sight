@@ -170,7 +170,7 @@ void SSliceIndexDicomEditor::starting()
     m_sagittalIndex = ::fwData::Integer::New(0);
 
     // Load a slice
-    ::boost::chrono::milliseconds duration = ::boost::chrono::milliseconds(m_delay);
+    std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
     m_delayTimer2->setFunction(  [ = ]()
         {
             this->triggerNewSlice();

@@ -6,9 +6,8 @@
 #ifndef __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__
 #define __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__
 
-#include <boost/type_traits/remove_pointer.hpp>
-
 #include <functional>
+#include <type_traits>
 
 namespace fwCom
 {
@@ -44,7 +43,7 @@ struct convert_function_type< std::function< F > >
 template <typename F>
 struct convert_function_type
 {
-    typedef typename ::boost::remove_pointer<F>::type type;
+    typedef typename std::remove_pointer<F>::type type;
 };
 
 } //namespace util
