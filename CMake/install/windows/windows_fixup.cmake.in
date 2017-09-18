@@ -15,16 +15,25 @@ function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
     set(${FWLIBS_BUNDLES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
 endfunction()
 
-#Find all /*/.dll in /Bundles /plugins /share
-file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@BUNDLE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
-file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
-file(GLOB_RECURSE SHARE FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/share/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
-include(BundleUtilities)
-set(LIBS)
-list(APPEND LIBS ${BUNDLES} ${PLUGINS})
-#Look for all directories containing '.dll' files
-findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
-list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
-#Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
 
+# Run the script when installing but not a second time when running CPack
+if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
+
+    #Find all /*/.dll in /Bundles /plugins /share
+    file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@BUNDLE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
+    file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
+    file(GLOB_RECURSE SHARE FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/share/*@CMAKE_SHARED_LIBRARY_SUFFIX@")
+
+    include(BundleUtilities)
+
+    set(LIBS)
+    list(APPEND LIBS ${BUNDLES} ${PLUGINS})
+    #Look for all directories containing '.dll' files
+
+    findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
+    list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
+
+    #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
+    fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+
+endif()
