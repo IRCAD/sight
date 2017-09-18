@@ -34,7 +34,7 @@ namespace visuOgreAdaptor
         <service type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="..." />
             <inout key="tf" uid="..." optional="yes" />
-            <config renderer="default" sliceIndex="axial" filtering="none" />
+            <config layer="default" sliceIndex="axial" filtering="none" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
@@ -44,7 +44,7 @@ namespace visuOgreAdaptor
  *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration:
- * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
  */

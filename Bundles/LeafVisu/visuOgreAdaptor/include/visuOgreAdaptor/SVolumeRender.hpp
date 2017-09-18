@@ -70,7 +70,7 @@ namespace visuOgreAdaptor
         <inout key="image" uid="..." autoConnect="yes" />
         <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
-        <config renderer="default"
+        <config layer="default"
                 preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" />
@@ -85,7 +85,7 @@ namespace visuOgreAdaptor
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
- * - \b renderer (optional): defines the renderer displaying the volume.
+ * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
