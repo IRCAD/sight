@@ -98,7 +98,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     ::boost::filesystem::path descriptorLocation(location / "plugin.xml");
     if(::boost::filesystem::exists(descriptorLocation) == false)
     {
-        throw ::fwCore::Exception(std::string("'plugin.xml': file not found in ") + location.c_str());
+        throw ::fwCore::Exception(std::string("'plugin.xml': file not found in ") + location.string());
     }
 
     // Validation

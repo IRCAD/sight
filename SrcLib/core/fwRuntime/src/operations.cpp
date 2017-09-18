@@ -115,7 +115,7 @@ const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesys
 
     // TEMP_FB: And remove this when BUNDLE_PREFIX is removed in xmls
     ::boost::filesystem::path relativePath;
-    if(path.is_absolute())
+    if(path.has_root_directory())
     {
         for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
         {
