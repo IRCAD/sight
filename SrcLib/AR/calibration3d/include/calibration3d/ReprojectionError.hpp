@@ -87,55 +87,54 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
 {
     //Use OpenCV template structures since this operator is templated.
     // Conversion to OpenCv Mat
-    ::cv::Mat rvec_pose   = (::cv::Mat_<T>(3, 1) << pose[0], pose[1], pose[2]);
-    ::cv::Mat tvec_pose   = (::cv::Mat_<T>(3, 1) << pose[3], pose[4], pose[5]);
-    ::cv::Mat rotMat_pose = ::cv::Mat_<T>::eye(3, 3);
+    const ::cv::Mat rvecPose = (::cv::Mat_<T>(3, 1) << pose[0], pose[1], pose[2]);
+    const ::cv::Mat tvecPose = (::cv::Mat_<T>(3, 1) << pose[3], pose[4], pose[5]);
+    ::cv::Mat rotMatPose = ::cv::Mat_<T>(3, 3);
 
-    ::cv::Rodrigues(rvec_pose, rotMat_pose); // rotation vector to matrix.
+    ::cv::Rodrigues(rvecPose, rotMatPose); // rotation vector to matrix.
 
-    ::cv::Mat transform_pose = ::cv::Mat_<T>::eye(4, 4); //identity
+    ::cv::Mat transformPose = ::cv::Mat_<T>::eye(4, 4);
 
-    //Copy in transform_pose
-    transform_pose( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = rotMat_pose * 1;
-    transform_pose( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = tvec_pose * 1;
+    // Copy in transform_pose
+    transformPose( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = rotMatPose * 1;
+    transformPose( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = tvecPose * 1;
 
-    ::cv::Mat extrinsic = ::cv::Mat_<T>::eye(4, 4); //identity
+    ::cv::Mat extrinsic = ::cv::Mat_<T>::eye(4, 4);
 
-    //Copy in extrinsic
+    // Copy in extrinsic
     extrinsic( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = m_rotMat * 1;
     extrinsic( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = m_tvec * 1;
 
     // compute real pose (extrinsic mat * pose)
-    //Note: extrinsic can be identity if we use reference camera
-    ::cv::Mat transform_poseExtrinsic = extrinsic * transform_pose;
+    // Note: extrinsic can be identity if we use reference camera
+    const ::cv::Mat transformPoseExtrinsic = extrinsic * transformPose;
 
-    ::cv::Mat rotMat_poseExtrinsic = ::cv::Mat_<T>::eye(3, 3); //identity
-    //Copy in rotMat_poseExtrinsic
-    rotMat_poseExtrinsic = transform_poseExtrinsic(::cv::Range(0, 3), ::cv::Range(0, 3));
+    const ::cv::Mat rotMatPoseExtrinsic = transformPoseExtrinsic(::cv::Range(0, 3), ::cv::Range(0, 3));
 
-    ::cv::Mat tvec_poseExtrinsic = ::cv::Mat_<T>::zeros(3, 1); //zeros
-    //Copy values in tvec_poseExtrinsic
-    tvec_poseExtrinsic.at<T>(0) = transform_poseExtrinsic.at<T>(0, 3);
-    tvec_poseExtrinsic.at<T>(1) = transform_poseExtrinsic.at<T>(1, 3);
-    tvec_poseExtrinsic.at<T>(2) = transform_poseExtrinsic.at<T>(2, 3);
+    ::cv::Mat tvecPoseExtrinsic = ::cv::Mat_<T>(3, 1);
+    // Copy values in tvec_poseExtrinsic
+    tvecPoseExtrinsic.at<T>(0) = transformPoseExtrinsic.at<T>(0, 3);
+    tvecPoseExtrinsic.at<T>(1) = transformPoseExtrinsic.at<T>(1, 3);
+    tvecPoseExtrinsic.at<T>(2) = transformPoseExtrinsic.at<T>(2, 3);
 
-    ::cv::Mat rvec_poseExtrinsic;
-    ::cv::Rodrigues(rotMat_poseExtrinsic, rvec_poseExtrinsic); //matrix to rotation vector.
+    ::cv::Mat rvecPoseExtrinsic;
+    ::cv::Rodrigues(rotMatPoseExtrinsic, rvecPoseExtrinsic); //matrix to rotation vector.
 
-    std::vector< ::cv::Point_<T> > point_reprojected(1);// 2d point
-    std::vector< ::cv::Point3_<T> > point3d_vector(1); //3d object point
-    point3d_vector[0].x = T(m_objectPoint.x);
-    point3d_vector[0].y = T(m_objectPoint.y);
-    point3d_vector[0].z = T(m_objectPoint.z);
+    std::vector< ::cv::Point_<T> > pointReprojected(1);// 2d point
+    const std::vector< ::cv::Point3_<T> > point3dVector = {{
+                                                               {T(m_objectPoint.x),
+                                                                T(m_objectPoint.y),
+                                                                T(m_objectPoint.z)}
+                                                           }};
 
-    //reproject the point with new pose
-    ::cv::projectPoints(point3d_vector, rvec_poseExtrinsic, tvec_poseExtrinsic, m_cameraMatrix,
+    // Reproject the point with new pose
+    ::cv::projectPoints(point3dVector, rvecPoseExtrinsic, tvecPoseExtrinsic, m_cameraMatrix,
                         m_distCoef,
-                        point_reprojected);
+                        pointReprojected);
 
     // The error is the difference between the predicted and observed position.
-    residuals[0] = T(m_imagePoint.x) - T(point_reprojected[0].x);
-    residuals[1] = T(m_imagePoint.y) - T(point_reprojected[0].y);
+    residuals[0] = T(m_imagePoint.x) - T(pointReprojected[0].x);
+    residuals[1] = T(m_imagePoint.y) - T(pointReprojected[0].y);
 
     return true;
 }
