@@ -83,18 +83,7 @@ void SImagesBlend::starting()
     if(nullptr == m_imageAlgorithm)
     {
         // If we have no vtkImageBlend, try to downcast as an vtkImageCheckerboard
-        vtkImageCheckerboard* imageCheckerboard =
-            vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
-
-        if(nullptr != imageCheckerboard)
-        {
-            // Set the number of subdivision
-            imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                    m_zDivision);
-
-            // Assign as an vtkThreadedImageAlgorithm
-            m_imageAlgorithm = imageCheckerboard;
-        }
+        m_imageAlgorithm = vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
     }
 
     // If we have a null m_imageAlgorithm, then we have a problem Houston
@@ -102,6 +91,9 @@ void SImagesBlend::starting()
                nullptr != m_imageAlgorithm);
 
     this->addImageAdaptors();
+
+    // Set the divisions once all image info has been gathered.
+    this->changeCheckerboardDivision(m_checkerboardDivision);
 }
 
 //------------------------------------------------------------------------------
