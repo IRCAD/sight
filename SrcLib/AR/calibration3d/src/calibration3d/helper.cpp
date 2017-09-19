@@ -80,11 +80,11 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 //-----------------------------------------------------------------------------
 
 ::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Point3f>& _objectPoints,
-                               const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
-                               const ::cv::Mat _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
+                               const ::cv::Mat& _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
+                               const ::cv::Mat& _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
                                const std::vector< ::cv::Point2f >& _imgPoints1,
                                const std::vector< ::cv::Point2f >& _imgPoints2,
-                               const ::cv::Mat _R, const ::cv::Mat _T)
+                               const ::cv::Mat& _R, const ::cv::Mat& _T)
 {
 
     //1. initialize solution with solvePnP
@@ -96,15 +96,10 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 
     ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false, CV_ITERATIVE);
 
-    std::vector<double> optimVector;
-    //rotation
-    optimVector.push_back(rvec.at<double>(0));
-    optimVector.push_back(rvec.at<double>(1));
-    optimVector.push_back(rvec.at<double>(2));
-    //translation
-    optimVector.push_back(tvec.at<double>(0));
-    optimVector.push_back(tvec.at<double>(1));
-    optimVector.push_back(tvec.at<double>(2));
+    std::vector<double> optimVector = {{
+                                           rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2),
+                                           tvec.at<double>(0), tvec.at<double>(1), tvec.at<double>(2)
+                                       }};
 
     //2. Creation of ceres problem
     //Minimization of sum of reprojection error for each points in each images
@@ -146,7 +141,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     // standard solver, SPARSE_NORMAL_CHOLESKY, also works fine but it is slower
     // for standard bundle adjustment problems.
     ::ceres::Solver::Options options;
-    options.linear_solver_type           = ::ceres::DENSE_QR;
+    options.linear_solver_type           = ::ceres::SPARSE_NORMAL_CHOLESKY;
     options.trust_region_strategy_type   = ceres::LEVENBERG_MARQUARDT;
     options.minimizer_progress_to_stdout = false;
     options.gradient_tolerance           = 1e-8;

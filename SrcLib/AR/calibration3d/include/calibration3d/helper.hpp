@@ -70,11 +70,11 @@ CALIBRATION3D_API ::cv::Matx44f cameraPoseMonocular(const std::vector< ::cv::Poi
  * @return
  */
 CALIBRATION3D_API ::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Point3f>& _objectPoints,
-                                                 const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
-                                                 const ::cv::Mat _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
+                                                 const ::cv::Mat& _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
+                                                 const ::cv::Mat& _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
                                                  const std::vector< ::cv::Point2f >& _imgPoints1,
-                                                 const std::vector< ::cv::Point2f >& _imgPoints2, const ::cv::Mat _R,
-                                                 const ::cv::Mat _T);
+                                                 const std::vector< ::cv::Point2f >& _imgPoints2, const ::cv::Mat& _R,
+                                                 const ::cv::Mat& _T);
 
 }
 
