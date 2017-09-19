@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_S2DWHEEL_HPP__
 #define __VISUVTKADAPTOR_S2DWHEEL_HPP__
 
+#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
+
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwRenderVTK/IAdaptor.hpp>
@@ -62,6 +64,10 @@ protected:
 
     /// Slot: update axes visibility (true = visible)
     // VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
+
+private:
+
+    vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > m_resizeCallback;
 
 };
 

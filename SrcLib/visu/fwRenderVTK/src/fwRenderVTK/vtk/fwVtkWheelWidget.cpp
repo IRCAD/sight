@@ -14,6 +14,8 @@
 #include <vtkActor2D.h>
 #include <vtkCallbackCommand.h>
 #include <vtkObjectFactory.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkWidgetCallbackMapper.h>
 #include <vtkWidgetEvent.h>
@@ -51,6 +53,13 @@ void fwVtkWheelWidget::CreateDefaultRepresentation()
 
 //----------------------------------------------------------------------------------
 
+void fwVtkWheelWidget::SetWheelUpdateCallback(std::function<void (double, double, double)> f)
+{
+    m_wheelUpdateCallback = f;
+}
+
+//----------------------------------------------------------------------------------
+
 void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 {
     fwVtkWheelWidget* self = reinterpret_cast<fwVtkWheelWidget*>(w);
@@ -67,7 +76,11 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 
     if ( self->WidgetState == fwVtkWheelWidget::Selecting )
     {
-        const auto& actPos = widgetRep->GetWheelActor()->GetPosition();
+        const auto& actPos      = widgetRep->GetWheelActor()->GetPosition();
+        const int* viewportSize = self->GetRepresentation()->GetRenderer()->GetRenderWindow()->GetSize();
+
+        X = ::glm::clamp(X, 0, viewportSize[0]);
+        Y = ::glm::clamp(Y, 0, viewportSize[1]);
 
         widgetRep->GetWheelActor()->SetPosition(X - self->m_initMouseX + actPos[0], Y - self->m_initMouseY + actPos[1]);
         self->m_initMouseX = X;
@@ -99,6 +112,10 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 
     if( renderRequired )
     {
+        const ::glm::dvec2 center = widgetRep->GetCenterInScreenSpace();
+        const double orientation  = widgetRep->GetOrientation();
+
+        self->m_wheelUpdateCallback(center.x, center.y, orientation);
         self->Render();
     }
 }
@@ -109,8 +126,14 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
 {
     fwVtkWheelWidget* self = reinterpret_cast<fwVtkWheelWidget*>(w);
 
-    int X = self->Interactor->GetEventPosition()[0];
-    int Y = self->Interactor->GetEventPosition()[1];
+    int X     = self->Interactor->GetEventPosition()[0];
+    int Y     = self->Interactor->GetEventPosition()[1];
+    int shift = self->Interactor->GetShiftKey();
+
+    if(shift == 0)
+    {
+        return;
+    }
 
     const fwVtkWheelRepresentation* widgetRep = dynamic_cast<fwVtkWheelRepresentation*>(self->WidgetRep);
 
@@ -158,5 +181,12 @@ void fwVtkWheelWidget::PrintSelf(ostream&, vtkIndent)
 void fwVtkWheelWidget::SetRepresentation(fwVtkWheelRepresentation* rep)
 {
     this->WidgetRep = rep;
+}
+
+//----------------------------------------------------------------------------------
+
+fwVtkWheelRepresentation* fwVtkWheelWidget::GetRepresentation() const
+{
+    return dynamic_cast<fwVtkWheelRepresentation*>(this->WidgetRep);
 }
 

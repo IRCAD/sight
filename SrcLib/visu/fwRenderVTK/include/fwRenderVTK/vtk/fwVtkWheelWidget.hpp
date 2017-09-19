@@ -12,6 +12,8 @@
 
 #include <vtkAbstractWidget.h>
 
+#include <functional>
+
 /**
  * @brief Implements the interactions with the wheel widget.
  *
@@ -33,8 +35,13 @@ public:
     /// Set associated representation.
     FWRENDERVTK_API void SetRepresentation(fwVtkWheelRepresentation* rep);
 
+    /// Get the representation.
+    FWRENDERVTK_API fwVtkWheelRepresentation* GetRepresentation() const;
+
     /// Creates a wheel representation as default.
     FWRENDERVTK_API void CreateDefaultRepresentation() VTK_OVERRIDE;
+
+    FWRENDERVTK_API void SetWheelUpdateCallback(std::function<void (double, double, double)> f);
 
 protected:
 
@@ -76,6 +83,8 @@ private:
 
     /// Records the initial wheel orientation when rotating.
     double m_initOrientation;
+
+    std::function< void (double, double, double) > m_wheelUpdateCallback;
 };
 
 #endif // __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__

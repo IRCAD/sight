@@ -33,8 +33,11 @@ public:
     /// Prints class information. Not implemented.
     void PrintSelf(ostream& os, vtkIndent indent) VTK_OVERRIDE;
 
-    /// Updates wheel geometry using the center, radius and orientation.
+    /// Generates the representation using the center, radius and orientation.
     FWRENDERVTK_API void BuildRepresentation() VTK_OVERRIDE;
+
+    /// Updates wheel geometry using the center, radius and orientation.
+    FWRENDERVTK_API void UpdateRepresentation();
 
     /// Adds the wheel actor to the prop collection.
     FWRENDERVTK_API void GetActors2D(vtkPropCollection* pc) VTK_OVERRIDE;
@@ -116,6 +119,7 @@ private:
 
     /// 2D Translation to convert from widget to wheel space.
     ::glm::dvec2 WidgetToCenterTranslation;
+
 };
 
 #endif // __FWRENDERVTK_VTK_FWVTKWHEELREPRESENTATION_HPP__
