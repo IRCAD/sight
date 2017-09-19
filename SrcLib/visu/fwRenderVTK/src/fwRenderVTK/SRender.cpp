@@ -126,8 +126,9 @@ void SRender::configureRenderer( const ConfigType& rendererConf )
 
 void SRender::configurePicker( const ConfigType& pickerConf )
 {
-    const std::string& id       = pickerConf.get<std::string>("<xmlattr>.id");
-    const std::string& vtkclass = pickerConf.get<std::string>("<xmlattr>.vtkclass", "vtkCellPicker");
+    const std::string& id        = pickerConf.get<std::string>("<xmlattr>.id");
+    const std::string& vtkclass  = pickerConf.get<std::string>("<xmlattr>.vtkclass", "vtkCellPicker");
+    const std::string& tolerance = pickerConf.get<std::string>("<xmlattr>.tolerance", "0");
 
     if(m_pickers.count(id) == 0)
     {
@@ -138,7 +139,7 @@ void SRender::configurePicker( const ConfigType& pickerConf )
         vtkPicker* picker = vtkPicker::SafeDownCast(m_pickers[id]);
         if (picker)
         {
-            picker->SetTolerance(0);
+            picker->SetTolerance(std::stod(tolerance));
         }
     }
 }
