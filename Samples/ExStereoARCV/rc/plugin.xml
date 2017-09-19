@@ -362,7 +362,7 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="tracker1" type="::trackerAruco::SArucoTracker" worker="tracking">
+            <service uid="tracker1" type="::trackerAruco::SArucoTracker" worker="tracking1">
                 <in key="timeline" uid="frameTL1" autoConnect="yes" />
                 <in key="camera" uid="camera1" />
                 <inout group="tagTL">
@@ -384,7 +384,7 @@
                 </config>
             </service>
 
-            <service uid="tracker2" type="::trackerAruco::SArucoTracker" worker="tracking">
+            <service uid="tracker2" type="::trackerAruco::SArucoTracker" worker="tracking2">
                 <in key="timeline" uid="frameTL2" autoConnect="yes" />
                 <in key="camera" uid="camera2" />
                 <inout group="tagTL">
