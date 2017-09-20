@@ -166,17 +166,20 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
 // ------------------------------------------------------------------------------
 
-template <class P, size_t N>
-void getPixelBufferTestHelper(P pixelValue[3])
+template <class P>
+void getPixelBufferTestHelper(const P& pixelValue)
 {
-    static_assert(N != 0, "Cannot test 0-dimensional pixel types");
     constexpr size_t IMG_DIMENSIONS = 100;
+    constexpr size_t N_COMPONENTS   = std::tuple_size<P>::value;
+    using SubPixel = typename P::value_type;
+
+    static_assert(N_COMPONENTS != 0, "Cannot test 0-dimensional pixel types");
 
     // Create a new image
     auto image = ::fwData::Image::New();
     ::fwData::Image::SizeType size(3);
     std::fill_n(size.begin(), 3, IMG_DIMENSIONS);
-    image->allocate(size, ::fwTools::Type::create<P>(), N);
+    image->allocate(size, ::fwTools::Type::create<SubPixel>(), N_COMPONENTS);
     image->setSpacing(::fwData::Image::SpacingType(3, 1));
     image->setOrigin(::fwData::Image::OriginType(3, 0));
 
@@ -189,18 +192,19 @@ void getPixelBufferTestHelper(P pixelValue[3])
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
     std::generate_n(coords, 3, [&] () { return rand() % IMG_DIMENSIONS; });
-    P* pixelPtr = static_cast<P*>(arrayPtr) +
-                  ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N);
-    std::copy(pixelValue, pixelValue + N, pixelPtr);
+    auto imageBufferPtr = image->getDataArray()->getBufferObject()->getBuffer();
+    SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr) +
+                          ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
+    std::copy(pixelValue.begin(), pixelValue.end(), pixelPtr);
 
     // Test that the helper returned pixel value is correct
     ::fwDataTools::helper::ImageGetter constHelper(image);
     ::fwDataTools::helper::Image helper(image);
-    P* pixelHelperPtr1 = static_cast<P*>(constHelper.getPixelBuffer(coords[0], coords[1], coords[2]));
-    P* pixelHelperPtr2 = static_cast<P*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
-    if(std::is_floating_point<P>::value)
+    SubPixel* pixelHelperPtr1 = static_cast<SubPixel*>(constHelper.getPixelBuffer(coords[0], coords[1], coords[2]));
+    SubPixel* pixelHelperPtr2 = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
+    if(std::is_floating_point<SubPixel>::value)
     {
-        for(auto i = 0; i != N; ++i)
+        for(auto i = 0; i != N_COMPONENTS; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i],
                                                  0.00001);
@@ -210,7 +214,7 @@ void getPixelBufferTestHelper(P pixelValue[3])
     }
     else
     {
-        for(auto i = 0; i != N; ++i)
+        for(auto i = 0; i != N_COMPONENTS; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr2[i], pixelValue[i]);
@@ -223,44 +227,47 @@ void getPixelBufferTestHelper(P pixelValue[3])
 void MedicalImageHelpersTest::getPixelBufferTest()
 {
     {
-        uint8_t pGray[1] = {84};
-        uint8_t pRGB[3]  = {42, 24, 21};
-        getPixelBufferTestHelper<uint8_t, 1>(pGray);
-        getPixelBufferTestHelper<uint8_t, 3>(pRGB);
+        std::array<uint8_t, 1> pGray = {84};
+        std::array<uint8_t, 3> pRGB  = {42, 24, 21};
+        getPixelBufferTestHelper(pGray);
+        getPixelBufferTestHelper(pRGB);
     }
     {
-        uint32_t pGray[1] = {0xDEADBEEF};
-        uint32_t pRGB[3]  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
-        getPixelBufferTestHelper<uint32_t, 1>(pGray);
-        getPixelBufferTestHelper<uint32_t, 3>(pRGB);
+        std::array<uint32_t, 1> pGray = {0xDEADBEEF};
+        std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
+        getPixelBufferTestHelper(pGray);
+        getPixelBufferTestHelper(pRGB);
     }
     {
-        float pGray[1] = {5423.2f};
-        float pRGB[3]  = {42.0f, 1487.4f, 0.1445f};
-        getPixelBufferTestHelper<float, 1>(pGray);
-        getPixelBufferTestHelper<float, 3>(pRGB);
+        std::array<float, 1> pGray = {5423.2f};
+        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        getPixelBufferTestHelper(pGray);
+        getPixelBufferTestHelper(pRGB);
     }
     {
-        double pGray[1] = {541.254981};
-        double pRGB[3]  = {841.567, 6476.874, 0.187487};
-        getPixelBufferTestHelper<double, 1>(pGray);
-        getPixelBufferTestHelper<double, 3>(pRGB);
+        std::array<double, 1> pGray = {541.254981};
+        std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
+        getPixelBufferTestHelper(pGray);
+        getPixelBufferTestHelper(pRGB);
     }
 }
 
 // ------------------------------------------------------------------------------
 
-template <class P, size_t N>
-void setPixelBufferTestHelper(P pixelValue[3])
+template <class P>
+void setPixelBufferTestHelper(P& pixelValue)
 {
-    static_assert(N != 0, "Cannot test 0-dimensional pixel types");
     constexpr size_t IMG_DIMENSIONS = 100;
+    constexpr size_t N_COMPONENTS   = std::tuple_size<P>::value;
+    using SubPixel = typename P::value_type;
+
+    static_assert(N_COMPONENTS != 0, "Cannot test 0-dimensional pixel types");
 
     // Create a new image
     auto image = ::fwData::Image::New();
     ::fwData::Image::SizeType size(3);
     std::fill_n(size.begin(), 3, IMG_DIMENSIONS);
-    image->allocate(size, ::fwTools::Type::create<P>(), N);
+    image->allocate(size, ::fwTools::Type::create<SubPixel>(), N_COMPONENTS);
     image->setSpacing(::fwData::Image::SpacingType(3, 1));
     image->setOrigin(::fwData::Image::OriginType(3, 0));
 
@@ -275,14 +282,14 @@ void setPixelBufferTestHelper(P pixelValue[3])
     std::generate_n(coords, 3, [&] () { return rand() % IMG_DIMENSIONS; });
     size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     ::fwDataTools::helper::Image helper(image);
-    helper.setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue));
+    helper.setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
     // Test that the helper returned pixel value is correct
     ::fwDataTools::helper::ImageGetter constHelper(image);
-    P* pixelHelperPtr = static_cast<P*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
-    if(std::is_floating_point<P>::value)
+    SubPixel* pixelHelperPtr = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
+    if(std::is_floating_point<SubPixel>::value)
     {
-        for(auto i = 0; i != N; ++i)
+        for(auto i = 0; i != N_COMPONENTS; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr[i], pixelValue[i],
                                                  0.00001);
@@ -290,7 +297,7 @@ void setPixelBufferTestHelper(P pixelValue[3])
     }
     else
     {
-        for(auto i = 0; i != N; ++i)
+        for(auto i = 0; i != N_COMPONENTS; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr[i], pixelValue[i]);
         }
@@ -302,28 +309,28 @@ void setPixelBufferTestHelper(P pixelValue[3])
 void MedicalImageHelpersTest::setPixelBufferTest()
 {
     {
-        uint8_t pGray[1] = {84};
-        uint8_t pRGB[3]  = {42, 24, 21};
-        setPixelBufferTestHelper<uint8_t, 1>(pGray);
-        setPixelBufferTestHelper<uint8_t, 3>(pRGB);
+        std::array<uint8_t, 1> pGray = {84};
+        std::array<uint8_t, 3> pRGB  = {42, 24, 21};
+        setPixelBufferTestHelper(pGray);
+        setPixelBufferTestHelper(pRGB);
     }
     {
-        uint32_t pGray[1] = {0xDEADBEEF};
-        uint32_t pRGB[3]  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
-        setPixelBufferTestHelper<uint32_t, 1>(pGray);
-        setPixelBufferTestHelper<uint32_t, 3>(pRGB);
+        std::array<uint32_t, 1> pGray = {0xDEADBEEF};
+        std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
+        setPixelBufferTestHelper(pGray);
+        setPixelBufferTestHelper(pRGB);
     }
     {
-        float pGray[1] = {5423.2f};
-        float pRGB[3]  = {42.0f, 1487.4f, 0.1445f};
-        setPixelBufferTestHelper<float, 1>(pGray);
-        setPixelBufferTestHelper<float, 3>(pRGB);
+        std::array<float, 1> pGray = {5423.2f};
+        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        setPixelBufferTestHelper(pGray);
+        setPixelBufferTestHelper(pRGB);
     }
     {
-        double pGray[1] = {541.254981};
-        double pRGB[3]  = {841.567, 6476.874, 0.187487};
-        setPixelBufferTestHelper<double, 1>(pGray);
-        setPixelBufferTestHelper<double, 3>(pRGB);
+        std::array<double, 1> pGray = {541.254981};
+        std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
+        setPixelBufferTestHelper(pGray);
+        setPixelBufferTestHelper(pRGB);
     }
 }
 
