@@ -6,6 +6,8 @@
 
 #include "visuVTKAdaptor/S2DWheel.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
@@ -18,11 +20,14 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::S2DWheel);
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Signals::SignalKeyType s_WHEEL_UPDATED_SIG = "wheelUpdated";
+
 //------------------------------------------------------------------------------
 
 S2DWheel::S2DWheel() noexcept :
     m_wheelWidget(vtkSmartPointer<fwVtkWheelWidget>::New())
 {
+    m_wheelUpdatedSignal = newSignal<WheelUpdatedSignalType>(s_WHEEL_UPDATED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -49,9 +54,10 @@ void S2DWheel::starting()
     m_wheelWidget->SetInteractor(this->getRenderer()->GetRenderWindow()->GetInteractor());
     m_wheelWidget->SetRepresentation(wheelRepresentation);
     m_wheelWidget->On();
-    m_wheelWidget->SetWheelUpdateCallback([](double cx, double cy, double o)
+    m_wheelWidget->SetWheelUpdateCallback([this](double cx, double cy, double o)
         {
             OSLM_DEBUG("Center : " << "(" << cx << ", " << cy << "), Orientation : " << o);
+            this->m_wheelUpdatedSignal->asyncEmit(cx, cy, o);
         });
 
     m_resizeCallback = vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand >::New();

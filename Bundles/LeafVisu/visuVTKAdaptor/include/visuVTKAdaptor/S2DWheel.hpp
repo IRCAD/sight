@@ -11,6 +11,9 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/vtk/fwVtkWheelWidget.hpp>
 
@@ -40,6 +43,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (S2DWheel)(::fwRenderVTK::IAdaptor) );
 
+    typedef ::fwCom::Signal<void (double, double, double)> WheelUpdatedSignalType;
+
     /// Constructor. Does nothing.
     VISUVTKADAPTOR_API S2DWheel() noexcept;
 
@@ -68,6 +73,8 @@ protected:
 private:
 
     vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > m_resizeCallback;
+
+    WheelUpdatedSignalType::sptr m_wheelUpdatedSignal;
 
 };
 
