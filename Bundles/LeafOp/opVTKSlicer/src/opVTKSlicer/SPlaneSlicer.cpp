@@ -6,11 +6,8 @@
 
 #include "opVTKSlicer/SPlaneSlicer.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
@@ -26,7 +23,7 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKSlicer::SPlaneSlicer, ::fwData::Image );
+fwServicesRegisterMacro( ::fwServices::IOperator, ::opVTKSlicer::SPlaneSlicer );
 
 namespace opVTKSlicer
 {
@@ -154,7 +151,10 @@ void SPlaneSlicer::setReslicerExtent()
 
     // cast size_t to int.
     std::vector<int> intSize(size.size());
-    std::transform(size.begin(), size.end(), intSize.begin(), [](size_t s){ return static_cast<int>(s) - 1; });
+    std::transform(size.begin(), size.end(), intSize.begin(), [](size_t s) -> int
+        {
+            return std::max(static_cast<int>(s) - 1, 0);
+        });
 
     switch (m_orientation)
     {
@@ -185,7 +185,8 @@ void SPlaneSlicer::setReslicerAxes()
     SLM_ASSERT("No axes found.", axes);
 
     // TODO: const correct function signature in fwVtkIO.
-    vtkMatrix4x4* axesMatrix(::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
+    vtkSmartPointer<vtkMatrix4x4> axesMatrix
+        (::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
 
     this->applySliceTranslation(axesMatrix);
 
@@ -245,7 +246,7 @@ void SPlaneSlicer::applySliceTranslation(vtkMatrix4x4* vtkMat) const
     const auto& spacing = image->getSpacing();
     const auto& origin  = image->getOrigin();
 
-    const uint8_t axis = static_cast<uint8_t>(m_orientation);
+    const std::uint8_t axis = static_cast<std::uint8_t>(m_orientation);
 
     const double trans = spacing[axis] * static_cast<double>(idx) + origin[axis];
 

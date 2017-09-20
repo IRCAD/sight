@@ -51,7 +51,7 @@ namespace opVTKSlicer
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : operator configuration
- *    - \b orientation (mandatory, values=axial|sagital|frontal): determines which axes to use for slicing.
+ *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
 class OPVTKSLICER_CLASS_API SPlaneSlicer : public ::fwServices::IOperator

@@ -22,7 +22,7 @@ struct OPVTKSLICER_CLASS_API Plugin : public ::fwRuntime::Plugin
     /// Destructor. Do nothing.
     OPVTKSLICER_API ~Plugin() noexcept;
 
-    /// Overrides start method. Object declarations.
+    /// Overrides start method.
     OPVTKSLICER_API void start();
 
     /// Overrides stop method. Do nothing
