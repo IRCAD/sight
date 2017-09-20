@@ -4,8 +4,14 @@ macro(qt_plugins_setup)
     if(PLUGINS)
         string(LENGTH "${EXTERNAL_LIBRARIES}/" QT_LENGTH)
 
+        if(WIN32)
+            set(FW_QT5_PLUGINS_PATH "${EXTERNAL_LIBRARIES}/bin/qt5/plugins/*")
+        else()
+            set(FW_QT5_PLUGINS_PATH "${EXTERNAL_LIBRARIES}/lib/qt5/plugins/*")
+        endif()
+
         # search in qml and plugins dirs
-        file(GLOB QT_DIRS  "${EXTERNAL_LIBRARIES}/qml/*" "${EXTERNAL_LIBRARIES}/lib/qt5/plugins/*")
+        file(GLOB QT_DIRS  "${EXTERNAL_LIBRARIES}/qml/*" "${FW_QT5_PLUGINS_PATH}")
         foreach(CURRENT_DIR ${QT_DIRS})
 
             get_filename_component(QT_NAME ${CURRENT_DIR} NAME)
