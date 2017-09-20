@@ -22,6 +22,7 @@ namespace visuVTKAdaptor
  * @section Slots Slots
  *
  * -\b updateTransform(double, double, double) : computes the transform
+ * -\b updateSliceOrientation(int, int): updates slice orientation
  *
  * @section XML XML Configuration
  *
@@ -31,6 +32,15 @@ namespace visuVTKAdaptor
        <inout key="transform" uid="..." />
        <config renderer="default" picker="myPicker" />
    </service>
+ *
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: defines the space in which the transform takes place.
+ * - \b transform [::fwData::TransformationMatrix3D]: outputed image space transform.
+ *
+ * @subsection Configuration Configuration
+ * - \b renderer (mandatory): renderer in which the image is displayed.
+ * - \b picker (mandatory): used to find image voxel positions from a viewport pixel position.
+ *
  */
 class VISUVTKADAPTOR_CLASS_API STransformFromWheel : public ::fwRenderVTK::IAdaptor,
                                                      public ::fwDataTools::helper::MedicalImageAdaptor
@@ -39,23 +49,35 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (STransformFromWheel)(::fwRenderVTK::IAdaptor) );
 
+    /// Constructor.
     VISUVTKADAPTOR_API STransformFromWheel();
 
+    /// Destructor.
     VISUVTKADAPTOR_API virtual ~STransformFromWheel();
 
 protected:
 
     VISUVTKADAPTOR_API virtual void configuring() override;
-
     VISUVTKADAPTOR_API virtual void starting() override;
-
     VISUVTKADAPTOR_API virtual void updating() override;
-
     VISUVTKADAPTOR_API virtual void stopping() override;
 
+    /**
+     * @brief Returns proposals to connect service slots to object signals.
+     *
+     * Connect image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT.
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 private:
 
-    void updateTransform(double cx, double cy, double o);
+    /// Computes the transform based on the (cx, cy) wheel center and the wheel angle.
+    void updateTransform(double cx, double cy, double wheelAngle);
+
+    /// Slot: set the correct orientation to compute the right transform.
+    void updateSliceOrientation(int from, int to);
+
+    /// Initial wheel position. Updated each time updateTransform() is called.
+    double m_initAngle;
 
 };
 
