@@ -36,6 +36,9 @@ fwVtkWheelRepresentation::fwVtkWheelRepresentation() :
     m_rainbowMode(false),
     m_hover(false)
 {
+    this->m_center.x = -std::numeric_limits<double>::infinity();
+    this->m_center.y = -std::numeric_limits<double>::infinity();
+
     this->BuildRepresentation();
 }
 
@@ -51,13 +54,6 @@ fwVtkWheelRepresentation::~fwVtkWheelRepresentation()
 
 void fwVtkWheelRepresentation::BuildRepresentation()
 {
-    // Default viewport size used at initialization.
-    // Updated later when the viewport is.
-    const int viewportWidth  = 512;
-    const int viewportHeight = 512;
-    this->m_center.x = static_cast<double>(viewportWidth) / 2.0;
-    this->m_center.y = static_cast<double>(viewportHeight) / 2.0;
-
     // Setup points
 
     // Define some colors
@@ -107,8 +103,6 @@ void fwVtkWheelRepresentation::BuildRepresentation()
     this->m_wheelActor->PickableOn();
 
     const ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
-
-    this->m_widgetToCenterTranslation = this->m_center - actorPos;
 }
 
 //------------------------------------------------------------------------------
@@ -125,6 +119,14 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
 
         // Clamp actor position to ensure that the widget center stays inside the viewport.
         ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
+
+        if(this->m_center.x == -std::numeric_limits<double>::infinity() &&
+           this->m_center.y == -std::numeric_limits<double>::infinity() )
+        {
+            this->m_center.x                  = static_cast<double>(viewportWidth) / 2.0;
+            this->m_center.y                  = static_cast<double>(viewportHeight) / 2.0;
+            this->m_widgetToCenterTranslation = this->m_center - actorPos;
+        }
 
         actorPos.x = ::glm::clamp(actorPos.x, -this->m_widgetToCenterTranslation.x,
                                   static_cast<double>(viewportWidth) - this->m_widgetToCenterTranslation.x);
