@@ -15,7 +15,6 @@
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
         <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
-        <object uid="myBlendSelectionComposite" type="::fwData::Composite" />
         <object uid="TFComposite" type="::fwData::Composite" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
@@ -54,10 +53,6 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="myManagerLockDump" type="::ctrlMemory::manager::LockDumpManagerSrv" autoConnect="yes">
-            <in key="composite" uid="myBlendSelectionComposite" />
-        </service>
-
         <service uid="medicalImageFrontSrv" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${frontImageUid}" />
         </service>
@@ -68,7 +63,6 @@
 
         <service uid="action_blendView" type="::gui::action::SConfigLauncher">
             <state active="true" />
-            <inout key="myBlendSelectionComposite" uid="myBlendSelectionComposite" />
             <inout key="TF_COMPOSITE_ID" uid="TFComposite" />
             <inout key="backgroundImageUid" uid="${backgroundImageUid}" />
             <inout key="frontImageUid" uid="${frontImageUid}" />
@@ -96,7 +90,6 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
-        <start uid="myManagerLockDump" />
         <start uid="medicalImageFrontSrv" />
         <start uid="medicalImageBgSrv" />
         <start uid="action_blendView" />

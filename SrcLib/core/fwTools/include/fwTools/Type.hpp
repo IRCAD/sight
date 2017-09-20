@@ -13,7 +13,9 @@
 #include <fwCore/base.hpp>
 
 #include <boost/any.hpp>
+#include <boost/cstdint.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/type_traits/is_signed.hpp>
 
 #include <limits>
 #include <map>
@@ -240,14 +242,8 @@ void Type::setType()
 
     m_tool = SPTR(ToolBase)(new Type::Tool<T>());
 
-    T min = static_cast< T >( std::numeric_limits< T >::min() );
+    T min = static_cast< T >( std::numeric_limits< T >::lowest() );
     T max = static_cast< T >( std::numeric_limits< T >::max() );
-
-    if(!m_isFixedPrecision)
-    {
-        // std::numeric_limits::min() returns the smallest positive value for floating types
-        min = max * -1;
-    }
 
     m_min = min;
     m_max = max;

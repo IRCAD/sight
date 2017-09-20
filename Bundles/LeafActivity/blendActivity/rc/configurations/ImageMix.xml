@@ -3,7 +3,6 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="myBlendSelectionComposite" />
         <param name="TF_COMPOSITE_ID" />
         <param name="SELECTED_TF_KEYA" />
         <param name="SELECTED_TF_KEYB" />
@@ -13,7 +12,6 @@
     </parameters>
     <config>
         <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
-        <object uid="${myBlendSelectionComposite}" type="::fwData::Composite" src="ref" />
         <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
         <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
@@ -100,9 +98,7 @@
             </registry>
         </service>
 
-        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" autoConnect="no">
-            <in key="object" uid="${myBlendSelectionComposite}" />
-        </service>
+        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" autoConnect="no" />
 
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
             <in key="image" uid="${backgroundImageUid}" />
