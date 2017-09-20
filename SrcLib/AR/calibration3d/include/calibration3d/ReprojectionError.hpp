@@ -9,6 +9,8 @@
 
 #include "calibration3d/config.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <ceres/ceres.h>
 
 #include <opencv2/opencv.hpp>
@@ -35,7 +37,7 @@ public:
      */
     CALIBRATION3D_API ReprojectionError( const ::cv::Mat& _cameraMat, const ::cv::Mat& _distCoef,
                                          const ::cv::Point2f& _imagePoints, const ::cv::Point3f& _objectPoints,
-                                         const ::cv::Mat& _rotMat, const ::cv::Mat& _tvec);
+                                         const ::cv::Mat& _extrinsic);
     /**
      * @brief operator() is a templated method, which assumes that all its inputs and outputs are of some type T.
      *  The use of templating here allows Ceres to call CostFunctor::operator<T>(),
@@ -58,23 +60,21 @@ public:
      * @return a pointer to a ::ceres::CostFunction
      */
 
-    static ::ceres::CostFunction* Create(const cv::Mat& _cameraMatrix,
-                                         const cv::Mat& _distCoef,
-                                         const cv::Point2f& _imagePoints,
-                                         const cv::Point3f& _objectPoints,
-                                         const cv::Mat& _rotMat,
-                                         const cv::Mat& _tvec)
+    static ::ceres::CostFunction* Create(const ::cv::Mat& _cameraMatrix,
+                                         const ::cv::Mat& _distCoef,
+                                         const ::cv::Point2f& _imagePoints,
+                                         const ::cv::Point3f& _objectPoints,
+                                         const ::cv::Mat& _extrinsic)
     {
         return (new ::ceres::NumericDiffCostFunction<ReprojectionError, ::ceres::FORWARD, 2, 6>(
-                    new ReprojectionError(_cameraMatrix, _distCoef, _imagePoints, _objectPoints, _rotMat, _tvec)));
+                    new ReprojectionError(_cameraMatrix, _distCoef, _imagePoints, _objectPoints, _extrinsic)));
     }
 
 private:
 
     ::cv::Point2f m_imagePoint;  ///< point on image
     ::cv::Point3f m_objectPoint;  ///< corresponding point in scene
-    ::cv::Mat m_rotMat;           ///< extrinsic calib rotation
-    ::cv::Mat m_tvec;         ///< extrinsic calib translation
+    ::cv::Mat m_extrinsic;        ///< extrinsic matrix
     ::cv::Mat m_cameraMatrix; ///< camera calibration (Fx, Fy, Cx, Cy)
     ::cv::Mat m_distCoef; ///< camera distorsion
 
@@ -99,26 +99,13 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
     transformPose( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = rotMatPose * 1;
     transformPose( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = tvecPose * 1;
 
-    ::cv::Mat extrinsic = ::cv::Mat_<T>::eye(4, 4);
-
-    // Copy in extrinsic
-    extrinsic( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = m_rotMat * 1;
-    extrinsic( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = m_tvec * 1;
-
     // compute real pose (extrinsic mat * pose)
     // Note: extrinsic can be identity if we use reference camera
-    const ::cv::Mat transformPoseExtrinsic = extrinsic * transformPose;
+    const ::cv::Mat transformPoseExtrinsic = m_extrinsic * transformPose;
 
-    const ::cv::Mat rotMatPoseExtrinsic = transformPoseExtrinsic(::cv::Range(0, 3), ::cv::Range(0, 3));
-
-    ::cv::Mat tvecPoseExtrinsic = ::cv::Mat_<T>(3, 1);
-    // Copy values in tvec_poseExtrinsic
-    tvecPoseExtrinsic.at<T>(0) = transformPoseExtrinsic.at<T>(0, 3);
-    tvecPoseExtrinsic.at<T>(1) = transformPoseExtrinsic.at<T>(1, 3);
-    tvecPoseExtrinsic.at<T>(2) = transformPoseExtrinsic.at<T>(2, 3);
-
+    //matrix to rotation vector.
     ::cv::Mat rvecPoseExtrinsic;
-    ::cv::Rodrigues(rotMatPoseExtrinsic, rvecPoseExtrinsic); //matrix to rotation vector.
+    ::cv::Rodrigues(transformPoseExtrinsic(::cv::Range(0, 3), ::cv::Range(0, 3)), rvecPoseExtrinsic);
 
     std::vector< ::cv::Point_<T> > pointReprojected(1);// 2d point
     const std::vector< ::cv::Point3_<T> > point3dVector = {{
@@ -128,7 +115,9 @@ bool ReprojectionError::operator()(const T* const pose, T* residuals) const
                                                            }};
 
     // Reproject the point with new pose
-    ::cv::projectPoints(point3dVector, rvecPoseExtrinsic, tvecPoseExtrinsic, m_cameraMatrix,
+    ::cv::projectPoints(point3dVector, rvecPoseExtrinsic,
+                        transformPoseExtrinsic(::cv::Range(0, 3), ::cv::Range(3, 4)),
+                        m_cameraMatrix,
                         m_distCoef,
                         pointReprojected);
 

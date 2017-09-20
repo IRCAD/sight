@@ -13,11 +13,10 @@ namespace calibration3d
 
 ReprojectionError::ReprojectionError(const ::cv::Mat& _cameraMat, const ::cv::Mat& _distCoef,
                                      const ::cv::Point2f& _imagePoints, const ::cv::Point3f& _objectPoints,
-                                     const ::cv::Mat& _rotMat, const ::cv::Mat& _tvec) :
+                                     const ::cv::Mat& _extrinsic) :
     m_imagePoint(_imagePoints),
     m_objectPoint(_objectPoints),
-    m_rotMat(_rotMat),
-    m_tvec(_tvec),
+    m_extrinsic(_extrinsic),
     m_cameraMatrix(_cameraMat),
     m_distCoef(_distCoef)
 

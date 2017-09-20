@@ -91,8 +91,10 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     ::cv::Mat rvec, tvec, R, T;
     T = ::cv::Mat::eye(4, 4, CV_64F);
 
-    ::cv::Mat cam1R = ::cv::Mat::eye(3, 3, CV_64F);
-    ::cv::Mat cam1T = ::cv::Mat::zeros(3, 1, CV_64F);
+    ::cv::Mat extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
+
+    extrinsic( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = _R * 1;
+    extrinsic( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = _T * 1;
 
     ::cv::solvePnP(_objectPoints, _imgPoints1, _cameraMatrix1, _distCoeffs1, rvec, tvec, false, CV_ITERATIVE);
 
@@ -113,8 +115,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                                                          _distCoeffs1,
                                                                          _imgPoints1[i],
                                                                          _objectPoints[i],
-                                                                         cam1R,
-                                                                         cam1T);
+                                                                         ::cv::Mat::eye(4, 4, CV_64F));
         problem.AddResidualBlock(cost_function,
                                  NULL,
                                  optimVector.data()
@@ -129,20 +130,16 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                                                          _distCoeffs2,
                                                                          _imgPoints2[i],
                                                                          _objectPoints[i],
-                                                                         _R,
-                                                                         _T);
+                                                                         extrinsic);
         problem.AddResidualBlock(cost_function,
                                  NULL,
                                  optimVector.data()
                                  );
     }
 
-    // Make Ceres automatically detect the bundle structure. Note that the
-    // standard solver, SPARSE_NORMAL_CHOLESKY, also works fine but it is slower
-    // for standard bundle adjustment problems.
     ::ceres::Solver::Options options;
     options.linear_solver_type           = ::ceres::SPARSE_NORMAL_CHOLESKY;
-    options.trust_region_strategy_type   = ceres::LEVENBERG_MARQUARDT;
+    options.trust_region_strategy_type   = ::ceres::LEVENBERG_MARQUARDT;
     options.minimizer_progress_to_stdout = false;
     options.gradient_tolerance           = 1e-8;
     options.function_tolerance           = 1e-8;
