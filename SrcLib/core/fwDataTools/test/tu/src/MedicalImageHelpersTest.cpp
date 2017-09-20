@@ -169,20 +169,28 @@ void MedicalImageHelpersTest::getMinMaxTest()
 void MedicalImageHelpersTest::getPixelBufferTest()
 {
     {
-        uint8_t p[3] = {42, 24, 21};
-        getPixelBufferTestHelper<uint8_t>(p);
+        uint8_t pGray[1] = {84};
+        uint8_t pRGB[3]  = {42, 24, 21};
+        getPixelBufferTestHelper<uint8_t, 1>(pGray);
+        getPixelBufferTestHelper<uint8_t, 3>(pRGB);
     }
     {
-        uint32_t p[3] = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
-        getPixelBufferTestHelper<uint32_t>(p);
+        uint32_t pGray[1] = {0xDEADBEEF};
+        uint32_t pRGB[3]  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
+        getPixelBufferTestHelper<uint32_t, 1>(pGray);
+        getPixelBufferTestHelper<uint32_t, 3>(pRGB);
     }
     {
-        float p[3] = {42.0f, 1487.4f, 0.1445f};
-        getPixelBufferTestHelper<float>(p);
+        float pGray[1] = {5423.2f};
+        float pRGB[3]  = {42.0f, 1487.4f, 0.1445f};
+        getPixelBufferTestHelper<float, 1>(pGray);
+        getPixelBufferTestHelper<float, 3>(pRGB);
     }
     {
-        double p[3] = {841.567, 6476.874, 0.187487};
-        getPixelBufferTestHelper<double>(p);
+        double pGray[1] = {541.254981};
+        double pRGB[3]  = {841.567, 6476.874, 0.187487};
+        getPixelBufferTestHelper<double, 1>(pGray);
+        getPixelBufferTestHelper<double, 3>(pRGB);
     }
 }
 

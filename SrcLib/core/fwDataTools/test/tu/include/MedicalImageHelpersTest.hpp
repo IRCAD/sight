@@ -32,7 +32,7 @@ public:
     void getPixelBufferTest();
     //------------------------------------------------------------------------------
 
-    template <class P>
+    template <class P, size_t N>
     void getPixelBufferTestHelper(P pixelValue[3])
     {
         constexpr size_t IMG_DIMENSIONS = 100;
@@ -41,7 +41,7 @@ public:
         auto image = ::fwData::Image::New();
         ::fwData::Image::SizeType size(3);
         std::fill_n(size.begin(), 3, IMG_DIMENSIONS);
-        image->allocate(size, ::fwTools::Type::create<P>(), 3);
+        image->allocate(size, ::fwTools::Type::create<P>(), N);
         image->setSpacing(::fwData::Image::SpacingType(3, 1));
         image->setOrigin(::fwData::Image::OriginType(3, 0));
 
@@ -55,8 +55,8 @@ public:
         size_t coords[3];
         std::generate_n(coords, 3, [&] () { return rand() % IMG_DIMENSIONS; });
         P* pixelPtr = static_cast<P*>(arrayPtr) +
-                      ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * 3);
-        std::copy(pixelValue, pixelValue + 3, pixelPtr);
+                      ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N);
+        std::copy(pixelValue, pixelValue + N, pixelPtr);
 
         // Test that the helper returned pixel value is correct
         ::fwDataTools::helper::ImageGetter constHelper(image);
@@ -65,7 +65,7 @@ public:
         P* pixelHelperPtr2 = static_cast<P*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
         if(std::is_floating_point<P>::value)
         {
-            for(auto i = 0; i != 3; ++i)
+            for(auto i = 0; i != N; ++i)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i],
                                                      0.00001);
@@ -75,7 +75,7 @@ public:
         }
         else
         {
-            for(auto i = 0; i != 3; ++i)
+            for(auto i = 0; i != N; ++i)
             {
                 CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i]);
                 CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr2[i], pixelValue[i]);
