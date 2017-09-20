@@ -166,5 +166,27 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
 // ------------------------------------------------------------------------------
 
+void MedicalImageHelpersTest::getPixelBufferTest()
+{
+    {
+        uint8_t p[3] = {42, 24, 21};
+        getPixelBufferTestHelper<uint8_t>(p);
+    }
+    {
+        uint32_t p[3] = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
+        getPixelBufferTestHelper<uint32_t>(p);
+    }
+    {
+        float p[3] = {42.0f, 1487.4f, 0.1445f};
+        getPixelBufferTestHelper<float>(p);
+    }
+    {
+        double p[3] = {841.567, 6476.874, 0.187487};
+        getPixelBufferTestHelper<double>(p);
+    }
+}
+
+// ------------------------------------------------------------------------------
+
 } // namespace ut
 } // namespace fwDataTools
