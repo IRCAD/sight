@@ -59,7 +59,8 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(m_structureDictionary);
 
-    dictionaryReader->setFile(::fwRuntime::getLibraryResourceFilePath("fwDataIO_" FWGDCMIO_VER "/plugin.xsd").string());
+    const auto path = ::fwRuntime::getLibraryResourceFilePath("fwDataIO_0-2/OrganDictionary.dic");
+    dictionaryReader->setFile(path.string());
     try
     {
         dictionaryReader->read();
