@@ -182,7 +182,7 @@ protected:
         }
         else if (imageType == ::fwTools::Type::s_INT32)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::int32_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int32_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }

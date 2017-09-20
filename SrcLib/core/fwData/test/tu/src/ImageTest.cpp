@@ -52,7 +52,7 @@ void ImageTest::testGetterSetter()
     std::vector<double> VECTORSPACING(DIMENSION, CREFSPACING);
     double CREFORIGIN = 2.7;
     std::vector<double> VECTORORIGIN(DIMENSION, CREFORIGIN);
-    ::boost::int32_t CREFSIZE = 42;
+    std::int32_t CREFSIZE = 42;
     ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE);
     const double WINDOWCENTER = 10.10;
     const double WINDOWWIDTH  = 11.34;

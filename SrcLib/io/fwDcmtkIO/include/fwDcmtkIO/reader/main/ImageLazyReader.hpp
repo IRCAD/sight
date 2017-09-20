@@ -113,7 +113,7 @@ protected:
         }
         else if (imageType == ::fwTools::Type::s_INT32)
         {
-            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int32_t >(
+            tempoBuffer = ::fwDcmtkIO::reader::main::ImageLazyReader::createInstanceBuffer< T, std::int32_t >(
                 rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT64)

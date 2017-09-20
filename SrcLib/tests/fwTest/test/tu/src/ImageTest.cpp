@@ -67,7 +67,7 @@ void ImageTest::generator3DTest()
     origin[0]            = -45.6;
     origin[1]            = 25.97;
     origin[2]            = -53.9;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
 
@@ -107,7 +107,7 @@ void ImageTest::deepCopyTest()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwData::Image::sptr image2;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
     image2 = ::fwData::Object::copy(image);
@@ -130,7 +130,7 @@ void ImageTest::stressTest()
     type = ::fwTools::Type::create< std::uint16_t >();
     this->stressTestWithType(type, 10);
 
-    type = ::fwTools::Type::create< ::boost::int32_t >();
+    type = ::fwTools::Type::create< std::int32_t >();
     this->stressTestWithType(type, 10);
 
     type = ::fwTools::Type::create< std::uint32_t >();

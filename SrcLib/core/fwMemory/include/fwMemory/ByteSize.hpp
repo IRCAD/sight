@@ -47,8 +47,8 @@ public:
     FWMEMORY_API static const std::uint64_t TiB;
     FWMEMORY_API static const std::uint64_t PiB;
 
-    typedef ::std::uint64_t SizeType;
-    typedef ::std::uint64_t UnitType;
+    typedef std::uint64_t SizeType;
+    typedef std::uint64_t UnitType;
 
     /**
      * @brief Default constructor

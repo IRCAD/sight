@@ -68,7 +68,7 @@ void ImageReaderWriterTest::stressTestInr()
     type = ::fwTools::Type::create< std::uint16_t >();
     this->stressTestInrWithType(type, 5);
 
-    type = ::fwTools::Type::create< ::boost::int32_t >();
+    type = ::fwTools::Type::create< std::int32_t >();
     this->stressTestInrWithType(type, 5);
 
     type = ::fwTools::Type::create< std::uint32_t >();

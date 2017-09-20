@@ -80,7 +80,7 @@ void ImageConversionTest::stressTest()
     stressTestForAType< std::int16_t >();
     stressTestForAType< std::uint16_t >();
 
-    stressTestForAType< ::boost::int32_t >();
+    stressTestForAType< std::int32_t >();
     stressTestForAType< std::uint32_t >();
 
     stressTestForAType< std::int64_t >();
