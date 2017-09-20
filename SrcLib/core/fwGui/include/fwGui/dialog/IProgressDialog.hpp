@@ -23,16 +23,12 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic Progress dialog for IHM.
+ *
+ * @note    inherits from ::boost::signals2::trackable to autoDisconnect if handler is destroyed before the notifier.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
 class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject,
-                                        public ::boost::signals2::trackable                                // to
-                                                                                                           // autoDisconnect
-                                                                                                           // if handler
-                                                                                                           // is
-                                                                                                           // destroyed
-                                                                                                           // before the
-                                                                                                           // notifier
+                                        public ::boost::signals2::trackable
 {
 
 public:
