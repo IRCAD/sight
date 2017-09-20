@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
 
 #include <fwServices/op/Add.hpp>
 
-#include <boost/integer_traits.hpp>
+#include <numeric>
 
 namespace uiNetwork
 {
@@ -23,7 +23,7 @@ NetworkListenerWidget::NetworkListenerWidget (::fwData::Object::sptr obj,
     m_portEditor     = new QSpinBox();
 
     m_portEditor->setMinimum(0);
-    m_portEditor->setMaximum(boost::integer_traits< ::boost::uint16_t>::const_max);
+    m_portEditor->setMaximum(std::numeric_limits<std::uint16_t>::max());
     m_childLayout->addWidget(m_hostnameEditor);
     m_childLayout->addWidget(m_portEditor);
 
@@ -62,7 +62,7 @@ void NetworkListenerWidget::onStart()
         }
         SLM_ASSERT("Configuration must be modified to use the hostname and port set in the editor.", false);
         // The virtual function was removed, it is not necessary, the configuration can be modified
-//        m_listener->setHost(m_hostnameEditor->text().toStdString(), (::boost::uint16_t)m_portEditor->value());
+//        m_listener->setHost(m_hostnameEditor->text().toStdString(), (std::uint16_t)m_portEditor->value());
         this->onStart();
     }
 }

@@ -46,8 +46,8 @@
 
 typedef struct
 {
-    ::boost::uint32_t Low; //UINT32
-    ::boost::uint32_t High; //UINT32
+    std::uint32_t Low; //UINT32
+    std::uint32_t High; //UINT32
 }uint32HL;
 
 #endif // __ARLCORE_COMMON_H__

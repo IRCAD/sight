@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,6 @@
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
-
 
 namespace videoCalibration
 {
@@ -205,10 +204,10 @@ void SChessBoardDetector::updateChessboardSize()
         size[2] = 1;
         const ::fwData::Image::SpacingType::value_type voxelSize = 1;
         image->allocate(size, tl->getType(), tl->getNumberOfComponents());
-        ::fwData::Image::OriginType origin(3,0);
+        ::fwData::Image::OriginType origin(3, 0);
 
         image->setOrigin(origin);
-        ::fwData::Image::SpacingType spacing(3,voxelSize);
+        ::fwData::Image::SpacingType spacing(3, voxelSize);
         image->setSpacing(spacing);
         image->setWindowWidth(1);
         image->setWindowCenter(0);
@@ -217,8 +216,8 @@ void SChessBoardDetector::updateChessboardSize()
 
         ::fwDataTools::helper::Array arrayHelper(array);
 
-        const ::boost::uint8_t*  frameBuff = &buffer->getElement(0);
-        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+        const std::uint8_t*  frameBuff = &buffer->getElement(0);
+        std::uint8_t* index            = arrayHelper.begin< std::uint8_t >();
 
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
     }
@@ -241,7 +240,7 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
         int height = static_cast<int>(tl->getWidth());
         int width  = static_cast<int>(tl->getHeight());
 
-        ::boost::uint8_t* frameBuff = const_cast< ::boost::uint8_t*>( &buffer->getElement(0) );
+        std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
         cv::Mat img(width, height, CV_8UC4, frameBuff);
         cv::Mat grayImg;

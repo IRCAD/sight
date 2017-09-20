@@ -7,16 +7,16 @@
 #ifndef __ZMQNETWORK_SOCKET_HPP__
 #define __ZMQNETWORK_SOCKET_HPP__
 
-#include "zmqNetwork/Exception.hpp"
 #include "zmqNetwork/config.hpp"
-
-#include <igtlProtocol/DataConverter.hpp>
-
-#include <zmq.hpp>
+#include "zmqNetwork/Exception.hpp"
 
 #include <fwCore/Exception.hpp>
 
 #include <fwData/Object.hpp>
+
+#include <igtlProtocol/DataConverter.hpp>
+
+#include <zmq.hpp>
 
 #include <string>
 
@@ -195,7 +195,7 @@ private:
     PatternMode m_patternMode;
 
     /// timeout
-    ::boost::uint32_t m_timeout;
+    std::uint32_t m_timeout;
 
     /// header size
     static const int s_HEADER_SIZE = 58;

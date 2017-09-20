@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "DataConverterTest.hpp"
 
+#include <igtlProtocol/converter/CompositeConverter.hpp>
 #include <igtlProtocol/DataConverter.hpp>
 #include <igtlProtocol/RawMessage.hpp>
-#include <igtlProtocol/converter/CompositeConverter.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
@@ -87,23 +87,22 @@ void DataConverterTest::meshConverterTest()
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), mesh2->getCellDataSize());
 
-    CPPUNIT_ASSERT(mesh->getPointsArray()->getSize()          == mesh2->getPointsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize()       == mesh2->getCellTypesArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getPointsArray()->getSize() == mesh2->getPointsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize() == mesh2->getCellTypesArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellDataOffsetsArray()->getSize() == mesh2->getCellDataOffsetsArray()->getSize());
 
-    CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize()        == mesh2->getCellDataArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize()     == mesh2->getPointColorsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellColorsArray()->getSize()      == mesh2->getCellColorsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getCellDataArray()->getSize() == mesh2->getCellDataArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getPointColorsArray()->getSize() == mesh2->getPointColorsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getCellColorsArray()->getSize() == mesh2->getCellColorsArray()->getSize());
 
-    CPPUNIT_ASSERT(mesh->getPointNormalsArray()->getSize()    == mesh2->getPointNormalsArray()->getSize());
-    CPPUNIT_ASSERT(mesh->getCellNormalsArray()->getSize()     == mesh2->getCellNormalsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getPointNormalsArray()->getSize() == mesh2->getPointNormalsArray()->getSize());
+    CPPUNIT_ASSERT(mesh->getCellNormalsArray()->getSize() == mesh2->getCellNormalsArray()->getSize());
 
     ::fwData::Mesh::PointsMultiArrayType meshPointArray  = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType mesh2PointArray = mesh2Helper.getPoints();
 
     ::fwData::Mesh::CellTypesMultiArrayType meshCellArray  = meshHelper.getCellTypes();
     ::fwData::Mesh::CellTypesMultiArrayType mesh2CellArray = meshHelper.getCellTypes();
-
 
     ::fwData::Mesh::PointColorsMultiArrayType meshPointColorArray  = meshHelper.getPointColors();
     ::fwData::Mesh::PointColorsMultiArrayType mesh2PointColorArray = mesh2Helper.getPointColors();
@@ -117,8 +116,7 @@ void DataConverterTest::meshConverterTest()
     ::fwData::Mesh::CellNormalsMultiArrayType meshCellNormalsArray  = meshHelper.getCellNormals();
     ::fwData::Mesh::CellNormalsMultiArrayType mesh2CellNormalsArray = mesh2Helper.getCellNormals();
 
-
-    for (unsigned int i = 0; i< mesh->getNumberOfPoints(); i++)
+    for (unsigned int i = 0; i < mesh->getNumberOfPoints(); i++)
     {
         for (unsigned int j = 0; j < 3; j++)
         {
@@ -127,11 +125,10 @@ void DataConverterTest::meshConverterTest()
         }
     }
 
-    for (unsigned int i = 0; i< mesh->getNumberOfCells(); i++)
+    for (unsigned int i = 0; i < mesh->getNumberOfCells(); i++)
     {
         CPPUNIT_ASSERT_EQUAL(meshCellArray[i], mesh2CellArray[i]);
     }
-
 
 }
 
@@ -143,7 +140,7 @@ void DataConverterTest::imageConverterTest()
     ::fwData::Image::sptr image  = ::fwData::Image::New();
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     ::fwData::Object::sptr obj;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(image);
@@ -168,13 +165,13 @@ void DataConverterTest::imageConverterTest()
     exclude.insert("spacing.2");
     exclude.insert("origin.2");
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0],image2->getSpacing()[0],epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1],image2->getSpacing()[1],epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2],image2->getSpacing()[2],epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[0], image2->getSpacing()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[1], image2->getSpacing()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getSpacing()[2], image2->getSpacing()[2], epsilon);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[0],image2->getOrigin()[0],epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[1],image2->getOrigin()[1],epsilon);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[2],image2->getOrigin()[2],epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[0], image2->getOrigin()[0], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[1], image2->getOrigin()[1], epsilon);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(image->getOrigin()[2], image2->getOrigin()[2], epsilon);
 
     CPPUNIT_ASSERT(::fwTest::helper::compare(image, image2, exclude));
 
@@ -330,7 +327,6 @@ void DataConverterTest::scalarConverterTest()
     converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()), destObj);
     CPPUNIT_ASSERT(newDataInteger->getValue() == valueInt);
 
-
     const float valueFloat = 16.64f;
     ::fwData::Float::sptr dataFloat = ::fwData::Float::New(valueFloat);
 
@@ -388,7 +384,6 @@ void DataConverterTest::compositeConverterTest()
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
     }
 
-
     ::fwData::Composite::sptr destComposite = ::fwData::Composite::New();
     ::fwData::Object::sptr destObject       = destComposite;
     converter->fromIgtlMessage(::igtl::MessageBase::Pointer(trackingMsg.GetPointer()), destObject);
@@ -403,7 +398,6 @@ void DataConverterTest::compositeConverterTest()
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMmatrix->getCoefficients().begin() + i * 4));
     }
 }
-
 
 } //namespace ut
 } //namespace OpenIGTLinkProtocol

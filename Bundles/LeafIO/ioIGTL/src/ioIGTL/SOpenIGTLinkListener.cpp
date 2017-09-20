@@ -100,7 +100,7 @@ void SOpenIGTLinkListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
@@ -245,9 +245,9 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
 
-        ::boost::uint8_t* destBuffer = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+        std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
-        ::boost::uint8_t* srcBuffer = static_cast< ::boost::uint8_t* >(helper.getBuffer());
+        std::uint8_t* srcBuffer = static_cast< std::uint8_t* >(helper.getBuffer());
 
         std::copy(srcBuffer, srcBuffer+im->getSizeInBytes(), destBuffer);
 

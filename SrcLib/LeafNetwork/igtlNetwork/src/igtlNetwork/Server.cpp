@@ -8,11 +8,11 @@
 
 #include "igtlNetwork/Exception.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 #include <igtlProtocol/MessageFactory.hpp>
 
 #include <boost/lexical_cast.hpp>
-
-#include <fwCore/spyLog.hpp>
 
 namespace igtlNetwork
 {
@@ -48,7 +48,7 @@ bool Server::isStarted() const
 
 //------------------------------------------------------------------------------
 
-::boost::uint16_t Server::getPort() const
+std::uint16_t Server::getPort() const
 {
     return m_port;
 }
@@ -112,7 +112,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-void Server::start (::boost::uint16_t port)
+void Server::start (std::uint16_t port)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     int result;

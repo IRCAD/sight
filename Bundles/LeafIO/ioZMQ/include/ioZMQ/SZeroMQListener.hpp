@@ -73,7 +73,7 @@ protected:
                                           ::zmqNetwork::Socket::SocketMode const sockMode,
                                           std::string const& host);
 
-    IOZMQ_API void setHost(std::string const& host, boost::uint16_t const port);
+    IOZMQ_API void setHost(std::string const& host, std::uint16_t const port);
 
 private:
     /**

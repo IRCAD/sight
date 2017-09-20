@@ -263,8 +263,8 @@ void SFrameMatrixSynchronizer::synchronize()
             return;
         }
 
-        const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
-        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
         // Notify

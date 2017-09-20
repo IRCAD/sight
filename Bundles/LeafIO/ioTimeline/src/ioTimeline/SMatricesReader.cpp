@@ -281,8 +281,8 @@ void SMatricesReader::startReading()
                 if(m_tsMatrices.size() >= 2)
                 {
                     duration =
-                        std::chrono::milliseconds(static_cast<uint64_t>(m_tsMatrices[1].timestamp -
-                                                                        m_tsMatrices[0].timestamp));
+                        std::chrono::milliseconds(static_cast<std::uint64_t>(m_tsMatrices[1].timestamp -
+                                                                             m_tsMatrices[0].timestamp));
                 }
                 else
                 {

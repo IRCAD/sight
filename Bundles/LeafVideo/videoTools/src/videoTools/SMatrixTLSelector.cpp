@@ -211,9 +211,9 @@ void SMatrixTLSelector::synchronize()
                         const float* values = buffer->getElement(index);
 
                         ::fwData::TransformationMatrix3D::sptr matrix = matrixCfg.m_matrix;
-                        for(unsigned int i = 0; i < 4; ++i)
+                        for(std::uint8_t i = 0; i < 4; ++i)
                         {
-                            for(unsigned int j = 0; j < 4; ++j)
+                            for(std::uint8_t j = 0; j < 4; ++j)
                             {
                                 matrix->setCoefficient(i, j, values[i*4+j]);
                             }
@@ -286,8 +286,8 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
             return;
         }
 
-        const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
-        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
         //Notify

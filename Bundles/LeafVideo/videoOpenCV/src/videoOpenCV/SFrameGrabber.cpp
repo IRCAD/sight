@@ -192,7 +192,7 @@ void SFrameGrabber::stopCamera()
         const ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp() + 1;
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+        std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
         std::fill(destBuffer,
                   destBuffer + frameTL->getWidth() * frameTL->getHeight() * frameTL->getNumberOfComponents(), 0);
@@ -439,7 +439,7 @@ void SFrameGrabber::grabVideo()
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            ::boost::uint8_t* frameBuffOut                = bufferOut->addElement(0);
+            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
             ::cv::Mat imgOut(image.size(), image.type(), (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
@@ -519,7 +519,7 @@ void SFrameGrabber::grabImage()
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            ::boost::uint8_t* frameBuffOut                = bufferOut->addElement(0);
+            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
             ::cv::Mat imgOut(image.size(), image.type(), (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
