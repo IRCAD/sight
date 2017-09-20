@@ -35,6 +35,7 @@ public:
     template <class P, size_t N>
     void getPixelBufferTestHelper(P pixelValue[3])
     {
+        static_assert(N != 0, "Cannot test 0-dimensional images");
         constexpr size_t IMG_DIMENSIONS = 100;
 
         // Create a new image
