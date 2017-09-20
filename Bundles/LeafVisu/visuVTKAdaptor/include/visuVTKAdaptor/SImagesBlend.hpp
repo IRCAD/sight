@@ -158,6 +158,9 @@ private:
 
     /// Number of division in checkerboard mode
     int m_checkerboardDivision;
+
+    /// Number of Z divisions for checkerboard (=1 if it is a 2D image)
+    int m_zDivision;
 };
 
 } //namespace visuVTKAdaptor
