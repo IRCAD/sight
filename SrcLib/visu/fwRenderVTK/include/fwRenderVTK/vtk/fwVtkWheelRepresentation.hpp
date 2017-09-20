@@ -14,6 +14,7 @@
 #include <vtkActor2D.h>
 #include <vtkPoints.h>
 #include <vtkPropCollection.h>
+#include <vtkUnsignedCharArray.h>
 #include <vtkWidgetRepresentation.h>
 
 /**
@@ -56,6 +57,9 @@ public:
     /// Set the wheel orientation, expressed in radians.
     FWRENDERVTK_API void SetOrientation(double orientation);
 
+    /// Set the wheel hovering.
+    FWRENDERVTK_API void SetHovering(bool hover);
+
     /// Returns the center in viewport coordinates.
     FWRENDERVTK_API ::glm::dvec2 GetCenterInScreenSpace() const;
 
@@ -70,7 +74,7 @@ public:
     /// Returns the orientation in radians.
     FWRENDERVTK_API double GetOrientation() const
     {
-        return Orientation;
+        return m_orientation;
     }
 
     //------------------------------------------------------------------------------
@@ -78,7 +82,7 @@ public:
     /// Get the actor holding the wheel.
     FWRENDERVTK_API vtkActor2D* GetWheelActor()
     {
-        return WheelActor;
+        return m_wheelActor;
     }
 
 protected:
@@ -90,36 +94,44 @@ protected:
     ~fwVtkWheelRepresentation() VTK_OVERRIDE;
 
     /// List of points defining the wheel.
-    vtkPoints* WheelPoints;
+    vtkPoints* m_wheelPoints;
 
     /// Actor displaying the widget.
-    vtkActor2D* WheelActor;
+    vtkActor2D* m_wheelActor;
+
+    /// Colors of the wheel
+    vtkUnsignedCharArray* m_colors;
 
 private:
     fwVtkWheelRepresentation(const fwVtkWheelRepresentation&) VTK_DELETE_FUNCTION;
     void operator=(const fwVtkWheelRepresentation&) VTK_DELETE_FUNCTION;
 
     /// Wheel central part dimensions. The center is used to move the wheel.
-    double CenterInnerRadius;
-    double CenterOuterRadius;
+    double m_centerInnerRadius;
+    double m_centerOuterRadius;
 
     /// Actual wheel dimensions. Defines the rotating part.
-    double WheelInnerRadius;
-    double WheelOuterRadius;
+    double m_wheelInnerRadius;
+    double m_wheelOuterRadius;
 
     /// Wheel angle in radians.
-    double Orientation;
+    double m_orientation;
 
-    unsigned int nSectors;
+    unsigned int m_nSectors;
 
-    unsigned int nMarkedSectors;
+    unsigned int m_nMarkedSectors;
 
     /// The wheel center, expressed relatively to the widget position.
-    ::glm::dvec2 Center;
+    ::glm::dvec2 m_center;
 
     /// 2D Translation to convert from widget to wheel space.
-    ::glm::dvec2 WidgetToCenterTranslation;
+    ::glm::dvec2 m_widgetToCenterTranslation;
 
+    /// Rainbow mode
+    bool m_rainbowMode;
+
+    /// Mouse hover
+    bool m_hover;
 };
 
 #endif // __FWRENDERVTK_VTK_FWVTKWHEELREPRESENTATION_HPP__

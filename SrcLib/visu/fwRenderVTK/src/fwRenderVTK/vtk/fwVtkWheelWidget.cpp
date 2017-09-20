@@ -107,7 +107,8 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
     }
     else if ( self->WidgetState == fwVtkWheelWidget::Hovering )
     {
-        // TODO
+        widgetRep->SetHovering( widgetRep->isOnWheel(X, Y) || widgetRep->isInCenter(X, Y) );
+        renderRequired = true;
     }
 
     if( renderRequired )
