@@ -356,6 +356,8 @@
                 <adaptor uid="blendNegatoMPR" />
                 <adaptor uid="blendInteractorStyle" />
                 <adaptor uid="slicerImageAdaptor" />
+                <adaptor uid="2DWheel" />
+                <adaptor uid="transformFromWheel" />
             </scene>
         </service>
 
@@ -366,6 +368,20 @@
 
         <service uid="blendInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+        </service>
+
+        <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
+            <config renderer="default" />
+        </service>
+
+        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
+            <inout key="image" uid="${targetImageUid}" autoConnect="yes"/>
+            <inout key="transform" uid="${transformUid}" />
+            <config renderer="default" picker="picker" />
         </service>
 
         <!-- Adaptor to show background and front image merge in the same view. -->
@@ -645,6 +661,7 @@
             <signal>resetIdentity/updated</signal>
             <signal>automaticRegistration/updated</signal>
             <signal>alignCenter/updated</signal>
+            <signal>${transformUid}/modified</signal>
             <slot>recomputeManual/update</slot>
         </connect>
 
@@ -683,6 +700,11 @@
             <slot>blendNegatoMPR/changeImageSource</slot>
         </connect>
 
+        <connect>
+            <signal>2DWheel/wheelUpdated</signal>
+            <slot>transformFromWheel/updateTransform</slot>
+        </connect>
+
         <!-- START AND STOP SERVICES -->
 
         <start uid="mainView" />
@@ -717,6 +739,8 @@
         <start uid="blendNegatoMPR" />
         <start uid="blendInteractorStyle" />
         <start uid="slicerImageAdaptor" />
+        <start uid="2DWheel" />
+        <start uid="transformFromWheel" />
         <!-- VTK scene '3dScene' -->
         <start uid="transformAdpt" />
         <start uid="targetNegatoMPR" />
