@@ -14,6 +14,8 @@
 
 #include <fwTest/generator/Image.hpp>
 
+#include <cstdint>
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::MedicalImageHelpersTest );
 
@@ -85,8 +87,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
     {
         // Test on 3D image of type 'float'
         typedef float Type;
-        const Type MIN  = -12.3;
-        const Type MAX  = 18.2;
+        const Type MIN  = -12.3f;
+        const Type MAX  = 18.2f;
         const int RANGE = static_cast<int>(MAX - MIN);
 
         ::fwData::Image::sptr image = ::fwData::Image::New();
@@ -118,8 +120,10 @@ void MedicalImageHelpersTest::getMinMaxTest()
         buffer[286] = MAX;
 
         ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("min values are not equal", MIN, resMin, 0.00001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("max values are not equal", MAX, resMax, 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("min values are not equal",
+                                             static_cast<double>(MIN), static_cast<double>(resMin), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("max values are not equal",
+                                             static_cast<double>(MAX), static_cast<double>(resMax), 0.00001);
     }
 
     {
@@ -191,7 +195,7 @@ void getPixelBufferTestHelper(const P& pixelValue)
 
     // Pick some random coordinates and store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&] () { return rand() % IMG_DIMENSIONS; });
+    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % IMG_DIMENSIONS; });
     auto imageBufferPtr = image->getDataArray()->getBufferObject()->getBuffer();
     SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr) +
                           ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
@@ -204,17 +208,21 @@ void getPixelBufferTestHelper(const P& pixelValue)
     SubPixel* pixelHelperPtr2 = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(auto i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i],
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
+                                                 static_cast<double>(pixelHelperPtr1[i]),
+                                                 static_cast<double>(pixelValue[i]),
                                                  0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr2[i], pixelValue[i],
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
+                                                 static_cast<double>(pixelHelperPtr2[i]),
+                                                 static_cast<double>(pixelValue[i]),
                                                  0.00001);
         }
     }
     else
     {
-        for(auto i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr1[i], pixelValue[i]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr2[i], pixelValue[i]);
@@ -227,26 +235,26 @@ void getPixelBufferTestHelper(const P& pixelValue)
 void MedicalImageHelpersTest::getPixelBufferTest()
 {
     {
-        std::array<uint8_t, 1> pGray = {84};
-        std::array<uint8_t, 3> pRGB  = {42, 24, 21};
+        std::array<uint8_t, 1> pGray = {{ 84 }};
+        std::array<uint8_t, 3> pRGB  = {{ 42, 24, 21 }};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<uint32_t, 1> pGray = {0xDEADBEEF};
-        std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
+        std::array<uint32_t, 1> pGray = {{ 0xDEADBEEF }};
+        std::array<uint32_t, 3> pRGB  = {{ 0xC0FFEE, 0xF100D, 0xDE7EC7ED }};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {5423.2f};
-        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        std::array<float, 1> pGray = {{ 5423.2f }};
+        std::array<float, 3> pRGB  = {{ 42.0f, 1487.4f, 0.1445f }};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<double, 1> pGray = {541.254981};
-        std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
+        std::array<double, 1> pGray = {{ 541.254981 }};
+        std::array<double, 3> pRGB  = {{ 841.567, 6476.874, 0.187487 }};
         getPixelBufferTestHelper(pGray);
         getPixelBufferTestHelper(pRGB);
     }
@@ -279,7 +287,7 @@ void setPixelBufferTestHelper(P& pixelValue)
 
     // Pick some random coordinates and use setPixelBuffer to store the given pixel there
     size_t coords[3];
-    std::generate_n(coords, 3, [&] () { return rand() % IMG_DIMENSIONS; });
+    std::generate_n(coords, 3, [&] () { return static_cast<size_t>(rand()) % IMG_DIMENSIONS; });
     size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     ::fwDataTools::helper::Image helper(image);
     helper.setPixelBuffer(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
@@ -289,15 +297,17 @@ void setPixelBufferTestHelper(P& pixelValue)
     SubPixel* pixelHelperPtr = static_cast<SubPixel*>(helper.getPixelBuffer(coords[0], coords[1], coords[2]));
     if(std::is_floating_point<SubPixel>::value)
     {
-        for(auto i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr[i], pixelValue[i],
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Pixel values are not equal",
+                                                 static_cast<double>(pixelHelperPtr[i]),
+                                                 static_cast<double>(pixelValue[i]),
                                                  0.00001);
         }
     }
     else
     {
-        for(auto i = 0; i != N_COMPONENTS; ++i)
+        for(std::uint8_t i = 0; i != N_COMPONENTS; ++i)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelHelperPtr[i], pixelValue[i]);
         }
@@ -309,26 +319,26 @@ void setPixelBufferTestHelper(P& pixelValue)
 void MedicalImageHelpersTest::setPixelBufferTest()
 {
     {
-        std::array<uint8_t, 1> pGray = {84};
-        std::array<uint8_t, 3> pRGB  = {42, 24, 21};
+        std::array<uint8_t, 1> pGray = {{ 84 }};
+        std::array<uint8_t, 3> pRGB  = {{ 42, 24, 21 }};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<uint32_t, 1> pGray = {0xDEADBEEF};
-        std::array<uint32_t, 3> pRGB  = {0xC0FFEE, 0xF100D, 0xDE7EC7ED};
+        std::array<uint32_t, 1> pGray = {{ 0xDEADBEEF }};
+        std::array<uint32_t, 3> pRGB  = {{ 0xC0FFEE, 0xF100D, 0xDE7EC7ED }};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {5423.2f};
-        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        std::array<float, 1> pGray = {{ 5423.2f }};
+        std::array<float, 3> pRGB  = {{ 42.0f, 1487.4f, 0.1445f }};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
     {
-        std::array<double, 1> pGray = {541.254981};
-        std::array<double, 3> pRGB  = {841.567, 6476.874, 0.187487};
+        std::array<double, 1> pGray = {{ 541.254981 }};
+        std::array<double, 3> pRGB  = {{ 841.567, 6476.874, 0.187487 }};
         setPixelBufferTestHelper(pGray);
         setPixelBufferTestHelper(pRGB);
     }
