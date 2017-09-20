@@ -70,15 +70,15 @@ void wrap_vector()
 void export_STLContainers()
 {
     using namespace boost::python;
-    wrap_vector< std::vector<boost::int8_t> >();
-    wrap_vector< std::vector<boost::int16_t> >();
-    wrap_vector< std::vector<boost::int32_t> >();
-    wrap_vector< std::vector<boost::int64_t> >();
+    wrap_vector< std::vector<std::int8_t> >();
+    wrap_vector< std::vector<std::int16_t> >();
+    wrap_vector< std::vector<std::int32_t> >();
+    wrap_vector< std::vector<std::int64_t> >();
 
-    wrap_vector< std::vector<boost::uint8_t> >();
-    wrap_vector< std::vector<boost::uint16_t> >();
-    wrap_vector< std::vector<boost::uint32_t> >();
-    wrap_vector< std::vector<boost::uint64_t> >();
+    wrap_vector< std::vector<std::uint8_t> >();
+    wrap_vector< std::vector<std::uint16_t> >();
+    wrap_vector< std::vector<std::uint32_t> >();
+    wrap_vector< std::vector<std::uint64_t> >();
 
     wrap_vector< std::vector<float> >();
     wrap_vector< std::vector<double> >();
