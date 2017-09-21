@@ -51,8 +51,8 @@ static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrat
 //------------------------------------------------------------------------------
 
 SVideo::SVideo() noexcept :
-    m_imageData(vtkImageData::New()),
-    m_actor(vtkImageActor::New()),
+    m_imageData(vtkSmartPointer<vtkImageData>::New()),
+    m_actor(vtkSmartPointer<vtkImageActor>::New()),
     m_isTextureInit(false),
     m_reverse(true),
     m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
@@ -69,8 +69,6 @@ SVideo::SVideo() noexcept :
 
 SVideo::~SVideo() noexcept
 {
-    m_actor->Delete();
-    m_actor = nullptr;
 }
 
 //------------------------------------------------------------------------------
