@@ -355,8 +355,6 @@
                 <renderer id="default" background="#052833" />
                 <adaptor uid="blendNegatoMPR" />
                 <adaptor uid="blendInteractorStyle" />
-                <adaptor uid="blendPickerInteractor" />
-                <!--<adaptor uid="referencePointListAdaptor" />-->
                 <adaptor uid="slicerImageAdaptor" />
             </scene>
         </service>
@@ -370,15 +368,6 @@
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
-        </service>
-
-        <!--<service uid="referencePointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
-            <inout key="pointList" uid="referencePL" />
-            <config renderer="default" picker="picker" color="#550066" radius="10" />
-        </service>-->
-
         <!-- Adaptor to show background and front image merge in the same view. -->
         <service uid="slicerImageAdaptor" type="::visuVTKAdaptor::SImagesBlend">
             <inout group="image" autoConnect="yes">
@@ -391,24 +380,6 @@
             </inout>
             <config vtkimageregister="imageBlend" />
         </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="mixedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${targetImageUid}" />
-            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
-        </service>
-
-        <!--<service uid="mixedPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
-        </service>-->
-
-        <!--<service uid="mixedPointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
-            <inout key="pointList" uid="targetPL" />
-            <config renderer="default" picker="picker" color="#550066" radius="10" />
-        </service>-->
 
         <!-- *************************** End generic scene *************************** -->
 
@@ -449,7 +420,6 @@
             <parameter replace="IMAGE_UID" uid="${referenceImageUid}" />
             <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
             <parameter replace="TF_KEY" by="referenceTF" />
-            <parameter replace="ADAPTOR_NEGATO" uid="referenceNegatoMPR" />
         </service>
 
         <service uid="targetImageManager" type="::fwServices::SConfigController" autoConnect="no">
@@ -458,7 +428,6 @@
             <parameter replace="IMAGE_UID" uid="${targetImageUid}" />
             <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
             <parameter replace="TF_KEY" by="targetTF" />
-            <parameter replace="ADAPTOR_NEGATO" uid="mixedNegatoMPR" />
         </service>
 
         <service uid="transformedTransparencySlider" type="::uiImageQt::ImageTransparency" autoConnect="yes">
@@ -704,11 +673,6 @@
             <slot>referenceLandmarkManager/createLandmark</slot>
         </connect>
 
-        <!--<connect>
-            <signal>mixedPickerInteractor/picked</signal>
-            <slot>targetLandmarkManager/createLandmark</slot>
-        </connect>-->
-
         <connect>
             <signal>blendMode/enumChanged</signal>
             <slot>slicerImageAdaptor/changeMode</slot>
@@ -752,7 +716,6 @@
         <!-- VTK scene 'blendScene' -->
         <start uid="blendNegatoMPR" />
         <start uid="blendInteractorStyle" />
-        <start uid="blendPickerInteractor" />
         <start uid="slicerImageAdaptor" />
         <!-- VTK scene '3dScene' -->
         <start uid="transformAdpt" />

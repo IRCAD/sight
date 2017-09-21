@@ -41,6 +41,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDe
 //------------------------------------------------------------------------------
 
 SPlaneSlicer::SPlaneSlicer() noexcept :
+    m_orientation(::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS),
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateSliceOrientation, this);
