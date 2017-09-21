@@ -92,8 +92,13 @@ const boost::filesystem::path getBundleResourcePath(const std::string& bundleIde
 {
     Runtime* rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
-    return bundle != 0 ? bundle->getResourcesLocation() : ::boost::filesystem::path();
 
+    if(bundle == nullptr)
+    {
+        SLM_ERROR("Could not find bundle " + bundleIdentifier + "'");
+        return ::boost::filesystem::path();
+    }
+    return bundle->getResourcesLocation();
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +108,13 @@ const ::boost::filesystem::path getBundleResourceFilePath(const std::string& bun
 {
     Runtime* rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
-    return bundle != 0 ? getBundleResourcePath(bundle, path) : ::boost::filesystem::path();
+
+    if(bundle == nullptr)
+    {
+        SLM_ERROR("Could not find bundle '" + bundleIdentifier + "'");
+        return ::boost::filesystem::path();
+    }
+    return getBundleResourcePath(bundle, path);
 }
 
 //------------------------------------------------------------------------------
@@ -146,10 +157,17 @@ const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesys
         Runtime* rntm = Runtime::getDefault();
         Version version(bundleVersion);
         std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier, version );
-        return bundle != 0 ? getBundleResourcePath(bundle, pathWithoutBundle ) : ::boost::filesystem::path();
+
+        if(bundle == nullptr)
+        {
+            SLM_ERROR("Could not find bundle '" + bundleIdentifier + "' with version '" + version.string() + "'");
+            return ::boost::filesystem::path();
+        }
+        return getBundleResourcePath(bundle, pathWithoutBundle );
     }
     catch(...)
     {
+        SLM_ERROR("Error looking for bundle '" + bundleIdentifier + "' with version '" + bundleVersion + "'");
         return ::boost::filesystem::path();
     }
 }
