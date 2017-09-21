@@ -842,7 +842,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
         auto& uid = srvCfg->m_uid;
 
         bool createService = true;
-        bool reconnect     = false;
 
         // Look for all objects (there could be more than the current object) and check if they are all created
         for(const auto& objCfg : srvCfg->m_objects)
@@ -883,7 +882,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                     }
 
                     createService = false;
-                    reconnect     = true;
                 }
             }
         }
@@ -897,15 +895,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
             // Debug message
             SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically created because its "
                       "objects are all available.");
-        }
-        else if(reconnect)
-        {
-            // Update auto connections
-            ::fwServices::IService::sptr srv = ::fwServices::get(uid);
-            OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << uid << "\".", srv);
-
-            srv->autoDisconnect();
-            srv->autoConnect();
         }
     }
 

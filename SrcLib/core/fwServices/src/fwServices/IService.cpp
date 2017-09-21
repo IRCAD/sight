@@ -476,6 +476,8 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
         PackagedTaskType task( fn );
         SharedFutureType future = task.get_future();
 
+        this->autoDisconnect();
+
         m_globalState = SWAPPING;
         task();
         m_globalState = STARTED;
@@ -492,6 +494,8 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
             // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
             return future;
         }
+
+        this->autoConnect();
 
         return future;
     }
