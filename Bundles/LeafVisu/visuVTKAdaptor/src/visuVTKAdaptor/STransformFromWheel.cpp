@@ -134,23 +134,25 @@ void STransformFromWheel::updateTransform(double cx, double cy, double wheelAngl
     this->worldToSliceIndex(worldPos, imageIndex);
 
     const auto& spacing = image->getSpacing();
+    const auto& origin  = image->getOrigin();
 
     ::glm::dvec3 rotAxis;
-    ::glm::dvec3 pos;
+    ::glm::dvec3 pos(imageIndex[0] * spacing[0] + origin[0],
+                     imageIndex[1] * spacing[1] + origin[1],
+                     imageIndex[2] * spacing[2] + origin[2]);
 
     switch (m_orientation)
     {
         case Z_AXIS:
             rotAxis = ::glm::dvec3(0., 0., 1.);
-            pos     = ::glm::dvec3(imageIndex[0] * spacing[0], imageIndex[1] * spacing[1], imageIndex[2] * spacing[2]);
             break;
         case Y_AXIS:
             rotAxis = ::glm::dvec3(0., -1., 0.);
-            pos     = ::glm::dvec3(imageIndex[0] * spacing[0], imageIndex[2] * spacing[2], imageIndex[1] * spacing[1]);
+            pos     = ::glm::dvec3(pos.x, pos.z, pos.y);
             break;
         case X_AXIS:
             rotAxis = ::glm::dvec3(1., 0., 0.);
-            pos     = ::glm::dvec3(imageIndex[2] * spacing[2], imageIndex[0] * spacing[0], imageIndex[1] * spacing[1]);
+            pos     = ::glm::dvec3(pos.z, pos.x, pos.y);
             break;
     }
 
