@@ -94,8 +94,8 @@ private:
     /// Set the plane axes using the input transform.
     void setReslicerAxes();
 
-    /// Modify the input matrix to align the plane with the current extent image slice.
-    void applySliceTranslation(vtkMatrix4x4* vtkMat) const;
+    /// Modify the matrix parameter to align the plane with the current extent image slice.
+    void applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const;
 
     /// Slot: called when the extent image orientation.
     void updateSliceOrientation(int from, int to);

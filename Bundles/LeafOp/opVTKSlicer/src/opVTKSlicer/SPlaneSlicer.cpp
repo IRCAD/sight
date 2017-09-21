@@ -39,7 +39,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDe
 //------------------------------------------------------------------------------
 
 SPlaneSlicer::SPlaneSlicer() noexcept :
-    m_reslicer(::vtkImageReslice::New())
+    m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateSliceOrientation, this);
     newSlot(s_UPDATE_DEFAULT_VALUE_SLOT, &SPlaneSlicer::updateDefaultValue, this);
@@ -76,8 +76,8 @@ void SPlaneSlicer::updating()
     this->setReslicerExtent();
     this->setReslicerAxes();
 
-    auto image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
-    vtkSmartPointer<vtkImageData> vtkimg(vtkImageData::New());
+    auto image                           = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    vtkSmartPointer<vtkImageData> vtkimg = vtkSmartPointer<vtkImageData>::New();
 
     ::fwVtkIO::toVTKImage(image, vtkimg.Get());
 
@@ -185,8 +185,8 @@ void SPlaneSlicer::setReslicerAxes()
     SLM_ASSERT("No axes found.", axes);
 
     // TODO: const correct function signature in fwVtkIO.
-    vtkSmartPointer<vtkMatrix4x4> axesMatrix
-        (::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
+    vtkSmartPointer<vtkMatrix4x4> axesMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
+    axesMatrix.TakeReference(::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
 
     this->applySliceTranslation(axesMatrix);
 
@@ -223,7 +223,7 @@ void SPlaneSlicer::setReslicerAxes()
 
 //------------------------------------------------------------------------------
 
-void SPlaneSlicer::applySliceTranslation(vtkMatrix4x4* vtkMat) const
+void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) const
 {
     auto image = this->getInput< ::fwData::Image >(s_EXTENT_IN);
 
@@ -250,7 +250,7 @@ void SPlaneSlicer::applySliceTranslation(vtkMatrix4x4* vtkMat) const
 
     const double trans = spacing[axis] * static_cast<double>(idx) + origin[axis];
 
-    vtkMatrix4x4* transMat = vtkMatrix4x4::New();
+    vtkSmartPointer<vtkMatrix4x4> transMat = vtkSmartPointer<vtkMatrix4x4>::New();
     transMat->Identity();
     transMat->SetElement(axis, 3, trans);
 
