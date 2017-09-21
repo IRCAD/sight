@@ -42,6 +42,12 @@ static const std::string srvType = "::fwServices::ut::TestSrvAutoconnect";
 
 struct TestIHasServices : public ::fwServices::IHasServices
 {
+
+    virtual ~TestIHasServices() noexcept
+    {
+        // just in case a test does not pass, we unregister all the services to avoid a crash
+        this->unregisterServices();
+    }
     //------------------------------------------------------------------------------
 
     void testConnection()
@@ -89,6 +95,25 @@ struct TestIHasServices : public ::fwServices::IHasServices
             CPPUNIT_ASSERT(testService->getReceived());
         }
 
+        {
+            // same test but with input instead of inout
+            auto testService = this->registerService< ::fwServices::ut::TestSrvAutoconnect >(srvType);
+            testService->registerInput(data1, "data1", true);
+            testService->registerInput(data2, "data2", true);
+            testService->registerInput(data3, "data3");
+            testService->start();
+
+            CPPUNIT_ASSERT(!testService->getIsUpdated());
+            CPPUNIT_ASSERT(!testService->getReceived());
+
+            sig1->emit();
+            CPPUNIT_ASSERT(testService->getIsUpdated());
+            sig3->emit();
+            CPPUNIT_ASSERT(!testService->getReceived());
+            sig2->emit();
+            CPPUNIT_ASSERT(testService->getReceived());
+        }
+
         // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
         // So if the test passes, that means we are ok with the unregistering
         this->unregisterServices();
@@ -118,6 +143,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
+            CPPUNIT_ASSERT(data1 == refService1.lock()->getInOut< ::fwData::Boolean >("data1"));
 
             // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -133,7 +159,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
             ::fwServices::IService::wptr refService1;
             {
                 auto testService1 = this->registerService(srvType);
-                testService1->registerInOut(data1, "data1", true);
+                testService1->registerInput(data1, "data1", true);
                 testService1->start();
                 refService1 = testService1;
             }
@@ -147,6 +173,7 @@ struct TestIHasServices : public ::fwServices::IHasServices
 
             CPPUNIT_ASSERT(!refService1.expired());
             CPPUNIT_ASSERT(!refService2.expired());
+            CPPUNIT_ASSERT(data1 == refService1.lock()->getInput< ::fwData::Boolean >("data1"));
 
             // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
@@ -202,7 +229,72 @@ struct TestIHasServices : public ::fwServices::IHasServices
             // The destructor of ::fwServices::IHasServices would assert if unregister is not done properly
             // So if the test passes, that means we are ok with the unregistering
             this->unregisterServices("::fwServices::ut::TestSrvAutoconnect");
+
+            CPPUNIT_ASSERT_EQUAL(size_t(0), this->getRegisteredServices().size());
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void testOptionalInputs()
+    {
+        ::fwData::Boolean::sptr data1 = ::fwData::Boolean::New();
+        ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
+        ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
+
+        {
+            auto testService = this->registerService< ::fwServices::ut::TestServiceImplementation >(
+                "::fwServices::ut::TestServiceImplementation");
+            testService->registerInput(data1, "data1", true, false);
+            testService->start();
+
+            CPPUNIT_ASSERT(testService->getSwappedObjectKey().empty());
+            CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
+
+            testService->registerInput(data2, "data2", true, true);
+            testService->swapKey("data2", nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
+            CPPUNIT_ASSERT(data2 == testService->getSwappedObject());
+
+            testService->registerInOut(data3, "data3", false, true);
+            testService->swapKey("data3", nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::string("data3"), testService->getSwappedObjectKey());
+
+            ::fwServices::OSR::unregisterService("data2", ::fwServices::IService::AccessType::INPUT, testService);
+            testService->swapKey("data2", nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::string("data2"), testService->getSwappedObjectKey());
+            CPPUNIT_ASSERT(nullptr == testService->getSwappedObject());
+        }
+
+        auto sig1 = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+        auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+        auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
+
+        {
+            auto testService = this->registerService< ::fwServices::ut::TestSrvAutoconnect >(srvType);
+            testService->registerInput(data1, "data1", true, false);
+            testService->start();
+
+            CPPUNIT_ASSERT(!testService->getIsUpdated());
+            CPPUNIT_ASSERT(!testService->getReceived());
+
+            sig1->emit();
+            CPPUNIT_ASSERT(testService->getIsUpdated());
+
+            testService->registerInput(data2, "data2", false, true);
+            testService->swapKey("data2", nullptr);
+
+            sig2->emit();
+            CPPUNIT_ASSERT(!testService->getReceived());
+
+            testService->registerInOut(data3, "data3", true, true);
+            testService->swapKey("data3", nullptr);
+
+            sig3->emit();
+            CPPUNIT_ASSERT(testService->getReceived());
+        }
+
+        this->unregisterServices();
     }
 };
 
@@ -220,6 +312,14 @@ void IHasServicesTest::testConnection()
 {
     TestIHasServices testHelper;
     testHelper.testConnection();
+}
+
+//------------------------------------------------------------------------------
+
+void IHasServicesTest::testOptionalInputs()
+{
+    TestIHasServices testHelper;
+    testHelper.testOptionalInputs();
 }
 
 //------------------------------------------------------------------------------
