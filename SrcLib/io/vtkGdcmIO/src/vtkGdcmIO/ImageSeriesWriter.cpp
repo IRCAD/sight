@@ -1,62 +1,62 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "vtkGdcmIO/ImageSeriesWriter.hpp"
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
-
 #include <fwCore/base.hpp>
-
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/dateAndTime.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include <fwVtkIO/vtk.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
+
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+
 #include <fwVtkIO/helper/vtkLambdaCommand.hpp>
-
-#include <vtkImageData.h>
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
-
-#include <vtkGDCMImageWriter.h>
-#include <vtkMedicalImageProperties.h>
-#include <gdcmFilenameGenerator.h>
-#include <gdcmDicts.h>
-#include <gdcmGlobal.h>
+#include <fwVtkIO/vtk.hpp>
 
 #include <boost/filesystem.hpp>
 
-#include <iostream>
+#include <gdcmDicts.h>
+#include <gdcmFilenameGenerator.h>
+#include <gdcmGlobal.h>
 #include <time.h>
+#include <vtkGDCMImageWriter.h>
+#include <vtkImageData.h>
+#include <vtkMedicalImageProperties.h>
+#include <vtkSmartPointer.h>
+#include <vtkStringArray.h>
+
+#include <iostream>
 
 fwDataIOWriterRegisterMacro( ::vtkGdcmIO::ImageSeriesWriter );
-
 
 namespace vtkGdcmIO
 {
 
-void setValue(vtkMedicalImageProperties *medprop,
+//------------------------------------------------------------------------------
+
+void setValue(vtkMedicalImageProperties* medprop,
               const ::boost::uint16_t group,
               const ::boost::uint16_t element,
-              const std::string &value)
+              const std::string& value)
 {
-    const gdcm::Global & g = gdcm::Global::GetInstance();
-    const gdcm::Dicts & ds = g.GetDicts();
+    const gdcm::Global& g = gdcm::Global::GetInstance();
+    const gdcm::Dicts& ds = g.GetDicts();
 
-    const gdcm::Tag tag(group,element);
-    const gdcm::DictEntry & dicEntry = ds.GetDictEntry( tag );
+    const gdcm::Tag tag(group, element);
+    const gdcm::DictEntry& dicEntry = ds.GetDictEntry( tag );
     medprop->AddUserDefinedValue( dicEntry.GetName(), value.c_str() );
 }
 
@@ -97,14 +97,14 @@ void ImageSeriesWriter::write()
     bool isGenerated = fg.Generate();
     FW_RAISE_IF("Filename generation failed.", !isGenerated);
 
-    vtkStringArray *filenames = vtkStringArray::New();
+    auto filenames = vtkSmartPointer<vtkStringArray>::New();
     for(unsigned int i = 0; i < fg.GetNumberOfFilenames(); ++i)
     {
         filenames->InsertNextValue( fg.GetFilename(i) );
     }
 
     // Medical informations
-    vtkMedicalImageProperties * medprop = vtkMedicalImageProperties::New();
+    auto medprop = vtkSmartPointer<vtkMedicalImageProperties>::New();
 
     // Patient name
     // tagkey = "0010|0010";
@@ -205,7 +205,6 @@ void ImageSeriesWriter::write()
         value = ::fwTools::getString< double >(spacing[2]);
         medprop->SetSliceThickness(value.c_str());
 
-
         // InterSlice
         // tagkey = "0018|0088";
         value = ::fwTools::getString< double >(spacing[2]);
@@ -249,8 +248,6 @@ void ImageSeriesWriter::write()
     writer->Write();
 
     m_job->finish();
-
-    filenames->Delete();
 }
 
 //------------------------------------------------------------------------------

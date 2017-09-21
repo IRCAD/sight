@@ -373,7 +373,7 @@ void SRender::render()
 
         renderWindow->Render();
 
-        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkWindowToImageFilter::New();
+        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
         windowToImageFilter->SetInputBufferTypeToRGBA();
         windowToImageFilter->SetInput( renderWindow );
         windowToImageFilter->Update();
@@ -392,9 +392,6 @@ void SRender::render()
             ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
-
-        // If we don't do explicitly, the filter is not destroyed and this leads to a huge memory leak
-        windowToImageFilter->Delete();
     }
     else
     {
@@ -446,7 +443,7 @@ void SRender::startContext()
         m_interactorManager = interactorManager;
     }
 
-    InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
+    auto interactor = vtkSmartPointer<InteractorStyle3DForNegato>::New();
     SLM_ASSERT("Can't instantiate interactor", interactor);
     interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
     m_interactorManager->getInteractor()->SetInteractorStyle( interactor );

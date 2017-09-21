@@ -12,6 +12,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <vtkSmartPointer.h>
+
 // forward declaration
 class vtkPolyData;
 class vtkImageData;
@@ -80,7 +82,7 @@ FWVTKIO_API void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwD
  * @param[in] _transfoMatrix ::fwData::TransformationMatrix3D::sptr.
  * @return vtkPolyData*.
  */
-FWVTKIO_API vtkMatrix4x4*  toVTKMatrix(  ::fwData::TransformationMatrix3D::sptr _transfoMatrix );
+FWVTKIO_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(  ::fwData::TransformationMatrix3D::csptr _transfoMatrix );
 
 /*!
  * @brief Convert a vtkMatrix4x4* to a ::fwData::TransformationMatrix3D::sptr.

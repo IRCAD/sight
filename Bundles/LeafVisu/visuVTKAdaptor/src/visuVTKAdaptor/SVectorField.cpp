@@ -44,15 +44,13 @@ static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
 
 SVectorField::SVectorField() noexcept
 {
-    m_imageData = vtkImageData::New();
+    m_imageData = vtkSmartPointer<vtkImageData>::New();
 }
 
 //------------------------------------------------------------------------------
 
 SVectorField::~SVectorField() noexcept
 {
-    m_imageData->Delete();
-    m_imageData = NULL;
 }
 
 //------------------------------------------------------------------------------
