@@ -334,31 +334,45 @@ glm::dvec2 fwVtkWheelRepresentation::GetCenterInScreenSpace() const
 
 bool fwVtkWheelRepresentation::isInCenter(int X, int Y) const
 {
-    const ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
+    bool inCenter = false;
 
-    const ::glm::dvec2 delta = ::glm::dvec2(X, Y) - (actorPos + this->m_widgetToCenterTranslation);
+    if(this->Visibility != 0)
+    {
+        const ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
 
-    const double squaredDistance = delta.x * delta.x + delta.y * delta.y;
+        const ::glm::dvec2 delta = ::glm::dvec2(X, Y) - (actorPos + this->m_widgetToCenterTranslation);
 
-    const double squaredRadius = this->m_centerOuterRadius * this->m_centerOuterRadius;
+        const double squaredDistance = delta.x * delta.x + delta.y * delta.y;
 
-    return (squaredDistance < squaredRadius);
+        const double squaredRadius = this->m_centerOuterRadius * this->m_centerOuterRadius;
+
+        inCenter = (squaredDistance < squaredRadius);
+    }
+
+    return inCenter;
 }
 
 //------------------------------------------------------------------------------
 
 bool fwVtkWheelRepresentation::isOnWheel(int X, int Y) const
 {
-    const ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
+    bool pointOnWheel = false;
 
-    const ::glm::dvec2 delta = ::glm::dvec2(X, Y) - (actorPos + this->m_widgetToCenterTranslation);
+    if(this->Visibility != 0)
+    {
+        const ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
 
-    const double squaredDistance = delta.x * delta.x + delta.y * delta.y;
+        const ::glm::dvec2 delta = ::glm::dvec2(X, Y) - (actorPos + this->m_widgetToCenterTranslation);
 
-    const double squaredOuterRadius = this->m_wheelOuterRadius * this->m_wheelOuterRadius;
-    const double squaredInnerRadius = this->m_wheelInnerRadius * this->m_wheelInnerRadius;
+        const double squaredDistance = delta.x * delta.x + delta.y * delta.y;
 
-    return (squaredDistance < squaredOuterRadius) && (squaredDistance > squaredInnerRadius);
+        const double squaredOuterRadius = this->m_wheelOuterRadius * this->m_wheelOuterRadius;
+        const double squaredInnerRadius = this->m_wheelInnerRadius * this->m_wheelInnerRadius;
+
+        pointOnWheel = (squaredDistance < squaredOuterRadius) && (squaredDistance > squaredInnerRadius);
+    }
+
+    return pointOnWheel;
 }
 
 //------------------------------------------------------------------------------

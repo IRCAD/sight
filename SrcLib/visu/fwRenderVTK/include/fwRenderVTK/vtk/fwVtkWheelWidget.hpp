@@ -84,6 +84,7 @@ private:
     /// Records the initial wheel orientation when rotating.
     double m_initOrientation;
 
+    /// Triggered on wheel modification. First two parameters are the wheel position and the third is for the angle.
     std::function< void (double, double, double) > m_wheelUpdateCallback;
 };
 

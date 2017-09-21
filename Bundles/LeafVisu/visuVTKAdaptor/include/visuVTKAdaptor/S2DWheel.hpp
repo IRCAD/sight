@@ -26,16 +26,21 @@ namespace visuVTKAdaptor
  * @brief Render a rotatable 2D wheel in screen-space.
  *
  * @section Slots Slots
+ * -\b updateVisibility(bool): sets the wheel visibility.
+ *
+ * @section Signals Signals
+ * -\b wheelUpdated(double, double, double): sends wheel position and angle when it is modified by the user.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="::visuVTKAdaptor::S2DWheel">
-       <config renderer="default" />
+       <config renderer="default" visible="true" />
    </service>
    @endcode
  * @subsection Configuration Configuration
  * - \b renderer(mandatory) : defines the renderer to show the wheel.
+ * - \b visible (optional, default: true) : makes the widget visible at start.
  */
 class VISUVTKADAPTOR_CLASS_API S2DWheel : public ::fwRenderVTK::IAdaptor
 {
@@ -67,15 +72,19 @@ protected:
     /// Wheel widget.
     vtkSmartPointer< fwVtkWheelWidget > m_wheelWidget;
 
-    /// Slot: update axes visibility (true = visible)
-    // VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
+    /// Slot: update wheel visibility (true = visible)
+    VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
 
 private:
 
+    /// Called when the VTK viewport is resized. Scales the widget accordingly.
     vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > m_resizeCallback;
 
+    /// Signal sending the wheel position and angle.
     WheelUpdatedSignalType::sptr m_wheelUpdatedSignal;
 
+    /// Widget visibility.
+    bool m_visible;
 };
 
 } // namespace visuVTKAdaptor

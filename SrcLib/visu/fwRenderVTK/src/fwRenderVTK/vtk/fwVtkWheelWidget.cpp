@@ -39,6 +39,12 @@ fwVtkWheelWidget::fwVtkWheelWidget()
     this->CallbackMapper->SetCallbackMethod(vtkCommand::LeftButtonReleaseEvent,
                                             vtkWidgetEvent::EndSelect,
                                             this, fwVtkWheelWidget::EndSelectAction);
+
+    // Default update callback, crashes the program.
+    m_wheelUpdateCallback = [] (double, double, double)
+                            {
+                                OSLM_FATAL("No update callback set.");
+                            };
 }
 
 //----------------------------------------------------------------------
