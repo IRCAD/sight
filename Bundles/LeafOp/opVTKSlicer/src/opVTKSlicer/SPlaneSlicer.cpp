@@ -16,6 +16,8 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageData.h>
