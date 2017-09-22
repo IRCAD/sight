@@ -109,7 +109,6 @@ void S2DWheel::stopping()
 
 void S2DWheel::updating()
 {
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
