@@ -12,6 +12,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
@@ -133,6 +134,12 @@ void STransformFromWheel::updateTransform(double cx, double cy, double wheelAngl
 
     const auto& spacing = image->getSpacing();
     const auto& origin  = image->getOrigin();
+
+    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    {
+        SLM_WARN("Image has not been initialized.")
+        return;
+    }
 
     ::glm::dvec3 rotAxis;
     ::glm::dvec3 pos(imageIndex[0] * spacing[0] + origin[0],
