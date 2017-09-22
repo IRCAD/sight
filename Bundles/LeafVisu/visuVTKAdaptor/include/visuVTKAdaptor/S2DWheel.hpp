@@ -7,15 +7,14 @@
 #ifndef __VISUVTKADAPTOR_S2DWHEEL_HPP__
 #define __VISUVTKADAPTOR_S2DWHEEL_HPP__
 
-#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
-
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
 
 #include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/vtk/fwVtkWheelWidget.hpp>
+
+#include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 
 #include <vtkSmartPointer.h>
 

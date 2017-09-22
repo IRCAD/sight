@@ -8,7 +8,7 @@
 #define __FWRENDERVTK_VTK_FWVTKWHEELWIDGET_HPP__
 
 #include "fwRenderVTK/config.hpp"
-#include <fwRenderVTK/vtk/fwVtkWheelRepresentation.hpp>
+#include "fwRenderVTK/vtk/fwVtkWheelRepresentation.hpp"
 
 #include <vtkAbstractWidget.h>
 
@@ -43,7 +43,7 @@ public:
 
     FWRENDERVTK_API void SetWheelUpdateCallback(std::function<void (double, double, double)> f);
 
-protected:
+private:
 
     /// Constructor, sets up the callback mapper.
     fwVtkWheelWidget();
@@ -71,8 +71,6 @@ protected:
         Rotating,
         Outside
     } WidgetState;
-
-private:
 
     fwVtkWheelWidget(const fwVtkWheelWidget&) VTK_DELETE_FUNCTION;
     void operator=(const fwVtkWheelWidget&) VTK_DELETE_FUNCTION;

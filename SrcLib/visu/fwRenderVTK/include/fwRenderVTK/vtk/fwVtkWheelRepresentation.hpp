@@ -72,7 +72,7 @@ public:
     //------------------------------------------------------------------------------
 
     /// Returns the orientation in radians.
-    FWRENDERVTK_API double GetOrientation() const
+    double GetOrientation() const
     {
         return m_orientation;
     }
@@ -80,12 +80,12 @@ public:
     //------------------------------------------------------------------------------
 
     /// Get the actor holding the wheel.
-    FWRENDERVTK_API vtkActor2D* GetWheelActor()
+    vtkActor2D* GetWheelActor() const
     {
         return m_wheelActor;
     }
 
-protected:
+private:
 
     /// Initializes wheel geometry and actor.
     fwVtkWheelRepresentation();
@@ -102,7 +102,6 @@ protected:
     /// Colors of the wheel
     vtkUnsignedCharArray* m_colors;
 
-private:
     fwVtkWheelRepresentation(const fwVtkWheelRepresentation&) VTK_DELETE_FUNCTION;
     void operator=(const fwVtkWheelRepresentation&) VTK_DELETE_FUNCTION;
 

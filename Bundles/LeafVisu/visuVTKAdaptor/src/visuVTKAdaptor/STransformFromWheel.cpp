@@ -6,9 +6,7 @@
 
 #include "visuVTKAdaptor/STransformFromWheel.hpp"
 
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>

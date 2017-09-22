@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRenderVTK/vtk/fwVtkWheelWidget.hpp>
+#include "fwRenderVTK/vtk/fwVtkWheelWidget.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -70,8 +70,8 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 {
     fwVtkWheelWidget* self = reinterpret_cast<fwVtkWheelWidget*>(w);
 
-    int X = self->Interactor->GetEventPosition()[0];
-    int Y = self->Interactor->GetEventPosition()[1];
+    int x = self->Interactor->GetEventPosition()[0];
+    int y = self->Interactor->GetEventPosition()[1];
 
     // Motion while selecting is ignored
     bool renderRequired = false;
@@ -85,12 +85,12 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
         const auto& actPos      = widgetRep->GetWheelActor()->GetPosition();
         const int* viewportSize = self->GetRepresentation()->GetRenderer()->GetRenderWindow()->GetSize();
 
-        X = ::glm::clamp(X, 0, viewportSize[0]);
-        Y = ::glm::clamp(Y, 0, viewportSize[1]);
+        x = ::glm::clamp(x, 0, viewportSize[0]);
+        y = ::glm::clamp(y, 0, viewportSize[1]);
 
-        widgetRep->GetWheelActor()->SetPosition(X - self->m_initMouseX + actPos[0], Y - self->m_initMouseY + actPos[1]);
-        self->m_initMouseX = X;
-        self->m_initMouseY = Y;
+        widgetRep->GetWheelActor()->SetPosition(x - self->m_initMouseX + actPos[0], y - self->m_initMouseY + actPos[1]);
+        self->m_initMouseX = x;
+        self->m_initMouseY = y;
 
         renderRequired = true;
     }
@@ -99,7 +99,7 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
         const ::glm::dvec2 center = widgetRep->GetCenterInScreenSpace();
 
         const auto v1 = ::glm::normalize(::glm::dvec2(self->m_initMouseX - center.x, self->m_initMouseY - center.y));
-        const auto v2 = ::glm::normalize(::glm::dvec2(X - center.x, Y - center.y));
+        const auto v2 = ::glm::normalize(::glm::dvec2(x - center.x, y - center.y));
 
         const double vectProd = v1.x * v2.y - v1.y * v2.x;
         const double angleSin = std::asin(vectProd);
@@ -113,7 +113,7 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
     }
     else if ( self->WidgetState == fwVtkWheelWidget::Hovering )
     {
-        widgetRep->SetHovering( widgetRep->isOnWheel(X, Y) || widgetRep->isInCenter(X, Y) );
+        widgetRep->SetHovering( widgetRep->isOnWheel(x, y) || widgetRep->isInCenter(x, y) );
         renderRequired = true;
     }
 
@@ -133,9 +133,9 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
 {
     fwVtkWheelWidget* self = reinterpret_cast<fwVtkWheelWidget*>(w);
 
-    int X     = self->Interactor->GetEventPosition()[0];
-    int Y     = self->Interactor->GetEventPosition()[1];
-    int shift = self->Interactor->GetShiftKey();
+    const int x     = self->Interactor->GetEventPosition()[0];
+    const int y     = self->Interactor->GetEventPosition()[1];
+    const int shift = self->Interactor->GetShiftKey();
 
     if(shift == 0)
     {
@@ -146,17 +146,17 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
 
     SLM_ASSERT("Widget representation is not a wheel.", widgetRep);
 
-    if(widgetRep->isInCenter(X, Y))
+    if(widgetRep->isInCenter(x, y))
     {
         self->WidgetState  = ::fwVtkWheelWidget::Selecting;
-        self->m_initMouseX = X;
-        self->m_initMouseY = Y;
+        self->m_initMouseX = x;
+        self->m_initMouseY = y;
     }
-    else if(widgetRep->isOnWheel(X, Y))
+    else if(widgetRep->isOnWheel(x, y))
     {
         self->WidgetState       = ::fwVtkWheelWidget::Rotating;
-        self->m_initMouseX      = X;
-        self->m_initMouseY      = Y;
+        self->m_initMouseX      = x;
+        self->m_initMouseY      = y;
         self->m_initOrientation = widgetRep->GetOrientation();
     }
 

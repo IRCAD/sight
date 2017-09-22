@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRenderVTK/vtk/fwVtkWheelRepresentation.hpp>
+#include "fwRenderVTK/vtk/fwVtkWheelRepresentation.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -48,6 +48,7 @@ fwVtkWheelRepresentation::~fwVtkWheelRepresentation()
 {
     m_wheelPoints->Delete();
     m_wheelActor->Delete();
+    m_colors->Delete();
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +65,7 @@ void fwVtkWheelRepresentation::BuildRepresentation()
     this->m_colors->SetName("Colors");
 
     // Create a triangle
-    vtkCellArray* quads = vtkCellArray::New();
+    vtkSmartPointer<vtkCellArray> quads = vtkCellArray::New();
 
     // Add the points to a vtkPoints object
     this->m_wheelPoints = vtkPoints::New();
@@ -139,10 +140,10 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
         const double deltaAngle = 2.0 * ::glm::pi<double>() / static_cast<double>(this->m_nSectors);
         double initAngle        = -deltaAngle / 2.0 + m_orientation;
 
-        double minViewportComp = std::min(viewportWidth, viewportHeight);
+        const double minViewportComp = std::min(viewportWidth, viewportHeight);
         this->m_wheelInnerRadius = 2.0 / 3.0 * minViewportComp / 2.0;
         this->m_wheelOuterRadius = this->m_wheelInnerRadius + 0.02 * minViewportComp;
-        double outerMarkedRadius = this->m_wheelOuterRadius + 0.01 * minViewportComp;
+        const double outerMarkedRadius = this->m_wheelOuterRadius + 0.01 * minViewportComp;
 
         double c, s;
         c = std::cos(initAngle + 0.0);
@@ -206,7 +207,7 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
         this->m_wheelPoints->SetPoint((this->m_nSectors + 1) * 2 + 1, this->m_center.x + this->m_centerOuterRadius * c,
                                       this->m_center.y + this->m_centerOuterRadius * s, 0.0);
 
-        double holeThickness = 0.15;
+        const double holeThickness = 0.15;
 
         for(unsigned int i = this->m_nSectors + 1; i < this->m_nSectors * 2; i++)
         {
@@ -324,7 +325,7 @@ void fwVtkWheelRepresentation::SetHovering(bool hover)
 
 //------------------------------------------------------------------------------
 
-glm::dvec2 fwVtkWheelRepresentation::GetCenterInScreenSpace() const
+::glm::dvec2 fwVtkWheelRepresentation::GetCenterInScreenSpace() const
 {
     const ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
     return actorPos + this->m_widgetToCenterTranslation;
