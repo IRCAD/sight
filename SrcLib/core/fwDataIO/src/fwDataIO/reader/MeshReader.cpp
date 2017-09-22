@@ -8,8 +8,8 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwData/Mesh.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Mesh.hpp>
@@ -96,6 +96,12 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     ::fwData::Mesh::CellValueType* cellDataArrayBuffer      = 0;
     ::fwData::Mesh::NormalValueType* cellNormalsArrayBuffer = 0;
 
+    // Starting from boost 1.65, the function could not be deduced
+    auto resizeFn =
+        phx::bind(static_cast<size_t(::fwData::Array::*)(const ::fwData::Array::SizeType&,
+                                                         bool)>(&::fwData::Array::resize), pointArray,
+                  std::ref(pointArraySize), true);
+
     bool r = phrase_parse(first, last,
 
                           //  Begin grammar
@@ -105,7 +111,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                                   ref(nbPoints) = _1,
                                   phx::bind(&::fwData::Mesh::setNumberOfPoints, mesh, _1),
                                   phx::push_back(phx::ref(pointArraySize), phx::ref(nbPoints)),
-                                  phx::bind(&::fwData::Array::resize, pointArray, phx::ref(pointArraySize), true),
+                                  resizeFn,
                                   ref(pointArrayBuffer) =
                                       phx::bind(&::fwDataTools::helper::Array::begin < ::fwData::Mesh::PointValueType >,
                                                 &pointHelper )
