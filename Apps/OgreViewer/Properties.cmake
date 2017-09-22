@@ -6,7 +6,6 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
     ctrlSelection
-    ctrlCamp
     gui
     guiQt
     ioData
@@ -14,7 +13,6 @@ set( REQUIREMENTS
     io
     ioVTK
     servicesReg
-    uiVisuQt
     uiImageQt
     uiReconstructionQt
     uiMedDataQt
@@ -34,11 +32,10 @@ set( REQUIREMENTS
     visuOgreQt
     visuOgreAdaptor
     uiVisuOgre
-    scene2D
     material
     media
     preferences
-    imageConfig
+    ogreConfig
     )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
