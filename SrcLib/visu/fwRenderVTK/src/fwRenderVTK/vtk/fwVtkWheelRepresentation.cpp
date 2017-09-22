@@ -65,7 +65,7 @@ void fwVtkWheelRepresentation::BuildRepresentation()
     this->m_colors->SetName("Colors");
 
     // Create a triangle
-    vtkSmartPointer<vtkCellArray> quads = vtkCellArray::New();
+    vtkSmartPointer<vtkCellArray> quads = vtkSmartPointer<vtkCellArray>::New();
 
     // Add the points to a vtkPoints object
     this->m_wheelPoints = vtkPoints::New();
@@ -73,7 +73,7 @@ void fwVtkWheelRepresentation::BuildRepresentation()
     // Add quads and corresponding colors
     for(unsigned int i = 0; i < this->m_nSectors * 2; i++)
     {
-        vtkQuad* quad = vtkQuad::New();
+        vtkSmartPointer<vtkQuad> quad = vtkSmartPointer<vtkQuad>::New();
 
         quad->GetPointIds()->SetId(0, (i * 2) + 0);
         quad->GetPointIds()->SetId(1, (i * 2) + 1);
@@ -92,13 +92,13 @@ void fwVtkWheelRepresentation::BuildRepresentation()
     }
 
     // Create a polydata object and add everything to it.
-    vtkPolyData* wheelPolyData = vtkPolyData::New();
+    vtkSmartPointer<vtkPolyData> wheelPolyData = vtkSmartPointer<vtkPolyData>::New();
     wheelPolyData->SetPoints(this->m_wheelPoints);
     wheelPolyData->SetPolys(quads);
     wheelPolyData->GetCellData()->SetScalars(this->m_colors);
 
     // Visualize
-    vtkPolyDataMapper2D* wheelMapper = vtkPolyDataMapper2D::New();
+    vtkSmartPointer<vtkPolyDataMapper2D> wheelMapper = vtkSmartPointer<vtkPolyDataMapper2D>::New();
     wheelMapper->SetInputData(wheelPolyData);
     this->m_wheelActor->SetMapper(wheelMapper);
     this->m_wheelActor->PickableOn();
