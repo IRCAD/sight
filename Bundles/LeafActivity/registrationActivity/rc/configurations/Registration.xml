@@ -429,18 +429,6 @@
             <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" transform="registration" />
         </service>
 
-        <service uid="transformedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="transformedImage" />
-            <inout key="tfSelection" uid="TFSelectionComposite" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" selectedTFKey="transformedTF" />
-        </service>
-
-        <service uid="transformedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="transformedImage" />
-            <inout key="tf" uid="transformedTransferFunction" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" />
-        </service>
-
         <!-- *************************** End generic scene *************************** -->
 
         <service uid="referenceImageManager" type="::fwServices::SConfigController">
@@ -743,7 +731,7 @@
         <start uid="referencePointListAdaptor" />
         <!-- VTK scene 'blendScene' -->
         <start uid="slicerImageAdaptor" />
-		<start uid="blendNegatoMPR" />
+        <start uid="blendNegatoMPR" />
         <start uid="blendInteractorStyle" />
         <!-- VTK scene '3dScene' -->
         <start uid="transformAdpt" />
