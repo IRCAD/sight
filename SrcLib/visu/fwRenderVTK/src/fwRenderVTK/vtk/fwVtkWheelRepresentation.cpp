@@ -31,7 +31,7 @@ fwVtkWheelRepresentation::fwVtkWheelRepresentation() :
     m_wheelActor(vtkActor2D::New()),
     m_colors(vtkUnsignedCharArray::New()),
     m_orientation(0.),
-    m_nSectors(280),
+    m_nSectors(288),
     m_nMarkedSectors(8),
     m_rainbowMode(false),
     m_hover(false)
@@ -166,7 +166,7 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
                                           this->m_center.y + this->m_wheelInnerRadius * s, 0.0);
 
             // Difference between small and big tick of the wheel
-            if(i % this->m_nMarkedSectors == 5 || i % this->m_nMarkedSectors == 6)
+            if(i % this->m_nMarkedSectors == 6 || i % this->m_nMarkedSectors == 7)
             {
                 this->m_wheelPoints->SetPoint(j*2 + 1, this->m_center.x + outerMarkedRadius * c,
                                               this->m_center.y + outerMarkedRadius * s, 0.0);
@@ -178,7 +178,7 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
             }
 
             // Display one out of two quads
-            if(i % 2 == 0)
+            if(i % 2 == 1)
             {
                 double color[4] = {70., 100., 140., 192.};
                 if(m_hover)
