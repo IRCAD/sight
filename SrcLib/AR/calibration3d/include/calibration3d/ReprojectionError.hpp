@@ -9,8 +9,6 @@
 
 #include "calibration3d/config.hpp"
 
-#include <fwCore/spyLog.hpp>
-
 #include <ceres/ceres.h>
 
 #include <opencv2/opencv.hpp>
