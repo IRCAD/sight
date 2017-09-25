@@ -8,6 +8,7 @@ set( REQUIREMENTS
     activities
     appXml
     arDataReg
+    media
     arMedia
     ctrlCamp
     dataReg
