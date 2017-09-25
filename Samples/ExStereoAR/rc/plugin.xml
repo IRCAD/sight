@@ -546,7 +546,6 @@
             <start uid="synchronizer" />
             <start uid="tracker1" />
             <start uid="tracker2" />
-            <!-- <start uid="error" />-->
             <start uid="CalibrationReader" />
             <start uid="CameraSelector1" />
             <start uid="CameraSelector2" />

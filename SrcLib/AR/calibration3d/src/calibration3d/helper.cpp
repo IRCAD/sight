@@ -117,7 +117,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                                                          _objectPoints[i],
                                                                          ::cv::Mat::eye(4, 4, CV_64F));
         problem.AddResidualBlock(cost_function,
-                                 NULL,
+                                 nullptr,
                                  optimVector.data()
                                  );
 
@@ -132,7 +132,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                                                          _objectPoints[i],
                                                                          extrinsic);
         problem.AddResidualBlock(cost_function,
-                                 NULL,
+                                 nullptr,
                                  optimVector.data()
                                  );
     }
