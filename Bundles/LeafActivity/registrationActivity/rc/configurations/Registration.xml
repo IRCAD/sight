@@ -469,8 +469,8 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <service uid="transformEditor" type="::uiVisuQt::STransformEditor" autoConnect="yes">
-            <inout key="matrix" uid="manualTransform" />
+        <service uid="transformEditor" type="::uiVisuQt::STransformEditor" >
+            <inout key="matrix" uid="manualTransform" autoConnect="yes" />
             <translation enabled="yes" min="-1500" max="1500" />
             <rotation enabled="yes" min="-180" max="180" />
         </service>
@@ -605,9 +605,9 @@
 
         <service uid="manualConcat" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="centerTransformResampled" autoConnect="yes" />
+                <key uid="centerTransformReference" autoConnect="yes" />
                 <key uid="manualTransform" autoConnect="yes" />
-                <key uid="centerTransformResampled" inverse="true" />
+                <key uid="centerTransformReference" inverse="true" />
             </in>
             <inout key="output" uid="${transformUid}" />
         </service>
@@ -615,9 +615,9 @@
         <!-- Service used to recompute the manualTransform from the ${transformUid} -->
         <service uid="recomputeManual" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="centerTransformResampled" inverse="true" />
-                <key uid="${transformUid}" />
-                <key uid="centerTransformResampled" />
+                <key uid="centerTransformReference" inverse="true" />
+                <key uid="${transformUid}" autoConnect="yes" />
+                <key uid="centerTransformReference" />
             </in>
             <inout key="output" uid="manualTransform" />
         </service>
@@ -661,7 +661,6 @@
             <signal>resetIdentity/updated</signal>
             <signal>automaticRegistration/updated</signal>
             <signal>alignCenter/updated</signal>
-            <signal>${transformUid}/modified</signal>
             <slot>recomputeManual/update</slot>
         </connect>
 
