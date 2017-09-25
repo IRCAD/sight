@@ -92,6 +92,10 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
         self->m_initMouseX = x;
         self->m_initMouseY = y;
 
+        const ::glm::dvec2 center = widgetRep->GetCenterInScreenSpace();
+        const double orientation  = widgetRep->GetOrientation();
+        self->m_wheelUpdateCallback(center.x, center.y, orientation);
+
         renderRequired = true;
     }
     else if( self->WidgetState == fwVtkWheelWidget::Rotating)
@@ -109,6 +113,9 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 
         widgetRep->SetOrientation(self->m_initOrientation + angle);
 
+        const double orientation = widgetRep->GetOrientation();
+        self->m_wheelUpdateCallback(center.x, center.y, orientation);
+
         renderRequired = true;
     }
     else if ( self->WidgetState == fwVtkWheelWidget::Hovering )
@@ -119,10 +126,6 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 
     if( renderRequired )
     {
-        const ::glm::dvec2 center = widgetRep->GetCenterInScreenSpace();
-        const double orientation  = widgetRep->GetOrientation();
-
-        self->m_wheelUpdateCallback(center.x, center.y, orientation);
         self->Render();
     }
 }
