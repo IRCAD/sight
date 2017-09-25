@@ -225,7 +225,7 @@ void STransformEditor::onSliderChanged(int value)
 
     ::glm::dmat4x4 mat;
     mat = ::glm::translate(mat, ::glm::dvec3(tx, ty, tz));
-    mat = ::glm::yawPitchRoll(ry, rx, rz) * mat;
+    mat = mat * ::glm::yawPitchRoll(ry, rx, rz);
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
