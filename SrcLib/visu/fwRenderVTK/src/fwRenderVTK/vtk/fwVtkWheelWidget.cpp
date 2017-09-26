@@ -95,6 +95,7 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
         const ::glm::dvec2 center = widgetRep->GetCenterInScreenSpace();
         const double orientation  = widgetRep->GetOrientation();
         self->m_wheelUpdateCallback(center.x, center.y, orientation);
+        self->EventCallbackCommand->SetAbortFlag(1);
 
         renderRequired = true;
     }
@@ -115,6 +116,7 @@ void fwVtkWheelWidget::MoveAction(vtkAbstractWidget* w)
 
         const double orientation = widgetRep->GetOrientation();
         self->m_wheelUpdateCallback(center.x, center.y, orientation);
+        self->EventCallbackCommand->SetAbortFlag(1);
 
         renderRequired = true;
     }
@@ -136,14 +138,8 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
 {
     fwVtkWheelWidget* self = reinterpret_cast<fwVtkWheelWidget*>(w);
 
-    const int x     = self->Interactor->GetEventPosition()[0];
-    const int y     = self->Interactor->GetEventPosition()[1];
-    const int shift = self->Interactor->GetShiftKey();
-
-    if(shift == 0)
-    {
-        return;
-    }
+    const int x = self->Interactor->GetEventPosition()[0];
+    const int y = self->Interactor->GetEventPosition()[1];
 
     const fwVtkWheelRepresentation* widgetRep = dynamic_cast<fwVtkWheelRepresentation*>(self->WidgetRep);
 
@@ -154,6 +150,7 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
         self->WidgetState  = ::fwVtkWheelWidget::Selecting;
         self->m_initMouseX = x;
         self->m_initMouseY = y;
+        self->EventCallbackCommand->SetAbortFlag(1);
     }
     else if(widgetRep->isOnWheel(x, y))
     {
@@ -161,10 +158,9 @@ void fwVtkWheelWidget::SelectAction(vtkAbstractWidget* w)
         self->m_initMouseX      = x;
         self->m_initMouseY      = y;
         self->m_initOrientation = widgetRep->GetOrientation();
+        self->EventCallbackCommand->SetAbortFlag(1);
     }
 
-    // We are definitely selected, Highlight as necessary.
-    self->EventCallbackCommand->SetAbortFlag(1);
     self->Render();
 }
 

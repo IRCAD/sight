@@ -64,6 +64,7 @@ void S2DWheel::starting()
 
     wheelRepresentation->SetVisibility(m_visible);
     m_wheelWidget->SetInteractor(this->getRenderer()->GetRenderWindow()->GetInteractor());
+    m_wheelWidget->SetPriority(1.f); // Set a priority higher than that of the ::visuVTKAdaptor::SProbeCursor
     m_wheelWidget->SetRepresentation(wheelRepresentation);
     m_wheelWidget->On();
     m_wheelWidget->SetWheelUpdateCallback([this](double cx, double cy, double o)
