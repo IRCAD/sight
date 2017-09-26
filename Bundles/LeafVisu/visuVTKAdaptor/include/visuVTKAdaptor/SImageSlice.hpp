@@ -41,7 +41,7 @@ namespace visuVTKAdaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::SNegatoOneSlice" autoConnect="yes">
+   <service type="::visuVTKAdaptor::SImageSlice" autoConnect="yes">
        <inout key="image" uid="..." />
        <config renderer="default" picker="negatodefault" sliceIndex="axial"
                transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"

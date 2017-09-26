@@ -30,7 +30,7 @@ namespace visuVTKAdaptor
    <service type="::visuVTKAdaptor::STransformFromWheel" >
        <inout key="image" uid="..." />
        <inout key="transform" uid="..." />
-       <config renderer="default" picker="myPicker" />
+       <config renderer="default" picker="myPicker" mode="2d" />
    </service>
  *
  * @subsection In-Out In-Out
@@ -40,6 +40,9 @@ namespace visuVTKAdaptor
  * @subsection Configuration Configuration
  * - \b renderer (mandatory): renderer in which the image is displayed.
  * - \b picker (mandatory): used to find image voxel positions from a viewport pixel position.
+ * - \b mode (optional, defaults to 2d) : determines how the position of the coordinates are computed.
+ *           In 2d, the coordinates are permutated to match the correct, whereas in 3d,
+ *           we do not change the picked position.
  *
  */
 class VISUVTKADAPTOR_CLASS_API STransformFromWheel : public ::fwRenderVTK::IAdaptor,
@@ -75,6 +78,9 @@ private:
 
     /// Slot: set the correct orientation to compute the right transform.
     void updateSliceOrientation(int from, int to);
+
+    /// Interaction mode: determines how the picked point is handled (default to 2d)
+    unsigned char m_interactionMode;
 
     /// Initial wheel position. Updated each time updateTransform() is called.
     double m_initAngle;

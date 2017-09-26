@@ -1,0 +1,148 @@
+<plugin id="Ex07WheelWidget" version="@DASH_VERSION@">
+    <!-- This exmaple allows to test the different dump policy. -->
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>Ex07WheelWidget</id>
+        <config>
+
+        <object uid="imageUID" type="::fwData::Image" />
+        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="transformUID" type="::fwData::TransformationMatrix3D" />
+        <object uid="wheelTransformUID" type="::fwData::TransformationMatrix3D" />
+
+        <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+            <gui>
+                <frame>
+                    <name>Example 07 - Wheel Widget @PROJECT_VERSION@</name>
+                    <minSize width="1280" height="720" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="yes" />
+                <view sid="mainView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="genericScene" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFile" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Open Image..." shortcut="Ctrl+O" />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="actionOpen" start="yes" />
+                <menuItem sid="actionQuit" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="actionOpen" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>imageReader/configureWithIHM</slot>
+                <slot>imageReader/update</slot>
+            </slots>
+        </service>
+
+        <service uid="imageReader" type="::ioVTK::SImageReader" worker="w_pngReader">
+            <inout key="frame" uid="imageUID" />
+        </service>
+
+        <service uid="actionQuit" type="::gui::action::SQuit" />
+
+        <!-- *************************** Start generic scene *************************** -->
+
+        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="#052833" />
+
+                <adaptor uid="transformAdpt" />
+                <adaptor uid="referenceNegatoMPR" />
+                <adaptor uid="referenceInteractorStyle" />
+                <adaptor uid="referencePickerInteractor" />
+                <adaptor uid="2DWheel" />
+                <adaptor uid="transformFromWheel" />
+            </scene>
+        </service>
+
+        <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="wheelTransformUID" />
+            <config transform="registration" />
+        </service>
+
+        <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="imageUID" />
+            <config renderer="default" picker="picker" mode="2D" slices="3" sliceIndex="axial" transform="registration" />
+        </service>
+
+        <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+        </service>
+
+        <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
+            <config renderer="default" />
+        </service>
+
+        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" autoConnect="yes" >
+            <inout key="image" uid="imageUID" autoConnect="yes"/>
+            <inout key="transform" uid="transformUID" />
+            <config renderer="default" picker="picker" />
+        </service>
+
+        <service uid="concatenate" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+              <key uid="transformUID" autoConnect="yes" inverse="true" />
+            </in>
+            <inout key="output" uid="wheelTransformUID" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <connect>
+            <signal>2DWheel/wheelUpdated</signal>
+            <slot>transformFromWheel/updateTransform</slot>
+        </connect>
+
+        <start uid="mainFrame" />
+
+        <start uid="concatenate" />
+        <start uid="referenceNegatoMPR" />
+        <start uid="referenceInteractorStyle" />
+        <start uid="referencePickerInteractor" />
+        <start uid="2DWheel" />
+        <start uid="transformFromWheel" />
+        <start uid="imageReader" />
+        <start uid="transformAdpt" />
+
+        </config>
+    </extension>
+
+
+</plugin>

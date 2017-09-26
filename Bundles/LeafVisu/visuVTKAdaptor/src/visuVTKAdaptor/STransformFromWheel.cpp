@@ -40,6 +40,7 @@ static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 //------------------------------------------------------------------------------
 
 STransformFromWheel::STransformFromWheel() :
+    m_interactionMode(2),
     m_initAngle(0.)
 {
     newSlot(s_UPDATE_TRANSFORM_SLOT, &STransformFromWheel::updateTransform, this);
@@ -58,6 +59,22 @@ STransformFromWheel::~STransformFromWheel()
 void STransformFromWheel::configuring()
 {
     this->configureParams();
+
+    const ConfigType config     = this->getConfigTree().get_child("config.<xmlattr>");
+    std::string interactionMode = config.get<std::string>("mode", "2D");
+
+    if(interactionMode == "2d" || interactionMode == "2D")
+    {
+        m_interactionMode = 2;
+    }
+    else if(interactionMode == "3d" || interactionMode == "3D")
+    {
+        m_interactionMode = 3;
+    }
+    else
+    {
+        SLM_WARN("Wrong interaction mode specified. Set to 2D.")
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -146,19 +163,37 @@ void STransformFromWheel::updateTransform(double cx, double cy, double wheelAngl
                      imageIndex[1] * spacing[1] + origin[1],
                      imageIndex[2] * spacing[2] + origin[2]);
 
-    switch (m_orientation)
+    if(m_interactionMode == 3)
     {
-        case Z_AXIS:
-            rotAxis = ::glm::dvec3(0., 0., 1.);
-            break;
-        case Y_AXIS:
-            rotAxis = ::glm::dvec3(0., -1., 0.);
-            pos     = ::glm::dvec3(pos.x, pos.z, pos.y);
-            break;
-        case X_AXIS:
-            rotAxis = ::glm::dvec3(1., 0., 0.);
-            pos     = ::glm::dvec3(pos.z, pos.x, pos.y);
-            break;
+        switch (m_orientation)
+        {
+            case Z_AXIS:
+                rotAxis = ::glm::dvec3(0., 0., 1.);
+                break;
+            case Y_AXIS:
+                rotAxis = ::glm::dvec3(0., 1., 0.);
+                break;
+            case X_AXIS:
+                rotAxis = ::glm::dvec3(1., 0., 0.);
+                break;
+        }
+    }
+    else
+    {
+        switch (m_orientation)
+        {
+            case Z_AXIS:
+                rotAxis = ::glm::dvec3(0., 0., 1.);
+                break;
+            case Y_AXIS:
+                rotAxis = ::glm::dvec3(0., -1., 0.);
+                pos     = ::glm::dvec3(pos.x, pos.z, pos.y);
+                break;
+            case X_AXIS:
+                rotAxis = ::glm::dvec3(1., 0., 0.);
+                pos     = ::glm::dvec3(pos.z, pos.x, pos.y);
+                break;
+        }
     }
 
     const ::glm::dmat4 invTransMat = ::glm::translate(pos);
