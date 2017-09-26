@@ -149,7 +149,6 @@ set(LIBRARY_OUTPUT_DIR lib)
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     #http://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question
     add_definitions(-D__MACOSX__) #racy backward compatibility
-    set(LIBRARY_OUTPUT_DIR Libraries)
 endif()
 
 
