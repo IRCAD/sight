@@ -95,7 +95,7 @@ public:
     /// Color bleeding factor setter.
     FWRENDEROGRE_API virtual void setColorBleedingFactor(double colorBleedingFactor);
 
-    FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination* illuminationVolume);
+    FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination::sptr illuminationVolume);
 
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
@@ -123,7 +123,7 @@ public:
     FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
 
     /// IllumVolume getter.
-    FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
+    FWRENDEROGRE_API SATVolumeIllumination::sptr getIllumVolume();
 
     /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
@@ -325,7 +325,7 @@ private:
     /// Only seems to update them when instancing the corresponding material
     ::Ogre::GpuSharedParametersPtr m_RTVSharedParameters;
 
-    SATVolumeIllumination* m_illumVolume;
+    std::weak_ptr<SATVolumeIllumination> m_illumVolume;
 
     /// Name of the method used for Importance driven volume rendering
     std::string m_idvrMethod;
@@ -358,9 +358,9 @@ private:
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline ::fwRenderOgre::vr::SATVolumeIllumination* RayTracingVolumeRenderer::getIllumVolume()
+inline ::fwRenderOgre::vr::SATVolumeIllumination::sptr RayTracingVolumeRenderer::getIllumVolume()
 {
-    return m_illumVolume;
+    return m_illumVolume.lock();
 }
 
 //-----------------------------------------------------------------------------
