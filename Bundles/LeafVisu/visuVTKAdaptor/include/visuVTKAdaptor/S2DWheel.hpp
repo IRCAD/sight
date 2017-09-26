@@ -68,13 +68,13 @@ protected:
     /// Disables the widget.
     VISUVTKADAPTOR_API virtual void stopping() override;
 
-    /// Wheel widget.
-    vtkSmartPointer< fwVtkWheelWidget > m_wheelWidget;
+private:
 
     /// Slot: update wheel visibility (true = visible)
     VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
 
-private:
+    /// Wheel widget.
+    vtkSmartPointer< fwVtkWheelWidget > m_wheelWidget;
 
     /// Called when the VTK viewport is resized. Scales the widget accordingly.
     vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > m_resizeCallback;
