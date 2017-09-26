@@ -13,6 +13,8 @@
 
 #include <fwCore/Profiling.hpp>
 
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
@@ -127,7 +129,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
             const int frameId = layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
-                if(m_renderer->m_illumVolume && m_renderer->m_shadows)
+                auto illuVolume = m_renderer->m_illumVolume.lock();
+                if(illuVolume && m_renderer->m_shadows)
                 {
                     // Set light directions in shader.
                     ::Ogre::LightList closestLights =
@@ -145,7 +148,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
                         satIllumParams->setNamedConstant("u_lightDir", lightDir);
 
-                        m_renderer->m_illumVolume->updateVolIllum();
+                        illuVolume->updateVolIllum();
                     }
                 }
 
@@ -254,7 +257,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                      static_cast< ::Ogre::Real>(colorBleedingFactor),
                      static_cast< ::Ogre::Real>(aoFactor)),
     m_opacityCorrectionFactor(200.f),
-    m_illumVolume(nullptr),
     m_idvrMethod(s_NONE),
     m_focalLength(0.f),
     m_cameraListener(nullptr),
@@ -394,6 +396,11 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf)
 {
+    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    {
+        return;
+    }
+
     this->scaleCube(image->getSpacing());
 
     const ::fwData::Image::SizeType& newSize = image->getSize();
@@ -520,7 +527,7 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illuminationVolume)
+void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination::sptr illuminationVolume)
 {
     m_illumVolume = illuminationVolume;
 
@@ -818,7 +825,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
 
     if(fpPPDefines.find(s_AO_DEFINE) != std::string::npos)
     {
-        texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
+        texUnitState = pass->createTextureUnitState(m_illumVolume.lock()->getIlluminationVolume()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
