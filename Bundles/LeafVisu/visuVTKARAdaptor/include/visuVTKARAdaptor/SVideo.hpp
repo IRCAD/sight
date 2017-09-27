@@ -88,7 +88,7 @@ protected:
     /// Configure the adaptor.
     VISUVTKARADAPTOR_API void configuring() override;
 
-    /// Updated the frame from the current Image.
+    /// Update the frame from the current Image.
     VISUVTKARADAPTOR_API void updating() override;
 
     /// Removes the actor from the renderer

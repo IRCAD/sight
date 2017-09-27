@@ -39,9 +39,9 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKARAdaptor::SVideo);
 namespace visuVTKARAdaptor
 {
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN  = "frame";
-static const ::fwServices::IService::KeyType s_CAMERA_IN = "camera";
-static const ::fwServices::IService::KeyType s_TF_INPUT  = "tf";
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "frame";
+static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
+static const ::fwServices::IService::KeyType s_TF_INPUT     = "tf";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
@@ -78,13 +78,13 @@ SVideo::~SVideo() noexcept
 ::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT);
-    connections.push( s_IMAGE_IN, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
-    connections.push( s_IMAGE_IN, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
-    connections.push( s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT);
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
+    connections.push( s_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
-    connections.push( s_CAMERA_IN, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push( s_CAMERA_IN, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+    connections.push( s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push( s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
     connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
     connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
@@ -133,7 +133,7 @@ void SVideo::starting()
 
 void SVideo::updating()
 {
-    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (!imageIsValid)
@@ -217,7 +217,7 @@ void SVideo::stopping()
 
 void SVideo::updateImageOpacity()
 {
-    ::fwData::Image::csptr img = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    ::fwData::Image::csptr img = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
     if(img->getField( "TRANSPARENCY" ) )
     {
         ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
@@ -256,7 +256,7 @@ void SVideo::show(bool visible)
 
 void SVideo::offsetOpticalCenter()
 {
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_IN);
+    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     if (camera)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
