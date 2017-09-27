@@ -266,7 +266,7 @@ private:
     bool m_widgetVisibilty;
 
     /// Illumination volume used to render shadows and ambient occlusion.
-    ::fwRenderOgre::vr::SATVolumeIllumination* m_illum;
+    std::shared_ptr< ::fwRenderOgre::vr::SATVolumeIllumination> m_illum;
 
     /// Ratio used to determine the size of the SAT regarding of the associated image size.
     float m_satSizeRatio;

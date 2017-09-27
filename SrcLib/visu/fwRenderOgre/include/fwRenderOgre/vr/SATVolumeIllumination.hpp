@@ -22,6 +22,7 @@ namespace vr
 class FWRENDEROGRE_CLASS_API SATVolumeIllumination
 {
 public:
+    typedef std::shared_ptr<SATVolumeIllumination> sptr;
 
     /// Initializes the illumination volume with the give dimensions.
     FWRENDEROGRE_API SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
