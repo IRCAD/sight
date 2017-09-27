@@ -58,7 +58,7 @@ void fwVtkWheelRepresentation::BuildRepresentation()
     // Setup points
 
     // Define some colors
-    double color[4] = {0., 0., 0., 0.};
+    const double color[4] = {0., 0., 0., 0.};
 
     // Setup the colors array
     this->m_colors->SetNumberOfComponents(4);
@@ -117,6 +117,10 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
         const auto viewportSize  = this->GetRenderer()->GetRenderWindow()->GetSize();
         const int viewportWidth  = viewportSize[0];
         const int viewportHeight = viewportSize[1];
+
+        // Define usefull colors
+        const double defaultColor[4] = {70., 100., 140., 192.};
+        const double hoverColor[4]   = {255., 255., 255., 255.};
 
         // Clamp actor position to ensure that the widget center stays inside the viewport.
         ::glm::dvec2 actorPos(this->m_wheelActor->GetPosition()[0], this->m_wheelActor->GetPosition()[1]);
@@ -180,15 +184,15 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
             // Display one out of two quads
             if(i % 2 == 1)
             {
-                double color[4] = {70., 100., 140., 192.};
                 if(m_hover)
                 {
-                    color[0] = 255.;
-                    color[1] = 255.;
-                    color[2] = 255.;
-                    color[3] = 255.;
+
+                    this->m_colors->SetTuple(i, hoverColor);
                 }
-                this->m_colors->SetTuple(i, color);
+                else
+                {
+                    this->m_colors->SetTuple(i, defaultColor);
+                }
             }
         }
 
@@ -225,15 +229,14 @@ void fwVtkWheelRepresentation::UpdateRepresentation()
             if( !(c < holeThickness && c > -holeThickness) &&
                 !(s < holeThickness && s > -holeThickness) )
             {
-                double color[4] = {70., 100., 140., 192.};
                 if(m_hover)
                 {
-                    color[0] = 255.;
-                    color[1] = 255.;
-                    color[2] = 255.;
-                    color[3] = 255.;
+                    this->m_colors->SetTuple(i, hoverColor);
                 }
-                this->m_colors->SetTuple(i, color);
+                else
+                {
+                    this->m_colors->SetTuple(i, defaultColor);
+                }
             }
         }
 
@@ -380,7 +383,7 @@ bool fwVtkWheelRepresentation::isOnWheel(int X, int Y) const
 
 void fwVtkWheelRepresentation::PrintSelf(ostream&, vtkIndent)
 {
-    SLM_FATAL("Method not implemented.");
+    SLM_WARN("Method not implemented.");
 }
 
 //------------------------------------------------------------------------------
