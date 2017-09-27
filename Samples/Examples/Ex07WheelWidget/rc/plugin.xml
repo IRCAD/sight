@@ -1,13 +1,13 @@
 <plugin id="Ex07WheelWidget" version="@DASH_VERSION@">
-    <!-- This exmaple allows to test the different dump policy. -->
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07WheelWidget</id>
+        <desc>Wheel widget interaction example.</desc>
         <config>
 
-        <object uid="imageUID" type="::fwData::Image" />
+        <object uid="image" type="::fwData::Image" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="transformUID" type="::fwData::TransformationMatrix3D" />
-        <object uid="wheelTransformUID" type="::fwData::TransformationMatrix3D" />
+        <object uid="transform" type="::fwData::TransformationMatrix3D" />
+        <object uid="wheelTransform" type="::fwData::TransformationMatrix3D" />
 
         <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
             <gui>
@@ -19,18 +19,6 @@
             </gui>
             <registry>
                 <menuBar sid="menuBar" start="yes" />
-                <view sid="mainView" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="mainView" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
                 <view sid="genericScene" start="yes" />
             </registry>
         </service>
@@ -59,15 +47,13 @@
             </registry>
         </service>
 
-        <service uid="actionOpen" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>imageReader/configureWithIHM</slot>
-                <slot>imageReader/update</slot>
-            </slots>
+        <service uid="imageReader" type="::uiIO::editor::SIOSelector" autoConnect="no">
+            <type mode="reader" />
+            <in key="image" uid="image" />
         </service>
 
-        <service uid="imageReader" type="::ioVTK::SImageReader" worker="w_pngReader">
-            <inout key="frame" uid="imageUID" />
+        <service uid="actionOpen" type="::gui::action::SStarter">
+            <start uid="imageReader" />
         </service>
 
         <service uid="actionQuit" type="::gui::action::SQuit" />
@@ -82,28 +68,23 @@
                 <adaptor uid="transformAdpt" />
                 <adaptor uid="referenceNegatoMPR" />
                 <adaptor uid="referenceInteractorStyle" />
-                <adaptor uid="referencePickerInteractor" />
                 <adaptor uid="2DWheel" />
                 <adaptor uid="transformFromWheel" />
             </scene>
         </service>
 
         <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="wheelTransformUID" />
+            <inout key="tm3d" uid="wheelTransform" />
             <config transform="registration" />
         </service>
 
         <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="imageUID" />
-            <config renderer="default" picker="picker" mode="2D" slices="3" sliceIndex="axial" transform="registration" />
+            <inout key="image" uid="image" />
+            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" transform="registration" />
         </service>
 
         <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
         </service>
 
         <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
@@ -111,19 +92,19 @@
         </service>
 
         <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" autoConnect="yes" >
-            <inout key="image" uid="imageUID" autoConnect="yes"/>
-            <inout key="transform" uid="transformUID" />
+            <inout key="image" uid="image" autoConnect="yes"/>
+            <inout key="transform" uid="transform" />
             <config renderer="default" picker="picker" />
         </service>
 
+        <!-- *************************** End generic scene *************************** -->
+
         <service uid="concatenate" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-              <key uid="transformUID" autoConnect="yes" inverse="true" />
+              <key uid="transform" autoConnect="yes" inverse="true" />
             </in>
-            <inout key="output" uid="wheelTransformUID" />
+            <inout key="output" uid="wheelTransform" />
         </service>
-
-        <!-- *************************** End generic scene *************************** -->
 
         <connect>
             <signal>2DWheel/wheelUpdated</signal>
@@ -135,14 +116,11 @@
         <start uid="concatenate" />
         <start uid="referenceNegatoMPR" />
         <start uid="referenceInteractorStyle" />
-        <start uid="referencePickerInteractor" />
         <start uid="2DWheel" />
         <start uid="transformFromWheel" />
-        <start uid="imageReader" />
         <start uid="transformAdpt" />
 
         </config>
     </extension>
-
 
 </plugin>

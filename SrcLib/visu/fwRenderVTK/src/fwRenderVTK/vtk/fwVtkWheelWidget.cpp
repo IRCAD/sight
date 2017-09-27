@@ -179,7 +179,7 @@ void fwVtkWheelWidget::EndSelectAction(vtkAbstractWidget* w)
 
 void fwVtkWheelWidget::PrintSelf(ostream&, vtkIndent)
 {
-    SLM_FATAL("Not implemented.");
+    SLM_WARN("Not implemented.");
 }
 
 //----------------------------------------------------------------------------------

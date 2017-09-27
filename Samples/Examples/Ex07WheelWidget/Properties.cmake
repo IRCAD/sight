@@ -12,14 +12,15 @@ set( REQUIREMENTS
     appXml
     fwlauncher
 
+    uiIO
     ioVTK
-
-    3DVisualizationActivity
 
     maths
     media
 
-    patchMedicalData
+    visuVTK
+    visuVTKQt
+    visuVTKAdaptor
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex07WheelWidget)

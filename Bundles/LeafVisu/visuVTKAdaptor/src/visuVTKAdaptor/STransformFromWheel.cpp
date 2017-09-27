@@ -60,8 +60,8 @@ void STransformFromWheel::configuring()
 {
     this->configureParams();
 
-    const ConfigType config     = this->getConfigTree().get_child("config.<xmlattr>");
-    std::string interactionMode = config.get<std::string>("mode", "2D");
+    const ConfigType config           = this->getConfigTree().get_child("config.<xmlattr>");
+    const std::string interactionMode = config.get<std::string>("mode", "2D");
 
     if(interactionMode == "2d" || interactionMode == "2D")
     {
