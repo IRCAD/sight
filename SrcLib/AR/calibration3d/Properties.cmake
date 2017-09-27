@@ -5,3 +5,4 @@ set( DEPENDENCIES
     fwCore
     )
 set( REQUIREMENTS  )
+set( DISABLE_PCH TRUE)

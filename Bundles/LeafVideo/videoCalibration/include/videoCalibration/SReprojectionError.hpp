@@ -115,6 +115,8 @@ private:
     /// if true: display circle centered at reprojection point.
     bool m_display;
 
+    ::cv::Mat m_extrinsic;
+
 };
 
 }//namespace videoCalibration

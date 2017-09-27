@@ -150,12 +150,12 @@ void SOpenCVWriter::updating()
 
     ::cv::FileStorage fs(this->getFile().string().c_str(), ::cv::FileStorage::WRITE);
 
-    fs<<"nbCameras"<<static_cast<int>(numberOfCameras);
+    fs << "nbCameras"<< static_cast<int>(numberOfCameras);
 
     for( size_t c = 0; c < numberOfCameras; ++c)
     {
         std::stringstream camNum;
-        camNum << "camera_"<<c;
+        camNum << "camera_"<< c;
 
         fs << camNum.str() << "{";
         fs << "id"<<camSeries->getCamera(c)->getCameraID().c_str();
@@ -164,6 +164,7 @@ void SOpenCVWriter::updating()
         fs << "imageHeight" << static_cast< int >(camSeries->getCamera(c)->getHeight());
         fs << "matrix" << cameraMatrices[c];
         fs << "distortion" << cameraDistCoefs[c];
+        fs << "scale" << camSeries->getCamera(c)->getScale();
 
         extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
         if(extrinsicMatrix)
@@ -176,7 +177,7 @@ void SOpenCVWriter::updating()
                                                                                    static_cast<size_t>(j));
                 }
             }
-            fs<<"extrinsic"<<extrinsic;
+            fs << "extrinsic"<< extrinsic;
         }
         fs << "}";
     }
