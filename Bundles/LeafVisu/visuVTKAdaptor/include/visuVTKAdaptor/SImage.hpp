@@ -139,8 +139,8 @@ private:
     bool m_allowAlphaInTF;
 
     vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
-    vtkImageMapToColors* m_map2colors;
-    vtkImageData* m_imageData;
+    vtkSmartPointer< vtkImageMapToColors > m_map2colors;
+    vtkSmartPointer< vtkImageData > m_imageData;
 
 };
 

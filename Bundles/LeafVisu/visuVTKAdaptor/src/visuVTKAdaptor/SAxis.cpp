@@ -36,7 +36,7 @@ SAxis::SAxis() noexcept :
     m_axisActor(fwVtkAxesActor::New()),
     m_length(1.),
     m_labelOn(true),
-    m_transformAxis(vtkTransform::New()),
+    m_transformAxis(vtkSmartPointer<vtkTransform>::New()),
     m_sphereActor(nullptr),
     m_sphereOn(false),
     m_xLabel("x"),

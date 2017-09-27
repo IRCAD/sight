@@ -71,7 +71,9 @@ class InitializeVtkOutputWindow
 public:
     InitializeVtkOutputWindow()
     {
-        vtkOutputWindow::SetInstance( vtkOutputWindowToSpyLog::New() );
+        auto output = vtkOutputWindowToSpyLog::New();
+        vtkOutputWindow::SetInstance( output );
+        output->Delete();
     }
 };
 

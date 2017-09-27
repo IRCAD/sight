@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,6 +64,8 @@ public:
         m_service              = _service;
         this->m_isMousePressed = false;
     }
+    //------------------------------------------------------------------------------
+
     void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
     {
         if (_event == vtkCommand::StartInteractionEvent )
@@ -185,10 +187,10 @@ void SRenderer::initVTKPipeline()
         ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
     }
 
-    m_mapper = vtkPolyDataMapper::New();
+    m_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     m_mapper->SetInputData(m_vtkPolyData);
 
-    vtkActor* actor = vtkActor::New();
+    auto actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(m_mapper);
 
     // Add the actors
@@ -201,7 +203,6 @@ void SRenderer::initVTKPipeline()
     m_loc = new vtkLocalCommand(this);
 
     m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
-
 
     // Repaint and resize window
     m_render->ResetCamera();
@@ -245,7 +246,7 @@ void SRenderer::notifyCamPositionUpdated()
 
     {
         ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(this->slot(s_UPDATE_CAM_POSITION_SLOT)));
-        m_sigCamUpdated->asyncEmit (position, focal, viewUp);
+        m_sigCamUpdated->asyncEmit(position, focal, viewUp);
     }
 }
 

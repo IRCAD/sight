@@ -78,8 +78,8 @@ void SPointListRegistration::updating()
     {
         vtkSmartPointer<vtkLandmarkTransform> landmarkTransform = vtkSmartPointer<vtkLandmarkTransform>::New();
 
-        vtkPoints* sourcePts = vtkPoints::New();
-        vtkPoints* targetPts = vtkPoints::New();
+        vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
+        vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
         // Match each point in both list according to the label
         for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )

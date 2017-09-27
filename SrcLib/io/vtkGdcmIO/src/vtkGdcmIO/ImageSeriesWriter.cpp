@@ -97,14 +97,14 @@ void ImageSeriesWriter::write()
     bool isGenerated = fg.Generate();
     FW_RAISE_IF("Filename generation failed.", !isGenerated);
 
-    vtkStringArray* filenames = vtkStringArray::New();
+    auto filenames = vtkSmartPointer<vtkStringArray>::New();
     for(unsigned int i = 0; i < fg.GetNumberOfFilenames(); ++i)
     {
         filenames->InsertNextValue( fg.GetFilename(i) );
     }
 
     // Medical informations
-    vtkMedicalImageProperties* medprop = vtkMedicalImageProperties::New();
+    auto medprop = vtkSmartPointer<vtkMedicalImageProperties>::New();
 
     // Patient name
     // tagkey = "0010|0010";
@@ -248,8 +248,6 @@ void ImageSeriesWriter::write()
     writer->Write();
 
     m_job->finish();
-
-    filenames->Delete();
 }
 
 //------------------------------------------------------------------------------

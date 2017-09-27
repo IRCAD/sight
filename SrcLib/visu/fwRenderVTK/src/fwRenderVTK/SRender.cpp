@@ -126,8 +126,9 @@ void SRender::configureRenderer( const ConfigType& rendererConf )
 
 void SRender::configurePicker( const ConfigType& pickerConf )
 {
-    const std::string& id       = pickerConf.get<std::string>("<xmlattr>.id");
-    const std::string& vtkclass = pickerConf.get<std::string>("<xmlattr>.vtkclass", "vtkCellPicker");
+    const std::string id       = pickerConf.get<std::string>("<xmlattr>.id");
+    const std::string vtkclass = pickerConf.get<std::string>("<xmlattr>.vtkclass", "vtkCellPicker");
+    const double tolerance     = pickerConf.get<double>("<xmlattr>.tolerance", 0.0);
 
     if(m_pickers.count(id) == 0)
     {
@@ -138,7 +139,7 @@ void SRender::configurePicker( const ConfigType& pickerConf )
         vtkPicker* picker = vtkPicker::SafeDownCast(m_pickers[id]);
         if (picker)
         {
-            picker->SetTolerance(0);
+            picker->SetTolerance(tolerance);
         }
     }
 }
@@ -147,8 +148,8 @@ void SRender::configurePicker( const ConfigType& pickerConf )
 
 void SRender::configureVtkObject( const ConfigType& vtkObjectConf )
 {
-    const std::string& id       = vtkObjectConf.get<std::string>("<xmlattr>.id");
-    const std::string& vtkClass = vtkObjectConf.get<std::string>("<xmlattr>.class");
+    const std::string id       = vtkObjectConf.get<std::string>("<xmlattr>.id");
+    const std::string vtkClass = vtkObjectConf.get<std::string>("<xmlattr>.class");
 
     SLM_ASSERT("Empty 'id'.", !id.empty() );
     SLM_ASSERT("Empty 'class'.", !vtkClass.empty() );
@@ -189,7 +190,7 @@ vtkTransform* SRender::createVtkTransform( const ConfigType& vtkObjectConf )
 
             SLM_ASSERT("No transform named '" + transformId + "'.", mat != nullptr);
 
-            const std::string& inverse = v.second.get<std::string>("<xmlattr>.inverse", "no");
+            const std::string inverse = v.second.get<std::string>("<xmlattr>.inverse", "no");
 
             SLM_ASSERT("Inverse must be 'yes' or 'no'.", inverse == "yes" || inverse == "no");
 
@@ -232,7 +233,7 @@ void SRender::configuring()
 
     if(nbInouts == 1)
     {
-        const std::string& key = srvConf.get<std::string>("inout.<xmlattr>.key", "");
+        const std::string key = srvConf.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
         SLM_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
@@ -244,7 +245,7 @@ void SRender::configuring()
 
     m_sceneConf = srvConf.get_child("scene");
 
-    const std::string& renderMode = m_sceneConf.get("<xmlattr>.renderMode", "auto");
+    const std::string renderMode = m_sceneConf.get("<xmlattr>.renderMode", "auto");
 
     if (renderMode == "auto")
     {
@@ -269,7 +270,7 @@ void SRender::configuring()
 
     BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, m_sceneConf.equal_range("adaptor"))
     {
-        const std::string& adaptorUid = v.second.get<std::string>("<xmlattr>.uid", "");
+        const std::string adaptorUid = v.second.get<std::string>("<xmlattr>.uid", "");
 
         SLM_FATAL_IF("Missing 'uid' attribute in adaptor configuration", adaptorUid == "");
 
@@ -372,7 +373,7 @@ void SRender::render()
 
         renderWindow->Render();
 
-        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkWindowToImageFilter::New();
+        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
         windowToImageFilter->SetInputBufferTypeToRGBA();
         windowToImageFilter->SetInput( renderWindow );
         windowToImageFilter->Update();
@@ -391,9 +392,6 @@ void SRender::render()
             ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
-
-        // If we don't do explicitly, the filter is not destroyed and this leads to a huge memory leak
-        windowToImageFilter->Delete();
     }
     else
     {
@@ -445,7 +443,7 @@ void SRender::startContext()
         m_interactorManager = interactorManager;
     }
 
-    InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
+    auto interactor = vtkSmartPointer<InteractorStyle3DForNegato>::New();
     SLM_ASSERT("Can't instantiate interactor", interactor);
     interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
     m_interactorManager->getInteractor()->SetInteractorStyle( interactor );
