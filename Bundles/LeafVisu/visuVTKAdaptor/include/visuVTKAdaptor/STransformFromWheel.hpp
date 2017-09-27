@@ -97,8 +97,10 @@ private:
     /// Initial wheel position. Updated each time updateTransform() is called.
     double m_initAngle;
 
+    /// Stores the last picking position, used to compute translations.
     double m_lastImagePos[3];
 
+    /// Flag set when in translation mode.
     bool m_translate;
 };
 

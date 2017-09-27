@@ -107,7 +107,7 @@
 
         <connect>
             <signal>2DWheel/wheelUpdated</signal>
-            <slot>transformFromWheel/updateTransform</slot>
+            <slot>transformFromWheel/rotateTransform</slot>
         </connect>
 
         <start uid="mainFrame" />
