@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SPickerInteractor">
-        <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" />
+        <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" abortOnPick="false" />
    </service>
    @endcode
  * @subsection Configuration Configuration
@@ -50,6 +50,7 @@ namespace visuVTKAdaptor
  *   - MOUSE_MIDDLE_DOWN
  *   - MOUSE_WHEELBACKWARD
  *   - MOUSE_MOVE
+ * - \b abortOnPick (optional, default=false): if set, cancel all following commands after a successful pick.
  */
 class VISUVTKADAPTOR_CLASS_API SPickerInteractor : public ::fwRenderVTK::IAdaptor
 {
@@ -99,6 +100,8 @@ protected:
 
     vtkCommand* m_interactionCommand; ///< the vtk mouse events observer
     SetEventIdType m_eventId; ///< event ID treated for picking
+
+    bool m_abortOnPick; ///< Disables all following commands if picking was successful.
 };
 
 } //namespace visuVTKAdaptor
