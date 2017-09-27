@@ -20,8 +20,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/euler_angles.hpp>
 #include <glm/mat4x4.hpp>
 
 #include <QHBoxLayout>
@@ -223,9 +221,10 @@ void STransformEditor::onSliderChanged(int value)
     const double ty = m_sliders[POSITION_Y].m_slider->value();
     const double tz = m_sliders[POSITION_Z].m_slider->value();
 
-    ::glm::dmat4x4 mat;
-    mat = ::glm::translate(mat, ::glm::dvec3(tx, ty, tz));
-    mat = mat * ::glm::yawPitchRoll(ry, rx, rz);
+    ::glm::dquat quat  = ::glm::dquat(::glm::dvec3(rx, ry, rz));
+    ::glm::dmat4x4 mat = ::glm::mat4_cast(quat);
+
+    mat[3] = ::glm::dvec4(tx, ty, tz, 1.);
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
