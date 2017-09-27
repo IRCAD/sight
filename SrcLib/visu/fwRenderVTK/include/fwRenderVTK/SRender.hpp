@@ -59,7 +59,7 @@ class IVtkRenderWindowInteractorManager;
         <scene renderMode="auto|timer|none" width="1920" height="1080">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
-            <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+            <picker id="negatodefault" vtkclass="fwVtkCellPicker" tolerance="0.002"/>
 
             <adaptor uid="tmAdaptor" />
             <adaptor uid="snapshot" />
@@ -91,6 +91,7 @@ class IVtkRenderWindowInteractorManager;
  * - \b picker
  *   - \b id (mandatory): the identifier of the picker
  *   - \b vtkclass (optional, by default vtkCellPicker): the classname of the picker to create.
+ *   - \b tolerance (optional, by default 0.0): the picker tolerance specified as fraction of rendering window size.
  * - \b adaptor
  *   - \b uid (mandatory): the uid of the adaptor
  */
