@@ -344,14 +344,6 @@ void SVolumeRender::starting()
 
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
 
-    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
-    {
-        m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
-                                                                (m_ambientOcclusion || m_colorBleeding), m_shadows,
-                                                                m_satShells, m_satShellRadius, m_satConeAngle,
-                                                                m_satConeSamples);
-    }
-
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
@@ -362,7 +354,7 @@ void SVolumeRender::starting()
     this->initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
 
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
     {
         this->newImage();
@@ -482,6 +474,15 @@ void SVolumeRender::newImage()
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        if(m_illum == nullptr)
+        {
+            m_illum = std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
+                                                                                   m_satSizeRatio,
+                                                                                   (m_ambientOcclusion ||
+                                                                                    m_colorBleeding), m_shadows,
+                                                                                   m_satShells, m_satShellRadius,
+                                                                                   m_satConeAngle, m_satConeSamples);
+        }
         this->updateVolumeIllumination();
     }
 
@@ -1060,13 +1061,15 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
     auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
 
     // Volume illumination is only implemented for raycasting rendering
-    if(rayCastVolumeRenderer)
+    if(rayCastVolumeRenderer && ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage()))
     {
         if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
         {
-            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
-                                                                    (m_ambientOcclusion || m_colorBleeding), m_shadows,
-                                                                    m_satShells, m_satShellRadius);
+            m_illum = ::std::make_shared< ::fwRenderOgre::vr::SATVolumeIllumination>(this->getID(), m_sceneManager,
+                                                                                     m_satSizeRatio,
+                                                                                     (m_ambientOcclusion ||
+                                                                                      m_colorBleeding), m_shadows,
+                                                                                     m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
         }
         else
