@@ -29,13 +29,13 @@ if(NOT APPLE)
     # This copies the plugins into the install directory
     install(DIRECTORY "${PROJECT_BINARY_DIR}/ogreplugins/" DESTINATION "ogrePlugins/")
 else()
-    # Ogre search frameworks plugings in /Contents/Frameworks/
-    set(FRAMEWORKS_DIR "${PROJECT_BINARY_DIR}/bin/Contents/Frameworks")
+    # Ogre search frameworks plugings in /Contents/Plugins/
+    set(FRAMEWORKS_DIR "${PROJECT_BINARY_DIR}/bin/Contents/Plugins")
     file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*")
     file(INSTALL ${OGRE_PLUGINS} DESTINATION ${FRAMEWORKS_DIR})
 
     # This copies the plugins into the install directory
-    install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "/bin/Contents/Frameworks/")
+    install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "/bin/Contents/Plugins/")
 endif()
 
 fwForwardInclude(
