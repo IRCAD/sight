@@ -10,8 +10,11 @@
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/PickingInfo.hpp>
 
 #include <fwRenderVTK/IAdaptor.hpp>
+
+#include <glm/mat4x4.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -21,8 +24,11 @@ namespace visuVTKAdaptor
  *
  * @section Slots Slots
  *
- * -\b updateTransform(double, double, double) : computes the transform
- * -\b updateSliceOrientation(int, int): updates slice orientation
+ * - \b rotateTransform(double, double, double): applies a rotation to the current
+ * transform using wheel information.
+ * - \b translateTransform(::fwDataTools::PickingInfo): applies a translation using the last two
+ * picking informations.
+ * - \b updateSliceOrientation(int, int): updates slice orientation.
  *
  * @section XML XML Configuration
  *
@@ -73,8 +79,14 @@ protected:
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 private:
 
-    /// Computes the transform based on the (cx, cy) wheel center and the wheel angle.
-    void updateTransform(double cx, double cy, double wheelAngle);
+    /// Slot: Computes the transform based on the (cx, cy) wheel center and the wheel angle.
+    void rotateTransform(double cx, double cy, double wheelAngle);
+
+    /// Slot: Computes a translation using the difference between the last two picking informations.
+    void translateTransform(::fwDataTools::PickingInfo info);
+
+    /// Applies the parameter transform to the 'transform' object.
+    void applyTransformToOutput(const ::glm::dmat4& transform) const;
 
     /// Slot: set the correct orientation to compute the right transform.
     void updateSliceOrientation(int from, int to);
@@ -85,6 +97,9 @@ private:
     /// Initial wheel position. Updated each time updateTransform() is called.
     double m_initAngle;
 
+    double m_lastImagePos[3];
+
+    bool m_translate;
 };
 
 } // namespace visuVTKAdaptor
