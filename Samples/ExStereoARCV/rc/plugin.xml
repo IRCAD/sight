@@ -1,30 +1,36 @@
-<plugin id="Ex04SimpleAR" version="@DASH_VERSION@">
+<plugin id="ExStereoARCV" version="@DASH_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="registrationCV" />
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex04SimpleARConfig</id>
+        <id>ExStereoARCVConfig</id>
         <config>
             <!-- objects declarations -->
             <object uid="cameraSeries" type="::arData::CameraSeries" />
-            <object uid="camera" type="::arData::Camera" src="deferred" />
-            <object uid="frameTL" type="::arData::FrameTL" />
-            <object uid="tagTL" type="::arData::MarkerTL" />
-            <object uid="videoImage" type="::fwData::Image" />
+            <object uid="camera1" type="::arData::Camera" src="deferred" />
+            <object uid="camera2" type="::arData::Camera" src="deferred" />
+            <object uid="frameTL1" type="::arData::FrameTL" />
+            <object uid="frameTL2" type="::arData::FrameTL" />
+            <object uid="tagTL1" type="::arData::MarkerTL" />
+            <object uid="tagTL2" type="::arData::MarkerTL" />
+            <object uid="videoImage1" type="::fwData::Image" />
+            <object uid="videoImage2" type="::fwData::Image" />
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
-            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
+            <object uid="rightMat" type="::fwData::TransformationMatrix3D" />
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
-                        <name>Ex04SimpleAR</name>
-                        <icon>@BUNDLE_PREFIX@/Ex04SimpleAR_0-1/app.ico</icon>
+                        <name>ExStereoARCV</name>
+                        <icon>@BUNDLE_PREFIX@/ExStereoAR_0-1/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
@@ -78,6 +84,7 @@
                     <layout>
                         <menuItem name="Load Calibration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg" />
                         <editor/>
+                        <editor/>
                         <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
@@ -85,7 +92,8 @@
                 </gui>
                 <registry>
                     <menuItem sid="loadCalib" start="yes" />
-                    <editor sid="CameraSelector" />
+                    <editor sid="CameraSelector1" />
+                    <editor sid="CameraSelector2" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
@@ -127,11 +135,27 @@
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericScene" />
-                    <view sid="errorLabel" start="yes" />
+                    <view sid="stereoView" start="yes" />
+                    <view sid="errorLabelLeft" start="yes" />
+                    <view sid="errorLabelRight" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="stereoView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericSceneLeft" />
+                    <view sid="genericSceneRight" />
                 </registry>
             </service>
 
@@ -151,19 +175,22 @@
 
             <service uid="startVideo" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>frameGrabber/startCamera</slot>
+                    <slot>frameGrabber1/startCamera</slot>
+                    <slot>frameGrabber2/startCamera</slot>
                 </slots>
             </service>
 
             <service uid="stopVideo" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>frameGrabber/stopCamera</slot>
+                    <slot>frameGrabber1/stopCamera</slot>
+                    <slot>frameGrabber2/stopCamera</slot>
                 </slots>
             </service>
 
             <service uid="pauseVideo" type="::gui::action::SSlotCaller">
                 <slots>
-                    <slot>frameGrabber/pauseCamera</slot>
+                    <slot>frameGrabber1/pauseCamera</slot>
+                    <slot>frameGrabber2/pauseCamera</slot>
                 </slots>
             </service>
 
@@ -185,50 +212,98 @@
             <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
             <service uid="Extractor" type="::ctrlCamp::SExtractObj">
                 <inout key="source" uid="cameraSeries">
-                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                    <extract from="@cameras.0" />
+                    <!-- Camp path of the first camera in cameraSeries -->
+                    <extract from="@cameras.1" />
+                    <extract from="@extrinsic_matrices.1" />
                 </inout>
                 <out group="target">
-                    <key uid="camera" /> <!-- destination -->
+                    <key uid="camera1" />
+                    <!-- destination -->
+                    <key uid="camera2" />
+                    <key uid="extrinsic" />
                 </out>
             </service>
 
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <service uid="genericSceneLeft" type="::fwRenderVTK::SRender" autoConnect="yes">
                 <scene>
                     <renderer id="video" layer="0" background="0.0" />
                     <renderer id="default" layer="1" background="0.0" />
-                    <adaptor uid="videoAdpt" />
-                    <adaptor uid="interactorStyle" />
-                    <adaptor uid="registrationTransform" />
-                    <adaptor uid="axis" />
-                    <adaptor uid="cameraAdpt" />
+                    <adaptor uid="videoLeft" />
+                    <adaptor uid="interactorStyleLeft" />
+                    <adaptor uid="registrationTransformLeft" />
+                    <adaptor uid="axisLeft" />
+                    <adaptor uid="cameraLeft" />
                 </scene>
             </service>
 
-            <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="videoImage" />
-                <in key="camera" uid="camera" />
+            <service uid="videoLeft" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage1" />
+                <in key="camera" uid="camera1" />
                 <config renderer="video" />
             </service>
 
-            <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <service uid="interactorStyleLeft" type="::visuVTKAdaptor::SInteractorStyle">
                 <config renderer="default" style="InteractorStyle2DForNegato" />
             </service>
 
-            <service uid="registrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="inverseMat" />
+            <service uid="registrationTransformLeft" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="matrix" />
                 <config renderer="default" picker="" transform="registrationMatrix" />
             </service>
 
-            <service uid="axis" type="::visuVTKAdaptor::SAxis">
+            <service uid="axisLeft" type="::visuVTKAdaptor::SAxis">
                 <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50" />
             </service>
 
-            <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+            <service uid="cameraLeft" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
                 <inout key="transform" uid="identity" />
-                <in key="camera" uid="camera" />
+                <in key="camera" uid="camera1" />
+                <config renderer="default" />
+            </service>
+
+            <!-- *************************** End generic scene *************************** -->
+
+            <!-- Scene in which the video and the 3D will be rendered -->
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericSceneRight" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <scene>
+                    <renderer id="video" layer="0" background="0.0" />
+                    <renderer id="default" layer="1" background="0.0" />
+                    <adaptor uid="videoRight" />
+                    <adaptor uid="interactorStyleRight" />
+                    <adaptor uid="registrationTransformRight" />
+                    <adaptor uid="axisRight" />
+                    <adaptor uid="cameraRight" />
+                </scene>
+            </service>
+
+            <service uid="videoRight" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="videoImage2" />
+                <in key="camera" uid="camera2" />
+                <config renderer="video" />
+            </service>
+
+            <service uid="interactorStyleRight" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="InteractorStyle2DForNegato" />
+            </service>
+
+            <service uid="registrationTransformRight" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="rightMat" />
+                <config renderer="default" picker="" transform="registrationMatrix" />
+            </service>
+
+            <service uid="axisRight" type="::visuVTKAdaptor::SAxis">
+                <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50" />
+            </service>
+
+            <service uid="cameraRight" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="identity" />
+                <in key="camera" uid="camera2" />
                 <config renderer="default" />
             </service>
 
@@ -256,32 +331,70 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabel" type="::uiTools::editor::STextStatus">
-                <label>Reprojection Error (RMSE)</label>
+            <service uid="errorLabelLeft" type="::uiTools::editor::STextStatus">
+                <label>Reprojection Error Left (RMSE)</label>
+            </service>
+
+            <service uid="errorLabelRight" type="::uiTools::editor::STextStatus">
+                <label>Reprojection Error Right (RMSE)</label>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="CameraSelector" type="::videoQt::editor::SCamera">
-                <inout key="camera" uid="camera" />
+            <service uid="CameraSelector1" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera1" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="CameraSelector2" type="::videoQt::editor::SCamera">
+                <inout key="camera" uid="camera2" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="frameGrabber" type="::videoQt::SFrameGrabber">
-                <in key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
+            <service uid="frameGrabber1" type="::videoQt::SFrameGrabber">
+                <in key="camera" uid="camera1" />
+                <inout key="frameTL" uid="frameTL1" />
+            </service>
+
+            <service uid="frameGrabber2" type="::videoQt::SFrameGrabber">
+                <in key="camera" uid="camera2" />
+                <inout key="frameTL" uid="frameTL2" />
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
-                <in key="timeline" uid="frameTL" autoConnect="yes" />
-                <in key="camera" uid="camera" />
+            <service uid="tracker1" type="::trackerAruco::SArucoTracker" worker="tracking1">
+                <in key="timeline" uid="frameTL1" autoConnect="yes" />
+                <in key="camera" uid="camera1" />
                 <inout group="tagTL">
-                    <key uid="tagTL" /> <!-- timeline of detected tag(s) -->
+                    <key uid="tagTL1" />
+                    <!-- timeline of detected tag(s) -->
                 </inout>
                 <config>
                     <track>
-                        <marker id="101" /> <!-- list of id -->
+                        <marker id="101" />
+                        <!-- list of id -->
+                    </track>
+                    <threshold>
+                        <method>ADPT_THRES</method>
+                        <blockSize>7</blockSize>
+                        <constant>7</constant>
+                    </threshold>
+                    <patternWidth>60</patternWidth>
+                    <debugMarkers>yes</debugMarkers>
+                </config>
+            </service>
+
+            <service uid="tracker2" type="::trackerAruco::SArucoTracker" worker="tracking2">
+                <in key="timeline" uid="frameTL2" autoConnect="yes" />
+                <in key="camera" uid="camera2" />
+                <inout group="tagTL">
+                    <key uid="tagTL2" />
+                    <!-- timeline of detected tag(s) -->
+                </inout>
+                <config>
+                    <track>
+                        <marker id="101" />
+                        <!-- list of id -->
                     </track>
                     <threshold>
                         <method>ADPT_THRES</method>
@@ -294,34 +407,49 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registration" type="::registrationARL::SPoseFrom2d" worker="registration">
+            <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="registration">
                 <in group="markerTL" autoConnect="yes">
-                    <key uid="tagTL" />
+                    <key uid="tagTL1" />
+                    <key uid="tagTL2" />
                 </in>
                 <in group="camera">
-                    <key uid="camera" />
+                    <key uid="camera1" />
+                    <key uid="camera2" />
                 </in>
+                <in key="extrinsic" uid="extrinsic" />
                 <inout key="matrixTL" uid="matrixTL" />
                 <patternWidth>60</patternWidth>
             </service>
 
-            <!-- This will compute the reprojection error -->
-            <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
-                <in key="matrixTL" uid="matrixTL" autoConnect="yes" /> <!-- automaticaly updates when matrixTL is modified -->
-                <in key="markerTL" uid="tagTL" />
-                <inout key="frameTL" uid="frameTL" />
-                <in key="camera" uid="camera" />
-                <in key="extrinsic" uid="matrix" />
+
+            <!-- This will compute the reprojection error Left -->
+            <service uid="reprojectionErrorLeft" type="::videoCalibration::SReprojectionError" worker="error1">
+                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+                <in key="camera" uid="camera1" />
+                <in key="markerTL" uid="tagTL1" />
+                <inout key="frameTL" uid="frameTL1" />
                 <patternWidth>60</patternWidth>
             </service>
+
+            <service uid="reprojectionErrorRight" type="::videoCalibration::SReprojectionError" worker="error2">
+                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+                <in key="extrinsic" uid="extrinsic" />
+                <in key="camera" uid="camera2" />
+                <in key="markerTL" uid="tagTL2" />
+                <inout key="frameTL" uid="frameTL2" />
+                <patternWidth>60</patternWidth>
+            </service>
+
 
             <!-- To synchronize matrix, frame and detection -->
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
                 <in group="frameTL">
-                    <key uid="frameTL" />
+                    <key uid="frameTL1" />
+                    <key uid="frameTL2" />
                 </in>
                 <inout group="image">
-                    <key uid="videoImage" />
+                    <key uid="videoImage1" />
+                    <key uid="videoImage2" />
                 </inout>
                 <in group="matrixTL">
                     <key uid="matrixTL" />
@@ -336,26 +464,33 @@
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="concatenate" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
+                    <key uid="extrinsic" />
                     <key uid="matrix" autoConnect="yes" inverse="false" />
-                    <key uid="identity" />
                 </in>
-                <inout key="output" uid="inverseMat" />
+                <inout key="output" uid="rightMat" />
             </service>
 
             <!-- signal/slot connection -->
             <connect>
                 <signal>reprojectionParams/colorChanged</signal>
-                <slot>error/setColorParameter</slot>
+                <slot>reprojectionErrorLeft/setColorParameter</slot>
+                <slot>reprojectionErrorRight/setColorParameter</slot>
             </connect>
 
             <connect>
                 <signal>reprojectionParams/boolChanged</signal>
-                <slot>error/setBoolParameter</slot>
+                <slot>reprojectionErrorLeft/setBoolParameter</slot>
+                <slot>reprojectionErrorRight/setBoolParameter</slot>
             </connect>
 
             <connect>
-                <signal>error/errorComputed</signal>
-                <slot>errorLabel/setDoubleParameter</slot>
+                <signal>reprojectionErrorLeft/errorComputed</signal>
+                <slot>errorLabelLeft/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>reprojectionErrorRight/errorComputed</signal>
+                 <slot>errorLabelRight/setDoubleParameter</slot>
             </connect>
 
             <connect>
@@ -384,33 +519,58 @@
             </connect>
 
             <connect>
-                <signal>camera/idModified</signal>
-                <slot>frameGrabber/stopCamera</slot>
+                <signal>camera1/idModified</signal>
+                <slot>frameGrabber1/stopCamera</slot>
+                <slot>frameGrabber2/stopCamera</slot>
             </connect>
 
             <connect>
-                <signal>tracker/markerDetected</signal>
-                <slot>axis/updateVisibility</slot>
+                <signal>camera2/idModified</signal>
+                <slot>frameGrabber1/stopCamera</slot>
+                <slot>frameGrabber2/stopCamera</slot>
             </connect>
 
             <!-- start services -->
+            <connect>
+                <signal>tracker1/markerDetected</signal>
+                <slot>axis/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>tracker2/markerDetected</signal>
+                <slot>axis/updateVisibility</slot>
+            </connect>
+
             <start uid="mainFrame" />
-            <start uid="frameGrabber" />
+            <start uid="frameGrabber1" />
+            <start uid="frameGrabber2" />
             <start uid="synchronizer" />
-            <start uid="tracker" />
-            <start uid="error" />
+            <start uid="tracker1" />
+            <start uid="tracker2" />
             <start uid="CalibrationReader" />
-            <start uid="CameraSelector" />
+            <start uid="CameraSelector1" />
+            <start uid="CameraSelector2" />
             <start uid="Extractor" />
             <start uid="registration" />
+            <start uid="reprojectionErrorLeft" />
+            <start uid="reprojectionErrorRight" />
+
             <start uid="concatenate" />
-            <start uid="genericScene" />
-            <!-- VTK scene 'genericScene' -->
-            <start uid="videoAdpt" />
-            <start uid="interactorStyle" />
-            <start uid="registrationTransform" />
-            <start uid="axis" />
-            <start uid="cameraAdpt" />
+            <start uid="genericSceneLeft" />
+            <start uid="genericSceneRight" />
+            <!-- VTK scene 'genericSceneLeft' -->
+            <start uid="videoLeft" />
+            <start uid="interactorStyleLeft" />
+            <start uid="registrationTransformLeft" />
+            <start uid="axisLeft" />
+            <start uid="cameraLeft" />
+            <!-- VTK scene 'genericSceneRight' -->
+            <start uid="videoRight" />
+            <start uid="interactorStyleRight" />
+            <start uid="registrationTransformRight" />
+            <start uid="axisRight" />
+            <start uid="cameraRight" />
+
             <update uid="actionHide" />
         </config>
     </extension>

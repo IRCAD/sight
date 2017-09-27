@@ -155,12 +155,22 @@ void SOpenCVReader::updating()
         std::string id, desc;
         int width, height;
         ::cv::Mat matrix, dist;
+        double scale;
         n["id"] >> id;
         n["description"] >> desc;
         n["imageWidth"] >> width;
         n["imageHeight"] >> height;
         n["matrix"] >> matrix;
         n["distortion"] >> dist;
+
+        if(!n["scale"].empty())
+        {
+            n["scale"] >> scale;
+        }
+        else
+        {
+            scale = 1.;
+        }
 
         ::arData::Camera::sptr cam = ::arData::Camera::New();
         cam->setFx(matrix.at<double>(0, 0));
@@ -178,6 +188,8 @@ void SOpenCVReader::updating()
                                       dist.at<double>(2),
                                       dist.at<double>(3),
                                       dist.at<double>(4));
+
+        cam->setScale(scale);
 
         ::fwData::mt::ObjectWriteLock writeLock(camSeries);
         camSeries->addCamera(cam);
