@@ -350,6 +350,7 @@
                 <renderer id="default" background="#052833" />
                 <adaptor uid="blendNegatoMPR" />
                 <adaptor uid="blendInteractorStyle" />
+                <adaptor uid="blendPickerInteractor" />
                 <adaptor uid="slicerImageAdaptor" />
                 <adaptor uid="2DWheel" />
                 <adaptor uid="transformFromWheel" />
@@ -366,7 +367,7 @@
         </service>
 
         <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP;MOUSE_MOVE;MOUSE_LEFT_DOWN" abortOnPick="true" />
         </service>
 
         <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
@@ -374,9 +375,8 @@
         </service>
 
         <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
-            <inout key="image" uid="${targetImageUid}" autoConnect="yes"/>
             <inout key="transform" uid="${transformUid}" />
-            <config renderer="default" picker="picker" />
+            <config renderer="default" picker="picker" mode="2d" orientation="axial" />
         </service>
 
         <!-- Adaptor to show background and front image merge in the same view. -->
@@ -672,7 +672,17 @@
 
         <connect>
             <signal>2DWheel/wheelUpdated</signal>
-            <slot>transformFromWheel/updateTransform</slot>
+            <slot>transformFromWheel/rotateTransform</slot>
+        </connect>
+
+        <connect>
+            <signal>blendPickerInteractor/picked</signal>
+            <slot>transformFromWheel/translateTransform</slot>
+        </connect>
+
+        <connect>
+            <signal>${targetImageUid}/sliceTypeModified</signal>
+            <slot>transformFromWheel/updateSliceType</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
@@ -706,6 +716,7 @@
         <!-- VTK scene 'blendScene' -->
         <start uid="blendNegatoMPR" />
         <start uid="blendInteractorStyle" />
+        <start uid="blendPickerInteractor" />
         <start uid="slicerImageAdaptor" />
         <start uid="2DWheel" />
         <start uid="transformFromWheel" />
