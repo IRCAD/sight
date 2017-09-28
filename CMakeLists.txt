@@ -105,9 +105,12 @@ if(ANDROID)
     set(BUNDLE_LIB_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
     set(BUNDLE_RC_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
 else()
+    if(WIN32)
+        set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+    else()
+        set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
+    endif()
 
-    # For debian packaging we add a subdirectory to sort out the bundles
-    set(BUNDLE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}" CACHE PATH "Relative path where the bundles libraries are installed.")
     set(BUNDLE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}" CACHE PATH "Relative path where the bundles resources are installed.")
 endif()
 
