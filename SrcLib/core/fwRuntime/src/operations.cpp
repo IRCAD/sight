@@ -121,24 +121,8 @@ const ::boost::filesystem::path getBundleResourceFilePath(const std::string& bun
 
 const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept
 {
-    // TEMP_FB: To add when BUNDLE_PREFIX is removed in xmls
-    //SLM_ASSERT("Path should be relative", path.is_relative());
-
-    // TEMP_FB: And remove this when BUNDLE_PREFIX is removed in xmls
-    ::boost::filesystem::path relativePath;
-    if(path.has_root_directory())
-    {
-        for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
-        {
-            relativePath /= *itPath;
-        }
-    }
-    else
-    {
-        relativePath = path;
-    }
-
-    const std::string bundleIdentifierAndVersion = relativePath.begin()->string();
+    SLM_ASSERT("Path should be relative", path.is_relative());
+    const std::string bundleIdentifierAndVersion = path.begin()->string();
 
     // TEMP_FB: Change _ into - when version refactor is made
     auto itVersionDelimiter = bundleIdentifierAndVersion.find('_');
@@ -147,7 +131,7 @@ const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesys
 
     // Strip the bundle name
     ::boost::filesystem::path pathWithoutBundle;
-    for(auto itPath = ++relativePath.begin(); itPath != relativePath.end(); itPath++)
+    for(auto itPath = ++path.begin(); itPath != path.end(); itPath++)
     {
         pathWithoutBundle /= *itPath;
     }

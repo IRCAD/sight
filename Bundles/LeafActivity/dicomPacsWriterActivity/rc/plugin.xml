@@ -21,7 +21,7 @@
         <id>DicomPacsWriter</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/Push.svg</icon>
+        <icon>media_0-1/icons/Push.svg</icon>
         <requirements>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>

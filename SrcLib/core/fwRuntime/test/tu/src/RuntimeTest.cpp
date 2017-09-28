@@ -86,10 +86,6 @@ void RuntimeTest::testOperations()
     path = ::fwRuntime::getBundleResourceFilePath("servicesReg_0-1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/plugin.xml", path);
 
-    // TEMP_FB: And remove this when BUNDLE_PREFIX is removed in xmls
-    path = ::fwRuntime::getBundleResourceFilePath("/servicesReg_0-1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/plugin.xml", path);
-
     path = ::fwRuntime::getBundleResourceFilePath("servicesReg_0-1/not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/not_existing.file", path);
 

@@ -14,7 +14,7 @@
                 <gui>
                     <frame>
                         <name>Tuto14MeshGenerator</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto14MeshGenerator_0-1/tuto.ico</icon>
+                        <icon>Tuto14MeshGenerator_0-1/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>

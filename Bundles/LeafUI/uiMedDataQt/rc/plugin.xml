@@ -72,8 +72,8 @@
                 <inout key="activitySeries" uid="${objectID}" />
                 <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
                 <icons>
-                    <icon type="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
-                    <icon type="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
+                    <icon type="::fwMedData::ImageSeries" icon="media_0-1/icons/ImageSeries.svg" />
+                    <icon type="::fwMedData::ModelSeries" icon="media_0-1/icons/ModelSeries.svg" />
                 </icons>
                 <registry>
                     <parent wid="${WID_PARENT}" />

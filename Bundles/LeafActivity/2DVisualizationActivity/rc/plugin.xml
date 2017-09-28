@@ -21,7 +21,7 @@
         <id>2DVisualization</id>
         <title>2D visualization</title>
         <desc>Display a medical image in 2D.</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png</icon>
+        <icon>media_0-1/icons/icon-2D.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to display.</desc>

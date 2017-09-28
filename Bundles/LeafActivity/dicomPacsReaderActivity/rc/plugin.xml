@@ -22,7 +22,7 @@
         <id>DicomPacsReader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/Pull.svg</icon>
+        <icon>media_0-1/icons/Pull.svg</icon>
         <requirements>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>

@@ -62,26 +62,26 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="3D MPR Axial view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-axial.png" />
-                    <menuItem name="3D MPR Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
-                    <menuItem name="3D MPR Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
+                    <menuItem name="3D MPR Axial view" icon="media_0-1/icons/icon-axial.png" />
+                    <menuItem name="3D MPR Frontal view" icon="media_0-1/icons/icon-frontal.png" />
+                    <menuItem name="3D MPR Sagittal view" icon="media_0-1/icons/icon-sagittal.png" />
                     <separator />
-                    <menuItem name="Load landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Load-landmark.png" />
-                    <menuItem name="Save landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Save-landmark.png" />
-                    <menuItem name="Focus landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Find-landmark.png" />
-                    <menuItem name="Display Landmarks editor" icon="@BUNDLE_PREFIX@/media_0-1/icons/View-landmark.png" style="check" />
+                    <menuItem name="Load landmark" icon="media_0-1/icons/Load-landmark.png" />
+                    <menuItem name="Save landmark" icon="media_0-1/icons/Save-landmark.png" />
+                    <menuItem name="Focus landmark" icon="media_0-1/icons/Find-landmark.png" />
+                    <menuItem name="Display Landmarks editor" icon="media_0-1/icons/View-landmark.png" style="check" />
                     <separator />
-                    <menuItem name="Add distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/distance.png" />
-                    <menuItem name="Remove distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/RemoveDistance.png" />
-                    <menuItem name="Hide distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideDistance.png" style="check" />
+                    <menuItem name="Add distance" icon="media_0-1/icons/distance.png" />
+                    <menuItem name="Remove distance" icon="media_0-1/icons/RemoveDistance.png" />
+                    <menuItem name="Hide distance" icon="media_0-1/icons/HideDistance.png" style="check" />
                     <separator />
-                    <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
-                    <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
-                    <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
+                    <menuItem name="Hide cross" icon="media_0-1/icons/HideCross.png" style="radio" />
+                    <menuItem name="Show normal cross" icon="media_0-1/icons/NormalCross.png" style="radio" />
+                    <menuItem name="Show full cross" icon="media_0-1/icons/FullCross.png" style="radio" />
                     <separator />
-                    <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
+                    <menuItem name="Manage organs color" icon="media_0-1/icons/ManageOrgan.png" style="check" />
                     <separator />
-                    <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Export Activity" icon="media_0-1/icons/Export.svg" />
                     <spacer />
                     <menu name="Visu 3D" />
                 </layout>
@@ -110,11 +110,11 @@
         <service uid="menu" type="::gui::aspect::SDefaultMenu">
             <gui>
                 <layout>
-                    <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" />
+                    <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="media_0-1/icons/ManageOrgan.png" />
                     <separator />
-                    <menuItem name="Axial view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-axial.png" />
-                    <menuItem name="Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
-                    <menuItem name="Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
+                    <menuItem name="Axial view" icon="media_0-1/icons/icon-axial.png" />
+                    <menuItem name="Frontal view" icon="media_0-1/icons/icon-frontal.png" />
+                    <menuItem name="Sagittal view" icon="media_0-1/icons/icon-sagittal.png" />
                 </layout>
             </gui>
             <registry>

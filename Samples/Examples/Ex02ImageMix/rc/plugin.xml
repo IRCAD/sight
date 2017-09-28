@@ -14,7 +14,7 @@
                 <gui>
                     <frame>
                         <name>Ex02ImageMix</name>
-                        <icon>@BUNDLE_PREFIX@/Ex02ImageMix_0-1/tuto.ico</icon>
+                        <icon>Ex02ImageMix_0-1/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar/>

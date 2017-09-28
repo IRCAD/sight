@@ -41,22 +41,22 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="@BUNDLE_PREFIX@/media_0-1/icons/Back.svg" />
-                    <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Next.svg" />
-                    <menuItem name="Load landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Load-landmark.png" />
-                    <menuItem name="Save landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Save-landmark.png" />
-                    <menuItem name="Focus landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Find-landmark.png" />
-                    <menuItem name="Display Landmarks editor" icon="@BUNDLE_PREFIX@/media_0-1/icons/View-landmark.png" style="check" />
+                    <menuItem name="Previous" icon="media_0-1/icons/Back.svg" />
+                    <menuItem name="Next" icon="media_0-1/icons/Next.svg" />
+                    <menuItem name="Load landmark" icon="media_0-1/icons/Load-landmark.png" />
+                    <menuItem name="Save landmark" icon="media_0-1/icons/Save-landmark.png" />
+                    <menuItem name="Focus landmark" icon="media_0-1/icons/Find-landmark.png" />
+                    <menuItem name="Display Landmarks editor" icon="media_0-1/icons/View-landmark.png" style="check" />
                     <separator />
-                    <menuItem name="Add distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/distance.png" />
-                    <menuItem name="Remove distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/RemoveDistance.png" />
-                    <menuItem name="Hide distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideDistance.png" style="check" />
+                    <menuItem name="Add distance" icon="media_0-1/icons/distance.png" />
+                    <menuItem name="Remove distance" icon="media_0-1/icons/RemoveDistance.png" />
+                    <menuItem name="Hide distance" icon="media_0-1/icons/HideDistance.png" style="check" />
                     <separator />
-                    <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
-                    <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
-                    <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
+                    <menuItem name="Hide cross" icon="media_0-1/icons/HideCross.png" style="radio" />
+                    <menuItem name="Show normal cross" icon="media_0-1/icons/NormalCross.png" style="radio" />
+                    <menuItem name="Show full cross" icon="media_0-1/icons/FullCross.png" style="radio" />
                     <separator />
-                    <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Export Activity" icon="media_0-1/icons/Export.svg" />
                 </layout>
             </gui>
             <registry>

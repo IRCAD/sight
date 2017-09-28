@@ -34,10 +34,10 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Blend view" style="radio" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png" />
-                    <menuItem name="Edit background Image TF" style="radio" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-tf1.svg" />
-                    <menuItem name="Edit front Image TF" style="radio" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-tf2.svg" />
-                    <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Blend view" style="radio" icon="media_0-1/icons/icon-2D.png" />
+                    <menuItem name="Edit background Image TF" style="radio" icon="media_0-1/icons/icon-tf1.svg" />
+                    <menuItem name="Edit front Image TF" style="radio" icon="media_0-1/icons/icon-tf2.svg" />
+                    <menuItem name="Export Activity" icon="media_0-1/icons/Export.svg" />
                 </layout>
             </gui>
             <registry>

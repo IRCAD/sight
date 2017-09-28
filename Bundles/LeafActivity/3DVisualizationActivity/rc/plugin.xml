@@ -15,7 +15,7 @@
         <id>3DVisualization</id>
         <title>3D visualization</title>
         <desc>Activity to display a 3D model, and optionally its associated image.</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png</icon>
+        <icon>media_0-1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
                 <desc>3D model.</desc>

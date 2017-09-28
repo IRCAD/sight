@@ -38,10 +38,10 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Read DICOM files" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
-                    <menuItem name="Preview filtered DICOM series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg" style="check" />
-                    <menuItem name="Read filtered DICOM series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Apply.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="@BUNDLE_PREFIX@/media_0-1/icons/Push.svg" />
+                    <menuItem name="Read DICOM files" icon="media_0-1/icons/Import.svg" />
+                    <menuItem name="Preview filtered DICOM series" icon="media_0-1/icons/Preview.svg" style="check" />
+                    <menuItem name="Read filtered DICOM series" icon="media_0-1/icons/Apply.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="media_0-1/icons/Push.svg" />
 
                     <spacer />
 
@@ -114,7 +114,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="activityHelp" type="::uiGenericQt::action::LaunchBrowserActionService" >
-            <url>@BUNDLE_PREFIX@/dicomFilteringActivity_0-1/quickstart.pdf</url>
+            <url>dicomFilteringActivity_0-1/quickstart.pdf</url>
         </service>
 
         <!-- READING SELECTION -->
@@ -145,7 +145,7 @@
         <service uid="action_previewFilteredDicomSeries" type="::gui::action::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout key="SERIESDB" uid="filteredSeriesDB" />
-            <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg" />
+            <parameter replace="ICON_PATH" by="media_0-1/icons/Preview.svg" />
         </service>
 
         <service uid="action_convertSeries" type="::ioGdcm::SDicomSeriesConverter">

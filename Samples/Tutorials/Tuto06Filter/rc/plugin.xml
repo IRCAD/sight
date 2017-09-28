@@ -16,7 +16,7 @@
                 <gui>
                     <frame>
                         <name>Filter</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto06Filter_0-1/tuto.ico</icon>
+                        <icon>Tuto06Filter_0-1/tuto.ico</icon>
                         <minSize width="720" height="600" />
                     </frame>
                     <menuBar />

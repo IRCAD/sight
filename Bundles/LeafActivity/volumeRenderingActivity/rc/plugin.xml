@@ -15,7 +15,7 @@
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-VR.png</icon>
+        <icon>media_0-1/icons/icon-VR.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to displayed in volumic rendering.</desc>

@@ -15,7 +15,7 @@
                 <gui>
                     <frame>
                         <name>tutoSignalSlot</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto04SignalSlot_0-1/tuto.ico</icon>
+                        <icon>Tuto04SignalSlot_0-1/tuto.ico</icon>
                         <minSize width="720" height="600" />
                     </frame>
                     <menuBar />

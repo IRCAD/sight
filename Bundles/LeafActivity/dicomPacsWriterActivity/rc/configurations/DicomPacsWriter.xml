@@ -32,10 +32,10 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
-                    <menuItem name="Edit pacs configuration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" style="check" />
-                    <menuItem name="Anonymize selected series" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-Anonymization.svg" />
-                    <menuItem name="Push selected series to Pacs" icon="@BUNDLE_PREFIX@/media_0-1/icons/Push.svg" />
+                    <menuItem name="Import" icon="media_0-1/icons/Import.svg" />
+                    <menuItem name="Edit pacs configuration" icon="media_0-1/icons/Settings.svg" style="check" />
+                    <menuItem name="Anonymize selected series" icon="media_0-1/icons/icon-Anonymization.svg" />
+                    <menuItem name="Push selected series to Pacs" icon="media_0-1/icons/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -56,7 +56,7 @@
         <service uid="action_editPacsConfiguration" type="::gui::action::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
             <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
-            <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg"  />
+            <parameter replace="ICON_PATH" by="media_0-1/icons/Settings.svg"  />
         </service>
 
         <!-- Dicom Anonymization -->

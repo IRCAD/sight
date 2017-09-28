@@ -24,7 +24,7 @@
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-DICOM-Filtering.svg</icon>
+        <icon>media_0-1/icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
