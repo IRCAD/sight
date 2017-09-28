@@ -46,7 +46,7 @@
         <id>CameraSeriesExport</id>
         <title>CameraSeries Export</title>
         <desc>CameraSeries Export</desc>
-        <icon>NONE</icon>
+        <icon>media_0-1/icons/Export.svg</icon>
         <requirements>
             <requirement name="series" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -62,7 +62,7 @@
         <id>activitySelector</id>
         <title>Choose your activity</title>
         <desc>Activity selector for ARSurg</desc>
-        <icon>arMedia_0-1/icons/selector.svg</icon>
+        <icon>media_0-1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="activitySelector">
             <parameters />
