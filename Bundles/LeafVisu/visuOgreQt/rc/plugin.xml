@@ -1,4 +1,4 @@
-<plugin id="visuOgreQt" class="visuOgreQt::Plugin"  version="@DASH_VERSION@" >
+<plugin id="visuOgreQt" class="visuOgreQt::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="visuOgreQt" />
 

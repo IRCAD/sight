@@ -106,7 +106,7 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
     if(root == nullptr)
     {
-        root = new ::Ogre::Root(::fwRuntime::getLibraryResourceFilePath("fwRenderOgre_0-1/" PLUGIN_PATH).string());
+        root = new ::Ogre::Root(::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH).string());
 
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
@@ -160,7 +160,7 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
         root->initialise(false);
 
-        auto resourcePath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre_0-1/resources.cfg" );
+        auto resourcePath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/resources.cfg" );
         ::fwRenderOgre::Utils::addResourcesPath( resourcePath );
 
         loadResources();

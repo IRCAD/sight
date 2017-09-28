@@ -1,4 +1,4 @@
-<plugin id="uiVisuOgre" class="::uiVisuOgre::Plugin"  version="@DASH_VERSION@" >
+<plugin id="uiVisuOgre" class="::uiVisuOgre::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="uiVisuOgre" />
 
