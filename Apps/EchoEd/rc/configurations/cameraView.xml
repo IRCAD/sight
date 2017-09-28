@@ -34,8 +34,8 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Start camera" icon="arMedia_0-1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="arMedia_0-1/icons/stop-cam.svg" />
+                    <menuItem name="Start camera" icon="arMedia-0.1/icons/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="arMedia-0.1/icons/stop-cam.svg" />
                 </layout>
             </gui>
             <registry>

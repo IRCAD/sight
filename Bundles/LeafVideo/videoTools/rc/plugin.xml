@@ -1,4 +1,4 @@
-<plugin id="videoTools" class="videoTools::Plugin" version="@DASH_VERSION@" >
+<plugin id="videoTools" class="videoTools::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="videoTools" />
     

@@ -1,4 +1,4 @@
-<plugin id="Ex05FrameByFrame" version="@DASH_VERSION@">
+<plugin id="Ex05FrameByFrame" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
@@ -18,7 +18,7 @@
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
-                        <icon>Ex05FrameByFrame_@DASH_VERSION@/ex05framebyframe.ico</icon>
+                        <icon>Ex05FrameByFrame_@PROJECT_VERSION@/ex05framebyframe.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -32,9 +32,9 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start" icon="arMedia_0-1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="arMedia_0-1/icons/stop-cam.svg" />
-                        <menuItem name="pause" icon="arMedia_0-1/icons/pause-cam.svg" />
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <spacer/>
                         <menuItem name="Previous" />
                         <menuItem name="Next" />

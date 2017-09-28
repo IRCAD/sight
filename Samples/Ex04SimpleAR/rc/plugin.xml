@@ -1,4 +1,4 @@
-<plugin id="Ex04SimpleAR" version="@DASH_VERSION@">
+<plugin id="Ex04SimpleAR" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
@@ -24,7 +24,7 @@
                 <gui>
                     <frame>
                         <name>Ex04SimpleAR</name>
-                        <icon>Ex04SimpleAR_0-1/app.ico</icon>
+                        <icon>Ex04SimpleAR-0.1/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
@@ -76,11 +76,11 @@
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="media_0-1/icons/Plus.svg" />
+                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
-                        <menuItem name="start" icon="arMedia_0-1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="arMedia_0-1/icons/stop-cam.svg" />
-                        <menuItem name="pause" icon="arMedia_0-1/icons/pause-cam.svg" />
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                     </layout>
                 </gui>
                 <registry>
