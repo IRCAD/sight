@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,10 +17,10 @@
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
 
+#include <boost/filesystem.hpp>
+
 #include <QImage>
 #include <QString>
-
-#include <boost/filesystem.hpp>
 
 namespace videoQt
 {
@@ -38,9 +38,10 @@ static const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
 
 //-----------------------------------------------------------------------------
 
-SFrameRecorder::SFrameRecorder() noexcept : m_count(0),
-                                           m_isRecording(false),
-                                           m_isPaused(false)
+SFrameRecorder::SFrameRecorder() noexcept :
+    m_count(0),
+    m_isRecording(false),
+    m_isPaused(false)
 {
     m_slotSaveFrame   = ::fwCom::newSlot( &SFrameRecorder::saveFrame, this);
     m_slotStartRecord = ::fwCom::newSlot( &SFrameRecorder::startRecord, this);
@@ -51,8 +52,6 @@ SFrameRecorder::SFrameRecorder() noexcept : m_count(0),
         (s_START_RECORD_SLOT, m_slotStartRecord)
         (s_STOP_RECORD_SLOT, m_slotStopRecord)
         (s_PAUSE_RECORD_SLOT, m_slotPauseRecord);
-
-
 
     ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
@@ -109,15 +108,15 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
             int height = static_cast<int>(frameTL->getHeight());
             QImage image(width, height, QImage::Format_ARGB32);
 
-            ::boost::uint64_t* imageBuffer = reinterpret_cast< ::boost::uint64_t*>( image.bits() );
-            const ::boost::uint64_t* frameBuffer =
-                reinterpret_cast< const ::boost::uint64_t*>( &buffer->getElement(0) );
+            std::uint64_t* imageBuffer       = reinterpret_cast< std::uint64_t*>( image.bits() );
+            const std::uint64_t* frameBuffer =
+                reinterpret_cast< const std::uint64_t*>( &buffer->getElement(0) );
 
             const unsigned int size = static_cast<unsigned int>(width * height) >> 1;
 
             for(unsigned int idx = 0; idx < size; ++idx)
             {
-                const ::boost::uint64_t pixel = *frameBuffer++;
+                const std::uint64_t pixel = *frameBuffer++;
 
                 *imageBuffer++ = (pixel & 0xFF00FF00FF00FF00) | (pixel & 0x000000FF000000FF) << 16
                                  | (pixel & 0x00FF000000FF0000) >> 16;

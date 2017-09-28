@@ -114,8 +114,8 @@ private:
     /// Slot: apply the optical center offset to our video plane
     void offsetOpticalCenter();
 
-    vtkImageData* m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
-    vtkImageActor* m_actor;   ///< actor to show frame
+    vtkSmartPointer<vtkImageData> m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
+    vtkSmartPointer<vtkImageActor> m_actor;   ///< actor to show frame
     vtkSmartPointer<vtkLookupTable> m_lookupTable; ///< Vtk LUT representing the fw4spl TF
 
     bool m_isTextureInit; /// true if the texture is initialized

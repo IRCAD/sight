@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,9 +12,11 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <ioNetwork/INetworkSender.hpp>
 #include <fwTools/Failed.hpp>
+
 #include <zmqNetwork/Socket.hpp>
+
+#include <ioNetwork/INetworkSender.hpp>
 
 namespace ioZMQ
 {
@@ -27,7 +29,7 @@ class IOZMQ_CLASS_API SZeroMQSender : public ::ioNetwork::INetworkSender
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SZeroMQSender) (::ioNetwork::INetworkSender));
+    fwCoreServiceClassDefinitionsMacro( (SZeroMQSender) (::ioNetwork::INetworkSender));
 
     /**
      * @brief Slot to update configuration
@@ -36,7 +38,6 @@ public:
     typedef ::fwCom::Slot< void (::zmqNetwork::Socket::PatternMode const,
                                  ::zmqNetwork::Socket::SocketMode const,
                                  std::string const& host) > UpdateConfigurationSlotType;
-
 
     /// Constructor
     IOZMQ_API SZeroMQSender();
@@ -62,11 +63,10 @@ protected:
      */
     IOZMQ_API virtual void stopping();
 
-
     /**
      * @brief change the port of the service work only in tcp mode
      */
-    IOZMQ_API void setPort(::boost::uint16_t const port);
+    IOZMQ_API void setPort(std::uint16_t const port);
 
     /**
      * @brief slot method to update configuration
@@ -103,8 +103,6 @@ private:
     /// host to connect or interface to bind
     std::string m_hostStr;
 };
-
-
 
 } // namespace ioZMQ
 

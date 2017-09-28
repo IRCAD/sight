@@ -52,11 +52,11 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT            = "updateTF
 //------------------------------------------------------------------------------
 
 SVideo::SVideo() noexcept :
-    m_imageData(vtkImageData::New()),
-    m_actor(vtkImageActor::New()),
-    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
+    m_imageData(vtkSmartPointer<vtkImageData>::New()),
+    m_actor(vtkSmartPointer<vtkImageActor>::New()),
     m_isTextureInit(false),
-    m_reverse(true)
+    m_reverse(true),
+    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New())
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideo::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideo::updateImageOpacity, this);
@@ -69,8 +69,6 @@ SVideo::SVideo() noexcept :
 
 SVideo::~SVideo() noexcept
 {
-    m_actor->Delete();
-    m_actor = nullptr;
 }
 
 //------------------------------------------------------------------------------

@@ -192,8 +192,8 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     ::fwDataTools::helper::Array arrayHelper(array);
 
-    const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
-    ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+    const std::uint8_t* frameBuff = &buffer->getElement(0);
+    std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
     std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);

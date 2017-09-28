@@ -215,9 +215,9 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
                 if(bufferFrame != nullptr)
                 {
-                    const ::boost::uint8_t* frameData = &bufferFrame->getElement(0);
-                    const int width                   = static_cast< int >( frameTL->getWidth() );
-                    const int height                  = static_cast< int >( frameTL->getHeight() );
+                    const std::uint8_t* frameData = &bufferFrame->getElement(0);
+                    const int width               = static_cast< int >( frameTL->getWidth() );
+                    const int height              = static_cast< int >( frameTL->getHeight() );
                     ::cv::Mat img( ::cv::Size( width, height ), CV_8UC4 );
                     img.data = const_cast< uchar*>(frameData);
 

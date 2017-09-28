@@ -115,7 +115,7 @@ void SFrameResizer::updating()
 
     // Get the buffer of the copied timeline
     CSPTR(::arData::FrameTL::BufferType) bufferFrameIn = m_inputTL->getClosestBuffer(timestamp);
-    const ::boost::uint8_t* frameBuffIn = &bufferFrameIn->getElement(0);
+    const std::uint8_t* frameBuffIn = &bufferFrameIn->getElement(0);
 
     int width  = static_cast<int>( m_inputTL->getWidth() );
     int height = static_cast<int>( m_inputTL->getHeight() );
@@ -134,7 +134,7 @@ void SFrameResizer::updating()
 
     // Get the buffer of the timeline to fill
     SPTR(::arData::FrameTL::BufferType) bufferOut = m_outputTL->createBuffer(timestamp);
-    ::boost::uint8_t* frameBuffOut                = bufferOut->addElement(0);
+    std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
     // Create an openCV mat that aliases the buffer created from the output timeline
     ::cv::Size size(static_cast<int>(outWidth), static_cast<int>(outHeight));
