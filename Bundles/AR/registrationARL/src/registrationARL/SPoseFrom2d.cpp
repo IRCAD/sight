@@ -14,8 +14,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwCore/Profiling.hpp>
-
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <arlcore/MatrixR.h>
@@ -99,7 +97,6 @@ void SPoseFrom2d::updating()
 
 void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
-
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
     if(!m_isInitialized)

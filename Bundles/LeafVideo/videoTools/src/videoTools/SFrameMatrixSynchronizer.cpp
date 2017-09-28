@@ -114,7 +114,7 @@ void SFrameMatrixSynchronizer::starting()
 
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
     m_timer                                      = m_associatedWorker->createTimer();
-    ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(m_timeStep);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
     m_timer->setFunction( std::bind( &SFrameMatrixSynchronizer::synchronize, this)  );
     m_timer->setDuration(duration);
     m_timer->start();
@@ -263,8 +263,8 @@ void SFrameMatrixSynchronizer::synchronize()
             return;
         }
 
-        const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
-        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
         // Notify

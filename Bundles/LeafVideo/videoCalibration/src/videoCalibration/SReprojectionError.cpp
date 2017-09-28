@@ -17,6 +17,8 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
@@ -91,6 +93,8 @@ void SReprojectionError::starting()
 
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
 
+    SLM_ASSERT("Camera is not found", camera);
+
     m_cameraMatrix                  = ::cv::Mat::eye(3, 3, CV_64F);
     m_cameraMatrix.at<double>(0, 0) = camera->getFx();
     m_cameraMatrix.at<double>(1, 1) = camera->getFy();
@@ -98,9 +102,24 @@ void SReprojectionError::starting()
     m_cameraMatrix.at<double>(1, 2) = camera->getCy();
 
     m_distorsionCoef = ::cv::Mat(5, 1, CV_64F);
-    for (int i = 0; i < 5; ++i)
+    for (std::uint8_t i = 0; i < 5; ++i)
     {
         m_distorsionCoef.at<double>(i) = camera->getDistortionCoefficient()[i];
+    }
+
+    m_extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
+
+    auto extrinsic = this->getInput< ::fwData::TransformationMatrix3D>(s_EXTRINSIC_INPUT);
+
+    if(extrinsic != nullptr)
+    {
+        for(std::uint8_t i = 0; i < 4; ++i )
+        {
+            for(std::uint8_t j = 0; j < 4; ++j)
+            {
+                m_extrinsic.at<double>(i, j) = extrinsic->getCoefficient(i, j);
+            }
+        }
     }
 
 }
@@ -116,6 +135,7 @@ void SReprojectionError::stopping()
 
 void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 {
+
     if(!this->isStarted())
     {
         return;
@@ -132,8 +152,13 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
             return;
         }
 
-        const CSPTR(::arData::MatrixTL::BufferType) matBuff = matrixTL->getBuffer(ts);
-        const CSPTR(::arData::MarkerTL::BufferType) buffer  = markerTL->getBuffer(ts);
+        const CSPTR(::arData::MatrixTL::BufferType) matBuff = matrixTL->getClosestBuffer(ts);
+        const CSPTR(::arData::MarkerTL::BufferType) buffer  = markerTL->getClosestBuffer(ts);
+
+        if(matBuff == nullptr || buffer == nullptr)
+        {
+            return;
+        }
 
         const size_t nbMatrices = matBuff->getMaxElementNum();
         const size_t nbMarkers  = buffer->getMaxElementNum();
@@ -147,19 +172,24 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
             std::vector< ::cv::Point2f >points2D;
 
             ::cv::Mat rot = ::cv::Mat(3, 3, CV_64F);
+            ::cv::Mat mat = ::cv::Mat::eye(4, 4, CV_64F);
 
-            for(int r = 0; r < 3; ++r)
+            for(int r = 0; r < 4; ++r)
             {
-                for(int c = 0; c < 3; ++c)
+                for(int c = 0; c < 4; ++c)
                 {
-                    rot.at<double>(r, c) = static_cast<double>(matrix[r * 4 + c]);
+                    mat.at<double>(r, c) = static_cast<double>(matrix[r * 4 + c]);
                 }
             }
 
+            ::cv::Mat pose = m_extrinsic * mat;
+
+            rot = pose( ::cv::Rect(0, 0, 3, 3));
+
             ::cv::Mat tvec     = ::cv::Mat(3, 1, CV_64F);
-            tvec.at<double>(0) = static_cast<double>(matrix[3]);
-            tvec.at<double>(1) = static_cast<double>(matrix[7]);
-            tvec.at<double>(2) = static_cast<double>(matrix[11]);
+            tvec.at<double>(0) = pose.at<double>(0, 3);
+            tvec.at<double>(1) = pose.at<double>(1, 3);
+            tvec.at<double>(2) = pose.at<double>(2, 3);
 
             ::cv::Mat rvec;
 
@@ -178,15 +208,16 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
             if(m_display) //draw reprojected points
             {
-                auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
+                auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INPUT);
                 SLM_ASSERT("The input "+ s_FRAMETL_INPUT +" is not valid.", frameTL);
 
-                CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getBuffer(ts);
+                CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
+
                 if(bufferFrame != nullptr)
                 {
-                    const ::boost::uint8_t* frameData = &bufferFrame->getElement(0);
-                    const int width                   = static_cast< int >( frameTL->getWidth() );
-                    const int height                  = static_cast< int >( frameTL->getHeight() );
+                    const std::uint8_t* frameData = &bufferFrame->getElement(0);
+                    const int width               = static_cast< int >( frameTL->getWidth() );
+                    const int height              = static_cast< int >( frameTL->getHeight() );
                     ::cv::Mat img( ::cv::Size( width, height ), CV_8UC4 );
                     img.data = const_cast< uchar*>(frameData);
 
@@ -243,7 +274,7 @@ void SReprojectionError::updating()
 {
     KeyConnectionsMap connections;
 
-    connections.push( "matrixTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
+    connections.push( s_MATRIXTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT );
 
     return connections;
 }

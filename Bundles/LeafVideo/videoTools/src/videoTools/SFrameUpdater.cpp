@@ -155,9 +155,9 @@ void SFrameUpdater::updateImage()
         {
             m_lastTimestamp = timestamp;
 
-            const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
+            const std::uint8_t* frameBuff = &buffer->getElement(0);
 
-            ::arData::timeline::Buffer::BufferDataType index = arrayHelper.begin< ::boost::uint8_t >();
+            ::arData::timeline::Buffer::BufferDataType index = arrayHelper.begin< std::uint8_t >();
 
             std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 

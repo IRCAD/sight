@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,10 +8,11 @@
 #define __ARLCORE_COMMON_H__
 
 //#include <float.h>
-#include <boost/cstdint.hpp>
-#include <fwCore/macros.hpp>
-#include <fwTools/Object.hpp>
 #include <ARLcore/config.hpp>
+
+#include <fwCore/macros.hpp>
+
+#include <fwTools/Object.hpp>
 
 //#include <arlcore/Type.h>
 
@@ -45,10 +46,8 @@
 
 typedef struct
 {
-    ::boost::uint32_t Low; //UINT32
-    ::boost::uint32_t High; //UINT32
+    std::uint32_t Low; //UINT32
+    std::uint32_t High; //UINT32
 }uint32HL;
-
-
 
 #endif // __ARLCORE_COMMON_H__

@@ -67,7 +67,7 @@ void SImageNetworkWriter::configureWithIHM()
     portStr = inputDialog.getInput();
     try
     {
-        m_port        = ::boost::lexical_cast< ::boost::uint16_t> (portStr);
+        m_port        = ::boost::lexical_cast< std::uint16_t> (portStr);
         m_isValidPort = true;
     }
     catch (boost::bad_lexical_cast&)

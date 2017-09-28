@@ -8,13 +8,13 @@
 #define __IGTLNETWORK_SERVER_HPP__
 
 #include "igtlNetwork/Client.hpp"
-#include "igtlNetwork/INetwork.hpp"
 #include "igtlNetwork/config.hpp"
-
-#include <boost/type.hpp>
+#include "igtlNetwork/INetwork.hpp"
 
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
+
+#include <boost/type.hpp>
 
 #include <igtl/igtlServerSocket.h>
 
@@ -49,7 +49,7 @@ public:
      *
      * @param[in] port the port to listen
      */
-    IGTLNETWORK_API void start(::boost::uint16_t port);
+    IGTLNETWORK_API void start(std::uint16_t port);
 
     /**
      * @brief method to wait a connection
@@ -83,7 +83,7 @@ public:
      *
      * @return the port listened by server instance
      */
-    IGTLNETWORK_API ::boost::uint16_t getPort() const;
+    IGTLNETWORK_API std::uint16_t getPort() const;
 
     /**
      * @brief method to run server and start event loop of server
@@ -132,7 +132,7 @@ private:
     std::vector< Client::sptr > m_clients;
 
     /// Server port
-    ::boost::uint16_t m_port;
+    std::uint16_t m_port;
 
     /// integer constant for success
     static const int s_SUCCESS = 0;

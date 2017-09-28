@@ -91,7 +91,6 @@ void SPoseFrom2d::updating()
 
 void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
-
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
     if(!m_isInitialized)
@@ -109,7 +108,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
             {
                 auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
                 ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
-                if(timestamp == 0)
+                if(timestamp <= 0.)
                 {
                     OSLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
                     return;
@@ -165,23 +164,28 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 }
 
                 float matrixValues[16];
-
+                ::cv::Matx44f Rt;
                 if(markers.size() == 1)
                 {
-                    const ::cv::Matx44f Rt = this->cameraPoseFromMono(markers[0]);
+                    Rt = this->cameraPoseFromMono(markers[0]);
+                }
+                else if(markers.size() == 2)
+                {
 
-                    for (unsigned int i = 0; i < 4; ++i)
-                    {
-                        for (unsigned int j = 0; j < 4; ++j)
-                        {
-                            matrixValues[4*i+j] = Rt(i, j);
-                        }
-                    }
+                    Rt = this->cameraPoseFromStereo(markers[0], markers[1]);
                 }
                 else
                 {
                     SLM_WARN("More than 2 cameras is not handle for the moment");
                     continue;
+                }
+
+                for (std::uint8_t i = 0; i < 4; ++i)
+                {
+                    for (std::uint8_t j = 0; j < 4; ++j)
+                    {
+                        matrixValues[4*i+j] = Rt(i, j);
+                    }
                 }
 
                 if(!matrixBufferCreated)
@@ -201,6 +205,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
                 sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
                     ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+
                 sig->asyncEmit(timestamp);
 
             }
@@ -244,6 +249,9 @@ void SPoseFrom2d::initialize()
         cam.intrinsicMat.at<double>(0, 2) = camera->getCx();
         cam.intrinsicMat.at<double>(1, 2) = camera->getCy();
 
+        cam.imageSize.width  = static_cast<int>(camera->getWidth());
+        cam.imageSize.height = static_cast<int>(camera->getHeight());
+
         cam.distCoef = ::cv::Mat::zeros(5, 1, CV_64F);
 
         for (size_t i = 0; i < 5; ++i)
@@ -262,9 +270,9 @@ void SPoseFrom2d::initialize()
             m_extrinsic.rotation    = ::cv::Mat::eye(3, 3, CV_64F);
             m_extrinsic.translation = ::cv::Mat::eye(3, 1, CV_64F);
 
-            for (unsigned int i = 0; i < 3; ++i)
+            for (std::uint8_t i = 0; i < 3; ++i)
             {
-                for (unsigned int j = 0; j < 3; ++j)
+                for (std::uint8_t j = 0; j < 3; ++j)
                 {
                     m_extrinsic.rotation.at<double>(i, j)  = extrinsicMatrix->getCoefficient(i, j);
                     m_extrinsic.Matrix4x4.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
@@ -290,8 +298,13 @@ void SPoseFrom2d::initialize()
 const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(const SPoseFrom2d::Marker& _markerCam1,
                                                     const SPoseFrom2d::Marker& _markerCam2) const
 {
-    SLM_ERROR("Not implemented!");
-    ::cv::Matx44f pose;
+
+    ::cv::Matx44f pose = ::calibration3d::helper::cameraPoseStereo(m_3dModel, m_cameras[0].intrinsicMat,
+                                                                   m_cameras[0].distCoef,
+                                                                   m_cameras[1].intrinsicMat, m_cameras[1].distCoef,
+                                                                   _markerCam1.corners2D, _markerCam2.corners2D,
+                                                                   m_extrinsic.rotation, m_extrinsic.translation);
+
     return pose;
 }
 
@@ -312,7 +325,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 {
     KeyConnectionsMap connections;
 
-    connections.push( "markerTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
+    connections.push( s_MARKERTL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
 
     return connections;
 }

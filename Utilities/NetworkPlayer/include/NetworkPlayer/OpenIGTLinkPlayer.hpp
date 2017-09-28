@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,9 @@
 
 #include <igtlNetwork/Server.hpp>
 
-#include <istream>
 #include <boost/function.hpp>
+
+#include <istream>
 
 namespace networkPlayer
 {
@@ -60,7 +61,8 @@ public:
     void play(std::istream& inputStream);
 
     /**
-     * @brief create a OpenIGTLinkPlayer with a player user-defined function(play is like a incomplete method which user have to complete with the playFunction)
+     * @brief create a OpenIGTLinkPlayer with a player user-defined function(play is like a incomplete method which user
+     * have to complete with the playFunction)
      *
      * @param[in] playFunction play function to read stream and send data to client
      * @return a instance of a OpenIGTLinkPlayer in a smart pointer of INetworkPlayer
@@ -72,7 +74,7 @@ private:
     ::igtlNetwork::Server m_server;
 
     /// port to listen
-    ::boost::uint16_t m_port;
+    std::uint16_t m_port;
 
     /// user-defined function
     FunctionType m_playFunction;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,9 @@
 
 #include <fwZip/exception/Read.hpp>
 
-#include <boost/iostreams/stream.hpp>
-
 #include <archive_entry.h>
+
+#include <boost/iostreams/stream.hpp>
 
 #include <algorithm>
 
@@ -120,7 +120,7 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
 
 void MemoryReadArchive::readEntry(BufferSPtr content)
 {
-    ::boost::int64_t ret;
+    std::int64_t ret;
     char buffer[MemoryReadArchive::s_BUFFER_READ_SIZE];
 
     while ((ret = archive_read_data(m_archive, buffer, MemoryReadArchive::s_BUFFER_READ_SIZE)) > 0)

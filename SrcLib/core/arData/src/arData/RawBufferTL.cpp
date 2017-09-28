@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "arData/RawBufferTL.hpp"
-#include "arData/timeline/RawBuffer.hpp"
 
-#include <fwCore/base.hpp>
+#include "arData/timeline/RawBuffer.hpp"
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
+#include <boost/bind.hpp>
 #include <boost/pool/pool.hpp>
+
 #include <functional>
 
 fwDataRegisterMacro( ::arData::RawBufferTL );
@@ -111,5 +112,4 @@ bool RawBufferTL::isObjectValid(const CSPTR(::arData::timeline::Object)& obj) co
 //------------------------------------------------------------------------------
 
 } // namespace arData
-
 

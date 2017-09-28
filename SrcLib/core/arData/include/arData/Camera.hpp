@@ -15,7 +15,6 @@
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
-#include <boost/cstdint.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <array>

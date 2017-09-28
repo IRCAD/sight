@@ -1,28 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioZMQ/SZeroMQListener.hpp"
-#include "ioZMQ/ZeroMQConfigurationParser.hpp"
-#include "ioZMQ/Patterns.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
+#include "ioZMQ/Patterns.hpp"
+#include "ioZMQ/ZeroMQConfigurationParser.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
 
 #include <fwData/Object.hpp>
-#include <fwServices/macros.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <functional>
 #include <sstream>
 
-fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioZMQ::SZeroMQListener, ::fwData::Object);
-
+fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioZMQ::SZeroMQListener, ::fwData::Object);
 
 namespace ioZMQ
 {
@@ -34,10 +36,10 @@ const ::fwCom::Slots::SlotKeyType SZeroMQListener::s_UPDATE_CONFIGURATION_SLOT =
 SZeroMQListener::SZeroMQListener() :
     ::ioNetwork::INetworkListener()
 {
-    m_updateConfigurationSlot = ::fwCom::newSlot (&SZeroMQListener::updateConfiguration, this);
-    ::fwCom::HasSlots::m_slots (SZeroMQListener::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot );
+    m_updateConfigurationSlot = ::fwCom::newSlot(&SZeroMQListener::updateConfiguration, this);
+    ::fwCom::HasSlots::m_slots(SZeroMQListener::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot );
 
-    ::fwCom::HasSlots::m_slots.setWorker (m_associatedWorker);
+    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +50,7 @@ SZeroMQListener::~SZeroMQListener()
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQListener::setHost(std::string const& host, ::boost::uint16_t const port)
+void SZeroMQListener::setHost(std::string const& host, std::uint16_t const port)
 {
     std::stringstream stream;
 
@@ -62,9 +64,9 @@ void SZeroMQListener::configuring()
 {
     try
     {
-        ZeroMQConfigurationParser parser (m_configuration);
+        ZeroMQConfigurationParser parser(m_configuration);
 
-        parser.parse (Patterns::getSupportedReaderPatterns());
+        parser.parse(Patterns::getSupportedReaderPatterns());
         m_hostStr     = parser.getHostname();
         m_sockMode    = parser.getSocketMode();
         m_patternMode = parser.getPatternMode();
@@ -84,11 +86,11 @@ void SZeroMQListener::runReceiver()
 
     try
     {
-        m_socket->start (m_hostStr);
+        m_socket->start(m_hostStr);
     }
     catch (std::exception& err)
     {
-        msgDialog.showMessageDialog ("Error", "Cannot start the listener : " + std::string(err.what()));
+        msgDialog.showMessageDialog("Error", "Cannot start the listener : " + std::string(err.what()));
         return;
     }
     m_socket->setReceiveTimeout(1000);
@@ -127,7 +129,7 @@ void SZeroMQListener::updateConfiguration(::zmqNetwork::Socket::PatternMode cons
 
 void SZeroMQListener::starting()
 {
-    std::function<void() > task = std::bind (&SZeroMQListener::runReceiver, this);
+    std::function<void() > task = std::bind(&SZeroMQListener::runReceiver, this);
 
     m_socket        = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(m_sockMode, m_patternMode));
     m_receiveWorker = ::fwThread::Worker::New();
@@ -145,5 +147,4 @@ void SZeroMQListener::stopping()
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-
 
