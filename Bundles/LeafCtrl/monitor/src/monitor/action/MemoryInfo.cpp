@@ -1,19 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
+#include "monitor/action/MemoryInfo.hpp"
 
-#include <fwServices/macros.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwServices/macros.hpp>
 
-#include "monitor/action/MemoryInfo.hpp"
+#include <iostream>
 
 namespace monitor
 {
@@ -36,15 +36,14 @@ MemoryInfo::~MemoryInfo() noexcept
 
 //------------------------------------------------------------------------------
 
-
 void MemoryInfo::updating( )
 {
     // Memory information
-    ::boost::uint64_t mo                = 1024*1024;
-    ::boost::uint64_t totalSystemMemory = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
-    ::boost::uint64_t freeSystemMemory  = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
-    ::boost::uint64_t usedProcessMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
-    ::boost::uint64_t estimateFreeMem   = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem();
+    std::uint64_t mo                = 1024*1024;
+    std::uint64_t totalSystemMemory = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
+    std::uint64_t freeSystemMemory  = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
+    std::uint64_t usedProcessMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
+    std::uint64_t estimateFreeMem   = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem();
 
     ::fwMemory::BufferManager::SizeType managedBufferSize = 0;
     ::fwMemory::BufferManager::SizeType dumpedBufferSize  = 0;

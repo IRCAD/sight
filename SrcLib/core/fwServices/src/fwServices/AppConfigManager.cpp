@@ -26,6 +26,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/thread/futures/wait_for_all.hpp>
 
 namespace fwServices
 {
@@ -332,10 +333,10 @@ void AppConfigManager::stopStartedServices()
 
         const ::fwServices::IService::sptr srv = w_srv.lock();
         OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        futures.push_back(srv->stop());
+        futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
-    ::boost::wait_for_all(futures.begin(), futures.end());
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -388,14 +389,15 @@ void AppConfigManager::processStartItems()
                 SLM_FATAL_IF( this->msgHead() + "Start is requested for service '" + uid + "', though this identifier "
                               "exists, this is not a service.", !srv);
 
-                futures.push_back(srv->start());
+                futures.emplace_back(srv->start());
 
                 m_startedSrv.push_back(srv);
             }
 
         }
     }
-    ::boost::wait_for_all(futures.begin(), futures.end());
+
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -432,12 +434,12 @@ void AppConfigManager::processUpdateItems()
                 SLM_FATAL_IF( this->msgHead() + "Update is requested for service '" + uid +
                               "', though this identifier exists, this is not a service.", !srv);
 
-                futures.push_back(srv->update());
+                futures.emplace_back(srv->update());
             }
         }
     }
 
-    ::boost::wait_for_all(futures.begin(), futures.end());
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------

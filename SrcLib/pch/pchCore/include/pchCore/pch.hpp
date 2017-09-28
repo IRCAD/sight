@@ -30,6 +30,7 @@
 #include <cstdint>
 #include <exception>
 #include <functional>
+#include <future>
 #include <map>
 #include <string>
 #include <typeinfo>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,20 +8,19 @@
 
 #include "fwJobs/exception/Waiting.hpp"
 
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <algorithm>
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
 
+#include <algorithm>
 
 namespace fwJobs
 {
 
-IJob::IJob(const std::string &name) :
+IJob::IJob(const std::string& name) :
     m_sigCancelRequested(CancelRequestedSignal::New()),
     m_sigCanceled(StateSignal::New()),
     m_sigStarted(StateSignal::New()),
@@ -119,7 +118,9 @@ IJob::SharedFuture IJob::cancel()
 
             if(nextState == CANCELED)
             {
-                m_runFuture = ::boost::make_shared_future();
+                // If we use the default constructor, the future is not valid and we will not be able to wait for it
+                // Thus we build a dummy future to get a valid one
+                m_runFuture = std::async( []() {} );
             }
         }
     }
@@ -293,7 +294,7 @@ void IJob::wait()
     {
         runFuture.wait();
     }
-    catch( boost::future_uninitialized & )
+    catch( std::future_error& )
     {
         FW_RAISE_EXCEPTION( ::fwJobs::exception::Waiting("Job has not been started") );
     }
@@ -301,7 +302,7 @@ void IJob::wait()
 
 //------------------------------------------------------------------------------
 
-void IJob::log(const std::string &message)
+void IJob::log(const std::string& message)
 {
     ::fwCore::mt::WriteLock lock(m_mutex);
     this->logNoLock(message);
@@ -309,7 +310,7 @@ void IJob::log(const std::string &message)
 
 //------------------------------------------------------------------------------
 
-void IJob::logNoLock(const std::string &message)
+void IJob::logNoLock(const std::string& message)
 {
     m_logs.push_back(message);
 
@@ -383,7 +384,7 @@ void IJob::doneWork( std::uint64_t units )
 
 //------------------------------------------------------------------------------
 
-void IJob::doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock &lock )
+void IJob::doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock )
 {
     auto oldDoneWork = m_doneWorkUnits;
     decltype(m_doneWorkHooks)doneWorkHooks;
@@ -421,7 +422,7 @@ void IJob::setTotalWorkUnits(std::uint64_t units)
 
 //------------------------------------------------------------------------------
 
-void IJob::setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::ReadToWriteLock &lock )
+void IJob::setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock )
 {
     auto oldTotalWorkUnits = m_totalWorkUnits;
     decltype(m_totalWorkUnitsHooks)totalWorkUnitsHook;

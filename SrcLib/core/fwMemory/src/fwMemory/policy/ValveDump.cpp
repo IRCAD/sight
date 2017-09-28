@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #include "fwMemory/ByteSize.hpp"
 #include "fwMemory/exception/BadCast.hpp"
@@ -20,9 +19,6 @@
 #define MEMORYTOOLIMPL PosixMemoryMonitorTools
 #include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 #endif
-
-#include <boost/assign.hpp>
-
 
 namespace fwMemory
 {
@@ -42,7 +38,7 @@ ValveDump::ValveDump() :
 
 //------------------------------------------------------------------------------
 
-void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+void ValveDump::allocationRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                                    BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(buffer);
@@ -51,7 +47,7 @@ void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+void ValveDump::setRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                             BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(info);
@@ -62,7 +58,7 @@ void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBu
 
 //------------------------------------------------------------------------------
 
-void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+void ValveDump::reallocateRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                                    BufferInfo::SizeType newSize )
 {
     FwCoreNotUsedMacro(buffer);
@@ -71,7 +67,7 @@ void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::destroyRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -79,7 +75,7 @@ void ValveDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::Con
 
 //------------------------------------------------------------------------------
 
-void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::lockRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -87,7 +83,7 @@ void ValveDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstB
 
 //------------------------------------------------------------------------------
 
-void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::unlockRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -96,7 +92,7 @@ void ValveDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::Cons
 
 //------------------------------------------------------------------------------
 
-void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::dumpSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -104,7 +100,7 @@ void ValveDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstB
 
 //------------------------------------------------------------------------------
 
-void ValveDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void ValveDump::restoreSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -136,17 +132,16 @@ size_t ValveDump::dump(size_t nbOfBytes)
 
         BufferVectorType buffers;
 
-        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt :  bufferInfos)
+        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type& elt :  bufferInfos)
         {
-            const ::fwMemory::BufferInfo &info = elt.second;
+            const ::fwMemory::BufferInfo& info = elt.second;
             if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }
         }
 
-
-        for(const BufferVectorType::value_type &pair :  bufferInfos)
+        for(const BufferVectorType::value_type& pair :  bufferInfos)
         {
             if(dumped < nbOfBytes)
             {
@@ -186,7 +181,7 @@ void ValveDump::refresh()
 
 //------------------------------------------------------------------------------
 
-bool ValveDump::setParam(const std::string &name, const std::string &value)
+bool ValveDump::setParam(const std::string& name, const std::string& value)
 {
     OSLM_INFO("Set " << name << " to " << value);
     try
@@ -214,17 +209,15 @@ bool ValveDump::setParam(const std::string &name, const std::string &value)
 
 //------------------------------------------------------------------------------
 
-const fwMemory::IPolicy::ParamNamesType &ValveDump::getParamNames() const
+const fwMemory::IPolicy::ParamNamesType& ValveDump::getParamNames() const
 {
-    static const fwMemory::IPolicy::ParamNamesType params
-        = ::boost::assign::list_of ("min_free_mem")
-              ("hysteresis_offet");
+    static const fwMemory::IPolicy::ParamNamesType params = {{ "min_free_mem", "hysteresis_offet" }};
     return params;
 }
 
 //------------------------------------------------------------------------------
 
-std::string ValveDump::getParam(const std::string &name, bool *ok ) const
+std::string ValveDump::getParam(const std::string& name, bool* ok ) const
 {
     bool isOk = false;
     std::string value;
@@ -246,7 +239,6 @@ std::string ValveDump::getParam(const std::string &name, bool *ok ) const
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace policy
 

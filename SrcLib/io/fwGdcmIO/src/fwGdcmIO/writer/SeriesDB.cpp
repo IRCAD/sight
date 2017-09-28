@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,14 @@
 #include "fwGdcmIO/writer/SeriesDB.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwDataIO/writer/registry/macros.hpp>
+
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
+
 #include <fwTools/Stringizer.hpp>
 
-#include <boost/bind.hpp>           // for ProgessHandler
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>  // for ProgessHandler
@@ -54,7 +56,7 @@ void SeriesDB::write()
 
     // Copy and sort container in order to write ImageSeries before ModelSeries
     ::fwMedData::SeriesDB::ContainerType seriesContainer = seriesDB->getContainer();
-    std::sort (seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
+    std::sort(seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
 
     // Write all patients
     for( ::fwMedData::Series::sptr series: seriesContainer)
@@ -67,7 +69,7 @@ void SeriesDB::write()
 
         // Forward event progress to its parents
         ::fwTools::ProgressAdviser::ProgessHandler handler =
-            ::boost::bind( &Series::notifyProgress, this, ::boost::lambda::_1, ::boost::lambda::_2);
+            std::bind( &Series::notifyProgress, this, ::std::placeholders::_1, ::std::placeholders::_2);
         writer->addHandler(handler);
 
         // Write a series

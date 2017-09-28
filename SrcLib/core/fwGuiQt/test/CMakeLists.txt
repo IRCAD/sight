@@ -8,4 +8,3 @@ fwInclude(
 fwLink(
     ${Qt5Core_LIBRARIES}
 )
-

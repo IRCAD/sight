@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,6 @@
 
 #include <fwTools/NumericRoundCast.hxx>
 
-#include <boost/type_traits/make_unsigned.hpp>
-
 #include <cstdlib>
 #include <ctime>
 
@@ -21,6 +19,8 @@ namespace generator
 {
 
 struct RandFloat {
+    //------------------------------------------------------------------------------
+
     float operator()()
     {
         return ((rand()%101-50.f))/500.f;
@@ -96,9 +96,9 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
     float step = edgeDim / nbPointsByEdge;
 
     //Face Y = edgeDim
-    for(size_t x = 0; x<nbPointsByEdge; x++)
+    for(size_t x = 0; x < nbPointsByEdge; x++)
     {
-        for(size_t z = 0; z<nbPointsByEdge; z++)
+        for(size_t z = 0; z < nbPointsByEdge; z++)
         {
             pt1[0] = x*step;
             pt1[1] = edgeDim;
@@ -126,9 +126,9 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
     }
 
     //Face X = edgeDim
-    for(size_t y = 0; y<nbPointsByEdge; y++)
+    for(size_t y = 0; y < nbPointsByEdge; y++)
     {
-        for(size_t z = 0; z<nbPointsByEdge; z++)
+        for(size_t z = 0; z < nbPointsByEdge; z++)
         {
             pt1[0] = edgeDim;
             pt1[1] = y*step;
@@ -168,9 +168,9 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
     float step = edgeDim / nbPointsByEdge;
 
     //Face Z = 0
-    for(size_t x = 0; x<nbPointsByEdge; x++)
+    for(size_t x = 0; x < nbPointsByEdge; x++)
     {
-        for(size_t y = 0; y<nbPointsByEdge; y++)
+        for(size_t y = 0; y < nbPointsByEdge; y++)
         {
             pt1[0] = x*step;
             pt1[1] = y*step;
@@ -199,9 +199,9 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
     }
 
     //Face X = 0
-    for(size_t y = 0; y<nbPointsByEdge; y++)
+    for(size_t y = 0; y < nbPointsByEdge; y++)
     {
-        for(size_t z = 0; z<nbPointsByEdge; z++)
+        for(size_t z = 0; z < nbPointsByEdge; z++)
         {
             pt1[0] = 0;
             pt1[1] = y*step;

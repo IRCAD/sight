@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,21 +8,23 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
-#include <functional>
+
 #include <QComboBox>
-#include <QStringList>
-#include <QSlider>
-#include <QLineEdit>
 #include <QHBoxLayout>
+#include <QLineEdit>
+#include <QSlider>
+#include <QStringList>
+
+#include <functional>
 
 namespace fwGuiQt
 {
 
 //------------------------------------------------------------------------------
 
-SliceSelector::SliceSelector(QWidget* const parent ) noexcept : QWidget( parent )
+SliceSelector::SliceSelector(QWidget* const parent ) noexcept :
+    QWidget( parent )
 {
     m_fctChangeIndexCallback = std::bind( &::fwGuiQt::SliceSelector::printIndex, this, std::placeholders:: _1);
     m_fctChangeTypeCallback  = std::bind( &::fwGuiQt::SliceSelector::printType, this, std::placeholders:: _1);
@@ -39,11 +41,11 @@ SliceSelector::SliceSelector(QWidget* const parent ) noexcept : QWidget( parent 
     m_pSliceIndexText->setReadOnly(true);
     m_pSliceIndexText->setMaximumWidth(80);
 
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(m_sliceType, 0);
     layout->addWidget(m_sliceIndex, 1);
     layout->addWidget(m_pSliceIndexText, 0);
-    layout->setContentsMargins(0,0,0,0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
     QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
@@ -140,7 +142,6 @@ void SliceSelector::onSliceTypeChange( int index )
     m_fctChangeTypeCallback(index);
     this->setSliceValue( this->m_sliceIndex->value());
 }
-
 
 //------------------------------------------------------------------------------
 

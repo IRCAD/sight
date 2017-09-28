@@ -263,7 +263,7 @@ void IGuiContainerSrv::initializeSlideViewBuilder(ConfigurationType slideViewCon
 
 void IGuiContainerSrv::setParent(std::string wid)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(::boost::function< void() >([this, &wid]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >([this, &wid]
         {
             m_viewRegistrar->setParent(wid);
             ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,9 @@
 
 #include <fwCore/mt/types.hpp>
 
-#include <boost/thread/future.hpp>
-
 #include <cstdint>
 #include <functional>
+#include <future>
 #include <string>
 #include <vector>
 
@@ -62,7 +61,7 @@ public:
     typedef std::function< void (IJob&) > JobCancelHook;
 
     /// Log callback type for log hook
-    typedef std::function< void (IJob&, const std::string &) > LogHook;
+    typedef std::function< void (IJob&, const std::string&) > LogHook;
 
     /// Done work callback type for done work hook
     typedef std::function< void (IJob&, std::uint64_t /*oldDoneWork*/) > DoneWorkHook;
@@ -107,7 +106,7 @@ public:
     typedef ::fwCom::Signal< void (std::string) > LogSignal;
 
     /// Future type
-    typedef ::boost::shared_future< void > SharedFuture;
+    typedef std::shared_future< void > SharedFuture;
     /**  @} */
 
     /**
@@ -115,7 +114,7 @@ public:
      *
      * @param name The name of the job.
      */
-    FWJOBS_API IJob(const std::string &name = "");
+    FWJOBS_API IJob(const std::string& name = "");
 
     /// Default destructor.
     FWJOBS_API virtual ~IJob();
@@ -141,7 +140,6 @@ public:
     /// Setter on cancelable.
     FWJOBS_API void setCancelable(bool cancel);
 
-
     /**
      * @brief Run the current job
      *
@@ -158,13 +156,12 @@ public:
      */
     FWJOBS_API void wait();
 
-
     /**
      * @brief Returns the job canceling status.
      *
      * @return A boolean: true if cancel have been requested.
      */
-    FWJOBS_API const bool &cancelRequested() const;
+    FWJOBS_API const bool& cancelRequested() const;
 
     /**
      * @brief Returns a callback on job canceling status.
@@ -180,7 +177,6 @@ public:
      * is canceled
      */
     FWJOBS_API virtual SharedFuture cancel();
-
 
     /**
      * @brief Add cancel callback to sequence for cancel hook
@@ -224,7 +220,6 @@ public:
      */
     FWJOBS_API void addStateHook(StateHook callback);
 
-
     /**
      * @brief Log a message.
      *
@@ -233,18 +228,17 @@ public:
      *
      * @param log the message to log
      */
-    FWJOBS_API void log(const std::string &message);
-
+    FWJOBS_API void log(const std::string& message);
 
 protected:
 
     /**
      * @name Not implemented
      * @{ */
-    IJob(IJob &);
-    IJob& operator=(IJob &);
-    IJob(IJob &&);
-    IJob& operator=(IJob &&);
+    IJob(IJob&);
+    IJob& operator=(IJob&);
+    IJob(IJob&&);
+    IJob& operator=(IJob&&);
     /**  @} */
 
     /// Run an instanciated job
@@ -266,7 +260,6 @@ protected:
     // TODO : remove when compiler is up to date
     FWJOBS_API std::function< void() > finishCallback();
 
-
     /// Getter on the state without mutex lock
     FWJOBS_API State getStateNoLock() const;
 
@@ -286,7 +279,7 @@ protected:
      * @param units new done work units
      * @param lock mutex to upgrade to write lock
      */
-    FWJOBS_API void doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock &lock );
+    FWJOBS_API void doneWork( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock );
 
     /// Set done work units to total work units
     FWJOBS_API void done();
@@ -305,8 +298,7 @@ protected:
      * @param units new total work units
      * @param lock mutex to upgrade to write lock
      */
-    FWJOBS_API void setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::ReadToWriteLock &lock );
-
+    FWJOBS_API void setTotalWorkUnitsUpgradeLock( std::uint64_t units, ::fwCore::mt::ReadToWriteLock& lock );
 
     /**
      * @brief Add job cancel callback to sequence without mutex lock for cancel hook
@@ -343,14 +335,12 @@ protected:
      */
     FWJOBS_API void addStateHookNoLock(StateHook callback);
 
-
     /**
      * @brief Add a message to thelog sequence.
      *
      * @param message the message to add to the sequence
      */
-    FWJOBS_API void logNoLock(const std::string &message);
-
+    FWJOBS_API void logNoLock(const std::string& message);
 
     /// Signal emitted when cancel has been requested
     SPTR(CancelRequestedSignal) m_sigCancelRequested;
@@ -370,10 +360,8 @@ protected:
     /// Signal emitted when a message has been added to logs. Takes a std::string as parameter.
     SPTR(LogSignal) m_sigLogged;
 
-
     /// Mutex to protect object access.
     mutable ::fwCore::mt::ReadWriteMutex m_mutex;
-
 
     /// Job's name
     std::string m_name;
@@ -416,6 +404,5 @@ protected:
 };
 
 } //namespace fwJobs
-
 
 #endif //__FWJOBS_IJOB_HPP__

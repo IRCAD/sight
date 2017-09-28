@@ -20,6 +20,7 @@
 #include <limits>
 #include <map>
 #include <string>
+#include <type_traits>
 #include <typeinfo>
 
 namespace fwTools
@@ -27,7 +28,6 @@ namespace fwTools
 
 /**
  * @brief   Class describing an elementary C++ type aka unsigned char, signed char, .... int, float, double
- *
  **/
 class FWTOOLS_CLASS_API Type
 {
@@ -172,15 +172,15 @@ public:
     FWTOOLS_API static const std::string s_FLOAT_TYPENAME;
     FWTOOLS_API static const std::string s_DOUBLE_TYPENAME;
 
-    typedef ::boost::int8_t Int8Type;
-    typedef ::boost::int16_t Int16Type;
-    typedef ::boost::int32_t Int32Type;
-    typedef ::boost::int64_t Int64Type;
+    typedef std::int8_t Int8Type;
+    typedef std::int16_t Int16Type;
+    typedef std::int32_t Int32Type;
+    typedef std::int64_t Int64Type;
 
-    typedef ::boost::uint8_t UInt8Type;
-    typedef ::boost::uint16_t UInt16Type;
-    typedef ::boost::uint32_t UInt32Type;
-    typedef ::boost::uint64_t UInt64Type;
+    typedef std::uint8_t UInt8Type;
+    typedef std::uint16_t UInt16Type;
+    typedef std::uint32_t UInt32Type;
+    typedef std::uint64_t UInt64Type;
 
     typedef float FloatType;
     typedef double DoubleType;
@@ -234,11 +234,11 @@ bool Type::isOfType() const
 template <typename T>
 void Type::setType()
 {
-    m_name = Type::traitsToString< sizeof(T), ::boost::is_signed<T>::value, ::boost::is_integral<T>::value >();
+    m_name = Type::traitsToString< sizeof(T), std::is_signed<T>::value, std::is_integral<T>::value >();
 
     m_sizeof           = sizeof(T);
-    m_isSigned         = ::boost::is_signed<T>::value;
-    m_isFixedPrecision = ::boost::is_integral<T>::value;
+    m_isSigned         = std::is_signed<T>::value;
+    m_isFixedPrecision = std::is_integral<T>::value;
 
     m_tool = SPTR(ToolBase)(new Type::Tool<T>());
 
@@ -264,12 +264,12 @@ FWTOOLS_API void Type::setType< char >();
 #ifdef linux
 
 template <>
-FWTOOLS_API void Type::setType< ::boost::int64_t >();
+FWTOOLS_API void Type::setType< std::int64_t >();
 
 //-----------------------------------------------------------------------------
 
 template <>
-FWTOOLS_API void Type::setType< ::boost::uint64_t >();
+FWTOOLS_API void Type::setType< std::uint64_t >();
 
 #endif
 
@@ -307,8 +307,8 @@ template<> FWTOOLS_API const std::string& Type::traitsToString< 2, false, true >
 template<> FWTOOLS_API const std::string& Type::traitsToString< 4, false, true > ();
 template<> FWTOOLS_API const std::string& Type::traitsToString< 8, false, true > ();
 
-template<> FWTOOLS_API const std::string& Type::traitsToString< 4, false, false > ();
-template<> FWTOOLS_API const std::string& Type::traitsToString< 8, false, false > ();
+template<> FWTOOLS_API const std::string& Type::traitsToString< 4, true, false > ();
+template<> FWTOOLS_API const std::string& Type::traitsToString< 8, true, false > ();
 
 } //end namespace fwTools
 

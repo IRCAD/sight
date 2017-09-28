@@ -1,46 +1,46 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
-
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
+#include "fwMemory/ByteSize.hpp"
 
 #include "fwMemory/exception/BadCast.hpp"
-#include "fwMemory/ByteSize.hpp"
+
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/qi.hpp>
+
+#include <sstream>
 
 namespace fwMemory
 {
 
-
-const ::boost::uint64_t ByteSize::Bytes = 1;
+const std::uint64_t ByteSize::Bytes = 1;
 
 // SI units
-const ::boost::uint64_t ByteSize::KB = 1000LL;
-const ::boost::uint64_t ByteSize::MB = 1000000LL;
-const ::boost::uint64_t ByteSize::GB = 1000000000LL;
-const ::boost::uint64_t ByteSize::TB = 1000000000000LL;
-const ::boost::uint64_t ByteSize::PB = 1000000000000000LL;
+const std::uint64_t ByteSize::KB = 1000LL;
+const std::uint64_t ByteSize::MB = 1000000LL;
+const std::uint64_t ByteSize::GB = 1000000000LL;
+const std::uint64_t ByteSize::TB = 1000000000000LL;
+const std::uint64_t ByteSize::PB = 1000000000000000LL;
 
 // IEC units
-const ::boost::uint64_t ByteSize::KiB = 1LL << 10;
-const ::boost::uint64_t ByteSize::MiB = 1LL << 20;
-const ::boost::uint64_t ByteSize::GiB = 1LL << 30;
-const ::boost::uint64_t ByteSize::TiB = 1LL << 40;
-const ::boost::uint64_t ByteSize::PiB = 1LL << 50;
+const std::uint64_t ByteSize::KiB = 1LL << 10;
+const std::uint64_t ByteSize::MiB = 1LL << 20;
+const std::uint64_t ByteSize::GiB = 1LL << 30;
+const std::uint64_t ByteSize::TiB = 1LL << 40;
+const std::uint64_t ByteSize::PiB = 1LL << 50;
 
-
-
-ByteSize::ByteSize () : m_size(0)
+ByteSize::ByteSize () :
+    m_size(0)
 {
 }
 
 //------------------------------------------------------------------------------
 
-ByteSize::ByteSize ( SizeType size, UnitType unit ) : m_size(0)
+ByteSize::ByteSize ( SizeType size, UnitType unit ) :
+    m_size(0)
 {
     SLM_ASSERT("Bad Unit",
                (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
@@ -50,7 +50,8 @@ ByteSize::ByteSize ( SizeType size, UnitType unit ) : m_size(0)
 
 //------------------------------------------------------------------------------
 
-ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
+ByteSize::ByteSize ( double size, UnitType unit ) :
+    m_size(0)
 {
     SLM_ASSERT("Bad Unit",
                (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
@@ -64,7 +65,7 @@ ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
 
 //------------------------------------------------------------------------------
 
-ByteSize::ByteSize ( const std::string &size )
+ByteSize::ByteSize ( const std::string& size )
 {
     this->setSize(size);
 }
@@ -92,7 +93,7 @@ ByteSize& ByteSize::operator= ( double size )
 
 //------------------------------------------------------------------------------
 
-ByteSize& ByteSize::operator= ( const std::string &size )
+ByteSize& ByteSize::operator= ( const std::string& size )
 {
     this->setSize(size);
     return *this;
@@ -125,7 +126,7 @@ void ByteSize::setSize ( double size, UnitType unit )
 
 //------------------------------------------------------------------------------
 
-void ByteSize::setSize ( const std::string &size )
+void ByteSize::setSize ( const std::string& size )
 {
     SizeType newSize = 0;
     bool r           = parseSize(size, newSize);
@@ -172,8 +173,7 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
 
 //------------------------------------------------------------------------------
 
-
-bool ByteSize::parseSize(const std::string &s, SizeType& size)
+bool ByteSize::parseSize(const std::string& s, SizeType& size)
 {
     using ::boost::phoenix::ref;
     using ::boost::spirit::ascii::no_case;
@@ -209,7 +209,6 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
         ( "p", ByteSize::PiB ) ( "pib", ByteSize::PiB )
     ;
 
-
     bool r = false;
     r = phrase_parse(first, last,
                      //  Begin grammar
@@ -225,7 +224,6 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
                      //  End grammar
 
                      space);
-
 
     if (!r || first != last) // fail if we did not get a full match
     {
@@ -283,7 +281,7 @@ std::string ByteSize::getHumanReadableSize( StandardType standard )
     static UnitType iec []         = {Bytes, KiB, MiB, GiB, TiB, PiB};
     const size_t sizeOfStandardSet = 5;
 
-    UnitType *unitSet = iec;
+    UnitType* unitSet = iec;
     if( standard == SI)
     {
         unitSet = si;
@@ -303,9 +301,5 @@ std::string ByteSize::getHumanReadableSize( StandardType standard )
 }
 //------------------------------------------------------------------------------
 
-
-
-
 } //namespace fwMemory
-
 

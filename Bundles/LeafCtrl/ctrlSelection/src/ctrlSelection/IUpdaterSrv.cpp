@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,8 +88,8 @@ void IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr
         OSLM_INFO(
             "Manage event "<< onEvent <<" from this object "<< fromUID <<" and "<< actionType << " "<< compositeKey <<
             " in my composite.");
-        ::boost::tuple< std::string, std::string, std::string, ActionType > managedEvent (onEvent, fromUID,
-                                                                                          compositeKey, action);
+        std::tuple< std::string, std::string, std::string, ActionType > managedEvent(onEvent, fromUID,
+                                                                                     compositeKey, action);
         m_managedEvents.push_back( managedEvent );
         //addNewHandledEvent( onEvent );
     }
@@ -126,8 +126,8 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
     }
 
     // Use helper on composite
-    std::shared_ptr< ::fwDataTools::helper::Composite > pCompositeHelper ( new ::fwDataTools::helper::Composite(
-                                                                               pComposite ) );
+    std::shared_ptr< ::fwDataTools::helper::Composite > pCompositeHelper( new ::fwDataTools::helper::Composite(
+                                                                              pComposite ) );
 
     if(_action != DO_NOTHING)
     {
@@ -140,12 +140,12 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
             }
             case SWAP:
             {
-                pCompositeHelper->swap(_compositeKey,_obj);
+                pCompositeHelper->swap(_compositeKey, _obj);
                 break;
             }
             case ADD:
             {
-                pCompositeHelper->add(_compositeKey,_obj);
+                pCompositeHelper->add(_compositeKey, _obj);
                 break;
             }
             default:

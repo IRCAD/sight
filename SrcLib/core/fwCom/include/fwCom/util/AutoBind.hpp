@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 #ifndef __FWCOM_UTIL_AUTOBIND_HPP__
 #define __FWCOM_UTIL_AUTOBIND_HPP__
 
-#include <boost/function.hpp>
-
 #include "fwCom/util/convert_function_type.hpp"
 
+#include <functional>
 
 /**
  * @brief fwCom
@@ -17,16 +16,13 @@
 namespace fwCom
 {
 
-
 /**
  * @brief util
  */
 namespace util
 {
 
-
 /**
- * @class AutoBind
  * @brief Automatic binding class.
  * This class allow to bind automatically a function/method with the right number of arguments.
  *
@@ -36,7 +32,6 @@ namespace util
 template< typename F, int PLACEHOLDERS_NB >
 struct AutoBind;
 
-
 /// AutoBind specialization.
 template< typename F >
 struct AutoBind< F, 0 >
@@ -44,10 +39,9 @@ struct AutoBind< F, 0 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -56,9 +50,8 @@ struct AutoBind< F, 1 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -67,9 +60,8 @@ struct AutoBind< F, 2 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -78,9 +70,8 @@ struct AutoBind< F, 3 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -89,9 +80,8 @@ struct AutoBind< F, 4 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -100,9 +90,8 @@ struct AutoBind< F, 5 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -111,9 +100,8 @@ struct AutoBind< F, 6 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -122,9 +110,8 @@ struct AutoBind< F, 7 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -133,9 +120,8 @@ struct AutoBind< F, 8 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /// AutoBind specialization.
 template< typename F >
@@ -144,9 +130,8 @@ struct AutoBind< F, 9 >
     typedef typename convert_function_type< F >::type FunctionType;
 
     template< typename W, typename ... A >
-    static ::boost::function< FunctionType > wrap( W f, A ... a );
+    static std::function< FunctionType > wrap( W f, A ... a );
 };
-
 
 /**
  * @brief Automatic bind of given function
@@ -157,9 +142,7 @@ struct AutoBind< F, 9 >
  * as second argument.
  */
 template <typename F, typename ... A >
-::boost::function< typename convert_function_type< F >::type > autobind(F f, A ... a);
-
-
+std::function< typename convert_function_type< F >::type > autobind(F f, A ... a);
 
 } //namespace util
 

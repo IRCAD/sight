@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,14 +13,10 @@
 
 #include <fwCamp/macros.hpp>
 
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
-
 #include <boost/filesystem/path.hpp>
-#include <boost/type_traits/conditional.hpp>
-#include <boost/type_traits/is_const.hpp>
 
 #include <istream>
+#include <type_traits>
 
 fwCampAutoDeclareMacro((fwMemory)(BufferObject), FWMEMORY_API);
 
@@ -72,6 +68,8 @@ public:
         return this->getClassname();
     }
 
+    //------------------------------------------------------------------------------
+
     virtual ::fwMemory::BufferManager::BufferType getBuffer()
     {
         return m_buffer;
@@ -92,7 +90,7 @@ public:
     {
     public:
 
-        typedef typename ::boost::conditional< ::boost::is_const< T >::value, const void*, void* >::type BufferType;
+        typedef typename ::boost::conditional< std::is_const< T >::value, const void*, void* >::type BufferType;
 
         /**
          * @brief Build an empty lock.
@@ -148,7 +146,6 @@ public:
         WPTR(T) m_bufferObject;
     };
 
-
     /**
      * @name Locks
      * @brief Locks types
@@ -157,7 +154,6 @@ public:
     typedef LockBase<BufferObject> Lock;
     typedef LockBase<const BufferObject> ConstLock;
     /**  @} */
-
 
     /**
      * @brief BufferObject constructor
@@ -172,7 +168,6 @@ public:
      * unregister the buffer from the buffer manager.
      */
     FWMEMORY_API virtual ~BufferObject();
-
 
     /**
      * @brief Buffer allocation
@@ -208,7 +203,6 @@ public:
      *
      */
     FWMEMORY_API virtual void destroy();
-
 
     /**
      * @brief Buffer setter
@@ -305,7 +299,6 @@ public:
                                         const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New()
                                         );
 
-
 protected:
 
     ::fwMemory::BufferManager::BufferType m_buffer;
@@ -322,6 +315,5 @@ protected:
 };
 
 }
-
 
 #endif // __FWMEMORY_BUFFEROBJECT_HPP__

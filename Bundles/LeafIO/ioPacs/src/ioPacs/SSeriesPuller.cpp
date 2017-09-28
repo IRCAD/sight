@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -87,7 +87,7 @@ void SSeriesPuller::info(std::ostream& _sstream )
 void SSeriesPuller::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SSeriesPuller must have a \"config\" element.",config);
+    SLM_ASSERT("The service ::ioPacs::SSeriesPuller must have a \"config\" element.", config);
 
     bool success;
 
@@ -135,7 +135,6 @@ void SSeriesPuller::starting()
         m_dicomReader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(readerConfig) );
 
     }
-
 
     m_dicomReader->configure();
     m_dicomReader->start();
@@ -189,7 +188,7 @@ void SSeriesPuller::updating()
     }
     else
     {
-        m_pullSeriesWorker->post(::boost::bind(&::ioPacs::SSeriesPuller::pullSeries, this));
+        m_pullSeriesWorker->post(std::bind(&::ioPacs::SSeriesPuller::pullSeries, this));
     }
 
 }
@@ -275,7 +274,7 @@ void SSeriesPuller::pullSeries()
 
                 // Start Series Retriever
                 ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-                worker->post(::boost::bind(&::fwPacsIO::SeriesRetriever::start, seriesRetriever));
+                worker->post(std::bind(&::fwPacsIO::SeriesRetriever::start, seriesRetriever));
 
                 // Pull Selected Series
                 m_seriesEnquirer->connect();

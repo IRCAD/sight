@@ -16,9 +16,6 @@
 #include <fwThread/Timer.hpp>
 #include <fwThread/Worker.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-
 #include <QDir>
 #include <QEvent>
 #include <QFont>
@@ -62,8 +59,6 @@ const int WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType(
 class WorkerQt : public ::fwThread::Worker
 {
 public:
-    typedef ::boost::thread ThreadType;
-
     WorkerQt();
 
     void init( int& argc, char** argv, bool guiEnabled = true );
@@ -217,11 +212,11 @@ WorkerQt::~WorkerQt()
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
                    !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
-        ::boost::packaged_task< ExitReturnType > task( std::bind(&QApplication::exec) );
+        std::packaged_task< ExitReturnType() > task( std::bind(&QApplication::exec) );
 
-        ::boost::future< ExitReturnType > ufuture = task.get_future();
+        std::future< ExitReturnType > ufuture = task.get_future();
 
-        m_future = ::boost::move(ufuture);
+        m_future = std::move(ufuture);
 
         task();
     }
@@ -295,7 +290,7 @@ void TimerQt::setDuration(TimeDurationType duration)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     m_timerQt->setInterval( static_cast<int>(
-                                ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
+                                std::chrono::duration_cast< std::chrono::milliseconds >(duration).count())
                             );
 }
 

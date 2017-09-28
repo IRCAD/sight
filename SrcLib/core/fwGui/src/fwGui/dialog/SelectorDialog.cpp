@@ -8,8 +8,6 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/bind.hpp>
-
 #include <string>
 
 namespace fwGui
@@ -51,7 +49,7 @@ SelectorDialog::SelectorDialog()
 
 void SelectorDialog::create()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
@@ -62,7 +60,7 @@ void SelectorDialog::create()
 
 void SelectorDialog::setTitle(std::string title)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 m_implementation->setTitle(title);
             })).wait();
@@ -72,8 +70,8 @@ void SelectorDialog::setTitle(std::string title)
 
 std::string SelectorDialog::show()
 {
-    ::boost::function< std::string() > f         = ::boost::bind(&ISelectorDialog::show, m_implementation);
-    ::boost::shared_future< std::string > future =
+    std::function< std::string() > f         = std::bind(&ISelectorDialog::show, m_implementation);
+    std::shared_future< std::string > future =
         ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
     future.wait();
     return future.get();
@@ -83,7 +81,7 @@ std::string SelectorDialog::show()
 
 void SelectorDialog::setSelections(std::vector< std::string > _selections)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setSelections( _selections );
             })).wait();
@@ -93,7 +91,7 @@ void SelectorDialog::setSelections(std::vector< std::string > _selections)
 
 void SelectorDialog::setMessage(const std::string& msg)
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setMessage( msg );
             })).wait();

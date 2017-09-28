@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,8 +14,7 @@
 #include <fwCore/mt/types.hpp>
 #include <fwCore/spyLog.hpp>
 
-#include <boost/thread/future.hpp>
-
+#include <future>
 #include <queue>
 #include <set>
 
@@ -60,7 +59,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /**  @} */
 
     /// SlotBase::asyncRun return type.
-    typedef ::boost::shared_future< void > VoidSharedFutureType;
+    typedef std::shared_future< void > VoidSharedFutureType;
 
     /// Connections container type
     typedef std::set< CSPTR( SlotConnectionBase ) > ConnectionSetType;
@@ -161,16 +160,16 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
      * @name Asynchronous call helpers
      * @{ */
     template< typename R, typename A1, typename A2, typename A3 >
-    ::boost::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
+    std::shared_future< R > asyncCall(A1 a1, A2 a2, A3 a3) const;
 
     template< typename R, typename A1, typename A2 >
-    ::boost::shared_future< R > asyncCall(A1 a1, A2 a2) const;
+    std::shared_future< R > asyncCall(A1 a1, A2 a2) const;
 
     template< typename R, typename A1 >
-    ::boost::shared_future< R > asyncCall(A1 a1) const;
+    std::shared_future< R > asyncCall(A1 a1) const;
 
     template< typename R >
-    ::boost::shared_future< R > asyncCall() const;
+    std::shared_future< R > asyncCall() const;
     /**  @} */
 
     /// Returns number of connections.
@@ -201,7 +200,6 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 
         /**  @} */
 
-
         /// Returns F typeid name.
         template < typename F >
         std::string getTypeName() const
@@ -210,10 +208,10 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
             return signature;
         }
 
-        SlotBase(unsigned int arity) : m_arity(arity)
+        SlotBase(unsigned int arity) :
+            m_arity(arity)
         {
         }
-
 
         /// Slot's signature based on typeid.
         std::string m_signature;

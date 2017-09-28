@@ -287,7 +287,7 @@ void SRender::configuring()
         unsigned int timeStep = static_cast<unsigned int>( 1000.f / targetFrameRate );
         m_timer = m_associatedWorker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(timeStep);
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(timeStep);
         m_timer->setFunction( std::bind( &SRender::requestRender, this)  );
         m_timer->setDuration(duration);
     }

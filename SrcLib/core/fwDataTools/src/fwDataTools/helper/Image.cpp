@@ -208,9 +208,9 @@ void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, Siz
 
 void* Image::getPixelBuffer( IndexType index )
 {
-    ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
-    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
-    BufferIndexType bufIndex = index * imagePixelSize;
+    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
+    BufferType* buf             = static_cast < BufferType* > (this->getBuffer());
+    BufferIndexType bufIndex    = index * imagePixelSize;
     return buf + bufIndex;
 }
 
@@ -218,8 +218,8 @@ void* Image::getPixelBuffer( IndexType index )
 
 void Image::setPixelBuffer( IndexType index, Image::BufferType* pixBuf)
 {
-    ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
-    BufferType* buf = static_cast < BufferType* > (this->getPixelBuffer(index));
+    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
+    BufferType* buf             = static_cast < BufferType* > (this->getPixelBuffer(index));
 
     std::copy(pixBuf, pixBuf+imagePixelSize, buf);
 }

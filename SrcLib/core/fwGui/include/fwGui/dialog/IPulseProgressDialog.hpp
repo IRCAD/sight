@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __FWGUI_DIALOG_IPULSEPROGRESSDIALOG_HPP__
 #define __FWGUI_DIALOG_IPULSEPROGRESSDIALOG_HPP__
 
-#include <string>
-#include <boost/function.hpp>
+#include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwData/location/ILocation.hpp>
 
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/config.hpp"
+#include <functional>
+#include <string>
 
 namespace fwGui
 {
@@ -22,10 +22,6 @@ namespace dialog
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
- * @class   IPulseProgressDialog
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IPulseProgressDialog : public ::fwGui::GuiBaseObject
 {
@@ -36,7 +32,7 @@ public:
 
     typedef std::string FactoryRegistryKeyType;
 
-    typedef ::boost::function0<void> Stuff;
+    typedef std::function<void ()> Stuff;
 
     typedef unsigned long MilliSecond;
 
@@ -47,10 +43,10 @@ public:
     FWGUI_API IPulseProgressDialog();
 
     ///set the title for the dialog
-    FWGUI_API virtual void setTitle(const std::string &title) = 0;
+    FWGUI_API virtual void setTitle(const std::string& title) = 0;
 
     ///set the message for the dialog
-    FWGUI_API virtual void setMessage(const std::string &msg) = 0;
+    FWGUI_API virtual void setMessage(const std::string& msg) = 0;
 
     ///set the stuff
     FWGUI_API virtual void setStuff(Stuff stuff);
@@ -70,5 +66,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_DIALOG_IPULSEPROGRESSDIALOG_HPP__*/
-
 

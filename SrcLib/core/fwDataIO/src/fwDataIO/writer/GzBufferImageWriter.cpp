@@ -12,8 +12,6 @@
 
 #include <fwDataTools/helper/Image.hpp>
 
-#include <boost/cstdint.hpp>
-
 #include <zlib.h>
 
 #include <iostream>

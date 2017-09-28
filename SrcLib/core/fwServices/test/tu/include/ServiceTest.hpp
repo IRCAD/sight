@@ -28,6 +28,7 @@ CPPUNIT_TEST( testServiceCreationWithMultipleData );
 CPPUNIT_TEST( testServiceCreationWithTemplateMethods );
 CPPUNIT_TEST( testServiceCreationWithUUID );
 CPPUNIT_TEST( testStartStopUpdate );
+CPPUNIT_TEST( testStartStopUpdateExceptions );
 CPPUNIT_TEST( testCommunication );
 CPPUNIT_TEST_SUITE_END();
 
@@ -52,6 +53,9 @@ public:
 
     /// test start/stop/update service
     void testStartStopUpdate();
+
+    /// test exceptions handling when starting/stopping/updating services
+    void testStartStopUpdateExceptions();
 
     /// test sending/receiving message
     void testCommunication();

@@ -56,9 +56,9 @@ void* ImageGetter::getPixelBuffer( SizeType::value_type x, SizeType::value_type 
 
 void* ImageGetter::getPixelBuffer( IndexType index ) const
 {
-    ::boost::uint8_t imageGetterPixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
-    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
-    BufferIndexType bufIndex = index * imageGetterPixelSize;
+    std::uint8_t imageGetterPixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
+    BufferType* buf                   = static_cast < BufferType* > (this->getBuffer());
+    BufferIndexType bufIndex          = index * imageGetterPixelSize;
     return buf + bufIndex;
 }
 

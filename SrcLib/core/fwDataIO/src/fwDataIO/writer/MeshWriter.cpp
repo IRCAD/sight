@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,17 +8,14 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Mesh.hpp>
-
-#include <boost/cstdint.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fstream>
 #include <iostream>
 
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::MeshWriter );
-
 
 namespace fwDataIO
 {
@@ -28,8 +25,8 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
-    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -44,7 +41,7 @@ MeshWriter::~MeshWriter()
 void MeshWriter::write()
 {
     OSLM_INFO( "[MeshReader::read] Trian file: " << getFile());
-    assert( getFile().empty() ==  false );
+    assert( getFile().empty() == false );
 
     ::fwData::Mesh::sptr mesh = this->getConcreteObject();
     FW_RAISE_IF("Can't convert this Mesh to Trian file",
@@ -68,7 +65,7 @@ void MeshWriter::write()
     nbPts                                       = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     file<<nbPts<<std::endl;
-    for( i = 0; i<nbPts; ++i )
+    for( i = 0; i < nbPts; ++i )
     {
         file << points[i][0] << " " << points[i][1] << " " << points[i][2] << std::endl;
     }
@@ -79,10 +76,10 @@ void MeshWriter::write()
     ::fwDataTools::helper::Array cellsArrayHelper(cells);
 
     FW_RAISE_IF("Not able to write " << cells->getType().string() << " cell type in trian file.",
-                cells->getType() != ::fwTools::Type::create< ::boost::uint64_t >());
+                cells->getType() != ::fwTools::Type::create< std::uint64_t >());
 
-    ::boost::uint64_t* cellBuf    = cellsArrayHelper.begin< ::boost::uint64_t >();
-    ::boost::uint64_t* cellBufEnd = cellBuf + 3*nbCells;
+    std::uint64_t* cellBuf    = cellsArrayHelper.begin< std::uint64_t >();
+    std::uint64_t* cellBufEnd = cellBuf + 3*nbCells;
 
     SLM_ASSERT("Wrong CellDataMultiArray size", cells->getNumberOfElements() >= nbCells*3);
     file << nbCells << std::endl;

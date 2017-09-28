@@ -1,19 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ImageConversionTest.hpp"
+
+#include "helper.hpp"
+
+#include <fwItkIO/itk.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwData/Object.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-
-#include <fwItkIO/itk.hpp>
-
-#include "helper.hpp"
-#include "ImageConversionTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageConversionTest );
@@ -46,7 +48,7 @@ void ImageConversionTest::testConversion()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
-    typedef itk::Image< ::boost::int16_t, 3 > ImageType;
+    typedef itk::Image< std::int16_t, 3 > ImageType;
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
@@ -72,17 +74,17 @@ void ImageConversionTest::testConversion()
 
 void ImageConversionTest::stressTest()
 {
-    stressTestForAType< ::boost::int8_t >();
-    stressTestForAType< ::boost::uint8_t >();
+    stressTestForAType< std::int8_t >();
+    stressTestForAType< std::uint8_t >();
 
-    stressTestForAType< ::boost::int16_t >();
-    stressTestForAType< ::boost::uint16_t >();
+    stressTestForAType< std::int16_t >();
+    stressTestForAType< std::uint16_t >();
 
-    stressTestForAType< ::boost::int32_t >();
-    stressTestForAType< ::boost::uint32_t >();
+    stressTestForAType< std::int32_t >();
+    stressTestForAType< std::uint32_t >();
 
-    stressTestForAType< ::boost::int64_t >();
-    stressTestForAType< ::boost::uint64_t >();
+    stressTestForAType< std::int64_t >();
+    stressTestForAType< std::uint64_t >();
 
     stressTestForAType< float >();
     stressTestForAType< double >();
@@ -94,7 +96,7 @@ void ImageConversionTest::testConversion2D()
 {
     // create Image
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    const ::boost::uint8_t dim = 2;
+    const std::uint8_t dim = 2;
     ::fwData::Image::SizeType size(dim);
     size[0] = rand()%100 + 2;
     size[1] = rand()%100 + 2;
@@ -104,13 +106,13 @@ void ImageConversionTest::testConversion2D()
     std::vector<double> origin(dim);
     origin[0]            = (rand()%200 - 100) / 3.;
     origin[1]            = (rand()%200 - 100) / 3.;
-    ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
+    ::fwTools::Type type = ::fwTools::Type::create< std::int16_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
     ::fwData::Array::sptr array = image->getDataArray();
     ::fwTest::generator::Image::randomizeArray(array);
 
-    typedef itk::Image< ::boost::int16_t, 2 > ImageType;
+    typedef itk::Image< std::int16_t, 2 > ImageType;
 
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 

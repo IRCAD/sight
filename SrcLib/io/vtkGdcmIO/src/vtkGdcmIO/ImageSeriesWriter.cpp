@@ -48,8 +48,8 @@ namespace vtkGdcmIO
 //------------------------------------------------------------------------------
 
 void setValue(vtkMedicalImageProperties* medprop,
-              const ::boost::uint16_t group,
-              const ::boost::uint16_t element,
+              const std::uint16_t group,
+              const std::uint16_t element,
               const std::string& value)
 {
     const gdcm::Global& g = gdcm::Global::GetInstance();

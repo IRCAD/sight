@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwJobs/Aggregator.hpp"
-#include "fwJobs/Job.hpp"
+
 #include "fwJobs/exception/Waiting.hpp"
+#include "fwJobs/Job.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -17,6 +18,8 @@
 
 namespace fwJobs
 {
+
+//------------------------------------------------------------------------------
 
 Aggregator::sptr Aggregator::New(const std::string& name)
 {
@@ -31,7 +34,8 @@ Aggregator::Aggregator()
 
 //------------------------------------------------------------------------------
 
-Aggregator::Aggregator(const std::string &name) : IJob(name)
+Aggregator::Aggregator(const std::string& name) :
+    IJob(name)
 {
 }
 
@@ -47,15 +51,15 @@ IJob::SharedFuture Aggregator::runImpl()
     }
 
     std::vector< SharedFuture > futures;
-    for(const ::fwJobs::IJob::sptr &iJob : jobs)
+    for(const ::fwJobs::IJob::sptr& iJob : jobs)
     {
         futures.push_back(iJob->run());
     }
 
-    auto future = boost::async(
+    auto future = std::async(
         [ = ]() mutable
         {
-            boost::wait_for_all(futures.begin(), futures.end());
+            std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 
             this->finish();
 
@@ -67,16 +71,16 @@ IJob::SharedFuture Aggregator::runImpl()
         }
         );
 
-    return ::boost::move(future);
+    return std::move(future);
 }
 
 //------------------------------------------------------------------------------
 
-void Aggregator::add(const ::fwJobs::IJob::sptr &iJob, double weight)
+void Aggregator::add(const ::fwJobs::IJob::sptr& iJob, double weight)
 {
     SLM_ASSERT("iJob shall not be null", iJob);
 
-    SLM_ASSERT("iJob shall not be added to itself", this!=iJob.get());
+    SLM_ASSERT("iJob shall not be added to itself", this != iJob.get());
 
     if(!iJob)
     {
@@ -92,7 +96,7 @@ void Aggregator::add(const ::fwJobs::IJob::sptr &iJob, double weight)
     if( m_state == WAITING || m_state == RUNNING )
     {
         m_jobInfo[iJob.get()] = JobInfo( *iJob );
-        auto &jobInfo = m_jobInfo[iJob.get()];
+        auto& jobInfo = m_jobInfo[iJob.get()];
 
         this->setTotalWorkUnitsUpgradeLock( m_totalWorkUnits + (jobInfo.totalWork ? normValue : 0), lock);
         lock.lock();
@@ -118,16 +122,13 @@ void Aggregator::add(const ::fwJobs::IJob::sptr &iJob, double weight)
 
                 jobInfo.lastValue = std::uint64_t(normValue * jobInfo.progress());
 
-
                 auto doneWork = m_doneWorkUnits + jobInfo.lastValue;
                 // minimize numerical uncertainty by substracting in a second time :
                 doneWork -= oldInfo.lastValue;
 
-
                 this->doneWork( static_cast<std::uint64_t>(doneWork), sublock );
             }
             );
-
 
         iJob->addTotalWorkUnitsHook(
             [ = ](IJob& subJob, std::uint64_t oldTotalWorkUnits)
@@ -153,7 +154,6 @@ void Aggregator::add(const ::fwJobs::IJob::sptr &iJob, double weight)
             }
             );
 
-
         this->addCancelHookNoLock( [iJob]( IJob& /* cancelingJob */ )
             {
                 iJob->cancel();
@@ -161,7 +161,7 @@ void Aggregator::add(const ::fwJobs::IJob::sptr &iJob, double weight)
 
         auto iJobName = iJob->getName();
         iJobName = iJobName.empty() ? "" : "[" + iJobName + "] ";
-        iJob->addLogHook( [ = ]( IJob& /* job */, const std::string &message)
+        iJob->addLogHook( [ = ]( IJob& /* job */, const std::string& message)
             {
                 this->log( iJobName + message);
             } );
