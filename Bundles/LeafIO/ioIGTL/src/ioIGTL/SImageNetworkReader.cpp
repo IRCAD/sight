@@ -66,7 +66,7 @@ void SImageNetworkReader::configureWithIHM()
     {
         m_hostname = addr.substr(0, splitPosition);
         portStr    = addr.substr(splitPosition + 1, addr.size());
-        m_port     = ::boost::lexical_cast<boost::uint16_t> (portStr);
+        m_port     = ::boost::lexical_cast<std::uint16_t> (portStr);
     }
 }
 

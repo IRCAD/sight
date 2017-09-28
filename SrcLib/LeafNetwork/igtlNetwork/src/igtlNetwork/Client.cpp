@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlNetwork/Client.hpp"
+
 #include "igtlNetwork/Exception.hpp"
 
 #include <fwTools/Stringizer.hpp>
@@ -26,8 +27,8 @@ Client::Client()
 Client::Client (::igtl::ClientSocket::Pointer socket)
 {
     m_socket = socket;
-    SLM_ASSERT ("socket is null", socket.IsNotNull());
-    SLM_ASSERT ("socket is not connected", socket->GetConnected());
+    SLM_ASSERT("socket is null", socket.IsNotNull());
+    SLM_ASSERT("socket is not connected", socket->GetConnected());
 }
 
 //------------------------------------------------------------------------------
@@ -60,18 +61,17 @@ void Client::throwExceptionIfFailed (const std::string& msg, bool result)
 
 //------------------------------------------------------------------------------
 
-void Client::connect (const std::string& addr, ::boost::uint16_t port)
+void Client::connect (const std::string& addr, std::uint16_t port)
 {
     int result;
     std::string portStr;
 
-    result  = dynamic_cast< ::igtl::ClientSocket* >( m_socket.GetPointer() )->ConnectToServer (addr.c_str(), port);
+    result  = dynamic_cast< ::igtl::ClientSocket* >( m_socket.GetPointer() )->ConnectToServer(addr.c_str(), port);
     portStr = boost::lexical_cast<std::string> (port);
-    this->throwExceptionIfFailed ("Cannot connect to the server at " + addr + " : " + portStr, result == -1);
+    this->throwExceptionIfFailed("Cannot connect to the server at " + addr + " : " + portStr, result == -1);
 }
 
 //------------------------------------------------------------------------------
-
 
 void Client::disconnect()
 {

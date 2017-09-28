@@ -1,23 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Object.hpp>
-#include <fwServices/macros.hpp>
-#include <boost/type.hpp>
-#include <boost/integer_traits.hpp>
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QString>
-#include <QFormLayout>
-#include <QVariant>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <ioZMQ/Patterns.hpp>
 #include "uiZMQ/SZMQConfigEditor.hpp"
+
+#include <fwData/Object.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <ioZMQ/Patterns.hpp>
+
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QString>
+#include <QVariant>
+#include <QVBoxLayout>
+#include <QWidget>
+
+#include <numeric>
 
 namespace uiZMQ
 {
@@ -29,7 +33,7 @@ SZMQConfigEditor::SZMQConfigEditor()
 {
     m_configurationUpdatedSig = ConfigurationUpdatedSignalType::New();
 
-    ::fwCom::HasSignals::m_signals (SZMQConfigEditor::s_CONFIGURATION_UPDATED_SIGNAL,  m_configurationUpdatedSig);
+    ::fwCom::HasSignals::m_signals(SZMQConfigEditor::s_CONFIGURATION_UPDATED_SIGNAL,  m_configurationUpdatedSig);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,14 +77,13 @@ void SZMQConfigEditor::configuring()
     this->initPatternBox();
 
     m_port->setMinimum(0);
-    m_port->setMaximum(boost::integer_traits<boost::uint16_t>::const_max);
+    m_port->setMaximum(std::numeric_limits<std::uint16_t>::max());
 
     formLayout->addRow(QString::fromStdString("Protocol : "), m_protocolBox);
     formLayout->addRow(QString::fromStdString("Mode : "), m_modeBox);
     formLayout->addRow(QString::fromStdString("Pattern : "), m_patternBox);
     formLayout->addRow(m_title, m_host);
     formLayout->addRow(m_portWidget);
-
 
     buttonLayout->addWidget(validateButton);
     buttonLayout->addWidget(cancelButton);
@@ -172,5 +175,4 @@ void SZMQConfigEditor::swapping()
 //-----------------------------------------------------------------------------
 
 } // namespace uiZMQ
-
 

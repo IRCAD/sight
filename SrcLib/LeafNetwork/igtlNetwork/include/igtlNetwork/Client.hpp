@@ -7,16 +7,16 @@
 #ifndef __IGTLNETWORK_CLIENT_HPP__
 #define __IGTLNETWORK_CLIENT_HPP__
 
-#include "igtlNetwork/INetwork.hpp"
 #include "igtlNetwork/config.hpp"
-
-#include <igtlProtocol/DataConverter.hpp>
-
-#include <boost/type.hpp>
+#include "igtlNetwork/INetwork.hpp"
 
 #include <fwCore/Exception.hpp>
 
 #include <fwData/Object.hpp>
+
+#include <igtlProtocol/DataConverter.hpp>
+
+#include <boost/type.hpp>
 
 #include <igtl/igtlClientSocket.h>
 #include <igtl/igtlMessageHeader.h>
@@ -58,7 +58,7 @@ public:
      * @param[in] port port of server
      */
     IGTLNETWORK_API void connect (const std::string& addr,
-                                  ::boost::uint16_t port);
+                                  std::uint16_t port);
 
     /**
      * @brief method to disconnect client

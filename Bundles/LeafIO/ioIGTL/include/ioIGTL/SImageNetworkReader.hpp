@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,9 @@
 
 #include "ioIGTL/config.hpp"
 
-#include <io/IReader.hpp>
-
 #include <igtlNetwork/Client.hpp>
+
+#include <io/IReader.hpp>
 
 #include <boost/type.hpp>
 
@@ -26,8 +26,7 @@ class IOIGTL_CLASS_API SImageNetworkReader : public ::io::IReader
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SImageNetworkReader) (::io::IReader));
-
+    fwCoreServiceClassDefinitionsMacro( (SImageNetworkReader) (::io::IReader));
 
     /// Constructor
     IOIGTL_API SImageNetworkReader();
@@ -70,11 +69,9 @@ private:
     std::string m_hostname;
 
     /// port
-    boost::uint16_t m_port;
+    std::uint16_t m_port;
 
 };
-
-
 
 } // namespace ioIGTL
 
