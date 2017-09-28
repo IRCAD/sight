@@ -62,9 +62,9 @@ void MeshTest::copyColors()
 
         for(size_t i = 0; i < numPoints; ++i)
         {
-            pSrc[0] = static_cast< ::std::uint8_t>(rand()%255);
-            pSrc[1] = static_cast< ::std::uint8_t>(rand()%255);
-            pSrc[2] = static_cast< ::std::uint8_t>(rand()%255);
+            pSrc[0] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[1] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[2] = static_cast< std::uint8_t>(rand()%255);
             pSrc   += numComponents;
         }
 
@@ -97,10 +97,10 @@ void MeshTest::copyColors()
 
         for(size_t i = 0; i < numPoints; ++i)
         {
-            pSrc[0] = static_cast< ::std::uint8_t>(rand()%255);
-            pSrc[1] = static_cast< ::std::uint8_t>(rand()%255);
-            pSrc[2] = static_cast< ::std::uint8_t>(rand()%255);
-            pSrc[3] = static_cast< ::std::uint8_t>(rand()%255);
+            pSrc[0] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[1] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[2] = static_cast< std::uint8_t>(rand()%255);
+            pSrc[3] = static_cast< std::uint8_t>(rand()%255);
             pSrc   += numComponents;
         }
 

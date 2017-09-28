@@ -137,7 +137,7 @@ void TrackballInteractor::keyPressEvent(int key)
                         this->cameraRotate(10, 0);
                         m_sigRenderRequested->asyncEmit();
                     } );
-            m_timer->setDuration(boost::chrono::milliseconds(33));
+            m_timer->setDuration(std::chrono::milliseconds(33));
             m_timer->start();
         }
     }
