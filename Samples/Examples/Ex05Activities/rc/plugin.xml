@@ -1,4 +1,4 @@
-<plugin id="Ex05Activities" version="@DASH_VERSION@">
+<plugin id="Ex05Activities" version="@PROJECT_VERSION@">
 
     <requirement id="guiQt" />
     <requirement id="visuVTKQt" />
@@ -17,7 +17,7 @@
         <id>Ex05AppBase</id>
         <parameters>
             <param name="appName" value="Ex05 Activities @PROJECT_VERSION@" />
-            <param name="appIconPath" value="Ex05Activities_@DASH_VERSION@/app.ico" />
+            <param name="appIconPath" value="Ex05Activities_@PROJECT_VERSION@/app.ico" />
         </parameters>
     </extension>
 
@@ -25,7 +25,7 @@
         <id>Ex05ImageReading</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
-        <icon>media_0-1/icons/LoadActivity.svg</icon>
+        <icon>media-0.1/icons/LoadActivity.svg</icon>
         <requirements>
             <!-- Requirement with minOccurs="0" maxOccurs="0" means that the object will be automatically created by the
                  activity launcher and will be stored in the ActivitySeries. -->
@@ -44,7 +44,7 @@
         <id>Ex05ImageDisplaying</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
-        <icon>media_0-1/icons/icon-2D.png</icon>
+        <icon>media-0.1/icons/icon-2D.png</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">

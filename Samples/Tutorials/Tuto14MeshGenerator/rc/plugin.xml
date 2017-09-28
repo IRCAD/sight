@@ -1,4 +1,4 @@
-<plugin id="Tuto14MeshGenerator" version="@DASH_VERSION@">
+<plugin id="Tuto14MeshGenerator" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -14,7 +14,7 @@
                 <gui>
                     <frame>
                         <name>Tuto14MeshGenerator</name>
-                        <icon>Tuto14MeshGenerator_0-1/tuto.ico</icon>
+                        <icon>Tuto14MeshGenerator-0.1/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>

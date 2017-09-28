@@ -1,4 +1,4 @@
-<plugin id="tu_fwActivities"  version="@DASH_VERSION@" >
+<plugin id="tu_fwActivities"  version="@PROJECT_VERSION@" >
 
     <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
 

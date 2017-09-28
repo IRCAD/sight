@@ -1,4 +1,4 @@
-<plugin id="io" class="io::Plugin" version="@DASH_VERSION@" >
+<plugin id="io" class="io::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="io"/>
     

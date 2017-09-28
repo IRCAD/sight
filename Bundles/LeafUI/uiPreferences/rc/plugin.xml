@@ -1,4 +1,4 @@
-<plugin id="uiPreferences" class="::uiPreferences::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiPreferences" class="::uiPreferences::Plugin" version="@PROJECT_VERSION@" >
     <library name="uiPreferences"/>
 
     <requirement id="gui"/>

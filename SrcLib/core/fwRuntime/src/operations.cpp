@@ -125,7 +125,7 @@ const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesys
     const std::string bundleIdentifierAndVersion = path.begin()->string();
 
     // TEMP_FB: Change _ into - when version refactor is made
-    auto itVersionDelimiter = bundleIdentifierAndVersion.find('_');
+    auto itVersionDelimiter = bundleIdentifierAndVersion.find(Bundle::s_VERSION_DELIMITER);
     auto bundleIdentifier   = bundleIdentifierAndVersion.substr(0, itVersionDelimiter);
     auto bundleVersion      = bundleIdentifierAndVersion.substr(itVersionDelimiter + 1);
 

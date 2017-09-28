@@ -1,4 +1,4 @@
-<plugin id="Ex07WheelWidget" version="@DASH_VERSION@">
+<plugin id="Ex07WheelWidget" version="@PROJECT_VERSION@">
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07WheelWidget</id>
         <desc>Wheel widget interaction example.</desc>

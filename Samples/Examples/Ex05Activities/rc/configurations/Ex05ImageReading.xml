@@ -33,10 +33,10 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="media_0-1/icons/Back.svg" />
-                    <menuItem name="Next" icon="media_0-1/icons/Next.svg" />
+                    <menuItem name="Previous" icon="media-0.1/icons/Back.svg" />
+                    <menuItem name="Next" icon="media-0.1/icons/Next.svg" />
                     <separator />
-                    <menuItem name="Import image" icon="media_0-1/icons/Import.svg" />
+                    <menuItem name="Import image" icon="media-0.1/icons/Import.svg" />
                 </layout>
             </gui>
             <registry>

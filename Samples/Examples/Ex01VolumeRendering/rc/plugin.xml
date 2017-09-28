@@ -30,7 +30,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
  by the gray range in Scene2D_Shutter.
 
  -->
-<plugin id="Ex01VolumeRendering" version="@DASH_VERSION@">
+<plugin id="Ex01VolumeRendering" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -47,7 +47,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <gui>
                     <frame>
                         <name>Ex01VolumeRendering</name>
-                        <icon>Ex01VolumeRendering_0-1/tuto.ico</icon>
+                        <icon>Ex01VolumeRendering-0.1/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>
@@ -200,8 +200,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>media_0-1/icons/sliceHide.png</icon>
-                    <icon2>media_0-1/icons/sliceShow.png</icon2>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

@@ -58,7 +58,7 @@ macro(profile_setup ${PROJECT})
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
 
                 #set activate tag with parameters
-                list(APPEND ACTIVATE_LIST "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_DASH_VERSION}\" >")
+                list(APPEND ACTIVATE_LIST "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
                 foreach(CURRENT_PARAM ${CURRENT_PARAM_LIST})
                     list(FIND CURRENT_PARAM_LIST "${CURRENT_PARAM}" CURRENT_INDEX)
                     list(GET CURRENT_PARAM_VALUES "${CURRENT_INDEX}" CURRENT_VALUE)
@@ -68,7 +68,7 @@ macro(profile_setup ${PROJECT})
                 list(APPEND ACTIVATE_LIST "    </activate>")
             # else simply set the activate tag
             else()
-                 list(APPEND ACTIVATE_LIST "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_DASH_VERSION}\" />")
+                 list(APPEND ACTIVATE_LIST "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
             endif()
         endif()
     endforeach()
@@ -79,7 +79,7 @@ macro(profile_setup ${PROJECT})
     endforeach()
 
     configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile.xml.in"
-                    "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/profile.xml")
+                    "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/profile.xml")
 endmacro()
 
 function(findRequirements FWPROJECT_NAME)

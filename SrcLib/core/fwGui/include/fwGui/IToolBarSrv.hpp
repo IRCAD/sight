@@ -57,11 +57,11 @@ protected:
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout hideAction="false">
-                   <menuItem name="My item 2" style="radio" icon="TutoGui_0-1/icons/system.png"/>
-                   <menuItem name="My item 3" style="radio" icon="TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/icons/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />

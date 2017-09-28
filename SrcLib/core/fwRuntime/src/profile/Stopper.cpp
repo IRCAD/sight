@@ -33,15 +33,16 @@ Stopper::Stopper( const std::string& identifier, const Version& version) :
 void Stopper::apply()
 {
     std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to stop bundle " + m_identifier + "_" + m_version.string() + ". Not found.", bundle == 0);
+    SLM_FATAL_IF("Unable to stop bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". Not found.",
+                 bundle == 0);
     try
     {
-        SLM_INFO("Stopping bundle : " + m_identifier + "_" + m_version.string());
+        SLM_INFO("Stopping bundle : " + Bundle::getBundleStr(m_identifier, m_version));
         bundle->stop();
     }
     catch( const std::exception& e )
     {
-        SLM_ERROR("Unable to stop bundle " + m_identifier + "_" + m_version.string() + ". " + e.what());
+        SLM_ERROR("Unable to stop bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". " + e.what());
     }
 }
 

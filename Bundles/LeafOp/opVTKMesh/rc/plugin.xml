@@ -1,4 +1,4 @@
-<plugin id="opVTKMesh" class="::opVTKMesh::Plugin" version="@DASH_VERSION@" >
+<plugin id="opVTKMesh" class="::opVTKMesh::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="opVTKMesh" />
 

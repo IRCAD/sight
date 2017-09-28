@@ -8,7 +8,7 @@ function(plugin_setup ${PROJECT})
     unset(PROJECT_CLASS)
 
     # set variables used in the configure_file command
-    set(PROJECT_VERSION ${${PROJECT}_DASH_VERSION})
+    set(PROJECT_VERSION ${${PROJECT}_VERSION})
     set(PROJECT_NAME ${PROJECT})
     set(PROJECT_ID ${PROJECT})
 
@@ -88,6 +88,6 @@ function(plugin_setup ${PROJECT})
     endif()
 
     configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin.xml.in"
-                    "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/plugin.xml")
+                    "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/plugin.xml")
 
 endfunction()

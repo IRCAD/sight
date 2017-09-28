@@ -1,4 +1,4 @@
-<plugin id="monitor" class="::monitor::Plugin" version="@DASH_VERSION@" >
+<plugin id="monitor" class="::monitor::Plugin" version="@PROJECT_VERSION@" >
     <library name="monitor" />
     <requirement id="gui" />
 

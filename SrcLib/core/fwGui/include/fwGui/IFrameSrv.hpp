@@ -40,7 +40,7 @@ namespace fwGui
      <gui>
          <frame>
              <name>My App</name>
-             <icon>myApp_1-0/icon.ico</icon>
+             <icon>myApp-1.0/icon.ico</icon>
              <minSize width="800" height="600" />
              <style mode="MODAL" />
          </frame>

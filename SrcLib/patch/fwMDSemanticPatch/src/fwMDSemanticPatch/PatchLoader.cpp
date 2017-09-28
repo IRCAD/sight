@@ -18,7 +18,7 @@ namespace fwMDSemanticPatch
 void PatchLoader::loadPatches()
 {
     SPTR(::fwAtomsPatch::VersionsManager) versionManager = ::fwAtomsPatch::VersionsManager::getDefault();
-    auto path = ::fwRuntime::getLibraryResourceFilePath("fwMDSemanticPatch_" FWMDSEMANTICPATCH_VER "/");
+    auto path = ::fwRuntime::getLibraryResourceFilePath("fwMDSemanticPatch-" FWMDSEMANTICPATCH_VER "/");
     versionManager->buildVersionTable(path.string());
     versionManager->buildLinkTable(path.string());
 }

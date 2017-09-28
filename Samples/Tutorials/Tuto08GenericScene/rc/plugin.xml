@@ -2,7 +2,7 @@
     This tutorial shows a VTK scene containing a 3D image and a textured mesh.
     To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
 -->
-<plugin id="Tuto08GenericScene" version="@DASH_VERSION@">
+<plugin id="Tuto08GenericScene" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -16,7 +16,7 @@
                 <gui>
                     <frame>
                         <name>Tuto08GenericScene</name>
-                        <icon>Tuto08GenericScene_0-1/tuto.ico</icon>
+                        <icon>Tuto08GenericScene-0.1/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>
@@ -190,8 +190,8 @@
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>media_0-1/icons/sliceHide.png</icon>
-                    <icon2>media_0-1/icons/sliceShow.png</icon2>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

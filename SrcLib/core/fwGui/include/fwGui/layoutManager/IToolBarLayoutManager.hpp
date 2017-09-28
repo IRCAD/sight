@@ -102,12 +102,12 @@ public:
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
-                   <menuItem name="My item 2" style="check" icon="TutoGui_0-1/icons/system.png"
-     * icon2="TutoGui_0-1/icons/monkey.png" />
-                   <menuItem name="My item 3" style="check" icon="TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="TutoGui-0.1/icons/system.png"
+     * icon2="TutoGui-0.1/icons/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="TutoGui-0.1/icons/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -127,7 +127,7 @@ public:
      * This method analyzes the gui section of the configuration.
      *
      *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui_0-1/icons/system.png"/\> :
+     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file

@@ -53,7 +53,7 @@ std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( c
     }
 
     // Validation
-    auto profileXSDLocation = ::fwRuntime::getLibraryResourceFilePath("fwRuntime_" FWRUNTIME_VER "/profile.xsd");
+    auto profileXSDLocation = ::fwRuntime::getLibraryResourceFilePath("fwRuntime-" FWRUNTIME_VER "/profile.xsd");
 
     Validator validator(profileXSDLocation);
 

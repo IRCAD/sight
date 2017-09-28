@@ -1,4 +1,4 @@
-<plugin id="vtkCompositeMesh" class="::vtkCompositeMesh::Plugin"  version="@DASH_VERSION@" >
+<plugin id="vtkCompositeMesh" class="::vtkCompositeMesh::Plugin"  version="@PROJECT_VERSION@" >
 
 
     <library name="vtkCompositeMesh" />

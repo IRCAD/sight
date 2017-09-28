@@ -38,7 +38,7 @@ namespace view
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="media_0-1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
      </parameters>
    </service>
    @endcode

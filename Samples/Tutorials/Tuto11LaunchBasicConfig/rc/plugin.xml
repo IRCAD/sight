@@ -1,4 +1,4 @@
-<plugin id="Tuto11LaunchBasicConfig" version="@DASH_VERSION@">
+<plugin id="Tuto11LaunchBasicConfig" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -16,7 +16,7 @@
                 <gui>
                     <frame>
                         <name>Tuto 11 : Launch basic config</name>
-                        <icon>Tuto11LaunchBasicConfig_0-1/tuto.ico</icon>
+                        <icon>Tuto11LaunchBasicConfig-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

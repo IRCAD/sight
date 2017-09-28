@@ -1,4 +1,4 @@
-<plugin id="Ex06Dump" version="@DASH_VERSION@">
+<plugin id="Ex06Dump" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
@@ -112,10 +112,10 @@
             <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                        <menuItem name="Open..." icon="media_0-1/icons/Import.svg" />
-                        <menuItem name="Save..." icon="media_0-1/icons/Export.svg" />
+                        <menuItem name="Open..." icon="media-0.1/icons/Import.svg" />
+                        <menuItem name="Save..." icon="media-0.1/icons/Export.svg" />
                         <separator />
-                        <menuItem name="Dump all" icon="monitorQt_0-1/icon-dump.svg" />
+                        <menuItem name="Dump all" icon="monitorQt-0.1/icon-dump.svg" />
                     </layout>
                 </gui>
                 <registry>

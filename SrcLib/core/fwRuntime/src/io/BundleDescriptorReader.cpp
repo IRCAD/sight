@@ -102,7 +102,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     }
 
     // Validation
-    auto pluginXSDLocation = ::fwRuntime::getLibraryResourceFilePath("fwRuntime_" FWRUNTIME_VER "/plugin.xsd");
+    auto pluginXSDLocation = ::fwRuntime::getLibraryResourceFilePath("fwRuntime-" FWRUNTIME_VER "/plugin.xsd");
 
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )

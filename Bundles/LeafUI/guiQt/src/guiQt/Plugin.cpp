@@ -11,6 +11,7 @@
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/WorkerQt.hpp>
 
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
@@ -90,22 +91,25 @@ void Plugin::loadStyleSheet()
 {
     if( this->getBundle()->hasParameter("resource") )
     {
-        std::string resourceFile = this->getBundle()->getParameterValue("resource");
-        bool resourceLoaded      = QResource::registerResource(resourceFile.c_str());
+        const std::string resourceFile = this->getBundle()->getParameterValue("resource");
+        const auto path                = fwRuntime::getBundleResourceFilePath(resourceFile);
+
+        const bool resourceLoaded = QResource::registerResource(path.c_str());
         SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
     }
 
     if( this->getBundle()->hasParameter("style") )
     {
-        std::string style = this->getBundle()->getParameterValue("style");
+        const std::string style = this->getBundle()->getParameterValue("style");
         qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
     }
 
     if( this->getBundle()->hasParameter("stylesheet") )
     {
-        std::string stylesheetFile = this->getBundle()->getParameterValue("stylesheet");
+        const std::string stylesheetFile = this->getBundle()->getParameterValue("stylesheet");
+        const auto path                  = fwRuntime::getBundleResourceFilePath(stylesheetFile);
 
-        QFile data(QString::fromStdString(stylesheetFile));
+        QFile data(QString::fromStdString(path.string()));
         QString style;
         if(data.open(QFile::ReadOnly))
         {

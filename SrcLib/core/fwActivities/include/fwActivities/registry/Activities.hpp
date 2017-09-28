@@ -141,7 +141,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
-        <icon>media_0-1/icons/icon-3D.png</icon>
+        <icon>media-0.1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >

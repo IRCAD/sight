@@ -51,7 +51,7 @@
     Step 2 : The user loads an image in the second Tab by using the button (openFile2).
     Step 3 : The user goes to the third tab and click on compute to see the result of the subtract between the two images.
 -->
-<plugin id="Ex04ImageSubstraction" version="@DASH_VERSION@" >
+<plugin id="Ex04ImageSubstraction" version="@PROJECT_VERSION@" >
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -95,12 +95,12 @@
             <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                        <menuItem name="Load Image" icon="Ex04ImageSubstraction_0-1/icons/icon-load1.png" />
+                        <menuItem name="Load Image" icon="Ex04ImageSubstraction-0.1/icons/icon-load1.png" />
                         <separator/>
-                        <menuItem name="Load Image2" icon="Ex04ImageSubstraction_0-1/icons/icon-load2.png" />
+                        <menuItem name="Load Image2" icon="Ex04ImageSubstraction-0.1/icons/icon-load2.png" />
                         <separator/>
-                        <menuItem name="Save Image" icon="Ex04ImageSubstraction_0-1/icons/save.png" />
-                        <menuItem name="Quit" icon="Ex04ImageSubstraction_0-1/icons/unreadable.png" />
+                        <menuItem name="Save Image" icon="Ex04ImageSubstraction-0.1/icons/save.png" />
+                        <menuItem name="Quit" icon="Ex04ImageSubstraction-0.1/icons/unreadable.png" />
                     </layout>
                 </gui>
                 <registry>

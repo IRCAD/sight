@@ -1,4 +1,4 @@
-<plugin id="TutoVectorField" version="@DASH_VERSION@">
+<plugin id="TutoVectorField" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -112,8 +112,8 @@
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>media_0-1/icons/sliceHide.png</icon>
-                    <icon2>media_0-1/icons/sliceShow.png</icon2>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

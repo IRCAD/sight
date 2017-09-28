@@ -255,11 +255,10 @@ endmacro()
 
 
 macro(setVersion FWPROJECT_NAME PROJECT_VERSION)
-    set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION} )
+    set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION})
     set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION} PARENT_SCOPE)
-    string(REPLACE "." "-" DASH_VERSION "${PROJECT_VERSION}")
-    set(${FWPROJECT_NAME}_DASH_VERSION ${DASH_VERSION} )
-    set(${FWPROJECT_NAME}_DASH_VERSION ${DASH_VERSION} PARENT_SCOPE)
+    set(${FWPROJECT_NAME}_FULLNAME ${FWPROJECT_NAME}-${PROJECT_VERSION})
+    set(${FWPROJECT_NAME}_FULLNAME ${FWPROJECT_NAME}-${PROJECT_VERSION} PARENT_SCOPE)
 endmacro()
 
 macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
@@ -274,7 +273,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
 
     set_target_properties(${FWPROJECT_NAME} PROPERTIES DEFINE_SYMBOL ${PROJECT_NAME_UPCASE}_EXPORTS)
 
-    target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_VER="${DASH_VERSION}")
+    target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_VER="${PROJECT_VERSION}")
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
 
@@ -317,7 +316,6 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
                              -DIN_FILE="${RES_DIR}/${REL_PATH}"
                              -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
                              -DFWPROJECT_NAME="${FWPROJECT_NAME}"
-                             -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
                              -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
                              -DBUNDLE_LIB_PREFIX="${BUNDLE_LIB_PREFIX}"
                              -DBUNDLE_RC_PREFIX="${BUNDLE_RC_PREFIX}"
@@ -379,12 +377,12 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
         endif()
     endif()
 
@@ -417,6 +415,9 @@ macro(fwCppunitTest FWPROJECT_NAME)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} 0.0)
 
+    string(REGEX REPLACE "Test$" "" DIRNAME "${FWPROJECT_NAME}")
+    set(TU_NAME "tu_exec_${DIRNAME}-0.0")
+
     add_executable(${FWPROJECT_NAME}
         ${fwCppunitTest_UNPARSED_ARGUMENTS}
         ${${FWPROJECT_NAME}_HEADERS}
@@ -426,19 +427,18 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
     if(fwCppunitTest_BUNDLE)
-        add_definitions(-DBUNDLE_TEST_PROFILE=\"${BUNDLE_RC_PREFIX}/tu_exec_${fwCppunitTest_BUNDLE}_0-0/profile.xml\")
+        add_definitions(-DBUNDLE_TEST_PROFILE=\"${BUNDLE_RC_PREFIX}/${TU_NAME}/profile.xml\")
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
-        string(REGEX REPLACE "Test$" "" DIRNAME "${FWPROJECT_NAME}")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/tu_exec_${DIRNAME}_${DASH_VERSION}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${TU_NAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/tu/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/tu_exec_${DIRNAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${TU_NAME}" )
         endif()
     endif()
 
@@ -500,12 +500,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
         endif()
 
     endif()
@@ -565,7 +565,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
+    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
         add_library(${FWPROJECT_NAME} ${ARGN}
@@ -577,7 +577,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${FWPROJECT_NAME}_${DASH_VERSION})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${${FWPROJECT_NAME}_FULLNAME})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         # Fixed path for multi-config builds (e.g. msvc)
@@ -592,8 +592,8 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             qt_plugins_setup() # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION ${BUNDLE_LIB_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
-                LIBRARY DESTINATION ${BUNDLE_LIB_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
+                RUNTIME DESTINATION ${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
+                LIBRARY DESTINATION ${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
                 OPTIONAL NAMELINK_SKIP
                 )
         endif()
@@ -633,7 +633,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         if(MSVC_IDE)
             # create the launch config for the current app
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
+            set(PROFILE "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
             if(NOT DEBUGGER_ENVIRONMENT)
@@ -657,7 +657,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
             set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
             set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
-            set(PROFILE_PATH "${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
+            set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
 
             configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
             file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_BINARY_DIR}/bin
@@ -667,14 +667,14 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
 
-    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
+    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL)
-        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}" )
+        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
 
     fwBundleExtra()

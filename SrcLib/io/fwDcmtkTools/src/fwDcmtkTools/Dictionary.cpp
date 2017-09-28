@@ -27,7 +27,7 @@ void Dictionary::loadDictionary()
     // Make sure data dictionary is loaded
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        const auto dicoPath = ::fwRuntime::getLibraryResourceFilePath("fwDcmtkTools_" FWDCMTKTOOLS_VER "/dicom.dic");
+        const auto dicoPath = ::fwRuntime::getLibraryResourceFilePath("fwDcmtkTools-" FWDCMTKTOOLS_VER "/dicom.dic");
         bool loaded         = dcmDataDict.wrlock().loadDictionary(dicoPath.string().c_str());
         dcmDataDict.unlock();
         SLM_ERROR_IF("Unable to load DICOM dictionary !", loaded);

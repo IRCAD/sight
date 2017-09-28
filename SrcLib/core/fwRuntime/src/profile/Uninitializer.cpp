@@ -30,7 +30,7 @@ Uninitializer::Uninitializer( const std::string& identifier, const Version& vers
 void Uninitializer::apply()
 {
     std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to uninitialize bundle " + m_identifier + "_" + m_version.string() + ". Not found.",
+    SLM_FATAL_IF("Unable to uninitialize bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". Not found.",
                  bundle == 0);
     try
     {
@@ -38,7 +38,7 @@ void Uninitializer::apply()
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to uninitialize bundle " + m_identifier + "_" + m_version.string() + ". " + e.what());
+        SLM_FATAL("Unable to uninitialize bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". " + e.what());
     }
 }
 

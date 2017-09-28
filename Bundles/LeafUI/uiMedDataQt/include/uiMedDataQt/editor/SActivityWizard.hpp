@@ -65,8 +65,8 @@ namespace editor
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="::fwMedData::ImageSeries" icon="media_0-1/icons/ImageSeries.svg" />
-         <icon type="::fwMedData::ModelSeries" icon="media_0-1/icons/ModelSeries.svg" />
+         <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+         <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
      </icons>
    </service>
    @endcode

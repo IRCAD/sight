@@ -1,4 +1,4 @@
-<plugin id="3DVisualizationActivity" version="@DASH_VERSION@" >
+<plugin id="3DVisualizationActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="2DVisualizationActivity" />
@@ -15,7 +15,7 @@
         <id>3DVisualization</id>
         <title>3D visualization</title>
         <desc>Activity to display a 3D model, and optionally its associated image.</desc>
-        <icon>media_0-1/icons/icon-3D.png</icon>
+        <icon>media-0.1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
                 <desc>3D model.</desc>

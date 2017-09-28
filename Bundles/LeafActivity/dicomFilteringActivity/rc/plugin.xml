@@ -1,4 +1,4 @@
-<plugin id="dicomFilteringActivity" version="@DASH_VERSION@" >
+<plugin id="dicomFilteringActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
     <requirement id="ctrlMemory" />
@@ -24,7 +24,7 @@
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
-        <icon>media_0-1/icons/icon-DICOM-Filtering.svg</icon>
+        <icon>media-0.1/icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>

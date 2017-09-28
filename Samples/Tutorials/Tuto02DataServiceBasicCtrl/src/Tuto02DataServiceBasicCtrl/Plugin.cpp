@@ -68,7 +68,7 @@ void Plugin::initialize()
     auto iconPath = ::fwRuntime::getBundleResourceFilePath("Tuto02DataServiceBasicCtrl", "tuto.ico");
 
     frameConfig.put("gui.frame.name", "tutoDataServiceBasicCtrl");
-    frameConfig.put("gui.frame.icon", "Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
+    frameConfig.put("gui.frame.icon", "Tuto02DataServiceBasicCtrl-0.1/tuto.ico");
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 

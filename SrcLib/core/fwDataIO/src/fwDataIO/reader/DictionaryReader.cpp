@@ -358,7 +358,7 @@ std::string DictionaryReader::extension()
 
 ::boost::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
-    return ::fwRuntime::getLibraryResourceFilePath(PRJ_NAME "_" FWDATAIO_VER "/OrganDictionary.dic");
+    return ::fwRuntime::getLibraryResourceFilePath(PRJ_NAME "-" FWDATAIO_VER "/OrganDictionary.dic");
 }
 
 //------------------------------------------------------------------------------

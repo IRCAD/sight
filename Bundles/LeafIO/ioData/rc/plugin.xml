@@ -1,4 +1,4 @@
-<plugin id="ioData" class="::ioData::Plugin"  version="@DASH_VERSION@" >
+<plugin id="ioData" class="::ioData::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioData" />
 
     <requirement id="io" />

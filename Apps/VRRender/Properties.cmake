@@ -51,7 +51,7 @@ bundleParam(guiQt
         resource
         stylesheet
     PARAM_VALUES
-        ${BUNDLE_RC_PREFIX}/style_0-1/darkstyle.rcc
-        ${BUNDLE_RC_PREFIX}/style_0-1/darkstyle.qss
+        style-0.1/darkstyle.rcc
+        style-0.1/darkstyle.qss
 )
 bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

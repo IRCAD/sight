@@ -26,7 +26,7 @@ macro(linux_install PRJ_NAME)
 
         set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
         set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
-        set(PROFILE_PATH "${PRJ_NAME}_${DASH_VERSION}/profile.xml")
+        set(PROFILE_PATH "${PRJ_NAME}-${PROJECT_VERSION}/profile.xml")
 
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
 

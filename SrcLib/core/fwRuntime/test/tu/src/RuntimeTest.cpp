@@ -77,33 +77,33 @@ void RuntimeTest::testOperations()
 
     // Bundle location prototype
     auto path = ::fwRuntime::getBundleResourcePath(std::string("servicesReg"));
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1", path);
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1", path);
 
     path = ::fwRuntime::getBundleResourcePath("notExistingBundle");
     CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
 
     // Full path prototype
-    path = ::fwRuntime::getBundleResourceFilePath("servicesReg_0-1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/plugin.xml", path);
+    path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("servicesReg_0-1/not_existing.file");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/not_existing.file", path);
+    path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/not_existing.file");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle_0-1/plugin.xml");
+    path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
 
-    path = ::fwRuntime::getBundleResourceFilePath("wrong_version_format_0-1/plugin.xml");
+    path = ::fwRuntime::getBundleResourceFilePath("wrong_version_format-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
 
-    path = ::fwRuntime::getLibraryResourceFilePath("fwLibrary_0-1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary_0-1/plugin.xml", path);
+    path = ::fwRuntime::getLibraryResourceFilePath("fwLibrary-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
 
     // (Bundle, path) prototype
     path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/plugin.xml", path);
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
 
     path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "not_existing.file");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg_0-1/not_existing.file", path);
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
 
     path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);

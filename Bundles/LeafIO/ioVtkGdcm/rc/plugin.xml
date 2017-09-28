@@ -1,4 +1,4 @@
-<plugin id="ioVtkGdcm" class="ioVtkGdcm::Plugin"  version="@DASH_VERSION@" >
+<plugin id="ioVtkGdcm" class="ioVtkGdcm::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioVtkGdcm" />
 
     <requirement id="io" />

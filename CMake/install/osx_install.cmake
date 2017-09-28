@@ -11,7 +11,7 @@ function(osx_install PRJ_NAME)
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         # create a new executable equivalent to fwLauncher
         add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} rc/${ICON_FILENAME})
-        add_definitions(-DDEFAULT_PROFILE=${BUNDLE_RC_PREFIX}/${PRJ_NAME}_${${PRJ_NAME}_DASH_VERSION}/profile.xml)
+        add_definitions(-DDEFAULT_PROFILE=${BUNDLE_RC_PREFIX}/${PRJ_NAME}-${${PRJ_NAME}_VERSION}/profile.xml)
         get_target_property(LAUNCHER_DEFINITIONS fwlauncher COMPILE_DEFINITIONS)
         target_compile_definitions(${EXECUTABLE_NAME} PRIVATE ${LAUNCHER_DEFINITIONS})
         get_target_property(LINK_PROPERTIES fwlauncher LINK_LIBRARIES)

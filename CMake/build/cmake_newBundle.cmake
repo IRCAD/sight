@@ -6,7 +6,7 @@ else()
     include("${CMAKE_BINARY_DIR}/argsBundle.cmake")
 endif()
 
-set(DASH_VERSION @DASH_VERSION@)
+set(PROJECT_VERSION @PROJECT_VERSION@)
 
 #check required parameters
 if(NOT DEFINED BUNDLE_NAME)
@@ -30,13 +30,13 @@ configure_file(
     "${BUNDLE_PATH}/${BUNDLE_NAME}/include/${BUNDLE_NAME}/namespace.hpp"
     @ONLY
     NEWLINE_STYLE UNIX)
-    
+
 configure_file(
     "${SOURCEDIR}/CMake/build/Bundle/include/Plugin.hpp.in"
     "${BUNDLE_PATH}/${BUNDLE_NAME}/include/${BUNDLE_NAME}/Plugin.hpp"
     @ONLY
-    NEWLINE_STYLE UNIX)    
-    
+    NEWLINE_STYLE UNIX)
+
 configure_file(
     "${SOURCEDIR}/CMake/build/Bundle/src/Plugin.cpp.in"
     "${BUNDLE_PATH}/${BUNDLE_NAME}/src/${BUNDLE_NAME}/Plugin.cpp"
@@ -48,7 +48,7 @@ configure_file(
     "${BUNDLE_PATH}/${BUNDLE_NAME}/rc/plugin.xml"
     @ONLY
     NEWLINE_STYLE UNIX)
-    
+
 configure_file(
     "${SOURCEDIR}/CMake/build/Bundle/Properties.cmake.in"
     "${BUNDLE_PATH}/${BUNDLE_NAME}/Properties.cmake"
@@ -60,5 +60,5 @@ configure_file(
     "${BUNDLE_PATH}/${BUNDLE_NAME}/CMakeLists.txt"
     @ONLY
     NEWLINE_STYLE UNIX)
-    
-message("New bundle ${BUNDLE_NAME} created, please do not forget to reconfigure with cmake" )  
+
+message("New bundle ${BUNDLE_NAME} created, please do not forget to reconfigure with cmake" )

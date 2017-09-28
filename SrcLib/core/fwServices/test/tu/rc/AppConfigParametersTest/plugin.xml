@@ -1,4 +1,4 @@
-<plugin id="AppConfigParametersTest" version="@DASH_VERSION@" >
+<plugin id="AppConfigParametersTest" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
 

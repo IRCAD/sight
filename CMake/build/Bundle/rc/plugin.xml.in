@@ -1,5 +1,5 @@
-<plugin id="@BUNDLE_NAME@" class="::@BUNDLE_NAME@::Plugin" version="@DASH_VERSION@">
-    
+<plugin id="@BUNDLE_NAME@" class="::@BUNDLE_NAME@::Plugin" version="@PROJECT_VERSION@">
+
     <library name="@BUNDLE_NAME@" />
 
     <requirement id="dataReg"/>

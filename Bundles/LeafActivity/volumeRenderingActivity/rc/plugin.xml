@@ -1,4 +1,4 @@
-<plugin id="volumeRenderingActivity" version="@DASH_VERSION@" >
+<plugin id="volumeRenderingActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="2DVisualizationActivity" />
@@ -15,7 +15,7 @@
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
-        <icon>media_0-1/icons/icon-VR.png</icon>
+        <icon>media-0.1/icons/icon-VR.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to displayed in volumic rendering.</desc>

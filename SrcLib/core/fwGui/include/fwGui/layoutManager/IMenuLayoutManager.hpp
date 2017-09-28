@@ -99,7 +99,7 @@ public:
        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
-                    <menuItem name="My item 1" shortcut="1" style="check" icon="TutoGui_0-1/icons/system.png" />
+                    <menuItem name="My item 1" shortcut="1" style="check" icon="TutoGui-0.1/icons/system.png" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
                     <menuItem name="My item 3" shortcut="3" style="radio" />

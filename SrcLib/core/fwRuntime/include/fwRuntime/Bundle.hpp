@@ -47,6 +47,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
+    static const char s_VERSION_DELIMITER = '-';
     /**
      * @name    Type definitions
      */
@@ -393,6 +394,8 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
     {
         return m_initialized;
     }
+
+    FWRUNTIME_API static std::string getBundleStr(const std::string& identifier, const Version& version);
 
     protected:
 
