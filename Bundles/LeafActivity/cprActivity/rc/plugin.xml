@@ -11,7 +11,7 @@
         <id>curvedPlanarReformationActivity</id>
         <title>Curved Planar Reformation</title>
         <desc>Curved planar reformation activity</desc>
-        <icon>@BUNDLE_PREFIX@/mediaExt_0-1/icons/cpr.png</icon>
+        <icon>mediaExt_0-1/icons/cpr.png</icon>
         <requirements>
 
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
