@@ -1,21 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "BufferObjectTest.hpp"
 
-#include <fwMemory/BufferObject.hpp>
 #include <fwMemory/BufferAllocationPolicy.hpp>
+#include <fwMemory/BufferObject.hpp>
 #include <fwMemory/exception/Memory.hpp>
 
-#include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
+#include <boost/thread/thread.hpp>
 
-#include <boost/thread.hpp>
 #include <functional>
 #include <limits>
+#include <type_traits>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMemory::ut::BufferObjectTest );
@@ -25,21 +24,28 @@ namespace fwMemory
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void BufferObjectTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void BufferObjectTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
 
 template <typename T> bool isPointedValueConst( T )
 {
-    return ::boost::is_const< typename boost::remove_pointer< T >::type >::value;
+    return std::is_const< typename std::remove_pointer< T >::type >::value;
 }
+
+//------------------------------------------------------------------------------
 
 void BufferObjectTest::allocateTest()
 {
@@ -60,9 +66,9 @@ void BufferObjectTest::allocateTest()
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
-        char *buf = static_cast<char*>(lock.getBuffer());
+        char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i<SIZE; ++i)
+        for (int i = 0; i < SIZE; ++i)
         {
             buf[i] = (i%256);
         }
@@ -70,9 +76,9 @@ void BufferObjectTest::allocateTest()
 
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
-        char *buf = static_cast<char*>(lock.getBuffer());
+        char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i<SIZE; ++i)
+        for (int i = 0; i < SIZE; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i%256), buf[i]);
         }
@@ -99,9 +105,6 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
-
-
-
     CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
@@ -111,12 +114,11 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
-
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
-        char *buf = static_cast<char*>(lock.getBuffer());
+        char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i<SIZE; ++i)
+        for (int i = 0; i < SIZE; ++i)
         {
             buf[i] = (i%256);
         }
@@ -124,9 +126,9 @@ void BufferObjectTest::allocateTest()
 
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
-        char *buf = static_cast<char*>(lock.getBuffer());
+        char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i<SIZE; ++i)
+        for (int i = 0; i < SIZE; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i%256), buf[i]);
         }
@@ -167,10 +169,11 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT( bo->isEmpty() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() == NULL );
 
-
     CPPUNIT_ASSERT_THROW( bo->allocate(150, ::fwMemory::BufferNoAllocPolicy::New()), ::fwMemory::exception::Memory);
     // CPPUNIT_ASSERT_THROW( bo->reallocate(150), ::fwMemory::exception::Memory);
 }
+
+//------------------------------------------------------------------------------
 
 void BufferObjectTest::allocateZeroTest()
 {
@@ -191,9 +194,9 @@ void BufferObjectTest::allocateZeroTest()
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
-
 }
 
+//------------------------------------------------------------------------------
 
 void stressLock(::fwMemory::BufferObject::sptr bo, int nbLocks, int nbTest)
 {
@@ -213,11 +216,13 @@ void stressLock(::fwMemory::BufferObject::sptr bo, int nbLocks, int nbTest)
 
 }
 
+//------------------------------------------------------------------------------
+
 void BufferObjectTest::lockThreadedStressTest()
 {
     ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
 
-    boost::thread_group group;
+    ::boost::thread_group group;
 
     group.create_thread( std::bind( &stressLock, bo, 800, 600 ) );
     group.create_thread( std::bind( &stressLock, bo, 600, 800 ) );
@@ -229,8 +234,6 @@ void BufferObjectTest::lockThreadedStressTest()
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
 }
-
-
 
 } // namespace ut
 } // namespace fwMemory

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,11 @@
 #ifndef __FWDCMTKIO_READER_MAIN_IMAGEREADER_HPP__
 #define __FWDCMTKIO_READER_MAIN_IMAGEREADER_HPP__
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwDcmtkIO/config.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
 
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
@@ -145,7 +144,6 @@ public:
         return tempoBuffer;
     }
 
-
 protected:
 
     /**
@@ -172,49 +170,49 @@ protected:
         //Copy the temporary buffer to the final buffer
         if (imageType == ::fwTools::Type::s_INT8)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::int8_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int8_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT16)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::int16_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int16_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT32)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::int32_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int32_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT64)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::int64_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::int64_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT8)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::uint8_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint8_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT16)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::uint16_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint16_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT32)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::uint32_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint32_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT64)
         {
-            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< ::boost::uint64_t >(
+            ::fwDcmtkIO::reader::main::ImageReader::copyBuffer< std::uint64_t >(
                 rows, columns, depth, tempoBuffer, destination, rescaleSlope,
                 rescaleIntercept);
         }
@@ -234,7 +232,6 @@ protected:
         delete tempoBuffer;
 
     }
-
 
     /**
      * @brief Copy the temporary buffer to the image buffer
@@ -273,12 +270,10 @@ protected:
         }
     }
 
-
 };
 
 } //main
 } //reader
 } //fwDcmtkIO
-
 
 #endif /* __FWDCMTKIO_READER_MAIN_IMAGEREADER_HPP__ */

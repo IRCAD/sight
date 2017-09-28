@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,14 +10,17 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+
 #include <fwData/Vector.hpp>
-#include <fwMedData/DicomSeries.hpp>
-#include <fwPacsIO/helper/Series.hpp>
-#include <fwPacsIO/exceptions/Base.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
+
+#include <fwPacsIO/exceptions/Base.hpp>
+#include <fwPacsIO/helper/Series.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>
@@ -131,7 +134,6 @@ void SSeriesPusher::updating()
             m_pacsConfiguration->getMoveApplicationTitle(),
             m_slotProgressCallback);
 
-
         // Set pushing boolean to true
         m_isPushing = true;
 
@@ -140,7 +142,7 @@ void SSeriesPusher::updating()
         if(pushOK)
         {
             // Push series to the PACS
-            m_pushSeriesWorker->post(::boost::bind(&::ioPacs::SSeriesPusher::pushSeries, this));
+            m_pushSeriesWorker->post(std::bind(&::ioPacs::SSeriesPusher::pushSeries, this));
         }
 
     }

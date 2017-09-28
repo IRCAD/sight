@@ -271,6 +271,7 @@ void SSlicesCursor::buildColorAttribute()
         colors->InsertNextTupleValue(  i->second.second );
 #endif
         m_cursorPolyData->GetCellData()->AddArray(colors);
+        colors->Delete();
     }
     m_cursorMapper->SetScalarModeToUseCellFieldData();
     this->setVtkPipelineModified();

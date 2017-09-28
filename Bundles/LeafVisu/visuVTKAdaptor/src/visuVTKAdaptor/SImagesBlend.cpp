@@ -55,7 +55,8 @@ static const ::fwServices::IService::KeyType s_TF_SELECTION_GROUP = "tfSelection
 
 SImagesBlend::SImagesBlend() noexcept :
     m_imageAlgorithm(nullptr),
-    m_checkerboardDivision(10)
+    m_checkerboardDivision(10),
+    m_zDivision(m_checkerboardDivision)
 {
     newSlot(s_CHANGE_MODE_SLOT, &SImagesBlend::changeMode, this);
     newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &SImagesBlend::changeCheckerboardDivision, this);
@@ -82,18 +83,7 @@ void SImagesBlend::starting()
     if(nullptr == m_imageAlgorithm)
     {
         // If we have no vtkImageBlend, try to downcast as an vtkImageCheckerboard
-        vtkImageCheckerboard* imageCheckerboard =
-            vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
-
-        if(nullptr != imageCheckerboard)
-        {
-            // Set the number of subdivision
-            imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                    m_checkerboardDivision);
-
-            // Assign as an vtkThreadedImageAlgorithm
-            m_imageAlgorithm = imageCheckerboard;
-        }
+        m_imageAlgorithm = vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
     }
 
     // If we have a null m_imageAlgorithm, then we have a problem Houston
@@ -101,6 +91,9 @@ void SImagesBlend::starting()
                nullptr != m_imageAlgorithm);
 
     this->addImageAdaptors();
+
+    // Set the divisions once all image info has been gathered.
+    this->changeCheckerboardDivision(m_checkerboardDivision);
 }
 
 //------------------------------------------------------------------------------
@@ -195,6 +188,10 @@ bool SImagesBlend::checkImageInformations()
                 size    = img->getSize();
                 spacing = img->getSpacing();
                 origin  = img->getOrigin();
+                if(size[2] <= 1)
+                {
+                    m_zDivision = 1;
+                }
             }
             else
             {
@@ -317,7 +314,7 @@ void SImagesBlend::changeMode(std::string _value, std::string _key)
             {
                 // Set the number of subdivision
                 imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                        m_checkerboardDivision);
+                                                        m_zDivision);
 
                 // Assign as an vtkThreadedImageAlgorithm
                 m_imageAlgorithm = imageCheckerboard;
@@ -370,7 +367,7 @@ void SImagesBlend::changeCheckerboardDivision(const int division)
     {
         // Set the number of subdivision
         imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
-                                                m_checkerboardDivision);
+                                                m_zDivision);
 
         // Assign as an vtkThreadedImageAlgorithm
         m_imageAlgorithm = imageCheckerboard;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,11 +13,10 @@
 
 #include "fwCom/SlotRun.hpp"
 
-#include <boost/bind.hpp>
-
 namespace fwCom
 {
 
+//------------------------------------------------------------------------------
 
 template < typename ... A >
 inline std::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (A ...) >::New(
@@ -44,8 +43,10 @@ inline std::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A
 
 template < typename ... A >
 inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType& signal,
-                                                      const SlotRunSptrType& slot)
-    : m_signal(signal), m_connectedSlot(slot), m_pair(true, slot.get())
+                                                      const SlotRunSptrType& slot) :
+    m_signal(signal),
+    m_connectedSlot(slot),
+    m_pair(true, slot.get())
 {
 }
 
@@ -56,8 +57,11 @@ inline SlotConnection< void (A ...) >::SlotConnection(
     const SignalSptrType& signal,
     const SlotBase::sptr& slot,
     const SlotWrapperSptrType& slotWrapper
-    )
-    : m_signal(signal), m_connectedSlot(slot), m_slotWrapper(slotWrapper), m_pair(true, slotWrapper.get())
+    ) :
+    m_signal(signal),
+    m_connectedSlot(slot),
+    m_slotWrapper(slotWrapper),
+    m_pair(true, slotWrapper.get())
 {
 }
 
@@ -178,7 +182,7 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A ...) >::getBl
         {
             blocker = SlotConnectionBase::BlockerSptrType(
                 (void*)NULL,
-                ::boost::bind( &SlotConnection< void (A ...) >::unblock, this )
+                std::bind( &SlotConnection< void (A ...) >::unblock, this )
                 );
             m_weakBlocker = blocker;
 
@@ -208,5 +212,4 @@ inline void SlotConnection< void (A ...) >::unblock()
 } // namespace fwCom
 
 #endif /* __FWCOM_SLOTCONNECTION_HXX__ */
-
 

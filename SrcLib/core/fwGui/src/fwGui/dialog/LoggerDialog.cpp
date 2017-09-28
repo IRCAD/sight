@@ -11,7 +11,7 @@
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
 
-#include <boost/function.hpp>
+#include <functional>
 
 namespace fwGui
 {
@@ -79,9 +79,8 @@ bool LoggerDialog::show()
 {
     if(m_implementation)
     {
-        ::boost::function<bool()> func = ::boost::bind(&ILoggerDialog::show, m_implementation);
-        ::boost::shared_future<bool> f =
-            ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<bool>(func);
+        std::function<bool()> func = std::bind(&ILoggerDialog::show, m_implementation);
+        std::shared_future<bool> f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<bool>(func);
         f.wait();
 
         return f.get();

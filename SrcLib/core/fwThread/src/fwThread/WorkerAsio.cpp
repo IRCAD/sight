@@ -1,30 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/chrono/duration.hpp>
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
-#include <boost/bind.hpp>
+#include "fwThread/Timer.hpp"
+#include "fwThread/Worker.hpp"
 
 #include <fwCore/TimeStamp.hpp>
 
-#include "fwThread/Worker.hpp"
-#include "fwThread/Timer.hpp"
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/io_service.hpp>
 
 namespace fwThread
 {
 
-std::size_t WorkerThread( ::boost::asio::io_service & io_service )
+//------------------------------------------------------------------------------
+
+std::size_t WorkerThread( ::boost::asio::io_service& io_service )
 {
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Start");
     std::size_t res = io_service.run();
     OSLM_TRACE("Thread " << getCurrentThreadId() <<" Finish");
     return res;
 }
-
 
 /**
  * @brief Private implementation of fwThread::Worker using boost::asio.
@@ -35,8 +34,7 @@ public:
     typedef ::boost::asio::io_service IOServiceType;
     typedef ::boost::asio::io_service::work WorkType;
     typedef std::shared_ptr< WorkType > WorkPtrType;
-    typedef ::boost::thread ThreadType;
-
+    typedef std::thread ThreadType;
 
     WorkerAsio();
 
@@ -72,16 +70,10 @@ protected:
     SPTR(ThreadType) m_thread;
 };
 
-
 //------------------------------------------------------------------------------
 
-
 /**
- * @class TimerAsio
  * @brief Private Timer implementation using boost::asio.
- *
- *
- * @date   2012.
  */
 class TimerAsio : public ::fwThread::Timer
 {
@@ -89,7 +81,7 @@ public:
     /**
      * @brief Constructs a TimerAsio from given io_service.
      */
-    TimerAsio(::boost::asio::io_service &ioSrv);
+    TimerAsio(::boost::asio::io_service& ioSrv);
 
     ~TimerAsio();
 
@@ -128,8 +120,7 @@ protected:
     void cancelNoLock();
     void rearmNoLock(TimeDurationType duration);
 
-    void call(const ::boost::system::error_code & code);
-
+    void call(const ::boost::system::error_code& code);
 
     /// Copy constructor forbidden.
     TimerAsio( const TimerAsio& );
@@ -152,20 +143,18 @@ protected:
 
 //------------------------------------------------------------------------------
 
-
 // ---------- WorkerAsio private implementation ----------
 
 WorkerAsio::WorkerAsio() :
     m_ioService(),
-    m_work( std::make_shared< WorkType >(::boost::ref(m_ioService)) )
+    m_work( std::make_shared< WorkType >(std::ref(m_ioService)) )
 {
-    ::boost::packaged_task< ::fwThread::Worker::ExitReturnType > task( ::boost::bind(&WorkerThread, ::boost::ref(
-                                                                                         m_ioService)) );
-    ::boost::future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
+    std::packaged_task< ::fwThread::Worker::ExitReturnType() > task( std::bind(&WorkerThread, std::ref(m_ioService)) );
+    std::future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
 
-    m_thread = std::make_shared< ThreadType >( ::boost::move( task ) );
+    m_thread = std::make_shared< ThreadType >( std::move( task ) );
 
-    m_future = ::boost::move(ufuture);
+    m_future = std::move(ufuture);
 }
 
 WorkerAsio::~WorkerAsio()
@@ -176,6 +165,8 @@ WorkerAsio::~WorkerAsio()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void WorkerAsio::stop()
 {
     m_work.reset();
@@ -184,24 +175,31 @@ void WorkerAsio::stop()
 
 SPTR(::fwThread::Timer) WorkerAsio::createTimer()
 {
-    return std::make_shared< TimerAsio >(::boost::ref(m_ioService));
+    return std::make_shared< TimerAsio >(std::ref(m_ioService));
 }
+
+//------------------------------------------------------------------------------
 
 void WorkerAsio::post(TaskType handler)
 {
     m_ioService.post(handler);
 }
 
+//------------------------------------------------------------------------------
 
 ThreadIdType WorkerAsio::getThreadId() const
 {
     return m_thread->get_id();
 }
 
+//------------------------------------------------------------------------------
+
 void WorkerAsio::processTasks()
 {
     m_ioService.poll();
 }
+
+//------------------------------------------------------------------------------
 
 void WorkerAsio::processTasks(PeriodType maxtime)
 {
@@ -220,12 +218,11 @@ SPTR(Worker) Worker::defaultFactory()
     return std::make_shared< WorkerAsio >();
 }
 
-
 // ---------- Timer private implementation ----------
 
-TimerAsio::TimerAsio(::boost::asio::io_service &ioSrv) :
+TimerAsio::TimerAsio(::boost::asio::io_service& ioSrv) :
     m_timer(ioSrv),
-    m_duration(::boost::chrono::seconds(1)),
+    m_duration(std::chrono::seconds(1)),
     m_oneShot(false),
     m_running(false)
 {
@@ -235,11 +232,15 @@ TimerAsio::~TimerAsio()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void TimerAsio::setDuration(TimeDurationType duration)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     m_duration = duration;
 }
+
+//------------------------------------------------------------------------------
 
 void TimerAsio::start()
 {
@@ -247,6 +248,8 @@ void TimerAsio::start()
     this->rearmNoLock(m_duration);
     m_running = true;
 }
+
+//------------------------------------------------------------------------------
 
 void TimerAsio::stop()
 {
@@ -258,16 +261,20 @@ void TimerAsio::stop()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void TimerAsio::rearmNoLock(TimeDurationType duration)
 {
     this->cancelNoLock();
     ::boost::posix_time::time_duration d =
-        ::boost::posix_time::microseconds(boost::chrono::duration_cast<boost::chrono::microseconds>(duration).count());
+        ::boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
     m_timer.expires_from_now( d );
-    m_timer.async_wait( ::boost::bind(&TimerAsio::call, this, _1));
+    m_timer.async_wait( std::bind(&TimerAsio::call, this, std::placeholders::_1));
 }
 
-void TimerAsio::call(const ::boost::system::error_code & error)
+//------------------------------------------------------------------------------
+
+void TimerAsio::call(const ::boost::system::error_code& error)
 {
     if(!error)
     {
@@ -298,11 +305,12 @@ void TimerAsio::call(const ::boost::system::error_code & error)
 
 }
 
+//------------------------------------------------------------------------------
+
 void TimerAsio::cancelNoLock()
 {
     m_timer.cancel();
 }
-
 
 } //namespace fwThread
 

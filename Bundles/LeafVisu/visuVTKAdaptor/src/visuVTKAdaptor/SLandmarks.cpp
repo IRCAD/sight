@@ -561,7 +561,7 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
 
     m_timer = m_associatedWorker->createTimer();
 
-    ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(500);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
 
     const std::array<double, 3> color1 = {{color[0], color[1], color[2]}};
     const std::array<double, 3> color2 = {{0., 1., 0.}};
@@ -663,13 +663,13 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
     ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, pointIndex);
 
-    vtkSmartPointer< vtkHandleWidget > handle = vtkHandleWidget::New();
+    vtkSmartPointer< vtkHandleWidget > handle = vtkSmartPointer<vtkHandleWidget>::New();
 
     const ::fwData::Landmarks::ColorType& color = group.m_color;
 
     // TODO add option for cube representation
     vtkSmartPointer< ::fwRenderVTK::vtk::fwHandleRepresentation3D > pointRep =
-        ::fwRenderVTK::vtk::fwHandleRepresentation3D::New();
+        vtkSmartPointer< ::fwRenderVTK::vtk::fwHandleRepresentation3D>::New();
 
     if (group.m_shape == ::fwData::Landmarks::Shape::SPHERE)
     {
@@ -710,8 +710,8 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     // create label
     const std::string label = groupName + "_" + std::to_string(pointIndex);
 
-    vtkSmartPointer<vtkActor2D> textActor     = vtkActor2D::New();
-    vtkSmartPointer<vtkTextMapper> textMapper = vtkTextMapper::New();
+    vtkSmartPointer<vtkActor2D> textActor     = vtkSmartPointer< vtkActor2D>::New();
+    vtkSmartPointer<vtkTextMapper> textMapper = vtkSmartPointer< vtkTextMapper>::New();
     textMapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
     textMapper->GetTextProperty()->ShadowOn(); // better contrast
     textMapper->GetTextProperty()->BoldOn();

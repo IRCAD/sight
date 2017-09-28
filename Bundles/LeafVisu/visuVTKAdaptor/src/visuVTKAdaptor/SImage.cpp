@@ -47,9 +47,9 @@ SImage::SImage() noexcept :
     m_imagePortId(-1),
     m_imageOpacity(0.),
     m_allowAlphaInTF(false),
-    m_lut(fwVtkWindowLevelLookupTable::New()),
-    m_map2colors(vtkImageMapToColors::New()),
-    m_imageData(vtkImageData::New())
+    m_lut(vtkSmartPointer<fwVtkWindowLevelLookupTable>::New()),
+    m_map2colors(vtkSmartPointer<vtkImageMapToColors>::New()),
+    m_imageData(vtkSmartPointer<vtkImageData>::New())
 {
     this->installTFSlots(this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SImage::updateImageOpacity, this);
@@ -59,14 +59,6 @@ SImage::SImage() noexcept :
 
 SImage::~SImage() noexcept
 {
-    m_lut->Delete();
-    m_lut = NULL;
-
-    m_map2colors->Delete();
-    m_map2colors = NULL;
-
-    m_imageData->Delete();
-    m_imageData = NULL;
 }
 
 //------------------------------------------------------------------------------

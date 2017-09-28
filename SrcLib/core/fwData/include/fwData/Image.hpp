@@ -17,7 +17,6 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
 
-#include <boost/cstdint.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_array.hpp>
 
@@ -60,7 +59,7 @@ public:
 
     typedef SizeType::value_type IndexType;
     typedef size_t BufferIndexType;
-    typedef ::boost::uint8_t BufferType;
+    typedef std::uint8_t BufferType;
     typedef ::boost::shared_array< BufferType > SharedArray;
 
     /**

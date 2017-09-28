@@ -164,9 +164,9 @@ public:
      * @name Slot API
      */
     //@{
-    typedef ::boost::shared_future< void > SharedFutureType;
-    typedef ::boost::packaged_task< void > PackagedTaskType;
-    typedef ::boost::future< void > UniqueFutureType;
+    typedef std::shared_future< void > SharedFutureType;
+    typedef std::packaged_task< void ()> PackagedTaskType;
+    typedef std::future< void > UniqueFutureType;
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_SLOT;
     typedef ::fwCom::Slot<SharedFutureType()> StartSlotType;

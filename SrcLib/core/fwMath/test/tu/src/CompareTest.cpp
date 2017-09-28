@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #include "CompareTest.hpp"
 
 #include <fwMath/Compare.hpp>
-#include <fwTools/random/Generator.hpp>
 
+#include <fwTools/random/Generator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::CompareTest );
@@ -59,7 +59,7 @@ void CompareTest::checkContainerEquality()
     bool isEqual = ::fwMath::isContainerEqual(vect1, vect2);
     CPPUNIT_ASSERT_EQUAL(true, isEqual);
 
-    ::boost::uint32_t seedVal = std::time(NULL);
+    std::uint32_t seedVal = std::time(NULL);
     ::fwTools::random::fillContainer(0.000001, 0.000009, vect1, seedVal);
     ::fwTools::random::fillContainer(0.000001, 0.000009, vect2, ++seedVal);
 
@@ -69,7 +69,6 @@ void CompareTest::checkContainerEquality()
     isEqual = ::fwMath::isContainerEqual(vect1, vect2, 0.0000001f);
     CPPUNIT_ASSERT_EQUAL(false, isEqual);
 }
-
 
 } //namespace ut
 } //namespace fwMath

@@ -16,7 +16,7 @@ namespace dialog
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(::boost::function< void() >(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
                                                                                     [this] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
@@ -38,8 +38,8 @@ void MultiSelectorDialog::setTitle(std::string title)
 IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     typedef IMultiSelectorDialog::Selections R;
-    ::boost::function< R() > func = ::boost::bind( &IMultiSelectorDialog::show, m_implementation);
-    ::boost::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
+    std::function< R() > func = std::bind( &IMultiSelectorDialog::show, m_implementation);
+    std::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
 
     f.wait();
     return f.get();

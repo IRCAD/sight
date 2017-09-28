@@ -1,23 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "SlotsSignalsStuff.hpp"
 
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
+
 #include <fwCom/Connection.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
-#include <fwData/registry/macros.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <fwData/registry/macros.hpp>
 
 namespace fwServices
 {
@@ -35,7 +34,9 @@ fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShow2T
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-SBasicTest::SBasicTest() : m_updateFinished(false), m_swapFinished(false)
+SBasicTest::SBasicTest() :
+    m_updateFinished(false),
+    m_swapFinished(false)
 {
 }
 
@@ -43,21 +44,21 @@ SBasicTest::SBasicTest() : m_updateFinished(false), m_swapFinished(false)
 
 void SBasicTest::starting()
 {
-    ::boost::this_thread::sleep_for(m_startRetarder);
+    std::this_thread::sleep_for(m_startRetarder);
 }
 
 //------------------------------------------------------------------------------
 
 void SBasicTest::stopping()
 {
-    ::boost::this_thread::sleep_for(m_stopRetarder);
+    std::this_thread::sleep_for(m_stopRetarder);
 }
 
 //------------------------------------------------------------------------------
 
 void SBasicTest::swapping()
 {
-    ::boost::this_thread::sleep_for(m_swapRetarder);
+    std::this_thread::sleep_for(m_swapRetarder);
     m_swapFinished = true;
 }
 
@@ -65,7 +66,7 @@ void SBasicTest::swapping()
 
 void SBasicTest::updating()
 {
-    ::boost::this_thread::sleep_for(m_updateRetarder);
+    std::this_thread::sleep_for(m_updateRetarder);
     m_updateFinished = true;
 }
 
@@ -93,7 +94,9 @@ const ::fwCom::Slots::SlotKeyType SShowTest::s_CHANGE_SLOT = "change";
 
 //------------------------------------------------------------------------------
 
-SShowTest::SShowTest() : m_receiveCount(0), m_changeCount(0)
+SShowTest::SShowTest() :
+    m_receiveCount(0),
+    m_changeCount(0)
 {
     m_slotChange = ::fwCom::newSlot( &SShowTest::change, this );
     ::fwCom::HasSlots::m_slots( s_CHANGE_SLOT, m_slotChange );
@@ -104,7 +107,7 @@ SShowTest::SShowTest() : m_receiveCount(0), m_changeCount(0)
 void SShowTest::updating()
 {
     Buffer::sptr buffer = this->getObject<Buffer>();
-    ::boost::this_thread::sleep_for(m_receiveRetarder);
+    std::this_thread::sleep_for(m_receiveRetarder);
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
 }
@@ -148,7 +151,8 @@ const ::fwCom::Slots::SlotKeyType SShow2Test::s_UPDATE_BUFFER_SLOT = "updateBuff
 
 //------------------------------------------------------------------------------
 
-SShow2Test::SShow2Test() : m_receiveCount(0)
+SShow2Test::SShow2Test() :
+    m_receiveCount(0)
 {
     newSlot(s_UPDATE_BUFFER_SLOT, &SShow2Test::updateBuffer, this);
 }
@@ -173,7 +177,7 @@ void SShow2Test::updating()
 void SShow2Test::updateBuffer()
 {
     Buffer::sptr buffer = this->getObject<Buffer>();
-    ::boost::this_thread::sleep_for(m_receiveRetarder);
+    std::this_thread::sleep_for(m_receiveRetarder);
     ::fwData::mt::ObjectWriteLock lock(buffer);
     ++m_receiveCount;
 

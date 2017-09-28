@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMemory/exception/BadCast.hpp"
-#include "fwMemory/ByteSize.hpp"
-#include "fwMemory/policy/registry/macros.hpp"
 #include "fwMemory/policy/BarrierDump.hpp"
 
-#include <boost/assign.hpp>
+#include "fwMemory/ByteSize.hpp"
+#include "fwMemory/exception/BadCast.hpp"
+#include "fwMemory/policy/registry/macros.hpp"
 
 namespace fwMemory
 {
@@ -31,7 +30,7 @@ BarrierDump::BarrierDump() :
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+void BarrierDump::allocationRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                                      BufferInfo::SizeType size )
 {
     SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
@@ -47,8 +46,7 @@ void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+void BarrierDump::setRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                               BufferInfo::SizeType size )
 {
     SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
@@ -64,8 +62,7 @@ void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::Const
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+void BarrierDump::reallocateRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                                      BufferInfo::SizeType newSize )
 {
     SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
@@ -81,8 +78,7 @@ void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::destroyRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     if(!info.loaded)
     {
@@ -95,29 +91,27 @@ void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::C
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::lockRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
 }
 
 //------------------------------------------------------------------------------
 
-
-void BarrierDump::unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::unlockRequest( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::dumpSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     m_totalDumped += info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
+void BarrierDump::restoreSuccess( BufferInfo& info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
     SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
@@ -158,17 +152,16 @@ size_t BarrierDump::dump(size_t nbOfBytes)
 
         BufferVectorType buffers;
 
-        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt :  bufferInfos)
+        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type& elt :  bufferInfos)
         {
-            const ::fwMemory::BufferInfo &info = elt.second;
+            const ::fwMemory::BufferInfo& info = elt.second;
             if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }
         }
 
-
-        for(const BufferVectorType::value_type &pair :  bufferInfos)
+        for(const BufferVectorType::value_type& pair :  bufferInfos)
         {
             if(dumped < nbOfBytes)
             {
@@ -210,7 +203,7 @@ void BarrierDump::refresh()
 
 //------------------------------------------------------------------------------
 
-bool BarrierDump::setParam(const std::string &name, const std::string &value)
+bool BarrierDump::setParam(const std::string& name, const std::string& value)
 {
     try
     {
@@ -232,15 +225,15 @@ bool BarrierDump::setParam(const std::string &name, const std::string &value)
 
 //------------------------------------------------------------------------------
 
-const ::fwMemory::IPolicy::ParamNamesType &BarrierDump::getParamNames() const
+const ::fwMemory::IPolicy::ParamNamesType& BarrierDump::getParamNames() const
 {
-    static const ::fwMemory::IPolicy::ParamNamesType params = ::boost::assign::list_of("barrier");
+    static const ::fwMemory::IPolicy::ParamNamesType params = {{ "barrier" }};
     return params;
 }
 
 //------------------------------------------------------------------------------
 
-std::string BarrierDump::getParam(const std::string &name, bool *ok ) const
+std::string BarrierDump::getParam(const std::string& name, bool* ok ) const
 {
     bool isOk = false;
     std::string value;
@@ -257,8 +250,6 @@ std::string BarrierDump::getParam(const std::string &name, bool *ok ) const
 }
 
 //------------------------------------------------------------------------------
-
-
 
 } // namespace policy
 

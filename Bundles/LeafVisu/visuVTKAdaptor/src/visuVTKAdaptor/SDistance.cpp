@@ -66,6 +66,8 @@ SDistance::SDistance() noexcept :
 
 SDistance::~SDistance() noexcept
 {
+    m_lineSource->Delete();
+    m_lineActor->Delete();
     m_distanceRepresentation->Delete();
 }
 

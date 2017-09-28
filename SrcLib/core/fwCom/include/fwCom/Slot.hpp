@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,11 +9,10 @@
 
 #include "fwCom/SlotCall.hpp"
 
-#include <boost/function.hpp>
+#include <functional>
 
 namespace fwCom
 {
-
 
 template< typename F >
 class Slot;
@@ -21,7 +20,7 @@ class Slot;
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A >
-class Slot< R ( A ... ) > : public SlotCall< R (A ...) >
+class Slot< R( A ... ) > : public SlotCall< R(A ...) >
 {
 public:
     typedef R SignatureType (A ...);
@@ -38,19 +37,19 @@ public:
     static SPTR( Slot< R(A ...) > ) New( F f, O o );
 };
 
-
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A >
-class Slot< ::boost::function< R ( A ... ) > > : public Slot< R ( A ... ) >
+class Slot< std::function< R( A ... ) > > : public Slot< R( A ... ) >
 {
 public:
     typedef R SignatureType (A ...);
-    typedef ::boost::function< SignatureType > FunctionType;
-
+    typedef std::function< SignatureType > FunctionType;
 
     template< typename FUNCTOR >
-    Slot( FUNCTOR f ) : Slot< R ( A ... ) >(),  m_func(f)
+    Slot( FUNCTOR f ) :
+        Slot< R( A ... ) >(),
+        m_func(f)
     {
     }
 
@@ -58,10 +57,14 @@ public:
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void run(A ... a) const
     {
         m_func(a ...);
     }
+
+    //------------------------------------------------------------------------------
 
     virtual R   call(A ... a) const
     {
@@ -75,12 +78,12 @@ protected:
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A >
-class Slot< Slot< R ( A ... ) > > : public Slot< ::boost::function < R ( A ... ) > >
+class Slot< Slot< R( A ... ) > > : public Slot< std::function < R( A ... ) > >
 {
 public:
 
     typedef R SignatureType ( A ... );
-    typedef ::boost::function< SignatureType > FunctionType;
+    typedef std::function< SignatureType > FunctionType;
 
     template< typename F >
     Slot( SPTR( SlotRun< F > )slot );
@@ -96,7 +99,6 @@ public:
 
 template<typename F, typename ... Bindings>
 SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ... bindings);
-
 
 } // namespace fwCom
 

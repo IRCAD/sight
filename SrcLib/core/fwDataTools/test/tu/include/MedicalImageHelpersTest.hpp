@@ -20,6 +20,8 @@ class MedicalImageHelpersTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( MedicalImageHelpersTest );
 CPPUNIT_TEST( getMinMaxTest );
+CPPUNIT_TEST( getPixelBufferTest );
+CPPUNIT_TEST( setPixelBufferTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,6 +29,14 @@ public:
     void tearDown();
 
     void getMinMaxTest();
+
+    // Test the getPixelBuffer method for several image pixel types
+    void getPixelBufferTest();
+
+    //------------------------------------------------------------------------------
+
+    // Test the setPixelBuffer method for several image pixel types
+    void setPixelBufferTest();
 };
 
 } // namespace ut

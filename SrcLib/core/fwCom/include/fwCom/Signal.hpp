@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,15 @@
 #ifndef __FWCOM_SIGNAL_HPP__
 #define __FWCOM_SIGNAL_HPP__
 
+#include "fwCom/SignalBase.hpp"
+#include <fwCom/SlotConnection.hpp>
+
+#include <fwCore/mt/types.hpp>
+
 #include <list>
 #include <map>
+#include <type_traits>
 #include <utility>
-
-#include <boost/type_traits/is_same.hpp>
-
-#include <fwCom/SlotConnection.hpp>
-#include <fwCore/mt/types.hpp>
-#include "fwCom/SignalBase.hpp"
-
 
 namespace fwCom
 {
@@ -35,7 +34,7 @@ struct SlotRun;
  * Template parameter T must always be void.
  */
 template < typename R, typename ... A >
-struct Signal< R (A ...) > : SignalBase
+struct Signal< R(A ...) > : SignalBase
 {
     /**
      * @name Typedefs
@@ -73,13 +72,13 @@ struct Signal< R (A ...) > : SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect ( SPTR( SlotBase ) slot );
+    Connection connect( SPTR( SlotBase ) slot );
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect ( SPTR( SlotBase ) slot );
+    void disconnect( SPTR( SlotBase ) slot );
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -97,17 +96,13 @@ struct Signal< R (A ...) > : SignalBase
         return m_slots.size();
     }
 
-
     /**
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
     Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
-
-
     protected:
-
 
         template < typename F >
         friend struct SlotConnection;
@@ -132,10 +127,9 @@ struct Signal< R (A ...) > : SignalBase
         mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
     private:
-        BOOST_STATIC_ASSERT( (::boost::is_same<void, R>::value) );
+        BOOST_STATIC_ASSERT( (std::is_same<void, R>::value) );
 
 };
-
 
 } // namespace fwCom
 

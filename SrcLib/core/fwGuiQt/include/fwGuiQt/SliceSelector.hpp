@@ -15,6 +15,8 @@
 #include <QPointer>
 #include <QWidget>
 
+#include <functional>
+
 // Qt
 class QSlider;
 class QLineEdit;
@@ -51,10 +53,10 @@ public:
 
     FWGUIQT_API void setEnable(bool enable);
 
-    typedef ::boost::function1<void, int > ChangeIndexCallback;
+    typedef std::function<void (int) > ChangeIndexCallback;
     FWGUIQT_API void setChangeIndexCallback(ChangeIndexCallback fct);
 
-    typedef ::boost::function1<void, int > ChangeTypeCallback;
+    typedef std::function<void (int) > ChangeTypeCallback;
     FWGUIQT_API void setChangeTypeCallback(ChangeTypeCallback fct);
 
 protected Q_SLOTS:

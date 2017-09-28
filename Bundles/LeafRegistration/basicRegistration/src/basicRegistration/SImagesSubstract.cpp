@@ -96,7 +96,7 @@ void SImagesSubstract::updating()
         bool isSameSize = (image1->getSize() == image2->getSize());
         if(isSameSize)
         {
-            typedef itk::Image< ::boost::int16_t, 3 > ImageType;
+            typedef itk::Image< std::int16_t, 3 > ImageType;
 
             ImageType::Pointer itkImage1 = ::fwItkIO::itkImageFactory< ImageType >( image1 );
             SLM_ASSERT("Unable to convert fwData::Image to itkImage", itkImage1);

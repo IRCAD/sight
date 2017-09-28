@@ -300,12 +300,12 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::
 
 // -----------------------------------------------------------------------------
 
-vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
+vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( ::fwData::TransformationMatrix3D::csptr _transfoMatrix )
 {
-    vtkMatrix4x4* matrix = vtkMatrix4x4 ::New();
-    for(int l = 0; l < 4; l++)
+    auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+    for(std::uint8_t l = 0; l < 4; l++)
     {
-        for(int c = 0; c < 4; c++)
+        for(std::uint8_t c = 0; c < 4; c++)
         {
             matrix->SetElement(l, c, _transfoMatrix->getCoefficient(l, c));
         }
@@ -317,11 +317,10 @@ vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatri
 
 bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::sptr _transfoMatrix)
 {
-    SLM_TRACE_FUNC();
     bool res = true;
-    for(int l = 0; l < 4; l++)
+    for(std::uint8_t l = 0; l < 4; l++)
     {
-        for(int c = 0; c < 4; c++)
+        for(std::uint8_t c = 0; c < 4; c++)
         {
             _transfoMatrix->setCoefficient(l, c, _matrix->GetElement(l, c));
         }

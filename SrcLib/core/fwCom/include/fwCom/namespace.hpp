@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,9 +18,7 @@ namespace fwCom
 namespace exception
 {
 
-
 } // namespace exception
-
 
 /**
  * @brief fwCom's utilities
@@ -28,10 +26,7 @@ namespace exception
 namespace util
 {
 
-
 } // namespace util
-
-
 
 /**
  * @page SigSlot fwCom Signal/Slot system
@@ -111,10 +106,10 @@ namespace util
  * @subsubsection SlotAsyncRun Asynchronous `run`
  *
  * `asyncRun` method returns a <a
- * href="http://www.boost.org/doc/libs/1_52_0/doc/html/thread/synchronization.html#thread.synchronization.futures">`boost::shared_future<
+ * href="http://www.boost.org/doc/libs/1_52_0/doc/html/thread/synchronization.html#thread.synchronization.futures">`std::shared_future<
  * void >`</a>, that makes it possible to wait for end-of-execution.
  *
- *     ::boost::future< void > future = slotStart->asyncRun();
+ *     std::future< void > future = slotStart->asyncRun();
  *     // do something else ...
  *     future.wait(); //ensures slotStart is finished before continuing
  *
@@ -122,10 +117,10 @@ namespace util
  *
  * `asyncCall` method returns a <a
  * href="http://www.boost.org/doc/libs/1_52_0/doc/html/thread/synchronization.html#thread.synchronization.futures">
- * `boost::shared_future< R >`</a> where R is the return type, this allows to
+ * `std::shared_future< R >`</a> where R is the return type, this allows to
  * wait for end-of-execution and to get the computed value.
  *
- *     ::boost::future< int > future = slotSum->asyncCall();
+ *     std::future< int > future = slotSum->asyncCall();
  *     // do something else ...
  *     future.wait(); //ensures slotStart is finished before continuing
  *     int result = future.get();

@@ -53,7 +53,7 @@ void SSimpleMeshDeformation::starting()
     SLM_ASSERT("No valid worker for mesh deformation", m_associatedWorker);
     m_timer = m_associatedWorker->createTimer();
 
-    ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(200);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(200);
 
     m_timer->setFunction(  std::bind( &SSimpleMeshDeformation::updating, this)  );
     m_timer->setDuration(duration);

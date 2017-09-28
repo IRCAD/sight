@@ -56,21 +56,21 @@ void SOrientationMarker::starting()
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
 
-    vtkOrientationMarkerWidget* widget = vtkOrientationMarkerWidget::New();
-    widget->SetOrientationMarker( actor );
-    widget->SetInteractor( this->getInteractor() );
+    m_widget = vtkSmartPointer<vtkOrientationMarkerWidget>::New();
+    m_widget->SetOrientationMarker( actor );
+    m_widget->SetInteractor( this->getInteractor() );
 
     if(m_hAlign == "left")
     {
-        widget->SetViewport( 0.0, 0.0, 0.1, 0.1 );
+        m_widget->SetViewport( 0.0, 0.0, 0.1, 0.1 );
     }
     else if(m_hAlign == "right")
     {
-        widget->SetViewport( 0.9, 0.0, 1, 0.1 );
+        m_widget->SetViewport( 0.9, 0.0, 1, 0.1 );
     }
 
-    widget->SetEnabled( 1 );
-    widget->InteractiveOff();
+    m_widget->SetEnabled( 1 );
+    m_widget->InteractiveOff();
     this->setVtkPipelineModified();
     this->requestRender();
 }
@@ -80,6 +80,7 @@ void SOrientationMarker::starting()
 void SOrientationMarker::stopping()
 {
     this->removeAllPropFromRenderer();
+    m_widget = nullptr;
 }
 
 //-----------------------------------------------------------------------------

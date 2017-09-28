@@ -15,8 +15,6 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <boost/assign/list_of.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
 
 #include <QAction>
@@ -24,6 +22,8 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
+
+#include <functional>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::ToolBarLayoutManager,
                     ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );

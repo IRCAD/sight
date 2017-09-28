@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ public:
      *
      * @param name The job name
      */
-    FWJOBS_API Observer(const std::string &name, std::uint64_t workUnits = 100);
+    FWJOBS_API Observer(const std::string& name, std::uint64_t workUnits = 100);
 
     /**
      * @name Exposed IJob methods
@@ -82,7 +82,7 @@ protected:
     FWJOBS_API virtual SharedFuture runImpl();
 
     /// Task type
-    typedef ::boost::packaged_task< void > PackagedTask;
+    typedef std::packaged_task< void () > PackagedTask;
 
     /// Task observed
     PackagedTask m_finishTask;
@@ -90,6 +90,5 @@ protected:
 };
 
 } //namespace fwJobs
-
 
 #endif //__FWJOBS_OBSERVER_HPP__

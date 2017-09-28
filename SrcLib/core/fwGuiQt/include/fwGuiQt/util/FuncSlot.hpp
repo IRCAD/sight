@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,17 @@
 #ifndef __FWGUIQT_UTIL_FUNCSLOT_HPP__
 #define __FWGUIQT_UTIL_FUNCSLOT_HPP__
 
-#include <boost/function.hpp>
+#include <fwGuiQt/config.hpp>
 
 #include <QObject>
 
-#include <fwGuiQt/config.hpp>
+#include <functional>
 
 namespace fwGuiQt
 {
 
 namespace util
 {
-
 
 class FWGUIQT_CLASS_API FuncSlot : public QObject
 {
@@ -28,9 +27,12 @@ public:
     FWGUIQT_API FuncSlot();
 
     template< typename CALLABLE >
-    FuncSlot(CALLABLE c) : m_func(c)
+    FuncSlot(CALLABLE c) :
+        m_func(c)
     {
     }
+
+    //------------------------------------------------------------------------------
 
     template< typename CALLABLE >
     void setFunction(CALLABLE c)
@@ -42,7 +44,7 @@ public Q_SLOTS:
     void trigger();
 
 protected:
-    ::boost::function< void() > m_func;
+    std::function< void() > m_func;
 };
 
 } // namespace util

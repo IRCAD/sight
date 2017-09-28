@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,26 +8,23 @@
 #ifndef __FWTOOLS_COMBINATORY_HPP__
 #define __FWTOOLS_COMBINATORY_HPP__
 
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/empty.hpp>
-#include <boost/mpl/vector.hpp>
-#include <boost/mpl/transform.hpp>
-#include <boost/mpl/push_front.hpp>
-#include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/accumulate.hpp>
-#include <boost/mpl/copy.hpp>
 #include <boost/mpl/apply.hpp>
 #include <boost/mpl/back_inserter.hpp>
-#include <boost/type_traits.hpp>
+#include <boost/mpl/copy.hpp>
+#include <boost/mpl/empty.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/push_front.hpp>
+#include <boost/mpl/transform.hpp>
+#include <boost/mpl/vector.hpp>
 
 namespace fwTools
 {
 
 /**
  * @brief   Helper for BinaryCartesianProduct two Set
- * @struct  AppendValueFirst
  *
- * @date    2007-2009.
  * @param   TYPE should be a simple type
  * @param   SETOFSET should be a container of type list i.e vector< vector< singleTypes>, vector< singleTypes>, ... >.
  * If SET is empty then vector<vector<TYPE> > is created
@@ -37,7 +34,7 @@ namespace fwTools
  */
 struct AppendValueFirst
 {
-    template<class TYPE,class SETOFSET>
+    template<class TYPE, class SETOFSET>
     struct apply
     {
 
@@ -50,12 +47,8 @@ struct AppendValueFirst
     };
 };
 
-
 /**
  * @brief   MetaFunction which create an boost::boost::mpl::vector
- * @struct  make_vector
- *
- * @date    2007-2009.
  */
 struct make_vector
 {
@@ -66,13 +59,9 @@ struct make_vector
     };
 };
 
-
 /**
  * @brief   MetaFunction ( used for pseudo Curryfication ) which transform a set where new elements are
  * singleton of 1st set elements i.e { a , b , c } --> { {a}, {b}, {c} }
- * @struct  makeSetOfSingletons
- *
- * @date    2007-2009.
  **/
 struct makeSetOfSingletons
 {
@@ -83,18 +72,13 @@ struct makeSetOfSingletons
     };
 };
 
-
-
-
 /**
  * @brief   Helper which compute from a set and a multi set
- * @struct  BinaryCartesianProductRecurser
- *
- * @date    2007-2009.
  *
  * Set1: A = { a_1, a_2, ..., a_N }  \n  MultiSet = {   { ... b_i ...} , { ... c_i ...}, ... { z_i ...}  }\n
  * the set
- * {   {a_1, ... b_i ...} , { a_1,  ... c_i ...}, ... {a_1,  ... z_i ...}  ,        {a_2, ... b_i ...} , { a_2,  ... c_i ...}, {a_2,  ... z_i ...},
+ * {   {a_1, ... b_i ...} , { a_1,  ... c_i ...}, ... {a_1,  ... z_i ...}  ,        {a_2, ... b_i ...} , { a_2,  ... c_i
+ *...}, {a_2,  ... z_i ...},
  *   , .... ,  {a_N, ... b_i ...} , { a_N,  ... c_i ...}, ... {a_N,  ... z_i ...}
  */
 struct BinaryCartesianProductRecurser
@@ -114,13 +98,8 @@ struct BinaryCartesianProductRecurser
     };
 };
 
-
-
 /**
  * @brief   Compute Cartesian Product of two set (type list) to generate all possible combinaison.
- * @struct  BinaryCartesianProduct
- *
- * @date    2007-2009.
  *
  * From two type list generate a new type list where all elemenent a combinaison of each set. For example :
  * @code
@@ -129,7 +108,8 @@ struct BinaryCartesianProductRecurser
  * typedef vector< char, short, long > Set1;
  * typedef vector< double, float > Set2;
  *
- *  typedef vector< vector< char,float>, vector<char, double>, vector< short,float>, vector<short, double>, vector< long,float>, vector<long, double> > Wanted;
+ *  typedef vector< vector< char,float>, vector<char, double>, vector< short,float>, vector<short, double>, vector<
+ * long,float>, vector<long, double> > Wanted;
  *
  *  typedef apply< BinaryCartesianProduct, Set1, Set2 >::type  Result;
  *
@@ -166,22 +146,19 @@ struct BinaryCartesianProduct
     };
 };
 
-
-
-
 /**
  * @brief compute the cartesian product of many set
- * @struct  CartesianProduct
  *
- * @date    2007-2009.
- * @param   MultiSet must be of the following form vector<  vector< ElementaryType1, ElementaryType2,... > , vector< ...ElementaryTypes...> ... > where Elementary
+ * @param   MultiSet must be of the following form vector<  vector< ElementaryType1, ElementaryType2,... > , vector<
+ *...ElementaryTypes...> ... > where Elementary
  *          types are not boost::mpl::Container : i.e int, classes, std::vector<int> etc...
  *
  * Example
  * @code
  *  using namespace boost::mpl;
 
-    typedef vector< vector<signed char, signed short, signed int>,  vector< float, double >  , vector< std::string, unsigned char >   > ::type MultiSet;
+    typedef vector< vector<signed char, signed short, signed int>,  vector< float, double >  , vector< std::string,
+ * unsigned char >   > ::type MultiSet;
 
     typedef apply< CartesianProduct, MultiSet>::type Result;
 
@@ -216,9 +193,6 @@ struct CartesianProduct
     };
 };
 
-
-
 } //end namespace fwTools
-
 
 #endif /*__FWTOOLS_COMBINATORY_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,16 @@
 
 #include <boost/any.hpp>
 #include <boost/asio/io_service.hpp>
-#include <boost/thread.hpp>
+#include <future>
 
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
 
 #include "fwThread/config.hpp"
 
-
 namespace fwThread
 {
-typedef ::boost::thread::id ThreadIdType;
+typedef std::thread::id ThreadIdType;
 
 /// Returns the current thread id
 FWTHREAD_API ThreadIdType getCurrentThreadId();
@@ -27,21 +26,17 @@ FWTHREAD_API ThreadIdType getCurrentThreadId();
 class Timer;
 
 /**
- * @class   Worker
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
- *
- *
- * @date   2012.
  */
 class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
 {
 public:
     typedef ::fwCore::HiResClock::HiResClockType PeriodType;
-    typedef ::boost::function< void () > TaskType;
+    typedef std::function< void () > TaskType;
     typedef ::boost::any ExitReturnType;
 
-    typedef ::boost::shared_future< ExitReturnType > FutureType;
+    typedef std::shared_future< ExitReturnType > FutureType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (Worker)(::fwCore::BaseObject), (()), defaultFactory );
 
@@ -64,10 +59,10 @@ public:
      * @tparam R future's value type
      * @tparam CALLABLE Any type wrappable with a boost::function< void() >
      *
-     * @returns a boost::shared_future associated with the result of the given callable
+     * @returns a std::shared_future associated with the result of the given callable
      */
     template< typename R, typename CALLABLE >
-    ::boost::shared_future< R > postTask(CALLABLE f);
+    std::shared_future< R > postTask(CALLABLE f);
 
     /// Returns the worker's thread id
     FWTHREAD_API virtual ThreadIdType getThreadId() const = 0;
@@ -76,8 +71,9 @@ public:
     FWTHREAD_API virtual SPTR(::fwThread::Timer) createTimer() = 0;
 
     /**
-     * @brief Returns a boost::shared_future associated with the execution of Worker's loop
-     * @warning Calling getFuture() may be blocking if it is required by a specific implementation (for example, the Qt implementation).
+     * @brief Returns a std::shared_future associated with the execution of Worker's loop
+     * @warning Calling getFuture() may be blocking if it is required by a specific implementation (for example, the Qt
+     * implementation).
      */
     virtual FutureType getFuture()
     {
@@ -114,7 +110,6 @@ protected:
 
     /// Copy operator forbidden
     Worker& operator=( const Worker& );
-
 
     /// Worker's loop future
     FutureType m_future;

@@ -10,8 +10,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwCore/base.hpp>
-
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
 #include <fwGui/Cursor.hpp>
@@ -26,8 +24,6 @@
 #include <fwTools/ProgressToLogger.hpp>
 
 #include <io/IReader.hpp>
-
-#include <boost/bind.hpp>
 
 namespace ioDcmtk
 {

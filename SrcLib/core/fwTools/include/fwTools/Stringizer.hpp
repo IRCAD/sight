@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,29 +7,30 @@
 #ifndef __FWTOOLS_STRINGIZER_HPP__
 #define __FWTOOLS_STRINGIZER_HPP__
 
-
-#include <string>
-#include <typeinfo>
-
-#include  <boost/type_traits/is_arithmetic.hpp>
-#include  <boost/lexical_cast.hpp>
-#include  <boost/mpl/if.hpp>
+#include "fwTools/config.hpp"
+#include "fwTools/TypeInfo.hpp"
 
 #include <fwCore/Demangler.hpp>
 
-#include "fwTools/TypeInfo.hpp"
-#include "fwTools/config.hpp"
+#include  <boost/lexical_cast.hpp>
+#include  <boost/mpl/if.hpp>
+#include  <boost/type_traits/is_arithmetic.hpp>
+
+#include <string>
+#include <type_traits>
+#include <typeinfo>
 
 namespace fwTools
 {
-
 
 namespace
 {
 struct NumericCast
 {
+    //------------------------------------------------------------------------------
+
     template<class T>
-    static std::string eval(const T &t)
+    static std::string eval(const T& t)
     {
         // note boost::lexical_cast with char is a ASCII-code conversion
         // instead numerical casting. We provide fix with specialization
@@ -39,8 +40,10 @@ struct NumericCast
 
 struct Default
 {
+    //------------------------------------------------------------------------------
+
     template<class T>
-    static std::string eval(const T &t)
+    static std::string eval(const T& t)
     {
         return "No getString for " + ::fwCore::Demangler(typeid(t)).getRootedClassname();
     }
@@ -60,9 +63,9 @@ struct Default
  * @return      Value converted in a string
  */
 template<class T>
-inline std::string getString(const T &t)
+inline std::string getString(const T& t)
 {
-    typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  boost::is_arithmetic<T>::value,
+    typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  std::is_arithmetic<T>::value,
                                                       NumericCast,
                                                       Default
                                                       >::type Choice;
@@ -78,8 +81,8 @@ inline std::string getString(const T &t)
  * @param[in]   t pair of values in type T1 and T2
  * @return      String in format [value 1, value 2]
  */
-template<class T1,class T2>
-inline std::string getString(const std::pair<T1,T2> &t)
+template<class T1, class T2>
+inline std::string getString(const std::pair<T1, T2>& t)
 {
     std::string res = ("[");
     res += getString(t.first) + "," + getString(t.second) + "]";
@@ -96,13 +99,13 @@ inline std::string getString(const std::pair<T1,T2> &t)
  * @return      String in format [value1, value2,....]
  */
 template<class ForwardIterator>
-inline std::string getString(ForwardIterator begin,ForwardIterator end)
+inline std::string getString(ForwardIterator begin, ForwardIterator end)
 {
     std::string result("[");
-    if (begin!=end)
+    if (begin != end)
     {
         result += getString( *begin );
-        while (++begin!=end)
+        while (++begin != end)
         {
             result += "," + getString( *begin );
         }
@@ -111,35 +114,30 @@ inline std::string getString(ForwardIterator begin,ForwardIterator end)
     return result;
 }
 
-
 /// explicit specialization of getString(const T &t)
 template<>
-FWTOOLS_API std::string getString(const std::string &aString);
-
-
-template<>
-FWTOOLS_API std::string getString(const std::type_info &ti);
-
+FWTOOLS_API std::string getString(const std::string& aString);
 
 template<>
-FWTOOLS_API std::string getString(const TypeInfo &ti);
+FWTOOLS_API std::string getString(const std::type_info& ti);
+
+template<>
+FWTOOLS_API std::string getString(const TypeInfo& ti);
 
 // char are numerically casted
 template<>
-FWTOOLS_API std::string getString(const signed char &c);
+FWTOOLS_API std::string getString(const signed char& c);
 
 // char are numerically casted // signed char and char doesn't are the same :/ !!!!
 template<>
-FWTOOLS_API std::string getString(const char &c);
+FWTOOLS_API std::string getString(const char& c);
 
 // char are numerically casted
 template<>
-FWTOOLS_API std::string getString(const unsigned char &c);
+FWTOOLS_API std::string getString(const unsigned char& c);
 
 template<>
-FWTOOLS_API std::string getString(const std::string &aString);
-
-
+FWTOOLS_API std::string getString(const std::string& aString);
 
 ///@}
 

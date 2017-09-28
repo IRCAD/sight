@@ -136,7 +136,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     const double tfMax = tf->getMinMaxTFValues().second;
     const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
-    ::std::uint8_t* pDest = qimg->bits();
+    std::uint8_t* pDest = qimg->bits();
 
     // Fill image according to current slice type:
     if( m_orientation == MedicalImageAdaptor::X_AXIS ) // sagittal

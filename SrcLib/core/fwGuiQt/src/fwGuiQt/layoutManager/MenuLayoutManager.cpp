@@ -13,13 +13,13 @@
 #include <fwGui/registry/macros.hpp>
 
 #include <boost/assign/list_of.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
 
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
+
+#include <functional>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::MenuLayoutManager,
                     ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );

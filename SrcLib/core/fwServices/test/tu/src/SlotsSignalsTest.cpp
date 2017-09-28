@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/chrono/duration.hpp>
+#include "SlotsSignalsTest.hpp"
+
+#include "SlotsSignalsStuff.hpp"
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Exception.hpp>
-
-#include "SlotsSignalsTest.hpp"
-#include "SlotsSignalsStuff.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::SlotsSignalsTest );
@@ -94,9 +93,9 @@ void SlotsSignalsTest::comObjectServiceTest()
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
     ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
-    activeWorkers->addWorker("worker1",worker1);
+    activeWorkers->addWorker("worker1", worker1);
     ::fwThread::Worker::sptr worker2 = ::fwThread::Worker::New();
-    activeWorkers->addWorker("worker2",worker2);
+    activeWorkers->addWorker("worker2", worker2);
 
     {
 
@@ -178,7 +177,7 @@ void SlotsSignalsTest::comServiceToServiceTest()
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
     ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
-    activeWorkers->addWorker("worker1",worker1);
+    activeWorkers->addWorker("worker1", worker1);
 
     SReader2Test::sptr readerTestSrv = ::fwServices::factory::New<SReader2Test>();
     ::fwServices::OSR::registerService(buffer, readerTestSrv);
@@ -219,7 +218,7 @@ void SlotsSignalsTest::blockConnectionTest()
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
     ::fwThread::Worker::sptr worker1 = ::fwThread::Worker::New();
-    activeWorkers->addWorker("worker1",worker1);
+    activeWorkers->addWorker("worker1", worker1);
 
     SReaderTest::sptr readerTestSrv = ::fwServices::factory::New<SReaderTest>();
     ::fwServices::OSR::registerService(buffer, readerTestSrv);
@@ -237,7 +236,7 @@ void SlotsSignalsTest::blockConnectionTest()
 
     readerTestSrv->update();
 
-    ::boost::this_thread::sleep_for( ::boost::chrono::seconds(8));
+    std::this_thread::sleep_for( std::chrono::seconds(8));
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
     IService::SharedFutureType stopShowFuture   = showTestSrv->stop();

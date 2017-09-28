@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ struct SlotCall;
  * @tparam A Slot's arguments types.
  */
 template< typename R, typename ... A >
-struct SlotCall< R (A ...) > : SlotRun< void ( A ... ) >
+struct SlotCall< R(A ...) > : SlotRun< void ( A ... ) >
 {
     /**
      * @name Typedefs
@@ -36,11 +36,11 @@ struct SlotCall< R (A ...) > : SlotRun< void ( A ... ) >
     typedef SlotCall< SignatureType > SelfType;
     typedef SPTR ( SelfType ) sptr;
     typedef WPTR ( SelfType ) wptr;
-    typedef ::boost::shared_future< R > SharedFutureType;
+    typedef std::shared_future< R > SharedFutureType;
     /**  @} */
 
-
-    SlotCall() :  SlotRun< void ( A ... ) >()
+    SlotCall() :
+        SlotRun< void ( A ... ) >()
     {
     }
 
@@ -78,16 +78,15 @@ struct SlotCall< R (A ...) > : SlotRun< void ( A ... ) >
     protected:
 
         template< typename WEAKCALL >
-        static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker)& worker, WEAKCALL f );
+        static std::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker)& worker, WEAKCALL f );
 
         /**
          * @brief Binds the given parameters to the call method within a R() function.
          *
          * @return a R() function.
          */
-        virtual ::boost::function< R() > bindCall( A ... args  ) const;
+        virtual std::function< R() > bindCall( A ... args  ) const;
 };
-
 
 } // namespace fwCom
 

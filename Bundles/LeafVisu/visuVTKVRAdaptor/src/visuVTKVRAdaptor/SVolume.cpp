@@ -182,6 +182,12 @@ SVolume::~SVolume() noexcept
 
     m_boxWidget->Delete();
     m_boxWidget = nullptr;
+
+    m_opacityTransferFunction->Delete();
+    m_opacityTransferFunction = nullptr;
+
+    m_colorTransferFunction->Delete();
+    m_colorTransferFunction = nullptr;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,6 @@ namespace fwDataTools
 {
 namespace helper
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -59,7 +58,6 @@ bool Image::createLandmarks()
 
     return fieldIsCreated;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -109,7 +107,6 @@ bool Image::createTransferFunctionPool()
     return fieldIsCreated;
 }
 
-
 //------------------------------------------------------------------------------
 
 bool Image::createImageSliceIndex()
@@ -141,8 +138,7 @@ bool Image::createImageSliceIndex()
         fieldIsCreated = true;
     }
 
-
-    SLM_ASSERT (
+    SLM_ASSERT(
         "Information on image slice index is not correct, miss one of these fields : "
         "m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
         axialIdx && frontalIdx && sagittalIdx
@@ -192,7 +188,6 @@ void Image::notify()
     sig->asyncEmit();
 }
 
-
 //-----------------------------------------------------------------------------
 
 void* Image::getBuffer()
@@ -213,9 +208,9 @@ void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, Siz
 
 void* Image::getPixelBuffer( IndexType index )
 {
-    ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf();
-    BufferType* buf          = static_cast < BufferType* > (this->getBuffer());
-    BufferIndexType bufIndex = index * imagePixelSize;
+    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
+    BufferType* buf             = static_cast < BufferType* > (this->getBuffer());
+    BufferIndexType bufIndex    = index * imagePixelSize;
     return buf + bufIndex;
 }
 
@@ -223,8 +218,8 @@ void* Image::getPixelBuffer( IndexType index )
 
 void Image::setPixelBuffer( IndexType index, Image::BufferType* pixBuf)
 {
-    ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf();
-    BufferType* buf = static_cast < BufferType* > (this->getPixelBuffer(index));
+    std::uint8_t imagePixelSize = m_image->getType().sizeOf() * m_image->getNumberOfComponents();
+    BufferType* buf             = static_cast < BufferType* > (this->getPixelBuffer(index));
 
     std::copy(pixBuf, pixBuf+imagePixelSize, buf);
 }
@@ -235,7 +230,7 @@ const std::string Image::getPixelAsString(SizeType::value_type x,
                                           SizeType::value_type y,
                                           SizeType::value_type z )
 {
-    return m_image->getType().toString(this->getPixelBuffer(x,y,z));
+    return m_image->getType().toString(this->getPixelBuffer(x, y, z));
 }
 
 //------------------------------------------------------------------------------

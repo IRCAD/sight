@@ -1,29 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
+#include "SignalTest.hpp"
 
-#include <boost/thread.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/chrono/duration.hpp>
-
-
-#include "fwCom/exception/BadSlot.hpp"
 #include "fwCom/exception/AlreadyConnected.hpp"
-
+#include "fwCom/exception/BadSlot.hpp"
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
 #include <fwThread/Worker.hpp>
 
-#include "SignalTest.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <string>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::SignalTest );
@@ -33,11 +27,15 @@ namespace fwCom
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void SignalTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void SignalTest::tearDown()
 {
     // Clean up after the test run.
@@ -85,15 +83,21 @@ struct SignalTestClass
     {
     }
 
+    //------------------------------------------------------------------------------
+
     void method0()
     {
         m_method0 = true;
     }
 
+    //------------------------------------------------------------------------------
+
     void method00()
     {
         m_method00 = true;
     }
+
+    //------------------------------------------------------------------------------
 
     float method1(float f)
     {
@@ -101,11 +105,15 @@ struct SignalTestClass
         return 2*f;
     }
 
+    //------------------------------------------------------------------------------
+
     float method2(float f, int i)
     {
         m_method2 = true;
         return 2*f;
     }
+
+    //------------------------------------------------------------------------------
 
     float method3(float f, double d, std::string s)
     {
@@ -255,7 +263,6 @@ void SignalTest::connectTest()
         typedef void Signature (std::string);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
-
         CPPUNIT_ASSERT_THROW( sig->disconnect(slot1), fwCom::exception::BadSlot);
         CPPUNIT_ASSERT_THROW( sig->disconnect(slot2), fwCom::exception::BadSlot);
         CPPUNIT_ASSERT_THROW( sig->disconnect(slot3), fwCom::exception::BadSlot);
@@ -279,7 +286,6 @@ void SignalTest::connectTest()
 
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
     }
-
 
 }
 
@@ -446,8 +452,6 @@ void SignalTest::argumentLossTest()
     CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
 }
 
-
-
 //-----------------------------------------------------------------------------
 
 void SignalTest::asyncArgumentLossTest()
@@ -480,12 +484,11 @@ void SignalTest::asyncArgumentLossTest()
 
     sig->asyncEmit(21.0f, 42.0, "asyncEmit");
 
-    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(100));
+    std::this_thread::sleep_for( std::chrono::milliseconds(100));
 
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(testObject.m_method1);
     CPPUNIT_ASSERT(testObject.m_method3);
-
 
     sig->disconnectAll();
     CPPUNIT_ASSERT_EQUAL((size_t)0, sig->getNumberOfConnections());
@@ -530,7 +533,6 @@ void SignalTest::blockTest()
         sig->emit(21.0f, 42.0, "emit");
     }
 
-
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(!testObject.m_method1);
     CPPUNIT_ASSERT(testObject.m_method3);
@@ -545,7 +547,6 @@ void SignalTest::blockTest()
     CPPUNIT_ASSERT(testObject.m_method1);
     CPPUNIT_ASSERT(testObject.m_method3);
 
-
     testObject.m_method0 = false;
     testObject.m_method1 = false;
     testObject.m_method3 = false;
@@ -556,11 +557,9 @@ void SignalTest::blockTest()
         sig->emit(21.0f, 42.0, "emit");
     }
 
-
     CPPUNIT_ASSERT(testObject.m_method0);
     CPPUNIT_ASSERT(testObject.m_method1);
     CPPUNIT_ASSERT(testObject.m_method3);
-
 
 }
 
@@ -586,7 +585,7 @@ void SignalTest::asyncEmitTest()
 
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
         sig->asyncEmit();
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+        std::this_thread::sleep_for( std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method0);
     }
@@ -609,7 +608,7 @@ void SignalTest::asyncEmitTest()
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         sig->asyncEmit(21.0f);
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+        std::this_thread::sleep_for( std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method1);
     }
@@ -632,7 +631,7 @@ void SignalTest::asyncEmitTest()
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         sig->asyncEmit(21.0f, 42);
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+        std::this_thread::sleep_for( std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method2);
     }
@@ -655,7 +654,7 @@ void SignalTest::asyncEmitTest()
         CPPUNIT_ASSERT_EQUAL((size_t)1, sig->getNumberOfConnections());
 
         sig->asyncEmit(21.0f, 42.0, "emit");
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(1));
+        std::this_thread::sleep_for( std::chrono::seconds(1));
 
         CPPUNIT_ASSERT(testObject.m_method3);
     }

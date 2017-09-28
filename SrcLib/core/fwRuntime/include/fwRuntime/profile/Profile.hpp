@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,13 +8,14 @@
 #define __FWRUNTIME_PROFILE_PROFILE_HPP__
 
 #include "fwRuntime/config.hpp"
+
 #include <fwCore/base.hpp>
 
-#include <boost/function.hpp>
-#include <boost/utility.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/utility.hpp>
 
+#include <functional>
 #include <vector>
 
 #ifdef ANDROID
@@ -25,7 +26,6 @@ namespace fwRuntime
 {
 
 /**
- * @namespace   ::fwRuntime::profile
  * @brief       Namespace ::fwRuntime::profile
  */
 namespace profile
@@ -37,17 +37,15 @@ class Stopper;
 class Initializer;
 class Uninitializer;
 
-
 /**
  * @brief   Implements a bundle set profile.
- * @class   Profile
  */
 class Profile : public ::fwCore::BaseObject
 {
 public:
 
     typedef std::vector< std::string >  ParamsContainer;
-    typedef ::boost::function< int () > RunCallbackType;
+    typedef std::function< int () > RunCallbackType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), std::make_shared< Profile >);
 
@@ -99,14 +97,12 @@ public:
     FWRUNTIME_API void start();
     FWRUNTIME_API void stop();
 
-
     /**
      * @brief   Run the profile.
      */
     FWRUNTIME_API int run();
     FWRUNTIME_API int defaultRun();
     FWRUNTIME_API void setRunCallback(RunCallbackType callback);
-
 
     /**
      * @brief   Once started, setup the profile.
@@ -186,17 +182,21 @@ public:
     {
         return m_app;
     }
+    //------------------------------------------------------------------------------
+
     void setApp(android_app* app)
     {
         m_app = app;
     }
 #endif
+    //------------------------------------------------------------------------------
+
     ParamsContainer getParams() const
     {
         return m_params;
     }
 
-    FWRUNTIME_API void setParams(const ParamsContainer &params);
+    FWRUNTIME_API void setParams(const ParamsContainer& params);
     FWRUNTIME_API void setParams(int argc, char** argv);
 
     /**
@@ -248,7 +248,6 @@ private:
     char**          m_argv;
 };
 
-
 /**
  * @brief       Set current profile.
  *
@@ -264,8 +263,5 @@ FWRUNTIME_API Profile::sptr getCurrentProfile();
 } // namespace profile
 
 } // namespace fwRuntime
-
-
-
 
 #endif /*__FWRUNTIME_PROFILE_PROFILE_HPP__*/
