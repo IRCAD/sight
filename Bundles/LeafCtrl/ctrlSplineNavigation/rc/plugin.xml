@@ -1,4 +1,4 @@
-<plugin id="ctrlSplineNavigation" class="::ctrlSplineNavigation::Plugin" version="@DASH_VERSION@" >
+<plugin id="ctrlSplineNavigation" class="::ctrlSplineNavigation::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ctrlSplineNavigation" />
 

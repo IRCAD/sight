@@ -1,4 +1,4 @@
-<plugin id="beginnerTraining" class="::beginnerTraining::Plugin" version="@DASH_VERSION@" >
+<plugin id="beginnerTraining" class="::beginnerTraining::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="beginnerTraining" />
 

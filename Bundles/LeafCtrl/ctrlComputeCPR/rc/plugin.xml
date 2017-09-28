@@ -1,4 +1,4 @@
-<plugin id="ctrlComputeCPR" class="::ctrlComputeCPR::Plugin" version="@DASH_VERSION@" >
+<plugin id="ctrlComputeCPR" class="::ctrlComputeCPR::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ctrlComputeCPR" />
 

@@ -65,7 +65,7 @@ public:
      *
      * @code{.xml}
             <service uid="${GENERIC_UID}_logo_button" impl="::uiLogo::editor::SButton" autoConnect="no">
-                <image>media_0-1/icons/*.png</image>
+                <image>media-0.1/icons/*.png</image>
                 <label>Label</label>
                 <tooltip>Tooltip</tooltip>
             </service>

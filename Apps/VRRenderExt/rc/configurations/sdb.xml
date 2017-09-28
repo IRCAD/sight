@@ -28,7 +28,7 @@
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>
-                <icon series="::fwMedData::AttachmentSeries" icon="media_0-1/icons/AttachmentSeries.svg" />
+                <icon series="::fwMedData::AttachmentSeries" icon="media-0.1/icons/AttachmentSeries.svg" />
             </icons>
         </service>
 
