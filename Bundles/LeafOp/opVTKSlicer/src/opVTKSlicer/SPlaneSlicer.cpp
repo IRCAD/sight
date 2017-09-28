@@ -187,9 +187,7 @@ void SPlaneSlicer::setReslicerAxes()
 
     SLM_ASSERT("No axes found.", axes);
 
-    // TODO: const correct function signature in fwVtkIO.
-    vtkSmartPointer<vtkMatrix4x4> axesMatrix = vtkSmartPointer<vtkMatrix4x4>::New();
-    axesMatrix.TakeReference(::fwVtkIO::toVTKMatrix(std::const_pointer_cast< ::fwData::TransformationMatrix3D>(axes)));
+    vtkSmartPointer<vtkMatrix4x4> axesMatrix = ::fwVtkIO::toVTKMatrix(axes);
 
     this->applySliceTranslation(axesMatrix);
 
