@@ -1,51 +1,52 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/python.hpp>
-#include <boost/cstdint.hpp>
+#include "fwPython/bindings/STLContainers.hpp"
 
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/make_constructor.hpp>
-
-#include <boost/algorithm/string/replace.hpp>
-
-#include <vector>
+#include <fwCore/Demangler.hpp>
 
 #include <fwTools/Stringizer.hpp>
-#include <fwCore/Demangler.hpp>
-#include "fwPython/bindings/STLContainers.hpp"
+
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+
+#include <vector>
 
 namespace fwPython
 {
 namespace bindings
 {
 
+//------------------------------------------------------------------------------
+
 template <class T>
 std::string getString(std::vector<T>& v)
 {
     std::string res;
-    res += fwTools::getString(v.begin(),v.end());
+    res += fwTools::getString(v.begin(), v.end());
     return res;
 }
 
+//------------------------------------------------------------------------------
 
 template< typename VECTOR >
 VECTOR* vectorFromList( ::boost::python::list& ns )
 {
     unsigned long len = ::boost::python::len(ns);
     VECTOR* vect      = new VECTOR( len );
-    for (unsigned long i = 0; i<len; ++i )
+    for (unsigned long i = 0; i < len; ++i )
     {
         (*vect)[i] = ::boost::python::extract<typename VECTOR::value_type> (ns[i]);
     }
     return vect;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 template< typename T >
 void wrap_vector()
@@ -69,15 +70,15 @@ void wrap_vector()
 void export_STLContainers()
 {
     using namespace boost::python;
-    wrap_vector< std::vector<boost::int8_t> >();
-    wrap_vector< std::vector<boost::int16_t> >();
-    wrap_vector< std::vector<boost::int32_t> >();
-    wrap_vector< std::vector<boost::int64_t> >();
+    wrap_vector< std::vector<std::int8_t> >();
+    wrap_vector< std::vector<std::int16_t> >();
+    wrap_vector< std::vector<std::int32_t> >();
+    wrap_vector< std::vector<std::int64_t> >();
 
-    wrap_vector< std::vector<boost::uint8_t> >();
-    wrap_vector< std::vector<boost::uint16_t> >();
-    wrap_vector< std::vector<boost::uint32_t> >();
-    wrap_vector< std::vector<boost::uint64_t> >();
+    wrap_vector< std::vector<std::uint8_t> >();
+    wrap_vector< std::vector<std::uint16_t> >();
+    wrap_vector< std::vector<std::uint32_t> >();
+    wrap_vector< std::vector<std::uint64_t> >();
 
     wrap_vector< std::vector<float> >();
     wrap_vector< std::vector<double> >();
