@@ -35,9 +35,9 @@
             <ioSelectorConfig>ARFullSDBReaderIOSelectorConfig</ioSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
-                <icon type="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
-                <icon type="::arData::CameraSeries" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/CameraSeries.svg" />
+                <icon type="::fwMedData::ImageSeries" icon="media_0-1/icons/ImageSeries.svg" />
+                <icon type="::fwMedData::ModelSeries" icon="media_0-1/icons/ModelSeries.svg" />
+                <icon type="::arData::CameraSeries" icon="arMedia_0-1/icons/CameraSeries.svg" />
             </icons>
         </service>
 

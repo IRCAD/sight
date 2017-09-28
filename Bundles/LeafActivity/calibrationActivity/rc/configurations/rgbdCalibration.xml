@@ -57,14 +57,14 @@
         <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
+                    <menuItem name="start" icon="arMedia_0-1/icons/start-cam.svg" />
+                    <menuItem name="stop" icon="arMedia_0-1/icons/stop-cam.svg" />
                     <separator/>
-                    <menuItem name="configure depth record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
-                    <menuItem name="configure color record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
-                    <menuItem name="configure infrared record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="configure depth record" icon="arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="configure color record" icon="arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="configure infrared record" icon="arMedia_0-1/icons/configuration.svg" />
                     <separator/>
-                    <menuItem name="start record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/camera-photo.svg" />
+                    <menuItem name="start record" icon="arMedia_0-1/icons/camera-photo.svg" />
                 </layout>
             </gui>
             <registry>

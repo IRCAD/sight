@@ -24,7 +24,7 @@
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <icon>arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -40,7 +40,7 @@
         <id>toolsCalibration</id>
         <title>ToolsCalibration</title>
         <desc>This activity allows to calibrate a tool.</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <icon>arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Stereo calibrated camera series.</desc>
@@ -76,7 +76,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg</icon>
+        <icon>arMedia_0-1/icons/configuration.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -93,7 +93,7 @@
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <icon>arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="RGBDCalibration">

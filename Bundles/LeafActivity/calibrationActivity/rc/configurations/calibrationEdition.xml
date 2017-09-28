@@ -52,14 +52,14 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Export camera series" icon="media_0-1/icons/Export.svg" />
                     <separator/>
-                    <menuItem name="Export XML" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
+                    <menuItem name="Export XML" icon="arMedia_0-1/icons/save.svg" />
                     <separator/>
-                    <menuItem name="Start camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
-                    <menuItem name="Loop video" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/loop-cam.svg" style="check" />
+                    <menuItem name="Start camera" icon="arMedia_0-1/icons/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="arMedia_0-1/icons/stop-cam.svg" />
+                    <menuItem name="Pause video" icon="arMedia_0-1/icons/pause-cam.svg" />
+                    <menuItem name="Loop video" icon="arMedia_0-1/icons/loop-cam.svg" style="check" />
                 </layout>
             </gui>
             <registry>

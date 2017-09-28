@@ -32,7 +32,7 @@
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>
-                <icon series="::arData::CameraSeries" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
+                <icon series="::arData::CameraSeries" icon="arMedia_0-1/icons/calibrationActivity.svg" />
             </icons>
         </service>
 

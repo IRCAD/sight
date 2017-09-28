@@ -34,15 +34,15 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="@BUNDLE_PREFIX@/media_0-1/icons/Back.svg" />
-                    <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Next.svg" />
-                    <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Previous" icon="media_0-1/icons/Back.svg" />
+                    <menuItem name="Next" icon="media_0-1/icons/Next.svg" />
+                    <menuItem name="Export camera series" icon="media_0-1/icons/Export.svg" />
                     <separator/>
-                    <menuItem name="Export xml/yaml" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
+                    <menuItem name="Export xml/yaml" icon="arMedia_0-1/icons/save.svg" />
                     <separator/>
                     <editor/>
                     <separator/>
-                    <menuItem name="Chessboard size" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/chessboard.svg" />
+                    <menuItem name="Chessboard size" icon="arMedia_0-1/icons/chessboard.svg" />
                 </layout>
             </gui>
             <registry>
