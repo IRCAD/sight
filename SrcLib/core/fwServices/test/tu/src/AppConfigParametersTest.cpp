@@ -35,11 +35,10 @@ void AppConfigParametersTest::setUp()
     runtime->addDefaultBundles();
 
     ::boost::filesystem::path location = ::boost::filesystem::current_path() / "share/tu_exec_fwServices-0.0";
-    if( !::boost::filesystem::exists( location ) )
-    {
-        location = ::boost::filesystem::current_path() / "share/tu_xml_fwServices-0.0";
-    }
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
+
+    runtime->addBundles(location);
+    CPPUNIT_ASSERT(runtime->bundlesBegin() != runtime->bundlesEnd());
 
     std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
     CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'", bundle);
