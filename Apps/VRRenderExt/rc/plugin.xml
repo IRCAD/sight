@@ -2,13 +2,13 @@
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
-    
+
     <requirement id="patchMedicalData" />
-    
+
     <requirement id="filterVRRender" />
     <requirement id="activities" />
     <requirement id="preferences" />
-    
+
     <requirement id="gui" />
     <requirement id="guiQt" />
     <requirement id="media" />
@@ -30,7 +30,7 @@
         <id>SDBVRRenderExt</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>NONE</icon>
+        <icon>media_0-1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="SDBVRRenderExt">
             <parameters />
@@ -41,7 +41,7 @@
         <id>activitySelector</id>
         <title>Choose your activity</title>
         <desc>Activity selector for VRRenderExt</desc>
-        <icon>NONE</icon>
+        <icon>media_0-1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="activitySelector">
             <parameters />
