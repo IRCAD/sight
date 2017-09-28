@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "MesherTest.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-
 #include <fwIGG/Mesher.hpp>
 #include <fwIGG/Mesher.hxx>
+
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwItkIO/ImageReader.hpp>
 
@@ -93,7 +93,7 @@ void MesherTest::memoryTest()
     executeMCMesher("igg/liver_01_masks_inr/liver.inr.gz");
     executeMCSMesher("igg/classic/bunny.inr.gz", 50000, 100, 5);
 
-    ::boost::uint64_t initialMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
+    std::uint64_t initialMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
 
     executeMCMesher("igg/liver_01_masks_inr/rightkidney.inr.gz");
     executeMCMesher("igg/liver_01_masks_inr/artery.inr.gz");
@@ -104,7 +104,7 @@ void MesherTest::memoryTest()
     executeMCSMesher("igg/classic/dragon.inr.gz", 100000, 100, 5);
     executeMCSMesher("igg/classic/happy.inr.gz", 120000, 100, 5);
 
-    ::boost::uint64_t finalMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
+    std::uint64_t finalMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
 
     SLM_TRACE("Initial used memory: " + boost::lexical_cast<std::string>(initialMemory) +
               "   Final used memory : " + boost::lexical_cast<std::string>(finalMemory));
@@ -151,7 +151,7 @@ void MesherTest::sameMeshTest()
     float zValue1 = 0;
     float zValue2 = 0;
 
-    for(int i = 0; i<size/3; ++i)
+    for(int i = 0; i < size/3; ++i)
     {
         xValue1 += points1[i];
         xValue2 += points2[i];
@@ -180,10 +180,7 @@ void MesherTest::sameMeshTest()
     CPPUNIT_ASSERT_EQUAL(zValue1, zValue2);
 }
 
-
 //-----------------------------------------------------------------------------
-
-
 
 } //namespace ut
 } //namespace fwIGG
