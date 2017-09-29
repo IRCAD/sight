@@ -94,7 +94,7 @@ void Plugin::loadStyleSheet()
         const std::string resourceFile = this->getBundle()->getParameterValue("resource");
         const auto path                = fwRuntime::getBundleResourceFilePath(resourceFile);
 
-        const bool resourceLoaded = QResource::registerResource(path.c_str());
+        const bool resourceLoaded = QResource::registerResource(path.string().c_str());
         SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
     }
 
