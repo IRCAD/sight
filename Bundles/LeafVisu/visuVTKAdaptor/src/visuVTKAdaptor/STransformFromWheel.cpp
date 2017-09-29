@@ -136,11 +136,11 @@ void STransformFromWheel::updateSliceOrientation(int from, int to)
 {
     if( to == static_cast< int > ( m_orientation ) )
     {
-        m_orientation = static_cast< Orientation > ( from );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation > ( from );
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast< Orientation >( to );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation >( to );
     }
 }
 
@@ -151,8 +151,6 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     SLM_ASSERT("No 'image' found.", image);
-
-    m_weakImage = image;
 
     const double angle = wheelAngle - m_initAngle;
     m_initAngle = wheelAngle;
@@ -185,13 +183,13 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
     {
         switch (m_orientation)
         {
-            case Z_AXIS:
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS:
                 rotAxis = ::glm::dvec3(0., 0., 1.);
                 break;
-            case Y_AXIS:
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
                 rotAxis = ::glm::dvec3(0., 1., 0.);
                 break;
-            case X_AXIS:
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
                 rotAxis = ::glm::dvec3(1., 0., 0.);
                 break;
         }
@@ -200,14 +198,14 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
     {
         switch (m_orientation)
         {
-            case Z_AXIS:
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS:
                 rotAxis = ::glm::dvec3(0., 0., 1.);
                 break;
-            case Y_AXIS:
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
                 rotAxis = ::glm::dvec3(0., -1., 0.);
                 pos     = ::glm::dvec3(pos.x, pos.z, pos.y);
                 break;
-            case X_AXIS:
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
                 rotAxis = ::glm::dvec3(1., 0., 0.);
                 pos     = ::glm::dvec3(pos.z, pos.x, pos.y);
                 break;
@@ -225,12 +223,6 @@ void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngl
 
 void STransformFromWheel::translateTransform(fwDataTools::PickingInfo info)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
-    SLM_ASSERT("No 'image' found.", image);
-
-    m_weakImage = image;
-
     if(info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)
     {
         std::copy(info.m_worldPos, info.m_worldPos + 3, m_lastImagePos);
@@ -247,11 +239,11 @@ void STransformFromWheel::translateTransform(fwDataTools::PickingInfo info)
         {
             switch (m_orientation)
             {
-                case Z_AXIS: break;
-                case Y_AXIS:
+                case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break;
+                case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
                     transVec = ::glm::dvec3(transVec.x, transVec.z, transVec.y);
                     break;
-                case X_AXIS:
+                case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
                     transVec = ::glm::dvec3(transVec.z, transVec.x, transVec.y);
                     break;
             }

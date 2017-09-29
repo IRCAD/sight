@@ -51,8 +51,7 @@ namespace visuVTKAdaptor
  *           we do not change the picked position.
  *
  */
-class VISUVTKADAPTOR_CLASS_API STransformFromWheel : public ::fwRenderVTK::IAdaptor,
-                                                     public ::fwDataTools::helper::MedicalImageAdaptor
+class VISUVTKADAPTOR_CLASS_API STransformFromWheel : public ::fwRenderVTK::IAdaptor
 {
 public:
 
@@ -90,6 +89,8 @@ private:
 
     /// Slot: set the correct orientation to compute the right transform.
     void updateSliceOrientation(int from, int to);
+
+    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
 
     /// Interaction mode: determines how the picked point is handled (default to 2d)
     unsigned char m_interactionMode;
