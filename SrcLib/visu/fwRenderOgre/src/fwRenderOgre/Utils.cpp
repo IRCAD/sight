@@ -172,12 +172,6 @@ void Utils::addResourcesPath(const std::string& path)
         ::fwRenderOgre::Utils::addResourcesPath(RESOURCES_PATH);
         loadResources();
 
-        // TODO : Check utility of TextureManager in a shader-based programming model (RenderSystemGL3+)
-        if(::Ogre::Root::getSingleton().getRenderSystem()->getName() != "OpenGL 3+ Rendering Subsystem (ALPHA)")
-        {
-            ::Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-        }
-
         // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
