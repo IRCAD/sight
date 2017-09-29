@@ -126,7 +126,7 @@ function(pch_msvc_hook variable access value current_list_file stack)
 
         # 4. Remove symbols that would not defined by other targets using this pch
         foreach(def ${defines})
-            string(REGEX REPLACE ".*_VER=\"[0-9]-[0-9]\"" "" def1 ${def})
+            string(REGEX REPLACE ".*_VER=\"[0-9].[0-9]\"" "" def1 ${def})
             if(def1)
                 string(REGEX REPLACE ".*_EXPORTS" "" def2 ${def1})
                 if(def2)
