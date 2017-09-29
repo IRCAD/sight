@@ -15,7 +15,6 @@ set( REQUIREMENTS
     uiIO
     ioVTK
 
-    maths
     media
 
     visuVTK
