@@ -17,7 +17,7 @@
                 <gui>
                     <frame>
                         <name>TutoOgreGenericScene</name>
-                        <icon>TutoOgreGenericScene_@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>TutoOgreGenericScene-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="1024" height="768" />
                     </frame>
                     <menuBar/>

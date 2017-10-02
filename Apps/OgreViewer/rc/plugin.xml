@@ -44,7 +44,7 @@
                 <gui>
                     <frame>
                         <name>Ogre Viewer</name>
-                        <icon>OgreViewer_@PROJECT_VERSION@/ogre_head.svg</icon>
+                        <icon>OgreViewer-@PROJECT_VERSION@/ogre_head.svg</icon>
                         <minSize width="1100" height="700" />
                     </frame>
                     <menuBar />
