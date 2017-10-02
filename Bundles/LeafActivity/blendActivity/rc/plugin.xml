@@ -1,4 +1,4 @@
-<plugin id="blendActivity" version="@DASH_VERSION@" >
+<plugin id="blendActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="gui" />
@@ -20,7 +20,7 @@
         <id>Blend</id>
         <title>Blend</title>
         <desc>Activity to superimpose two images.</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-blend.png</icon>
+        <icon>media-0.1/icons/icon-blend.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>

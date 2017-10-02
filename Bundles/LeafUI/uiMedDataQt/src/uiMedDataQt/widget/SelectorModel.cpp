@@ -19,6 +19,8 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwTools/fwID.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
@@ -304,11 +306,13 @@ void SelectorModel::addSeriesIcon(::fwMedData::Series::sptr series, QStandardIte
         ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
         if(imageSeries)
         {
-            item->setIcon(QIcon(BUNDLE_PREFIX "/media_0-1/icons/ImageSeries.svg"));
+            const auto path = ::fwRuntime::getBundleResourceFilePath("media", "icons/ImageSeries.svg");
+            item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (modelSeries)
         {
-            item->setIcon(QIcon(BUNDLE_PREFIX "/media_0-1/icons/ModelSeries.svg"));
+            const auto path = ::fwRuntime::getBundleResourceFilePath("media", "icons/ModelSeries.svg");
+            item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (activitySeries)
         {

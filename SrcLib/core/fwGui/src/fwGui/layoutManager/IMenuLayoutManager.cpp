@@ -1,18 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/IMenuLayoutManager.cpp
- * @brief This file defines the implementation of the base class for managing a menu.
- *
- *
- * @date 2009-2010
- */
-
 #include "fwGui/layoutManager/IMenuLayoutManager.hpp"
+
+#include <fwRuntime/operations.hpp>
 
 namespace fwGui
 {
@@ -40,7 +34,6 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
                 configuration->getName() == "layout");
 
-
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
     {
@@ -65,7 +58,7 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
             if( menuItem->hasAttribute("icon") )
             {
-                info.m_icon = menuItem->getExistingAttributeValue("icon");
+                info.m_icon = ::fwRuntime::getBundleResourceFilePath(menuItem->getAttributeValue("icon"));
             }
 
             if( menuItem->hasAttribute("style") )
@@ -161,6 +154,4 @@ std::vector< ::fwGui::container::fwMenu::sptr > IMenuLayoutManager::getMenus()
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
 

@@ -44,10 +44,10 @@ static std::stringstream spiritDebugStream;
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsHelper.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include "fwDataIO/reader/DictionaryReader.hpp"
 #include "fwDataIO/reader/registry/macros.hpp"
-
-#include <string>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::DictionaryReader );
 
@@ -358,8 +358,7 @@ std::string DictionaryReader::extension()
 
 ::boost::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
-    std::string dicoPath = std::string("./share/") + PRJ_NAME +"_"+ FWDATAIO_VER + "/OrganDictionary.dic";
-    return dicoPath;
+    return ::fwRuntime::getLibraryResourceFilePath(PRJ_NAME "-" FWDATAIO_VER "/OrganDictionary.dic");
 }
 
 //------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-<plugin id="VRRender" version="@DASH_VERSION@">
+<plugin id="VRRender" version="@PROJECT_VERSION@">
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
@@ -14,8 +14,8 @@
         <id>VRRenderAppBase</id>
         <parameters>
             <param name="appName" value="VRRender 0.9.7" />
-            <param name="appIconPath" value="@BUNDLE_PREFIX@/VRRender_0-9/vrrender.ico" />
-            <param name="appVersion" value="0-9" />
+            <param name="appIconPath" value="VRRender-@PROJECT_VERSION@/vrrender.ico" />
+            <param name="appVersion" value="@PROJECT_VERSION@" />
         </parameters>
     </extension>
 
@@ -23,7 +23,7 @@
         <id>SDBVRRender</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="SDBVRRender">
             <parameters />

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,16 +21,18 @@ class RuntimeTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( RuntimeTest );
 CPPUNIT_TEST( testRuntime );
+CPPUNIT_TEST( testOperations );
 CPPUNIT_TEST_SUITE_END();
 
-protected:
-
 public:
+    RuntimeTest();
+
     // interface
     void setUp();
     void tearDown();
 
     void testRuntime();
+    void testOperations();
 };
 
 } // namespace ut

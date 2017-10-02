@@ -157,9 +157,11 @@ QTextDocument* ShowRevInfo::generateReport()
     tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Solid);
     tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
 
-    ::boost::filesystem::path bundlePath = ::boost::filesystem::current_path() /
-                                           ::boost::filesystem::path(BUNDLE_PREFIX);
-    ::boost::filesystem::path libPath = ::boost::filesystem::current_path() / "share";
+    SLM_ASSERT("Congratulations, you'll have to fix this yourself !", false);
+    // We should get the bundle prefix from the fwRuntime or maybe move the findRevInfo into fwRuntime
+    // But for now... who cares ? This service is totally unused
+    ::boost::filesystem::path bundlePath = ::boost::filesystem::current_path(); // / BUNDLE_ RC_PREFIX;
+    ::boost::filesystem::path libPath    = ::boost::filesystem::current_path() / "share";
     const FindMapType& bundleMap = this->findRevInfo(bundlePath);
     const FindMapType& libMap    = this->findRevInfo(libPath);
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,12 @@
 #pragma GCC visibility pop
 #endif
 
+#include "fwRuntime/ExtensionPoint.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/dl/Library.hpp"
 
 namespace fwRuntime
 {
-
 
 struct Bundle;
 struct ConfigurationElement;
@@ -32,7 +32,6 @@ struct ExtensionPoint;
 
 namespace io
 {
-
 
 /**
  * @brief   Defines the bundle descriptor reader class.
@@ -51,17 +50,7 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    FWRUNTIME_API static std::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location);;
-
-    /**
-     * @brief       Look for a descriptor at the specified location,
-     *              reads it and creates a bundle with it.
-     *
-     * @param[in]   location    a path to a plugin.xml that should contain a bundle description
-     *
-     * @return      a shared pointer to the created bundle
-     */
-    FWRUNTIME_API static std::shared_ptr<Bundle> createBundleFromXmlPlugin(const ::boost::filesystem::path & location);
+    FWRUNTIME_API static std::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location);
 
     /**
      * @brief       Creates all bundles that are found at the given location.
@@ -82,7 +71,7 @@ struct BundleDescriptorReader
      */
     FWRUNTIME_API static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
                                                                                            const std::shared_ptr<Bundle> bundle)
-   ;
+    ;
 
     private:
 
@@ -109,7 +98,6 @@ struct BundleDescriptorReader
          */
         static std::shared_ptr<Extension> processExtension(xmlNodePtr node,
                                                            const std::shared_ptr<Bundle> bundle);
-
 
         /**
          * Processes a node that is a point
@@ -162,10 +150,8 @@ struct BundleDescriptorReader
         static const std::string processRequirement(xmlNodePtr node);
 };
 
-
 } // namespace io
 
 } // namespace fwRuntime
-
 
 #endif // __FWRUNTIME_IO_BUNDLEDESCRIPTORREADER_HPP__

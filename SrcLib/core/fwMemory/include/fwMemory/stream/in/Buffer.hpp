@@ -11,6 +11,7 @@
 #include "fwMemory/stream/in/IFactory.hpp"
 
 #include <fwCore/macros.hpp>
+#include <functional>
 
 #include <functional>
 

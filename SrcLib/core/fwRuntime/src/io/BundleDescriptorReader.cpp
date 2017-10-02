@@ -1,25 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <libxml/parser.h>
-#include <libxml/xinclude.h>
+#include "fwRuntime/io/BundleDescriptorReader.hpp"
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/ConfigurationElement.hpp"
+#include "fwRuntime/dl/Library.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/ExtensionPoint.hpp"
-#include "fwRuntime/dl/Library.hpp"
-#include "fwRuntime/io/BundleDescriptorReader.hpp"
 #include "fwRuntime/io/Validator.hpp"
+#include "fwRuntime/operations.hpp"
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
+#include <libxml/parser.h>
+#include <libxml/xinclude.h>
+
+#include <iostream>
+#include <sstream>
+#include <string>
 namespace fwRuntime
 {
 
@@ -77,6 +80,10 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
             {
                 OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
             }
+            catch(const ::fwCore::Exception& exception)
+            {
+                OSLM_INFO( "'"<< entryPath.string() << "': skipped. " << exception.what() );
+            }
         }
     }
     return bundles;
@@ -87,24 +94,15 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
 std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::filesystem::path& location)
 {
     std::shared_ptr<Bundle> bundle;
-    // Get the descriptor location.
-    ::boost::filesystem::path completeLocation = location;
-    if(!completeLocation.is_complete())
-    {
-        completeLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
-    }
 
     ::boost::filesystem::path descriptorLocation(location / "plugin.xml");
     if(::boost::filesystem::exists(descriptorLocation) == false)
     {
-        throw RuntimeException("'plugin.xml': file not found.");
+        throw ::fwCore::Exception(std::string("'plugin.xml': file not found in ") + location.string());
     }
 
     // Validation
-    std::ostringstream fileLocation;
-    fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
-    const ::boost::filesystem::path pluginXSDLocation(
-        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
+    auto pluginXSDLocation = ::fwRuntime::getLibraryResourceFilePath("fwRuntime-" FWRUNTIME_VER "/plugin.xsd");
 
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
@@ -113,19 +111,18 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     }
 
     // Get the document.
-    xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
+    xmlDocPtr document = xmlParseFile( descriptorLocation.string().c_str() );
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
     }
-
 
     try
     {
         // Get the root node.
         xmlNodePtr rootNode = xmlDocGetRootElement(document);
 
-        if (xmlXIncludeProcessTreeFlags (rootNode, XML_PARSE_NOBASEFIX) == -1)
+        if (xmlXIncludeProcessTreeFlags(rootNode, XML_PARSE_NOBASEFIX) == -1)
         {
             throw RuntimeException("Unable to manage xinclude !");
         }
@@ -136,75 +133,14 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
         }
 
         // Creates and process the plugin element.
-        bundle = processPlugin(rootNode, completeLocation);
+        // Get the descriptor location.
+        ::boost::filesystem::path completeLocation(location);
 
-        // Job's done!
-        xmlFreeDoc(document);
-
-    }
-    catch(std::exception& exception)
-    {
-        xmlFreeDoc(document);
-        throw;
-    }
-    return bundle;
-}
-
-//-----------------------------------------------------------------------------
-
-std::shared_ptr<Bundle> BundleDescriptorReader::createBundleFromXmlPlugin( const ::boost::filesystem::path & location )
-{
-    std::shared_ptr<Bundle> bundle;
-    // Get the descriptor location.
-    ::boost::filesystem::path tmpCompleteLocation = location;
-    if(!tmpCompleteLocation.is_complete())
-    {
-        tmpCompleteLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
-    }
-    tmpCompleteLocation.normalize();
-
-    const ::boost::filesystem::path completeLocation ( tmpCompleteLocation.parent_path() );
-
-    ::boost::filesystem::path descriptorLocation ( tmpCompleteLocation );
-    if( ::boost::filesystem::exists(descriptorLocation) == false )
-    {
-        throw RuntimeException("'plugin.xml': file not found.");
-    }
-
-    // Validation
-    std::ostringstream fileLocation;
-    fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
-    const ::boost::filesystem::path pluginXSDLocation(
-        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
-
-    Validator validator(pluginXSDLocation);
-    if( validator.validate(descriptorLocation) == false )
-    {
-        throw RuntimeException("Invalid bundle descriptor file. " + validator.getErrorLog());
-    }
-
-    // Get the document.
-    xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
-    if(document == 0)
-    {
-        throw RuntimeException("Unable to read the bundle descriptor file.");
-    }
-
-    try
-    {
-        // Get the root node.
-        xmlNodePtr rootNode = xmlDocGetRootElement(document);
-        if (xmlXIncludeProcessTreeFlags (rootNode, XML_PARSE_NOBASEFIX) == -1)
+        if(!completeLocation.is_complete())
         {
-            throw RuntimeException("Unable to manage xinclude !");
+            completeLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
         }
 
-        if(xmlStrcmp(rootNode->name, (const xmlChar*) PLUGIN.c_str()) != 0)
-        {
-            throw RuntimeException("Unexpected XML element");
-        }
-
-        // Creates and process the plugin element.
         bundle = processPlugin(rootNode, completeLocation);
 
         // Job's done!
@@ -249,7 +185,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
             OSLM_WARN_IF(
                 "Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
-                (value.find("\n")!=std::string::npos || value.find("\t")!=std::string::npos));
+                (value.find("\n") != std::string::npos || value.find("\t") != std::string::npos));
 
             configurationElement->setValue( configurationElement->getValue() + value );
             continue;

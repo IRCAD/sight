@@ -19,9 +19,9 @@
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwRuntime/operations.hpp>
 
-#include <boost/foreach.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -95,8 +95,10 @@ void SFilterSelectionEditor::starting()
     this->fillAvailableFilters();
     topLayout->addWidget(m_availableFilterListWidget);
 
+    auto path = ::fwRuntime::getBundleResourcePath("media");
+
     // Add filter button
-    m_addFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Plus.svg"), "Add");
+    m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Plus.svg").string())), "Add");
     m_addFilterButton->setSizePolicy(policy);
     topLayout->addWidget(m_addFilterButton);
 
@@ -134,27 +136,26 @@ void SFilterSelectionEditor::starting()
     buttonLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Apply filters button
-    m_applyFiltersButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/media_0-1/icons/Apply.svg"),
-                                           "Apply");
+    m_applyFiltersButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Apply.svg").string())), "Apply");
     m_applyFiltersButton->setSizePolicy(policy);
     buttonLayout->addWidget(m_applyFiltersButton);
 
     // Configure filter button
-    m_configureFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/media_0-1/icons/Settings.svg"),
+    m_configureFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Settings.svg").string())),
                                               "Configure");
     m_configureFilterButton->setSizePolicy(policy);
     m_configureFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_configureFilterButton);
 
     // Split filter button
-    m_splitFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/media_0-1/icons/Split.svg"), "Split");
+    m_splitFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Split.svg").string())), "Split");
     m_splitFilterButton->setSizePolicy(policy);
     m_splitFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_splitFilterButton);
 
     // Remove filter button
-    m_removeFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Minus.svg"),
-                                           "Remove");
+    m_removeFilterButton =
+        new QPushButton(QIcon(QString::fromStdString((path / "icons/Minus.svg").string())), "Remove");
     m_removeFilterButton->setSizePolicy(policy);
     m_removeFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_removeFilterButton);
@@ -557,12 +558,13 @@ bool SFilterSelectionEditor::sortFilters(const ::fwDicomIOFilter::IFilter::sptr&
 
 QIcon SFilterSelectionEditor::getFilterIcon(::fwDicomIOFilter::IFilter::sptr filter)
 {
-    QIcon icons[] = {
-        QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Modifier.svg"),
-        QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Sorter.svg"),
-        QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Splitter.svg"),
-        QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Composite.svg"),
-        QIcon(QString(BUNDLE_PREFIX) + "/media_0-1/icons/Custom.svg")
+    const ::boost::filesystem::path path = ::fwRuntime::getBundleResourcePath(std::string("media"));
+    QIcon icons[]                        = {
+        QIcon(QString::fromStdString((path / "icons/Modifier.svg").string())),
+        QIcon(QString::fromStdString((path / "icons/Sorter.svg").string())),
+        QIcon(QString::fromStdString((path / "icons/Splitter.svg").string())),
+        QIcon(QString::fromStdString((path / "icons/Composite.svg").string())),
+        QIcon(QString::fromStdString((path / "icons/Custom.svg").string()))
     };
     return icons[filter->getFilterType()];
 }

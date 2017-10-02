@@ -125,7 +125,7 @@ void SCreateActivity::starting()
     // Add the load button
     ::fwActivities::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
-    infoLoad.icon        = std::string(BUNDLE_PREFIX) + std::string("/media_0-1/icons/LoadActivity.svg");
+    infoLoad.icon        = ::fwRuntime::getBundleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

@@ -1,2 +1,2 @@
-<plugin id="media" version="@DASH_VERSION@" >
+<plugin id="media" version="@PROJECT_VERSION@" >
 </plugin>

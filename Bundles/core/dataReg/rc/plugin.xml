@@ -1,4 +1,4 @@
-<plugin id="dataReg" class="::dataReg::Plugin" version="@DASH_VERSION@" >
+<plugin id="dataReg" class="::dataReg::Plugin" version="@PROJECT_VERSION@" >
     
     <library name="dataReg" />
     

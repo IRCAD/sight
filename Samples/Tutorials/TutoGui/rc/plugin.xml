@@ -1,4 +1,4 @@
-<plugin id="TutoGui" version="@DASH_VERSION@" >
+<plugin id="TutoGui" version="@PROJECT_VERSION@" >
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -12,7 +12,7 @@
             <gui>
                 <frame>
                     <name>TutoGui</name>
-                    <icon>@BUNDLE_PREFIX@/TutoGui_0-1/tuto.ico</icon>
+                    <icon>TutoGui-0.1/tuto.ico</icon>
                     <minSize width="800" height="600"/>
                 </frame>
                 <menuBar />
@@ -44,23 +44,23 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="start" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/start.svg" />
-                    <menuItem name="pause" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/pause.svg" />
-                    <menuItem name="stop"  icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/stop.svg" />
+                    <menuItem name="start" icon="TutoGui-0.1/icons/start.svg" />
+                    <menuItem name="pause" icon="TutoGui-0.1/icons/pause.svg" />
+                    <menuItem name="stop"  icon="TutoGui-0.1/icons/stop.svg" />
                     <separator />
-                    <menuItem name="My item 1" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
+                    <menuItem name="My item 1" style="check" icon="TutoGui-0.1/icons/important.png" />
                     <separator />
-                    <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
-                    <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                    <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/>
+                    <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/icons/system.png"/>
                     <separator />
-                    <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                    <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                    <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
+                    <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
                     <separator />
-                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
-                    <menuItem name="start A-B / stop 2-3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/important.png" />
+                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="TutoGui-0.1/icons/important.png" />
+                    <menuItem name="start A-B / stop 2-3" style="radio" icon="TutoGui-0.1/icons/important.png" />
                     <spacer/>
                     <menu name="Test Hide/Show" start="yes" />
-                    <menuItem name="Quit" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/unreadable.png"/>
+                    <menuItem name="Quit" icon="TutoGui-0.1/icons/unreadable.png"/>
                 </layout>
             </gui>
             <registry>
@@ -82,9 +82,9 @@
         <service uid="testHideShow" type="::gui::aspect::SDefaultMenu" >
             <gui>
                 <layout>
-                    <menuItem name="Play" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/start.svg" />
-                    <menuItem name="Pause" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/pause.svg" />
-                    <menuItem name="Stop" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/stop.svg" />
+                    <menuItem name="Play" icon="TutoGui-0.1/icons/start.svg" />
+                    <menuItem name="Pause" icon="TutoGui-0.1/icons/pause.svg" />
+                    <menuItem name="Stop" icon="TutoGui-0.1/icons/stop.svg" />
 
                 </layout>
             </gui>
@@ -203,11 +203,11 @@
         <service uid="toolbar2" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" />
-                    <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" />
+                    <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png" />
+                    <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/icons/system.png" />
                     <separator />
-                    <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png" />
-                    <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png" />
+                    <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png" />
+                    <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png" />
                 </layout>
             </gui>
             <registry>

@@ -1,4 +1,4 @@
-<plugin id="uiVisu" class="::uiVisu::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiVisu" class="::uiVisu::Plugin" version="@PROJECT_VERSION@" >
     <library name="uiVisu"/>
     
     <requirement id="dataReg"/>

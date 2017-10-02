@@ -1,5 +1,5 @@
 
-<plugin id="Tuto13Scene2D" version="@DASH_VERSION@">
+<plugin id="Tuto13Scene2D" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -17,7 +17,7 @@
                 <gui>
                     <frame>
                         <name>TutoScene132D</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto13Scene2D_0-1/tuto.ico</icon>
+                        <icon>Tuto13Scene2D-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>

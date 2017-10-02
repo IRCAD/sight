@@ -1,4 +1,4 @@
-<plugin id="ioVTK" class="::ioVTK::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioVTK" class="::ioVTK::Plugin" version="@PROJECT_VERSION@" >
     <library name="ioVTK" />
 
     <requirement id="dataReg" />

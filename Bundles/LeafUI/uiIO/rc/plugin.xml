@@ -1,4 +1,4 @@
-<plugin id="uiIO" class="::uiIO::Plugin"  version="@DASH_VERSION@" >
+<plugin id="uiIO" class="::uiIO::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="uiIO" />
 

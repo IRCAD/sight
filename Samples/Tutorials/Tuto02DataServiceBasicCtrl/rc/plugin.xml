@@ -1,4 +1,4 @@
-<plugin id="Tuto02DataServiceBasicCtrl" class="::Tuto02DataServiceBasicCtrl::Plugin"  version="@DASH_VERSION@" >
+<plugin id="Tuto02DataServiceBasicCtrl" class="::Tuto02DataServiceBasicCtrl::Plugin"  version="@PROJECT_VERSION@" >
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />

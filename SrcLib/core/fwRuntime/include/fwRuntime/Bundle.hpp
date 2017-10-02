@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,18 @@
 #ifndef __FWRUNTIME_BUNDLE_HPP__
 #define __FWRUNTIME_BUNDLE_HPP__
 
-#include <map>
-#include <set>
-#include <string>
-#include <boost/filesystem/path.hpp>
-
 #include "fwCore/base.hpp"
 
 #include "fwRuntime/config.hpp"
+#include "fwRuntime/dl/Library.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
-#include "fwRuntime/dl/Library.hpp"
+
+#include <boost/filesystem/path.hpp>
+
+#include <map>
+#include <set>
+#include <string>
 
 namespace fwRuntime
 {
@@ -35,47 +36,48 @@ struct BundleDescriptorReader;
 }
 }
 
-
-
 namespace fwRuntime
 {
 
-
-
 /**
  * @brief   Defines the bundle class.
- * @struct  Bundle
- * @date    2004-2009
  *
  */
 struct Bundle : public std::enable_shared_from_this< Bundle >
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-
+    static const char s_VERSION_DELIMITER = '-';
     /**
      * @name    Type definitions
      */
     //@{
-    typedef std::set< SPTR( ExecutableFactory ) >      ExecutableFactoryContainer;     ///< Defines the executable factory container type.
-    typedef ExecutableFactoryContainer::const_iterator ExecutableFactoryConstIterator; ///< Defines the executable factory container constant iterator type.
+    typedef std::set< SPTR( ExecutableFactory ) >      ExecutableFactoryContainer;     ///< Defines the executable
+                                                                                       // factory container type.
+    typedef ExecutableFactoryContainer::const_iterator ExecutableFactoryConstIterator; ///< Defines the executable
+                                                                                       // factory container constant
+                                                                                       // iterator type.
 
-    typedef std::set< SPTR( Extension ) >      ExtensionContainer;             ///< Defines the extension container type.
-    typedef ExtensionContainer::const_iterator ExtensionConstIterator;         ///< Defines the extension container constant iterator type.
+    typedef std::set< SPTR( Extension ) >      ExtensionContainer;             ///< Defines the extension container
+                                                                               // type.
+    typedef ExtensionContainer::const_iterator ExtensionConstIterator;         ///< Defines the extension container
+                                                                               // constant iterator type.
 
-    typedef std::set< SPTR( ExtensionPoint ) >      ExtensionPointContainer;        ///< Defines the extension point container type.
-    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point container constant iterator type.
+    typedef std::set< SPTR( ExtensionPoint ) >      ExtensionPointContainer;        ///< Defines the extension point
+                                                                                    // container type.
+    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point
+                                                                                    // container constant iterator type.
 
-    typedef std::set< SPTR(dl::Library) >     LibraryContainer;               ///< Defines the dynamic library container type.
-    typedef LibraryContainer::const_iterator LibraryConstIterator;            ///< Defines the dynamic library container constant iterator type.
+    typedef std::set< SPTR(dl::Library) >     LibraryContainer;               ///< Defines the dynamic library container
+                                                                              // type.
+    typedef LibraryContainer::const_iterator LibraryConstIterator;            ///< Defines the dynamic library container
+                                                                              // constant iterator type.
     //@}
-
 
     /**
      * @brief   Retrieves the pointer to the bundle that is currently loading its dynamic libraries
      */
     static SPTR( Bundle ) getLoadingBundle();
-
 
     /**
      * @name    Dynamic Libraries
@@ -105,7 +107,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
     FWRUNTIME_API LibraryConstIterator librariesEnd() const;
     //@}
 
-
     /**
      * @name    Executable Factories & Dynamic Objects Instantiation
      */
@@ -126,7 +127,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @todo    not implemented and not used !!!!!!!
      */
-    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type );
+    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type );
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -154,7 +155,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
     FWRUNTIME_API SPTR( ExecutableFactory ) findExecutableFactory( const std::string & type ) const;
     //@}
 
-
     /**
      * @name    Extensions
      */
@@ -173,7 +173,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @return      true or false
      */
-    FWRUNTIME_API bool hasExtension(const std::string & identifier) const;
+    FWRUNTIME_API bool hasExtension(const std::string& identifier) const;
 
     /**
      * @brief       Search a specific extension in the bundle to enable or
@@ -184,7 +184,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      * @param[in]   identifier  the extension identifier
      * @param[in]   enable      enable or disable this extension
      */
-    FWRUNTIME_API void setEnableExtension(const std::string & identifier, const bool enable);
+    FWRUNTIME_API void setEnableExtension(const std::string& identifier, const bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -202,7 +202,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      */
     FWRUNTIME_API ExtensionConstIterator extensionsEnd() const;
     //@}
-
 
     /**
      * @name    Extension Points
@@ -231,7 +230,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @return      true or false
      */
-    FWRUNTIME_API bool hasExtensionPoint(const std::string & identifier) const;
+    FWRUNTIME_API bool hasExtensionPoint(const std::string& identifier) const;
 
     /**
      * @brief       Search a specific extension point in the bundle to enable or
@@ -242,7 +241,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      * @param[in]   identifier  the extension point identifier
      * @param[in]   enable      enable or disable this extension point
      */
-    FWRUNTIME_API void setEnableExtensionPoint(const std::string & identifier, const bool enable);
+    FWRUNTIME_API void setEnableExtensionPoint(const std::string& identifier, const bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -261,7 +260,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
     FWRUNTIME_API ExtensionPointConstIterator extensionPointsEnd() const;
     //@}
 
-
     /**
      * @name    Misc
      */
@@ -271,21 +269,28 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @param[in]   requirement a string containing a bundle identifier that is required
      */
-    FWRUNTIME_API void addRequirement( const std::string & requirement );
+    FWRUNTIME_API void addRequirement( const std::string& requirement );
 
     /**
      * @brief   Retrieves the bundle identifier.
      *
      * @return  a string containing the bundle identifier
      */
-    FWRUNTIME_API const std::string & getIdentifier() const;
+    FWRUNTIME_API const std::string& getIdentifier() const;
 
     /**
      * @brief   Retrieves the bundle location.
      *
      * @return  a path representing the bundle location
      */
-    FWRUNTIME_API const boost::filesystem::path & getLocation() const;
+    FWRUNTIME_API const ::boost::filesystem::path& getLibraryLocation() const;
+
+    /**
+     * @brief   Retrieves the bundle location.
+     *
+     * @return  a path representing the bundle location
+     */
+    FWRUNTIME_API const ::boost::filesystem::path& getResourcesLocation() const;
 
     /**
      * @brief   Retrieves the class representing the bundle executable part.
@@ -299,7 +304,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @return  the bundle version
      */
-    FWRUNTIME_API const Version & getVersion() const;
+    FWRUNTIME_API const Version& getVersion() const;
 
     /**
      * @brief   Retrieves the plugin instance for the specified bundle identifier.
@@ -308,7 +313,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      */
     FWRUNTIME_API SPTR( IPlugin ) getPlugin() const;
     //@}
-
 
     /**
      * @name        State Management
@@ -337,7 +341,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
     FWRUNTIME_API void stop();
     //@}
 
-
     /**
      * @brief   Initialize the bundle.
      *
@@ -347,7 +350,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
 
     FWRUNTIME_API void uninitialize();
     //@}
-
 
     /**
      * @name    Parameters Management
@@ -359,7 +361,7 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      * @param[in]   identifier  a string containing the parameter identifier
      * @param[in]   value       a string containing the parameter value
      */
-    FWRUNTIME_API void addParameter( const std::string & identifier, const std::string & value );
+    FWRUNTIME_API void addParameter( const std::string& identifier, const std::string& value );
 
     /**
      * @brief       Retrieves the value of the given parameter
@@ -372,25 +374,28 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
      *
      * @return      a string containing the parameter value
      */
-    FWRUNTIME_API const std::string getParameterValue( const std::string & identifier ) const;
+    FWRUNTIME_API const std::string getParameterValue( const std::string& identifier ) const;
 
     /**
      * @brief   Tells if a parameter exists.
      *
      * @return  true or false
      */
-    FWRUNTIME_API bool hasParameter( const std::string & name ) const;
+    FWRUNTIME_API bool hasParameter( const std::string& name ) const;
     //@}
-
 
     bool isStarted()
     {
         return m_started;
     }
+    //------------------------------------------------------------------------------
+
     bool isInitialized()
     {
         return m_initialized;
     }
+
+    FWRUNTIME_API static std::string getBundleStr(const std::string& identifier, const Version& version);
 
     protected:
 
@@ -404,9 +409,9 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
          * @todo        test parameters validity
          *
          */
-        Bundle( const boost::filesystem::path   & location,
-                const std::string               & id,
-                const std::string               & version );
+        Bundle( const ::boost::filesystem::path& location,
+                const std::string& id,
+                const std::string& version );
 
         /**
          * @brief       Constructor.
@@ -419,24 +424,27 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
          * @todo        test parameters validity
          *
          */
-        Bundle( const boost::filesystem::path   & location,
-                const std::string               & id,
-                const std::string               & version,
-                const std::string               & pluginClass );
-
+        Bundle( const ::boost::filesystem::path& location,
+                const std::string& id,
+                const std::string& version,
+                const std::string& pluginClass );
 
     private:
 
-        typedef std::set< std::string >                 RequirementContainer;///< Defines the requirement container type.
+        typedef std::set< std::string >                 RequirementContainer;///< Defines the requirement container
+                                                                             // type.
         typedef std::map< std::string, std::string >    ParameterContainer; ///< defines the parameter container type
 
-        static SPTR( Bundle )           m_loadingBundle;    ///< a pointer to the bundle that is currently loading its dynamic libaries
+        static SPTR( Bundle )           m_loadingBundle;    ///< a pointer to the bundle that is currently loading its
+                                                            // dynamic libaries
 
-        const boost::filesystem::path m_location;           ///< the path to the bundle location
+        ::boost::filesystem::path m_libraryLocation;        ///< the path to the bundle libraries
+        const ::boost::filesystem::path m_resourcesLocation;  ///< the path to the bundle resources
         const std::string m_identifier;                     ///< a string containing the bundle identifier
         const Version m_version;                            ///< defines the version of the bundle
         const std::string m_class;                          ///< a string containing the bundle's plugin class name
-        bool m_enable;                                      ///< a boolean telling if the bundle is enabled or not
+        bool m_enable { false };                                      ///< a boolean telling if the bundle is enabled or
+                                                                      // not
         ExtensionContainer m_extensions;                    ///< all extensions
         ExtensionPointContainer m_extensionPoints;          ///< all extension points
         ExecutableFactoryContainer m_executableFactories;   ///< all executable factories
@@ -445,15 +453,15 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
         SPTR( IPlugin )                 m_plugin;           ///< a shared pointer to the plugin instance
         ParameterContainer m_parameters;                    ///< all parameters
 
-        bool m_started;
-        bool m_initialized;
+        bool m_started { false };
+        bool m_initialized { false };
 
         /**
          * @brief   Assignement operator.
          *
          * @remark  Assignement is forbidden for this class.
          */
-        void operator= (const Bundle & );
+        void operator= (const Bundle& );
 
         /**
          * @brief   Load bundle's library in the current process.
@@ -472,9 +480,6 @@ struct Bundle : public std::enable_shared_from_this< Bundle >
 
 };
 
-
-
 } // namespace fwRuntime
-
 
 #endif // __FWRUNTIME_BUNDLE_HPP__

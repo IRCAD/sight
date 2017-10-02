@@ -2,7 +2,7 @@
 #It will be configured at configure time, only '@' variables will be replaced.
 #function to find libs and Bundles/* directories
 function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
-    file(GLOB_RECURSE LIBS @CMAKE_INSTALL_PREFIX@/@BUNDLE_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*)
+    file(GLOB_RECURSE LIBS @CMAKE_INSTALL_PREFIX@/@BUNDLE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*)
     list(REMOVE_DUPLICATES LIBS)
     set(FOLDERS)
     foreach(LIB ${LIBS})
@@ -15,26 +15,32 @@ function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
     set(${FWLIBS_BUNDLES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
 endfunction()
 
-#Find all /*/.so* in /Bundles /plugins /share
-file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@BUNDLE_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-file(GLOB_RECURSE SHARE FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/share/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+# Run the script when installing but not a second time when running CPack
+if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
-include(BundleUtilities)
-set(LIBS "")
-list(APPEND LIBS ${BUNDLES} ${PLUGINS} ${SHARE})
-#Look for all directories containing '.so*' files
-findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
-list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
-list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
-#Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+    #Find all /*/.so* in /Bundles /plugins
+    file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@BUNDLE_LIB_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+    file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
 
-#Move all libraries in 'lib' folder
-#Not needed but much more elegant
-file(GLOB_RECURSE FIXED_LIBS "@CMAKE_INSTALL_PREFIX@/bin/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+    include(BundleUtilities)
+    set(LIBS "")
+    list(APPEND LIBS ${BUNDLES} ${PLUGINS})
 
-foreach(LIB ${FIXED_LIBS})
-    file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/lib/")
-    file(REMOVE ${LIB})
-endforeach()
+    #Look for all directories containing '.so*' files
+    findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
+    list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
+    list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
+
+    #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
+    fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+
+    #Move all libraries in 'lib' folder
+    #Not needed but much more elegant
+    file(GLOB_RECURSE FIXED_LIBS "@CMAKE_INSTALL_PREFIX@/bin/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+
+    foreach(LIB ${FIXED_LIBS})
+        file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/lib/")
+        file(REMOVE ${LIB})
+    endforeach()
+
+endif()

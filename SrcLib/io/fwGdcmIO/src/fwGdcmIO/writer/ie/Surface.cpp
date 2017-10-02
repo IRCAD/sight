@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,15 +19,16 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <gdcmSurfaceHelper.h>
 #include <gdcmSurfaceWriter.h>
 #include <gdcmUIDGenerator.h>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <sstream>
 
@@ -57,7 +58,9 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
     // Ready the dictionary
     ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
     dictionaryReader->setObject(m_structureDictionary);
-    dictionaryReader->setFile("./share/fwDataIO_0-2/OrganDictionary.dic");
+
+    const auto path = ::fwRuntime::getLibraryResourceFilePath("fwDataIO-0.2/OrganDictionary.dic");
+    dictionaryReader->setFile(path.string());
     try
     {
         dictionaryReader->read();
@@ -117,7 +120,7 @@ void Surface::writeSurfaceSegmentationModule(unsigned short segmentationNumber)
     ::boost::algorithm::trim(segmentLabel);
     if(segmentLabel.size() > 1)
     {
-        segmentLabel = ::boost::algorithm::to_upper_copy(segmentLabel.substr(0,1)) + segmentLabel.substr(1);
+        segmentLabel = ::boost::algorithm::to_upper_copy(segmentLabel.substr(0, 1)) + segmentLabel.substr(1);
     }
 
     ::fwData::StructureTraitsDictionary::StructureTypeNameContainer segmentLabelContainer =
@@ -144,7 +147,6 @@ void Surface::writeSurfaceSegmentationModule(unsigned short segmentationNumber)
 
     const ::fwGdcmIO::container::DicomCodedAttribute* propertyType =
         ::fwGdcmIO::helper::DictionarySegment::guessPropTypeFromLabel(structure->getPropertyType());
-
 
     // Add segmentation to GDCM Surface Writer
     ::gdcm::SmartPointer< ::gdcm::Segment > segment = new ::gdcm::Segment();
@@ -222,7 +224,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned short segmentationNumber)
         referencedSurfaceItem.SetVLToUndefined();
         ::gdcm::DataSet& referencedSurfaceDataset = referencedSurfaceItem.GetNestedDataSet();
 
-        // WARNING : index+1 == segmentNumber == surfaceNumber because currently, reconstruction just contains one surface.*
+        // WARNING : index+1 == segmentNumber == surfaceNumber because currently, reconstruction just contains one
+        // surface.*
         // Referenced Surface Number - Type 1
         ::fwGdcmIO::helper::DicomData::setTagValue< uint16_t, 0x0066, 0x002C >(realSegmentationNumber,
                                                                                referencedSurfaceDataset);

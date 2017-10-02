@@ -1,4 +1,4 @@
-<plugin id="Ex02ImageMix" version="@DASH_VERSION@">
+<plugin id="Ex02ImageMix" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -14,7 +14,7 @@
                 <gui>
                     <frame>
                         <name>Ex02ImageMix</name>
-                        <icon>@BUNDLE_PREFIX@/Ex02ImageMix_0-1/tuto.ico</icon>
+                        <icon>Ex02ImageMix-0.1/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar/>

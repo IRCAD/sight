@@ -7,7 +7,7 @@
         <param name="landmarks" />
         <param name="TFSelections" />
         <param name="SelectedTFKey" />
-        <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
+        <param name="TFPath" default="uiTF-0.1/tf"/>
     </parameters>
 
     <config>

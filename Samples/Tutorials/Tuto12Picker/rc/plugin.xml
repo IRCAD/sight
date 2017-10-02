@@ -1,4 +1,4 @@
-<plugin id="Tuto12Picker" version="@DASH_VERSION@">
+<plugin id="Tuto12Picker" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -14,7 +14,7 @@
                 <gui>
                     <frame>
                         <name>Tuto12Picker</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto12Picker_0-1/tuto.ico</icon>
+                        <icon>Tuto12Picker-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar/>
@@ -112,8 +112,8 @@
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

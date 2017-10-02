@@ -1,4 +1,4 @@
-<plugin id="ioPacs" class="ioPacs::Plugin"  version="@DASH_VERSION@" >
+<plugin id="ioPacs" class="ioPacs::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioPacs" />
 
     <requirement id="dataReg"/>

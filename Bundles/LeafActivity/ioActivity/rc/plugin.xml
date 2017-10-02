@@ -1,4 +1,4 @@
-<plugin id="ioActivity" version="@DASH_VERSION@">
+<plugin id="ioActivity" version="@PROJECT_VERSION@">
 
     <requirement id="io" />
     <requirement id="uiIO" />
@@ -11,7 +11,7 @@
         <id>ImageSeriesExport</id>
         <title>ImageSeries Export</title>
         <desc>Activity to export the selected ImageSeries.</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
             <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -28,7 +28,7 @@
         <id>ModelSeriesExport</id>
         <title>ModelSeries Export</title>
         <desc>Activity to export the selected ModelSeries.</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
             <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>

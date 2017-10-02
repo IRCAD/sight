@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,12 @@
 #include "fwGuiQt/dialog/LoggerDialog.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwGui/registry/macros.hpp>
+
+#include <fwRuntime/operations.hpp>
+
+#include <boost/foreach.hpp>
 
 #include <QApplication>
 #include <QCheckBox>
@@ -18,8 +23,6 @@
 #include <QTableWidgetItem>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <boost/foreach.hpp>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::LoggerDialog, ::fwGui::dialog::ILoggerDialog::REGISTRY_KEY );
 
@@ -92,15 +95,18 @@ bool LoggerDialog::show()
     QLabel* iconLabel = new QLabel();
     if(m_logger->count(::fwLog::Log::CRITICAL) > 0)
     {
-        iconLabel->setPixmap(QIcon("share/fwGuiQt_0-1/critical.png").pixmap(48, 48));
+        const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/critical.png");
+        iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     else if(m_logger->count(::fwLog::Log::WARNING) > 0)
     {
-        iconLabel->setPixmap(QIcon("share/fwGuiQt_0-1/warning.png").pixmap(48, 48));
+        const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/warning.png");
+        iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     else
     {
-        iconLabel->setPixmap(QIcon("share/fwGuiQt_0-1/information.png").pixmap(48, 48));
+        const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/information.png");
+        iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     messageLayout->addWidget(iconLabel);
 
@@ -131,15 +137,19 @@ bool LoggerDialog::show()
     buttonLayout->addWidget(cancelButton);
 
     // Create a checkbox to display the logs
-    QCheckBox* checkbox = new QCheckBox("Details");
-    checkbox->setStyleSheet("QCheckBox::indicator:unchecked { image: url(share/fwGuiQt_0-1/details-hidden.png); } "
-                            "QCheckBox::indicator:checked { image: url(share/fwGuiQt_0-1/details-shown.png); }");
+    QCheckBox* checkbox      = new QCheckBox("Details");
+    const auto detailshidden = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/details-hidden.png").string();
+    const auto detailsshown  = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/details-shown.png").string();
+    std::string styleSheet;
+    styleSheet += "QCheckBox::indicator:unchecked { image: url(" + detailshidden + "); }";
+    styleSheet += "QCheckBox::indicator:checked { image: url(" + detailsshown + "); }";
+    checkbox->setStyleSheet(QString::fromStdString(styleSheet));
 
     // Create log table
     m_logTableWidget = new QTableWidget(static_cast<int>(m_logger->count()), 2);
     m_logTableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem("Level"));
     m_logTableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem("Message"));
-    m_logTableWidget->setColumnWidth(0,120);
+    m_logTableWidget->setColumnWidth(0, 120);
     m_logTableWidget->horizontalHeader()->setStretchLastSection(true);
 
     // Fill log table
@@ -153,17 +163,20 @@ bool LoggerDialog::show()
         if (level == ::fwLog::Log::INFORMATION)
         {
             levelString = "Information";
-            levelIcon   = QIcon("share/fwGuiQt_0-1/information.png");
+            const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/information.png");
+            levelIcon = QIcon(QString::fromStdString(path.string()));
         }
         else if (level == ::fwLog::Log::WARNING)
         {
             levelString = "Warning";
-            levelIcon   = QIcon("share/fwGuiQt_0-1/warning.png");
+            const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/warning.png");
+            levelIcon = QIcon(QString::fromStdString(path.string()));
         }
         else if (level == ::fwLog::Log::CRITICAL)
         {
             levelString = "Critical";
-            levelIcon   = QIcon("share/fwGuiQt_0-1/critical.png");
+            const auto path = ::fwRuntime::getLibraryResourceFilePath("fwGuiQt-0.1/critical.png");
+            levelIcon = QIcon(QString::fromStdString(path.string()));
         }
 
         QTableWidgetItem* levelItem = new QTableWidgetItem(levelIcon, levelString.c_str());
@@ -221,5 +234,4 @@ void LoggerDialog::displayLogs(int state)
 
 } // namespace dialog
 } // namespace fwGuiQt
-
 

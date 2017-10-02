@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWACTIVITIES_UT_REGISTRY_ACTIVITYREGISTRYTEST_HPP__
 #define __FWACTIVITIES_UT_REGISTRY_ACTIVITYREGISTRYTEST_HPP__
+
+#include <fwCore/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

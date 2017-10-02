@@ -1,4 +1,4 @@
-﻿<plugin id="Tuto16MultithreadConsole" class="::Tuto16MultithreadConsole::Plugin" version="@DASH_VERSION@" >
+﻿<plugin id="Tuto16MultithreadConsole" class="::Tuto16MultithreadConsole::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="Tuto16MultithreadConsole" />
 

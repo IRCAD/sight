@@ -1,4 +1,4 @@
-<plugin id="vtkSimpleMesh" class="::vtkSimpleMesh::Plugin" version="@DASH_VERSION@" >
+<plugin id="vtkSimpleMesh" class="::vtkSimpleMesh::Plugin" version="@PROJECT_VERSION@" >
     <library name="vtkSimpleMesh" />
 
 
