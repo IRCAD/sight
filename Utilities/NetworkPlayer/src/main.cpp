@@ -17,9 +17,11 @@
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
+#include <chrono>
 #include <fstream>
 #include <functional>
 #include <stdexcept>
+#include <thread>
 #include <vector>
 
 using namespace networkPlayer;
@@ -90,7 +92,7 @@ static void     readStream (std::istream& stream, Socket& socket)
             {
                 diffTime = static_cast< std::uint32_t> (datas[0] - prevTime);
                 prevTime = datas[0];
-                ::boost::this_thread::sleep(::boost::posix_time::milliseconds(diffTime));
+                std::this_thread::sleep_for(std::chrono::milliseconds(diffTime));
 
             }
             socket.sendObject(toMatrix(datas));
