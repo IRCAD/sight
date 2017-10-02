@@ -1,4 +1,4 @@
-<plugin id="uiCalibration" class="uiCalibration::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiCalibration" class="uiCalibration::Plugin" version="@PROJECT_VERSION@" >
     <library name="uiCalibration" />
 
     <requirement id="gui"/>

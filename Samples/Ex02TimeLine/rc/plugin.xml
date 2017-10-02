@@ -1,4 +1,4 @@
-﻿<plugin id="Ex02TimeLine" class="::Ex02TimeLine::Plugin" version="@DASH_VERSION@" >
+﻿<plugin id="Ex02TimeLine" class="::Ex02TimeLine::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="Ex02TimeLine" />
 

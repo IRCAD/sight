@@ -1,4 +1,4 @@
-<plugin id="Ex03Igtl" version="@DASH_VERSION@">
+<plugin id="Ex03Igtl" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -12,7 +12,7 @@
                 <gui>
                     <frame>
                         <name>Ex03Igtl</name>
-                        <icon>@BUNDLE_PREFIX@/Ex03Igtl_@DASH_VERSION@/tuto.ico</icon>
+                        <icon>Ex03Igtl-@PROJECT_VERSION@/tuto.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -26,15 +26,15 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Load mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                        <menuItem name="Load mesh" icon="media-0.1/icons/Import.svg" />
                         <separator/>
-                        <menuItem name="start sender" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Sending.svg" />
-                        <menuItem name="stop sender" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Sending.svg" />
-                        <menuItem name="configure sender" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
+                        <menuItem name="start sender" icon="arMedia-0.1/icons/Network-Sending.svg" />
+                        <menuItem name="stop sender" icon="arMedia-0.1/icons/Network-Stop-Sending.svg" />
+                        <menuItem name="configure sender" icon="media-0.1/icons/Settings.svg" />
                         <separator/>
-                        <menuItem name="start listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Receiving.svg" />
-                        <menuItem name="stop listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Receiving.svg" />
-                        <menuItem name="configure listener" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
+                        <menuItem name="start listener" icon="arMedia-0.1/icons/Network-Receiving.svg" />
+                        <menuItem name="stop listener" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
+                        <menuItem name="configure listener" icon="media-0.1/icons/Settings.svg" />
                         <separator/>
                     </layout>
                 </gui>

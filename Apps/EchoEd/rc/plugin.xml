@@ -1,4 +1,4 @@
-<plugin id="EchoEd" version="@DASH_VERSION@">
+<plugin id="EchoEd" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="patchMedicalData" />
@@ -127,7 +127,7 @@
                 <gui>
                     <frame>
                         <name>EchoEd</name>
-                        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/echoEd.ico</icon>
+                        <icon>arMedia-0.1/icons/echoEd.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -215,11 +215,11 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="add scan view" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
+                        <menuItem name="add scan view" icon="media-0.1/icons/ManageOrgan.png" style="check" />
                         <separator/>
-                        <menuItem name="start listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Receiving.svg" />
-                        <menuItem name="stop listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Receiving.svg" />
-                        <menuItem name="configure listener" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
+                        <menuItem name="start listener" icon="arMedia-0.1/icons/Network-Receiving.svg" />
+                        <menuItem name="stop listener" icon="arMedia-0.1/icons/Network-Stop-Receiving.svg" />
+                        <menuItem name="configure listener" icon="media-0.1/icons/Settings.svg" />
                         <separator/>
                         <menuItem name="Launch Camera" style="check" />
                     </layout>

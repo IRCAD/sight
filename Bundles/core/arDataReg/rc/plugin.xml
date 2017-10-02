@@ -1,4 +1,4 @@
-<plugin id="arDataReg" class="::arDataReg::Plugin" version="@DASH_VERSION@" >
+<plugin id="arDataReg" class="::arDataReg::Plugin" version="@PROJECT_VERSION@" >
     
     <library name="arDataReg" />
 

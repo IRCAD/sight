@@ -1,4 +1,4 @@
-<plugin id="uiNetwork" class="::uiNetwork::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiNetwork" class="::uiNetwork::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="uiNetwork" />
 

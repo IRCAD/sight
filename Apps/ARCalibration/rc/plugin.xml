@@ -1,4 +1,4 @@
-<plugin id="ARCalibration" version="@DASH_VERSION@">
+<plugin id="ARCalibration" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -19,7 +19,7 @@
         <id>ARCalibrationAppBase</id>
         <parameters>
             <param name="appName" value="ARCalibration 0.3" />
-            <param name="appIconPath" value="@BUNDLE_PREFIX@/ARCalibration_0-3/arcalibration.ico" />
+            <param name="appIconPath" value="ARCalibration-0.3/arcalibration.ico" />
         </parameters>
     </extension>
 
@@ -46,7 +46,7 @@
         <id>CameraSeriesExport</id>
         <title>CameraSeries Export</title>
         <desc>CameraSeries Export</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
             <requirement name="series" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -62,7 +62,7 @@
         <id>activitySelector</id>
         <title>Choose your activity</title>
         <desc>Activity selector for ARSurg</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/selector.svg</icon>
+        <icon>media-0.1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="activitySelector">
             <parameters />
