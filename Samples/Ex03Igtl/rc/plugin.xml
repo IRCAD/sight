@@ -12,7 +12,7 @@
                 <gui>
                     <frame>
                         <name>Ex03Igtl</name>
-                        <icon>Ex03Igtl_@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Ex03Igtl-@PROJECT_VERSION@/tuto.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>

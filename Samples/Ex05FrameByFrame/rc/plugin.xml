@@ -18,7 +18,7 @@
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
-                        <icon>Ex05FrameByFrame_@PROJECT_VERSION@/ex05framebyframe.ico</icon>
+                        <icon>Ex05FrameByFrame-@PROJECT_VERSION@/ex05framebyframe.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>

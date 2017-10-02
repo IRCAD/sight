@@ -36,7 +36,7 @@
                 <gui>
                     <frame>
                         <name>Ex06RGBDStream</name>
-                        <icon>Ex06RGBDStream_@PROJECT_VERSION@/ex06rgbdstream.ico</icon>
+                        <icon>Ex06RGBDStream-@PROJECT_VERSION@/ex06rgbdstream.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>

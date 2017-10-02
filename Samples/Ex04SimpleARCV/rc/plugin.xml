@@ -25,7 +25,7 @@
                 <gui>
                     <frame>
                         <name>Ex04SimpleARCV</name>
-                        <icon>Ex04SimpleARCV_@PROJECT_VERSION@/app.ico</icon>
+                        <icon>Ex04SimpleARCV-@PROJECT_VERSION@/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
