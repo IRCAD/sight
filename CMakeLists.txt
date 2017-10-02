@@ -317,9 +317,6 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
                              -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
                              -DFWPROJECT_NAME="${FWPROJECT_NAME}"
                              -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
-                             -DBUNDLE_LIB_PREFIX="${BUNDLE_LIB_PREFIX}"
-                             -DBUNDLE_RC_PREFIX="${BUNDLE_RC_PREFIX}"
-                             -DTARGET_TYPE="${TARGET_TYPE}"
                              -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
