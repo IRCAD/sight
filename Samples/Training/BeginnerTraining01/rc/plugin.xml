@@ -1,4 +1,4 @@
-<plugin id="BeginnerTraining01" version="@DASH_VERSION@" >
+<plugin id="BeginnerTraining01" version="@PROJECT_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>BeginnerTraining01Config</id>
@@ -17,7 +17,7 @@
 
             <service uid="myReader" type="::beginnerTraining::tuto01::SStringReader"  >
                 <inout key="targetString" uid="string" />
-                <file>@BUNDLE_PREFIX@/beginnerTraining_0-1/data.txt</file>
+                <file>beginnerTraining-0.1/data.txt</file>
             </service>
 
             <start uid="myFrame" />

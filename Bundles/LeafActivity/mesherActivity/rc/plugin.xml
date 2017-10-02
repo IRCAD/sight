@@ -1,4 +1,4 @@
-<plugin id="mesherActivity" version="@DASH_VERSION@">
+<plugin id="mesherActivity" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -27,7 +27,7 @@
         <id>mesherActivity</id>
         <title>CGoGN Mesher</title>
         <desc>Mesher activity proposed by IGG team (ICube)</desc>
-        <icon>@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn.png</icon>
+        <icon>mesherActivity-0.1/icons/cgogn.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
