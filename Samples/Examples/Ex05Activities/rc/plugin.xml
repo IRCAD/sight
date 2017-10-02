@@ -17,7 +17,7 @@
         <id>Ex05AppBase</id>
         <parameters>
             <param name="appName" value="Ex05 Activities @PROJECT_VERSION@" />
-            <param name="appIconPath" value="Ex05Activities_@PROJECT_VERSION@/app.ico" />
+            <param name="appIconPath" value="Ex05Activities-@PROJECT_VERSION@/app.ico" />
         </parameters>
     </extension>
 
