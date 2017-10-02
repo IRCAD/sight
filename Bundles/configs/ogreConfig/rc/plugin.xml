@@ -1,4 +1,4 @@
-<plugin id="ogreConfig" version="@DASH_VERSION@">
+<plugin id="ogreConfig" version="@PROJECT_VERSION@">
 
     <requirement id="gui" />
 

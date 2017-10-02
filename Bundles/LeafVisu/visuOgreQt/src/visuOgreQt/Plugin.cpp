@@ -6,13 +6,7 @@
 
 #include "visuOgreQt/Plugin.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#define RESOURCES_PATH  BUNDLE_PREFIX "/visuOgreQt_0-1/resources.cfg"
 
 namespace visuOgreQt
 {
@@ -31,7 +25,6 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwRenderOgre::Utils::addResourcesPath( RESOURCES_PATH );
 }
 
 //-----------------------------------------------------------------------------

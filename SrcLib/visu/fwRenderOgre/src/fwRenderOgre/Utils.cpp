@@ -16,6 +16,8 @@
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
@@ -26,14 +28,12 @@
 #include <cstdint>
 
 #ifdef __MACOSX__
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins_osx.cfg"
+#define PLUGIN_PATH "plugins_osx.cfg"
 #elif _DEBUG
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins_d.cfg"
+#define PLUGIN_PATH "plugins_d.cfg"
 #else
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins.cfg"
+#define PLUGIN_PATH "plugins.cfg"
 #endif
-
-#define RESOURCES_PATH "./share/fwRenderOgre_0-1/resources.cfg"
 
 namespace fwRenderOgre
 {
@@ -85,9 +85,10 @@ void loadResources()
 
 //------------------------------------------------------------------------------
 
-void Utils::addResourcesPath(const std::string& path)
+void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 {
-    s_resourcesPath.insert(path);
+    SLM_ASSERT("Empty resource path", !path.empty());
+    s_resourcesPath.insert(path.string());
 }
 
 //------------------------------------------------------------------------------
@@ -105,12 +106,13 @@ void Utils::addResourcesPath(const std::string& path)
 
     if(root == nullptr)
     {
-        root            = new ::Ogre::Root(PLUGIN_PATH);
+        root = new ::Ogre::Root(::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH).string());
+
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
         const Ogre::RenderSystemList& rsList = root->getAvailableRenderers();
 
-        Ogre::RenderSystem* rs;
+        Ogre::RenderSystem* rs = nullptr;
 
         if(!rsList.empty())
         {
@@ -139,18 +141,7 @@ void Utils::addResourcesPath(const std::string& path)
                 break;
             }
         }
-        if (rs == nullptr)
-        {
-            if (!root->restoreConfig())
-            {
-                if (!root->showConfigDialog())
-                {
-                    OGRE_EXCEPT(::Ogre::Exception::ERR_INVALIDPARAMS,
-                                "Abort render system configuration",
-                                "Window::initialize");
-                }
-            }
-        }
+        SLM_ASSERT("Abort render system configuration, no render system found", rs);
 
         /*
            Setting size and VSync on windows will solve a lot of problems
@@ -169,7 +160,9 @@ void Utils::addResourcesPath(const std::string& path)
 
         root->initialise(false);
 
-        ::fwRenderOgre::Utils::addResourcesPath(RESOURCES_PATH);
+        auto resourcePath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/resources.cfg" );
+        ::fwRenderOgre::Utils::addResourcesPath( resourcePath );
+
         loadResources();
 
         // Register factory for R2VB renderables objects
