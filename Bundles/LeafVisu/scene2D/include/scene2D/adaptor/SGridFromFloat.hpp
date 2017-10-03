@@ -64,20 +64,20 @@ public:
      *
      * Connect Float::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    SCENE2D_API void configuring();
+    SCENE2D_API void configuring() override;
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
-    SCENE2D_API void starting();
+    SCENE2D_API void starting() override;
 
     /// Do nothing.
-    SCENE2D_API void updating();
+    SCENE2D_API void updating() override;
 
     /// Clean the lines vector and remove the layer from the scene.
-    SCENE2D_API void stopping();
+    SCENE2D_API void stopping() override;
 
 private:
 

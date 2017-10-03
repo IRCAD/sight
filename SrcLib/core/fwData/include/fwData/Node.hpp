@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,9 @@
 #define __FWDATA_NODE_HPP__
 
 #include "fwData/config.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Port.hpp"
-#include "fwData/factory/new.hpp"
 
 #include <vector>
 
@@ -52,10 +52,10 @@ public:
     FWDATA_API void addOutputPort(const ::fwData::Port::sptr& port);
 
     /// Get the container of input ports
-    FWDATA_API PortContainer & getInputPorts();
+    FWDATA_API PortContainer& getInputPorts();
 
     /// Get the container of output ports
-    FWDATA_API PortContainer & getOutputPorts();
+    FWDATA_API PortContainer& getOutputPorts();
 
     /// Set object to the node
     FWDATA_API void setObject(const ::fwData::Object::sptr& object );
@@ -71,13 +71,13 @@ public:
      *
      * @return input or output port with given identifier
      */
-    FWDATA_API Port::sptr findPort(const std::string &_identifier, bool _modeInput) const;
+    FWDATA_API Port::sptr findPort(const std::string& _identifier, bool _modeInput) const;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Updated signal key
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;

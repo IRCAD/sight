@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,22 +10,25 @@
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
+
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <gui/editor/IEditor.hpp>
+
 #include <io/IReader.hpp>
+
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
 #include <QWidget>
-
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
-#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
@@ -90,7 +93,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSliceIndexDicomPullerEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SSliceIndexDicomPullerEditor)( ::gui::editor::IEditor ) );
 
     IOPACS_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;
@@ -118,19 +121,19 @@ private Q_SLOTS:
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring();
+    IOPACS_API virtual void configuring() override;
 
     /// Override
-    IOPACS_API virtual void starting();
+    IOPACS_API virtual void starting() override;
 
     /// Override
-    IOPACS_API virtual void stopping();
+    IOPACS_API virtual void stopping() override;
 
     /// Override
-    IOPACS_API void updating();
+    IOPACS_API void updating() override;
 
     /// Override
-    IOPACS_API void info(std::ostream& _sstream );
+    IOPACS_API void info(std::ostream& _sstream ) override;
 
     /// Function called when a new slice must be displayed
     IOPACS_API void triggerNewSlice();

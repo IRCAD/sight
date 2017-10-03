@@ -45,8 +45,8 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
 
     //------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ protected:
     {
     }
 
-    void stopping();
+    void stopping() override;
 
     /// Horizontal alignment
     std::string m_hAlign;

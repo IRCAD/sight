@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,14 @@
 #ifndef __FWVTKIO_METAIMAGEWRITER_HPP__
 #define __FWVTKIO_METAIMAGEWRITER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
+
+#include <fwData/Image.hpp>
+#include <fwData/location/SingleFile.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/Image.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace fwJobs
 {
@@ -25,7 +26,6 @@ namespace fwVtkIO
 
 /**
  * @brief   Write a MetaImage.
- * @class   MetaImageWriter
  *
  * Write a MetaImage using the VTK lib
  */
@@ -49,13 +49,13 @@ public:
     FWVTKIO_API ~MetaImageWriter();
 
     //! @brief Writing operator.
-    FWVTKIO_API void write();
+    FWVTKIO_API void write() override;
 
     /// @return ".mhd"
-    FWVTKIO_API std::string extension();
+    FWVTKIO_API std::string extension() override;
 
     /// @return internal job
-    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 

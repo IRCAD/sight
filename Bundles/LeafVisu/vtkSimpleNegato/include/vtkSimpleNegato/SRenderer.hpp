@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ namespace vtkSimpleNegato
 class VTKSIMPLENEGATO_CLASS_API SRenderer : public fwRender::IRender
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SRenderer)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRenderer)(::fwRender::IRender) );
 
     /// Constructor
     VTKSIMPLENEGATO_API SRenderer() noexcept;
@@ -53,7 +53,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_REFRESH_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_REFRESH_SLOT
      */
-    VTKSIMPLENEGATO_API virtual KeyConnectionsMap getAutoConnections() const;
+    VTKSIMPLENEGATO_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
@@ -63,14 +63,14 @@ protected:
      * This method is used to initialize the service.
      * Initialize VTK renderer and gui containers
      */
-    VTKSIMPLENEGATO_API virtual void starting();
+    VTKSIMPLENEGATO_API virtual void starting() override;
 
     /**
      * @brief Stopping method.
      *
      * Destroy VTK renderer and gui containers
      */
-    VTKSIMPLENEGATO_API virtual void stopping();
+    VTKSIMPLENEGATO_API virtual void stopping() override;
 
     /**
      * @brief Updating method.
@@ -78,14 +78,14 @@ protected:
      * This method is used to update the service.
      * Make a render if necessary
      */
-    VTKSIMPLENEGATO_API virtual void updating();
+    VTKSIMPLENEGATO_API virtual void updating() override;
 
     /**
      * @brief This method is used to configure the service.
      *
      * It initializes the qt container.
      */
-    VTKSIMPLENEGATO_API virtual void configuring();
+    VTKSIMPLENEGATO_API virtual void configuring() override;
 
 private:
     /**
@@ -127,6 +127,5 @@ private:
 };
 
 }
-
 
 #endif /* __VTKSIMPLENEGATO_SRENDERER_HPP__ */

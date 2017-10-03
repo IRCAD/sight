@@ -24,7 +24,7 @@ class IWriteArchive
 
 public:
 
-    fwCoreBaseClassDefinitionsMacro((IWriteArchive));
+    fwCoreBaseClassDefinitionsMacro((IWriteArchive))
 
     virtual ~IWriteArchive()
     {

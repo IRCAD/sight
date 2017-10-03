@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,17 @@
 #ifndef __GUIQT_EDITOR_CODE_HPP__
 #define __GUIQT_EDITOR_CODE_HPP__
 
-#include <QPointer>
-#include <QObject>
-#include <QTextEdit>
-#include <QString>
-#include <QSyntaxHighlighter>
+#include "guiQt/config.hpp"
 
 #include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-
-#include "guiQt/config.hpp"
+#include <QObject>
+#include <QPointer>
+#include <QString>
+#include <QSyntaxHighlighter>
+#include <QTextEdit>
 
 namespace guiQt
 {
@@ -26,7 +26,6 @@ namespace editor
 {
 
 /**
- * @class   Code
  * @brief   This service displays a code editor and works on a ::fwData::String.
  *
  * It provides highlighting for python and C++.
@@ -47,7 +46,7 @@ class GUIQT_CLASS_API Code : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Code)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (Code)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     GUIQT_API Code() noexcept;
@@ -61,28 +60,27 @@ public:
      *
      * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    GUIQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    GUIQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
-
     /// Install the layout.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroy the layout
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Update the value from the String object.
-    virtual void updating();
+    virtual void updating() override;
 
     /// Update the value from the String object.
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Parses the configuration
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 protected:
     static const std::string PYTHON;

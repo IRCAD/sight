@@ -47,16 +47,16 @@ public:
 protected:
 
     /// Initialize the timer
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stop and reset the timer
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Increment all the values of the current array
-    virtual void updating();
+    virtual void updating() override;
 
     /// Do nothing
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
     /// Slot: starts the timer

@@ -37,19 +37,19 @@ public:
      *
      * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_SHOW_LANDMARK_SLOT
      */
-    UIMEASUREMENT_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    UIMEASUREMENT_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 protected:
 
-    void configuring();
+    void configuring() override;
 
-    void starting();
+    void starting() override;
 
-    void updating();
+    void updating() override;
 
-    void stopping();
+    void stopping() override;
 
-    UIMEASUREMENT_API void swapping();
-    UIMEASUREMENT_API void info(std::ostream& _sstream );
+    UIMEASUREMENT_API void swapping() override;
+    UIMEASUREMENT_API void info(std::ostream& _sstream ) override;
 
 private:
 

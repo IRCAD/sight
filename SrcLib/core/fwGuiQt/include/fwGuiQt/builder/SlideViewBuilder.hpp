@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,11 +12,10 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include <fwGui/builder/ISlideViewBuilder.hpp>
 #include <fwGui/container/fwContainer.hpp>
 
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -38,13 +37,13 @@ public:
     FWGUIQT_API virtual ~SlideViewBuilder();
 
     /// Create the slide view container
-    FWGUIQT_API virtual void createContainer( ::fwGui::container::fwContainer::sptr parent );
+    FWGUIQT_API virtual void createContainer( ::fwGui::container::fwContainer::sptr parent ) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    FWGUIQT_API virtual void destroyContainer();
+    FWGUIQT_API virtual void destroyContainer() override;
 
 protected:
     ::fwGuiQt::container::QtContainer::sptr m_parent;

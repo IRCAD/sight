@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,12 @@
 #ifndef __FWDATA_FLOAT_HPP__
 #define __FWDATA_FLOAT_HPP__
 
-#include "fwData/GenericField.hpp"
-
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/GenericField.hpp"
+#include "fwData/Object.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(Float), FWDATA_API);
-
 
 namespace fwData
 {
@@ -27,9 +25,8 @@ namespace fwData
 class FWDATA_CLASS_API Float : public GenericField< float >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object),( ((const float)(0.0f)) ),
+    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object), ( ((const float)(0.0f)) ),
                                             GenericFieldFactory< Float >);
-
 
     fwCampMakeFriendDataMacro((fwData)(Float));
 
@@ -44,12 +41,11 @@ public:
      */
     FWDATA_API virtual ~Float() noexcept;
 
-
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 protected:
 

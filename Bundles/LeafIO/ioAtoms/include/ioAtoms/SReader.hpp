@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,16 @@
 #ifndef __IOATOMS_SREADER_HPP__
 #define __IOATOMS_SREADER_HPP__
 
-#include <map>
-#include <set>
-
-#include <io/IReader.hpp>
+#include "ioAtoms/config.hpp"
 
 #include <fwCom/Signal.hpp>
 
 #include <fwJobs/IJob.hpp>
 
-#include "ioAtoms/config.hpp"
+#include <io/IReader.hpp>
+
+#include <map>
+#include <set>
 
 namespace fwMemory
 {
@@ -28,8 +28,6 @@ namespace ioAtoms
 
 /**
  * @brief Atoms reader. Service to load data from Atoms format
- * @class SReader
- * @date 2013
  */
 class IOATOMS_CLASS_API SReader : public ::io::IReader
 {
@@ -50,7 +48,7 @@ public:
     }
 
     /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
-    IOATOMS_API void configureWithIHM();
+    IOATOMS_API void configureWithIHM() override;
 
     /// Maps file extension to format name.
     typedef std::map< std::string, std::string > FileExtension2NameType;
@@ -61,10 +59,10 @@ public:
 protected:
 
     /// Does nothing
-    IOATOMS_API void starting();
+    IOATOMS_API void starting() override;
 
     /// Does nothing
-    IOATOMS_API void stopping();
+    IOATOMS_API void stopping() override;
 
     /**
      * @brief Configures the reader.
@@ -107,15 +105,15 @@ protected:
      * @see ::io::IReader
      * @throw ::fwTools::Failed
      */
-    IOATOMS_API void configuring();
+    IOATOMS_API void configuring() override;
 
     /**
      * @brief Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
      */
-    IOATOMS_API void updating();
+    IOATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    IOATOMS_API ::io::IOPathType getIOPathType() const;
+    IOATOMS_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

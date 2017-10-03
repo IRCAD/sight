@@ -51,7 +51,7 @@ public:
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UITF_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UITF_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
@@ -74,16 +74,16 @@ protected:
      * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF bundle.
      * - \b path (optional): path to a directory containing tf files.
      */
-    UITF_API virtual void configuring();
+    UITF_API virtual void configuring() override;
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
-    UITF_API virtual void starting();
+    UITF_API virtual void starting() override;
 
     /// Update the TransferFunctionEditor, do nothing.
-    UITF_API virtual void updating();
+    UITF_API virtual void updating() override;
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
-    UITF_API virtual void stopping();
+    UITF_API virtual void stopping() override;
 
     /**
      * @brief Initialize the transfer functions.

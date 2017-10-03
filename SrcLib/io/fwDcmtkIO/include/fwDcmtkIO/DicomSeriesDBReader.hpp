@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,6 @@ class Series;
 
 class DcmDataset;
 
-
 namespace fwDcmtkIO
 {
 
@@ -57,7 +56,6 @@ public:
         );
     fwCoreAllowSharedFromThis();
 
-
     typedef std::map< std::string, SPTR(::fwMedData::Patient) > PatientMapType;
     typedef std::map< std::string, SPTR(::fwMedData::Study) > StudyMapType;
     typedef std::map< std::string, SPTR(::fwMedData::Equipment) > EquipmentMapType;
@@ -69,7 +67,7 @@ public:
     FWDCMTKIO_API ~DicomSeriesDBReader();
 
     /// Reads DICOM data from configured path and fills SeriesDB object
-    FWDCMTKIO_API void read();
+    FWDCMTKIO_API void read() override;
 
     /**
      * @brief Reads DICOM data from DicomSeries an fills SeriesDB object
@@ -90,14 +88,20 @@ public:
     {
         return m_isDicomdirActivated;
     }
+    //------------------------------------------------------------------------------
+
     bool& getRefDicomdirActivated ()
     {
         return this->m_isDicomdirActivated;
     }
+    //------------------------------------------------------------------------------
+
     const bool& getCRefDicomdirActivated () const
     {
         return this->m_isDicomdirActivated;
     }
+    //------------------------------------------------------------------------------
+
     void setDicomdirActivated (const bool _isDicomdirActivated)
     {
         this->m_isDicomdirActivated = _isDicomdirActivated;
@@ -111,14 +115,20 @@ public:
     {
         return m_dicomFilterType;
     }
+    //------------------------------------------------------------------------------
+
     std::string& getRefDicomFilterType ()
     {
         return this->m_dicomFilterType;
     }
+    //------------------------------------------------------------------------------
+
     const std::string& getCRefDicomFilterType () const
     {
         return this->m_dicomFilterType;
     }
+    //------------------------------------------------------------------------------
+
     void setDicomFilterType (const std::string&  _dicomFilterType)
     {
         this->m_dicomFilterType = _dicomFilterType;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,13 @@
 #ifndef __FWGUIQT_DIALOG_INPUTDIALOG_HPP__
 #define __FWGUIQT_DIALOG_INPUTDIALOG_HPP__
 
-#include <string>
+#include "fwGuiQt/config.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/dialog/IInputDialog.hpp>
 
-#include "fwGuiQt/config.hpp"
+#include <string>
 
 namespace fwGuiQt
 {
@@ -20,9 +21,6 @@ namespace dialog
 {
 /**
  * @brief   Defines an Input dialog.
- * @class   InputDialog
- *
- * @date    2009-2010.
  *
  * Example of use:
  * @code
@@ -47,16 +45,16 @@ public:
     FWGUIQT_API virtual ~InputDialog();
 
     /// Set the title of the message box
-    FWGUIQT_API virtual void setTitle( const std::string &title );
+    FWGUIQT_API virtual void setTitle( const std::string& title ) override;
 
     /// Set the message
-    FWGUIQT_API virtual void setMessage( const std::string &msg );
+    FWGUIQT_API virtual void setMessage( const std::string& msg ) override;
 
     /// Set the input text in the input field
-    FWGUIQT_API virtual void setInput(const std::string &text);
+    FWGUIQT_API virtual void setInput(const std::string& text) override;
 
     /// Get the input text in the input field
-    FWGUIQT_API virtual std::string getInput();
+    FWGUIQT_API virtual std::string getInput() override;
 
 protected:
     /// Dialog title

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@ class OPIMAGEFILTER_CLASS_API SThreshold : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SThreshold)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SThreshold)(::fwGui::IActionSrv) );
 
     OPIMAGEFILTER_API SThreshold() noexcept;
 
@@ -48,20 +48,18 @@ public:
 
 protected:
 
-    OPIMAGEFILTER_API void starting();
+    OPIMAGEFILTER_API void starting() override;
 
-    OPIMAGEFILTER_API void stopping();
+    OPIMAGEFILTER_API void stopping() override;
 
     /// Configure the service.
-    OPIMAGEFILTER_API void configuring();
+    OPIMAGEFILTER_API void configuring() override;
 
     /// Apply the threshold.
-    OPIMAGEFILTER_API void updating();
+    OPIMAGEFILTER_API void updating() override;
 };
-
 
 } // namespace action
 } // namespace opImageFilter
-
 
 #endif // __OPIMAGEFILTER_ACTION_STHRESHOLD_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,12 @@
 #ifndef __FWACTIVITIES_BUILDER_ACTIVITYSERIESINITDATA_HPP__
 #define __FWACTIVITIES_BUILDER_ACTIVITYSERIESINITDATA_HPP__
 
-#include <fwCore/base.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include "fwActivities/builder/ActivitySeries.hpp"
 #include "fwActivities/config.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwActivities
 {
@@ -20,14 +21,13 @@ namespace builder
 
 /**
  * @brief Defines an activity builder which instanciates a new requirement if minOccurs and maxOccurs are set to 0.
- * @class ActivitySeriesInitData
  */
 class FWACTIVITIES_CLASS_API ActivitySeriesInitData : public ::fwActivities::builder::ActivitySeries
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ActivitySeriesInitData)(::fwActivities::IBuilder),
                                             (()),
-                                            ::fwActivities::builder::factory::New< ActivitySeriesInitData > );
+                                            ::fwActivities::builder::factory::New< ActivitySeriesInitData > )
 
     typedef std::string RegistryKeyType;
 
@@ -43,7 +43,7 @@ public:
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        SPTR(::fwData::Vector) currentSelection ) const;
+        SPTR(::fwData::Vector) currentSelection ) const override;
 };
 
 } // namespace builder

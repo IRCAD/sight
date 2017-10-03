@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #include "ioGdcm/config.hpp"
 
 #include <fwCom/Signal.hpp>
+
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -45,7 +46,7 @@ public:
     typedef ::boost::filesystem::path PathType;
     typedef ::fwCom::Signal< void ( bool, std::vector< PathType > ) > FilesAddedSignal;
 
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::io::IReader) );
     /**
      * @brief   constructor
      *
@@ -75,18 +76,17 @@ protected:
         USER_SELECTION_MODE /*! Let the user decide whether read directly or copy before reading */
     };
 
+    /// Override
+    IOGDCM_API virtual void starting() override;
 
     /// Override
-    IOGDCM_API virtual void starting();
+    IOGDCM_API virtual void stopping() override;
 
     /// Override
-    IOGDCM_API virtual void stopping();
+    IOGDCM_API void updating() override;
 
     /// Override
-    IOGDCM_API void updating();
-
-    /// Override
-    IOGDCM_API void info(std::ostream& _sstream );
+    IOGDCM_API void info(std::ostream& _sstream ) override;
 
     /// Override
     IOGDCM_API virtual std::string getSelectorDialogTitle();
@@ -101,13 +101,13 @@ protected:
        </config>
        @endcode
      */
-    IOGDCM_API virtual void configuring();
+    IOGDCM_API virtual void configuring() override;
 
     /// Override
-    IOGDCM_API virtual void configureWithIHM();
+    IOGDCM_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const;
+    IOGDCM_API ::io::IOPathType getIOPathType() const override;
 
 private:
 
@@ -135,7 +135,6 @@ private:
 
     /// Specify how to handle reading
     ReaderMode m_readerMode;
-
 
 };
 

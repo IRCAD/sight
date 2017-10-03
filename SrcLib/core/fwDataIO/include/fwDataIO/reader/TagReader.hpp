@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __FWDATAIO_READER_TAGREADER_HPP__
 #define __FWDATAIO_READER_TAGREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwDataIO/config.hpp"
+#include "fwDataIO/reader/GenericObjectReader.hpp"
 
 #include <fwData/location/SingleFile.hpp>
 
-#include "fwDataIO/config.hpp"
-#include "fwDataIO/reader/GenericObjectReader.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
@@ -27,9 +27,7 @@ namespace reader
 
 /**
  * @brief   Tag Reader. Read file format .tag
- * @class   TagReader
  *
- * @date    2009
  *
  * Ircad reader to read a ::fwData::Tag on filesystem which the file format
  * is .tag.
@@ -51,10 +49,10 @@ public:
     FWDATAIO_API virtual ~TagReader();
 
     /// Read the file .tag.
-    FWDATAIO_API virtual void read();
+    FWDATAIO_API virtual void read() override;
 
     /// Defines extension supported by this reader ".tag"
-    FWDATAIO_API std::string  extension();
+    FWDATAIO_API std::string extension() override;
 
 };
 

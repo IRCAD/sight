@@ -1,26 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/ToolboxLayoutManagerBase.hpp
- * @brief This file defines the interface of the class for managing a line layout geometry.
- *
- *
- * @date 2009-2010
- */
-
 #ifndef __FWGUI_LAYOUTMANAGER_TOOLBOXLAYOUTMANAGERBASE_HPP__
 #define __FWGUI_LAYOUTMANAGER_TOOLBOXLAYOUTMANAGERBASE_HPP__
 
-#include <list>
+#include "fwGui/config.hpp"
+#include "fwGui/layoutManager/IViewLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwGui/layoutManager/IViewLayoutManager.hpp"
-#include "fwGui/config.hpp"
+#include <list>
 
 namespace fwGui
 {
@@ -29,10 +21,6 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for line layout manager.
- * @class   ToolboxLayoutManagerBase
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API ToolboxLayoutManagerBase : public IViewLayoutManager
 {
@@ -49,9 +37,9 @@ public:
 
         ViewInfo() :
             m_border(0),
-            m_minSize (std::make_pair(-1,-1)),
-            m_caption (""),
-            m_visible (true),
+            m_minSize(std::make_pair(-1, -1)),
+            m_caption(""),
+            m_visible(true),
             m_expanded(false),
             m_useScrollBar(false)
         {
@@ -93,7 +81,8 @@ public:
        </service>
        @endcode
      *  - \<layout type="::fwGui::ToolboxLayoutManager" \> : define a toolbox layout.
-     *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following attributes
+     *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following
+     * attributes
      *   - \b border : define the size of the border in the layout
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.
@@ -102,11 +91,13 @@ public:
      *   - \b expanded  {true | yes | false | no} : define if the view is expanded or not.
      *   - \b useScrollBar  {true | yes | false | no} : define if the view use scrollbar or not.
      */
-    FWGUI_API virtual void initialize( ConfigurationType configuration);
+    FWGUI_API virtual void initialize( ConfigurationType configuration) override;
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
 
 protected:
+
+    //------------------------------------------------------------------------------
 
     std::list< ViewInfo> getViewsInfo()
     {
@@ -123,5 +114,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_LAYOUTMANAGER_TOOLBOXLAYOUTMANAGERBASE_HPP__*/
-
 

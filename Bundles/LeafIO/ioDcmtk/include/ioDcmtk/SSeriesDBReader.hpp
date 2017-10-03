@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@ class IODCMTK_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::io::IReader) );
     /**
      * @brief   constructor
      *
@@ -83,28 +83,28 @@ protected:
         </extension>
        @endcode
      */
-    IODCMTK_API virtual void configuring();
+    IODCMTK_API virtual void configuring() override;
 
     /// Override
-    IODCMTK_API virtual void starting();
+    IODCMTK_API virtual void starting() override;
 
     /// Override
-    IODCMTK_API virtual void stopping();
+    IODCMTK_API virtual void stopping() override;
 
     /// Override
-    IODCMTK_API void updating();
+    IODCMTK_API void updating() override;
 
     /// Override
-    IODCMTK_API void info(std::ostream& _sstream );
+    IODCMTK_API void info(std::ostream& _sstream ) override;
 
     /// Override
     IODCMTK_API virtual std::string getSelectorDialogTitle();
 
     /// Override
-    IODCMTK_API virtual void configureWithIHM();
+    IODCMTK_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IODCMTK_API ::io::IOPathType getIOPathType() const;
+    IODCMTK_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

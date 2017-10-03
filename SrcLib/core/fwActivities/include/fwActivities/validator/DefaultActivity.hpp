@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,7 @@ class FWACTIVITIES_CLASS_API DefaultActivity : public ::fwActivities::IActivityV
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (DefaultActivity)(::fwActivities::IActivityValidator),
                                             (()),
-                                            ::fwActivities::validator::factory::New< DefaultActivity > );
-
+                                            ::fwActivities::validator::factory::New< DefaultActivity > )
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API DefaultActivity(::fwActivities::IValidator::Key key);
@@ -38,7 +37,7 @@ public:
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
     FWACTIVITIES_API virtual IValidator::ValidationType validate(
-        const CSPTR(::fwMedData::ActivitySeries) &activitySeries ) const;
+        const CSPTR(::fwMedData::ActivitySeries)& activitySeries ) const override;
 };
 
 } // namespace validator

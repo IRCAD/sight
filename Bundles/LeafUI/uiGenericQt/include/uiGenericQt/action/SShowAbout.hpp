@@ -55,19 +55,19 @@ protected:
        @endcode
      * This method is used to configure the service.
      */
-    void configuring();
+    void configuring() override;
 
     /// Starts action
-    void starting();
+    void starting() override;
 
     /// Shows the frame
-    void updating();
+    void updating() override;
 
     /// Stops action
-    void stopping();
+    void stopping() override;
 
     /// Prints service info
-    void info(std::ostream& _sstream);
+    void info(std::ostream& _sstream) override;
 
 protected Q_SLOTS:
 

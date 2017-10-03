@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,6 @@
 #include <fwServices/helper/ConfigLauncher.hpp>
 
 #include <fwTools/Failed.hpp>
-
 
 namespace gui
 {
@@ -59,7 +58,7 @@ class GUI_CLASS_API SConfigLauncher : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SConfigLauncher)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SConfigLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     GUI_API SConfigLauncher() noexcept;
@@ -76,7 +75,7 @@ public:
      *
      * @note connect Object::s_MODIFIED_SIG to this::s_CHECK_PARAMETERS_SIG
      */
-    GUI_API virtual KeyConnectionsType getObjSrvConnections() const;
+    GUI_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
     // Launched signal key
     GUI_API static const ::fwCom::Signals::SignalKeyType s_LAUNCHED_SIG;
@@ -91,16 +90,15 @@ protected:
     /**  @} */
 
     ///This method launches the IAction::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Starts the view and initialize the operator.
      */
-    virtual void updating();
-
+    virtual void updating() override;
 
     /**
      * @brief Declare the configuration to associate with an operator type and a view config
@@ -121,10 +119,10 @@ protected:
        </service>
         @endcode
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     /**
      * @name Slots
@@ -145,6 +143,5 @@ protected:
 
 } // action
 } // gui
-
 
 #endif // __GUI_ACTION_SCONFIGLAUNCHER_HPP__

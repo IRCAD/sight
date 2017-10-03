@@ -13,10 +13,10 @@
 
 #include <gui/editor/IEditor.hpp>
 
+#include <boost/filesystem/path.hpp>
+
 #include <QPointer>
 #include <QPushButton>
-
-#include <boost/filesystem/path.hpp>
 
 namespace guiQt
 {
@@ -84,25 +84,25 @@ protected:
     /**
      * @brief This method launches the IEditor::starting method.
      */
-    GUIQT_API virtual void starting();
+    GUIQT_API virtual void starting() override;
 
     /**
      * @brief This method launches the IEditor::stopping method.
      */
-    GUIQT_API virtual void stopping();
+    GUIQT_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUIQT_API virtual void updating();
+    GUIQT_API virtual void updating() override;
 
     /// This method is used to configure the class parameters.
-    GUIQT_API virtual void configuring();
+    GUIQT_API virtual void configuring() override;
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    GUIQT_API virtual void info(std::ostream& _sstream );
+    GUIQT_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
 

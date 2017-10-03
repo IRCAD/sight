@@ -85,13 +85,13 @@ public:
 protected:
 
     /// Install the container.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroy the container.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Do nothing
-    virtual void updating();
+    virtual void updating() override;
 
 private:
 

@@ -7,8 +7,8 @@
 #ifndef __FWMEDDATA_DICOMSERIES_HPP__
 #define __FWMEDDATA_DICOMSERIES_HPP__
 
-#include "fwMedData/Series.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
 #include <fwData/factory/new.hpp>
@@ -55,10 +55,10 @@ public:
     FWMEDDATA_API virtual ~DicomSeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /// Add dicom path
     FWMEDDATA_API void addDicomPath(std::size_t instanceIndex, ::boost::filesystem::path path);

@@ -50,24 +50,24 @@ public:
     IOVTKGDCM_API virtual ~SImageSeriesWriter() noexcept;
 
     /// Propose select a directory where to save the DICOM files.
-    IOVTKGDCM_API virtual void configureWithIHM();
+    IOVTKGDCM_API virtual void configureWithIHM() override;
 
 protected:
 
     /// Does nothing
-    IOVTKGDCM_API virtual void starting();
+    IOVTKGDCM_API virtual void starting() override;
 
     /// Does nothing
-    IOVTKGDCM_API virtual void stopping();
+    IOVTKGDCM_API virtual void stopping() override;
 
     /// Does nothing
-    IOVTKGDCM_API virtual void configuring();
+    IOVTKGDCM_API virtual void configuring() override;
 
     /// Write the ImageSeries in DICOM format.
-    IOVTKGDCM_API void updating();
+    IOVTKGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
+    IOVTKGDCM_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

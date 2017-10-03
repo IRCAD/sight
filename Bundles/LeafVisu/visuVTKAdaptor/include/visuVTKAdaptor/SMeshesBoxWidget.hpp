@@ -70,10 +70,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -83,7 +83,7 @@ protected:
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates vtk transformation from data meshes
     void updateMeshTransform();

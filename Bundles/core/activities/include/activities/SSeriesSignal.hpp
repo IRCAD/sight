@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,8 +14,8 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -39,7 +39,8 @@ namespace activities
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SSeriesSignal" autoConnect="yes" >
+    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SSeriesSignal"
+ * autoConnect="yes" >
         <!-- Filter mode 'include' allows all given types.
              Filter mode 'exclude' allows all series excepted given ones. -->
         <filter>
@@ -58,7 +59,7 @@ class ACTIVITIES_CLASS_API SSeriesSignal : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesSignal)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesSignal)(::fwServices::IController) );
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SSeriesSignal() noexcept;
@@ -78,21 +79,21 @@ public:
      * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
      * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
      */
-    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const;
+    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     /// Do nothing
-    virtual void starting();
+    virtual void starting() override;
 
     /// Do nothing
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Do nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Parse XML configuration
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
 
@@ -119,6 +120,5 @@ private:
 };
 
 } // gui
-
 
 #endif // __ACTIVITIES_SSERIESSIGNAL_HPP__

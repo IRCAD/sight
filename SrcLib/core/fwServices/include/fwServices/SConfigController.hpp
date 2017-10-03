@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWSERVICES_SCONFIGCONTROLLER_HPP__
 #define __FWSERVICES_SCONFIGCONTROLLER_HPP__
 
-#include "fwServices/IController.hpp"
 #include "fwServices/config.hpp"
 #include "fwServices/helper/ConfigLauncher.hpp"
+#include "fwServices/IController.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -51,7 +51,7 @@ class FWSERVICES_CLASS_API SConfigController : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SConfigController)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SConfigController)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
     FWSERVICES_API SConfigController() noexcept;
@@ -62,14 +62,13 @@ public:
 protected:
 
     /// Starts the config
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops the config
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
-
+    virtual void updating() override;
 
     /**
      * @brief Declare the configuration to associate with an operator type and a view config
@@ -91,13 +90,13 @@ protected:
         @endcode
      * It MUST have at least one key node and at least one replace node.
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Swaps the config
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 
@@ -108,7 +107,5 @@ private:
 
 } // fwServices
 
-
 #endif // __FWSERVICES_SCONFIGCONTROLLER_HPP__
-
 

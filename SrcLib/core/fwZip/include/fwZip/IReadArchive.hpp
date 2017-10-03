@@ -24,7 +24,7 @@ class IReadArchive
 
 public:
 
-    fwCoreBaseClassDefinitionsMacro((IReadArchive));
+    fwCoreBaseClassDefinitionsMacro((IReadArchive))
 
     virtual ~IReadArchive()
     {

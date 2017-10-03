@@ -76,7 +76,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (WindowLevel)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (WindowLevel)(::gui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API WindowLevel() noexcept;
@@ -89,21 +89,21 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Update editor information from the image
-    virtual void updating();
+    virtual void updating() override;
 
     /// Swap of image
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Parse the xml configuration
-    virtual void configuring();
+    virtual void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -112,18 +112,18 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream& _sstream );
+    UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
 
     virtual void setEnabled(bool enable);
 
     /// Called when transfer function points are modified.
-    UIIMAGEQT_API virtual void updatingTFPoints();
+    UIIMAGEQT_API virtual void updatingTFPoints() override;
 
     /// Called when transfer function windowing is modified.
-    UIIMAGEQT_API virtual void updatingTFWindowing(double window, double level);
+    UIIMAGEQT_API virtual void updatingTFWindowing(double window, double level) override;
 
 protected Q_SLOTS:
 

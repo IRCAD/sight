@@ -157,25 +157,25 @@ protected:
      *        object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
      *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
-    FWRENDERQT_API void configuring();
+    FWRENDERQT_API void configuring() override;
 
     /// Call startContext to set the scene, the viewport and the view,
     /// and add'em to the QtContainer and start the adaptors
     /// contained in the adaptors id vector of the ObjectsID2AdaptorIDVector map.
-    FWRENDERQT_API void starting();
+    FWRENDERQT_API void starting() override;
 
     /// Do nothing.
-    FWRENDERQT_API void updating();
+    FWRENDERQT_API void updating() override;
 
-    FWRENDERQT_API void swapping();
+    FWRENDERQT_API void swapping() override;
 
     /// Start/stop adaptors
-    FWRENDERQT_API void swapping(const KeyType& key);
+    FWRENDERQT_API void swapping(const KeyType& key) override;
 
     /// Stop all the adaptors attached to the render related composite,
     /// stop all those attached to the objects contained
     /// by the render related composite, clear the maps and call stopContext().
-    FWRENDERQT_API void stopping();
+    FWRENDERQT_API void stopping() override;
 
 private:
 

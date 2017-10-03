@@ -65,12 +65,12 @@ public:
     /**
      * @brief Returns a clone object
      */
-    FWATOMS_API virtual Base::sptr clone() const;
+    FWATOMS_API virtual Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const
+    ::fwAtoms::Base::AtomType type() const override
     {
         return ::fwAtoms::Base::NUMERIC;
     }
@@ -96,7 +96,7 @@ public:
     /**
      * @brief Returns a string representing the currently held numeric value
      */
-    FWATOMS_API virtual std::string getString() const;
+    FWATOMS_API virtual std::string getString() const override;
 
     /**
      * @brief Sets Numeric's value from given string, using Numeric::valueFromString

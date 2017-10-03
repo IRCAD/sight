@@ -84,10 +84,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -97,7 +97,7 @@ protected:
      * Connect Image::s_LANDMARK_REMOVED_SIG to this::s_UPDATE_LANDMARKS_SLOT
      * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_UPDATE_LANDMARKS_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

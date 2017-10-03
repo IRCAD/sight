@@ -68,7 +68,7 @@ public:
     ACTIVITIES_API virtual ~SActivitySequencer() noexcept;
 
     /// Connect the service to the SeriesDB signals
-    ACTIVITIES_API virtual KeyConnectionsMap getAutoConnections() const;
+    ACTIVITIES_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @name Signals API
@@ -84,10 +84,10 @@ public:
 protected:
 
     /// Do nothing
-    virtual void starting();
+    virtual void starting() override;
 
     /// Do nothing
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Analyse the series contained in the current seriesDB.
@@ -96,10 +96,10 @@ protected:
      * - else, the activity data is stored in m_requirements
      * - the last activity is launched
      */
-    virtual void updating();
+    virtual void updating() override;
 
     /// Parse XML configuration
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
 

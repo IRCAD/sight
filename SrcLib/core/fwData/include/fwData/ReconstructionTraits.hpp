@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,8 +50,8 @@ public:
      * @brief Get/Set value of the identifier.
      */
     const std::string  getIdentifier () const;
-    std::string & getRefIdentifier ();
-    const std::string & getCRefIdentifier () const;
+    std::string& getRefIdentifier ();
+    const std::string& getCRefIdentifier () const;
     void setIdentifier (const std::string& _identifier);
     /// @}
 
@@ -74,7 +74,7 @@ public:
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 
@@ -101,14 +101,14 @@ inline const std::string ReconstructionTraits::getIdentifier () const
 
 //-----------------------------------------------------------------------------
 
-inline std::string & ReconstructionTraits::getRefIdentifier ()
+inline std::string& ReconstructionTraits::getRefIdentifier ()
 {
     return m_identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string & ReconstructionTraits::getCRefIdentifier () const
+inline const std::string& ReconstructionTraits::getCRefIdentifier () const
 {
     return m_identifier;
 }

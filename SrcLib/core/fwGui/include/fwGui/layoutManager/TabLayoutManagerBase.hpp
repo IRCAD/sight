@@ -1,27 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/TabLayoutManagerBase.hpp
- * @brief This file defines the interface of the class for managing a tab layout geometry.
- *
- *
- * @date 2009-2010
- */
-
 #ifndef __FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP__
 #define __FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP__
 
-#include <list>
-#include <map>
+#include "fwGui/config.hpp"
+#include "fwGui/layoutManager/IViewLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwGui/layoutManager/IViewLayoutManager.hpp"
-#include "fwGui/config.hpp"
+#include <list>
+#include <map>
 
 namespace fwGui
 {
@@ -30,10 +22,6 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for cardinal layout manager.
- * @class   TabLayoutManagerBase
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API TabLayoutManagerBase : public IViewLayoutManager
 {
@@ -92,9 +80,11 @@ public:
      *   - \b selected  {yes | no}: define if the tab is the current one.
      */
 
-    FWGUI_API virtual void initialize( ConfigurationType configuration);
+    FWGUI_API virtual void initialize( ConfigurationType configuration) override;
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
+
+    //------------------------------------------------------------------------------
 
     std::list< ViewInfo> getViewsInfo()
     {
@@ -112,5 +102,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP__*/
-
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,8 +13,8 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <set>
 #include <map>
+#include <set>
 
 namespace gui
 {
@@ -39,7 +39,7 @@ class GUI_CLASS_API SPushField : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SPushField)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SPushField)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     GUI_API SPushField() noexcept;
@@ -54,21 +54,21 @@ public:
      * Connect source Composite::s_ADDED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      * Connect source Composite::s_REMOVED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      */
-    GUI_API virtual KeyConnectionsMap getAutoConnections() const;
+    GUI_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Configure the service.
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Register the action and check if the action is executable.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Unregister the action.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Extract the object.
-    virtual void updating();
+    virtual void updating() override;
 
 private:
 

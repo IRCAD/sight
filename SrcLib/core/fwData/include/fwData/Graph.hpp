@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,10 +8,10 @@
 #define __FWDATA_GRAPH_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
 #include "fwData/Edge.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/Node.hpp"
+#include "fwData/Object.hpp"
 
 #include <map>
 #include <set>
@@ -39,11 +39,11 @@ public:
     FWDATA_API static const bool DOWN_STREAM;
 
     typedef std::map< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainer;
-    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be careful, if you change we use erase(it++)
+    typedef std::set< Node::sptr >                                         NodeContainer;  //  Be careful, if you change
+                                                                                           // we use erase(it++)
 
     /// Type of signal m_sigUpdated
     typedef std::vector< ::fwData::Object::sptr > UpdatedDataType;
-
 
     /**
      * @brief Update signal type
@@ -78,8 +78,8 @@ public:
      * @{
      * @brief Get the node container
      */
-    FWDATA_API NodeContainer &getRefNodes();
-    FWDATA_API const NodeContainer &getCRefNodes() const;
+    FWDATA_API NodeContainer& getRefNodes();
+    FWDATA_API const NodeContainer& getCRefNodes() const;
     ///@}
 
     /**
@@ -89,8 +89,8 @@ public:
      *
      * @return map<Edge, pair<source node, destination node> >
      */
-    FWDATA_API const ConnectionContainer &getCRefConnections() const;
-    FWDATA_API ConnectionContainer &getRefConnections();
+    FWDATA_API const ConnectionContainer& getCRefConnections() const;
+    FWDATA_API ConnectionContainer& getRefConnections();
 
     /**
      * @brief Add and edge
@@ -173,9 +173,9 @@ public:
      *
      * @return the vector of all edges with correct nature and portID where _node is a source/destination node
      */
-    FWDATA_API std::vector< Edge::sptr > getEdges(const Node::csptr &_node, bool _upStream,
-                                                  const std::string &_nature = "",
-                                                  const std::string &_portID = "");
+    FWDATA_API std::vector< Edge::sptr > getEdges(const Node::csptr& _node, bool _upStream,
+                                                  const std::string& _nature = "",
+                                                  const std::string& _portID = "");
 
     /**
      * @brief Get a vector of nodes
@@ -187,9 +187,9 @@ public:
      *
      * @return the vector of all nodes associated with _node
      */
-    FWDATA_API std::vector< ::fwData::Node::sptr > getNodes( const ::fwData::Node::csptr &node, bool upStream,
-                                                             const std::string &nature = "",
-                                                             const std::string &portID = "" );
+    FWDATA_API std::vector< ::fwData::Node::sptr > getNodes( const ::fwData::Node::csptr& node, bool upStream,
+                                                             const std::string& nature = "",
+                                                             const std::string& portID = "" );
 
     /**
      * @return Number of nodes
@@ -201,9 +201,9 @@ public:
      */
     FWDATA_API size_t getNbEdges() const;
 
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Check if an edge is connected to the node

@@ -76,19 +76,19 @@ protected:
     }RegistrationModeType;
 
     /// Configures the service
-    BASICREGISTRATION_API virtual void configuring();
+    BASICREGISTRATION_API virtual void configuring() override;
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void starting();
+    BASICREGISTRATION_API virtual void starting() override;
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void stopping();
+    BASICREGISTRATION_API virtual void stopping() override;
 
     /// Perform the registration
-    BASICREGISTRATION_API virtual void updating();
+    BASICREGISTRATION_API virtual void updating() override;
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void swapping();
+    BASICREGISTRATION_API virtual void swapping() override;
 
 private:
 

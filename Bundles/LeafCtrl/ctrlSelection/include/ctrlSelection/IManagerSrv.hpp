@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,8 @@
 
 #include "ctrlSelection/config.hpp"
 
-#include <fwServices/IService.hpp>
 #include <fwServices/helper/Config.hpp>
+#include <fwServices/IService.hpp>
 
 namespace ctrlSelection
 {
@@ -27,7 +27,7 @@ public:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string ObjectIdType;
 
-    fwCoreServiceClassDefinitionsMacro ( (IManagerSrv)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IManagerSrv)(::fwServices::IService) );
 
     ///@brief IManagerSrv constructor. Do nothing.
     CTRLSELECTION_API IManagerSrv();
@@ -40,7 +40,7 @@ protected:
     /**
      * @brief Swaps the service from associated object to another object. Stops and starts this service.
      */
-    CTRLSELECTION_API virtual void swapping();
+    CTRLSELECTION_API virtual void swapping() override;
 
     typedef std::map< ObjectIdType, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
 
@@ -79,12 +79,12 @@ protected:
     /// Disconnects all proxies associated to objectId;
     void disconnectProxies(const std::string& objectId);
 
-    /// Registers connection associated to an object. Connections are connected/disconnected when the object is added/removed.
+    /// Registers connection associated to an object. Connections are connected/disconnected when the object is
+    // added/removed.
     ObjectConnectionsMapType m_objectConnections;
 
     /// Proxy connection information map : used to properly disconnect proxies
     ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyCtns;
-
 
 };
 

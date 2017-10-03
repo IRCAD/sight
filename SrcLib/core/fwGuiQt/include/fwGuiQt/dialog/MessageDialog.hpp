@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWGUIQT_DIALOG_MESSAGEDIALOG_HPP__
 #define __FWGUIQT_DIALOG_MESSAGEDIALOG_HPP__
-
 
 #include "fwGuiQt/config.hpp"
 
@@ -20,7 +19,6 @@
 
 class QPushButton;
 
-
 namespace fwGuiQt
 {
 namespace dialog
@@ -28,7 +26,6 @@ namespace dialog
 
 /**
  * @brief Defines the generic message box for IHM.
- * @class MessageDialog
  */
 class FWGUIQT_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 {
@@ -44,25 +41,25 @@ public:
     FWGUIQT_API virtual ~MessageDialog();
 
     /// Set the title of the message box
-    FWGUIQT_API virtual void setTitle( const std::string &title );
+    FWGUIQT_API virtual void setTitle( const std::string& title ) override;
 
     /// Set the message
-    FWGUIQT_API virtual void setMessage( const std::string &msg );
+    FWGUIQT_API virtual void setMessage( const std::string& msg ) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    FWGUIQT_API virtual void setIcon( IMessageDialog::Icons icon);
+    FWGUIQT_API virtual void setIcon( IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    FWGUIQT_API virtual void addButton( IMessageDialog::Buttons button );
+    FWGUIQT_API virtual void addButton( IMessageDialog::Buttons button ) override;
 
     /// Add a custom button to this dialog
     FWGUIQT_API void addCustomButton(QPushButton* button);
 
     /// Set the default buttons
-    FWGUIQT_API virtual void setDefaultButton( IMessageDialog::Buttons button );
+    FWGUIQT_API virtual void setDefaultButton( IMessageDialog::Buttons button ) override;
 
     /// Show the message box and return the clicked button.
-    FWGUIQT_API virtual Buttons show();
+    FWGUIQT_API virtual Buttons show() override;
 
 protected:
 

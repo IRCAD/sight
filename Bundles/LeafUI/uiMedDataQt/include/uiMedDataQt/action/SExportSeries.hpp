@@ -63,23 +63,23 @@ public:
      * Connect ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
      * Connect ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// This method is used to configure the service parameters
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops service. Does nothing.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Adds the series specified by m_seriesId in the SeriesDB.
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

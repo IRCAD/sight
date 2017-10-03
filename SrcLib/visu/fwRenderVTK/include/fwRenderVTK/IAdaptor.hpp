@@ -113,14 +113,6 @@ public:
         m_autoRender = autoRender;
     }
 
-    /**
-     * @brief   Returns the starting priority of the adaptor.
-     *
-     * Some adaptors may have to be started before others.
-     * @return priority, the lesser will be the first to be launched and the last be to stopped (default: 0)
-     */
-    FWRENDERVTK_API virtual int getStartPriority();
-
 protected:
 
     /**

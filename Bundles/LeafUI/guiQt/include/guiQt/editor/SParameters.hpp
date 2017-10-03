@@ -103,16 +103,16 @@ public:
     GUIQT_API virtual ~SParameters() noexcept;
 
     /// Configure the editor.
-    GUIQT_API void configuring();
+    GUIQT_API void configuring() override;
 
     /// Initializes Qt input widgets for parameters according to xml configuration
-    GUIQT_API void starting();
+    GUIQT_API void starting() override;
 
     /// This method launches the IEditor::stopping method
-    GUIQT_API void stopping();
+    GUIQT_API void stopping() override;
 
     /// This method is used to update services. Does nothing
-    GUIQT_API void updating();
+    GUIQT_API void updating() override;
 
 private Q_SLOTS:
 

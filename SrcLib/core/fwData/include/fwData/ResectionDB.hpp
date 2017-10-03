@@ -41,10 +41,10 @@ public:
     FWDATA_API virtual ~ResectionDB();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     typedef std::vector< ::fwData::Resection::sptr > ResectionContainerType;
 

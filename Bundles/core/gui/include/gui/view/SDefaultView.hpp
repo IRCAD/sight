@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __GUI_VIEW_SDEFAULTVIEW_HPP__
 #define __GUI_VIEW_SDEFAULTVIEW_HPP__
 
-#include "gui/view/IView.hpp"
 #include "gui/config.hpp"
+#include "gui/view/IView.hpp"
 
 #include <fwTools/Failed.hpp>
 
@@ -25,7 +25,7 @@ class GUI_CLASS_API SDefaultView : public ::gui::view::IView
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDefaultView)(::gui::view::IView) );
+    fwCoreServiceClassDefinitionsMacro( (SDefaultView)(::gui::view::IView) );
 
     /// Constructor. Do nothing.
     GUI_API SDefaultView() noexcept;
@@ -44,36 +44,34 @@ protected:
      * @brief This method is used to configure the class parameters.
      * @see ::fwGui::IGuiContainerSrv::initialize()
      */
-    GUI_API virtual void configuring();
+    GUI_API virtual void configuring() override;
 
     /**
      * @brief Register a view with defined id.
      * @see ::fwGui::IGuiContainerSrv::create()
      */
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
      * @see ::fwGui::IGuiContainerSrv::destroy()
      */
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating();
+    GUI_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
     ///@}
 
 };
 
-
 } // namespace view
 } // namespace gui
-
 
 #endif /*__GUI_VIEW_SDEFAULTVIEW_HPP__*/

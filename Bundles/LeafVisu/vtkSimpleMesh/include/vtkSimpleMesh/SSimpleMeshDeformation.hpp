@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@ class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::ICon
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSimpleMeshDeformation)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SSimpleMeshDeformation)(::fwServices::IController) );
 
     // Key used to register the 'startDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_START_DEFORMATION_SLOT;
@@ -56,16 +56,16 @@ public:
 protected:
 
     /// Starting method. Initialize timer.
-    VTKSIMPLEMESH_API virtual void starting();
+    VTKSIMPLEMESH_API virtual void starting() override;
 
     /// Configuring method.
-    VTKSIMPLEMESH_API virtual void configuring();
+    VTKSIMPLEMESH_API virtual void configuring() override;
 
     /// Stopping method.
-    VTKSIMPLEMESH_API virtual void stopping();
+    VTKSIMPLEMESH_API virtual void stopping() override;
 
     /// Updating method. Deforms the mesh
-    VTKSIMPLEMESH_API virtual void updating();
+    VTKSIMPLEMESH_API virtual void updating() override;
 
     /// Starts mesh deformation
     VTKSIMPLEMESH_API void startDeformation();

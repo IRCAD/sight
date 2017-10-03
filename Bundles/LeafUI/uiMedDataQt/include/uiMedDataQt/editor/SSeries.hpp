@@ -76,15 +76,15 @@ public:
      * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_UPDATE_SLOT
      * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     /// Installs GUI : create container and add selector.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroys GUI.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      *
@@ -99,10 +99,10 @@ protected:
      * - \b selectionMode : defines the selection mode for the series
      * - \b allowedRemove : allows user to remove series
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Fill selector with the series contained in SeriesDB.
-    virtual void updating();
+    virtual void updating() override;
 
 protected Q_SLOTS:
 

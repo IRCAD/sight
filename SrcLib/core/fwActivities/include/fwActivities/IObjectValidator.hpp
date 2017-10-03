@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include "fwActivities/IValidator.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 
 namespace fwData
@@ -32,13 +33,12 @@ class FWACTIVITIES_CLASS_API IObjectValidator : public ::fwActivities::IValidato
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IObjectValidator)(::fwActivities::IValidator) );
-
+    fwCoreNonInstanciableClassDefinitionsMacro( (IObjectValidator)(::fwActivities::IValidator) )
 
     /// Does nothing.
     FWACTIVITIES_API virtual ValidationType validate(
-        const ::fwActivities::registry::ActivityInfo& activityInfo,
-        SPTR(::fwData::Vector)currentSelection ) const
+        const ::fwActivities::registry::ActivityInfo&,
+        SPTR(::fwData::Vector) ) const override
     {
         ValidationType validation;
         validation.first  = true;
@@ -50,7 +50,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Composite of one type of data.
      */
-    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(::fwData::Object) &currentData ) const = 0;
+    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(::fwData::Object)& currentData ) const = 0;
 
 };
 

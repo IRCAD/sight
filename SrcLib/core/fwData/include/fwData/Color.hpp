@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define __FWDATA_COLOR_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <array>
 
@@ -27,10 +27,10 @@ class FWDATA_CLASS_API Color : public Object
 public:
 
     typedef float ColorType;
-    typedef std::array<ColorType,4> ColorArray;
+    typedef std::array<ColorType, 4> ColorArray;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
-                                               ((::fwData::factory::New< Color >,() ))
+                                               ((::fwData::factory::New< Color >, () ))
                                                    ((ColorFactory,
                                                      ((ColorType))((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(
                                                                                                               1.0)) ))
@@ -48,10 +48,10 @@ public:
     FWDATA_API virtual ~Color();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /** Get/Set the array of color values (red, green, blue, alpha).
      *  @name ColorArray accessor
@@ -76,23 +76,22 @@ public:
      *  @brief Get editable reference to color attributes
      *  @{
      */
-    FWDATA_API ColorType  &red();
-    FWDATA_API ColorType  &green();
-    FWDATA_API ColorType  &blue();
-    FWDATA_API ColorType  &alpha();
+    FWDATA_API ColorType& red();
+    FWDATA_API ColorType& green();
+    FWDATA_API ColorType& blue();
+    FWDATA_API ColorType& alpha();
     /// @}
 
     /**@brief Get read-only reference to color attributes
      * @{
      */
-    FWDATA_API const ColorType  &red()   const;
-    FWDATA_API const ColorType  &green() const;
-    FWDATA_API const ColorType  &blue()  const;
-    FWDATA_API const ColorType  &alpha() const;
+    FWDATA_API const ColorType& red()   const;
+    FWDATA_API const ColorType& green() const;
+    FWDATA_API const ColorType& blue()  const;
+    FWDATA_API const ColorType& alpha() const;
     //@}
 
 protected:
-
 
     FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 
@@ -132,6 +131,5 @@ inline void Color::setRGBA(const Color::ColorArray&  _vRGBA)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-
 
 #endif // __FWDATA_COLOR_HPP__

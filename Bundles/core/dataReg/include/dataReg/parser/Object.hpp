@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,21 +30,21 @@ namespace parser
 class DATAREG_CLASS_API Object : public ::fwServices::IXMLParser
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Object)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (Object)(::fwServices::IXMLParser) );
 
     DATAREG_API Object( );
     DATAREG_API virtual ~Object();
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj );
-    DATAREG_API void startConfig();
-    DATAREG_API void updateConfig();
-    DATAREG_API void stopConfig();
-    DATAREG_API void destroyConfig();
+    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
+    DATAREG_API void startConfig() override;
+    DATAREG_API void updateConfig() override;
+    DATAREG_API void stopConfig() override;
+    DATAREG_API void destroyConfig() override;
 
 protected:
 
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement );
-    void updating();
+    void updating() override;
 
     std::vector< ::fwServices::IAppConfigManager::sptr > m_ctmContainer;
 };

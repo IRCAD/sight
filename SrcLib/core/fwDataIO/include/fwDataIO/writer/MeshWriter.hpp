@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __FWDATAIO_WRITER_MESHWRITER_HPP__
 #define __FWDATAIO_WRITER_MESHWRITER_HPP__
 
-#include <boost/filesystem/path.hpp>
-
-#include <fwData/Mesh.hpp>
-#include <fwData/location/SingleFile.hpp>
-
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/GenericObjectWriter.hpp"
+
+#include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 namespace fwDataIO
 {
@@ -23,9 +23,7 @@ namespace writer
 
 /**
  * @brief   Mesh writer. Write file format .trian
- * @class   MeshWriter
  *
- * @date    2011
  *
  * Ircad writer to write a ::fwData::Mesh (with only triangular cells) on filesystem which the file format
  * is .trian. This format is basic. This is an ascii file which contains :
@@ -44,7 +42,7 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)(GenericObjectWriter< ::fwData::Mesh >),
                                            (()),
                                            ::fwDataIO::writer::factory::New< MeshWriter >
-                                           );
+                                           )
     /// Constructor. Do nothing.
     FWDATAIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
@@ -55,16 +53,15 @@ public:
      * Write the file with standard iostream API.
      * @pre Mesh must contains only triangular cells.
      */
-    FWDATAIO_API virtual void write();
+    FWDATAIO_API virtual void write() override;
 
     /// Defines extension supported by this reader ".trian"
-    FWDATAIO_API virtual std::string  extension();
+    FWDATAIO_API virtual std::string extension() override;
 
 };
 
 } // namespace writer
 
 } // namespace fwDataIO
-
 
 #endif // __FWDATAIO_WRITER_MESHWRITER_HPP__

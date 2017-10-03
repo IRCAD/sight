@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,14 +12,12 @@
 #include <fwData/Image.hpp>
 
 #include <fwRender/IRender.hpp>
+
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
-
-
-
-#include <vtkCommand.h>
 
 #include <boost/shared_array.hpp>
 
+#include <vtkCommand.h>
 
 // VTK
 class vtkRenderer;
@@ -30,7 +28,6 @@ namespace vtkCompositeMesh
 
 /**
  * @brief   Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.
- * @class   RendererService
 
  * Service registered details : \n
  * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite)
@@ -39,7 +36,7 @@ class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (RendererService)(::fwRender::IRender) );
 
     typedef ::boost::shared_array< double > SharedArray;
 
@@ -52,7 +49,6 @@ public:
 
     VTKCOMPOSITEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
     typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
-
 
     /**
      * @brief    Constructor
@@ -73,7 +69,7 @@ public:
      *
      * Connect mesh::s_MODIFIED_SIG to this::s_UPDATE_PIPELINE_SLOT
      */
-    VTKCOMPOSITEMESH_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VTKCOMPOSITEMESH_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
@@ -83,8 +79,7 @@ protected:
      * This method is used to initialize the service.
      * Initialize VTK renderer and create qt containers
      */
-    VTKCOMPOSITEMESH_API virtual void starting();
-
+    VTKCOMPOSITEMESH_API virtual void starting() override;
 
     /**
      * @brief Configuring method.
@@ -95,15 +90,14 @@ protected:
        @endcode
      * This method is used to configure the service. Initialize qt container.
      */
-    VTKCOMPOSITEMESH_API virtual void configuring();
-
+    VTKCOMPOSITEMESH_API virtual void configuring() override;
 
     /**
      * @brief Stopping method.
      *
      * Destroy VTK renderer and containers
      */
-    VTKCOMPOSITEMESH_API virtual void stopping();
+    VTKCOMPOSITEMESH_API virtual void stopping() override;
 
     /**
      * @brief Updating method.
@@ -111,10 +105,10 @@ protected:
      * This method is used to update the service.
      * Make a render if necessary
      */
-    VTKCOMPOSITEMESH_API virtual void updating();
+    VTKCOMPOSITEMESH_API virtual void updating() override;
 
     /// @brief vtk renderer
-    vtkRenderer * m_render;
+    vtkRenderer* m_render;
 
 private:
 
@@ -130,7 +124,6 @@ private:
     /// This method is used to update the VTK pipeline.
     void updateVTKPipeline();
 
-
     /// Slot: receives new camera information (position, focal, viewUp). Update camera with new information.
     void updateCamPosition(SharedArray positionValue,
                            SharedArray focalValue,
@@ -138,7 +131,6 @@ private:
 
     /// Slot: update the pipeline
     void updatePipeline();
-
 
     /// Contains the mesh, and allows to compute normals.
     vtkPolyDataNormals* m_normals;
@@ -159,7 +151,6 @@ private:
 
     /// Signal emitted when camera position is updated.
     CamUpdatedSignalType::sptr m_sigCamUpdated;
-
 
 };
 

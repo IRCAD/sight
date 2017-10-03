@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,13 +9,12 @@
 
 #include "uiIO/config.hpp"
 
-#include <gui/editor/IDialogEditor.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 
 #include <fwJobs/IJob.hpp>
 
+#include <gui/editor/IDialogEditor.hpp>
 
 namespace uiIO
 {
@@ -37,7 +36,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro ( (SIOSelector)( ::gui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SIOSelector)( ::gui::editor::IDialogEditor) );
 
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
     typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
@@ -62,10 +61,10 @@ public:
 protected:
 
     ///Starts the service. Do nothing.
-    UIIO_API void starting();
+    UIIO_API void starting() override;
 
     /// Stops the service. Do nothing.
-    UIIO_API void stopping();
+    UIIO_API void stopping() override;
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -75,7 +74,8 @@ protected:
      *
      * Sample of configuration :
      * @code{.xml}
-          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
+          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector"
+     * autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
               <addSelection service="::ioAtoms::SWriter" />
@@ -87,20 +87,22 @@ protected:
      *  - \b type
      *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).
      *  - \b selection
-     *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the selection of the selector list).
+     *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the
+     * selection of the selector list).
      *  - \b addSelection
      *      - \b service (mandatory) : Name of the service to include/exclude to the choice list of the selector.
      *  - \b config
      *      - \b id (mandatory) : the id of the configuration to use.
      *      - \b service (mandatory) :  the name of the service.
      **/
-    UIIO_API void configuring();
+    UIIO_API void configuring() override;
 
-    /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated objects. Then, the selected reader (writer) is executed.
-    UIIO_API void updating();
+    /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated
+    // objects. Then, the selected reader (writer) is executed.
+    UIIO_API void updating() override;
 
     /// Gives the name of the class. Do nothing.
-    UIIO_API void info( std::ostream &_sstream );
+    UIIO_API void info( std::ostream& _sstream ) override;
 
 private:
 

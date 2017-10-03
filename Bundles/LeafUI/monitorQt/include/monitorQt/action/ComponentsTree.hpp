@@ -40,16 +40,16 @@ public:
 protected:
 
     /// Calls classic IAction methods to configure
-    void configuring();
+    void configuring() override;
 
     /// Prepare dialog box
-    void starting();
+    void starting() override;
 
     /// Fill factory information in m_tree and show the dialog
-    void updating();
+    void updating() override;
 
     /// Delete dialog box
-    void stopping();
+    void stopping() override;
 
 private:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,7 +55,7 @@ public:
     /**  @} */
 
     /// Return an empty string
-    FWGDCMIO_API std::string  extension();
+    FWGDCMIO_API std::string extension() override;
 
     /// Get job Aggregator
     FWGDCMIO_API SPTR(::fwJobs::Aggregator) getAggregator();
@@ -64,7 +64,7 @@ public:
     FWGDCMIO_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);
 
     /// Write the image series in DICOM format.
-    FWGDCMIO_API void write();
+    FWGDCMIO_API void write() override;
 
     /// Enable Zip output format
     FWGDCMIO_API void enableZippedArchive(bool enable);

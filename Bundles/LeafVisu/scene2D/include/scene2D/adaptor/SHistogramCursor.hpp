@@ -59,13 +59,13 @@ public:
     SCENE2D_API SHistogramCursor() noexcept;
     SCENE2D_API virtual ~SHistogramCursor() noexcept;
 
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
-    SCENE2D_API void configuring();
-    SCENE2D_API void starting();
-    SCENE2D_API void updating();
-    SCENE2D_API void stopping();
+    SCENE2D_API void configuring() override;
+    SCENE2D_API void starting() override;
+    SCENE2D_API void updating() override;
+    SCENE2D_API void stopping() override;
 
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 

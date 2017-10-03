@@ -61,19 +61,19 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void swapping();
+    virtual void swapping() override;
 
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     void notifyMaterial();
 

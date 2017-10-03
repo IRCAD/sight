@@ -49,21 +49,21 @@ public:
     UIMEASUREMENT_API virtual ~SFocusLandmark() noexcept;
 
     /// Defines connection to Landmarks data
-    UIMEASUREMENT_API KeyConnectionsMap getAutoConnections() const;
+    UIMEASUREMENT_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Do nothing
-    UIMEASUREMENT_API void starting();
+    UIMEASUREMENT_API void starting() override;
 
     /// Do nothing
-    UIMEASUREMENT_API void stopping();
+    UIMEASUREMENT_API void stopping() override;
 
     /// Do nothing
-    UIMEASUREMENT_API void configuring();
+    UIMEASUREMENT_API void configuring() override;
 
     /// Focus the image slices on the selected landmark
-    UIMEASUREMENT_API void updating();
+    UIMEASUREMENT_API void updating() override;
 
 private:
     /// Slot: keep a reference to the selected landmark

@@ -40,8 +40,8 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwServices::IAppConfigManager),
                                            (()),
-                                           std::make_shared< AppConfigManager >);
-    fwCoreAllowSharedFromThis();
+                                           std::make_shared< AppConfigManager >)
+    fwCoreAllowSharedFromThis()
 
     /// Constructor. Do nothing.
     FWSERVICES_API AppConfigManager();
@@ -54,16 +54,17 @@ public:
      * @{
      */
     FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const FieldAdaptorType& replaceFields = FieldAdaptorType());
-    FWSERVICES_API virtual void setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields);
-    FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const;
-    FWSERVICES_API virtual void launch();
-    FWSERVICES_API virtual void stopAndDestroy();
-    FWSERVICES_API virtual void create();
-    FWSERVICES_API virtual void start();
-    FWSERVICES_API virtual void update();
-    FWSERVICES_API virtual void stop();
-    FWSERVICES_API virtual void destroy();
+                                          const FieldAdaptorType& replaceFields = FieldAdaptorType()) override;
+    FWSERVICES_API virtual void setConfig(const std::string& configId,
+                                          const ::fwData::Composite::csptr& replaceFields) override;
+    FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const override;
+    FWSERVICES_API virtual void launch() override;
+    FWSERVICES_API virtual void stopAndDestroy() override;
+    FWSERVICES_API virtual void create() override;
+    FWSERVICES_API virtual void start() override;
+    FWSERVICES_API virtual void update() override;
+    FWSERVICES_API virtual void stop() override;
+    FWSERVICES_API virtual void destroy() override;
     ///@}
 
     /**

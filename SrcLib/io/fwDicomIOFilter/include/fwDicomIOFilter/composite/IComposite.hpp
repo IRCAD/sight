@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__
 #define __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__
 
-#include "fwDicomIOFilter/IFilter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/IFilter.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
 
@@ -31,11 +31,11 @@ public:
     FWDICOMIOFILTER_API virtual ~IComposite();
 
     /// Return filter type
-    FWDICOMIOFILTER_API FilterType getFilterType() const;
+    FWDICOMIOFILTER_API FilterType getFilterType() const override;
 
     /// Override
     FWDICOMIOFILTER_API DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
+        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
 
     /**
      * @brief Apply every filters without throwing any exceptions.
@@ -67,6 +67,5 @@ protected:
 
 } // namespace composite
 } // namespace fwDicomIOFilter
-
 
 #endif /* __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__ */

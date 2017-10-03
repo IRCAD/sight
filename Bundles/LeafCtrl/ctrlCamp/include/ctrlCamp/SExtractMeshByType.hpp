@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,13 @@
 #ifndef __CTRLCAMP_SEXTRACTMESHBYTYPE_HPP__
 #define __CTRLCAMP_SEXTRACTMESHBYTYPE_HPP__
 
-
 #include "ctrlCamp/config.hpp"
 #include "ctrlCamp/ICamp.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
-
+#include <fwServices/macros.hpp>
 
 namespace ctrlCamp
 {
@@ -58,7 +56,7 @@ class CTRLCAMP_CLASS_API SExtractMeshByType : public ::ctrlCamp::ICamp
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SExtractMeshByType)(::ctrlCamp::ICamp) );
+    fwCoreServiceClassDefinitionsMacro( (SExtractMeshByType)(::ctrlCamp::ICamp) );
 
     typedef std::map<std::string, std::tuple< std::string, std::string, std::string > > ExtractMapType;
     typedef std::vector<std::pair< std::string, std::string > > ExtractVectorType;
@@ -72,16 +70,16 @@ public:
 protected:
 
     /// Does nothing
-    CTRLCAMP_API virtual void starting();
+    CTRLCAMP_API virtual void starting() override;
 
     /// Configure the service
-    CTRLCAMP_API virtual void configuring();
+    CTRLCAMP_API virtual void configuring() override;
 
     /// Does nothing
-    CTRLCAMP_API virtual void stopping();
+    CTRLCAMP_API virtual void stopping() override;
 
     /// Does nothing
-    CTRLCAMP_API virtual void updating();
+    CTRLCAMP_API virtual void updating() override;
 
 private:
 
@@ -94,6 +92,5 @@ private:
 };
 
 }// namespace ctrlCamp
-
 
 #endif /* __CTRLCAMP_SEXTRACTMESHBYTYPE_HPP__ */

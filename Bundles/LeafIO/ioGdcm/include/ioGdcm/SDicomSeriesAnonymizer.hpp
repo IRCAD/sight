@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,7 +48,7 @@ class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesAnonymizer)( ::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesAnonymizer)( ::fwServices::IController) );
 
     /// Constructor
     IOGDCM_API SDicomSeriesAnonymizer() noexcept;
@@ -59,19 +59,19 @@ public:
 protected:
 
     /// Do nothing.
-    IOGDCM_API virtual void configuring();
+    IOGDCM_API virtual void configuring() override;
 
     /// Override
-    IOGDCM_API virtual void starting();
+    IOGDCM_API virtual void starting() override;
 
     /// Override
-    IOGDCM_API virtual void stopping();
+    IOGDCM_API virtual void stopping() override;
 
     /// Override
-    IOGDCM_API void updating();
+    IOGDCM_API void updating() override;
 
     /// Override
-    IOGDCM_API void info(std::ostream& _sstream );
+    IOGDCM_API void info(std::ostream& _sstream ) override;
 
     /// Override
     IOGDCM_API void anonymize();

@@ -7,8 +7,8 @@
 #ifndef __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 #define __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <array>
 #include <iostream>
@@ -43,10 +43,10 @@ public:
     FWDATA_API virtual ~TransformationMatrix3D();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Getters/setters
     TMCoefArray& getRefCoefficients ();

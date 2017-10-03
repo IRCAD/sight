@@ -7,8 +7,8 @@
 #ifndef __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__
 #define __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__
 
-#include "ctrlSelection/IUpdaterSrv.hpp"
 #include "ctrlSelection/config.hpp"
+#include "ctrlSelection/IUpdaterSrv.hpp"
 
 namespace ctrlSelection
 {
@@ -73,19 +73,19 @@ protected:
        @endcode
      * - \b compositeKey key of the object to manage into the composite (add/swap/remove)
      */
-    CTRLSELECTION_API virtual void configuring();
+    CTRLSELECTION_API virtual void configuring() override;
 
     /// Implements starting method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void starting();
+    CTRLSELECTION_API virtual void starting() override;
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping();
+    CTRLSELECTION_API virtual void stopping() override;
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating();
+    CTRLSELECTION_API virtual void updating() override;
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream ) override;
 
     /**
      * @name Slots

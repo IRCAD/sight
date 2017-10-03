@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #include "fwGdcmIO/config.hpp"
 
 #include <fwData/location/Folder.hpp>
+
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <string>
@@ -37,8 +38,6 @@ namespace helper
 {
 class DicomAnonymizer;
 
-
-
 /**
  * @brief Write a DicomSeries in DICOM format.
  *
@@ -63,13 +62,13 @@ public:
     FWGDCMIO_API DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Write the image series in DICOM format.
-    FWGDCMIO_API void write();
+    FWGDCMIO_API void write() override;
 
     /// Return an empty string
-    FWGDCMIO_API std::string  extension();
+    FWGDCMIO_API std::string extension() override;
 
     /// Get job observer
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
     /// Defines optional anonymizer.
     FWGDCMIO_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);

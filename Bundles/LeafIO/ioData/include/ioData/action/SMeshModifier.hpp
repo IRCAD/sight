@@ -65,21 +65,21 @@ public:
 
 protected:
 
-    IODATA_API virtual void configuring();
+    IODATA_API virtual void configuring() override;
 
-    IODATA_API virtual void starting();
+    IODATA_API virtual void starting() override;
 
-    IODATA_API virtual void stopping();
+    IODATA_API virtual void stopping() override;
 
     /**
      * @brief Process the action: modifies the mesh using the selected functor.
      */
-    IODATA_API virtual void updating();
+    IODATA_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class.
      */
-    IODATA_API virtual void info(std::ostream& _sstream );
+    IODATA_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
 

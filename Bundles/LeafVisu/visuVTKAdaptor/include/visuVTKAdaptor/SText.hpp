@@ -88,14 +88,14 @@ public:
      *
      * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    VISUVTKADAPTOR_API virtual void configuring();
-    VISUVTKADAPTOR_API virtual void starting();
-    VISUVTKADAPTOR_API virtual void updating();
-    VISUVTKADAPTOR_API virtual void stopping();
+    VISUVTKADAPTOR_API virtual void configuring() override;
+    VISUVTKADAPTOR_API virtual void starting() override;
+    VISUVTKADAPTOR_API virtual void updating() override;
+    VISUVTKADAPTOR_API virtual void stopping() override;
 
     /// Displayed text.
     std::string m_text;

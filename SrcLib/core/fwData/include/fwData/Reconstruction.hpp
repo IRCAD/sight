@@ -48,10 +48,10 @@ public:
     fwCampMakeFriendDataMacro((fwData)(Reconstruction));
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Constant to inform that mask volume has not been computed yet.
     FWDATA_API static const double s_NO_COMPUTED_MASK_VOLUME;

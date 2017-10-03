@@ -48,18 +48,18 @@ protected:
      * @brief Create the toolBar
      * @see ::fwGui::IToolBarSrv::create()
      */
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
      * @see ::fwGui::IToolBarSrv::destroy()
      */
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating();
+    GUI_API virtual void updating() override;
 
     /**
      * @brief Configuring method allows to create a toolBar with several actions.
@@ -104,12 +104,12 @@ protected:
      *
      *  @see ::fwGui::IToolBarSrv::initialize(), ::fwGui::layoutManager::IToolBarLayoutManager::initialize()
      */
-    GUI_API virtual void configuring();
+    GUI_API virtual void configuring() override;
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
     ///@}
 
 };

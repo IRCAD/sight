@@ -54,18 +54,18 @@ protected:
        <service type="::fwGui::IActionSrv" impl="::uiGenericQt::action::ShowRevInfo" autoConnect="no" />
        @endcode
      */
-    UIGENERICQT_API void configuring();
+    UIGENERICQT_API void configuring() override;
 
     /// Starts action
-    UIGENERICQT_API void starting();
+    UIGENERICQT_API void starting() override;
 
     /// Show the frame
-    UIGENERICQT_API void updating();
+    UIGENERICQT_API void updating() override;
 
     /// Stops action
-    UIGENERICQT_API void stopping();
+    UIGENERICQT_API void stopping() override;
 
-    UIGENERICQT_API void info(std::ostream& _sstream );
+    UIGENERICQT_API void info(std::ostream& _sstream ) override;
 
 private:
 

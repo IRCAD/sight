@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef __FWATOMS_SEQUENCE_HPP__
 #define __FWATOMS_SEQUENCE_HPP__
 
-#include <vector>
-
-#include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
 #include "fwAtoms/factory/new.hpp"
+
+#include <vector>
 
 namespace fwAtoms
 {
@@ -65,7 +65,7 @@ public:
     /**
      * @brief push an atom in the sequence.
      */
-    void push_back(const Base::sptr &value)
+    void push_back(const Base::sptr& value)
     {
         m_value.push_back(value);
     }
@@ -94,7 +94,6 @@ public:
         return m_value.end();
     }
 
-
     //! Returns the sequence size
     size_type size() const
     {
@@ -120,11 +119,13 @@ public:
     }
 
     //! access an element in position index
-    Base::sptr &operator[](unsigned int index)
+    Base::sptr& operator[](unsigned int index)
     {
         return m_value[index];
     }
-    const Base::sptr &operator[](unsigned int index) const
+    //------------------------------------------------------------------------------
+
+    const Base::sptr& operator[](unsigned int index) const
     {
         return m_value[index];
     }
@@ -132,16 +133,15 @@ public:
     /**
      * @brief Returns a clone object
      */
-    FWATOMS_API virtual Base::sptr clone() const;
+    FWATOMS_API virtual Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const
+    ::fwAtoms::Base::AtomType type() const override
     {
         return ::fwAtoms::Base::SEQUENCE;
     }
-
 
 protected:
     SequenceType m_value;

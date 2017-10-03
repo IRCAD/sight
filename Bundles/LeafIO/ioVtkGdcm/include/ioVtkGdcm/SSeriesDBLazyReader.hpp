@@ -49,31 +49,31 @@ public:
 protected:
 
     /// Override
-    IOVTKGDCM_API virtual void starting();
+    IOVTKGDCM_API virtual void starting() override;
 
     /// Override
-    IOVTKGDCM_API virtual void stopping();
+    IOVTKGDCM_API virtual void stopping() override;
 
     /// Override
-    IOVTKGDCM_API virtual void configuring();
+    IOVTKGDCM_API virtual void configuring() override;
 
     /// Override
-    IOVTKGDCM_API void updating();
+    IOVTKGDCM_API void updating() override;
 
     /// Override
-    IOVTKGDCM_API void info(std::ostream& _sstream );
+    IOVTKGDCM_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions();
+    IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions() override;
 
     /// Override
     IOVTKGDCM_API virtual std::string getSelectorDialogTitle();
 
     /// Override
-    IOVTKGDCM_API virtual void configureWithIHM();
+    IOVTKGDCM_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
+    IOVTKGDCM_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

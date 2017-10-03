@@ -38,10 +38,10 @@ public:
     UIMEDDATAQT_API virtual ~InsertSeries();
 
     /// Defines shallow copy
-    UIMEDDATAQT_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    UIMEDDATAQT_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    UIMEDDATAQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    UIMEDDATAQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
 };
 

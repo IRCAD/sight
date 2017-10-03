@@ -49,7 +49,7 @@ public:
      *
      * This method is used to find the file path using a file selector.
      */
-    IOVTK_API virtual void configureWithIHM();
+    IOVTK_API virtual void configureWithIHM() override;
 
     /**
      * @brief Constructor. Do nothing.
@@ -58,16 +58,16 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::io::IOPathType getIOPathType() const;
+    IOVTK_API virtual ::io::IOPathType getIOPathType() const override;
 
     /// Method called when the service is started, does nothing.
-    IOVTK_API virtual void starting();
+    IOVTK_API virtual void starting() override;
 
     /// Method called when the service is stopped, does nothing.
-    IOVTK_API virtual void stopping();
+    IOVTK_API virtual void stopping() override;
 
     /// Method called when the service is stopped, does nothing.
-    IOVTK_API virtual void configuring();
+    IOVTK_API virtual void configuring() override;
 
     /**
      * @brief Updating method execute the read process.
@@ -75,10 +75,10 @@ protected:
      * This method is used to update the service.
      * The image is read.
      */
-    IOVTK_API void updating();
+    IOVTK_API void updating() override;
 
     /// Info method gives some informations on service.
-    IOVTK_API void info(std::ostream& _sstream );
+    IOVTK_API void info(std::ostream& _sstream ) override;
 
 private:
 

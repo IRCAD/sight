@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __MEMORY_SDUMPPOLICY_HPP__
 #define __MEMORY_SDUMPPOLICY_HPP__
 
-#include <fwTools/Failed.hpp>
-
-#include <fwServices/IController.hpp>
+#include "memory/config.hpp"
 
 #include <fwMemory/IPolicy.hpp>
 
-#include "memory/config.hpp"
+#include <fwServices/IController.hpp>
+
+#include <fwTools/Failed.hpp>
 
 namespace memory
 {
@@ -23,7 +23,7 @@ class MEMORY_CLASS_API SDumpPolicy : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDumpPolicy)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SDumpPolicy)(::fwServices::IController) );
 
     MEMORY_API SDumpPolicy();
 
@@ -43,30 +43,27 @@ public:
        </service>
        @endcode
      * */
-    MEMORY_API virtual void configuring();
+    MEMORY_API virtual void configuring() override;
 
     /// Overrides
-    MEMORY_API virtual void starting();
+    MEMORY_API virtual void starting() override;
 
     /// Overrides
-    MEMORY_API virtual void stopping();
+    MEMORY_API virtual void stopping() override;
 
     /// Overrides
-    MEMORY_API virtual void updating();
+    MEMORY_API virtual void updating() override;
 
     /// Overrides
-    MEMORY_API virtual void swapping();
+    MEMORY_API virtual void swapping() override;
 
 protected:
 
     typedef std::vector< std::pair< ::fwMemory::IPolicy::ParamNamesType::value_type, std::string > > ParametersType;
 
-
     std::string m_policy;
     ParametersType m_policyParams;
 };
-
-
 
 } // namespace memory
 

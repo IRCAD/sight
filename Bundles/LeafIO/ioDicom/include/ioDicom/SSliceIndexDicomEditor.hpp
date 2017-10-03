@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,18 +10,20 @@
 #include "ioDicom/config.hpp"
 
 #include <fwCom/Slot.hpp>
+
 #include <gui/editor/IEditor.hpp>
+
 #include <io/IReader.hpp>
+
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
 #include <QWidget>
-
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
-#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
@@ -82,7 +84,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSliceIndexDicomEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SSliceIndexDicomEditor)( ::gui::editor::IEditor ) );
 
     IODICOM_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef ::fwCom::Slot<void (std::size_t)> ReadImageSlotType;
@@ -103,19 +105,19 @@ public:
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    IODICOM_API virtual void configuring();
+    IODICOM_API virtual void configuring() override;
 
     /// Override
-    IODICOM_API virtual void starting();
+    IODICOM_API virtual void starting() override;
 
     /// Override
-    IODICOM_API virtual void stopping();
+    IODICOM_API virtual void stopping() override;
 
     /// Override
-    IODICOM_API void updating();
+    IODICOM_API void updating() override;
 
     /// Override
-    IODICOM_API void info(std::ostream& _sstream );
+    IODICOM_API void info(std::ostream& _sstream ) override;
 
     /// Function called when a new slice must be displayed
     IODICOM_API void triggerNewSlice();

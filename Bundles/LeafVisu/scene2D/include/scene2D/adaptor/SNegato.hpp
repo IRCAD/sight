@@ -78,21 +78,21 @@ public:
      * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_VISIBILITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    SCENE2D_API void configuring();
-    SCENE2D_API void starting();
-    SCENE2D_API void updating();
-    SCENE2D_API void stopping();
+    SCENE2D_API void configuring() override;
+    SCENE2D_API void starting() override;
+    SCENE2D_API void updating() override;
+    SCENE2D_API void stopping() override;
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
     /// Called when transfer function points are modified.
-    SCENE2D_API virtual void updatingTFPoints();
+    SCENE2D_API virtual void updatingTFPoints() override;
 
     /// Called when transfer function windowing is modified.
-    SCENE2D_API virtual void updatingTFWindowing(double window, double level);
+    SCENE2D_API virtual void updatingTFWindowing(double window, double level) override;
 
 private:
 

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKVRADAPTOR_VOLUME_HPP__
-#define __VISUVTKVRADAPTOR_VOLUME_HPP__
+#ifndef __VISUVTKVRADAPTOR_SVOLUME_HPP__
+#define __VISUVTKVRADAPTOR_SVOLUME_HPP__
 
 #include "visuVTKVRAdaptor/config.hpp"
 
@@ -84,7 +84,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Apply the cropping on volume rendering
     VISUVTKVRADAPTOR_API void crop();
@@ -97,17 +97,17 @@ public:
 
 protected:
 
-    VISUVTKVRADAPTOR_API void configuring();
-    VISUVTKVRADAPTOR_API void starting();
-    VISUVTKVRADAPTOR_API void stopping();
-    VISUVTKVRADAPTOR_API void updating();
-    VISUVTKVRADAPTOR_API void swapping();
+    VISUVTKVRADAPTOR_API void configuring() override;
+    VISUVTKVRADAPTOR_API void starting() override;
+    VISUVTKVRADAPTOR_API void stopping() override;
+    VISUVTKVRADAPTOR_API void updating() override;
+    VISUVTKVRADAPTOR_API void swapping() override;
 
     /// Called when transfer function points are modified.
-    VISUVTKVRADAPTOR_API virtual void updatingTFPoints();
+    VISUVTKVRADAPTOR_API virtual void updatingTFPoints() override;
 
     /// Called when transfer function windowing is modified.
-    VISUVTKVRADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    VISUVTKVRADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
 
     /// Slot: reset the clipping box widget around the volume
     void resetBoxWidget();
@@ -159,4 +159,4 @@ private:
 
 } //namespace visuVTKVRAdaptor
 
-#endif // __VISUVTKVRADAPTOR_VOLUME_HPP__
+#endif // __VISUVTKVRADAPTOR_SVOLUME_HPP__
