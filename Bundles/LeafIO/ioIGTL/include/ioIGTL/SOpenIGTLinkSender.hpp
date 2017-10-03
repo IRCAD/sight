@@ -33,16 +33,21 @@ namespace ioIGTL
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="..." type="::ioIGTL::SOpenIGTLinkSender">
-            <in key="object" uid="..." />
-            <deviceName>...</deviceName>
-       </service>
-   @endcode
- * @subsection Input Input:
- * - \b target [::fwData::Object]: .
+ * <service uid="..." type="::ioIGTL::SOpenIGTLinkSender" >
+ *      <port>...</port>
+ *      <deviceName>...</deviceName>
+ *      <inout group="objects">
+ *           <key uid="..." name="..." />
+ *           <key uid="..." />
+ *      </inout>
+ * </service>
+ * @endcode
  * @subsection Configuration Configuration:
- * - \b deviceName(optional) : device to set in the message.
- */
+ * - \b port : defines the port where the objects will be sent
+ * - \b deviceName : defines the name of the device (here, our server)
+ * @subsection In-Out In-Out:
+ * - \b objects [::fwData::Object] : defines the objects to send.
+ **/
 
 class IOIGTL_CLASS_API SOpenIGTLinkSender : public ::ioNetwork::INetworkSender
 {
@@ -76,6 +81,14 @@ private:
      */
     IOIGTL_API void sendObject(const ::fwData::Object::sptr& obj);
 
+    /**
+     * @brief method to send data.
+     *
+     * @param[in] obj obj to send
+     * @param[in] index index of the object in the group
+     */
+    IOIGTL_API void sendObject(const ::fwData::Object::sptr& obj, const size_t index);
+
     /// Server instance
     ::igtlNetwork::Server::sptr m_server;
 
@@ -87,6 +100,10 @@ private:
 
     ///device name
     std::string m_deviceName;
+
+    /// Vector of device name if the group configuration exists.
+    std::vector< std::string > m_deviceNames;
+
 };
 
 } // namespace ioIGTL

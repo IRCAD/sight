@@ -37,4 +37,11 @@
        <object>::arData::MatrixTL</object>
    </extension>
 
+   <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::ioNetwork::INetworkSender</type>
+       <service>::ioIGTL::SClientSender</service>
+       <object>::fwData::Object</object>
+       <desc>OpenIGTLink objects sender</desc>
+   </extension>
+
 </plugin>

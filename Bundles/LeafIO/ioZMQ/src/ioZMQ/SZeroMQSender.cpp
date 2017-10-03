@@ -141,5 +141,19 @@ void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
+void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj,  const size_t index /* unused */)
+{
+    try
+    {
+        m_socket->sendObject(obj);
+    }
+    catch(std::exception& err)
+    {
+        OSLM_FATAL("Failed to send object: "<< err.what());
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace ioZMQ
 

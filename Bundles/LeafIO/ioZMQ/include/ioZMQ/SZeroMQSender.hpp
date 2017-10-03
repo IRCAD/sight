@@ -88,6 +88,13 @@ private:
      */
     void sendObject (const ::fwData::Object::sptr& obj);
 
+    /**
+     * @brief method to send data object
+     *
+     * @see INetworkSender
+     */
+    void sendObject (const ::fwData::Object::sptr& obj, const size_t index);
+
     /// Socket instance
     ::zmqNetwork::Socket::sptr m_socket;
 

@@ -110,6 +110,12 @@ protected:
      */
     virtual void sendObject(const ::fwData::Object::sptr& obj) = 0;
 
+    /**
+     * @brief Sends the obj at index
+     * Useable if the configuration group exists.
+     */
+    virtual void sendObject(const ::fwData::Object::sptr& obj, const size_t index) = 0;
+
     /// Signal when server started
     ServerStartedSignalType::sptr m_sigServerStarted;
 

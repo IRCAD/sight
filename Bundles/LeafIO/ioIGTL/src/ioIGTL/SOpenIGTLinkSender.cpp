@@ -99,11 +99,23 @@ void SOpenIGTLinkSender::stopping()
 }
 
 //-----------------------------------------------------------------------------
+
 void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj)
 {
-    if(m_deviceName != "")
+    if(!m_deviceName.empty())
     {
         m_server->setMessageDeviceName(m_deviceName);
+    }
+    m_server->broadcast(obj);
+}
+
+//-----------------------------------------------------------------------------
+
+void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj, const size_t index)
+{
+    if (!m_deviceNames[index].empty())
+    {
+        m_server->setMessageDeviceName(m_deviceNames[index]);
     }
     m_server->broadcast(obj);
 }

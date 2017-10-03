@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlNetwork/INetwork.hpp"
+
 #include "igtlNetwork/Exception.hpp"
 
 #include <fwTools/Stringizer.hpp>
@@ -60,7 +61,7 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
     headerMsg = this->receiveHeader();
     if (headerMsg.IsNotNull())
     {
-        msg = this->receiveBody (headerMsg);
+        msg = this->receiveBody(headerMsg);
         if (msg.IsNotNull())
         {
             m_dataConverter->fromIgtlMessage(msg, obj);
@@ -69,7 +70,6 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
     }
     return false;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
 
     headerMsg = ::igtl::MessageHeader::New();
     headerMsg->InitPack();
-    sizeReceive = m_socket->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+    sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
     if (sizeReceive == -1 || sizeReceive == 0)
     {
@@ -126,16 +126,16 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
     ::igtl::MessageBase::Pointer msg;
 
     msg = ::igtlProtocol::MessageFactory::create(headerMsg->GetDeviceType());
-    msg->SetMessageHeader (headerMsg);
+    msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
-    result = m_socket->Receive (msg->GetPackBodyPointer(), msg->GetPackBodySize());
+    result = m_socket->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
     if (result == -1)
     {
         return ::igtl::MessageBase::Pointer();
     }
 
-    unpackResult = msg->Unpack (1);
+    unpackResult = msg->Unpack(1);
     if (unpackResult & igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;
@@ -199,7 +199,6 @@ std::string INetwork::getDeviceNameOut()
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace igtlNetwork
 
