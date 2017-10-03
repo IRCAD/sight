@@ -92,10 +92,10 @@ protected:
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Called when transfer function points are modified.
-    VISUOGREADAPTOR_API virtual void updatingTFPoints();
+    VISUOGREADAPTOR_API virtual void updatingTFPoints() override;
 
     /// Called when transfer function windowing is modified.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
 
 private:
 

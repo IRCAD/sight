@@ -105,7 +105,7 @@ class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) )
 
     /**
      * @name Slots API
@@ -165,10 +165,10 @@ protected:
     VISUOGREADAPTOR_API virtual void configuring() override;
 
     /// Slot called on TF update.
-    VISUOGREADAPTOR_API virtual void updatingTFPoints();
+    VISUOGREADAPTOR_API virtual void updatingTFPoints() override;
 
     /// Slot called on TF window update.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

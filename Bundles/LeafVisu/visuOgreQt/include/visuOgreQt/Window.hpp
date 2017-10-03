@@ -99,7 +99,7 @@ public Q_SLOTS:
     VISUOGREQT_API virtual void renderNow();
 
     /// We use an event filter to be able to capture keyboard/mouse events. More on this later.
-    VISUOGREQT_API virtual bool eventFilter(QObject* target, QEvent* event);
+    VISUOGREQT_API virtual bool eventFilter(QObject* target, QEvent* event) override;
 
 Q_SIGNALS:
     /// When the render window is created

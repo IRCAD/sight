@@ -55,7 +55,7 @@ protected:
 
     //@{
     /// Overrides
-    FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
+    FWRENDEROGRE_API virtual void info(std::ostream& _sstream ) override;
     //@}
 
     /**
