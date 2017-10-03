@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,6 @@ public:
                                             (()),
                                             ::fwActivities::validator::factory::New< ContainOneTool > );
 
-
     /// Constructor. Do nothing.
     VALIDATORS_API ContainOneTool(::fwActivities::IValidator::Key key);
 
@@ -39,13 +38,12 @@ public:
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
      * @see ::fwActivities::IValidator::validate
      */
-    VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object) &currentObject ) const;
+    VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object)& currentObject ) const
+    override;
 };
 
 } // namespace ModelSeries
 } // namespace validators
-
-
 
 #endif // __VALIDATORS_MODELSERIES_CONTAINONETOOL_HPP__
 

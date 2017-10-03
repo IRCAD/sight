@@ -85,19 +85,19 @@ public:
 protected:
 
     /// Create the actor and mapper used to show the video frame.
-    VISUVTKARADAPTOR_API void starting();
+    VISUVTKARADAPTOR_API void starting() override;
 
     /// Configure the adaptor.
-    VISUVTKARADAPTOR_API void configuring();
+    VISUVTKARADAPTOR_API void configuring() override;
 
     /// Calls doUpdate()
-    VISUVTKARADAPTOR_API void swapping();
+    VISUVTKARADAPTOR_API void swapping() override;
 
     /// Updated the frame from the current Image.
-    VISUVTKARADAPTOR_API void updating();
+    VISUVTKARADAPTOR_API void updating() override;
 
     /// Removes the actor from the renderer
-    VISUVTKARADAPTOR_API void stopping();
+    VISUVTKARADAPTOR_API void stopping() override;
 
     /**
      *  @brief Called when transfer function points are modified.

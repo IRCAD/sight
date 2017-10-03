@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,18 @@
 #ifndef __VIDEOTOOLS_SMATRIXSYNCHRONIZER_HPP__
 #define __VIDEOTOOLS_SMATRIXSYNCHRONIZER_HPP__
 
-
 #include "videoTools/config.hpp"
 
-#include <arServices/ISynchronizer.hpp>
 #include <arData/MatrixTL.hpp>
 
-#include <fwCore/base.hpp>
+#include <arServices/ISynchronizer.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+
+#include <fwCore/base.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
-
-
 
 namespace videoTools
 {
@@ -64,16 +64,16 @@ protected:
      *
      */
 
-    VIDEOTOOLS_API void configuring();
+    VIDEOTOOLS_API void configuring() override;
 
     /// This method is used to initialize the service.
-    VIDEOTOOLS_API void starting();
+    VIDEOTOOLS_API void starting() override;
 
     /// Does nothing.
-    VIDEOTOOLS_API void stopping();
+    VIDEOTOOLS_API void stopping() override;
 
     /// Does nothing.
-    VIDEOTOOLS_API void updating()
+    VIDEOTOOLS_API void updating() override
     {
     }
 
@@ -86,7 +86,6 @@ private:
 
     /// This function fills the TransformationMatrix3D with the current buffer content of the MatrixTL
     void updateMatrix(::fwCore::HiResClock::HiResClockType timestamp);
-
 
 };
 

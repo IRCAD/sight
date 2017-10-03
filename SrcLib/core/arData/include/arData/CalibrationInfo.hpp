@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #ifndef __ARDATA_CALIBRATIONINFO_HPP__
 #define __ARDATA_CALIBRATIONINFO_HPP__
 
 #include "arData/config.hpp"
 
-#include <fwCore/macros.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
+
+#include <fwCore/macros.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Object.hpp>
@@ -26,7 +25,6 @@ fwCampAutoDeclareDataMacro((arData)(CalibrationInfo), ARDATA_API);
 namespace arData
 {
 /**
- * @class CalibrationInfo
  * @brief class for handle calibration information , this class handle two lists the first one contains images
  * and the second one contains pointList
  *
@@ -35,7 +33,7 @@ class ARDATA_CLASS_API CalibrationInfo : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((CalibrationInfo)( ::fwData::Object),(()),
+    fwCoreClassDefinitionsWithFactoryMacro((CalibrationInfo)( ::fwData::Object), (()),
                                            ::fwData::factory::New< CalibrationInfo >);
 
     fwCampMakeFriendDataMacro((arData)(CalibrationInfo));
@@ -70,17 +68,17 @@ public:
     ARDATA_API ~CalibrationInfo();
 
     /// Defines shallow copy
-    ARDATA_API void shallowCopy(const ::fwData::Object::csptr& _source );
+    ARDATA_API void shallowCopy(const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache);
+    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief add an Image and a pointList into CalibrationInfo
      * @param[in] img the new image
      * @param[in] pl the corresponding point list
      */
-    ARDATA_API void addRecord( const ::fwData::Image::sptr& img, const ::fwData::PointList::sptr &pl );
+    ARDATA_API void addRecord( const ::fwData::Image::sptr& img, const ::fwData::PointList::sptr& pl );
 
     /**
      * @brief remove the desired record (both image and pointList)
@@ -121,7 +119,6 @@ public:
      */
     ARDATA_API ::fwData::Image::sptr getImage(size_t idx) const;
 
-
 protected:
     ///List of Image
     ImageContainerType m_imageContainer;
@@ -139,6 +136,5 @@ protected:
 };
 
 }// namespace arData
-
 
 #endif /* __ARDATA_CALIBRATIONINFO_HPP__ */

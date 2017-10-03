@@ -71,31 +71,31 @@ public:
     REGISTRATIONCV_API virtual ~SPoseFrom2d() noexcept;
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    REGISTRATIONCV_API void configuring();
+    REGISTRATIONCV_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    REGISTRATIONCV_API void starting();
+    REGISTRATIONCV_API void starting() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    REGISTRATIONCV_API void updating();
+    REGISTRATIONCV_API void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    REGISTRATIONCV_API void stopping();
+    REGISTRATIONCV_API void stopping() override;
 
     /// Register matrix slot
-    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp);
+    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) override;
 
 private:
 

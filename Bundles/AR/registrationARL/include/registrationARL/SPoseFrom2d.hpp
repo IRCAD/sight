@@ -73,31 +73,31 @@ public:
     REGISTRATIONARL_API virtual ~SPoseFrom2d() noexcept;
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    REGISTRATIONARL_API void configuring();
+    REGISTRATIONARL_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    REGISTRATIONARL_API void starting();
+    REGISTRATIONARL_API void starting() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    REGISTRATIONARL_API void updating();
+    REGISTRATIONARL_API void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    REGISTRATIONARL_API void stopping();
+    REGISTRATIONARL_API void stopping() override;
 
     /// Register matrix slot
-    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp);
+    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) override;
 
 private:
 

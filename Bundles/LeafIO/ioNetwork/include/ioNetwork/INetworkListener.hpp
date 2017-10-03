@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <fwServices/IController.hpp>
 
 #include <boost/type.hpp>
+
 #include <map>
 #include <string>
 
@@ -30,7 +31,7 @@ class IONETWORK_CLASS_API INetworkListener :
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (INetworkListener) (::fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro( (INetworkListener) (::fwServices::IController));
 
     /**
      * @brief Receive object signal is emitted when listener receive a new object from network
@@ -68,8 +69,6 @@ public:
      */
     typedef ::fwCom::Signal< void () > ClientDisconnectSignalType;
 
-
-
     /// Constructor
     IONETWORK_API INetworkListener();
 
@@ -78,19 +77,19 @@ public:
 
 protected:
     /// Overrides
-    IONETWORK_API virtual void configuring();
+    IONETWORK_API virtual void configuring() override;
 
     /// Overrides
-    IONETWORK_API virtual void starting();
+    IONETWORK_API virtual void starting() override;
 
     /// Overrides
-    IONETWORK_API virtual void stopping();
+    IONETWORK_API virtual void stopping() override;
 
     /// Overrides
-    IONETWORK_API virtual void updating();
+    IONETWORK_API virtual void updating() override;
 
     /// Overrides
-    IONETWORK_API virtual void swapping();
+    IONETWORK_API virtual void swapping() override;
 
     /**
      * @brief notify application the object has updated use the s_MODIFIED_SIG signal from Object
@@ -110,8 +109,6 @@ protected:
     ClientDisconnectSignalType::sptr m_sigClientDisconnected;
 
 };
-
-
 
 } // namespace ioNetwork
 

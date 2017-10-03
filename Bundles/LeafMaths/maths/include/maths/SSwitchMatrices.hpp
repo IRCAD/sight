@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,14 @@
 
 #include "maths/config.hpp"
 
-#include <fwCom/Slot.hpp>
 #include <fwCom/helper/SigSlotConnection.hpp>
+#include <fwCom/Slot.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwServices/IController.hpp>
-
 
 namespace maths
 {
@@ -26,7 +25,8 @@ namespace maths
  * @brief   This service switch between several matrices.
  *
  * @section Slots Slots
- * - \b switchMatrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is copied on the matrix bound
+ * - \b switchMatrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is
+ * copied on the matrix bound
  * to the service
  * - \b switchToMatrix(int index) : switch to the matrix at the given index
  *
@@ -75,13 +75,13 @@ public:
 protected:
 
     /// This method is used to configure the service.
-    MATHS_API void configuring();
+    MATHS_API void configuring() override;
 
     /// This method is used to initialize the service.
-    MATHS_API void starting();
+    MATHS_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping();
+    MATHS_API void stopping() override;
 
     /// Does nothing.
     void swapping()
@@ -89,14 +89,13 @@ protected:
     }
 
     /// Does nothing.
-    MATHS_API void updating();
+    MATHS_API void updating() override;
 
     /// Switch to next Matrix
     MATHS_API void switchMatrix();
 
     /// Switch to Matrix "index"
     MATHS_API void switchToMatrix(size_t index);
-
 
 private:
 

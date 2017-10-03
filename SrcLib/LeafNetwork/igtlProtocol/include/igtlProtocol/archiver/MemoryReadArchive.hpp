@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,12 +11,13 @@
 
 #include <fwCore/macros.hpp>
 
-#include <fwZip/IReadArchive.hpp>
 #include <fwZip/exception/Read.hpp>
+#include <fwZip/IReadArchive.hpp>
+
+#include <archive.h>
 
 #include <boost/iostreams/categories.hpp>
 
-#include <archive.h>
 #include <map>
 
 namespace igtlProtocol
@@ -26,7 +27,6 @@ namespace archiver
 
 typedef SPTR (std::vector<char>)  BufferSPtr;
 typedef CSPTR (std::vector<char>) BufferCSPtr;
-
 
 /**
  *
@@ -52,14 +52,14 @@ public:
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      * @throw ::fwZip::exception::Read if cannot retrieve file in archive.
      */
-    IGTLPROTOCOL_API SPTR(std::istream) getFile (const ::boost::filesystem::path& path);
+    IGTLPROTOCOL_API SPTR(std::istream) getFile(const ::boost::filesystem::path& path);
 
     /**
      * @brief Returns archive path.
      *
      * @return the archive path
      */
-    IGTLPROTOCOL_API const ::boost::filesystem::path getArchivePath() const;
+    IGTLPROTOCOL_API const ::boost::filesystem::path getArchivePath() const override;
 
     /**
      * @brief clone the instance
@@ -68,7 +68,7 @@ public:
      */
     IReadArchive::sptr clone() const
     {
-        return SPTR (MemoryReadArchive) (new MemoryReadArchive(m_BUFFER, m_SIZE));
+        return SPTR(MemoryReadArchive) (new MemoryReadArchive(m_BUFFER, m_SIZE));
     }
 
 private:

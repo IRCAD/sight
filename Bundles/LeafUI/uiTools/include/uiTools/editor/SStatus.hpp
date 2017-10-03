@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __UITOOLS_EDITOR_SSTATUS_HPP__
 #define __UITOOLS_EDITOR_SSTATUS_HPP__
 
-#include <QPointer>
-#include <QLabel>
+#include "uiTools/config.hpp"
 
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiTools/config.hpp"
+#include <QLabel>
+#include <QPointer>
 
 class QPushButton;
 
@@ -26,7 +26,6 @@ namespace editor
 
 /**
  * @brief   SStatus service shows a colored square (red, orange, green) representing a status.
- * @class   SStatus
  *
  * @note To change the status color, you should call the slots 'changeToGreen', * 'changeToOrange', 'changeToRed'
  * or 'toggleGreenRed'.
@@ -68,7 +67,7 @@ class UITOOLS_CLASS_API SStatus : public QObject,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStatus)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SStatus)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UITOOLS_API SStatus() noexcept;
@@ -100,24 +99,24 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Configures the service
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     /// SLOT : change label color
     void changeToGreen();
@@ -163,5 +162,4 @@ private:
 } // namespace uiTools
 
 #endif /*__UITOOLS_EDITOR_SSTATUS_HPP__*/
-
 

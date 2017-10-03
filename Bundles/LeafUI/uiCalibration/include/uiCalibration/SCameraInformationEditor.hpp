@@ -64,17 +64,17 @@ public:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    UICALIBRATION_API void configuring();
+    UICALIBRATION_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    UICALIBRATION_API void starting();
+    UICALIBRATION_API void starting() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    UICALIBRATION_API void stopping();
+    UICALIBRATION_API void stopping() override;
     /**
      * @brief Updating method : This method is used to update the service.
      */
@@ -85,11 +85,11 @@ public:
     /**
      * @brief Swapping method : This method is used to swap the service.
      */
-    UICALIBRATION_API void swapping();
+    UICALIBRATION_API void swapping() override;
 
 protected:
 
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.

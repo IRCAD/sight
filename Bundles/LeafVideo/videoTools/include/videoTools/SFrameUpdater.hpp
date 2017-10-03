@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ class VIDEOTOOLS_CLASS_API SFrameUpdater : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameUpdater)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameUpdater)(::fwServices::IController) );
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
     typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> UpdateFrameSlotType;
@@ -67,16 +67,16 @@ public:
 protected:
 
     /// Starting method. Initialize timer.
-    VIDEOTOOLS_API virtual void starting();
+    VIDEOTOOLS_API virtual void starting() override;
 
     /// Configuring method.
-    VIDEOTOOLS_API virtual void configuring();
+    VIDEOTOOLS_API virtual void configuring() override;
 
     /// Stopping method.
-    VIDEOTOOLS_API virtual void stopping();
+    VIDEOTOOLS_API virtual void stopping() override;
 
     /// Updating method. Deforms the mesh
-    VIDEOTOOLS_API virtual void updating();
+    VIDEOTOOLS_API virtual void updating() override;
 
     /// Update frame slots
     VIDEOTOOLS_API virtual void updateFrame( ::fwCore::HiResClock::HiResClockType timestamp );
@@ -89,7 +89,7 @@ protected:
 
 private:
 
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Slots used when the frame have been refreshed
     UpdateFrameSlotType::sptr m_slotUpdateFrame;

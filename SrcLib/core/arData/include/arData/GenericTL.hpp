@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __ARDATA_GENERICTL_HPP__
 #define __ARDATA_GENERICTL_HPP__
 
-#include "arData/timeline/GenericObject.hpp"
 #include "arData/BufferTL.hpp"
 #include "arData/config.hpp"
+#include "arData/timeline/GenericObject.hpp"
 
 namespace arData
 {
@@ -22,7 +22,7 @@ class GenericTL : public BufferTL
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (GenericTL<BUFFER_TYPE>)(::fwData::Object) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (GenericTL<BUFFER_TYPE>)(::fwData::Object) )
 
     typedef ::arData::timeline::GenericObject< BUFFER_TYPE > BufferType;
     /**
@@ -35,7 +35,7 @@ public:
     virtual ~GenericTL();
 
     /// Defines deep copy
-    virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Returns the closest buffer to the given timestamp
@@ -56,7 +56,7 @@ public:
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    SPTR(::arData::timeline::Object) createObject(::fwCore::HiResClock::HiResClockType timestamp);
+    SPTR(::arData::timeline::Object) createObject(::fwCore::HiResClock::HiResClockType timestamp) override;
 
     /**
      * @brief Returns a new BufferType with the given timestamp.
@@ -66,7 +66,7 @@ public:
     SPTR(BufferType) createBuffer(::fwCore::HiResClock::HiResClockType timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    virtual bool isObjectValid(const CSPTR(::arData::timeline::Object)& obj) const;
+    virtual bool isObjectValid(const CSPTR(::arData::timeline::Object)& obj) const override;
 
     /// Get/set the maximum number of objects inside a single buffer
     unsigned int getMaxElementNum() const;

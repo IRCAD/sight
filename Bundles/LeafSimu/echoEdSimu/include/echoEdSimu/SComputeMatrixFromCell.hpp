@@ -65,16 +65,16 @@ public:
 protected:
 
     /// Configure the service
-    ECHOEDSIMU_API virtual void configuring();
+    ECHOEDSIMU_API virtual void configuring() override;
 
     /// Get objects and calcute the number of cells per line and the number of line in the skin mesh.
-    ECHOEDSIMU_API virtual void starting();
+    ECHOEDSIMU_API virtual void starting() override;
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void stopping();
+    ECHOEDSIMU_API virtual void stopping() override;
 
     /// Grab the mesh and compute the 2D grid
-    ECHOEDSIMU_API virtual void updating();
+    ECHOEDSIMU_API virtual void updating() override;
 
 private:
 

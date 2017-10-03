@@ -69,7 +69,7 @@ public:
 protected:
 
     /// configure with IHM
-    IOCALIBRATION_API void configureWithIHM();
+    IOCALIBRATION_API void configureWithIHM() override;
 
     /**
      * @brief Prompt a dialog to define file location.
@@ -80,22 +80,22 @@ protected:
     /**
      * @brief Configures the service.
      */
-    IOCALIBRATION_API void configuring();
+    IOCALIBRATION_API void configuring() override;
 
     /// Does nothing.
-    IOCALIBRATION_API void starting();
+    IOCALIBRATION_API void starting() override;
 
     /// Calls stopping and starting.
-    IOCALIBRATION_API void swapping();
+    IOCALIBRATION_API void swapping() override;
 
     /// Computes intrinsic calibration
-    IOCALIBRATION_API void updating();
+    IOCALIBRATION_API void updating() override;
 
     /// Removes connections
-    IOCALIBRATION_API void stopping();
+    IOCALIBRATION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    IOCALIBRATION_API ::io::IOPathType getIOPathType() const;
+    IOCALIBRATION_API ::io::IOPathType getIOPathType() const override;
 
 };
 

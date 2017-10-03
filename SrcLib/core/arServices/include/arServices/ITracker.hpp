@@ -50,7 +50,7 @@ public:
     ARSERVICES_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    ARSERVICES_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ARSERVICES_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Return true if the tracking is started.
     bool isTracking() const
@@ -78,7 +78,7 @@ protected:
     ///@brief ITracker destructor. Do nothing.
     ARSERVICES_API virtual ~ITracker();
 
-    ARSERVICES_API virtual void configuring();
+    ARSERVICES_API virtual void configuring() override;
 
     /**
      * @brief This method calls tracking.

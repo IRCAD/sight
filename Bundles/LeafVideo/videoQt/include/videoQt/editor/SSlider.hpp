@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,19 @@
 #ifndef __VIDEOQT_EDITOR_SSLIDER_HPP__
 #define __VIDEOQT_EDITOR_SSLIDER_HPP__
 
-#include <QObject>
-#include <QSlider>
-#include <QLabel>
-#include <QPointer>
-
-#include <fwTools/Failed.hpp>
+#include "videoQt/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include "videoQt/config.hpp"
+#include <QLabel>
+#include <QObject>
+#include <QPointer>
+#include <QSlider>
 
 namespace videoQt
 {
@@ -28,7 +28,6 @@ namespace editor
 
 /**
  * @brief   This editor allows to draw a slider. It is designed to be used with SFrameGrabber to browse a video.
- * @class   SSlider
  */
 class VIDEOQT_CLASS_API SSlider : public QObject,
                                   public ::gui::editor::IEditor
@@ -37,7 +36,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSlider)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSlider)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     VIDEOQT_API SSlider() noexcept;
@@ -69,20 +68,19 @@ public:
 
 protected:
 
-
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroys the layout
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
     /**
      * @brief Configure the service
@@ -91,7 +89,7 @@ protected:
         <service uid="..." type="::gui::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
        @endcode
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Signal when the position os the slider changed
     PositionChangedSignalType::sptr m_sigPositionChanged;
@@ -125,5 +123,4 @@ private:
 } // videoQt
 
 #endif /*__VIDEOQT_EDITOR_SSLIDER_HPP__*/
-
 

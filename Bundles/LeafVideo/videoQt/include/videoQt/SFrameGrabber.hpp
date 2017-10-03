@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,23 +8,20 @@
 #define __VIDEOQT_SFRAMEGRABBER_HPP__
 
 #include "videoQt/config.hpp"
+#include <videoQt/player/QVideoPlayer.hpp>
+
+#include <arServices/IGrabber.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-
-#include <arServices/IGrabber.hpp>
 
 #include <fwThread/Worker.hpp>
 
 #include <fwTools/Failed.hpp>
 
-#include <fwThread/Worker.hpp>
-
-#include <videoQt/player/QVideoPlayer.hpp>
-
+#include <QImage>
 #include <QObject>
 #include <QPointer>
-#include <QImage>
 
 namespace arData
 {
@@ -67,7 +64,7 @@ class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
 Q_OBJECT;
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
 
     /// Constructor. Do nothing.
     VIDEOQT_API SFrameGrabber() noexcept;
@@ -78,31 +75,31 @@ public:
 protected:
 
     /// Initialize the layout and the camera.
-    VIDEOQT_API virtual void starting();
+    VIDEOQT_API virtual void starting() override;
 
     /// Destroy the layout.
-    VIDEOQT_API virtual void stopping();
+    VIDEOQT_API virtual void stopping() override;
 
     /// Do nothing.
-    VIDEOQT_API virtual void updating();
+    VIDEOQT_API virtual void updating() override;
 
     /// Do nothing.
-    VIDEOQT_API virtual void configuring();
+    VIDEOQT_API virtual void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
-    virtual void startCamera();
+    virtual void startCamera() override;
 
     /// SLOT : Stop camera
-    virtual void stopCamera();
+    virtual void stopCamera() override;
 
     /// SLOT : Pause camera
-    virtual void pauseCamera();
+    virtual void pauseCamera() override;
 
     /// SLOT : enable/disable loop in video
-    virtual void toggleLoopMode();
+    virtual void toggleLoopMode() override;
 
     /// SLOT : set the new position in the video.
-    virtual void setPosition(int64_t position);
+    virtual void setPosition(int64_t position) override;
 
     /// Gets camera from m_cameraID
     CSPTR(::arData::Camera) getCamera();

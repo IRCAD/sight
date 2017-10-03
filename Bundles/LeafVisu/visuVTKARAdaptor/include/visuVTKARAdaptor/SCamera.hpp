@@ -73,19 +73,19 @@ public:
 
 protected:
 
-    VISUVTKARADAPTOR_API void configuring();
+    VISUVTKARADAPTOR_API void configuring() override;
 
     /// Initializes the camera position and connects it to the observer.
-    VISUVTKARADAPTOR_API void starting();
+    VISUVTKARADAPTOR_API void starting() override;
 
     /// Restarts (stop-start).
-    VISUVTKARADAPTOR_API void swapping();
+    VISUVTKARADAPTOR_API void swapping() override;
 
     /// Updates the camera with the input transform.
-    VISUVTKARADAPTOR_API void updating();
+    VISUVTKARADAPTOR_API void updating() override;
 
     /// Removes the observer.
-    VISUVTKARADAPTOR_API void stopping();
+    VISUVTKARADAPTOR_API void stopping() override;
 
 private:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #include "ioNetwork/config.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Object.hpp>
 
@@ -37,7 +37,7 @@ class IONETWORK_CLASS_API INetworkSender : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (INetworkSender) (::fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro( (INetworkSender) (::fwServices::IController));
 
     /**
      * @brief Send data slot can be used if you want to connect a custom signal to this slot
@@ -75,7 +75,6 @@ public:
      */
     typedef ::fwCom::Signal< void () > ServerStoppedSignalType;
 
-
     /// Constructor
     IONETWORK_API INetworkSender();
 
@@ -85,19 +84,19 @@ public:
 protected:
 
     /// Overrides
-    IONETWORK_API virtual void configuring();
+    IONETWORK_API virtual void configuring() override;
 
     /// Make connection like autoConnect enable message reception
-    IONETWORK_API virtual void starting();
+    IONETWORK_API virtual void starting() override;
 
     /// Disconnect connection to bypass the OSLM_FATAL_IF when service receives a message
-    IONETWORK_API virtual void stopping();
+    IONETWORK_API virtual void stopping() override;
 
     /// Sends the object
-    IONETWORK_API virtual void updating();
+    IONETWORK_API virtual void updating() override;
 
     /// Calls stopping and starting
-    IONETWORK_API virtual void swapping();
+    IONETWORK_API virtual void swapping() override;
 
     /**
      * @brief SLOT: called to send obj

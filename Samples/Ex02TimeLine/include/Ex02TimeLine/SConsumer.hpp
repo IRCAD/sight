@@ -55,16 +55,16 @@ public:
 protected:
 
     /// Configure the service
-    virtual void configuring() final;
+    virtual void configuring() final override;
 
     /// Start the timer if a period is defined.
-    virtual void starting() final;
+    virtual void starting() final override;
 
     /// Stop the timer.
-    virtual void stopping() final;
+    virtual void stopping() final override;
 
     /// Called by the timer to consume a message periodically
-    virtual void updating() final;
+    virtual void updating() final override;
 
     /// Called by a signal to consume a message
     void consume(::fwCore::HiResClock::HiResClockType timestamp);
