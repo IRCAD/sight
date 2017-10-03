@@ -52,16 +52,16 @@ public:
 protected:
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void configuring();
+    OPITKREGISTRATION_API virtual void configuring() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void starting();
+    OPITKREGISTRATION_API virtual void starting() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void stopping();
+    OPITKREGISTRATION_API virtual void stopping() override;
 
     /// Apply the transform and resample.
-    OPITKREGISTRATION_API virtual void updating();
+    OPITKREGISTRATION_API virtual void updating() override;
 
     /**
      * @brief Auto connections
@@ -70,7 +70,7 @@ protected:
      * - Update service when the transform matrix is modified.
      * - Update service when the target image is modified.
      */
-    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const;
+    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 };
 

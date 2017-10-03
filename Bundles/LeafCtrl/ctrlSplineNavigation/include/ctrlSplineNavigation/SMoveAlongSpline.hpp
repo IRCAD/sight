@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,14 @@
 
 #include "ctrlSplineNavigation/config.hpp"
 
-#include <fwServices/IController.hpp>
-
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwServices/IController.hpp>
 
 #include <vtkParametricSpline.h>
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
-
 
 namespace ctrlSplineNavigation
 {
@@ -79,7 +78,6 @@ public:
     typedef ::fwCom::Slot<void (double)> ChangeAngleSlotType;
     /**  @} */
 
-
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
@@ -88,17 +86,17 @@ public:
      * Connect PointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
      * Connect PointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
      */
-    CTRLSPLINENAVIGATION_API virtual KeyConnectionsType getObjSrvConnections() const;
+    CTRLSPLINENAVIGATION_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     /**
      * @name Overrides.
      * @{ */
-    virtual void starting();
-    virtual void stopping();
-    virtual void configuring();
-    virtual void updating();
+    virtual void starting() override;
+    virtual void stopping() override;
+    virtual void configuring() override;
+    virtual void updating() override;
     /**  @} */
 
     /**

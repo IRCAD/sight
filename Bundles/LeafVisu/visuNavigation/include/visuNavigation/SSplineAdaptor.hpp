@@ -65,10 +65,10 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    VISUNAVIGATION_API void configuring();
-    VISUNAVIGATION_API void starting();
-    VISUNAVIGATION_API void updating();
-    VISUNAVIGATION_API void stopping();
+    VISUNAVIGATION_API void configuring() override;
+    VISUNAVIGATION_API void starting() override;
+    VISUNAVIGATION_API void updating() override;
+    VISUNAVIGATION_API void stopping() override;
     /**  @} */
 
     /**
@@ -79,7 +79,7 @@ protected:
      * Connect PointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
      * Connect PointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
      */
-    VISUNAVIGATION_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUNAVIGATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

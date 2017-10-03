@@ -48,13 +48,13 @@ public:
      * @brief This method launches the IEditor::starting method
      * Initializes button according to xml configuration
      */
-    UILOGO_API void starting();
+    UILOGO_API void starting() override;
 
     /// This method launches the IEditor::stopping method
-    UILOGO_API void stopping();
+    UILOGO_API void stopping() override;
 
     /// This method is used to update services. Sends triggered signal
-    UILOGO_API void updating();
+    UILOGO_API void updating() override;
 
     /// This method is used to update services on notification. Do nothing
     UILOGO_API void receiving( );
@@ -71,10 +71,10 @@ public:
             </service>
        @endcode
      */
-    UILOGO_API void configuring();
+    UILOGO_API void configuring() override;
 
     /// This method is used to give information about the service. Do nothing
-    UILOGO_API void info(std::ostream& _sstream);
+    UILOGO_API void info(std::ostream& _sstream) override;
 
 protected Q_SLOTS:
     /// This method is called when the user clicks OK button

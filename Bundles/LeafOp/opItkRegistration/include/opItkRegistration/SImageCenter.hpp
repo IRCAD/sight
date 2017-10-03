@@ -51,16 +51,16 @@ public:
 protected:
 
     /// Configure registration parameters.
-    OPITKREGISTRATION_API virtual void configuring();
+    OPITKREGISTRATION_API virtual void configuring() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void starting();
+    OPITKREGISTRATION_API virtual void starting() override;
 
     /// Do the registration.
-    OPITKREGISTRATION_API virtual void updating();
+    OPITKREGISTRATION_API virtual void updating() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void stopping();
+    OPITKREGISTRATION_API virtual void stopping() override;
 
     /**
      * @brief Auto connections
@@ -68,7 +68,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const;
+    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 };
 
