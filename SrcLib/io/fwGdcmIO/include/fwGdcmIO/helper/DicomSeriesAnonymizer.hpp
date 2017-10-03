@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,12 @@
 #define __FWGDCMIO_HELPER_DICOMSERIESANONYMIZER_HPP__
 
 #include "fwGdcmIO/config.hpp"
-#include "fwGdcmIO/reader/SeriesDB.hpp"
-#include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
+#include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
+#include "fwGdcmIO/reader/SeriesDB.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
+
 #include <fwTools/ProgressAdviser.hpp>
 
 namespace fwJobs
@@ -33,7 +34,7 @@ class FWGDCMIO_CLASS_API DicomSeriesAnonymizer
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((DicomSeriesAnonymizer), (()), new DicomSeriesAnonymizer );
+    fwCoreClassFactoryMacro((DicomSeriesAnonymizer), (()), new DicomSeriesAnonymizer );
 
     /// Constructor
     FWGDCMIO_API DicomSeriesAnonymizer();

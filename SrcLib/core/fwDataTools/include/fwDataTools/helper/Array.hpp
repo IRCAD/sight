@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,6 @@
 #include <fwData/Array.hpp>
 
 #include <fwMemory/BufferObject.hpp>
-
-#include <fwTools/Type.hpp>
 
 namespace fwDataTools
 {
@@ -28,18 +26,17 @@ class FWDATATOOLS_CLASS_API Array
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Array), (((::fwData::Array::sptr))), new Array );
-
+    fwCoreClassFactoryMacro((Array), (((::fwData::Array::sptr))), new Array )
 
     FWDATATOOLS_API Array( ::fwData::Array::sptr array );
-
     FWDATATOOLS_API virtual ~Array();
 
     /**
      * @brief Setter for one item components of the array
      *
      * @param id Item id
-     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied to array 'id'
+     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied
+     * to array 'id'
      */
     FWDATATOOLS_API virtual void setItem(const ::fwData::Array::IndexType& id, const void* value);
 
@@ -48,7 +45,8 @@ public:
      *
      * @param id Item id
      * @param component Component id to write data in.
-     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied to array 'id', component n° 'component'
+     * @param value Valid buffer of elements of type \<m_type\> with a length equal to \<m_nbOfComponents\> to be copied
+     * to array 'id', component n° 'component'
      *
      */
     FWDATATOOLS_API virtual void setItem(const ::fwData::Array::IndexType& id, const size_t component,
@@ -118,7 +116,6 @@ public:
     FWDATATOOLS_API virtual const char* begin() const;
     FWDATATOOLS_API virtual const char* end() const;
 
-
     /// Returns the begining/end of the buffer, casted to T
     template< typename T > T* begin();
     template< typename T > T* end();
@@ -152,11 +149,12 @@ protected:
      */
     FWDATATOOLS_API virtual void setBuffer(void* buf, bool takeOwnership = false);
 
-
     ::fwData::Array::sptr m_array;
     ::fwMemory::BufferObject::Lock m_lock;
 
 };
+
+//------------------------------------------------------------------------------
 
 template< typename T >
 T* Array::begin()
@@ -164,18 +162,21 @@ T* Array::begin()
     return static_cast<T*>(this->getBuffer());
 }
 
+//------------------------------------------------------------------------------
+
 template< typename T >
 T* Array::end()
 {
     return reinterpret_cast<T*> (static_cast<char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
 
+//------------------------------------------------------------------------------
+
 template< typename T >
 T* Array::getItem(const  ::fwData::Array::IndexType& id, const size_t component)
 {
     return static_cast<T*> (this->getItem(id, component));
 }
-
 
 } // namespace helper
 

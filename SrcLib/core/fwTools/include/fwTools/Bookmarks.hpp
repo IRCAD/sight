@@ -28,7 +28,7 @@ class FWTOOLS_CLASS_API Bookmarks
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((Bookmarks), (()), new Bookmarks );
+    FWTOOLS_API Bookmarks();
 
     typedef std::string BookmarkName;
 
@@ -61,8 +61,6 @@ public:
 
     FWTOOLS_API virtual ~Bookmarks();
 protected:
-
-    FWTOOLS_API Bookmarks();
 
     typedef ::std::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
 

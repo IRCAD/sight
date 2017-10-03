@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include "MacrosTest.hpp"
 
 #include <fwTools/Object.hpp>
 
-#include "MacrosTest.hpp"
+#include <fwCore/base.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::MacrosTest );
@@ -22,20 +22,22 @@ class ClassTest
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ClassTest), (())( ((int)) ), new ClassTest);
+    fwCoreClassFactoryMacro((ClassTest), (())( ((int)) ), new ClassTest);
+
+    //------------------------------------------------------------------------------
 
     int getNum()
     {
         return m_num;
     }
 
-    ClassTest()
-        : m_num(1)
+    ClassTest() :
+        m_num(1)
     {
     }
 
-    ClassTest(int num)
-        : m_num(num)
+    ClassTest(int num) :
+        m_num(num)
     {
     }
 
@@ -47,15 +49,21 @@ private:
     int m_num;
 };
 
+//------------------------------------------------------------------------------
+
 void MacrosTest::setUp()
 {
     // Set up context before running a test.
 }
 
+//------------------------------------------------------------------------------
+
 void MacrosTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void MacrosTest::factoryMacroTest()
 {

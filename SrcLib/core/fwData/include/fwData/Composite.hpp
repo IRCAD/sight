@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,9 @@
 #ifndef __FWDATA_COMPOSITE_HPP__
 #define __FWDATA_COMPOSITE_HPP__
 
-
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -22,9 +21,7 @@ namespace fwData
 class Composite;
 }
 
-
 fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
-
 
 namespace fwData
 {
@@ -63,7 +60,6 @@ public:
     typedef ContainerType::const_reverse_iterator const_reverse_iterator;
     typedef ContainerType::size_type size_type;
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -72,7 +68,6 @@ public:
 
     /// Destructor
     FWDATA_API virtual ~Composite();
-
 
     IteratorType begin();
     IteratorType end();
@@ -95,24 +90,22 @@ public:
     SizeType count ( const KeyType& x ) const;
     /// @}
 
-
     /// @brief get/set the map of std::string/::fwData::Object
     /// @{
-    ContainerType &getContainer();
-    const ContainerType &getContainer () const;
-    void setContainer (const ContainerType &val);
+    ContainerType& getContainer();
+    const ContainerType& getContainer () const;
+    void setContainer (const ContainerType& val);
     /// @}
-
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
 
     /// Method to initialize a ::fwData::Composite from a std::map< string, X >
     template< class DATATYPE >
-    void setDataContainer( const std::map< std::string, SPTR(DATATYPE) > & map );
+    void setDataContainer( const std::map< std::string, SPTR(DATATYPE) >& map );
 
     /// Method to get a std::map< string, X > from ::fwData::Composite
     template< class DATATYPE >
@@ -235,49 +228,49 @@ inline Composite::SizeType Composite::size() const
 
 //-----------------------------------------------------------------------------
 
-inline Composite::mapped_type &Composite::operator[](Composite::KeyType n)
+inline Composite::mapped_type& Composite::operator[](Composite::KeyType n)
 {
     return this->m_container[n];
 }
 
 //-----------------------------------------------------------------------------
 
-inline Composite::IteratorType Composite::find(const Composite::KeyType &x)
+inline Composite::IteratorType Composite::find(const Composite::KeyType& x)
 {
     return m_container.find(x);
 }
 
 //-----------------------------------------------------------------------------
 
-inline Composite::ConstIteratorType Composite::find(const Composite::KeyType &x) const
+inline Composite::ConstIteratorType Composite::find(const Composite::KeyType& x) const
 {
     return m_container.find(x);
 }
 
 //-----------------------------------------------------------------------------
 
-inline Composite::SizeType Composite::count(const Composite::KeyType &x) const
+inline Composite::SizeType Composite::count(const Composite::KeyType& x) const
 {
     return m_container.count(x);
 }
 
 //-----------------------------------------------------------------------------
 
-inline Composite::ContainerType &Composite::getContainer()
+inline Composite::ContainerType& Composite::getContainer()
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Composite::ContainerType &Composite::getContainer () const
+inline const Composite::ContainerType& Composite::getContainer () const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Composite::setContainer (const Composite::ContainerType &val)
+inline void Composite::setContainer (const Composite::ContainerType& val)
 {
     m_container = val;
 }
@@ -285,7 +278,7 @@ inline void Composite::setContainer (const Composite::ContainerType &val)
 //-----------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline void Composite::setDataContainer( const std::map< std::string, SPTR(DATATYPE) > & map )
+inline void Composite::setDataContainer( const std::map< std::string, SPTR(DATATYPE) >& map )
 {
     this->getContainer().clear();
     this->getContainer().insert( map.begin(), map.end() );
@@ -301,7 +294,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
     for( ::fwData::Composite::value_type elem : *this )
     {
         castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
-        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castData);
+        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
         map[elem.first] = castData;
     }
 
@@ -318,7 +311,7 @@ SPTR(DATATYPE) Composite::at(const std::string& key)
     if(iter != this->end())
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
-        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
+        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getClassname()+" failed", !castData);
     }
     else
     {
@@ -337,7 +330,7 @@ CSPTR(DATATYPE) Composite::at(const std::string& key) const
     if(iter != this->end())
     {
         castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
-        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
+        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getClassname()+" failed", !castData);
     }
     else
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,8 +29,7 @@ class FWDATATOOLS_CLASS_API ArrayGetter
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ArrayGetter), (((::fwData::Array::sptr))), new ArrayGetter );
-
+    fwCoreClassFactoryMacro((ArrayGetter), (((::fwData::Array::sptr))), new ArrayGetter );
 
     FWDATATOOLS_API ArrayGetter( ::fwData::Array::csptr array );
 
@@ -79,7 +78,6 @@ public:
     FWDATATOOLS_API virtual const char* begin() const;
     FWDATATOOLS_API virtual const char* end() const;
 
-
     /// Returns the begining/end of the buffer, casted to T
     template< typename T > const T* begin() const;
     template< typename T > const T* end() const;
@@ -106,11 +104,15 @@ protected:
 
 };
 
+//------------------------------------------------------------------------------
+
 template< typename T >
 const T* ArrayGetter::begin() const
 {
     return static_cast<const T*>(this->getBuffer());
 }
+
+//------------------------------------------------------------------------------
 
 template< typename T >
 const T* ArrayGetter::end() const
@@ -118,12 +120,13 @@ const T* ArrayGetter::end() const
     return reinterpret_cast<const T*> (static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
 }
 
+//------------------------------------------------------------------------------
+
 template< typename T >
 const T* ArrayGetter::getItem(const  ::fwData::Array::IndexType& id, const size_t component) const
 {
     return static_cast<const T*> (this->getItem(id, component));
 }
-
 
 } // namespace helper
 

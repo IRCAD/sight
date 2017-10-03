@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ template< class DATATYPE >
 SPTR(DATATYPE) IService::getObject()
 {
     SPTR(DATATYPE) castData = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
-    OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getFullClassname() << " failed", castData);
+    OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", castData);
 
     return castData;
 }
@@ -34,7 +34,7 @@ CSPTR(DATATYPE) IService::getInput(const KeyType &key) const
     if(iterator != m_inputsMap.end())
     {
         input = std::dynamic_pointer_cast<const DATATYPE>( iterator->second.lock() );
-        OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getFullClassname() << " failed", input);
+        OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", input);
     }
 
     return input;
@@ -50,7 +50,7 @@ SPTR(DATATYPE) IService::getInOut(const KeyType &key) const
     if(iterator != m_inOutsMap.end())
     {
         inout = std::dynamic_pointer_cast<DATATYPE>( iterator->second.lock() );
-        OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getFullClassname() << " failed", inout);
+        OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getClassname() << " failed", inout);
     }
 
     return inout;

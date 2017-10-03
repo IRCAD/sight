@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,11 @@
 #ifndef __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__
 #define __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__
 
-#include <iterator>
-#include <vector>
-
-
 #include "fwRuntime/config.hpp"
 
+#include <iterator>
+#include <memory>
+#include <vector>
 
 namespace fwRuntime
 {
@@ -22,9 +21,7 @@ namespace io
 struct BundleDescriptorReader;
 } // namespace io
 
-
 struct ConfigurationElement;
-
 
 /**
  * @brief   Defines the generic configuration element container class.
@@ -32,7 +29,6 @@ struct ConfigurationElement;
 struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 {
     friend struct BundleDescriptorReader;
-
 
     /**
      * @name    Type Definitions
@@ -46,7 +42,6 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
     typedef Container::iterator Iterator;
 
     //@}
-
 
     /**
      * @brief   Retrieves the iterator on the first managed configuration
@@ -68,7 +63,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      *
      * @return  an configuration element container
      */
-    FWRUNTIME_API const Container & getElements() const;
+    FWRUNTIME_API const Container& getElements() const;
 
     /**
      * @brief       Retrieves the first configuration corresponding to the specified name.
@@ -77,7 +72,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      *
      * @return      a pointer to a configuration element instance or null if none
      */
-    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name )
+    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string& name )
     const;
 
     /**
@@ -87,8 +82,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      *
      * @return      true if the method find at least one configuration
      */
-    FWRUNTIME_API bool hasConfigurationElement( const std::string & name ) const;
-
+    FWRUNTIME_API bool hasConfigurationElement( const std::string& name ) const;
 
     /**
      * @brief       Retrieves the configurations corresponding to the specified name.
@@ -97,7 +91,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      *
      * @return      a configuration element container that contains configuration element instances
      */
-    FWRUNTIME_API ConfigurationElementContainer findAllConfigurationElement( const std::string & name ) const;
+    FWRUNTIME_API ConfigurationElementContainer findAllConfigurationElement( const std::string& name ) const;
 
     /**
      * @brief       Return the number of configurations
@@ -114,15 +108,12 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
          */
         FWRUNTIME_API void addConfigurationElement( std::shared_ptr< ConfigurationElement > element );
 
-
     private:
 
         Container m_elements; ///< all configuration elements
 
 };
 
-
 } // namespace fwRuntime
-
 
 #endif // __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__

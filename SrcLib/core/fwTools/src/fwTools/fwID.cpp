@@ -102,7 +102,7 @@ fwID::IDType fwID::getID( Policy policy) const
 fwID::IDType fwID::generate() const
 {
     IDType newID;
-    std::string prefix = this->getRootedClassname();
+    std::string prefix = this->getClassname();
     do
     {
         ::fwCore::mt::ScopedLock lock(s_mutexCounter);
