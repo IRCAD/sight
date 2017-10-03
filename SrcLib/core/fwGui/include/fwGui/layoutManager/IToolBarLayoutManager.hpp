@@ -22,6 +22,8 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <boost/filesystem/path.hpp>
+
 namespace fwGui
 {
 namespace layoutManager
