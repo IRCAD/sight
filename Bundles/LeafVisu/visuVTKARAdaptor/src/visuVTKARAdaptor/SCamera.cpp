@@ -271,7 +271,17 @@ void SCamera::calibrate()
         camera->RemoveObserver(m_cameraCommand);
 
         const double fy = cameraCalibration->getFy();
+        const double cx = cameraCalibration->getCx();
+        const double cy = cameraCalibration->getCy();
+
+        const double nx = static_cast<double>(cameraCalibration->getWidth());
+        const double ny = static_cast<double>(cameraCalibration->getHeight());
+
+        const double wcx = -2. * ( cx - nx / 2. ) / nx;
+        const double wcy = 2. * ( cy - ny / 2. ) / ny;
+
         camera->SetViewAngle(2.0 * atan(cameraCalibration->getHeight() / 2.0 / fy) * 180./ vtkMath::Pi());
+        camera->SetWindowCenter(wcx, wcy);
 
         this->updateFromTMatrix3D();
         camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
