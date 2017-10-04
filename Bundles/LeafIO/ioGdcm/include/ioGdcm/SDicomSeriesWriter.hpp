@@ -50,24 +50,24 @@ public:
     IOGDCM_API virtual ~SDicomSeriesWriter() noexcept;
 
     /// Propose select a directory where to save the DICOM files.
-    IOGDCM_API virtual void configureWithIHM();
+    IOGDCM_API virtual void configureWithIHM() override;
 
 protected:
 
     /// Does nothing
-    IOGDCM_API virtual void starting();
+    IOGDCM_API virtual void starting() override;
 
     /// Does nothing
-    IOGDCM_API virtual void stopping();
+    IOGDCM_API virtual void stopping() override;
 
     /// Does nothing
-    IOGDCM_API virtual void configuring();
+    IOGDCM_API virtual void configuring() override;
 
     /// Write the DicomSeries in DICOM format.
-    IOGDCM_API void updating();
+    IOGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const;
+    IOGDCM_API ::io::IOPathType getIOPathType() const override;
 
 private:
     /// Save the selected Dicom series

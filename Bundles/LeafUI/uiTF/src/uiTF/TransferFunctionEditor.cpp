@@ -20,6 +20,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -75,9 +76,10 @@ void TransferFunctionEditor::configuring()
     {
         const ConfigType config = srvConfig.get_child("config");
 
-        BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &pathCfg, config.equal_range("path"))
+        std::vector< ::fwRuntime::ConfigurationElement::sptr > pathsCfg = configuration->find("path");
+        for(::fwRuntime::ConfigurationElement::sptr cfg :  pathsCfg)
         {
-            const ::boost::filesystem::path path(pathCfg.second.get_value<std::string>());
+            const auto path = ::fwRuntime::getBundleResourceFilePath(cfg->getValue());
             m_paths.push_back(path);
         }
 
@@ -88,8 +90,7 @@ void TransferFunctionEditor::configuring()
     }
     if (useDefaultPath)
     {
-        ::boost::filesystem::path pathRoot(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                               UITF_VER) + "/tf");
+        const auto pathRoot = ::fwRuntime::getBundleResourceFilePath("uiTF", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -107,33 +108,29 @@ void TransferFunctionEditor::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    ::boost::filesystem::path deletePath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                             UITF_VER) + "/delete.png");
+    ::boost::filesystem::path bundlePath = ::fwRuntime::getBundleResourcePath(std::string("uiTF"));
+
+    const auto deletePath = bundlePath / "delete.png";
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
 
-    ::boost::filesystem::path newPath(std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(UITF_VER) +
-                                      "/new.png");
+    const auto newPath = bundlePath / "new.png";
     m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "");
     m_newButton->setToolTip(QString("New"));
 
-    ::boost::filesystem::path reinitializePath(std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(
-                                                   UITF_VER) + "/reinitialize.png");
+    const auto reinitializePath = bundlePath / "reinitialize.png";
     m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "");
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
 
-    ::boost::filesystem::path renamePath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                             UITF_VER) + "/rename.png");
+    const auto renamePath = bundlePath / "rename.png";
     m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
 
-    ::boost::filesystem::path importPath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                             UITF_VER) + "/import.png");
+    const auto importPath = bundlePath / "import.png";
     m_importButton = new QPushButton(QIcon(importPath.string().c_str()), "");
     m_importButton->setToolTip(QString("Import"));
 
-    ::boost::filesystem::path exportPath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                             UITF_VER) + "/export.png");
+    const auto exportPath = bundlePath / "export.png";
     m_exportButton = new QPushButton(QIcon(exportPath.string().c_str()), "");
     m_exportButton->setToolTip(QString("Export"));
 

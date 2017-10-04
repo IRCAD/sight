@@ -63,16 +63,16 @@ public:
 protected:
 
     /// Set memory and command boundaries.
-    CTRLHISTORY_API virtual void configuring();
+    CTRLHISTORY_API virtual void configuring() override;
 
     /// Notify if undo or redo are possible.
-    CTRLHISTORY_API virtual void starting();
+    CTRLHISTORY_API virtual void starting() override;
 
     /// Notify if undo or redo are possible.
-    CTRLHISTORY_API virtual void updating();
+    CTRLHISTORY_API virtual void updating() override;
 
     /// Clears the history.
-    CTRLHISTORY_API virtual void stopping();
+    CTRLHISTORY_API virtual void stopping() override;
 
 private:
 

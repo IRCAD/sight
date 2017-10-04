@@ -86,16 +86,16 @@ public:
 protected:
 
     /// Configure the adaptor.
-    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void configuring() override;
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void starting() override;
 
     /// Creates and starts image adaptor. Redraw all (stop then restart sub services).
-    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void updating() override;
 
     /// Stops and unregister image subservice.
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void stopping() override;
 
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
     void setSliceMode(SNegatoMPR::SliceMode sliceMode);

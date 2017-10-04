@@ -64,7 +64,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
         if (!actionInfo.m_icon.empty())
         {
-            QIcon icon(QString::fromStdString(actionInfo.m_icon));
+            QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
             action->setIcon(icon);
         }
         if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::QUIT)

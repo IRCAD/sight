@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,11 +13,11 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/location/ILocation.hpp>
 
 #include <fwJobs/IJob.hpp>
+
+#include <fwTools/Object.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -32,9 +32,6 @@ namespace reader
 
 /**
  * @brief   Base class for all object readers.
- * @class   IObjectReader
- *
- * @date    2009
  *
  * This class defines the API to use basic object readers. This reader is not
  * service. Their equivalent exist as services see ::io::IReader. To read an
@@ -106,7 +103,7 @@ public:
      */
     FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
 
-    FWDATAIO_API virtual std::string  extension() = 0;
+    FWDATAIO_API virtual std::string extension() = 0;
 
     /**
      * @brief Requests reader abortion.
@@ -118,7 +115,6 @@ public:
     {
         return nullptr;
     }
-
 
 protected:
 
@@ -143,6 +139,5 @@ protected:
 } // namespace reader
 
 } // namespace fwDataIO
-
 
 #endif // __FWDATAIO_READER_IOBJECTREADER_HPP__

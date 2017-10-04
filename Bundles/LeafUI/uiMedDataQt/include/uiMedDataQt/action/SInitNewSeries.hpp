@@ -35,10 +35,10 @@ public:
 protected:
 
     /// Starts service.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops service. Does nothing.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      *
@@ -52,12 +52,12 @@ protected:
      * \b seriesDB : UID of series DB used to add new series for each patient/study group
      * \b institution (not mandatory) : default value to be set for new series equipment's institution
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Adds the fake series in series DB.
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

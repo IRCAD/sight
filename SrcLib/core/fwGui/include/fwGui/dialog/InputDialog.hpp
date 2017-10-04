@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,9 @@
 #ifndef __FWGUI_DIALOG_INPUTDIALOG_HPP__
 #define __FWGUI_DIALOG_INPUTDIALOG_HPP__
 
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/dialog/IInputDialog.hpp"
 #include "fwGui/config.hpp"
-
+#include "fwGui/dialog/IInputDialog.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 namespace fwGui
 {
@@ -19,9 +18,6 @@ namespace dialog
 /**
  * @brief   Defines the generic input dialog for IHM.
  * Use the Delegate design pattern
- * @class   InputDialog
- *
- * @date    2009-2010.
  *
  * Example of use:
  * @code{.xml}
@@ -37,7 +33,7 @@ class FWGUI_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (InputDialog)(::fwGui::dialog::IInputDialog), (()), new InputDialog )
 
     /**
      * Opens a default input box with the specified title and message.
@@ -48,8 +44,7 @@ public:
      * @return Returns text in the input field
      */
     FWGUI_API static std::string showInputDialog(const std::string& title, const std::string& message,
-                                                 const std::string &text = "");
-
+                                                 const std::string& text = "");
 
     /** @brief Constructor. Create the implementation of the specific input dialog box.
      *
@@ -71,22 +66,22 @@ public:
      * @param message Message of the input box
      * @param text the input text in the input field
      */
-    FWGUI_API InputDialog(const std::string& title, const std::string& message, const std::string &text = "");
+    FWGUI_API InputDialog(const std::string& title, const std::string& message, const std::string& text = "");
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~InputDialog();
 
     /// Set the title of the input dialog
-    FWGUI_API virtual void setTitle(const std::string &title);
+    FWGUI_API virtual void setTitle(const std::string& title) override;
 
     /// Set the message
-    FWGUI_API virtual void setMessage(const std::string &msg);
+    FWGUI_API virtual void setMessage(const std::string& msg) override;
 
     /// Set the input text in the input field
-    FWGUI_API virtual void setInput(const std::string &text);
+    FWGUI_API virtual void setInput(const std::string& text) override;
 
     /// Get the input text in the input field
-    FWGUI_API virtual std::string getInput();
+    FWGUI_API virtual std::string getInput() override;
 
 protected:
 
@@ -98,5 +93,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_DIALOG_INPUTDIALOG_HPP__*/
-
 

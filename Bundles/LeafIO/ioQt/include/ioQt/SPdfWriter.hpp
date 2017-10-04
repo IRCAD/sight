@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SPdfWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SPdfWriter)( ::io::IWriter) );
     /**
      * @brief Constructor : does nothing
      */
@@ -84,14 +84,14 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IOQT_API virtual void starting();
+    IOQT_API virtual void starting() override;
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IOQT_API virtual void stopping();
+    IOQT_API virtual void stopping() override;
 
     /**
      * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
@@ -107,7 +107,7 @@ protected:
      * This method is used to set the file path of the PDF to write.
      *
      */
-    IOQT_API void configureWithIHM();
+    IOQT_API void configureWithIHM() override;
 
     /**
      * @brief Updating method. Creates a new PDF.
@@ -115,7 +115,7 @@ protected:
      * Loops over the containers list and the images list. Creates a new A4 page for each,
      * converts the containers and the images to QImage and writes them into the newly created PDF.
      */
-    IOQT_API void updating();
+    IOQT_API void updating() override;
 
     /**
      * @brief Info method.
@@ -125,13 +125,11 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IOQT_API virtual void info(std::ostream& _sstream );
+    IOQT_API virtual void info(std::ostream& _sstream ) override;
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    IOQT_API ::io::IOPathType getIOPathType() const;
-
-
+    IOQT_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

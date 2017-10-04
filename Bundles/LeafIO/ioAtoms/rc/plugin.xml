@@ -1,4 +1,4 @@
-<plugin id="ioAtoms" class="::ioAtoms::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioAtoms" class="::ioAtoms::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ioAtoms" />
 

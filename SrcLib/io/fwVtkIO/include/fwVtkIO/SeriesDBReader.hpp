@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,14 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwMedData/Series.hpp>
-
-#include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/MultiFiles.hpp>
 
+#include <fwDataIO/reader/GenericObjectReader.hpp>
+
+#include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
 #include <boost/filesystem/path.hpp>
-
 
 namespace fwJobs
 {
@@ -29,7 +28,6 @@ namespace fwVtkIO
 
 /**
  * @brief   Read a SeriesDB.
- * @class   SeriesDBReader
  *
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.
  */
@@ -53,10 +51,12 @@ public:
     FWVTKIO_API ~SeriesDBReader();
 
     //! @brief Reading operator.
-    FWVTKIO_API void read();
+    FWVTKIO_API void read() override;
 
     /// @return ".vtk"
-    FWVTKIO_API std::string extension();
+    FWVTKIO_API std::string extension() override;
+
+    //------------------------------------------------------------------------------
 
     void setLazyMode(bool lazyMode)
     {
@@ -64,7 +64,7 @@ public:
     }
 
     /// @return internal job
-    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 

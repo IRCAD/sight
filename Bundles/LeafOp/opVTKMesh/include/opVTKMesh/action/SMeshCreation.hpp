@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,7 +48,7 @@ class OPVTKMESH_CLASS_API SMeshCreation : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMeshCreation)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SMeshCreation)(::fwGui::IActionSrv) );
 
     OPVTKMESH_API SMeshCreation() noexcept;
 
@@ -56,24 +56,22 @@ public:
 
 protected:
 
-    OPVTKMESH_API void starting();
+    OPVTKMESH_API void starting() override;
 
-    OPVTKMESH_API void stopping();
+    OPVTKMESH_API void stopping() override;
 
     /// Configure the service.
-    OPVTKMESH_API void configuring();
+    OPVTKMESH_API void configuring() override;
 
     /// Process the mesh creation from the image.
-    OPVTKMESH_API void updating();
+    OPVTKMESH_API void updating() override;
 
 private:
 
     unsigned int m_reduction;
 };
 
-
 } // namespace action
 } // namespace opVTKMesh
-
 
 #endif // __OPVTKMESH_ACTION_SMESHCREATION_HPP__

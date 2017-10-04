@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,7 @@
 #include "fwData/location/ILocation.hpp"
 
 #include <boost/filesystem/path.hpp>
+
 #include <vector>
 
 namespace fwData
@@ -38,7 +39,7 @@ public:
     FWDATA_API VectPathType getPaths();
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 protected:
 
@@ -60,7 +61,8 @@ struct enableMultiFiles
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableMultiFiles(RW *rw) : m_rw(rw)
+    enableMultiFiles(RW* rw) :
+        m_rw(rw)
     {
         SLM_ASSERT("m_rw not instanced", m_rw);
     }
@@ -80,7 +82,7 @@ struct enableMultiFiles
     private:
         /// Not implemented must use constructor with one parameter
         enableMultiFiles();
-        RW *m_rw;
+        RW* m_rw;
 };
 
 }

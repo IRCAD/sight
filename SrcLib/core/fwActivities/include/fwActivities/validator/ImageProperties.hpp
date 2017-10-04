@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,15 +19,13 @@ namespace validator
 
 /**
  * @brief Defines a validator which checks that properties of given images are the same.
- * @class ImageProperties.
  */
 class FWACTIVITIES_CLASS_API ImageProperties : public ::fwActivities::IObjectValidator
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ImageProperties)(::fwActivities::IObjectValidator),
                                             (()),
-                                            ::fwActivities::validator::factory::New< ImageProperties > );
-
+                                            ::fwActivities::validator::factory::New< ImageProperties > )
 
     /// Constructor. Do nothing.
     FWACTIVITIES_API ImageProperties(::fwActivities::IValidator::Key key);
@@ -41,14 +39,15 @@ public:
      */
     FWACTIVITIES_API virtual IValidator::ValidationType validate(
         const ::fwActivities::registry::ActivityInfo& activityInfo,
-        SPTR(::fwData::Vector) currentSelection ) const;
+        SPTR(::fwData::Vector) currentSelection ) const override;
 
     /**
      * @brief Validates if the given images have the same properties (origin, spacing, ...)
      * @note Given object must be a Vector or Composite of ImageSeries (or images)
      * @see ::fwActivities::IValidator::validate
      */
-    FWACTIVITIES_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object) &currentObject ) const;
+    FWACTIVITIES_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object)& currentObject ) const
+    override;
 };
 
 } // namespace validator

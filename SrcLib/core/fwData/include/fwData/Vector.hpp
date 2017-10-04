@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWDATA_VECTOR_HPP__
 #define __FWDATA_VECTOR_HPP__
 
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+#include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -95,20 +95,20 @@ public:
 
     /// @brief get/set the vector of ::fwData::Object
     /// @{
-    ContainerType &getContainer();
-    const ContainerType &getContainer () const;
-    void setContainer (const ContainerType &val);
+    ContainerType& getContainer();
+    const ContainerType& getContainer () const;
+    void setContainer (const ContainerType& val);
     /// @}
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Method to initialize a ::fwData::Vector from a std::vector
     template< class DATATYPE >
-    void setDataContainer( const std::vector< SPTR(DATATYPE) > & vec );
+    void setDataContainer( const std::vector< SPTR(DATATYPE) >& vec );
 
     /// Method to get a std::vector from ::fwData::Vector
     template< class DATATYPE >
@@ -204,7 +204,6 @@ inline Vector::SizeType Vector::size() const
     return m_container.size();
 }
 
-
 //-----------------------------------------------------------------------------
 
 inline Vector::ValueType Vector::front() const
@@ -249,21 +248,21 @@ inline Vector::ConstReferenceType Vector::at(Vector::SizeType n) const
 
 //-----------------------------------------------------------------------------
 
-inline Vector::ContainerType &Vector::getContainer()
+inline Vector::ContainerType& Vector::getContainer()
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Vector::ContainerType &Vector::getContainer () const
+inline const Vector::ContainerType& Vector::getContainer () const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Vector::setContainer (const Vector::ContainerType &val)
+inline void Vector::setContainer (const Vector::ContainerType& val)
 {
     m_container = val;
 }
@@ -271,7 +270,7 @@ inline void Vector::setContainer (const Vector::ContainerType &val)
 //-----------------------------------------------------------------------------
 
 template< class DATATYPE >
-inline void Vector::setDataContainer( const std::vector< SPTR(DATATYPE) > & vec )
+inline void Vector::setDataContainer( const std::vector< SPTR(DATATYPE) >& vec )
 {
     m_container.clear();
     std::copy( vec.begin(), vec.end(), std::back_inserter(this->getContainer()) );
@@ -288,7 +287,7 @@ inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
     for(const ::fwData::Object::sptr& data : this->getContainer() )
     {
         castedData = std::dynamic_pointer_cast<DATATYPE>( data );
-        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
+        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getClassname()<<" failed", castedData);
         vec.push_back( castedData );
     }
 

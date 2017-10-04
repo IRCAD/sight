@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,8 @@ namespace dataReg
 namespace parser
 {
 /**
- * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an XML-based description.
+ * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an
+ * XML-based description.
  * @see     ::fwServices::IXMLParser
  */
 class DATAREG_CLASS_API TransformationMatrix3D : public ::fwServices::IXMLParser
@@ -29,7 +30,7 @@ class DATAREG_CLASS_API TransformationMatrix3D : public ::fwServices::IXMLParser
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3D)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (TransformationMatrix3D)(::fwServices::IXMLParser) );
 
     /// Constructor : does nothing.
     TransformationMatrix3D()
@@ -41,7 +42,7 @@ public:
     {
     }
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj );
+    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 protected:
 
     /**
@@ -50,7 +51,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    DATAREG_API virtual void updating( );
+    DATAREG_API virtual void updating( ) override;
 
 };
 

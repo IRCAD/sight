@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWGUI_DIALOG_MESSAGEDIALOG_HPP__
 #define __FWGUI_DIALOG_MESSAGEDIALOG_HPP__
 
-#include <fwCore/base.hpp>
-
-#include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/dialog/IMessageDialog.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwGui
 {
@@ -19,14 +19,13 @@ namespace dialog
 /**
  * @brief   Defines the generic message box for IHM.
  * Use the Delegate design pattern.
- * @class   MessageDialog
  */
 class FWGUI_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog);
+    fwCoreClassDefinitionsWithFactoryMacro((MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog)
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -57,22 +56,22 @@ public:
     FWGUI_API virtual ~MessageDialog();
 
     /// Set the title of the message box
-    FWGUI_API virtual void setTitle(const std::string &title);
+    FWGUI_API virtual void setTitle(const std::string& title) override;
 
     /// Set the message
-    FWGUI_API virtual void setMessage(const std::string &msg);
+    FWGUI_API virtual void setMessage(const std::string& msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    FWGUI_API virtual void setIcon( IMessageDialog::Icons icon);
+    FWGUI_API virtual void setIcon( IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    FWGUI_API virtual void addButton(IMessageDialog::Buttons button );
+    FWGUI_API virtual void addButton(IMessageDialog::Buttons button ) override;
 
     /// Set the default button
-    void setDefaultButton(IMessageDialog::Buttons button );
+    void setDefaultButton(IMessageDialog::Buttons button ) override;
 
     /// Show the message box and return the clicked button.
-    FWGUI_API virtual IMessageDialog::Buttons show();
+    FWGUI_API virtual IMessageDialog::Buttons show() override;
 
 protected:
 
@@ -84,5 +83,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_DIALOG_MESSAGEDIALOG_HPP__*/
-
 

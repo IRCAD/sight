@@ -1,4 +1,4 @@
-<plugin id="visuVTK" class="visuVTK::Plugin" version="@DASH_VERSION@" >
+<plugin id="visuVTK" class="visuVTK::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="visuVTK" />
 

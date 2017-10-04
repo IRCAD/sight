@@ -39,16 +39,16 @@ public:
 protected:
 
     /// Do nothing
-    virtual void starting();
+    virtual void starting() override;
 
     /// Do nothing
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Initialize the current ::fwData::Array with 10 values (0 to 9).
-    virtual void updating();
+    virtual void updating() override;
 
     /// Do nothing
-    virtual void configuring();
+    virtual void configuring() override;
 };
 
 }  // namespace Tuto16MultithreadConsole

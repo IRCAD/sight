@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ class GUI_CLASS_API SDefaultMenu : public ::fwGui::IMenuSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDefaultMenu)(::fwGui::IMenuSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SDefaultMenu)(::fwGui::IMenuSrv) );
 
     /// Constructor. Do nothing.
     GUI_API SDefaultMenu() noexcept;
@@ -68,22 +68,22 @@ protected:
      *
      *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuLayoutManager::initialize()
      */
-    GUI_API virtual void configuring();
+    GUI_API virtual void configuring() override;
 
     /**
      * @brief Create the menu items and start the managed services.
      * @see ::fwGui::IMenuSrv::create()
      */
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to menuBar
      * @see ::fwGui::IMenuSrv::destroy()
      */
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     /// Updating service, do nothing.
-    GUI_API virtual void updating();
+    GUI_API virtual void updating() override;
     ///@}
 
 };

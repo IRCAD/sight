@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,24 +7,24 @@
 #ifndef __FWZIP_IREADARCHIVE_HPP__
 #define __FWZIP_IREADARCHIVE_HPP__
 
-#include <istream>
+#include <fwCore/macros.hpp>
+
 #include <boost/filesystem/path.hpp>
 
-#include <fwCore/macros.hpp>
+#include <istream>
 
 namespace fwZip
 {
 
 /**
  * @brief   This interface defines functions to read a file in an archive.
- * @class   IReadArchive
  */
 class IReadArchive
 {
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro((IReadArchive));
+    fwCoreBaseClassDefinitionsMacro((IReadArchive))
 
     virtual ~IReadArchive()
     {
@@ -46,7 +46,6 @@ public:
 };
 
 }
-
 
 #endif /* __FWZIP_IREADARCHIVE_HPP__ */
 

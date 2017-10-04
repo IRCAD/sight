@@ -39,7 +39,7 @@ struct WeakCall
         m_weakPtr(ptr),
         m_func(f)
     {
-        SLM_TRACE("WeakCall object : " + ptr->getFullClassname() );
+        SLM_TRACE("WeakCall object : " + ptr->getClassname() );
     }
 
     WeakCall( const std::shared_ptr< T const >& ptr, std::function< R() > f,
@@ -48,7 +48,7 @@ struct WeakCall
         m_func(f),
         m_worker( m )
     {
-        SLM_TRACE("WeakCall object : " + ptr->getFullClassname() );
+        SLM_TRACE("WeakCall object : " + ptr->getClassname() );
     }
 
     ~WeakCall()

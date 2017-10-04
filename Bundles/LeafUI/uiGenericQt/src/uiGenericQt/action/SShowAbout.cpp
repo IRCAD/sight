@@ -21,6 +21,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwRuntime/operations.hpp>
 
 #include "uiGenericQt/action/SShowAbout.hpp"
 
@@ -69,8 +70,9 @@ void SShowAbout::configuring()
     if(cfgFilename)
     {
         const std::string& filename = cfgFilename->getExistingAttributeValue("id");
+        // Convert the path from a bundle location
+        m_fsAboutPath = ::fwRuntime::getBundleResourceFilePath(filename);
 
-        m_fsAboutPath          = ::boost::filesystem::path(filename);
         m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAboutPath);
         SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
         SLM_TRACE("Filename found '" + filename + "'");

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
 #define __MONITOR_ACTION_MEMORYCONSUMPTION_HPP__
 
-#include <fwGui/IActionSrv.hpp>
-
 #include "monitor/config.hpp"
+
+#include <fwGui/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -22,7 +22,7 @@ class MONITOR_CLASS_API MemoryConsumption : public  ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MemoryConsumption)(  ::fwGui::IActionSrv ) );
+    fwCoreServiceClassDefinitionsMacro( (MemoryConsumption)(  ::fwGui::IActionSrv ) );
 
     /// Does nothing
     MONITOR_API MemoryConsumption() noexcept;
@@ -47,16 +47,16 @@ protected:
      * @li mode : increase or decrease.
      * @li value : optional, consuming memory size in Mo (in "increase" mode).
      */
-    void configuring();
+    void configuring() override;
 
     /// Calls classic IAction methods to start
-    void starting();
+    void starting() override;
 
     /// Increase or decrease memory with size defined during configuration
-    void updating();
+    void updating() override;
 
     /// Calls classic IAction methods to stop
-    void stopping();
+    void stopping() override;
 
 private:
 
@@ -70,7 +70,6 @@ private:
     size_t m_memorySizeInBytes;
 
 };
-
 
 } // namespace action
 } // namespace monitor

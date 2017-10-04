@@ -1,4 +1,4 @@
-<plugin id="Tuto02DataServiceBasic" version="@DASH_VERSION@">
+<plugin id="Tuto02DataServiceBasic" version="@PROJECT_VERSION@">
 
     <!-- The bundles in requirements are automatically started when this 
          Application is launched. -->
@@ -23,7 +23,7 @@
                 <gui>
                     <frame>
                         <name>tutoDataServiceBasic</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
+                        <icon>Tuto02DataServiceBasic-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>

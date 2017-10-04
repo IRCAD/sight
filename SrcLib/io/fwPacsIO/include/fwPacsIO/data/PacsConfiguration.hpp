@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,8 @@
 
 #include "fwPacsIO/config.hpp"
 
-#include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
 
 fwCampAutoDeclareDataMacro((fwPacsIO)(data)(PacsConfiguration), FWPACSIO_API);
 
@@ -30,7 +30,6 @@ public:
                                             ::fwData::factory::New< PacsConfiguration >);
     fwCampMakeFriendDataMacro((fwPacsIO)(data)(PacsConfiguration));
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -41,10 +40,10 @@ public:
     FWPACSIO_API virtual ~PacsConfiguration();
 
     /// Defines shallow copy
-    FWPACSIO_API void shallowCopy( const Object::csptr& _source );
+    FWPACSIO_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWPACSIO_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    FWPACSIO_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Retrieve Method
@@ -67,6 +66,8 @@ public:
         return m_localApplicationTitle;
     }
 
+    //------------------------------------------------------------------------------
+
     void setLocalApplicationTitle(const std::string& localApplicationTitle)
     {
         m_localApplicationTitle = localApplicationTitle;
@@ -81,6 +82,8 @@ public:
     {
         return m_pacsHostName;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPacsHostName(const std::string& pacsHostName)
     {
@@ -97,6 +100,8 @@ public:
         return m_pacsApplicationTitle;
     }
 
+    //------------------------------------------------------------------------------
+
     void setPacsApplicationTitle(const std::string& pacsApplicationTitle)
     {
         m_pacsApplicationTitle = pacsApplicationTitle;
@@ -111,6 +116,8 @@ public:
     {
         return m_pacsApplicationPort;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPacsApplicationPort(const unsigned short& pacsApplicationPort)
     {
@@ -127,6 +134,8 @@ public:
         return m_moveApplicationTitle;
     }
 
+    //------------------------------------------------------------------------------
+
     void setMoveApplicationTitle(const std::string& moveApplicationTitle)
     {
         m_moveApplicationTitle = moveApplicationTitle;
@@ -141,6 +150,8 @@ public:
     {
         return m_moveApplicationPort;
     }
+
+    //------------------------------------------------------------------------------
 
     void setMoveApplicationPort(unsigned short moveApplicationPort)
     {
@@ -157,6 +168,8 @@ public:
         return m_retrieveMethod;
     }
 
+    //------------------------------------------------------------------------------
+
     void setRetrieveMethod(RETRIEVE_METHOD retrieveMethod)
     {
         m_retrieveMethod = retrieveMethod;
@@ -165,7 +178,6 @@ public:
     /**  @} */
 
     /**  @} */
-
 
 protected:
     /// Local application title
@@ -188,7 +200,6 @@ protected:
 
     /// Retrieve method
     RETRIEVE_METHOD m_retrieveMethod;
-
 
 };
 

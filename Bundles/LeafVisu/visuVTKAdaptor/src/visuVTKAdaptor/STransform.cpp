@@ -157,13 +157,6 @@ void STransform::updateFromVtk()
 
 //------------------------------------------------------------------------------
 
-int STransform::getStartPriority()
-{
-    return -10;
-}
-
-//------------------------------------------------------------------------------
-
 void STransform::updating()
 {
     vtkTransform* vtkTrf = this->getTransform();

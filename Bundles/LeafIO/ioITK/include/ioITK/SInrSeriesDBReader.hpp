@@ -46,30 +46,30 @@ public:
 protected:
 
     /// Does nothing.
-    virtual void starting()
+    virtual void starting() override
     {
     }
 
     /// Does nothing.
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
 
     /// Calls base class implementation
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Reads inr files specified by user (configure or configureWithIHM) and pushes them into SeriesDB.
-    IOITK_API virtual void updating();
+    IOITK_API virtual void updating() override;
 
     /**
      * @brief Configure the inr files path.
      *
      * This method is used to find the inr files path using a files selector.
      */
-    IOITK_API virtual void configureWithIHM();
+    IOITK_API virtual void configureWithIHM() override;
 
     /// Returns managed file type, here FILES
-    IOITK_API ::io::IOPathType getIOPathType() const;
+    IOITK_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

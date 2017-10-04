@@ -1,4 +1,4 @@
-<plugin id="ioDcmtk" class="ioDcmtk::Plugin"  version="@DASH_VERSION@" >
+<plugin id="ioDcmtk" class="ioDcmtk::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioDcmtk" />
 
     <requirement id="dataReg"/>

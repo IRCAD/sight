@@ -53,19 +53,19 @@ public:
 
 protected:
 
-    BASICREGISTRATION_API virtual void configuring();
+    BASICREGISTRATION_API virtual void configuring() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void starting();
+    BASICREGISTRATION_API virtual void starting() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void stopping();
+    BASICREGISTRATION_API virtual void stopping() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void updating();
+    BASICREGISTRATION_API virtual void updating() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void swapping();
+    BASICREGISTRATION_API virtual void swapping() override;
 
 private Q_SLOTS:
 

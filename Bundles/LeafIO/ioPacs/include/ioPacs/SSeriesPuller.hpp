@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,12 +10,17 @@
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 #include <fwPacsIO/SeriesRetriever.hpp>
-#include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/IController.hpp>
+
 #include <fwThread/Worker.hpp>
+
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -62,7 +67,7 @@ class IOPACS_CLASS_API SSeriesPuller : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesPuller)( ::fwServices::IController ) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesPuller)( ::fwServices::IController ) );
 
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;
@@ -100,19 +105,19 @@ public:
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring();
+    IOPACS_API virtual void configuring() override;
 
     /// Override
-    IOPACS_API virtual void starting();
+    IOPACS_API virtual void starting() override;
 
     /// Override
-    IOPACS_API virtual void stopping();
+    IOPACS_API virtual void stopping() override;
 
     /// Override
-    IOPACS_API void updating();
+    IOPACS_API void updating() override;
 
     /// Override
-    IOPACS_API void info(std::ostream& _sstream );
+    IOPACS_API void info(std::ostream& _sstream ) override;
 
 protected:
 
@@ -139,8 +144,6 @@ protected:
      */
     IOPACS_API void storeInstanceCallback(const std::string& seriesInstanceUID, unsigned int instanceNumber,
                                           const std::string& filePath);
-
-
 
     /// Slot to call readLocalSeries method
     ReadDicomSlotType::sptr m_slotReadLocalSeries;

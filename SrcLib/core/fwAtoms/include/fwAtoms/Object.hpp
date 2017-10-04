@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef  __FWATOMS_OBJECT_HPP__
 #define  __FWATOMS_OBJECT_HPP__
 
-#include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
 #include "fwAtoms/factory/new.hpp"
 
 namespace fwAtoms
@@ -51,7 +51,6 @@ public:
     {
         return m_attributes;
     }
-
 
     //! Returns requested attribute if exists, empty sptr else.
     FWATOMS_API Base::sptr getAttribute(const std::string& key) const;
@@ -110,16 +109,15 @@ public:
     /**
      * @brief Returns a clone object
      */
-    FWATOMS_API virtual Base::sptr clone() const;
+    FWATOMS_API virtual Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const
+    ::fwAtoms::Base::AtomType type() const override
     {
         return ::fwAtoms::Base::OBJECT;
     }
-
 
 private:
 

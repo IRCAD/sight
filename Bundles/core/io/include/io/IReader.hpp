@@ -163,7 +163,7 @@ protected:
        </service>
        @endcode
      */
-    IO_API virtual void configuring();
+    IO_API virtual void configuring() override;
 
     /**
      * @brief Title of the window that will open when the `configureWithIHM` slot is called

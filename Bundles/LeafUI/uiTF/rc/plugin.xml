@@ -1,4 +1,4 @@
-<plugin id="uiTF" class="::uiTF::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiTF" class="::uiTF::Plugin" version="@PROJECT_VERSION@" >
     <library name="uiTF" />
 
     <requirement id="dataReg" />

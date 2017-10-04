@@ -109,13 +109,6 @@ void IAdaptor::setVtkPipelineModified()
 
 //------------------------------------------------------------------------------
 
-int IAdaptor::getStartPriority()
-{
-    return 0;
-}
-
-//------------------------------------------------------------------------------
-
 void IAdaptor::requestRender()
 {
     if ( (this->getRenderService()->getStatus() == ::fwServices::IService::STARTED ||

@@ -41,15 +41,15 @@ public:
 protected:
 
     /// Starts service and loads preferences if exists.
-    PREFERENCES_API virtual void starting();
+    PREFERENCES_API virtual void starting() override;
 
     /// Stops service and saves preferences.
-    PREFERENCES_API virtual void stopping();
+    PREFERENCES_API virtual void stopping() override;
 
     /// Updates service and saves preferences.
-    PREFERENCES_API virtual void updating();
+    PREFERENCES_API virtual void updating() override;
 
-    PREFERENCES_API virtual void configuring();
+    PREFERENCES_API virtual void configuring() override;
 
     /// preference file
     ::boost::filesystem::path m_prefFile;

@@ -39,15 +39,15 @@ public:
      * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     /// Calls updating on starting.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops the config if it is running.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Configures the service.
@@ -75,7 +75,7 @@ protected:
      *     - \b by : specific value to replace for the parameter
      * - \b extract : extracts the object from the path and replaces pattern with its fwID
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /**
      * @brief Launch the config on the object if possible.
@@ -85,9 +85,9 @@ protected:
      * no configuration are launched if there is no selection, a multiple selection or if there is no configuration
      * associated with the selected object.
      */
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWDATA_GENERICFIELD_HPP__
 #define __FWDATA_GENERICFIELD_HPP__
 
-#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+#include "fwData/factory/new.hpp"
 #include "fwData/GenericFieldBase.hpp"
 
 #include <fwCore/base.hpp>
@@ -49,7 +49,7 @@ public:
     }
 
     /// @brief set the value
-    void setValue(const T &newValue) noexcept
+    void setValue(const T& newValue) noexcept
     {
         m_value = newValue;
     }
@@ -63,54 +63,70 @@ public:
     /// @brief Conversion to a scalar type.
     operator T() noexcept { return m_value; }
 
-    bool operator== (const GenericFieldBase &lf)
+    //------------------------------------------------------------------------------
+
+    bool operator== (const GenericFieldBase& lf) override
     {
-        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField );
         return ( this->m_value == gField.value() );
     }
 
-    bool operator!= (const GenericFieldBase &lf )
+    //------------------------------------------------------------------------------
+
+    bool operator!= (const GenericFieldBase& lf ) override
     {
-        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value != gField.value() );
     }
 
-    bool operator< (const GenericFieldBase &lf )
+    //------------------------------------------------------------------------------
+
+    bool operator< (const GenericFieldBase& lf ) override
     {
-        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value < gField.value() );
     }
 
-    bool operator> (const GenericFieldBase &lf)
+    //------------------------------------------------------------------------------
+
+    bool operator> (const GenericFieldBase& lf) override
     {
-        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value > gField.value() );
     }
 
-    bool operator<= (const GenericFieldBase &lf)
+    //------------------------------------------------------------------------------
+
+    bool operator<= (const GenericFieldBase& lf) override
     {
-        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value <= gField.value() );
     }
 
-    bool operator>= (const GenericFieldBase &lf )
+    //------------------------------------------------------------------------------
+
+    bool operator>= (const GenericFieldBase& lf ) override
     {
-        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T>& gField = dynamic_cast< const ::fwData::GenericField<T>& >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value >= gField.value() );
     }
 
-    virtual ::std::string toString() const
+    //------------------------------------------------------------------------------
+
+    virtual ::std::string toString() const override
     {
         return ::boost::lexical_cast< ::std::string >(this->m_value);
     }
 
-    virtual void fromString(const ::std::string &_value)
+    //------------------------------------------------------------------------------
+
+    virtual void fromString(const ::std::string& _value) override
     {
         this->m_value = ::boost::lexical_cast< T >(_value);
     }
@@ -121,7 +137,6 @@ protected:
     static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value);
 
     static sptr GenericFieldFactory(const T value);
-
 
     /**
      * @brief Constructor.
@@ -139,7 +154,9 @@ protected:
     {
     }
 
-    virtual std::ostream & toOStream( std::ostream &_os ) const
+    //------------------------------------------------------------------------------
+
+    virtual std::ostream& toOStream( std::ostream& _os ) const override
     {
         return _os << this->value();
     }
@@ -148,6 +165,7 @@ protected:
     T m_value;
 };
 
+//------------------------------------------------------------------------------
 
 template< typename T >
 template< typename GT >
@@ -159,6 +177,8 @@ typename GT::sptr GenericField<T>::GenericFieldFactory(const typename GT::ValueT
     return field;
 }
 
+//------------------------------------------------------------------------------
+
 template< typename T >
 typename GenericField<T>::sptr GenericField<T>::GenericFieldFactory(const T value)
 {
@@ -167,7 +187,6 @@ typename GenericField<T>::sptr GenericField<T>::GenericFieldFactory(const T valu
     field->value() = value;
     return field;
 }
-
 
 } // namespace fwData
 

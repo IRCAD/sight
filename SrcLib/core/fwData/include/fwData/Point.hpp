@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,13 +8,12 @@
 #define __FWDATA_POINT_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <array>
 
 fwCampAutoDeclareDataMacro((fwData)(Point), FWDATA_API);
-
 
 namespace fwData
 {
@@ -30,11 +29,11 @@ public:
     typedef std::array<double, 3> PointCoordArrayType;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
-                                               ((::fwData::factory::New< Point >,() ))
-                                                   ((PointFactory,((float))((float)(0.0f)) ((float) (0.0f)) ))
-                                                   ((PointFactory,((double))((double)(0.0)) ((double) (0.0)) ))
-                                                   ((PointFactory,((const PointCoordArrayType &)) ))
-                                                   ((PointFactory,((Point::sptr)) ))
+                                               ((::fwData::factory::New< Point >, () ))
+                                                   ((PointFactory, ((float))((float)(0.0f)) ((float) (0.0f)) ))
+                                                   ((PointFactory, ((double))((double)(0.0)) ((double) (0.0)) ))
+                                                   ((PointFactory, ((const PointCoordArrayType &)) ))
+                                                   ((PointFactory, ((Point::sptr)) ))
                                                );
 
     fwCampMakeFriendDataMacro((fwData)(Point));
@@ -49,16 +48,16 @@ public:
     FWDATA_API virtual ~Point();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get/set point coordinates
     /// @{
     const PointCoordArrayType  getCoord () const;
     PointCoordArrayType& getRefCoord ();
-    const PointCoordArrayType & getCRefCoord() const;
+    const PointCoordArrayType& getCRefCoord() const;
     void setCoord(const PointCoordArrayType& _vCoord);
     /// @}
 
@@ -91,14 +90,14 @@ inline Point::PointCoordArrayType& Point::getRefCoord ()
 
 //-----------------------------------------------------------------------------
 
-inline const Point::PointCoordArrayType & Point::getCRefCoord() const
+inline const Point::PointCoordArrayType& Point::getCRefCoord() const
 {
     return this->m_vCoord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Point::setCoord(const PointCoordArrayType & _vCoord)
+inline void Point::setCoord(const PointCoordArrayType& _vCoord)
 {
     this->m_vCoord = _vCoord;
 }

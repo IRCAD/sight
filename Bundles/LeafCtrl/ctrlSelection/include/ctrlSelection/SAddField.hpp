@@ -50,16 +50,16 @@ public:
 protected:
 
     /// Configure the service.
-    CTRLSELECTION_API void configuring();
+    CTRLSELECTION_API void configuring() override;
 
     /// Do nothing.
-    CTRLSELECTION_API void starting();
+    CTRLSELECTION_API void starting() override;
 
     /// Do nothing.
-    CTRLSELECTION_API void stopping();
+    CTRLSELECTION_API void stopping() override;
 
     /// Add the source object as fields of the target object.
-    CTRLSELECTION_API void updating();
+    CTRLSELECTION_API void updating() override;
 
 private:
 

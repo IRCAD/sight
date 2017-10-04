@@ -34,15 +34,15 @@ public:
 
 protected:
 
-    void configuring();
+    void configuring() override;
 
-    void starting();
+    void starting() override;
 
-    void updating();
+    void updating() override;
 
-    void stopping();
+    void stopping() override;
 
-    UIMEASUREMENT_API void info(std::ostream& _sstream );
+    UIMEASUREMENT_API void info(std::ostream& _sstream ) override;
 
 private:
     void notifyNewDistance(const ::fwData::Image::csptr& image, const ::fwData::PointList::sptr& distance) const;

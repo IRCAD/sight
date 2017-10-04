@@ -45,18 +45,18 @@ protected:
        </service>
        @endcode
      */
-    void configuring();
+    void configuring() override;
 
     /// Starts action
-    void starting();
+    void starting() override;
 
     /// Launch a browser on the url given in the configuration
-    void updating();
+    void updating() override;
 
     /// Stops action
-    void stopping();
+    void stopping() override;
 
-    void info( std::ostream& _sstream );
+    void info( std::ostream& _sstream ) override;
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 

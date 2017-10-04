@@ -101,7 +101,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             toolButton->setText(QString::fromStdString(actionInfo.m_name));
             if (!actionInfo.m_icon.empty())
             {
-                QIcon icon(QString::fromStdString(actionInfo.m_icon));
+                QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
                 toolButton->setIcon(icon);
                 toolButton->setToolTip(QString::fromStdString(actionInfo.m_name));
                 toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -134,11 +134,13 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             QAction* action;
             if (!actionInfo.m_icon.empty())
             {
-                QIcon icon(QString::fromStdString(actionInfo.m_icon));
+                QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
                 if (!actionInfo.m_icon2.empty())
                 {
-                    icon.addFile(QString::fromStdString(actionInfo.m_icon2), QSize(), QIcon::Normal, QIcon::On);
-                    icon.addFile(QString::fromStdString(actionInfo.m_icon2), QSize(), QIcon::Active, QIcon::On);
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), QSize(), QIcon::Normal,
+                                 QIcon::On);
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), QSize(), QIcon::Active,
+                                 QIcon::On);
                 }
                 action = toolBar->addAction( icon, QString::fromStdString(actionInfo.m_name) );
             }

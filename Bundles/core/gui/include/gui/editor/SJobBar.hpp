@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@ class GUI_CLASS_API SJobBar : public ::gui::editor::IDialogEditor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SJobBar)(::gui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SJobBar)(::gui::editor::IDialogEditor) );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -65,21 +65,21 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /**
      * @brief This method emit a signal.
      */
-    GUI_API void updating();
+    GUI_API void updating() override;
 
     /**
      * @brief This method is used to configure the service.
      */
-    GUI_API void configuring();
+    GUI_API void configuring() override;
 
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     /**
      * @brief showJob slot's method
@@ -99,6 +99,5 @@ protected:
 
 } // namespace editor
 } // namespace gui
-
 
 #endif /*__GUI_EDITOR_SJOBBAR_HPP__*/

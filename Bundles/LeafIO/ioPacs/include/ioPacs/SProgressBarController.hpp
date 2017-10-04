@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,12 @@
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwServices/IController.hpp>
 
 #include <fwCore/mt/types.hpp>
+
+#include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwServices/IController.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -28,7 +30,7 @@ class IOPACS_CLASS_API SProgressBarController : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SProgressBarController)( ::fwServices::IController ) );
+    fwCoreServiceClassDefinitionsMacro( (SProgressBarController)( ::fwServices::IController ) );
 
     /// Type of progress bar container
     typedef std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
@@ -55,19 +57,19 @@ protected:
        </service>
        @endcode
      */
-    IOPACS_API virtual void configuring();
+    IOPACS_API virtual void configuring() override;
 
     /// Override
-    IOPACS_API virtual void starting();
+    IOPACS_API virtual void starting() override;
 
     /// Override
-    IOPACS_API virtual void stopping();
+    IOPACS_API virtual void stopping() override;
 
     /// Override
-    IOPACS_API void updating();
+    IOPACS_API void updating() override;
 
     /// Override
-    IOPACS_API void info(std::ostream& _sstream );
+    IOPACS_API void info(std::ostream& _sstream ) override;
 
     /**
      * @name Slots

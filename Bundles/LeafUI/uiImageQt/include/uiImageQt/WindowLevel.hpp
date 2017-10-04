@@ -80,7 +80,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (WindowLevel)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (WindowLevel)(::gui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API WindowLevel() noexcept;

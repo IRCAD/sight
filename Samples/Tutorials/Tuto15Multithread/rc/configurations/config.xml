@@ -10,7 +10,7 @@
             <gui>
                 <frame>
                     <name>Tuto15Multithread</name>
-                    <icon>@BUNDLE_PREFIX@/Tuto15Multithread_0-1/tuto.ico</icon>
+                    <icon>Tuto15Multithread-0.1/tuto.ico</icon>
                     <minSize width="720" height="600" />
                 </frame>
                 <menuBar />

@@ -1,4 +1,4 @@
-<plugin id="ioGdcm" class="ioGdcm::Plugin"  version="@DASH_VERSION@" >
+<plugin id="ioGdcm" class="ioGdcm::Plugin"  version="@PROJECT_VERSION@" >
     <library name="ioGdcm" />
 
     <requirement id="dataReg"/>

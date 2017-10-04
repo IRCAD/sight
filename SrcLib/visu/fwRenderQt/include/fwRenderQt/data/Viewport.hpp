@@ -39,10 +39,10 @@ public:
     }
 
     /// Defines shallow copy
-    FWRENDERQT_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    FWRENDERQT_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWRENDERQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    FWRENDERQT_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     float getX() const;
     void setX (float _x);

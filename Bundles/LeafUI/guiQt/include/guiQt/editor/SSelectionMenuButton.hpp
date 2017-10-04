@@ -88,24 +88,24 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Do nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Do nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Configure the editor.
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 protected Q_SLOTS:
     /// This method is called when the popup menu is clicked. Notify the selection changed.

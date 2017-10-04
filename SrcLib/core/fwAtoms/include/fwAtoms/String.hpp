@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef __FWATOMS_STRING_HPP__
 #define __FWATOMS_STRING_HPP__
 
-#include <string>
-
-#include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
 #include "fwAtoms/factory/new.hpp"
+
+#include <string>
 
 namespace fwAtoms
 {
@@ -29,7 +29,8 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    String(::fwAtoms::Base::Key key) : m_value("")
+    String(::fwAtoms::Base::Key key) :
+        m_value("")
     {
     }
 
@@ -40,17 +41,23 @@ public:
     {
     }
 
+    //------------------------------------------------------------------------------
+
     const std::string& getValue() const
     {
         return m_value;
     }
 
-    void setValue( const std::string &value )
+    //------------------------------------------------------------------------------
+
+    void setValue( const std::string& value )
     {
         m_value = value;
     }
 
-    std::string getString() const
+    //------------------------------------------------------------------------------
+
+    std::string getString() const override
     {
         return m_value;
     }
@@ -65,16 +72,15 @@ public:
     /**
      * @brief Returns a clone object
      */
-    FWATOMS_API virtual Base::sptr clone() const;
+    FWATOMS_API virtual Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const
+    ::fwAtoms::Base::AtomType type() const override
     {
         return ::fwAtoms::Base::STRING;
     }
-
 
 protected:
 
@@ -82,8 +88,6 @@ protected:
 };
 
 }
-
-
 
 #endif /* __FWATOMS_STRING_HPP__ */
 

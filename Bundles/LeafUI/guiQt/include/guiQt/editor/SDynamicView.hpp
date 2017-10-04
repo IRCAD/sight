@@ -71,7 +71,7 @@ namespace editor
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
      </parameters>
    </service>
    @endcode
@@ -111,33 +111,33 @@ protected:
     /**
      * @brief Install the container.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the container.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Update
      *
      */
-    virtual void updating();
+    virtual void updating() override;
 
     /**
      * @brief Swap
      *
      * Update the editors.
      */
-    virtual void swapping();
+    virtual void swapping() override;
 
     /**
      * @brief Configure the view
      * @see fwGui::IGuiContainerSrv::initialize()
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

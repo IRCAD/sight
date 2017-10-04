@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ class FWDATATOOLS_CLASS_API Image
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Image), (((::fwData::Image::sptr))), new Image );
+    fwCoreClassFactoryMacro((Image), (((::fwData::Image::sptr))), new Image )
 
     typedef ::fwData::Image::SizeType SizeType;
     typedef ::fwData::Image::IndexType IndexType;
@@ -98,7 +98,6 @@ private:
 
 } // helper
 } // fwDataTools
-
 
 #endif // __FWDATATOOLS_HELPER_IMAGE_HPP__
 

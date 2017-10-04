@@ -66,16 +66,16 @@ protected:
     /**
      * @brief This method is used to configure the service.
      */
-    UIMEASUREMENT_API void configuring();
+    UIMEASUREMENT_API void configuring() override;
 
     /// This method is used to initialize the service.
-    UIMEASUREMENT_API void starting();
+    UIMEASUREMENT_API void starting() override;
 
     /// Does nothing.
-    UIMEASUREMENT_API void stopping();
+    UIMEASUREMENT_API void stopping() override;
 
     /// Does nothing.
-    UIMEASUREMENT_API void updating();
+    UIMEASUREMENT_API void updating() override;
 
 private:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,6 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-
 namespace fwJobs
 {
 class IJob;
@@ -32,7 +31,8 @@ namespace action
  *
  * The available reader can be configured
  * @code{.xml}
-    <service uid="action_seriesDBMerger" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+    <service uid="action_seriesDBMerger" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger"
+ * autoConnect="no">
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
     </service>
    @endcode
@@ -55,7 +55,7 @@ namespace action
 class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBMerger)( ::fwGui::IActionSrv) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
     typedef ::fwCom::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
@@ -76,17 +76,17 @@ protected:
        @endcode
      * - \b IOSelectorSrvConfig: identifier of the ServiceConfig used for SIOSelector
      */
-    void configuring();
+    void configuring() override;
 
     /// Start action.
-    void starting();
+    void starting() override;
 
     /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
-    void updating();
+    void updating() override;
 
     /// Stop action.
-    void stopping();
-    void info(std::ostream &_sstream );
+    void stopping() override;
+    void info(std::ostream& _sstream ) override;
 
 private:
     void forwardJob(SPTR(::fwJobs::IJob) iJob);

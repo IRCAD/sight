@@ -103,16 +103,16 @@ public:
 protected:
 
     /// Configures the service.
-    CTRLSELECTION_API virtual void configuring();
+    CTRLSELECTION_API virtual void configuring() override;
 
     /// Implements starting method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void starting();
+    CTRLSELECTION_API virtual void starting() override;
 
     /// Implements stopping method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void stopping();
+    CTRLSELECTION_API virtual void stopping() override;
 
     /// Implements updating method derived from IService. Do nothing.
-    CTRLSELECTION_API virtual void updating();
+    CTRLSELECTION_API virtual void updating() override;
 
     /**
      * @name Slots

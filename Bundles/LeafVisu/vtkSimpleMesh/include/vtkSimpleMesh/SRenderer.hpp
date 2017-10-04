@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,10 @@
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
+#include <boost/shared_array.hpp>
+
 #include <vtkCommand.h>
 #include <vtkSmartPointer.h>
-
-#include <boost/shared_array.hpp>
 
 // VTK
 class vtkRenderer;
@@ -58,7 +58,7 @@ class VTKSIMPLEMESH_CLASS_API SRenderer : public fwRender::IRender
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SRenderer)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRenderer)(::fwRender::IRender) );
 
     typedef ::boost::shared_array< double > SharedArray;
 
@@ -79,7 +79,6 @@ public:
      */
     VTKSIMPLEMESH_API virtual ~SRenderer() noexcept;
 
-
     /// This method is used to notify that the VTK camera position is updated.
     void notifyCamPositionUpdated();
 
@@ -90,8 +89,7 @@ public:
      * Connect mesh::s_MODIFIED_SIG to this::s_INIT_PIPELINE_SLOT
      * Connect mesh::s_VERTEX_MODIFIED_SIG to this::s_UPDATE_PIPELINE_SLOT
      */
-    VTKSIMPLEMESH_API virtual KeyConnectionsMap getAutoConnections() const;
-
+    VTKSIMPLEMESH_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
@@ -101,21 +99,19 @@ protected:
      * This method is used to initialize the service.
      * Initialize VTK renderer and qt containers
      */
-    VTKSIMPLEMESH_API virtual void starting();
-
+    VTKSIMPLEMESH_API virtual void starting() override;
 
     /**
      * @brief This method is used to configure the service. Initialize the qt container.
      */
-    VTKSIMPLEMESH_API virtual void configuring();
-
+    VTKSIMPLEMESH_API virtual void configuring() override;
 
     /**
      * @brief Stopping method.
      *
      * Destroy the VTK renderer and the qt container
      */
-    VTKSIMPLEMESH_API virtual void stopping();
+    VTKSIMPLEMESH_API virtual void stopping() override;
 
     /**
      * @brief Updating method.
@@ -123,7 +119,7 @@ protected:
      * This method is used to update the service.
      * Make a render if necessary
      */
-    VTKSIMPLEMESH_API virtual void updating();
+    VTKSIMPLEMESH_API virtual void updating() override;
 
     /// @brief vtk renderer
     vtkRenderer* m_render;
@@ -141,7 +137,6 @@ private:
      * @param resetCamera if true : reset the camera position
      */
     void updateVTKPipeline(bool resetCamera = true);
-
 
     /// Slot: receives new camera information (position, focal, viewUp). Update camera with new information.
     void updateCamPosition(SharedArray positionValue,

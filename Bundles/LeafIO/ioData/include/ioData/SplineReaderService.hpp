@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
-
 
 namespace ioData
 {
@@ -34,7 +33,7 @@ class IODATA_CLASS_API SplineReaderService : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SplineReaderService)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SplineReaderService)( ::io::IReader) );
     /// Super class of reader services
     typedef ::io::IReader SuperClass;
     /**
@@ -63,7 +62,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    IODATA_API virtual std::vector< std::string > getSupportedExtensions();
+    IODATA_API virtual std::vector< std::string > getSupportedExtensions() override;
 
     /// @}
 
@@ -91,7 +90,6 @@ protected:
     {
     }
 
-
     /**
      * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
      *
@@ -115,7 +113,7 @@ protected:
      * This method is used to update the service.
      * Read the spline and notify.
      */
-    IODATA_API void updating();
+    IODATA_API void updating() override;
 
     /**
      * @brief Info method.
@@ -125,7 +123,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream& _sstream );
+    IODATA_API virtual void info(std::ostream& _sstream ) override;
     /// @}
 
 private:

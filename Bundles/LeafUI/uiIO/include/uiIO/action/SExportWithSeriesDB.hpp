@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,6 @@
 #include <fwCom/Slot.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
 
 namespace fwJobs
 {
@@ -67,7 +66,7 @@ namespace action
 class UIIO_CLASS_API SExportWithSeriesDB : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SExportWithSeriesDB)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SExportWithSeriesDB)( ::fwGui::IActionSrv) );
 
     /**
      * @name Signal/Slot typedefs
@@ -86,18 +85,18 @@ protected:
     /**
      * @brief Configure action. Retrieves the IOSelector config.
      */
-    void configuring();
+    void configuring() override;
 
     /// Start action.
-    void starting();
+    void starting() override;
 
     /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
-    void updating();
+    void updating() override;
 
     /// Stop action.
-    void stopping();
+    void stopping() override;
 
-    void info(std::ostream &_sstream );
+    void info(std::ostream& _sstream ) override;
 
 private:
 

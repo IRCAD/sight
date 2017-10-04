@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,14 @@
 
 #include "ioPacs/config.hpp"
 
+#include <fwMedData/SeriesDB.hpp>
+
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
-#include <fwMedData/SeriesDB.hpp>
+
 #include <gui/editor/IEditor.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 #include <QDateEdit>
 #include <QLineEdit>
@@ -20,8 +24,6 @@
 #include <QPointer>
 #include <QPushButton>
 #include <QWidget>
-
-#include <boost/filesystem/path.hpp>
 
 namespace ioPacs
 {
@@ -49,7 +51,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SQueryEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SQueryEditor)( ::gui::editor::IEditor ) );
 
     /// Constructor
     IOPACS_API SQueryEditor() noexcept;
@@ -60,19 +62,19 @@ public:
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    IOPACS_API virtual void configuring();
+    IOPACS_API virtual void configuring() override;
 
     /// Override
-    IOPACS_API virtual void starting();
+    IOPACS_API virtual void starting() override;
 
     /// Override
-    IOPACS_API virtual void stopping();
+    IOPACS_API virtual void stopping() override;
 
     /// Override
-    IOPACS_API void updating();
+    IOPACS_API void updating() override;
 
     /// Override
-    IOPACS_API void info(std::ostream& _sstream );
+    IOPACS_API void info(std::ostream& _sstream ) override;
 
     /**
      * @brief Display an error message

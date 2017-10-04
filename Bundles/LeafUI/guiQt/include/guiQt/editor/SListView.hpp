@@ -87,24 +87,24 @@ public:
 protected:
 
     /// used to catch the del key released event
-    bool eventFilter(QObject* watched, QEvent* event);
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroys the layout
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Configure the service
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
 

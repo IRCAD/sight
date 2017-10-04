@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,6 @@
 #include <map>
 #include <set>
 
-
 class QTabWidget;
 namespace fwData
 {
@@ -47,7 +46,7 @@ struct AppConfig
     AppConfig()
     {
     }
-    AppConfig(const ConfigType &config);
+    AppConfig(const ConfigType& config);
 
     std::string id;
     std::string title;
@@ -55,7 +54,6 @@ struct AppConfig
     bool closable;
     ParametersType parameters;
 };
-
 
 /**
  * @brief   This editor manages tabs containing sub-configurations.
@@ -109,7 +107,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DynamicView)(::gui::view::IView) );
+    fwCoreServiceClassDefinitionsMacro( (DynamicView)(::gui::view::IView) );
 
     /// Constructor. Do nothing.
     GUIQT_API DynamicView() noexcept;
@@ -122,34 +120,33 @@ protected:
     /**
      * @brief Install the container.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the container.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Update
      *
      */
-    virtual void updating();
+    virtual void updating() override;
 
     /**
      * @brief Swap
      *
      * Update the editors.
      */
-    virtual void swapping();
+    virtual void swapping() override;
 
     /**
      * @brief Configure the view
      * @see fwGui::IGuiContainerSrv::initialize()
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
-    virtual void info( std::ostream &_sstream );
-
+    virtual void info( std::ostream& _sstream ) override;
 
     typedef std::map< std::string, std::string> ReplaceMapType;
     struct DynamicViewInfo

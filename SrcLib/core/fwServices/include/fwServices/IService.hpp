@@ -697,16 +697,16 @@ protected:
 private:
 
     /// Connect the service with configuration services and objects
-    FWSERVICES_API virtual void connectToConfig();
+    FWSERVICES_API void connectToConfig();
 
     /// Disconnect the service from configuration services and objects
-    FWSERVICES_API virtual void disconnectFromConfig();
+    FWSERVICES_API void disconnectFromConfig();
 
     /// Connect the service with its data
-    FWSERVICES_API virtual void autoConnect();
+    FWSERVICES_API void autoConnect();
 
     /// Disconnect the service from its data
-    FWSERVICES_API virtual void autoDisconnect();
+    FWSERVICES_API void autoDisconnect();
 
     /// Add a known connection from the appConfig
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& info);

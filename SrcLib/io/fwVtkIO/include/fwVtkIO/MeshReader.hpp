@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
-
 #include <fwData/Mesh.hpp>
+
+#include <fwDataIO/reader/GenericObjectReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -27,7 +27,6 @@ namespace fwVtkIO
 
 /**
  * @brief   Read a mesh.
- * @class   MeshReader
  *
  * Read a VTK Mesh using the VTK lib
  */
@@ -51,12 +50,12 @@ public:
     FWVTKIO_API ~MeshReader();
 
     //! @brief Reading operator.
-    FWVTKIO_API void read();
+    FWVTKIO_API void read() override;
 
     /// @return ".vtk"
-    FWVTKIO_API std::string extension();
+    FWVTKIO_API std::string extension() override;
     /// @return internal job
-    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 

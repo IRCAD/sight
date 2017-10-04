@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,10 @@
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+
 #include <gui/editor/IEditor.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -20,8 +23,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
-
-#include <boost/filesystem/path.hpp>
 
 namespace ioPacs
 {
@@ -36,7 +37,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SPacsConfigurationEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SPacsConfigurationEditor)( ::gui::editor::IEditor ) );
     /**
      * @brief Constructor
      */
@@ -96,19 +97,19 @@ protected:
        </service>
        @endcode
      */
-    IOPACS_API virtual void configuring();
+    IOPACS_API virtual void configuring() override;
 
     /// Override
-    IOPACS_API virtual void starting();
+    IOPACS_API virtual void starting() override;
 
     /// Override
-    IOPACS_API virtual void stopping();
+    IOPACS_API virtual void stopping() override;
 
     /// Override
-    IOPACS_API void updating();
+    IOPACS_API void updating() override;
 
     /// Override
-    IOPACS_API void info(std::ostream& _sstream );
+    IOPACS_API void info(std::ostream& _sstream ) override;
 
     /// Local application title
     QPointer< QLineEdit > m_localApplicationTitleWidget;

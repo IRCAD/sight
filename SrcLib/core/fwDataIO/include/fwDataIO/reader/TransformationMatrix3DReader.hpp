@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__
 #define  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__
 
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/location/SingleFile.hpp>
-
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
+
+#include <fwData/location/SingleFile.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 namespace fwDataIO
 {
@@ -21,9 +21,7 @@ namespace reader
 
 /**
  * @brief   Reader for transformation of 3D Matrix. Read file format .trf
- * @class   TransformationMatrix3DReader
  *
- * @date    2009
  *
  * Ircad reader to read a ::fwData::TransformationMatrix3D on filesystem which the file format
  * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
@@ -48,10 +46,10 @@ public:
     FWDATAIO_API virtual ~TransformationMatrix3DReader();
 
     /// Read the file with standard iostream API.
-    FWDATAIO_API virtual void read();
+    FWDATAIO_API virtual void read() override;
 
     /// Defines extension supported by this reader ".trf"
-    FWDATAIO_API virtual std::string extension();
+    FWDATAIO_API virtual std::string extension() override;
 
 };
 

@@ -84,16 +84,16 @@ public:
 protected:
 
     /// Initialize the editor.
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// This method launches the IEditor::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     /// This method launches the IEditor::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Show activity selector.
-    virtual void updating();
+    virtual void updating() override;
 
     typedef std::vector< std::string > KeysType;
 

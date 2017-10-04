@@ -108,7 +108,7 @@ std::ostream& operator<<(std::ostream& os, const Version& version)
 {
     if(version.m_defined)
     {
-        auto& res = os << version.m_major << "-" << version.m_minor;
+        auto& res = os << version.m_major << "." << version.m_minor;
 
         if(version.m_patch != -1)
         {

@@ -78,7 +78,7 @@ public:
     /// Destructor. Do nothing.
     UIMEASUREMENTQT_API virtual ~SLandmarks() noexcept;
 
-    UIMEASUREMENTQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIMEASUREMENTQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
@@ -89,19 +89,19 @@ protected:
      *
      * This method launches the IEditor::starting method.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      *
      * This method launches the IEditor::stopping method.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Do nothing
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
 

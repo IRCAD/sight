@@ -60,22 +60,22 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Install the layout and call updating() method
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stop the layout.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Update the choice selection
-    virtual void updating();
+    virtual void updating() override;
 
     /// Call updating() method
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Calls classic IAction methods to configure
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides. Does nothing.
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     /// Start m_updateTimer, call on buffManager signal emit ( see m_refreshSignal )
     void onUpdate();

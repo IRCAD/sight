@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,11 +12,15 @@
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
+
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwDataIO/reader/IObjectReader.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
 #include <fwLog/Logger.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/IService.hpp>
 
 namespace fwJobs
@@ -58,7 +62,7 @@ public:
     FWGDCMIO_API ~SeriesDB();
 
     /// Reads DICOM data from configured path and fills SeriesDB object
-    FWGDCMIO_API void read();
+    FWGDCMIO_API void read() override;
 
     /**
      * @brief Reads DICOM data from DicomSeries and fills SeriesDB object
@@ -129,9 +133,8 @@ public:
         m_logger = logger;
     }
 
-
     /// Getter for reader's job
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
     /// Enable buffer rotation
     void setBufferRotationEnabled(bool enabled)

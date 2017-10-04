@@ -50,9 +50,9 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -60,7 +60,7 @@ protected:
      *
      * Connect Point::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 };
 
 } //namespace visuVTKAdaptor

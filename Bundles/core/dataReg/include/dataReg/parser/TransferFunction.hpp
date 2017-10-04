@@ -59,7 +59,7 @@ public:
      * - \b isClamped(optional, default: yes) : defines interpolation mode on extremities, if yes then after extremity
      *       point, the returned TF color is TFColor(0,0,0,0), else it is the color value of the extremity.
      */
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj );
+    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 protected:
 
     /**
@@ -68,7 +68,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    DATAREG_API virtual void updating( );
+    DATAREG_API virtual void updating( ) override;
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,13 @@
 
 #include "ctrlMemory/config.hpp"
 
-#include <ctrlSelection/IManagerSrv.hpp>
-
 #include <fwData/Composite.hpp>
 
-#include <map>
-#include <vector>
-#include <string>
+#include <ctrlSelection/IManagerSrv.hpp>
 
+#include <map>
+#include <string>
+#include <vector>
 
 namespace fwData
 {
@@ -31,14 +30,13 @@ namespace manager
 
 /**
  * @brief This service allows to lock an object for dump when it is contained in the composite.
- * @class LockDumpManagerSrv
  */
 class CTRLMEMORY_CLASS_API LockDumpManagerSrv : public ::ctrlSelection::IManagerSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) );
+    fwCoreServiceClassDefinitionsMacro( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Does nothing.
     CTRLMEMORY_API LockDumpManagerSrv() noexcept;
@@ -54,31 +52,31 @@ public:
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
      */
-    CTRLMEMORY_API virtual KeyConnectionsType getObjSrvConnections() const;
+    CTRLMEMORY_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     /// Dump lock composite objects
-    CTRLMEMORY_API virtual void starting();
+    CTRLMEMORY_API virtual void starting() override;
 
     /// Dump unlock composite objects
-    CTRLMEMORY_API virtual void stopping();
+    CTRLMEMORY_API virtual void stopping() override;
 
     /// Does nothing
-    CTRLMEMORY_API virtual void reconfiguring();
+    CTRLMEMORY_API virtual void reconfiguring() override;
 
     /// Does nothing
-    CTRLMEMORY_API virtual void updating();
+    CTRLMEMORY_API virtual void updating() override;
 
     /// Does nothing
-    CTRLMEMORY_API virtual void info( std::ostream &_sstream );
+    CTRLMEMORY_API virtual void info( std::ostream& _sstream ) override;
 
     /**
      * @brief Implements configuring method.
      * configuration \<manageLockOn key="CompositeObjectKey" /\>
      * if configuration is empty, service locks all composite objects
      */
-    CTRLMEMORY_API virtual void configuring();
+    CTRLMEMORY_API virtual void configuring() override;
 
 private:
 
@@ -96,7 +94,7 @@ private:
     typedef std::map< CompositeKeyType, ::fwData::ObjectLock > LockMapType;
 
     /// Add or remove lock ( _isLocked parameter ) on composite objects
-    void setDumpLockOnImages(LockMapType &lockMap, ::fwData::Composite::ContainerType objects, bool _isLocked );
+    void setDumpLockOnImages(LockMapType& lockMap, ::fwData::Composite::ContainerType objects, bool _isLocked );
 
     /// Composite keys managed by this service
     std::vector< std::string > m_managedKeys;

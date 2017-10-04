@@ -83,21 +83,21 @@ public:
 protected:
 
     ///This method launches the IAction::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Show activity selector.
      */
-    virtual void updating();
+    virtual void updating() override;
 
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     typedef std::vector< std::string > KeysType;
 

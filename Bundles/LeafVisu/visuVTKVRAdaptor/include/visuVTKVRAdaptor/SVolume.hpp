@@ -89,7 +89,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Apply the cropping on volume rendering
     VISUVTKVRADAPTOR_API void crop();
@@ -102,17 +102,17 @@ public:
 
 protected:
 
-    VISUVTKVRADAPTOR_API void configuring();
-    VISUVTKVRADAPTOR_API void starting();
-    VISUVTKVRADAPTOR_API void stopping();
-    VISUVTKVRADAPTOR_API void updating();
-    VISUVTKVRADAPTOR_API void swapping(const KeyType& key);
+    VISUVTKVRADAPTOR_API void configuring() override;
+    VISUVTKVRADAPTOR_API void starting() override;
+    VISUVTKVRADAPTOR_API void stopping() override;
+    VISUVTKVRADAPTOR_API void updating() override;
+    VISUVTKVRADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Slot: updates the volume transfer function
-    VISUVTKVRADAPTOR_API virtual void updateTFPoints();
+    VISUVTKVRADAPTOR_API virtual void updateTFPoints() override;
 
     /// Slot: updates the volume transfer function
-    VISUVTKVRADAPTOR_API virtual void updateTFWindowing(double window, double level);
+    VISUVTKVRADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
     /// Slot: reset the clipping box widget around the volume
     void resetBoxWidget();

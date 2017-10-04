@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 
 #include <fwTools/Failed.hpp>
 
-
 namespace gui
 {
 namespace editor
@@ -30,7 +29,7 @@ class GUI_CLASS_API IDialogEditor : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IDialogEditor)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IDialogEditor)(::fwServices::IService) );
 
 protected:
 
@@ -46,7 +45,7 @@ protected:
      * @brief This method is used to give information about the service. Do nothing.
      * @todo Must be not implemented and class child declaration should be imposed.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /// @}
 };
@@ -55,5 +54,4 @@ protected:
 }
 
 #endif /*__GUI_EDITOR_IDIALOGEDITOR_HPP__*/
-
 

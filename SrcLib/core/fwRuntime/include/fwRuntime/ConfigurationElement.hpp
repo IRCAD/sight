@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,17 @@
 #ifndef __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
 #define __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
 
-#include <map>
-#include <string>
-#include <vector>
-#include <memory>
-#include <utility>
-
-#include <fwCore/base.hpp>
-
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElementContainer.hpp"
 #include "fwRuntime/RuntimeException.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <map>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace fwRuntime
 {
@@ -30,18 +30,12 @@ struct BundleDescriptorReader;
 }
 }
 
-
-
 namespace fwRuntime
 {
 
-
 /**
  * @brief   Defines the configuration element class.
- * @struct  ConfigurationElement
- * @date    2004-2009
- *
-
+ * @deprecated use ::boost::property::ptree instead.
  */
 struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
                                                     public std::enable_shared_from_this< ConfigurationElement >
@@ -49,26 +43,28 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
 
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-    fwCoreClassDefinitionsWithFactoryMacro((ConfigurationElement),
-                                           ((( const std::shared_ptr< Bundle > ))(
-                                                ( const std::string ))), new ConfigurationElement);
+    fwCoreClassFactoryMacro((ConfigurationElement),
+                            ((( const std::shared_ptr< Bundle > ))(( const std::string ))),
+                            new ConfigurationElement)
+    __FWCORE_GENERATE_CAST(__FWCORE_GET_CLASSNAME((ConfigurationElement)), __FWCORE_TYPEDEF_ROOTCLASS_NAME)
+    fwCoreInterfaceMacro()
+    fwCoreInterfaceIsTypeOfMacro((ConfigurationElement))
 
     /**
      * @brief   Defines the attribute pair type.
      */
     typedef std::pair< bool, std::string > AttributePair;
 
-
     /**
      * @brief   Defines the a class for attributes exceptions.
      */
     struct NoSuchAttribute : public ::fwCore::Exception
     {
-        NoSuchAttribute(const std::string &attr) : ::fwCore::Exception(std::string("No such attribute: ") + attr)
+        NoSuchAttribute(const std::string& attr) :
+            ::fwCore::Exception(std::string("No such attribute: ") + attr)
         {
         }
     };
-
 
     /**
      * @brief   Retrieves the bundle the configuration element is attached to.
@@ -159,8 +155,8 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     /**
      * @brief   Print contents
      */
-    FWRUNTIME_API friend std::ostream & operator<<(std::ostream & _sstream,
-                                                   ConfigurationElement& _configurationElement);
+    FWRUNTIME_API friend std::ostream& operator<<(std::ostream& _sstream,
+                                                  ConfigurationElement& _configurationElement);
 
     /**
      * @brief       Find recursively all the corresponding configuration elements.
@@ -196,7 +192,6 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          */
         FWRUNTIME_API ConfigurationElement(const std::shared_ptr<Bundle> bundle, const std::string& name);
 
-
         /**
          * @brief       Sets an attribute with the specified name and value.
          *
@@ -214,14 +209,12 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          */
         FWRUNTIME_API void setValue(const std::string& value) noexcept;
 
-
     private:
 
         /**
          * @brief   Defines the attributes container type.
          */
         typedef std::map<std::string, std::string> AttributeContainer;
-
 
         /**
          * @brief   A pointer to the bundle the configuration element is attached to.
@@ -243,7 +236,6 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          */
         AttributeContainer m_attributes;
 
-
         /**
          * @brief   Assignemet operator.
          *
@@ -252,8 +244,6 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
         void operator=(const ConfigurationElement&) noexcept;
 };
 
-
 } // namespace fwRuntime
-
 
 #endif //  __FWRUNTIME_CONFIGURATIONELEMENT_HPP__

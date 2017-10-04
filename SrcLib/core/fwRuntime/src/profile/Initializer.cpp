@@ -32,7 +32,7 @@ Initializer::Initializer( const std::string& identifier, const Version& version)
 void Initializer::apply()
 {
     SPTR( Bundle )  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to initialize bundle " + m_identifier + "_" + m_version.string() + ". Not found.",
+    SLM_FATAL_IF("Unable to initialize bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". Not found.",
                  bundle == 0);
     try
     {
@@ -45,7 +45,7 @@ void Initializer::apply()
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to initialize bundle " + m_identifier + "_" + m_version.string() + ". " + e.what());
+        SLM_FATAL("Unable to initialize bundle " + Bundle::getBundleStr(m_identifier, m_version) + ". " + e.what());
     }
 }
 

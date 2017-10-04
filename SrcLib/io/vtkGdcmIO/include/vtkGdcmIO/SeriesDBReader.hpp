@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,12 @@
 #ifndef __VTKGDCMIO_SERIESDBREADER_HPP__
 #define __VTKGDCMIO_SERIESDBREADER_HPP__
 
-
 #include "vtkGdcmIO/config.hpp"
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 
+#include <fwDataIO/reader/GenericObjectReader.hpp>
 
 namespace fwMedData
 {
@@ -28,7 +27,6 @@ namespace vtkGdcmIO
 {
 
 /**
- * @class SeriesDBReader
  *
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
  */
@@ -53,10 +51,10 @@ public:
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object.
      */
-    VTKGDCMIO_API void read();
+    VTKGDCMIO_API void read() override;
 
     /// @return internal job
-    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 
@@ -75,7 +73,7 @@ private:
      * @param seriesDB SeriesDB object to be filled with DICOM data
      * @param filenames files to extract DICOM data from
      */
-    void addSeries( const SPTR( ::fwMedData::SeriesDB ) &seriesDB, const std::vector< std::string > &filenames);
+    void addSeries( const SPTR( ::fwMedData::SeriesDB )& seriesDB, const std::vector< std::string >& filenames);
 
     ///Internal job
     SPTR(::fwJobs::Observer) m_job;

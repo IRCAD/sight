@@ -56,15 +56,15 @@ public:
 
 protected:
 
-    void starting();
-    void stopping();
-    void updating();
-    void configuring();
+    void starting() override;
+    void stopping() override;
+    void updating() override;
+    void configuring() override;
 
     /// Manage the given events
     SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
 
-    SCENE2D_API KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 private:
 
     /// Builds axis graphic items.

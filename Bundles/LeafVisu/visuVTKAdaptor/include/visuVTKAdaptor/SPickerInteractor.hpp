@@ -89,10 +89,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
 
     typedef std::map< std::string, EventID > MapEventIdType; ///< typedef for the map (seen below).
     static MapEventIdType m_eventIdConversion; ///< map containing the association between 'event text' and 'event ID'.

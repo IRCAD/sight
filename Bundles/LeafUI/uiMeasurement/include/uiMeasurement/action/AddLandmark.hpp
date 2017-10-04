@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __UIMEASUREMENT_ACTION_ADDLANDMARK_HPP__
 #define __UIMEASUREMENT_ACTION_ADDLANDMARK_HPP__
 
-#include <fwGui/IActionSrv.hpp>
-
 #include "uiMeasurement/config.hpp"
+
+#include <fwGui/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -33,7 +33,7 @@ namespace action
 class UIMEASUREMENT_CLASS_API AddLandmark : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (AddLandmark)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (AddLandmark)( ::fwGui::IActionSrv) );
 
     UIMEASUREMENT_API AddLandmark() noexcept;
 
@@ -41,15 +41,15 @@ public:
 
 protected:
 
-    void configuring();
+    void configuring() override;
 
-    void starting();
+    void starting() override;
 
-    void updating();
+    void updating() override;
 
-    void stopping();
+    void stopping() override;
 
-    UIMEASUREMENT_API void info(std::ostream& _sstream );
+    UIMEASUREMENT_API void info(std::ostream& _sstream ) override;
 
 private:
     int m_actionCheckId;

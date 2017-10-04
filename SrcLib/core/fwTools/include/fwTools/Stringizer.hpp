@@ -45,7 +45,7 @@ struct Default
     template<class T>
     static std::string eval(const T& t)
     {
-        return "No getString for " + ::fwCore::Demangler(typeid(t)).getRootedClassname();
+        return "No getString for " + ::fwCore::Demangler(typeid(t)).getClassname();
     }
 };
 }

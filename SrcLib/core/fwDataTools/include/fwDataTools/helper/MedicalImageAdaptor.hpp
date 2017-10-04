@@ -40,7 +40,7 @@ class FWDATATOOLS_CLASS_API MedicalImageAdaptor
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (MedicalImageAdaptor) );
+    fwCoreBaseClassDefinitionsMacro( (MedicalImageAdaptor) );
 
     /// Image orientation
     typedef enum

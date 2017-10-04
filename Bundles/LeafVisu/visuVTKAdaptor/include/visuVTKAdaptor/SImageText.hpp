@@ -82,10 +82,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
     /// Select the current tf
     VISUVTKADAPTOR_API void swapping(const KeyType& key);
 
@@ -97,13 +97,13 @@ protected:
      * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Update the text according to the new windowing
-    VISUVTKADAPTOR_API virtual void updateTFPoints();
+    VISUVTKADAPTOR_API virtual void updateTFPoints() override;
 
     /// Update the text according to the new windowing
-    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level);
+    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
     /**
      * @name Slots

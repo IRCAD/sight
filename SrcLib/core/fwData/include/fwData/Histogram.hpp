@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,14 @@
 #ifndef __FWDATA_HISTOGRAM_HPP__
 #define __FWDATA_HISTOGRAM_HPP__
 
+#include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
-
-#include "fwData/config.hpp"
-
 
 fwCampAutoDeclareDataMacro((fwData)(Histogram), FWDATA_API);
 
 namespace fwData
 {
-
 
 /**
  * @brief This class defines the histogram of an image.
@@ -33,7 +30,6 @@ public:
 
     typedef std::vector< long > fwHistogramValues;
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -44,22 +40,24 @@ public:
     FWDATA_API virtual ~Histogram();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Add the given pixel value into the histogram.
      *
-     * This void will chose the right bins where the pixel must be added (if the bins width parameter is greater than 1).
+     * This void will chose the right bins where the pixel must be added (if the bins width parameter is greater than
+     * 1).
      *
      * @param pixel the pixel value to be added into the histogram.
      */
     FWDATA_API void addPixel( float pixel );
 
     /**
-     * @brief Return the number of pixels of the histogram that are within the range defined by the given parameters min and max.
+     * @brief Return the number of pixels of the histogram that are within the range defined by the given parameters min
+     * and max.
      *
      * @param _min lower value of the range
      * @param _max upper value of the range
@@ -91,7 +89,7 @@ public:
      *  @{
      */
     const float  getBinsWidth() const;
-    float & getRefBinsWidth();
+    float& getRefBinsWidth();
     const float& getCRefBinsWidth() const;
     void setBinsWidth(float _binsWidth);
     /// @}
@@ -102,8 +100,8 @@ public:
      */
     const fwHistogramValues getValues() const;
     fwHistogramValues& getRefValues();
-    const fwHistogramValues & getCRefValues() const;
-    void setCRefValues(const fwHistogramValues & _values);
+    const fwHistogramValues& getCRefValues() const;
+    void setCRefValues(const fwHistogramValues& _values);
     /// @}
 
     /** @name minimum value within the histogram
@@ -150,7 +148,7 @@ inline const float Histogram::getBinsWidth() const
 
 //-----------------------------------------------------------------------------
 
-inline float & Histogram::getRefBinsWidth()
+inline float& Histogram::getRefBinsWidth()
 {
     return this->m_binsWidth;
 }
@@ -185,14 +183,14 @@ inline Histogram::fwHistogramValues& Histogram::getRefValues()
 
 //-----------------------------------------------------------------------------
 
-inline const Histogram::fwHistogramValues & Histogram::getCRefValues() const
+inline const Histogram::fwHistogramValues& Histogram::getCRefValues() const
 {
     return this->m_values;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Histogram::setCRefValues(const Histogram::fwHistogramValues & _values)
+inline void Histogram::setCRefValues(const Histogram::fwHistogramValues& _values)
 {
     this->m_values = _values;
 }

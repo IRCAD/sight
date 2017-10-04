@@ -1,4 +1,4 @@
-<plugin id="imageConfig" version="@DASH_VERSION@" >
+<plugin id="imageConfig" version="@PROJECT_VERSION@" >
 
     <xi:include href="configurations/ImageManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionWidget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

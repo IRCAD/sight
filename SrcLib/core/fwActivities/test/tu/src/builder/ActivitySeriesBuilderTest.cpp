@@ -1,25 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "builder/ActivitySeriesBuilderTest.hpp"
+
+#include <fwActivities/IBuilder.hpp>
+#include <fwActivities/registry/Activities.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwMedData/ActivitySeries.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwData/Vector.hpp>
-#include <fwData/Composite.hpp>
-
-#include <fwMedData/ActivitySeries.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
-#include <fwActivities/IBuilder.hpp>
-
-#include "builder/ActivitySeriesBuilderTest.hpp"
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwActivities::ut::ActivitySeriesBuilderTest );
@@ -34,7 +33,7 @@ namespace ut
 void ActivitySeriesBuilderTest::setUp()
 {
     // Set up context before running a test.
-    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_builder";
+    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities-0.0/tu_builder";
     m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     m_activities = ::fwActivities::registry::Activities::New();

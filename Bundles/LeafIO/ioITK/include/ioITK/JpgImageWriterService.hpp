@@ -40,25 +40,25 @@ public:
 protected:
 
     /// Override
-    IOITK_API virtual void starting();
+    IOITK_API virtual void starting() override;
 
     /// Override
-    IOITK_API virtual void stopping();
+    IOITK_API virtual void stopping() override;
 
     /// Override
-    IOITK_API virtual void configuring();
+    IOITK_API virtual void configuring() override;
 
     /// Override
-    IOITK_API void updating();
+    IOITK_API void updating() override;
 
     /// Override
-    IOITK_API void info(std::ostream& _sstream );
+    IOITK_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IOITK_API virtual void configureWithIHM();
+    IOITK_API virtual void configureWithIHM() override;
 
     /// Return managed file type, here FOLDER
-    IOITK_API ::io::IOPathType getIOPathType() const;
+    IOITK_API ::io::IOPathType getIOPathType() const override;
 
 };
 

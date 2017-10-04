@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,9 +10,12 @@
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
+
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+
 #include <fwServices/IController.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <vector>
@@ -49,7 +52,7 @@ class IOPACS_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesPusher)( ::fwServices::IController ) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesPusher)( ::fwServices::IController ) );
 
     typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
     typedef std::vector< ::boost::filesystem::path > DicomFileContainer;
@@ -82,19 +85,19 @@ public:
 protected:
 
     /// Does nothing.
-    IOPACS_API virtual void configuring();
+    IOPACS_API virtual void configuring() override;
 
     /// Override
-    IOPACS_API virtual void starting();
+    IOPACS_API virtual void starting() override;
 
     /// Override
-    IOPACS_API virtual void stopping();
+    IOPACS_API virtual void stopping() override;
 
     /// Override
-    IOPACS_API void updating();
+    IOPACS_API void updating() override;
 
     /// Override
-    IOPACS_API void info(std::ostream& _sstream);
+    IOPACS_API void info(std::ostream& _sstream) override;
 
 protected:
 
@@ -122,7 +125,6 @@ protected:
      */
     IOPACS_API void progressCallback(const std::string& seriesInstanceUID, unsigned int instanceNumber,
                                      const std::string& filePath);
-
 
     /// Slot to call displayMessage method;
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
@@ -156,7 +158,6 @@ protected:
 
     /// Total number of instances that must be uploaded
     long unsigned int m_instanceCount;
-
 
 };
 

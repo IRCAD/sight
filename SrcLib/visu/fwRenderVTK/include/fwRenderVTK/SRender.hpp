@@ -152,16 +152,16 @@ protected:
     FWRENDERVTK_API void render();
 
     /// Starts the render context, start the adaptors with start="yes"
-    FWRENDERVTK_API virtual void starting();
+    FWRENDERVTK_API virtual void starting() override;
 
     /// Stops the context, stops the started adaptors
-    FWRENDERVTK_API virtual void stopping();
+    FWRENDERVTK_API virtual void stopping() override;
 
     /// configures the scene
-    FWRENDERVTK_API virtual void configuring();
+    FWRENDERVTK_API virtual void configuring() override;
 
     /// Does nothing.
-    FWRENDERVTK_API virtual void updating();
+    FWRENDERVTK_API virtual void updating() override;
 
     /// Add a vtk object in the SRender, referenced by a key.
     FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj );

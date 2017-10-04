@@ -78,16 +78,16 @@ public:
 protected:
 
     /// Configure the transfer function editor.
-    UITF_API virtual void configuring();
+    UITF_API virtual void configuring() override;
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
-    UITF_API virtual void starting();
+    UITF_API virtual void starting() override;
 
     /// Update the TransferFunctionEditor, do nothing.
-    UITF_API virtual void updating();
+    UITF_API virtual void updating() override;
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
-    UITF_API virtual void stopping();
+    UITF_API virtual void stopping() override;
 
     /// Selects the current transfer function
     UITF_API void swapping(const KeyType& key);

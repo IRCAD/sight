@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,15 +12,17 @@
 #ifndef __FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__
 #define __FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__
 
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/GuiBaseObject.hpp"
+#include "fwGui/IMenuItemCallback.hpp"
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwToolBar.hpp"
-#include "fwGui/container/fwMenuItem.hpp"
-#include "fwGui/container/fwMenu.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/IMenuItemCallback.hpp"
-#include "fwGui/config.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace fwGui
 {
@@ -48,7 +50,7 @@ public:
             m_shortcut(""),
             m_icon(""),
             m_icon2(""),
-            m_isCheckable (false),
+            m_isCheckable(false),
             m_isRadio(false),
             m_isSeparator(false),
             m_isSpacer(false),
@@ -60,8 +62,8 @@ public:
 
         std::string m_name;
         std::string m_shortcut;
-        std::string m_icon;
-        std::string m_icon2;
+        ::boost::filesystem::path m_icon;
+        ::boost::filesystem::path m_icon2;
         bool m_isCheckable;
         bool m_isRadio;
         bool m_isSeparator;
@@ -102,11 +104,12 @@ public:
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
-                   <menuItem name="My item 2" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" icon2="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png" />
-                   <menuItem name="My item 3" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="TutoGui-0.1/icons/system.png"
+     * icon2="TutoGui-0.1/icons/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="TutoGui-0.1/icons/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -126,7 +129,7 @@ public:
      * This method analyzes the gui section of the configuration.
      *
      *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *  - \<menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/\> :
+     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
@@ -149,7 +152,6 @@ public:
      * @pre services using this actions must be stopped before.
      */
     FWGUI_API virtual void destroyLayout() = 0;
-
 
     /**
      * @brief Set the action visibility.
@@ -201,5 +203,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__*/
-
 

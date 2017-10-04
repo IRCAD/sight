@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __FWMEMORY_POLICY_VALVEDUMP_HPP__
 #define __FWMEMORY_POLICY_VALVEDUMP_HPP__
 
-
-#include <fwCore/base.hpp>
-
 #include "fwMemory/BufferInfo.hpp"
 #include "fwMemory/BufferManager.hpp"
+#include "fwMemory/config.hpp"
 #include "fwMemory/IPolicy.hpp"
 #include "fwMemory/policy/factory/new.hpp"
-#include "fwMemory/config.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwMemory
 {
@@ -38,33 +37,38 @@ class FWMEMORY_CLASS_API ValveDump : public fwMemory::IPolicy
 public:
     fwCoreClassDefinitionsWithFactoryMacro((ValveDump)(fwMemory::IPolicy),
                                            (()),
-                                           ::fwMemory::policy::factory::New< ValveDump >);
+                                           ::fwMemory::policy::factory::New< ValveDump >)
 
     FWMEMORY_API ValveDump();
 
-    FWMEMORY_API virtual void allocationRequest( BufferInfo &info,
+    FWMEMORY_API virtual void allocationRequest( BufferInfo& info,
                                                  ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-                                                 BufferInfo::SizeType size );
-    FWMEMORY_API virtual void setRequest( BufferInfo &info,
+                                                 BufferInfo::SizeType size ) override;
+    FWMEMORY_API virtual void setRequest( BufferInfo& info,
                                           ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-                                          BufferInfo::SizeType size );
-    FWMEMORY_API virtual void reallocateRequest( BufferInfo &info,
+                                          BufferInfo::SizeType size ) override;
+    FWMEMORY_API virtual void reallocateRequest( BufferInfo& info,
                                                  ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-                                                 BufferInfo::SizeType newSize );
+                                                 BufferInfo::SizeType newSize ) override;
 
-    FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+    FWMEMORY_API virtual void destroyRequest( BufferInfo& info,
+                                              ::fwMemory::BufferManager::ConstBufferPtrType buffer ) override;
 
-    FWMEMORY_API virtual void lockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
-    FWMEMORY_API virtual void unlockRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+    FWMEMORY_API virtual void lockRequest( BufferInfo& info,
+                                           ::fwMemory::BufferManager::ConstBufferPtrType buffer ) override;
+    FWMEMORY_API virtual void unlockRequest( BufferInfo& info,
+                                             ::fwMemory::BufferManager::ConstBufferPtrType buffer ) override;
 
-    FWMEMORY_API virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
-    FWMEMORY_API virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
+    FWMEMORY_API virtual void dumpSuccess( BufferInfo& info,
+                                           ::fwMemory::BufferManager::ConstBufferPtrType buffer ) override;
+    FWMEMORY_API virtual void restoreSuccess( BufferInfo& info,
+                                              ::fwMemory::BufferManager::ConstBufferPtrType buffer ) override;
 
-    FWMEMORY_API virtual void refresh();
+    FWMEMORY_API virtual void refresh() override;
 
-    FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
-    FWMEMORY_API virtual std::string getParam(const std::string &name, bool *ok = NULL ) const;
-    FWMEMORY_API const ::fwMemory::IPolicy::ParamNamesType &getParamNames() const;
+    FWMEMORY_API bool setParam(const std::string& name, const std::string& value) override;
+    FWMEMORY_API virtual std::string getParam(const std::string& name, bool* ok = NULL ) const override;
+    FWMEMORY_API const ::fwMemory::IPolicy::ParamNamesType& getParamNames() const override;
 
 protected:
 
@@ -77,7 +81,6 @@ protected:
     size_t m_minFreeMem;
     size_t m_hysteresisOffset;
 };
-
 
 } // namespace policy
 

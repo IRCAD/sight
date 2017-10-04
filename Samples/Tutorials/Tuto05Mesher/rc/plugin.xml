@@ -1,4 +1,4 @@
-<plugin id="Tuto05Mesher" version="@DASH_VERSION@">
+<plugin id="Tuto05Mesher" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -20,7 +20,7 @@
                 <gui>
                     <frame>
                         <name>Mesher</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto05Mesher_0-1/tuto.ico</icon>
+                        <icon>Tuto05Mesher-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,12 @@
 #ifndef __FWGUI_DIALOG_LOGGERDIALOG_HPP__
 #define __FWGUI_DIALOG_LOGGERDIALOG_HPP__
 
-#include <fwCore/base.hpp>
-#include <fwLog/Logger.hpp>
-
 #include "fwGui/config.hpp"
 #include "fwGui/dialog/ILoggerDialog.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwLog/Logger.hpp>
 
 namespace fwGui
 {
@@ -58,24 +59,24 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    FWGUI_API virtual void setTitle(const std::string& title);
+    FWGUI_API virtual void setTitle(const std::string& title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    FWGUI_API virtual void setMessage(const std::string& message);
+    FWGUI_API virtual void setMessage(const std::string& message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    FWGUI_API virtual void setLogger(const ::fwLog::Logger::sptr& logger);
+    FWGUI_API virtual void setLogger(const ::fwLog::Logger::sptr& logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
      */
-    FWGUI_API virtual bool show();
+    FWGUI_API virtual bool show() override;
 
 protected:
 
@@ -87,5 +88,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_DIALOG_LOGGERDIALOG_HPP__*/
-
 

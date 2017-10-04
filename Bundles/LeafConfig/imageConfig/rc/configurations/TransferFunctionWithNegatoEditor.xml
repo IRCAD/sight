@@ -21,7 +21,7 @@ Note: The object 'transferFunctionOutput' is deferred and created by this config
         <param name="image" />
         <param name="histogram" />
         <param name="landmarks" />
-        <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
+        <param name="TFPath" default="uiTF-0.1/tf"/>
 
         <!-- The object 'transferFunctionOutput' is deferred, its id is given between configuration to
              receive the signal emitted when the object is created. -->

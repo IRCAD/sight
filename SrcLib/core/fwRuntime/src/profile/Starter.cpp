@@ -33,8 +33,9 @@ Starter::Starter( const std::string& identifier, const Version& version) :
 void Starter::apply()
 {
     std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to start bundle " + m_identifier + "_"  + m_version.string() + ". Not found.",
-                 bundle == 0);
+    SLM_FATAL_IF(
+        "Unable to start bundle " + m_identifier + Bundle::s_VERSION_DELIMITER  + m_version.string() + ". Not found.",
+        bundle == 0);
     try
     {
         if(!bundle->isStarted())
@@ -43,12 +44,14 @@ void Starter::apply()
         }
         else
         {
-            SLM_WARN("bundle " + m_identifier + "_" + m_version.string() + " already started");
+            SLM_WARN("bundle " + Bundle::getBundleStr(m_identifier, m_version) + " already started");
         }
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to start bundle " + m_identifier + "_"  + m_version.string() + ". " + e.what());
+        SLM_FATAL(
+            "Unable to start bundle " + m_identifier + Bundle::s_VERSION_DELIMITER  + m_version.string() + ". " +
+            e.what());
     }
 }
 

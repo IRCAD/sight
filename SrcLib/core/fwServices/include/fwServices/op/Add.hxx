@@ -37,7 +37,7 @@ SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
     ::fwServices::IService::sptr genericSrv = ::fwServices::add( _implType, _id );
     auto srv = std::dynamic_pointer_cast< SERVICE >(genericSrv);
     FW_RAISE_IF("Failed to cast service from factory type '" + _implType + "' into '" +
-                ::fwCore::TypeDemangler<SERVICE>().getFullClassname() + "'", !srv );
+                ::fwCore::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
 
     return srv;
 }

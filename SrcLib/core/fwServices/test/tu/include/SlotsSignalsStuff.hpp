@@ -90,10 +90,10 @@ protected:
     virtual void configuring()
     {
     }
-    virtual void starting();
-    virtual void stopping();
-    virtual void swapping();
-    virtual void updating();
+    virtual void starting() override;
+    virtual void stopping() override;
+    virtual void swapping() override;
+    virtual void updating() override;
 };
 
 //------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ protected:
     virtual void swapping()
     {
     }
-    virtual void updating();
+    virtual void updating() override;
 };
 
 //------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ protected:
     virtual void swapping()
     {
     }
-    virtual void updating();
+    virtual void updating() override;
 
     ChangedSignalType::sptr m_sigChanged;
 };
@@ -215,7 +215,7 @@ protected:
     virtual void swapping()
     {
     }
-    virtual void updating();
+    virtual void updating() override;
 
     ChangeSlotType::sptr m_slotChange;
 
@@ -259,7 +259,7 @@ protected:
     virtual void swapping()
     {
     }
-    virtual void updating();
+    virtual void updating() override;
 
     /// Slot to receive update
     void updateBuffer();

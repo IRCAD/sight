@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace helper
 class FWDATATOOLS_CLASS_API Mesh
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((Mesh), (((::fwData::Mesh::sptr))), new Mesh );
+    fwCoreClassFactoryMacro((Mesh), (((::fwData::Mesh::sptr))), new Mesh )
 
     FWDATATOOLS_API Mesh( ::fwData::Mesh::sptr mesh );
 
@@ -199,8 +199,6 @@ public:
                                                             const T& pointsBegin,
                                                             const T& pointsEnd );
 
-
-
     /// Returns the internal corresponding array as a boost::multi_array_ref
     FWDATATOOLS_API ::fwData::Mesh::PointsMultiArrayType          getPoints() const;
     /// Returns the internal corresponding array as a boost::multi_array_ref
@@ -247,7 +245,6 @@ protected:
     ::fwDataTools::helper::Array::sptr m_helperCellTexCoords;
 
 };
-
 
 } // namespace helper
 

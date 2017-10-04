@@ -52,16 +52,16 @@ public:
 
 protected:
 
-    SCENE2D_API void configuring();
+    SCENE2D_API void configuring() override;
 
     /// Initialize the layer and call the draw() function.
-    SCENE2D_API void starting();
+    SCENE2D_API void starting() override;
 
     /// Do nothing.
-    SCENE2D_API void updating();
+    SCENE2D_API void updating() override;
 
     /// Remove the layer from the scene.
-    SCENE2D_API void stopping();
+    SCENE2D_API void stopping() override;
 
 private:
 

@@ -101,10 +101,10 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
     VISUVTKADAPTOR_API void swapping(const KeyType& key);
 
     /**
@@ -116,7 +116,7 @@ protected:
      * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     virtual void buildPipeline();
     virtual void destroyPipeline();
@@ -128,10 +128,10 @@ protected:
     void updateImageTransferFunction();
 
     /// Slot: update the displayed lookup table
-    VISUVTKADAPTOR_API virtual void updateTFPoints();
+    VISUVTKADAPTOR_API virtual void updateTFPoints() override;
 
     /// Slot: update the windowing of the displayed lookup table
-    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level);
+    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
 private:
 

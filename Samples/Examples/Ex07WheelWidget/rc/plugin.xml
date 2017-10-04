@@ -1,4 +1,4 @@
-<plugin id="Ex07WheelWidget" version="@DASH_VERSION@">
+<plugin id="Ex07WheelWidget" version="@PROJECT_VERSION@">
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07WheelWidget</id>
         <desc>Wheel widget interaction example.</desc>
@@ -7,7 +7,6 @@
         <object uid="image" type="::fwData::Image" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="transform" type="::fwData::TransformationMatrix3D" />
-        <object uid="wheelTransform" type="::fwData::TransformationMatrix3D" />
 
         <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
             <gui>
@@ -65,6 +64,13 @@
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />
 
+                <vtkObject id="vtkWheelTransform" class="vtkTransform" />
+                <vtkObject id="invWheelTransform" class="vtkTransform">
+                    <vtkTransform>
+                        <concatenate inverse="yes">vtkWheelTransform</concatenate>
+                    </vtkTransform>
+                </vtkObject>
+
                 <adaptor uid="transformAdpt" />
                 <adaptor uid="referenceNegatoMPR" />
                 <adaptor uid="referenceInteractorStyle" />
@@ -74,13 +80,13 @@
         </service>
 
         <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="wheelTransform" />
-            <config transform="registration" />
+            <inout key="tm3d" uid="transform" />
+            <config transform="vtkWheelTransform" />
         </service>
 
         <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="image" />
-            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" transform="registration" />
+            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" transform="invWheelTransform" />
         </service>
 
         <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -99,13 +105,6 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="concatenate" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-              <key uid="transform" autoConnect="yes" inverse="true" />
-            </in>
-            <inout key="output" uid="wheelTransform" />
-        </service>
-
         <connect>
             <signal>2DWheel/wheelUpdated</signal>
             <slot>transformFromWheel/updateTransform</slot>
@@ -113,12 +112,11 @@
 
         <start uid="mainFrame" />
 
-        <start uid="concatenate" />
+        <start uid="transformAdpt" />
         <start uid="referenceNegatoMPR" />
         <start uid="referenceInteractorStyle" />
         <start uid="2DWheel" />
         <start uid="transformFromWheel" />
-        <start uid="transformAdpt" />
 
         </config>
     </extension>

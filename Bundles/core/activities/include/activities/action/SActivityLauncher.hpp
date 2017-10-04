@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 #define __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
+
+#include "activities/config.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
@@ -16,8 +18,6 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include "activities/config.hpp"
 
 namespace activities
 {
@@ -44,13 +44,15 @@ namespace action
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
  *
  * @section Signal Signal
- * - \b activityLaunched(::fwActivities::registry::ActivityMsg) : This signal is emitted when the activity is created, it
+ * - \b activityLaunched(::fwActivities::registry::ActivityMsg) : This signal is emitted when the activity is created,
+ * it
  *      contains the activity information. It should be connected to the slot 'createTab' of the service
  *      '::guiQt::editor::DynamicView'.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher"
+ * autoConnect="yes" >
         <config>
             <!-- SActivityLauncher mode : immediate or message(default)
                  Immediate mode starts and stop immediatly the activity's config -->
@@ -114,7 +116,7 @@ class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SActivityLauncher)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SActivityLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivityLauncher() noexcept;
@@ -130,7 +132,6 @@ public:
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
     /// @}
-
 
     /**
      * @name Signal API
@@ -149,29 +150,29 @@ public:
      * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
      * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
      */
-    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const;
+    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     ///This method launches the IAction::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /**
      * @brief Show activity selector.
      */
-    virtual void updating();
+    virtual void updating() override;
 
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
@@ -193,7 +194,7 @@ private:
      * @brief Launches activity series if only ActivitySeries are selected.
      * @return Returns true if only ActivitySeries are selected.
      */
-    bool launchAS(::fwData::Vector::sptr &selection);
+    bool launchAS(::fwData::Vector::sptr& selection);
 
     /**
      * @brief Slots to launch the given series.
@@ -217,7 +218,7 @@ private:
      *
      * @param info activity information
      */
-    void sendConfig( const ::fwActivities::registry::ActivityInfo & info );
+    void sendConfig( const ::fwActivities::registry::ActivityInfo& info );
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -225,12 +226,12 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const ::fwActivities::registry::ActivityInfo & info, const ::fwData::Vector::sptr& selection);
+    void buildActivity(const ::fwActivities::registry::ActivityInfo& info, const ::fwData::Vector::sptr& selection);
 
     typedef ::fwActivities::registry::Activities::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer & infos );
+    ::fwActivities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
@@ -258,6 +259,5 @@ private:
 
 } //action
 } // gui
-
 
 #endif // __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__

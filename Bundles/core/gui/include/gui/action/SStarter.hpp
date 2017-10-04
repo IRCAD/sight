@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,6 @@ namespace action
 
 /**
  * @brief   Apply an action (start, stop, ...) on a service specify by uid.
- * @class   SStarter
  *
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  * This action can be :
@@ -32,7 +31,8 @@ namespace action
               <start uid="Uid_of_the_service" />
            </service>
    @endcode
- * If the service is stopped, the service specified by "Uid_of_the_service" is started and updated. Otherwise it is just updated.
+ * If the service is stopped, the service specified by "Uid_of_the_service" is started and updated. Otherwise it is just
+ * updated.
  *
  *   - Start a service if exists :
  * @code{.xml}
@@ -64,9 +64,11 @@ namespace action
               <start_or_stop uid="Uid_of_the_service" />
            </service>
    @endcode
- * If the service is stopped, this works as start the service. If the service is started, this works as stop the service.
+ * If the service is stopped, this works as start the service. If the service is started, this works as stop the
+ * service.
  *
- * To notice : when the starterActionService is stopped, it stops all the associated services which have been started by itself.
+ * To notice : when the starterActionService is stopped, it stops all the associated services which have been started by
+ * itself.
  */
 
 class GUI_CLASS_API SStarter : public ::fwGui::IActionSrv
@@ -74,7 +76,7 @@ class GUI_CLASS_API SStarter : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStarter)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SStarter)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
@@ -102,25 +104,26 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating();
+    GUI_API void updating() override;
 
     /**
-     * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
+     * @brief This method is used to configure the service parameters: specifies which services must be started or
+     * stopped
      */
-    GUI_API void configuring();
+    GUI_API void configuring() override;
 
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
     /**
      * @brief Uninitialized the service activity.
      * All services started by this action are stopped.
      */
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
 private:
     typedef ::fwTools::fwID::IDType IDSrvType;
@@ -133,9 +136,7 @@ private:
     SetIDSrvType m_idStartedSrvSet;
 };
 
-
 } // namespace action
 } // namespace gui
-
 
 #endif /*__GUI_ACTION_SSTARTER_HPP__*/

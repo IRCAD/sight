@@ -48,16 +48,12 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IODATA_API virtual void configureWithIHM();
-
-    /**
-     * @brief   returns  (filename) extension
-     */
-    IODATA_API virtual std::vector< std::string > getSupportedExtensions();
-    ///@}
+    IODATA_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
+
+    ///@}
 
 protected:
 
@@ -82,7 +78,7 @@ protected:
     /**
      * @brief Configuring method : calls implementation from `io::IWriter`
      */
-    IODATA_API virtual void configuring();
+    IODATA_API virtual void configuring() override;
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -91,7 +87,7 @@ protected:
      * The transformation matrix is written with the writer ::fwDataIO::writer::TransformationMatrix3DWriter.
      * Notify writing.
      */
-    IODATA_API void updating();
+    IODATA_API void updating() override;
 
     /**
      * @brief Info method.
@@ -101,7 +97,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream& _sstream );
+    IODATA_API virtual void info(std::ostream& _sstream ) override;
     /// @}
 
 };

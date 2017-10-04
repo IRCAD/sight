@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,9 @@
 
 #include "vtkGdcmIO/config.hpp"
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/Folder.hpp>
+
+#include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 namespace fwJobs
 {
@@ -36,7 +37,6 @@ enum class CompressionTypes
 
 /**
  * @brief Write an ImageSeries in DICOM format.
- * @class ImageSeriesWriter
  */
 class ImageSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries >,
                           public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
@@ -48,20 +48,20 @@ public:
                                                                                                          ImageSeries>),
                                            (()),
                                            ::fwDataIO::writer::factory::New< ImageSeriesWriter >
-                                           );
-    fwCoreAllowSharedFromThis();
+                                           )
+    fwCoreAllowSharedFromThis()
 
     /// Constructor. Does nothing
     VTKGDCMIO_API ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     /// Write the image series in DICOM format.
-    VTKGDCMIO_API void write();
+    VTKGDCMIO_API void write() override;
 
     /// Return an empty string
-    VTKGDCMIO_API std::string  extension();
+    VTKGDCMIO_API std::string  extension() override;
 
     /// @return internal job
-    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
     /// Get DICOM compression type (default RAW)
     CompressionTypes getCompressionTypes() const

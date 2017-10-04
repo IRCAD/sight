@@ -1,25 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
+#include "registry/ActivityRegistryTest.hpp"
+
+#include <fwActivities/registry/Activities.hpp>
+
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/io/BundleDescriptorReader.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Vector.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
-
-#include "registry/ActivityRegistryTest.hpp"
-
+#include <algorithm>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwActivities::ut::ActivityRegistryTest );
@@ -42,7 +42,7 @@ void ActivityRegistryTest::setUp()
 {
     m_pimpl = std::make_shared< ActivityRegistryTestPimpl >();
 
-    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_registry";
+    ::boost::filesystem::path plugin = "share/tu_exec_fwActivities-0.0/tu_registry";
     m_pimpl->bundle                  = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     m_pimpl->activities = fwActivities::registry::Activities::New();
@@ -69,12 +69,16 @@ void ActivityRegistryTest::tearDown()
 
 struct activities_less_than_key
 {
+    //------------------------------------------------------------------------------
+
     inline bool operator() (const ::fwActivities::registry::ActivityInfo& a,
                             const ::fwActivities::registry::ActivityInfo& b)
     {
         return (a.id < b.id);
     }
 };
+
+//------------------------------------------------------------------------------
 
 void ActivityRegistryTest::registryTest()
 {
@@ -92,7 +96,6 @@ void ActivityRegistryTest::registryTest()
     CPPUNIT_ASSERT_EQUAL( std::string("Test3"), activities.at(1).id );
     CPPUNIT_ASSERT_EQUAL( std::string("Test4"), activities.at(2).id );
     CPPUNIT_ASSERT_EQUAL( std::string("Test7"), activities.at(3).id );
-
 
     // 2 images
     v->getContainer().push_back( ::fwData::Image::New() );
@@ -193,7 +196,7 @@ void ActivityRegistryTest::registryTest()
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
-    const ::fwActivities::registry::ActivityInfo &info = activities[0];
+    const ::fwActivities::registry::ActivityInfo& info = activities[0];
     CPPUNIT_ASSERT_EQUAL( std::string("Test0"), info.id );
     CPPUNIT_ASSERT_EQUAL( size_t(3), info.appConfig.parameters.size() );
     CPPUNIT_ASSERT_EQUAL( std::string("refImageUid"), info.appConfig.parameters.at(0).replace );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,14 @@
 #ifndef __FWITKIO_IMAGEWRITER_HPP__
 #define __FWITKIO_IMAGEWRITER_HPP__
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
-#include <fwData/Image.hpp>
-
 #include "fwItkIO/config.hpp"
+
+#include <fwData/Image.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataIO/writer/GenericObjectWriter.hpp>
+
+#include <fwTools/ProgressAdviser.hpp>
 
 namespace fwItkIO
 {
@@ -34,9 +36,9 @@ public:
 
     FWITKIO_API ~ImageWriter();
 
-    FWITKIO_API void write();
+    FWITKIO_API void write() override;
 
-    FWITKIO_API std::string extension();
+    FWITKIO_API std::string extension() override;
 };
 
 } // namespace fwItkIO

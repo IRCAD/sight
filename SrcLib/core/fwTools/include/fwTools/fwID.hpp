@@ -27,7 +27,7 @@ class FWTOOLS_CLASS_API fwID
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (fwID) );
+    fwCoreBaseClassDefinitionsMacro( (fwID) );
 
     typedef std::string IDType;
 

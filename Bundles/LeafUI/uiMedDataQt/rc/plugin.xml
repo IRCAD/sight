@@ -1,4 +1,4 @@
-<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin" version="@DASH_VERSION@">
+<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin" version="@PROJECT_VERSION@">
     <library name="uiMedDataQt" />
 
     <requirement id="dataReg" />
@@ -72,8 +72,8 @@
                 <inout key="activitySeries" uid="${objectID}" />
                 <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
                 <icons>
-                    <icon type="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
-                    <icon type="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
+                    <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+                    <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
                 </icons>
                 <registry>
                     <parent wid="${WID_PARENT}" />

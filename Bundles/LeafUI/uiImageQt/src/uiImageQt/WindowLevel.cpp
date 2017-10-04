@@ -23,6 +23,8 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -90,20 +92,20 @@ void WindowLevel::starting()
 
     m_toggleTFButton = new QToolButton();
     QIcon ico;
-    QString squareIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/square.png");
-    QString rampIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
-    ico.addPixmap(QPixmap(squareIcon), QIcon::Normal, QIcon::On);
-    ico.addPixmap(QPixmap(rampIcon), QIcon::Normal, QIcon::Off);
+    std::string squareIcon(::fwRuntime::getBundleResourceFilePath("uiImageQt", "square.png").string());
+    std::string rampIcon(::fwRuntime::getBundleResourceFilePath("uiImageQt", "ramp.png").string());
+    ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
+    ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
     m_toggleTFButton->setCheckable(true);
     m_toggleTFButton->setVisible(m_enableSquareTF);
 
     m_toggleAutoButton = new QToolButton();
     QIcon icon;
-    QString windo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
-    icon.addFile(windo, QSize(), QIcon::Normal, QIcon::On);
-    QString nowindo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
-    icon.addFile(nowindo, QSize(), QIcon::Normal, QIcon::Off);
+    std::string windo(::fwRuntime::getBundleResourceFilePath("uiImageQt", "windowing.svg").string());
+    icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
+    std::string nowindo(::fwRuntime::getBundleResourceFilePath("uiImageQt", "nowindowing.svg").string());
+    icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
     m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");
     m_toggleAutoButton->setCheckable(true);
