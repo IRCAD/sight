@@ -76,10 +76,10 @@ void TransferFunctionEditor::configuring()
     {
         const ConfigType config = srvConfig.get_child("config");
 
-        std::vector< ::fwRuntime::ConfigurationElement::sptr > pathsCfg = configuration->find("path");
-        for(::fwRuntime::ConfigurationElement::sptr cfg :  pathsCfg)
+        const auto pathCfg = config.equal_range("path");
+        for(auto itCfg = pathCfg.first; itCfg != pathCfg.second; ++itCfg)
         {
-            const auto path = ::fwRuntime::getBundleResourceFilePath(cfg->getValue());
+            const auto path = ::fwRuntime::getBundleResourceFilePath(itCfg->second.get_value<std::string>());
             m_paths.push_back(path);
         }
 
