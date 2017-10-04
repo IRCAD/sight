@@ -163,17 +163,17 @@ protected:
     FWGUI_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// SLOT: enable/disable the container
-    void setEnabled(bool isEnabled);
+    FWGUI_API void setEnabled(bool isEnabled);
     /// SLOT: enable the container
-    void enable();
+    FWGUI_API void enable();
     /// SLOT: disable the container
-    void disable();
+    FWGUI_API void disable();
     /// SLOT: show/hide the container
-    void setVisible(bool isVisible);
+    FWGUI_API void setVisible(bool isVisible);
     /// SLOT: show the container
-    void show();
+    FWGUI_API void show();
     /// SLOT: hide the container
-    void hide();
+    FWGUI_API void hide();
 
     /**
      * @}
@@ -206,4 +206,3 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_IGUICONTAINERSRV_HPP__*/
-
