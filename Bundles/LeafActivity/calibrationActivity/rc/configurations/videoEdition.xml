@@ -35,7 +35,7 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Edit" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
                 </layout>
             </gui>
             <registry>

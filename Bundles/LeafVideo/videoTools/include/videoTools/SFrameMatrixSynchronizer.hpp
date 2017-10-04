@@ -141,19 +141,19 @@ protected:
     /**
      * @brief This method is used to configure the service.
      */
-    VIDEOTOOLS_API void configuring();
+    VIDEOTOOLS_API void configuring() override;
 
     /// This method is used to initialize the timer and get the TLs & Matrixes.
-    VIDEOTOOLS_API void starting();
+    VIDEOTOOLS_API void starting() override;
 
     /// Stops timer and clear TLs & Matrixes.
-    VIDEOTOOLS_API void stopping();
+    VIDEOTOOLS_API void stopping() override;
 
     /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
 
     /// Do nothing.
-    VIDEOTOOLS_API void updating();
+    VIDEOTOOLS_API void updating() override;
 
 private:
 

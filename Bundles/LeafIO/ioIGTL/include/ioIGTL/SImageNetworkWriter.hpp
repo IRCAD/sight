@@ -35,30 +35,30 @@ public:
     IOIGTL_API virtual ~SImageNetworkWriter() noexcept;
 
     /// Overrides
-    IOIGTL_API ::io::IOPathType getIOPathType() const;
+    IOIGTL_API ::io::IOPathType getIOPathType() const override;
     /**
      * @brief configure the port to listen for send image to a client
      */
-    IOIGTL_API virtual void configureWithIHM();
+    IOIGTL_API virtual void configureWithIHM() override;
 
 protected:
 
     /// Overrides
-    IOIGTL_API virtual void configuring();
+    IOIGTL_API virtual void configuring() override;
 
     /// Overrides
-    IOIGTL_API virtual void starting();
+    IOIGTL_API virtual void starting() override;
 
     /// Overrides
-    IOIGTL_API virtual void stopping();
+    IOIGTL_API virtual void stopping() override;
 
     /**
      * @brief when a client is connected it send image and close the connection
      */
-    IOIGTL_API virtual void updating();
+    IOIGTL_API virtual void updating() override;
 
     /// Overrides
-    IOIGTL_API virtual void swapping();
+    IOIGTL_API virtual void swapping() override;
 
 private:
 

@@ -58,27 +58,27 @@ public:
     VIDEOOPENCV_API virtual ~SFrameWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    VIDEOOPENCV_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    VIDEOOPENCV_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    VIDEOOPENCV_API virtual void configureWithIHM();
+    VIDEOOPENCV_API virtual void configureWithIHM() override;
 
     /// Return file type (::io::FOLDER)
-    VIDEOOPENCV_API virtual ::io::IOPathType getIOPathType() const;
+    VIDEOOPENCV_API virtual ::io::IOPathType getIOPathType() const override;
 
 protected:
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void configuring();
+    VIDEOOPENCV_API virtual void configuring() override;
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void starting();
+    VIDEOOPENCV_API virtual void starting() override;
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void stopping();
+    VIDEOOPENCV_API virtual void stopping() override;
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void updating();
+    VIDEOOPENCV_API virtual void updating() override;
 
 private:
 

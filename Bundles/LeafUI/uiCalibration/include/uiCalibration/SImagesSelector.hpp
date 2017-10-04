@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SImagesSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SImagesSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
     UICALIBRATION_API SImagesSelector() noexcept;
@@ -79,16 +79,16 @@ public:
 protected:
 
     /// Configure the editor.
-    UICALIBRATION_API virtual void configuring();
+    UICALIBRATION_API virtual void configuring() override;
 
     /// Initialize the widgets.
-    UICALIBRATION_API virtual void starting();
+    UICALIBRATION_API virtual void starting() override;
 
     /// destroy the widgets.
-    UICALIBRATION_API virtual void stopping();
+    UICALIBRATION_API virtual void stopping() override;
 
     /// FILL ME.
-    UICALIBRATION_API virtual void updating();
+    UICALIBRATION_API virtual void updating() override;
 
 protected:
 

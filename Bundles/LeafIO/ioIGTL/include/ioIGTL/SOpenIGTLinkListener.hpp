@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,8 +15,8 @@
 
 #include <ioNetwork/INetworkListener.hpp>
 
-#include <string>
 #include <future>
+#include <string>
 
 namespace ioIGTL
 {
@@ -36,7 +36,8 @@ namespace ioIGTL
  * @endcode
  * @subsection In-Out In-Out:
  * - \b object [::fwData::Object]:
- *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL): received IGTL data are pushed in timeline
+ *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL): received IGTL data are pushed in
+ * timeline
  *   - else : object is updated with received IGTL data
  * @subsection Configuration Configuration:
  * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
@@ -49,7 +50,7 @@ class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListen
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SOpenIGTLinkListener)(::ioNetwork::INetworkListener) );
+    fwCoreServiceClassDefinitionsMacro( (SOpenIGTLinkListener)(::ioNetwork::INetworkListener) );
 
     /// Constructor
     IOIGTL_API SOpenIGTLinkListener();
@@ -60,13 +61,13 @@ public:
 protected:
 
     /// Configure port, hostname and device name
-    IOIGTL_API virtual void configuring();
+    IOIGTL_API virtual void configuring() override;
 
     /// start the client and try to connect to the server specify in configuration
-    IOIGTL_API virtual void starting();
+    IOIGTL_API virtual void starting() override;
 
     /// disconnect the client from the server
-    IOIGTL_API virtual void stopping();
+    IOIGTL_API virtual void stopping() override;
 
 private:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __EX02TIMELINE_SMAIN_HPP__
 #define __EX02TIMELINE_SMAIN_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "Ex02TimeLine/config.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace Ex02TimeLine
 {
@@ -22,7 +22,7 @@ class EX02TIMELINE_CLASS_API SMain : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMain)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (SMain)(::fwServices::IService) );
 
     EX02TIMELINE_API SMain() noexcept;
     EX02TIMELINE_API virtual ~SMain() noexcept;
@@ -30,19 +30,19 @@ public:
 protected:
 
     /// Does nothing.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Does nothing.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing.
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Contains one input instruction to block the main thread.
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing.
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
 

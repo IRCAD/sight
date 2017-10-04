@@ -133,22 +133,22 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    TRACKERARUCO_API void configuring();
+    TRACKERARUCO_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    TRACKERARUCO_API void starting();
+    TRACKERARUCO_API void starting() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    TRACKERARUCO_API void updating();
+    TRACKERARUCO_API void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    TRACKERARUCO_API void stopping();
+    TRACKERARUCO_API void stopping() override;
 
     /// Detect marker
     TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp);

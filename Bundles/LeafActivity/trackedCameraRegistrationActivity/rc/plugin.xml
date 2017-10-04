@@ -1,4 +1,4 @@
-<plugin id="trackedCameraRegistrationActivity" version="@DASH_VERSION@">
+<plugin id="trackedCameraRegistrationActivity" version="@PROJECT_VERSION@">
 
     <requirement id="activities" />
     <requirement id="visuVTKQt" />
@@ -14,7 +14,7 @@
         <id>TrackedCameraRegistration</id>
         <title>Tracked camera registration</title>
         <desc>Activity to compute the registration matrix between a camera and an aruco tag</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/tagTracking.svg</icon>
+        <icon>arMedia-0.1/icons/tagTracking.svg</icon>
         <requirements>
             <requirement name="rgbCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>CameraSeries containing the calibration for the RGB camera</desc>
@@ -42,7 +42,7 @@
         <id>TrackedSenseCameraRegistration</id>
         <title>Tracked sense camera registration</title>
         <desc>Activity to compute the registration matrix between a sense camera and an aruco tag</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/tagTracking.svg</icon>
+        <icon>arMedia-0.1/icons/tagTracking.svg</icon>
         <requirements>
             <requirement name="rgbCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>CameraSeries containing the calibration for the RGB camera</desc>

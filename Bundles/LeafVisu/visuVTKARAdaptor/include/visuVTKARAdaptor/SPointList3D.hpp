@@ -56,19 +56,19 @@ public:
 protected:
 
     /// Configure the service.
-    VISUVTKARADAPTOR_API void configuring();
+    VISUVTKARADAPTOR_API void configuring() override;
 
     /// Initialize the actor and update the point list.
-    VISUVTKARADAPTOR_API void starting();
+    VISUVTKARADAPTOR_API void starting() override;
 
     /// Update the point list.
-    VISUVTKARADAPTOR_API void updating();
+    VISUVTKARADAPTOR_API void updating() override;
 
     /// Destroy all vtk props created at start.
-    VISUVTKARADAPTOR_API void stopping();
+    VISUVTKARADAPTOR_API void stopping() override;
 
     /// Restart the service (stop-start).
-    VISUVTKARADAPTOR_API void swapping();
+    VISUVTKARADAPTOR_API void swapping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

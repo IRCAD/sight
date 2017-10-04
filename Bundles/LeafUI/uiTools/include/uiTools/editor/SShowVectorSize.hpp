@@ -75,27 +75,27 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Overrides
-    virtual void updating();
+    virtual void updating() override;
 
     /// Overrides
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// connect fwData::Vector's signals to SShowVector
-    virtual KeyConnectionsMap getAutoConnections() const;
+    virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Configures the service
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

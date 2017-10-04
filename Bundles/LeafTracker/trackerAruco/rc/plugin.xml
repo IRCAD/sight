@@ -1,4 +1,4 @@
-<plugin id="trackerAruco" class="::trackerAruco::Plugin" version="@DASH_VERSION@" >
+<plugin id="trackerAruco" class="::trackerAruco::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="trackerAruco" />
 

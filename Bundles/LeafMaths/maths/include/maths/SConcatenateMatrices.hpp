@@ -66,16 +66,16 @@ public:
 
 protected:
     /// This method is used to configure the service.
-    MATHS_API void configuring();
+    MATHS_API void configuring() override;
 
     /// This method is used to initialize the service.
-    MATHS_API void starting();
+    MATHS_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping();
+    MATHS_API void stopping() override;
 
     /// Does nothing.
-    MATHS_API void updating();
+    MATHS_API void updating() override;
 
 private:
 

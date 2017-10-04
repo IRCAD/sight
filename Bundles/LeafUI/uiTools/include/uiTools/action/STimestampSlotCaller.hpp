@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__
 #define __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__
 
-#include <fwCore/base.hpp>
+#include "uiTools/config.hpp"
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "uiTools/config.hpp"
-
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
 namespace uiTools
 {
@@ -23,7 +22,6 @@ namespace action
 {
 
 /**
- * @class STimestampSlotCaller
  * @brief Runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
  *
  * @code{.xml}
@@ -35,14 +33,13 @@ class UITOOLS_CLASS_API STimestampSlotCaller : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (STimestampSlotCaller)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (STimestampSlotCaller)(::fwGui::IActionSrv) );
 
     /// Constructor
     UITOOLS_API STimestampSlotCaller();
 
     /// Destructor
     UITOOLS_API ~STimestampSlotCaller();
-
 
 protected:
 
@@ -52,7 +49,7 @@ protected:
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Does nothing
-    UITOOLS_API virtual void starting();
+    UITOOLS_API virtual void starting() override;
 
     /**
      * @brief Configure the service
@@ -69,13 +66,13 @@ protected:
      *   - \b hasSlotsId : fwId of the HasSlots (usually a service)
      *   - \b slotKey : the identifier of the slot in the HasSlots
      */
-    UITOOLS_API virtual void configuring();
+    UITOOLS_API virtual void configuring() override;
 
     /// Does nothing
-    UITOOLS_API virtual void stopping();
+    UITOOLS_API virtual void stopping() override;
 
     /// This method run the specified slots.
-    UITOOLS_API virtual void updating();
+    UITOOLS_API virtual void updating() override;
 
     /// vector representing slots
     SlotInfoContainerType m_slotInfos;
@@ -83,6 +80,5 @@ protected:
 
 } // namespace action
 } // namespace uiTools
-
 
 #endif /* __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__ */

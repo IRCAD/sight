@@ -60,13 +60,13 @@ public:
 protected:
 
     /// Configure port and device name
-    IOIGTL_API virtual void configuring();
+    IOIGTL_API virtual void configuring() override;
 
     /// Start the server.
-    IOIGTL_API virtual void starting();
+    IOIGTL_API virtual void starting() override;
 
     /// Stop the server
-    IOIGTL_API virtual void stopping();
+    IOIGTL_API virtual void stopping() override;
 
 private:
     /**

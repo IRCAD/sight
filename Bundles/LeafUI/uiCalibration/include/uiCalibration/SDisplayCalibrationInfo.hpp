@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,12 @@
 
 #include "uiCalibration/config.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/IController.hpp>
-
-
 
 namespace uiCalibration
 {
@@ -57,7 +55,7 @@ class UICALIBRATION_CLASS_API SDisplayCalibrationInfo : public ::fwServices::ICo
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDisplayCalibrationInfo)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SDisplayCalibrationInfo)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
     UICALIBRATION_API SDisplayCalibrationInfo() noexcept;
@@ -68,20 +66,19 @@ public:
 protected:
 
     /// Starts the config
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops the config
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
-
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

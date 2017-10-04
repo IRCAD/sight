@@ -102,10 +102,10 @@ public:
     ARDATA_API static std::string getPixelFormatName(PixelFormat format);
 
     /// Defines shallow copy
-    ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    ARDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    ARDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**@name Signals API
      * @{

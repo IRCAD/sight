@@ -50,17 +50,17 @@ protected:
      *
      * @see ZeroMQConfigurationParser for the format of the configuration
      */
-    IOZMQ_API virtual void configuring();
+    IOZMQ_API virtual void configuring() override;
 
     /**
      * @brief start the socket
      */
-    IOZMQ_API virtual void starting();
+    IOZMQ_API virtual void starting() override;
 
     /**
      * @brief stop the socket
      */
-    IOZMQ_API virtual void stopping();
+    IOZMQ_API virtual void stopping() override;
 
     /**
      * @brief slot method to update configuration

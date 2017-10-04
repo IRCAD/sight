@@ -48,12 +48,12 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Add" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
-                    <menuItem name="Remove" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/remove.svg" />
-                    <menuItem name="Reset" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/CheckButton.svg" />
-                    <menuItem name="Draw" icon="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg" />
-                    <menuItem name="Edit" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="Add" icon="media-0.1/icons/Import.svg" />
+                    <menuItem name="Remove" icon="arMedia-0.1/icons/remove.svg" />
+                    <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
+                    <menuItem name="Calibrate with openCV" icon="arMedia-0.1/icons/CheckButton.svg" />
+                    <menuItem name="Draw" icon="media-0.1/icons/Preview.svg" />
+                    <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
                 </layout>
             </gui>
             <registry>

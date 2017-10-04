@@ -1,4 +1,4 @@
-<plugin id="ioIGTL" class="::ioIGTL::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioIGTL" class="::ioIGTL::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ioIGTL" />
 

@@ -77,31 +77,31 @@ public:
 protected:
 
     /// Initialize the layout and the camera.
-    VIDEOPCL_API virtual void starting();
+    VIDEOPCL_API virtual void starting() override;
 
     /// Destroy the layout.
-    VIDEOPCL_API virtual void stopping();
+    VIDEOPCL_API virtual void stopping() override;
 
     /// Do nothing.
-    VIDEOPCL_API virtual void updating();
+    VIDEOPCL_API virtual void updating() override;
 
     /// Do nothing.
-    VIDEOPCL_API virtual void configuring();
+    VIDEOPCL_API virtual void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
-    virtual void startCamera();
+    virtual void startCamera() override;
 
     /// SLOT : Stop camera
-    virtual void stopCamera();
+    virtual void stopCamera() override;
 
     /// SLOT : Pause camera
-    virtual void pauseCamera();
+    virtual void pauseCamera() override;
 
     /// SLOT : enable/disable loop in video
-    virtual void toggleLoopMode();
+    virtual void toggleLoopMode() override;
 
     /// SLOT : set the new position in the video.
-    virtual void setPosition(int64_t position);
+    virtual void setPosition(int64_t position) override;
 
 private:
 

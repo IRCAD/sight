@@ -1,4 +1,4 @@
-<plugin id="uiZMQ" class="::uiZMQ::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiZMQ" class="::uiZMQ::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="uiZMQ" />
     <requirement id="gui" />

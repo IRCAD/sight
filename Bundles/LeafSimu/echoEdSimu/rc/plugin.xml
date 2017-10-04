@@ -1,4 +1,4 @@
-<plugin id="echoEdSimu" class="::echoEdSimu::Plugin" version="@DASH_VERSION@" >
+<plugin id="echoEdSimu" class="::echoEdSimu::Plugin" version="@PROJECT_VERSION@" >
 
  <library name="echoEdSimu" />
 

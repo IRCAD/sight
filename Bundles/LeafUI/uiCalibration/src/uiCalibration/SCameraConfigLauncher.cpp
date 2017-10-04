@@ -21,6 +21,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
@@ -78,12 +80,13 @@ void SCameraConfigLauncher::starting()
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString(BUNDLE_PREFIX) + QString("/media_0-1/icons/Import.svg"));
+    QIcon addIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("media", "icons/Import.svg").string()));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon removeIcon(QString(BUNDLE_PREFIX) + QString("/arMedia_0-1/icons/remove.svg"));
+    QIcon removeIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
+                                                                                   "icons/remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);

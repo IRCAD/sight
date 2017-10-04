@@ -58,19 +58,19 @@ public:
 
 protected:
 
-    VISUVTKARADAPTOR_API void configuring();
+    VISUVTKARADAPTOR_API void configuring() override;
 
     /// Initialize the service and update it.
-    VISUVTKARADAPTOR_API void starting();
+    VISUVTKARADAPTOR_API void starting() override;
 
     /// Create/update vtk props.
-    VISUVTKARADAPTOR_API void updating();
+    VISUVTKARADAPTOR_API void updating() override;
 
     /// Cleanup vtk props.
-    VISUVTKARADAPTOR_API void stopping();
+    VISUVTKARADAPTOR_API void stopping() override;
 
     /// Restart the service (stop-start).
-    VISUVTKARADAPTOR_API void swapping();
+    VISUVTKARADAPTOR_API void swapping() override;
 
 private:
 

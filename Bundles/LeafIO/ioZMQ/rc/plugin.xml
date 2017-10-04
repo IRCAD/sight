@@ -1,4 +1,4 @@
-<plugin id="ioZMQ" class="::ioZMQ::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioZMQ" class="::ioZMQ::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ioZMQ" />
     

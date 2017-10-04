@@ -1,4 +1,4 @@
-<plugin id="Ex06RGBDStream" version="@DASH_VERSION@">
+<plugin id="Ex06RGBDStream" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="scene2D" />
@@ -31,7 +31,7 @@
                 <gui>
                     <frame>
                         <name>Ex06RGBDStream</name>
-                        <icon>@BUNDLE_PREFIX@/Ex06RGBDStream_@DASH_VERSION@/ex06rgbdstream.ico</icon>
+                        <icon>Ex06RGBDStream-@PROJECT_VERSION@/ex06rgbdstream.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>
@@ -46,8 +46,8 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                     </layout>
                 </gui>
                 <registry>

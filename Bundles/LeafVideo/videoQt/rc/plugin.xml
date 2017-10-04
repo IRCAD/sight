@@ -1,4 +1,4 @@
-<plugin id="videoQt" class="videoQt::Plugin" version="@DASH_VERSION@" >
+<plugin id="videoQt" class="videoQt::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="videoQt" />
 

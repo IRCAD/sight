@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,18 +9,20 @@
 
 #include "uiZMQ/config.hpp"
 
-#include <gui/editor/IDialogEditor.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+
 #include <zmqNetwork/Socket.hpp>
 
-#include <QDialog>
-#include <QObject>
+#include <gui/editor/IDialogEditor.hpp>
+
 #include <QComboBox>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QObject>
 #include <QSpinBox>
 #include <QWidget>
-#include <QLineEdit>
-#include <QLabel>
 
 namespace uiZMQ
 {
@@ -49,26 +51,26 @@ public:
                                     ::zmqNetwork::Socket::SocketMode const,
                                     std::string const& host) > ConfigurationUpdatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SZMQConfigEditor) (::gui::editor::IDialogEditor));
+    fwCoreServiceClassDefinitionsMacro( (SZMQConfigEditor) (::gui::editor::IDialogEditor));
 
     /**
      * @brief create gui interface
      */
-    UIZMQ_API virtual void configuring();
+    UIZMQ_API virtual void configuring() override;
 
     /// Overrides
-    UIZMQ_API virtual void starting();
+    UIZMQ_API virtual void starting() override;
 
     /// Overrides
-    UIZMQ_API virtual void stopping();
+    UIZMQ_API virtual void stopping() override;
 
     /**
      * @brief show the dialog
      */
-    UIZMQ_API virtual void updating();
+    UIZMQ_API virtual void updating() override;
 
     /// Overrides
-    UIZMQ_API virtual void swapping();
+    UIZMQ_API virtual void swapping() override;
 
     /// Constructor
     UIZMQ_API SZMQConfigEditor();
@@ -107,8 +109,6 @@ private:
 
     ConfigurationUpdatedSignalType::sptr m_configurationUpdatedSig;
 };
-
-
 
 } // namespace uiZMQ
 

@@ -35,30 +35,30 @@ public:
     IOIGTL_API virtual ~SImageNetworkReader() noexcept;
 
     /// Overrides
-    IOIGTL_API ::io::IOPathType getIOPathType() const;
+    IOIGTL_API ::io::IOPathType getIOPathType() const override;
 
     /**
      * @brief configure the server address to receive the image
      */
-    IOIGTL_API virtual void configureWithIHM();
+    IOIGTL_API virtual void configureWithIHM() override;
 
 protected:
     /// Overrides
-    IOIGTL_API virtual void configuring();
+    IOIGTL_API virtual void configuring() override;
 
     /// Overrides
-    IOIGTL_API virtual void starting();
+    IOIGTL_API virtual void starting() override;
 
     /// Overrides
-    IOIGTL_API virtual void stopping();
+    IOIGTL_API virtual void stopping() override;
 
     /**
      * @brief connect to the server, receive the image and close the connection
      */
-    IOIGTL_API virtual void updating();
+    IOIGTL_API virtual void updating() override;
 
     /// Overrides
-    IOIGTL_API virtual void swapping();
+    IOIGTL_API virtual void swapping() override;
 
 private:
 

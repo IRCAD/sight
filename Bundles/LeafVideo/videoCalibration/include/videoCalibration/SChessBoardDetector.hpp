@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,7 +88,6 @@ public:
     VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT;
     ///@}
 
-
     /// Constructor
     VIDEOCALIBRATION_API SChessBoardDetector() noexcept;
 
@@ -98,17 +97,16 @@ public:
 protected:
 
     /// Configure the service.
-    VIDEOCALIBRATION_API void configuring();
+    VIDEOCALIBRATION_API void configuring() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting();
+    VIDEOCALIBRATION_API void starting() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void updating();
+    VIDEOCALIBRATION_API void updating() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void stopping();
-
+    VIDEOCALIBRATION_API void stopping() override;
 
 private:
 
@@ -174,7 +172,5 @@ private:
 };
 
 } //namespace videoCalibration
-
-
 
 #endif //__VIDEOCALIBRATION_SCHESSBOARDDETECTOR_HPP__

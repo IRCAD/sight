@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ class CALIBRATIONACTIVITY_CLASS_API TagId : public ::fwActivities::IObjectValida
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagId)(::fwActivities::IValidator),
                                             (()),
-                                            ::fwActivities::validator::factory::New< TagId > );
+                                            ::fwActivities::validator::factory::New< TagId > )
 
     /// Constructor. Do nothing.
     CALIBRATIONACTIVITY_API TagId(::fwActivities::IValidator::Key key);
@@ -36,12 +36,11 @@ public:
     /// Destructor. Do nothing.
     CALIBRATIONACTIVITY_API virtual ~TagId();
 
-    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(::fwData::Object) &currentData ) const;
+    FWACTIVITIES_API virtual ValidationType validate(const CSPTR(::fwData::Object)& currentData ) const override;
 };
 
 } // namespace validator
 } // namespace calibrationActivity
 
 #endif /*__CALIBRATIONACTIVITY_VALIDATOR_TAGID_HPP__*/
-
 

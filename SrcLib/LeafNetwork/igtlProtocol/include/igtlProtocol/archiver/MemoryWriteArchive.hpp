@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -101,7 +101,7 @@ public:
      * @param[in] path file in archive
      * @return output stream of memory entry archive
      */
-    IGTLPROTOCOL_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path);
+    IGTLPROTOCOL_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) override;
 
     /**
      * @brief Write source file in memory archive
@@ -118,12 +118,12 @@ public:
      *
      * @param[in] path folder to create in memory archive in reality it create nothing
      */
-    IGTLPROTOCOL_API bool createDir(const ::boost::filesystem::path& path);
+    IGTLPROTOCOL_API bool createDir(const ::boost::filesystem::path& path) override;
 
     /**
      * @return archive path
      */
-    IGTLPROTOCOL_API const ::boost::filesystem::path getArchivePath() const;
+    IGTLPROTOCOL_API const ::boost::filesystem::path getArchivePath() const override;
 
     /**
      * @brief write all data stored in archive

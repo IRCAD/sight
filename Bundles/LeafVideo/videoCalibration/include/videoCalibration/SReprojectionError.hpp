@@ -66,28 +66,28 @@ public:
     VIDEOCALIBRATION_API ~SReprojectionError();
 
     /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    VIDEOCALIBRATION_API void configuring();
+    VIDEOCALIBRATION_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    VIDEOCALIBRATION_API void starting();
+    VIDEOCALIBRATION_API void starting() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    VIDEOCALIBRATION_API void updating();
+    VIDEOCALIBRATION_API void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    VIDEOCALIBRATION_API void stopping();
+    VIDEOCALIBRATION_API void stopping() override;
 
 private:
 

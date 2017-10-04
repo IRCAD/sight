@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@
 #include <future>
 #include <map>
 #include <string>
-
 
 namespace fwData
 {
@@ -60,7 +59,7 @@ class IOIGTL_CLASS_API STDataListener : public ::ioNetwork::INetworkListener
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (STDataListener)(::ioNetwork::INetworkListener) );
+    fwCoreServiceClassDefinitionsMacro( (STDataListener)(::ioNetwork::INetworkListener) );
 
     /// Constructor
     IOIGTL_API STDataListener();
@@ -71,13 +70,13 @@ public:
 protected:
 
     /// Configure port, hostname and device name
-    IOIGTL_API virtual void configuring();
+    IOIGTL_API virtual void configuring() override;
 
     /// Start the client and try to connect to the server specify in configuration
-    IOIGTL_API virtual void starting();
+    IOIGTL_API virtual void starting() override;
 
     /// Disconnect the client from the server
-    IOIGTL_API virtual void stopping();
+    IOIGTL_API virtual void stopping() override;
 
 private:
 

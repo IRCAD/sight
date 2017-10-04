@@ -77,37 +77,37 @@ public:
 protected:
 
     /// Do nothing.
-    VIDEOOPENNI_API virtual void configuring();
+    VIDEOOPENNI_API virtual void configuring() override;
 
     /// Initialize the layout and the cameras.
-    VIDEOOPENNI_API virtual void starting();
+    VIDEOOPENNI_API virtual void starting() override;
 
     /// Destroy the layout. Shutdowns the streams.
-    VIDEOOPENNI_API virtual void stopping();
+    VIDEOOPENNI_API virtual void stopping() override;
 
     /// Do nothing.
-    VIDEOOPENNI_API virtual void updating();
+    VIDEOOPENNI_API virtual void updating() override;
 
 private:
 
     /// SLOT : Initializes and starts the streams. Restarts the streams if already started.
-    virtual void startCamera();
+    virtual void startCamera() override;
 
     /// SLOT : Stops to grab frames.
-    virtual void stopCamera();
+    virtual void stopCamera() override;
 
     /// SLOT : Grabs and pushes depth and color frames in their corresponding timelines.
     virtual void presentFrame();
 
     /// SLOT : Pause the grabbing
-    virtual void pauseCamera();
+    virtual void pauseCamera() override;
 
     ///Not used
-    virtual void toggleLoopMode()
+    virtual void toggleLoopMode() override
     {
     }
     ///Not used
-    virtual void setPosition(int64_t position)
+    virtual void setPosition(int64_t position) override
     {
     }
 

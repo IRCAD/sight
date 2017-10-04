@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,17 @@
 
 #include "videoCalibration/config.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwServices/IController.hpp>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace videoCalibration
 {
@@ -62,24 +62,22 @@ public:
 protected:
 
     /// Does nothing
-    VIDEOCALIBRATION_API void configuring();
+    VIDEOCALIBRATION_API void configuring() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting();
+    VIDEOCALIBRATION_API void starting() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void swapping();
+    VIDEOCALIBRATION_API void swapping() override;
 
     ///Compute the center of the sphere
-    VIDEOCALIBRATION_API void updating();
+    VIDEOCALIBRATION_API void updating() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void stopping();
+    VIDEOCALIBRATION_API void stopping() override;
 
 };
 
 } //namespace videoCalibration
-
-
 
 #endif //__VIDEOCALIBRATION_SFIXEDPOINTREGISTRATION_HPP__
