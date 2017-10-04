@@ -80,7 +80,7 @@ protected:
     VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Overides MedicalImageAdaptor's setOrientation
-    VISUVTKADAPTOR_API void setOrientation( Orientation orientation );
+    VISUVTKADAPTOR_API void setOrientation( Orientation orientation ) override;
 
     /// Locations string
     std::string m_locations;

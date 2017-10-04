@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,9 @@
 #ifndef __FWSTRUCTURALPATCH_FWDATA_ACQUISITION_V1TOFWMEDDATAIMAGESERIESV1_HPP__
 #define __FWSTRUCTURALPATCH_FWDATA_ACQUISITION_V1TOFWMEDDATAIMAGESERIESV1_HPP__
 
-#include <fwAtomsPatch/IStructuralPatch.hpp>
 #include "fwStructuralPatch/config.hpp"
+
+#include <fwAtomsPatch/IStructuralPatch.hpp>
 
 namespace fwStructuralPatch
 {
@@ -35,7 +36,7 @@ public:
     FWSTRUCTURALPATCH_API ~V1ToFwMedDataImageSeriesV1();
 
     /// Copy constructor
-    FWSTRUCTURALPATCH_API V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImageSeriesV1 &cpy );
+    FWSTRUCTURALPATCH_API V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImageSeriesV1& cpy );
 
     /**
      * @brief Applies patch
@@ -46,10 +47,9 @@ public:
     FWSTRUCTURALPATCH_API virtual void apply(
         const ::fwAtoms::Object::sptr& previous,
         const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };
-
 
 } // namespace Acquisition
 

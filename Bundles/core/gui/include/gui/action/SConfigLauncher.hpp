@@ -67,7 +67,7 @@ public:
     GUI_API virtual ~SConfigLauncher() noexcept;
 
     /// Set the action service is activated/disable.
-    GUI_API virtual void setIsActive(bool isActive);
+    GUI_API virtual void setIsActive(bool isActive) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

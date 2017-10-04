@@ -58,7 +58,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~SImagesProbeCursor() noexcept;
 
-    VISUVTKADAPTOR_API virtual void updateView( double world[3] );
+    VISUVTKADAPTOR_API virtual void updateView( double world[3] ) override;
 
 protected:
 

@@ -61,7 +61,7 @@ protected:
     IODCMTK_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IODCMTK_API virtual std::string getSelectorDialogTitle();
+    IODCMTK_API virtual std::string getSelectorDialogTitle() override;
 
     /// Override
     IODCMTK_API virtual void configureWithIHM() override;

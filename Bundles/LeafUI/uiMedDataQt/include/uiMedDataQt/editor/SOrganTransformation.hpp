@@ -64,7 +64,7 @@ protected:
     UIMEDDATAQT_API virtual void stopping() override;
     UIMEDDATAQT_API virtual void swapping() override;
     UIMEDDATAQT_API virtual void updating() override;
-    UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
+    UIMEDDATAQT_API virtual void info( ::std::ostream& stream ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

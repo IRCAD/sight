@@ -69,14 +69,14 @@ protected:
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
-    IODATA_API virtual void starting( );
+    IODATA_API virtual void starting( ) override;
 
     /**
      * @brief Stopping method. This method is called by stop() from base service ( ::fwServices::IService )
      *
      * The stopping method is empty for this service.
      */
-    IODATA_API virtual void stopping( );
+    IODATA_API virtual void stopping( ) override;
 
     /**
      * @brief Configuring method : calls implementation from `io::IReader`

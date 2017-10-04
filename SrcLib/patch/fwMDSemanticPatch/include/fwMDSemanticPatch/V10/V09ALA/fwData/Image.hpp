@@ -44,7 +44,7 @@ public:
     FWMDSEMANTICPATCH_API virtual void apply(
         const ::fwAtoms::Object::sptr& previous,
         const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };
 

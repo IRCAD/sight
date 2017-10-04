@@ -55,7 +55,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    virtual void configureWithIHM()
+    virtual void configureWithIHM() override
     {
     }
 
@@ -77,7 +77,7 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    virtual void starting()
+    virtual void starting() override
     {
     }
 
@@ -86,7 +86,7 @@ protected:
      *
      * The stopping method is empty for this service.
      */
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
 
@@ -105,7 +105,7 @@ protected:
        </service>
        @endcode
      */
-    IODATA_API virtual void configuring( );
+    IODATA_API virtual void configuring( ) override;
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )

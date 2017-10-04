@@ -67,7 +67,7 @@ protected:
     IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions() override;
 
     /// Override
-    IOVTKGDCM_API virtual std::string getSelectorDialogTitle();
+    IOVTKGDCM_API virtual std::string getSelectorDialogTitle() override;
 
     /// Override
     IOVTKGDCM_API virtual void configureWithIHM() override;

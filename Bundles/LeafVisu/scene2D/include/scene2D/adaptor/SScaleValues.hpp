@@ -74,7 +74,7 @@ protected:
     SCENE2D_API void stopping() override;
 
     /// Manage the given events
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
     SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 

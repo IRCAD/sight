@@ -32,7 +32,6 @@ namespace visuVTKQt
 
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
- *
  */
 class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVTK::IVtkRenderWindowInteractorManager
 {
@@ -47,13 +46,13 @@ public:
     VISUVTKQT_API virtual ~VtkRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.
-    VISUVTKQT_API virtual void installInteractor( ::fwGui::container::fwContainer::sptr _parent );
+    VISUVTKQT_API virtual void installInteractor( ::fwGui::container::fwContainer::sptr _parent ) override;
 
     /// Deletes interactor and manage correctly the window (removing layout).
-    VISUVTKQT_API virtual void uninstallInteractor();
+    VISUVTKQT_API virtual void uninstallInteractor() override;
 
     /// Return a pointer on interactor
-    VISUVTKQT_API virtual ::vtkRenderWindowInteractor* getInteractor();
+    VISUVTKQT_API virtual ::vtkRenderWindowInteractor* getInteractor() override;
 
 private:
 

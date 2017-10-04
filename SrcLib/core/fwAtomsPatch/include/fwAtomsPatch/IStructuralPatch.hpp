@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __FWATOMSPATCH_ISTRUCTURALPATCH_HPP__
 #define __FWATOMSPATCH_ISTRUCTURALPATCH_HPP__
 
-#include <string>
+#include "fwAtomsPatch/config.hpp"
+#include "fwAtomsPatch/helper/Object.hpp"
+#include "fwAtomsPatch/IPatch.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwAtomsPatch/helper/Object.hpp"
-#include "fwAtomsPatch/IPatch.hpp"
-#include "fwAtomsPatch/config.hpp"
-
+#include <string>
 
 namespace fwAtoms
 {
@@ -25,7 +24,6 @@ namespace fwAtomsPatch
 {
 
 /**
- * @class IStructuralPatch
  * @brief Base class of all structural patches
  */
 class FWATOMSPATCH_CLASS_API IStructuralPatch : public IPatch
@@ -39,7 +37,7 @@ public:
     FWATOMSPATCH_API IStructuralPatch();
 
     ///Copy constructor
-    FWATOMSPATCH_API IStructuralPatch( const IStructuralPatch &cpy );
+    FWATOMSPATCH_API IStructuralPatch( const IStructuralPatch& cpy );
 
     ///Destructor
     FWATOMSPATCH_API virtual ~IStructuralPatch();
@@ -55,7 +53,7 @@ public:
      */
     FWATOMSPATCH_API virtual void apply(const SPTR(::fwAtoms::Object)& previous,
                                         const SPTR(::fwAtoms::Object)& current,
-                                        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+                                        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
     /// Returns the target classname of the object
     FWATOMSPATCH_API virtual const std::string& getTargetClassname() const;
@@ -74,7 +72,6 @@ protected:
     /// Target version
     std::string m_targetVersion;
 };
-
 
 } // namespace fwAtomsPatch
 

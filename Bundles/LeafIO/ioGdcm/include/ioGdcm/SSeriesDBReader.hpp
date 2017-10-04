@@ -106,7 +106,7 @@ protected:
     IOGDCM_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IOGDCM_API virtual std::string getSelectorDialogTitle();
+    IOGDCM_API virtual std::string getSelectorDialogTitle() override;
 
     /// Override
     IOGDCM_API virtual void configureWithIHM() override;

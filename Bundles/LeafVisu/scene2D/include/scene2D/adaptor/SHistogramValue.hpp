@@ -66,7 +66,7 @@ protected:
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
     /// Color used for graphic item's inner color
     QPen m_color;

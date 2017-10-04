@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,17 @@
 #ifndef __INR2ITK_ITKINRIMAGEIO_HPP__
 #define __INR2ITK_ITKINRIMAGEIO_HPP__
 
-#include <fstream>
+#include "fwItkIO/config.hpp"
+
 #include <itkImageIOBase.h>
 
-#include "fwItkIO/config.hpp"
+#include <fstream>
 
 namespace itk
 {
 
 /**
  * \ingroup IOFilters
- * \author R&D team
  * \brief Class that defines how to read/write in the InrImage file format.
  * @todo RGB and vector images.
  */
@@ -30,10 +30,10 @@ public:
     typedef SmartPointer<Self> Pointer;
 
     /** Method for creation through the object factory. */
-    itkNewMacro(Self);
+    itkNewMacro(Self)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(InrImageIO, Superclass);
+    itkTypeMacro(InrImageIO, Superclass)
 
     /*-------- This part of the interfaces deals with reading data. ----- */
 
@@ -42,13 +42,13 @@ public:
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can read the file specified.
      */
-    virtual bool CanReadFile(const char* FileNameToRead);
+    virtual bool CanReadFile(const char* FileNameToRead) override;
 
     /** Set the spacing and dimension information for the set filename. */
-    virtual void ReadImageInformation();
+    virtual void ReadImageInformation() override;
 
     /** Reads the data from disk into the memory buffer provided. */
-    virtual void Read(void* buffer);
+    virtual void Read(void* buffer) override;
 
     /*-------- This part of the interfaces deals with writing data. ----- */
 
@@ -57,19 +57,19 @@ public:
      * \post Sets classes ImageIOBase::m_FileName variable to be FileNameToWrite
      * \return Returns true if this ImageIO can write the file specified.
      */
-    virtual bool CanWriteFile(const char * FileNameToWrite);
+    virtual bool CanWriteFile(const char* FileNameToWrite) override;
 
     /** Set the spacing and dimension information for the set filename. */
-    virtual void WriteImageInformation();
+    virtual void WriteImageInformation() override;
 
     /** Writes the data to disk from the memory buffer provided. Make sure
      * that the IORegions has been set properly. */
-    virtual void Write(const void* buffer);
+    virtual void Write(const void* buffer) override;
 
 protected:
     FWITKIO_API InrImageIO();
     FWITKIO_API ~InrImageIO();
-    void PrintSelf(std::ostream& os, Indent indent) const;
+    void PrintSelf(std::ostream& os, Indent indent) const override;
 private:
     InrImageIO(const Self&); //purposely not implemented
     void operator=(const Self&); //purposely not implemented

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __INR2ITK_ITKINRIMAGEIOFACTORY_HPP__
 #define __INR2ITK_ITKINRIMAGEIOFACTORY_HPP__
 
-#include <itkObjectFactoryBase.h>
 #include <itkImageIOBase.h>
+#include <itkObjectFactoryBase.h>
 
 namespace itk
 {
@@ -26,14 +26,14 @@ public:
     typedef SmartPointer<const Self>  ConstPointer;
 
     /** Class methods used to interface with the registered factories. */
-    virtual const char* GetITKSourceVersion(void) const;
-    virtual const char* GetDescription(void) const;
+    virtual const char* GetITKSourceVersion(void) const override;
+    virtual const char* GetDescription(void) const override;
 
     /** Method for class instantiation. */
-    itkFactorylessNewMacro(Self);
+    itkFactorylessNewMacro(Self)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(InrImageIOFactory, ObjectFactoryBase);
+    itkTypeMacro(InrImageIOFactory, ObjectFactoryBase)
 
     /** Register one factory of this type  */
     static void RegisterOneFactory(void)
@@ -45,7 +45,7 @@ public:
 protected:
     InrImageIOFactory();
     ~InrImageIOFactory();
-    virtual void PrintSelf(std::ostream& os, Indent indent) const;
+    virtual void PrintSelf(std::ostream& os, Indent indent) const override;
 
 private:
     InrImageIOFactory(const Self&); //purposely not implemented
@@ -54,6 +54,5 @@ private:
 };
 
 } // end namespace itk
-
 
 #endif // __INR2ITK_ITKINRIMAGEIOFACTORY_HPP__

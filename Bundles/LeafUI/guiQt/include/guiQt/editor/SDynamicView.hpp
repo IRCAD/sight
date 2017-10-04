@@ -169,7 +169,7 @@ private:
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity series cannot be launched in two different tabs.
      */
-    virtual void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
+    virtual void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries) override;
 
     /// launch a new tab according to the receiving msg
     void createTab(::fwActivities::registry::ActivityMsg info);

@@ -89,7 +89,7 @@ protected:
     IOGDCM_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IOGDCM_API virtual std::string getSelectorDialogTitle();
+    IOGDCM_API virtual std::string getSelectorDialogTitle() override;
 
     /**
      * The reader can be configured as a regular reader.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,24 +7,22 @@
 #ifndef __FWATOMSPATCH_PATCHER_DEFAULTPATCHER_HPP__
 #define __FWATOMSPATCH_PATCHER_DEFAULTPATCHER_HPP__
 
-#include <string>
+#include "fwAtomsPatch/config.hpp"
+#include "fwAtomsPatch/helper/Object.hpp"
+#include "fwAtomsPatch/patcher/IPatcher.hpp"
+#include "fwAtomsPatch/VersionDescriptor.hpp"
+
+#include <fwAtoms/Blob.hpp>
+#include <fwAtoms/Boolean.hpp>
+#include <fwAtoms/Map.hpp>
+#include <fwAtoms/Numeric.hpp>
+#include <fwAtoms/Object.hpp>
+#include <fwAtoms/Sequence.hpp>
+#include <fwAtoms/String.hpp>
 
 #include <fwCore/base.hpp>
 
-#include <fwAtoms/Object.hpp>
-#include <fwAtoms/String.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Sequence.hpp>
-
-#include "fwAtomsPatch/helper/Object.hpp"
-#include "fwAtomsPatch/VersionDescriptor.hpp"
-
-#include "fwAtomsPatch/patcher/IPatcher.hpp"
-#include "fwAtomsPatch/config.hpp"
-
+#include <string>
 
 namespace fwAtomsPatch
 {
@@ -33,7 +31,6 @@ namespace patcher
 {
 
 /**
- * @class DefaultPatcher
  * @brief Default patcher
  */
 class FWATOMSPATCH_CLASS_API DefaultPatcher : public IPatcher
@@ -52,9 +49,9 @@ public:
 
     /// Apply the patch to the specified object
     FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-                                                                     const std::string &context,
-                                                                     const std::string &currentVersion,
-                                                                     const std::string &targetVersion);
+                                                                     const std::string& context,
+                                                                     const std::string& currentVersion,
+                                                                     const std::string& targetVersion) override;
 
 protected:
 

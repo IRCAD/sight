@@ -85,7 +85,7 @@ protected:
 
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
 private:
 
