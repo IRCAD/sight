@@ -25,7 +25,7 @@ public:
     fwCoreBaseClassDefinitionsMacro( (BaseObject) )
 
 protected:
-    virtual ~BaseObject();
+    FWCORE_API virtual ~BaseObject();
     using std::enable_shared_from_this<BaseObject>::shared_from_this;
 };
 
