@@ -52,16 +52,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    UIVISUOGRE_API virtual void configuring();
+    UIVISUOGRE_API virtual void configuring() override;
 
     /// Sets the connections and the UI elements
-    UIVISUOGRE_API virtual void starting();
+    UIVISUOGRE_API virtual void starting() override;
 
     /// Destroys the connections and cleans the container
-    UIVISUOGRE_API virtual void stopping();
+    UIVISUOGRE_API virtual void stopping() override;
 
     /// Does nothing
-    UIVISUOGRE_API virtual void updating();
+    UIVISUOGRE_API virtual void updating() override;
 
 private Q_SLOTS:
 

@@ -63,13 +63,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void configuring() final;
+    VISUOGREADAPTOR_API virtual void configuring() final override;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void starting() final;
+    VISUOGREADAPTOR_API virtual void starting() final override;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void stopping() final;
+    VISUOGREADAPTOR_API virtual void stopping() final override;
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void swapping() final;
+    VISUOGREADAPTOR_API virtual void swapping() final override;
 
 private:
 

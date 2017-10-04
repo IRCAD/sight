@@ -46,16 +46,16 @@ protected:
         </service>
        @endcode
      */
-    UIVISUOGRE_API virtual void configuring();
+    UIVISUOGRE_API virtual void configuring() override;
 
     /// Start the service. Create UI
-    UIVISUOGRE_API virtual void starting();
+    UIVISUOGRE_API virtual void starting() override;
 
     /// Stop the service. Delete UI
-    UIVISUOGRE_API virtual void stopping();
+    UIVISUOGRE_API virtual void stopping() override;
 
     /// Do nothing
-    UIVISUOGRE_API virtual void updating();
+    UIVISUOGRE_API virtual void updating() override;
 
 protected Q_SLOTS:
 

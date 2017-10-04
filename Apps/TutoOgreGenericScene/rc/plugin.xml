@@ -1,4 +1,4 @@
-<plugin id="TutoOgreGenericScene" version="@DASH_VERSION@">
+<plugin id="TutoOgreGenericScene" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
@@ -16,7 +16,7 @@
                 <gui>
                     <frame>
                         <name>TutoOgreGenericScene</name>
-                        <icon>@BUNDLE_PREFIX@/TutoOgreGenericScene_@DASH_VERSION@/tuto.ico</icon>
+                        <icon>TutoOgreGenericScene-@PROJECT_VERSION@/tuto.ico</icon>
                         <minSize width="1024" height="768" />
                     </frame>
                     <menuBar/>

@@ -8,11 +8,10 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
+#include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
-
-#define RESOURCES_PATH BUNDLE_PREFIX "/material_0-1/resources.cfg"
 
 namespace material
 {
@@ -29,7 +28,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwRenderOgre::Utils::addResourcesPath( RESOURCES_PATH );
+    ::fwRenderOgre::Utils::addResourcesPath( ::fwRuntime::getBundleResourceFilePath("material", "resources.cfg" ) );
 }
 
 //-----------------------------------------------------------------------------

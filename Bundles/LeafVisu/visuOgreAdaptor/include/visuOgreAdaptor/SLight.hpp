@@ -95,59 +95,59 @@ protected:
     VISUOGREADAPTOR_API void updating() override;
 
     /// Light name getter.
-    VISUOGREADAPTOR_API virtual const std::string& getName() const;
+    VISUOGREADAPTOR_API virtual const std::string& getName() const override;
 
     /// Light name setter.
-    VISUOGREADAPTOR_API virtual void setName(const std::string& _name);
+    VISUOGREADAPTOR_API virtual void setName(const std::string& _name) override;
 
     /// Light type getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const;
+    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const override;
 
     /// Light type setter.
-    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type);
+    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type) override;
 
     /// Diffuse color setter using fwData::Color.
     VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
 
     /// Diffuse color getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const;
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const override;
 
     /// Diffuse color setter using Ogre::ColourValue.
-    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor);
+    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor) override;
 
     /// Specular color setter using fwData::Color.
     VISUOGREADAPTOR_API void setSpecularColor(::fwData::Color::sptr _specularColor);
 
     /// Specular color getter.
-    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const;
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const override;
 
     /// Specular color setter using Ogre::ColourValue.
-    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor);
+    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor) override;
 
     /// Parent tranform id setter.
     VISUOGREADAPTOR_API virtual void setParentTransformName(
-        const fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName);
+        const fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) override;
 
     /// Light activation flag getter.
-    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const;
+    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const override;
 
     /// Light activation flag setter.
-    VISUOGREADAPTOR_API virtual void switchOn(bool _on);
+    VISUOGREADAPTOR_API virtual void switchOn(bool _on) override;
 
     /// Theta offset getter.
-    VISUOGREADAPTOR_API virtual float getThetaOffset() const;
+    VISUOGREADAPTOR_API virtual float getThetaOffset() const override;
 
     /// Theta offset setter.
-    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset);
+    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset) override;
 
     /// Phi offset getter.
-    VISUOGREADAPTOR_API virtual float getPhiOffset() const;
+    VISUOGREADAPTOR_API virtual float getPhiOffset() const override;
 
     /// Phi offset setter.
-    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset);
+    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset) override;
 
     /// Indicates if the light is attached to a parent node or not.
-    VISUOGREADAPTOR_API virtual bool isOrphanNode() const;
+    VISUOGREADAPTOR_API virtual bool isOrphanNode() const override;
 
 private:
 

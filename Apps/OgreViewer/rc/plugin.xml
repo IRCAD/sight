@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin id="OgreViewer" version="@DASH_VERSION@" >
+<plugin id="OgreViewer" version="@PROJECT_VERSION@" >
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -44,7 +44,7 @@
                 <gui>
                     <frame>
                         <name>Ogre Viewer</name>
-                        <icon>@BUNDLE_PREFIX@/OgreViewer_@DASH_VERSION@/ogre_head.svg</icon>
+                        <icon>OgreViewer-@PROJECT_VERSION@/ogre_head.svg</icon>
                         <minSize width="1100" height="700" />
                     </frame>
                     <menuBar />
@@ -224,13 +224,13 @@
                 <appConfig id="OgreOrganManagerWithSeries" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeriesUID" />
                 <parameter replace="WID_PARENT" uid="organView" />
-                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgLightManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreLightManager" />
                 <parameter replace="WID_PARENT" uid="lightView" />
-                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgHistogramManager" type="::fwServices::SConfigController">
@@ -238,7 +238,7 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
                 <parameter replace="WID_PARENT" uid="histogramView" />
-                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
                 <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
                      configuration to receive the signal emitted when the object is created. -->
                 <parameter replace="TF" by="TF" />
@@ -248,7 +248,7 @@
                 <appConfig id="OgreIDVR" />
                 <inout key="maskUID" uid="maskUID" />
                 <parameter replace="WID_PARENT" uid="idvrView" />
-                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+                <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
