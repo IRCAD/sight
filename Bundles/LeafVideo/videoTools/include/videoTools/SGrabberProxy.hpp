@@ -65,7 +65,7 @@ public:
      * @name Slots API
      * @{
      */
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_RECONFIGURE_SLOT;
+    VIDEOTOOLS_API static const ::fwCom::Slots::SlotKeyType s_RECONFIGURE_SLOT;
     ///@}
 
 protected:
