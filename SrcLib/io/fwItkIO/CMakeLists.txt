@@ -14,6 +14,10 @@ find_library(V3P_NETLIB_LIBRARY v3p_netlib )
 fwInclude(${ZLIB_INCLUDE_DIRS})
 
 fwForwardInclude(
+    ${VNL_INCLUDE_PATH}
+    ${VNL_INCLUDE_PATH}/vxl
+    ${VNL_INCLUDE_PATH}/vxl/core
+    ${VNL_INCLUDE_PATH}/vxl/vcl
     ${ITK_INCLUDE_DIRS}
 )
 
