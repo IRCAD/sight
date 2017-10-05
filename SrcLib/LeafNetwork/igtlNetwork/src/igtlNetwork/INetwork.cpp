@@ -32,7 +32,7 @@ INetwork::~INetwork()
 
 //------------------------------------------------------------------------------
 
-bool INetwork::sendObject (::fwData::Object::sptr obj)
+bool INetwork::sendObject(const ::fwData::Object::csptr& obj)
 {
     igtl::MessageBase::Pointer msg;
 
@@ -145,14 +145,14 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
 
 //------------------------------------------------------------------------------
 
-::igtl::Socket::Pointer INetwork::getSocket()
+::igtl::Socket::Pointer INetwork::getSocket() const
 {
     return m_socket;
 }
 
 //------------------------------------------------------------------------------
 
-void INetwork::addAuthorizedDevice(std::string deviceName)
+void INetwork::addAuthorizedDevice(const std::string& deviceName)
 {
     std::set< std::string >::iterator it = m_deviceNamesIn.find(deviceName);
 
@@ -164,7 +164,7 @@ void INetwork::addAuthorizedDevice(std::string deviceName)
 
 //------------------------------------------------------------------------------
 
-bool INetwork::getFilteringByDeviceName()
+bool INetwork::getFilteringByDeviceName() const
 {
     return m_filteringByDeviceName;
 }
@@ -186,14 +186,14 @@ void INetwork::setFilteringByDeviceName(bool filtering)
 
 //------------------------------------------------------------------------------
 
-void INetwork::setDeviceNameOut(std::string deviceName)
+void INetwork::setDeviceNameOut(const std::string& deviceName)
 {
     m_deviceNameOut = deviceName;
 }
 
 //------------------------------------------------------------------------------
 
-std::string INetwork::getDeviceNameOut()
+std::string INetwork::getDeviceNameOut() const
 {
     return m_deviceNameOut;
 }

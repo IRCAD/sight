@@ -79,7 +79,7 @@ public:
      *
      * @param[in] data data to send
      */
-    ZMQNETWORK_API void sendObject(::fwData::Object::sptr data);
+    ZMQNETWORK_API void sendObject(const ::fwData::Object::csptr& data);
 
     /**
      * @brief method to receive fwData object from network
@@ -94,7 +94,7 @@ public:
      *
      * @param[in] str string in zmq format
      */
-    ZMQNETWORK_API void start(std::string const& str);
+    ZMQNETWORK_API void start(const std::string& str);
 
     /**
      * @brief stop socket(close socket and destroy context)
@@ -140,13 +140,13 @@ public:
      * @brief set device Name when igtl message are sended
      * @param[in] deviceName std::string deviceName
      */
-    ZMQNETWORK_API void setDeviceNameOut(std::string deviceName);
+    ZMQNETWORK_API void setDeviceNameOut(const std::string& deviceName);
 
     /**
      * @brief get device Name when igtl message are sended
      * @return std::string deviceName
      */
-    ZMQNETWORK_API std::string getDeviceNameOut();
+    ZMQNETWORK_API std::string getDeviceNameOut() const;
 
 private:
 
@@ -200,8 +200,7 @@ private:
     /// header size
     static const int s_HEADER_SIZE = 58;
 
-    //device name in sended IGTL message
-
+    /// device name in sent IGTL message
     std::string m_deviceNameOut;
 
 };

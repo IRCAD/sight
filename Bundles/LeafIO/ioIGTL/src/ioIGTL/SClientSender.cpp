@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioIGTL/SClientSender.hpp"
+
 #include "ioIGTL/helper/preferences.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -25,6 +26,8 @@ namespace ioIGTL
 
 const ::fwCom::Slots::SlotKeyType SClientSender::s_START_SENDING_SLOT = "startSending";
 const ::fwCom::Slots::SlotKeyType SClientSender::s_STOP_SENDING_SLOT  = "stopSending";
+
+const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +50,7 @@ void SClientSender::configuring()
 {
     SLM_ASSERT("Configuration not found", m_configuration != nullptr);
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
+    const auto deviceNames = m_configuration->find("deviceName");
     if(!deviceNames.empty())
     {
         for(const auto& dn : deviceNames)
@@ -57,17 +60,16 @@ void SClientSender::configuring()
         m_client.setFilteringByDeviceName(true);
     }
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    std::vector< ConfigurationType > inoutCfgs = m_configuration->find("inout");
+    const auto inoutCfgs = m_configuration->find("in");
 
-    SLM_ASSERT("Missing 'in group=\"objects\"'", inoutCfgs[0]->getAttributeValue("group") == "objects");
+    SLM_ASSERT("Missing 'in group=\"objects\"'", inoutCfgs[0]->getAttributeValue("group") == s_OBJECTS_GROUP);
 
-    std::vector< ConfigurationType > objectsCfgs = inoutCfgs[0]->find("key");
-    for(ConfigurationType cfg : objectsCfgs)
+    const auto objectsCfgs = inoutCfgs[0]->find("key");
+    for(const auto& cfg : objectsCfgs)
     {
         if (cfg->hasAttribute("name"))
         {
-            std::string deviceName = cfg->getAttributeValue("name");
+            const std::string deviceName = cfg->getAttributeValue("name");
             m_deviceNames.push_back(deviceName);
             m_client.addAuthorizedDevice(deviceName);
         }
@@ -168,7 +170,7 @@ void SClientSender::stopSending()
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::sendObject(const ::fwData::Object::sptr& obj)
+void SClientSender::sendObject(const ::fwData::Object::csptr& obj)
 {
     if (m_client.isConnected())
     {
@@ -182,7 +184,7 @@ void SClientSender::sendObject(const ::fwData::Object::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::sendObject(const ::fwData::Object::sptr& obj, const size_t index)
+void SClientSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
     if (m_client.isConnected())
     {

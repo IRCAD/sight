@@ -108,7 +108,7 @@ private:
     bool m_frameTLInitialized;
 };
 
-} // namespace OpenIGTLinkIO
+} // namespace ioIGTL
 
 #endif /*__IOIGTL_SCLIENTLISTENER_HPP__*/
 

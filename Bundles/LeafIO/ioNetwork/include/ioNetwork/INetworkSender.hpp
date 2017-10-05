@@ -18,8 +18,6 @@
 
 #include <fwServices/IController.hpp>
 
-#include <boost/type.hpp>
-
 #include <map>
 
 namespace ioNetwork
@@ -43,13 +41,6 @@ public:
      * @brief Send data slot can be used if you want to connect a custom signal to this slot
      */
     IONETWORK_API static const ::fwCom::Slots::SlotKeyType s_SEND_DATA_SLOT;
-
-    /**
-     * @typedef SendDataSlotType
-     *
-     * @brief SendDataSlotType slot type stored that you can connect in your plugin.xml
-     */
-    typedef ::fwCom::Slot<void (::fwData::Object::sptr) > SendDataSlotType;
 
     /**
      * @brief Server started signal is emitted when the server is started
@@ -103,32 +94,24 @@ protected:
      *
      * @param[in] obj the obj to send
      */
-    IONETWORK_API void sendData(::fwData::Object::sptr obj);
+    IONETWORK_API void sendData(const ::fwData::Object::csptr& obj);
 
     /**
      * @brief Sends the obj
      */
-    virtual void sendObject(const ::fwData::Object::sptr& obj) = 0;
+    virtual void sendObject(const ::fwData::Object::csptr& obj) = 0;
 
     /**
      * @brief Sends the obj at index
      * Useable if the configuration group exists.
      */
-    virtual void sendObject(const ::fwData::Object::sptr& obj, const size_t index) = 0;
+    virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
 
     /// Signal when server started
     ServerStartedSignalType::sptr m_sigServerStarted;
 
     /// Signal when server stopped
     ServerStoppedSignalType::sptr m_sigServerStopped;
-
-private:
-
-    /// Slot used to send data
-    SendDataSlotType::sptr m_sendDataSlot;
-
-    /// connection between obj signal and service slots
-    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // namespace ioNetwork

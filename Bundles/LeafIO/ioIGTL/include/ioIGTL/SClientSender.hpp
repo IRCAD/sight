@@ -23,17 +23,17 @@ namespace ioIGTL
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::ioIGTL::SClientSender">
+ * <service uid="..." type="::ioIGTL::SClientSender" autoConnect="yes">
  *      <server>127.0.0.1:4242</server>
  *      <deviceName>name1</deviceName>
  *      <deviceName>...</deviceName>
- *      <inout group="objects">
+ *      <in group="objects">
  *           <key uid="..." name="..." />
  *           <key uid="..." />
- *      </inout>
+ *      </in>
  * </service>
  * @endcode
- * @subsection In-Out In-Out:
+ * @subsection Input Input:
  * - \b objects [::fwData::Object]: specified objects to send to the connected server. They can have an attribute
  * to change the devicename used for this specific data.
  * @subsection Configuration Configuration:
@@ -95,7 +95,7 @@ private:
      *
      * @param[in] obj obj to send
      */
-    void sendObject(const ::fwData::Object::sptr& obj) override;
+    void sendObject(const ::fwData::Object::csptr& obj) override;
 
     /**
      * @brief method to send data.
@@ -103,7 +103,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const ::fwData::Object::sptr& obj, const size_t index) override;
+    void sendObject(const ::fwData::Object::csptr& obj, const size_t index) override;
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject

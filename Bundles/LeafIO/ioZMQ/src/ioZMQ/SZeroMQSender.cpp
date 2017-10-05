@@ -27,7 +27,7 @@
 
 #include <sstream>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioZMQ::SZeroMQSender, ::fwData::Object);
+fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioZMQ::SZeroMQSender);
 
 namespace ioZMQ
 {
@@ -37,12 +37,10 @@ const ::fwCom::Slots::SlotKeyType SZeroMQSender::s_UPDATE_CONFIGURATION_SLOT = "
 //-----------------------------------------------------------------------------
 
 SZeroMQSender::SZeroMQSender() :
-    ::ioNetwork::INetworkSender()
+    m_patternMode(::zmqNetwork::Socket::Publish),
+    m_sockMode(::zmqNetwork::Socket::Server)
 {
-    m_updateConfigurationSlot = ::fwCom::newSlot(&SZeroMQSender::updateConfiguration, this);
-    ::fwCom::HasSlots::m_slots(SZeroMQSender::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot);
-
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
+    newSlot(s_UPDATE_CONFIGURATION_SLOT, &SZeroMQSender::updateConfiguration, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,26 +88,25 @@ void SZeroMQSender::setPort (std::uint16_t const port)
 
 void SZeroMQSender::starting()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-
     try
     {
         ::ioNetwork::INetworkSender::starting();
-        m_socket = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(m_sockMode, m_patternMode));
+        m_socket = std::make_shared< ::zmqNetwork::Socket >(m_sockMode, m_patternMode);
         m_socket->start(m_hostStr);
         m_sigServerStarted->asyncEmit();
     }
     catch (std::exception& err)
     {
-        msgDialog.showMessageDialog("Error", "Cannot start the sender : " + std::string(err.what()));
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error",
+                                                          "Cannot start the sender : " + std::string(err.what()));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::updateConfiguration (::zmqNetwork::Socket::PatternMode const pattern,
-                                         ::zmqNetwork::Socket::SocketMode const sockMode,
-                                         std::string const& host)
+void SZeroMQSender::updateConfiguration (const ::zmqNetwork::Socket::PatternMode pattern,
+                                         const ::zmqNetwork::Socket::SocketMode sockMode,
+                                         const std::string& host)
 {
     m_sockMode    = sockMode;
     m_patternMode = pattern;
@@ -127,7 +124,7 @@ void SZeroMQSender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj)
+void SZeroMQSender::sendObject(const ::fwData::Object::csptr& obj)
 {
     try
     {
@@ -141,7 +138,7 @@ void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj,  const size_t index /* unused */)
+void SZeroMQSender::sendObject(const ::fwData::Object::csptr& obj,  const size_t)
 {
     try
     {

@@ -33,19 +33,19 @@ namespace ioIGTL
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::ioIGTL::SServerSender" >
+ * <service uid="..." type="::ioIGTL::SServerSender" autoConnect="yes" >
  *      <port>...</port>
  *      <deviceName>...</deviceName>
- *      <inout group="objects">
+ *      <in group="objects">
  *           <key uid="..." name="..." />
  *           <key uid="..." />
- *      </inout>
+ *      </in>
  * </service>
  * @endcode
  * @subsection Configuration Configuration:
  * - \b port : defines the port where the objects will be sent
  * - \b deviceName : defines the name of the device (here, our server)
- * @subsection In-Out In-Out:
+ * @subsection Input Input:
  * - \b objects [::fwData::Object] : defines the objects to send.
  **/
 
@@ -79,7 +79,7 @@ private:
      *
      * @param[in] obj obj to send
      */
-    void sendObject(const ::fwData::Object::sptr& obj);
+    void sendObject(const ::fwData::Object::csptr& obj);
 
     /**
      * @brief method to send data.
@@ -87,7 +87,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const ::fwData::Object::sptr& obj, const size_t index);
+    void sendObject(const ::fwData::Object::csptr& obj, const size_t index);
 
     /// Server instance
     ::igtlNetwork::Server::sptr m_server;

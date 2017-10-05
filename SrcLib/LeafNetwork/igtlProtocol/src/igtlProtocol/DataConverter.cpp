@@ -54,12 +54,10 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::sptr src) const
+::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::csptr src) const
 {
-    SLM_TRACE_FUNC();
-
-    std::string classname = src->getClassname();
-    for(converter::IConverter::sptr converter :  m_converters)
+    const std::string classname = src->getClassname();
+    for(const converter::IConverter::sptr& converter :  m_converters)
     {
         if (converter->getFwDataObjectType() == classname)
         {

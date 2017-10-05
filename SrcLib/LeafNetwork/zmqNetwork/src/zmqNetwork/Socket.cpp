@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "zmqNetwork/Socket.hpp"
 
-#include "igtlProtocol/MessageFactory.hpp"
+#include <igtlProtocol/MessageFactory.hpp>
 
 #include <igtl/igtlMessageBase.h>
-#include <cstring>
 
+#include <cstring>
 
 namespace zmqNetwork
 {
@@ -38,7 +38,7 @@ Socket::~Socket()
 
 void Socket::deleteMessage(void* data, void* hint)
 {
-    igtl::MessageBase::Pointer ptr = reinterpret_cast<igtl::MessageBase*>(hint);
+    ::igtl::MessageBase::Pointer ptr = reinterpret_cast< ::igtl::MessageBase* >(hint);
 
     if(ptr)
     {
@@ -48,10 +48,10 @@ void Socket::deleteMessage(void* data, void* hint)
 
 //------------------------------------------------------------------------------
 
-void Socket::sendObject(::fwData::Object::sptr data)
+void Socket::sendObject(const ::fwData::Object::csptr& data)
 {
     ::igtl::MessageBase::Pointer igtlMsg = m_dataConverter->fromFwObject(data);
-    igtlMsg->SetDeviceName (m_deviceNameOut.c_str());
+    igtlMsg->SetDeviceName(m_deviceNameOut.c_str());
     igtlMsg->Pack();
     igtlMsg->Register();
 
@@ -122,9 +122,9 @@ Socket::PatternMode Socket::getPatternMode() const
 
 void Socket::initialize()
 {
-    m_context = ContextSPtr(new ::zmq::context_t(1));
+    m_context = std::make_shared< ::zmq::context_t >(1);
 
-    m_socket = SocketSPtr(new ::zmq::socket_t(*m_context, static_cast<int>(m_patternMode)));
+    m_socket = std::make_shared< ::zmq::socket_t >(*m_context, static_cast<int>(m_patternMode));
     if (m_patternMode == Subscribe)
     {
         m_socket->setsockopt(ZMQ_SUBSCRIBE, NULL, 0);
@@ -133,9 +133,9 @@ void Socket::initialize()
 
 //------------------------------------------------------------------------------
 
-void Socket::start(std::string const& str)
+void Socket::start(const std::string& str)
 {
-    if (m_context == NULL)
+    if (m_context == nullptr)
     {
         this->initialize();
     }
@@ -176,14 +176,14 @@ void Socket::stop()
 
 //------------------------------------------------------------------------------
 
-std::string Socket::getDeviceNameOut()
+std::string Socket::getDeviceNameOut() const
 {
     return m_deviceNameOut;
 }
 
 //------------------------------------------------------------------------------
 
-void Socket::setDeviceNameOut(std::string deviceName)
+void Socket::setDeviceNameOut(const std::string& deviceName)
 {
     m_deviceNameOut = deviceName;
 }

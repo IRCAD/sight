@@ -23,6 +23,8 @@ fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SServerSender);
 namespace ioIGTL
 {
 
+const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
+
 //-----------------------------------------------------------------------------
 
 SServerSender::SServerSender()
@@ -44,6 +46,19 @@ void SServerSender::configuring()
 
     m_portConfig = config.get("port", "4242");
     m_deviceName = config.get("deviceName", "");
+
+    const ConfigType configIn = config.get_child("in");
+
+    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+               configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+
+    const auto keyCfg = configIn.equal_range("key");
+    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
+    {
+        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string name                         = attr.get("name", "");
+        m_deviceNames.push_back(name);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -54,7 +69,7 @@ void SServerSender::starting()
 
     try
     {
-        std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
@@ -75,8 +90,6 @@ void SServerSender::starting()
 
 void SServerSender::stopping()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-
     try
     {
         if(m_server->isStarted())
@@ -88,9 +101,9 @@ void SServerSender::stopping()
     }
     catch (::fwCore::Exception& e)
     {
-        msgDialog.showMessageDialog("Error", e.what());
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
     }
-    catch (std::future_error& e)
+    catch (std::future_error&)
     {
         // This happens when the server failed to start, so we just ignore it silently.
     }
@@ -100,7 +113,7 @@ void SServerSender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SServerSender::sendObject(const ::fwData::Object::sptr& obj)
+void SServerSender::sendObject(const ::fwData::Object::csptr& obj)
 {
     if(!m_deviceName.empty())
     {
@@ -111,7 +124,7 @@ void SServerSender::sendObject(const ::fwData::Object::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
-void SServerSender::sendObject(const ::fwData::Object::sptr& obj, const size_t index)
+void SServerSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
     if (!m_deviceNames[index].empty())
     {

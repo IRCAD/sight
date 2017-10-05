@@ -63,11 +63,10 @@ void Client::throwExceptionIfFailed (const std::string& msg, bool result)
 
 void Client::connect (const std::string& addr, std::uint16_t port)
 {
-    int result;
-    std::string portStr;
+    ::igtl::ClientSocket* clietSocket = dynamic_cast< ::igtl::ClientSocket* >( m_socket.GetPointer() );
+    const int result          = clietSocket->ConnectToServer(addr.c_str(), port);
+    const std::string portStr = ::boost::lexical_cast<std::string> (port);
 
-    result  = dynamic_cast< ::igtl::ClientSocket* >( m_socket.GetPointer() )->ConnectToServer(addr.c_str(), port);
-    portStr = boost::lexical_cast<std::string> (port);
     this->throwExceptionIfFailed("Cannot connect to the server at " + addr + " : " + portStr, result == -1);
 }
 

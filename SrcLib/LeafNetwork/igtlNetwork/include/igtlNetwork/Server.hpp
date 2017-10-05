@@ -14,8 +14,6 @@
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <boost/type.hpp>
-
 #include <igtl/igtlServerSocket.h>
 
 #include <list>
@@ -71,7 +69,7 @@ public:
     /**
      * @brief method to broadcast to all client the obj
      */
-    IGTLNETWORK_API void broadcast(::fwData::Object::sptr obj);
+    IGTLNETWORK_API void broadcast(const ::fwData::Object::csptr& obj);
 
     /**
      * @brief method to broadcast to all client a msg
@@ -93,7 +91,7 @@ public:
     /**
      * @brief method to have the current number of clients
      */
-    IGTLNETWORK_API size_t getNumberOfClients();
+    IGTLNETWORK_API size_t getNumberOfClients() const;
     /**
      * @brief methdo to receive all headers of all connected clients
      *
@@ -115,7 +113,7 @@ public:
     /**
      * @brief set the device name when a message is sended
      */
-    IGTLNETWORK_API void setMessageDeviceName(std::string deviceName);
+    IGTLNETWORK_API void setMessageDeviceName(const std::string& deviceName);
 
 private:
 
