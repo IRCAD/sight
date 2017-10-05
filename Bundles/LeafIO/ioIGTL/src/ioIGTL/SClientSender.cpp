@@ -5,22 +5,20 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioIGTL/SClientSender.hpp"
+#include "ioIGTL/helper/preferences.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwPreferences/helper.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwTools/Failed.hpp>
 
-#include <boost/lexical_cast.hpp>
+#include <functional>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SClientSender, ::fwData::Object);
+fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SClientSender);
 
 namespace ioIGTL
 {
@@ -30,35 +28,29 @@ const ::fwCom::Slots::SlotKeyType SClientSender::s_STOP_SENDING_SLOT  = "stopSen
 
 //-----------------------------------------------------------------------------
 
-SClientSender::SClientSender() throw() :
-    m_hostname("127.0.0.1"),
-    m_deviceName("F4S"),
-    m_port(4242)
+SClientSender::SClientSender() :
+    m_deviceName("F4S")
 {
-    m_startSendingSlot = ::fwCom::newSlot(&SClientSender::startSending, this);
-    m_stopSendingSlot  = ::fwCom::newSlot(&SClientSender::stopSending, this);
-    ::fwCom::HasSlots::m_slots
-        (SClientSender::s_START_SENDING_SLOT, m_startSendingSlot )
-        (SClientSender::s_STOP_SENDING_SLOT, m_stopSendingSlot );
-
+    newSlot(s_START_SENDING_SLOT, &SClientSender::startSending, this);
+    newSlot(s_STOP_SENDING_SLOT, &SClientSender::stopSending, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SClientSender::~SClientSender() throw()
+SClientSender::~SClientSender()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::configuring() throw (::fwTools::Failed)
+void SClientSender::configuring()
 {
-    SLM_ASSERT("Configuration not found", m_configuration != NULL);
+    SLM_ASSERT("Configuration not found", m_configuration != nullptr);
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
     if(!deviceNames.empty())
     {
-        for(auto dn : deviceNames)
+        for(const auto& dn : deviceNames)
         {
             m_client.addAuthorizedDevice(dn->getValue());
         }
@@ -84,27 +76,16 @@ void SClientSender::configuring() throw (::fwTools::Failed)
             m_deviceNames.push_back(m_deviceName);
         }
     }
+
     if (m_configuration->findConfigurationElement("server"))
     {
-        std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
+        const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
         SLM_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
-        std::string::size_type splitPosition = serverInfo.find(':');
+        const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
-        std::string hostnameStr = serverInfo.substr(0, splitPosition);
-        std::string portStr     = serverInfo.substr(splitPosition + 1, serverInfo.size());
-
-        m_hostnameKey = this->getPreferenceKey(hostnameStr);
-        m_portKey     = this->getPreferenceKey(portStr);
-
-        if(m_hostnameKey.empty())
-        {
-            m_hostname = hostnameStr;
-        }
-        if(m_portKey.empty())
-        {
-            m_port = ::boost::lexical_cast< std::uint16_t > (portStr);
-        }
+        m_hostnameConfig = serverInfo.substr(0, splitPosition);
+        m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
     }
     else
     {
@@ -114,14 +95,15 @@ void SClientSender::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::runClient() throw (::fwTools::Failed)
+void SClientSender::runClient()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-
     // 1. Connection
     try
     {
-        m_client.connect(m_hostname, m_port);
+        const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
+
+        m_client.connect(hostname, port);
     }
     catch (::fwCore::Exception& ex)
     {
@@ -130,7 +112,7 @@ void SClientSender::runClient() throw (::fwTools::Failed)
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Connection error", ex.what());
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -144,28 +126,13 @@ void SClientSender::runClient() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::setHost(std::string const& hostname, std::uint16_t const port) throw (::fwTools::Failed)
-{
-    m_hostname = hostname;
-    this->setPort(port);
-}
-
-//-----------------------------------------------------------------------------
-
-void SClientSender::setPort(boost::uint16_t const port) throw (::fwTools::Failed)
-{
-    m_port = port;
-}
-
-//-----------------------------------------------------------------------------
-
-void SClientSender::starting() throw (::fwTools::Failed)
+void SClientSender::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::stopping() throw (::fwTools::Failed)
+void SClientSender::stopping()
 {
     this->::ioNetwork::INetworkSender::stopping();
     this->stopSending();
@@ -177,27 +144,7 @@ void SClientSender::startSending()
 {
     if(!m_client.isConnected())
     {
-        if(!m_hostnameKey.empty())
-        {
-            std::string hostname = ::fwPreferences::getPreference(m_hostnameKey);
-            if(!hostname.empty())
-            {
-                m_hostname = hostname;
-            }
-        }
-        if(!m_portKey.empty())
-        {
-            std::string port = ::fwPreferences::getPreference(m_portKey);
-            if(!port.empty())
-            {
-                m_port = ::boost::lexical_cast< std::uint16_t > (port);
-            }
-        }
-        std::function<void() > task = std::bind(&SClientSender::runClient, this);
-        m_clientWorker = ::fwThread::Worker::New();
-
-        m_clientWorker->post(task);
-        m_sigServerStarted->asyncEmit();
+        m_clientFuture = std::async(std::launch::async, std::bind(&SClientSender::runClient, this));
     }
 }
 
@@ -207,33 +154,16 @@ void SClientSender::stopSending()
 {
     if(m_client.isConnected())
     {
-        ::fwGui::dialog::MessageDialog msgDialog;
-
         try
         {
             m_client.disconnect();
-            m_clientWorker->stop();
-            m_sigServerStopped->asyncEmit();
+            m_clientFuture.wait();
         }
         catch (::fwCore::Exception& e)
         {
-            msgDialog.showMessageDialog("Error", e.what());
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-std::string SClientSender::getPreferenceKey(const std::string& key) const
-{
-    std::string keyResult;
-    size_t first = key.find('%');
-    size_t last  = key.rfind('%');
-    if (first == 0 && last == key.size() - 1)
-    {
-        keyResult = key.substr(1, key.size() - 2);
-    }
-    return keyResult;
 }
 
 //-----------------------------------------------------------------------------
