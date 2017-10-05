@@ -5,7 +5,6 @@
         <param name="SERIESDB" />
         <param name="AS_UID" />
         <param name="cameraSeries" />
-        <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -159,7 +158,6 @@
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
             <parameter replace="videoDurationModifiedChannel" uid="videoDurationModified" />
-            <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
 
         <service uid="camera1Launcher" type="::fwServices::SConfigController">
@@ -171,7 +169,6 @@
             <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
             <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
             <parameter replace="videoDurationModifiedChannel" uid="videoDurationModified" />
-            <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
 
         <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor">

@@ -12,18 +12,11 @@
 #include <arData/FrameTL.hpp>
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwDataTools/helper/Image.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include <fwServices/macros.hpp>
-
-#include <fwTools/Type.hpp>
 
 #include <boost/filesystem/operations.hpp>
 

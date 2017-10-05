@@ -43,14 +43,12 @@ namespace uiCalibration
                <appConfig id="calIntrinsicView" />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
-               <parameter replace="videoGrabberImpl" by="::videoBundleExample::SFrameGrabber" />
            </intrinsic>
            <extrinsic>
                <appConfig id="calExtrinsicView" />
                <inout key="cameraSeries" uid="..." />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
-               <parameter replace="videoGrabberImpl" by="::videoBundleExample::SFrameGrabber" />
            </extrinsic>
        </config>
    </service>

@@ -50,7 +50,6 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SFrameUpdater)(::fwServices::IController) );
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> UpdateFrameSlotType;
 
     /// Type of signal m_sigRenderRequested
     typedef ::fwCom::Signal< void () > RenderRequestedSignalType;
@@ -87,36 +86,28 @@ protected:
     /// Request Render
     VIDEOTOOLS_API void requestRender();
 
+    /// Reset the last timestamp when the timeline is cleared
+    VIDEOTOOLS_API void resetTimeline();
+
 private:
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connections
+     *
+     * Connect ::arData::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
+     * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
+     */
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
-
-    /// Slots used when the frame have been refreshed
-    UpdateFrameSlotType::sptr m_slotUpdateFrame;
-
-    /// Signal that emits signal when refresh is requested
-    RenderRequestedSignalType::sptr m_sigRenderRequested;
-
-    /// Connections
-    ::fwCom::helper::SigSlotConnection m_connections;
-
-    /// Frame timeline key
-    std::string m_frameTLKey;
 
     /// Frame timeline
     ::arData::FrameTL::csptr m_frameTL;
-
-    /// Image key
-    std::string m_imageKey;
 
     /// Image
     ::fwData::Image::sptr m_image;
 
     /// Last timestamp
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
-
-    /// Last matrix updated key
-    std::string m_lastMatrixUpdatedKey;
 
     /// Hight resolution timer to log information about computing function time
     ::fwCore::HiResTimer m_hiRestimer;

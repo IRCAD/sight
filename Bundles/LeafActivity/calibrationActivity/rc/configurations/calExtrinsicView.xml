@@ -9,7 +9,6 @@
         <param name="calibrationInfo2" />
         <param name="camIndex" />
         <param name="preferencesModifiedProxy" />
-        <param name="videoGrabberImpl" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -293,13 +292,13 @@
             <in key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="VideoGrabber1" type="${videoGrabberImpl}">
+        <service uid="VideoGrabber1" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera1}" />
             <inout key="frameTL" uid="Frame1TL" />
             <cameraFwId>${camera1}</cameraFwId>
         </service>
 
-        <service uid="VideoGrabber2" type="${videoGrabberImpl}">
+        <service uid="VideoGrabber2" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera2}" />
             <inout key="frameTL" uid="Frame2TL" />
             <cameraFwId>${camera2}</cameraFwId>

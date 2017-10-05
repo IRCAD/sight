@@ -6,10 +6,7 @@
 
 #include "arData/BufferTL.hpp"
 
-#include <fwCore/base.hpp>
-
-#include <fwData/Exception.hpp>
-#include <fwData/registry/macros.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <boost/pool/pool.hpp>
 
@@ -226,6 +223,9 @@ void BufferTL::clearTimeline()
 {
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     m_timeline.clear();
+
+    auto sig = this->signal<ObjectClearedSignalType>(s_CLEARED_SIG);
+    sig->asyncEmit();
 }
 
 } // namespace arData
