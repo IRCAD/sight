@@ -46,6 +46,8 @@ SFrameGrabber::SFrameGrabber() noexcept :
     m_horizontallyFlip(false),
     m_verticallyFlip(false)
 {
+    // Do not register the slot in the service, we want to put it on its own worker
+    m_slotPresentFrame = ::fwCom::newSlot( &SFrameGrabber::presentFrame, this );
 
 }
 
@@ -60,6 +62,11 @@ SFrameGrabber::~SFrameGrabber() noexcept
 void SFrameGrabber::starting()
 {
     SLM_ASSERT("m_videoPlayer must be null - have you called starting() twice ?", nullptr == m_videoPlayer);
+
+    // Create a worker for the frame copy, we don't want this on the main thread
+    // since it takes around 4/9ms (release/debug) to copy a full HD frame
+    m_workerPresentFrame = ::fwThread::Worker::New();
+    m_slotPresentFrame->setWorker(m_workerPresentFrame);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,6 +74,10 @@ void SFrameGrabber::starting()
 void SFrameGrabber::stopping()
 {
     this->stopCamera();
+
+    ::fwCore::mt::WriteLock lock(m_videoFrameMutex);
+    m_workerPresentFrame->stop();
+    m_workerPresentFrame.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +96,8 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    ::arData::Camera::csptr camera           = this->getCamera();
+    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
+    FW_RAISE_IF("Camera not found", !camera);
     ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
 
     // Make sure the user has selected a valid source
@@ -107,7 +119,8 @@ void SFrameGrabber::startCamera()
         {
             QObject::connect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
             QObject::connect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
-            QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
+            QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this,
+                             SLOT(onPresentFrame(QVideoFrame)));
 
             m_videoPlayer->play();
 
@@ -148,7 +161,8 @@ void SFrameGrabber::stopCamera()
 
         QObject::disconnect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
         QObject::disconnect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
-        QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
+        QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this,
+                            SLOT(onPresentFrame(QVideoFrame)));
 
         player::VideoRegistry& registry = player::VideoRegistry::getInstance();
         registry.releasePlayer(m_videoPlayer);
@@ -180,16 +194,6 @@ void SFrameGrabber::stopCamera()
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
-}
-
-//-----------------------------------------------------------------------------
-
-CSPTR(::arData::Camera) SFrameGrabber::getCamera()
-{
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
-    FW_RAISE_IF("Camera not found", !camera);
-
-    return camera;
 }
 
 //-----------------------------------------------------------------------------
@@ -235,48 +239,47 @@ void SFrameGrabber::onDurationChanged(qint64 duration)
 
 //----------------------------------------------------------------------------
 
+void SFrameGrabber::onPresentFrame(const QVideoFrame& frame)
+{
+    m_slotPresentFrame->asyncRun(std::ref(frame));
+}
+
+//----------------------------------------------------------------------------
+
 void SFrameGrabber::presentFrame(const QVideoFrame& frame)
 {
+    ::fwCore::mt::WriteLock lock(m_videoFrameMutex);
+
     if( frame.pixelFormat() == QVideoFrame::Format_Invalid )
     {
         SLM_WARN("Dropped frame");
         return;
     }
 
-    ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
+    // const_cast required to call function map() - but it's safe, since we map for READ_ONLY access !
+    QVideoFrame& mappedFrame = const_cast< QVideoFrame& >( frame );
+    // Make sure the frame has been mapped before accessing .bits() !!
+    mappedFrame.map(QAbstractVideoBuffer::ReadOnly);
 
     // If we have the same output format, we can take the fast path
     const int width  = frame.width();
     const int height = frame.height();
 
+    ::arData::FrameTL::sptr timeline = this->getInOut< ::arData::FrameTL >("frameTL");
     if(static_cast<unsigned int>(height) != timeline->getHeight() ||
        static_cast<unsigned int>(width) != timeline->getWidth())
     {
         timeline->initPoolSize(static_cast<size_t>(width), static_cast<size_t>(height), ::fwTools::Type::s_UINT8, 4);
     }
 
-    // This is called on a different worker than the service, so we must lock the frame
-    ::fwCore::mt::ReadLock lock(m_videoFrameMutex);
-
-    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-
-    SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
-    std::uint64_t* destBuffer = reinterpret_cast< std::uint64_t* >( buffer->addElement(0) );
-
     SLM_ASSERT("Pixel format must be RGB32", frame.pixelFormat() == QVideoFrame::Format_RGB32 ||
                frame.pixelFormat() == QVideoFrame::Format_ARGB32_Premultiplied ||
                frame.pixelFormat() == QVideoFrame::Format_ARGB32);
 
-    // const_cast required to call function map() - but it's safe, since we map for READ_ONLY access !
-    QVideoFrame& mappedFrame = const_cast< QVideoFrame& >( frame );
-    // Make sure the frame has been mapped before accessing .bits() !!
-    mappedFrame.map(QAbstractVideoBuffer::ReadOnly);
-
-    const std::uint64_t* frameBuffer;
-
     // Keep this QImage in the global scope, until we are done with it !
     QImage imgFlipped;
 
+    const std::uint64_t* frameBuffer = nullptr;
     if( m_horizontallyFlip || m_verticallyFlip )
     {
         imgFlipped = QImage(mappedFrame.bits(),
@@ -294,6 +297,10 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
 
     // Unmap when we don't need access to .bits() any longer
     mappedFrame.unmap();
+
+    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    std::uint64_t* destBuffer = reinterpret_cast< std::uint64_t* >( buffer->addElement(0) );
 
     const unsigned int size = static_cast<unsigned int>(width*height) >> 1;
 
