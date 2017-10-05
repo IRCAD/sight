@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOIGTL_SOPENIGTLINKLISTENER_HPP__
-#define __IOIGTL_SOPENIGTLINKLISTENER_HPP__
+#ifndef __IOIGTL_SCLIENTLISTENER_HPP__
+#define __IOIGTL_SCLIENTLISTENER_HPP__
 
 #include "ioIGTL/config.hpp"
 
@@ -26,7 +26,7 @@ namespace ioIGTL
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
+ * <service uid="..." type="::ioIGTL::SClientListener" >
  *      <inout key="target" uid="..." />
  *      <server>127.0.0.1:4242</server>
  *      <deviceName>...</deviceName>
@@ -45,18 +45,18 @@ namespace ioIGTL
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
-class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListener
+class IOIGTL_CLASS_API SClientListener : public ::ioNetwork::INetworkListener
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SOpenIGTLinkListener)(::ioNetwork::INetworkListener) );
+    fwCoreServiceClassDefinitionsMacro( (SClientListener)(::ioNetwork::INetworkListener) );
 
     /// Constructor
-    IOIGTL_API SOpenIGTLinkListener();
+    IOIGTL_API SClientListener();
 
     /// Destructor
-    IOIGTL_API virtual ~SOpenIGTLinkListener();
+    IOIGTL_API virtual ~SClientListener();
 
 protected:
 
@@ -76,6 +76,7 @@ private:
      *        this method run in a thread
      */
     void    runClient();
+
     /**
      * @brief method called when the current object is a timeline
      * @note Currently only arData::MatrixTL and arData::FrameTL are managed
@@ -109,5 +110,5 @@ private:
 
 } // namespace OpenIGTLinkIO
 
-#endif /*__IOIGTL_SOPENIGTLINKLISTENER_HPP__*/
+#endif /*__IOIGTL_SCLIENTLISTENER_HPP__*/
 

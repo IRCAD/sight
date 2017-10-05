@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOIGTL_SOPENIGTLINKSENDER_HPP__
-#define __IOIGTL_SOPENIGTLINKSENDER_HPP__
+#ifndef __IOIGTL_SSERVERSENDER_HPP__
+#define __IOIGTL_SSERVERSENDER_HPP__
 
 #include "ioIGTL/config.hpp"
 
@@ -33,7 +33,7 @@ namespace ioIGTL
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::ioIGTL::SOpenIGTLinkSender" >
+ * <service uid="..." type="::ioIGTL::SServerSender" >
  *      <port>...</port>
  *      <deviceName>...</deviceName>
  *      <inout group="objects">
@@ -49,18 +49,18 @@ namespace ioIGTL
  * - \b objects [::fwData::Object] : defines the objects to send.
  **/
 
-class IOIGTL_CLASS_API SOpenIGTLinkSender : public ::ioNetwork::INetworkSender
+class IOIGTL_CLASS_API SServerSender : public ::ioNetwork::INetworkSender
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SOpenIGTLinkSender)( ::ioNetwork::INetworkSender ) );
+    fwCoreServiceClassDefinitionsMacro( (SServerSender)( ::ioNetwork::INetworkSender ) );
 
     /// Constructor
-    IOIGTL_API SOpenIGTLinkSender();
+    IOIGTL_API SServerSender();
 
     /// Destructor
-    IOIGTL_API virtual ~SOpenIGTLinkSender();
+    IOIGTL_API virtual ~SServerSender();
 
 protected:
 
@@ -79,7 +79,7 @@ private:
      *
      * @param[in] obj obj to send
      */
-    IOIGTL_API void sendObject(const ::fwData::Object::sptr& obj);
+    void sendObject(const ::fwData::Object::sptr& obj);
 
     /**
      * @brief method to send data.
@@ -87,7 +87,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    IOIGTL_API void sendObject(const ::fwData::Object::sptr& obj, const size_t index);
+    void sendObject(const ::fwData::Object::sptr& obj, const size_t index);
 
     /// Server instance
     ::igtlNetwork::Server::sptr m_server;
@@ -108,4 +108,4 @@ private:
 
 } // namespace ioIGTL
 
-#endif /*__IOIGTL_SOPENIGTLINKSENDER_HPP__*/
+#endif /*__IOIGTL_SSERVERSENDER_HPP__*/

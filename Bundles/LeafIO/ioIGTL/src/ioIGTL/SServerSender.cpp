@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioIGTL/SOpenIGTLinkSender.hpp"
+#include "ioIGTL/SServerSender.hpp"
 
 #include "ioIGTL/helper/preferences.hpp"
 
@@ -18,27 +18,27 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SOpenIGTLinkSender);
+fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SServerSender);
 
 namespace ioIGTL
 {
 
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkSender::SOpenIGTLinkSender()
+SServerSender::SServerSender()
 {
     m_server = std::make_shared< ::igtlNetwork::Server>();
 }
 
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkSender::~SOpenIGTLinkSender()
+SServerSender::~SServerSender()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::configuring()
+void SServerSender::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
@@ -48,7 +48,7 @@ void SOpenIGTLinkSender::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::starting()
+void SServerSender::starting()
 {
     ::ioNetwork::INetworkSender::starting();
 
@@ -73,7 +73,7 @@ void SOpenIGTLinkSender::starting()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::stopping()
+void SServerSender::stopping()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
 
@@ -100,7 +100,7 @@ void SOpenIGTLinkSender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj)
+void SServerSender::sendObject(const ::fwData::Object::sptr& obj)
 {
     if(!m_deviceName.empty())
     {
@@ -111,7 +111,7 @@ void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj, const size_t index)
+void SServerSender::sendObject(const ::fwData::Object::sptr& obj, const size_t index)
 {
     if (!m_deviceNames[index].empty())
     {

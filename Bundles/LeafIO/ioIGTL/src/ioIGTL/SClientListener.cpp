@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioIGTL/SOpenIGTLinkListener.hpp"
+#include "ioIGTL/SClientListener.hpp"
 
 #include "ioIGTL/helper/preferences.hpp"
 
@@ -29,7 +29,7 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SOpenIGTLinkListener);
+fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SClientListener);
 
 namespace ioIGTL
 {
@@ -38,7 +38,7 @@ static const std::string s_TARGET_KEY = "target";
 
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkListener::SOpenIGTLinkListener() :
+SClientListener::SClientListener() :
     m_timelineType(NONE),
     m_frameTLInitialized(false)
 {
@@ -46,13 +46,13 @@ SOpenIGTLinkListener::SOpenIGTLinkListener() :
 
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkListener::~SOpenIGTLinkListener()
+SClientListener::~SClientListener()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::configuring()
+void SClientListener::configuring()
 {
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
     if (m_configuration->findConfigurationElement("server"))
@@ -83,16 +83,16 @@ void SOpenIGTLinkListener::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::runClient()
+void SClientListener::runClient()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
 
-    if(m_timelineType == SOpenIGTLinkListener::MATRIX)
+    if(m_timelineType == SClientListener::MATRIX)
     {
         obj = ::fwData::TransformationMatrix3D::New();
     }
-    else if(m_timelineType == SOpenIGTLinkListener::FRAME)
+    else if(m_timelineType == SClientListener::FRAME)
     {
         obj = ::fwData::Image::New();
     }
@@ -132,7 +132,7 @@ void SOpenIGTLinkListener::runClient()
         {
             if (m_client.receiveObject(obj))
             {
-                if(m_timelineType != SOpenIGTLinkListener::NONE)
+                if(m_timelineType != SClientListener::NONE)
                 {
                     this->manageTimeline(obj);
                 }
@@ -164,7 +164,7 @@ void SOpenIGTLinkListener::runClient()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::starting()
+void SClientListener::starting()
 {
     ::fwData::Object::sptr obj  = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
     ::arData::TimeLine::sptr tl = ::arData::TimeLine::dynamicCast(obj);
@@ -173,7 +173,7 @@ void SOpenIGTLinkListener::starting()
     {
         if(obj->isA("::arData::MatrixTL"))
         {
-            m_timelineType                 = SOpenIGTLinkListener::MATRIX;
+            m_timelineType                 = SClientListener::MATRIX;
             ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TARGET_KEY);
             matTL->setMaximumSize(10);
             matTL->initPoolSize(1);
@@ -181,7 +181,7 @@ void SOpenIGTLinkListener::starting()
         }
         else if(obj->isA("::arData::FrameTL"))
         {
-            m_timelineType = SOpenIGTLinkListener::FRAME;
+            m_timelineType = SClientListener::FRAME;
         }
         else
         {
@@ -189,12 +189,12 @@ void SOpenIGTLinkListener::starting()
         }
     }
 
-    m_clientFuture = std::async(std::launch::async, std::bind(&SOpenIGTLinkListener::runClient, this));
+    m_clientFuture = std::async(std::launch::async, std::bind(&SClientListener::runClient, this));
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::stopping()
+void SClientListener::stopping()
 {
     m_client.disconnect();
     m_clientFuture.wait();
@@ -203,11 +203,11 @@ void SOpenIGTLinkListener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
+void SClientListener::manageTimeline(::fwData::Object::sptr obj)
 {
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     //MatrixTL
-    if(m_timelineType == SOpenIGTLinkListener::MATRIX)
+    if(m_timelineType == SClientListener::MATRIX)
     {
         ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TARGET_KEY);
 
@@ -231,7 +231,7 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
         sig->asyncEmit(timestamp);
     }
     //FrameTL
-    else if(m_timelineType == SOpenIGTLinkListener::FRAME)
+    else if(m_timelineType == SClientListener::FRAME)
     {
         ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
         ::fwDataTools::helper::Image helper(im);
