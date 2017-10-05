@@ -41,7 +41,6 @@ SFrameGrabber::SFrameGrabber() noexcept :
 {
     // Do not register the slot in the service, we want to put it on its own worker
     m_slotPresentFrame = ::fwCom::newSlot( &SFrameGrabber::presentFrame, this );
-
 }
 
 //-----------------------------------------------------------------------------

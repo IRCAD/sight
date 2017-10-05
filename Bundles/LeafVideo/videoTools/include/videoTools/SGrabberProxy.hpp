@@ -11,6 +11,8 @@
 
 #include <arServices/IGrabber.hpp>
 
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwServices/IHasServices.hpp>
 
 namespace arData
@@ -99,7 +101,14 @@ protected:
 
 private:
 
+    /// SLOT : reset the grabber implementation and stop the current playback.
     void reconfigure();
+
+    /// SLOT : position in the video has changed.
+    void modifyPosition(int64_t position);
+
+    /// SLOT : duration of the video has changed.
+    void modifyDuration(int64_t position);
 
     /// state of the loop mode
     bool m_loopVideo { false };
@@ -109,6 +118,9 @@ private:
 
     /// actual grabber service
     ::arServices::IGrabber::sptr m_service;
+
+    /// connections with service signals
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // namespace videoTools

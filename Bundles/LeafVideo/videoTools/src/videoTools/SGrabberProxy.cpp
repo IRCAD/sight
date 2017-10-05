@@ -25,6 +25,9 @@ namespace videoTools
 
 const ::fwCom::Slots::SlotKeyType SGrabberProxy::s_RECONFIGURE_SLOT = "reconfigure";
 
+const ::fwCom::Slots::SlotKeyType s_MODIFY_POSITION = "modifyPosition";
+const ::fwCom::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
+
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
@@ -32,6 +35,9 @@ fwServicesRegisterMacro( ::arServices::IGrabber, ::videoTools::SGrabberProxy, ::
 SGrabberProxy::SGrabberProxy() noexcept
 {
     newSlot( s_RECONFIGURE_SLOT, &SGrabberProxy::reconfigure, this );
+
+    newSlot( s_MODIFY_POSITION, &SGrabberProxy::modifyPosition, this );
+    newSlot( s_MODIFY_DURATION, &SGrabberProxy::modifyDuration, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +58,7 @@ void SGrabberProxy::stopping()
 {
     if(m_service != nullptr)
     {
+        m_connections.disconnect();
         m_service->stopCamera();
         this->unregisterService(m_service);
         m_service.reset();
@@ -133,6 +140,11 @@ void SGrabberProxy::startCamera()
         m_service->setWorker(m_associatedWorker);
 
         m_service->start();
+
+        m_connections.connect(m_service, ::arServices::IGrabber::s_POSITION_MODIFIED_SIG,
+                              this->getSptr(), s_MODIFY_POSITION);
+        m_connections.connect(m_service, ::arServices::IGrabber::s_DURATION_MODIFIED_SIG,
+                              this->getSptr(), s_MODIFY_DURATION);
     }
 
     m_service->startCamera();
@@ -184,6 +196,7 @@ void SGrabberProxy::reconfigure()
 {
     if(m_service != nullptr)
     {
+        m_connections.disconnect();
         m_service->stopCamera();
         this->unregisterService(m_service);
         m_service.reset();
@@ -192,6 +205,22 @@ void SGrabberProxy::reconfigure()
         frameTL->clearTimeline();
     }
     m_grabberImpl = "";
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::modifyPosition(int64_t position)
+{
+    auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+    sig->asyncEmit(static_cast<std::int64_t>(position));
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::modifyDuration(int64_t duration)
+{
+    auto sig = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+    sig->asyncEmit(static_cast<std::int64_t>(duration));
 }
 
 //-----------------------------------------------------------------------------
