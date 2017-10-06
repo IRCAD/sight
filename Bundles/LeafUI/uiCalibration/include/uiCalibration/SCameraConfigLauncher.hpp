@@ -95,6 +95,7 @@ protected:
 
 private Q_SLOTS:
     void onAddClicked();
+    void onImportClicked();
     void onRemoveClicked();
     void onExtrinsicToggled(bool checked);
     void onCameraChanged(int index);
@@ -112,6 +113,7 @@ private:
 
     QPointer<QComboBox> m_cameraComboBox;
     QPointer<QPushButton> m_addButton;
+    QPointer<QPushButton> m_importButton;
     QPointer<QPushButton> m_removeButton;
     QPointer<QPushButton> m_extrinsicButton;
 

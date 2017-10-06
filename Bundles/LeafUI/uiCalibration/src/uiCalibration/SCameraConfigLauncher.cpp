@@ -16,7 +16,12 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
+
+#include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -85,6 +90,12 @@ void SCameraConfigLauncher::starting()
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
+    QIcon importIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
+                                                                                   "icons/CameraSeries.svg").string()));
+    m_importButton = new QPushButton(importIcon, "");
+    m_importButton->setToolTip("Import an intrinsic calibration.");
+    layout->addWidget(m_importButton);
+
     QIcon removeIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
                                                                                    "icons/remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
@@ -121,6 +132,7 @@ void SCameraConfigLauncher::starting()
 
     QObject::connect(m_cameraComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCameraChanged(int)));
     QObject::connect(m_addButton, SIGNAL(clicked()), this, SLOT(onAddClicked()));
+    QObject::connect(m_importButton, SIGNAL(clicked()), this, SLOT(onImportClicked()));
     QObject::connect(m_removeButton, SIGNAL(clicked()), this, SLOT(onRemoveClicked()));
     QObject::connect(m_extrinsicButton, SIGNAL(toggled(bool)), this, SLOT(onExtrinsicToggled(bool)));
 
@@ -184,6 +196,62 @@ void SCameraConfigLauncher::onAddClicked()
     m_removeButton->setEnabled(true);
 
     this->addCamera();
+}
+
+//------------------------------------------------------------------------------
+
+void SCameraConfigLauncher::onImportClicked()
+{
+    ::fwGui::dialog::LocationDialog dialog;
+    dialog.addFilter("Matrix", "*.trf");
+    dialog.setTitle("Select the matrix file to load");
+    dialog.setOption(::fwGui::dialog::ILocationDialog::READ);
+
+    auto result = ::fwData::location::SingleFile::dynamicCast( dialog.show() );
+
+    bool success = true;
+    size_t width, height;
+    try
+    {
+        ::fwGui::dialog::InputDialog widthDialog;
+        widthDialog.setTitle("Width of the camera frames");
+        widthDialog.setMessage("Enter the width in pixels of the camera frames: ");
+        widthDialog.setInput("<Width>");
+        auto widthStr = widthDialog.getInput();
+        width = std::stoul(widthStr);
+
+        ::fwGui::dialog::InputDialog heightDialog;
+        heightDialog.setTitle("Height of the camera frames");
+        heightDialog.setMessage("Enter the height in pixels of the camera frames: ");
+        heightDialog.setInput("<Height>");
+        auto heightStr = heightDialog.getInput();
+        height = std::stoul(heightStr);
+    }
+    catch(std::exception const& e)
+    {
+        success = false;
+    }
+
+    if(result && success)
+    {
+        auto matrix = ::fwData::TransformationMatrix3D::New();
+        auto reader = ::fwDataIO::reader::TransformationMatrix3DReader::New();
+        reader->setObject( matrix );
+        reader->setFile(result->getPath());
+        reader->read();
+
+        const auto camIdx = m_cameraComboBox->currentIndex();
+        auto camera       = m_cameraSeries->getCamera(camIdx);
+        camera->setFx(matrix->getCoefficient(0, 0));
+        camera->setFy(matrix->getCoefficient(1, 1));
+        camera->setCx(matrix->getCoefficient(0, 2));
+        camera->setCy(matrix->getCoefficient(1, 2));
+        camera->setHeight(height);
+        camera->setWidth(width);
+        camera->setIsCalibrated(true);
+        camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType>(::arData::Camera::s_INTRINSIC_CALIBRATED_SIG)
+        ->asyncEmit();
+    }
 }
 
 //------------------------------------------------------------------------------

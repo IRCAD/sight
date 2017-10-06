@@ -5,6 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
         fwCore
         fwData
+        fwDataIO
         fwRuntime
         fwServices
         fwTools
