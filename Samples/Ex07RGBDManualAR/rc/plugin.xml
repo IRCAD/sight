@@ -3,6 +3,7 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="visuVTKARAdaptor" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07RGBDManualARConfig</id>
@@ -15,11 +16,12 @@
             <object uid="frameTL" type="::arData::FrameTL" />
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
+            <object uid="backgroundMask" type="::fwData::Image" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
             <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
-            <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="skinMesh" type="::fwData::Mesh" src="deferred" />
             <object uid="modelseries" type="::fwMedData::ModelSeries" src="deferred" />
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -34,6 +36,18 @@
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
                     <toolBar sid="toolbar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
                     <view sid="genericScene" />
                 </registry>
             </service>
@@ -222,7 +236,7 @@
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
+                <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
             <service uid="registrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
@@ -242,6 +256,41 @@
             </service>
 
             <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin offscreen scene *************************** -->
+
+            <service uid="offscreenRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <inout key="offScreen" uid="backgroundMask" />
+                <scene width="640" height="480">
+                    <renderer id="default" layer="0" background="0.0" />
+                    <adaptor uid="interactorStyleOffscreen" />
+                    <adaptor uid="registrationTransformOffscreen" />
+                    <adaptor uid="meshAdptOffscreen" />
+                    <adaptor uid="cameraAdptOffscreen" />
+                </scene>
+            </service>
+
+            <service uid="interactorStyleOffscreen" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+            <service uid="registrationTransformOffscreen" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="inverseMat" />
+                <config renderer="default" picker="" transform="registrationMatrix" />
+            </service>
+
+            <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="skinMesh" />
+                <config renderer="default" picker="default" autoresetcamera="no" color="#FFFFFF" transform="registrationMatrix" shadingMode="ambient" />
+            </service>
+
+            <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="identity" />
+                <in key="camera" uid="cameraRGB" />
+                <config renderer="default" />
+            </service>
+
+            <!-- *************************** End offscreen scene *************************** -->
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="CameraSelector" type="::videoQt::editor::SCamera">
@@ -274,6 +323,15 @@
                 </inout>
                 <framerate>30</framerate>
                 <tolerance>100</tolerance>
+            </service>
+
+            <service uid="extractSkin" type="::ctrlCamp::SExtractMeshByType" >
+               <inout key="source" uid="modelseries">
+                   <extract type="Skin" />
+               </inout>
+               <out group="target">
+                   <key uid="skinMesh"/>
+               </out>
             </service>
 
             <!-- signal/slot connection -->
@@ -315,12 +373,21 @@
             <start uid="concatenate" />
             <start uid="organManager" />
             <start uid="genericScene" />
+            <start uid="offscreenRender" />
+            <start uid="extractSkin" />
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
             <start uid="registrationTransform" />
             <start uid="modelseriesAdpt" />
             <start uid="cameraAdpt" />
+            <!-- VTK scene 'offscreenRender' -->
+            <start uid="interactorStyleOffscreen" />
+            <start uid="registrationTransformOffscreen" />
+            <start uid="meshAdptOffscreen" />
+            <start uid="cameraAdptOffscreen" />
+            <!-- Update -->
+            <update uid="extractSkin" />
         </config>
     </extension>
 </plugin>
