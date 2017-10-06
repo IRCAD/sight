@@ -33,6 +33,7 @@ set( REQUIREMENTS
     ioAtoms
     uiMedDataQt
     3DVisualizationActivity
+    colourSegmentation
 
     )
 
