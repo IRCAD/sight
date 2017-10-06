@@ -124,13 +124,16 @@
                 <inout key="target" uid="objectMeshUid" />
             </service>
 
-            <service uid="matrixNetworkListener" type="::ioIGTL::SOpenIGTLinkListener">
+            <service uid="matrixNetworkListener" type="::ioIGTL::SClientListener">
                 <inout key="target" uid="identityMatrix" />
+                <deviceName>device01</deviceName>
                 <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
             </service>
 
-            <service uid="matrixNetworkSender" type="::ioIGTL::SOpenIGTLinkSender">
-                <in key="target" uid="identityMatrix" />
+            <service uid="matrixNetworkSender" type="::ioIGTL::SServerSender" autoConnect="yes" >
+                <in group="objects">
+                    <key uid="identityMatrix" name="device01" />
+                </in>
                 <port>%SERVER_PORT_KEY%</port>
             </service>
 
