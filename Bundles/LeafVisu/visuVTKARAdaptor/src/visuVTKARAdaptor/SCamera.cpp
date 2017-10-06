@@ -303,6 +303,7 @@ void SCamera::calibrate()
         vtkCamera* camera = this->getRenderer()->GetActiveCamera();
         camera->RemoveObserver(m_cameraCommand);
 
+        const double fx = cameraCalibration->getFx();
         const double fy = cameraCalibration->getFy();
 
         const double cx = cameraCalibration->getCx();
@@ -317,6 +318,16 @@ void SCamera::calibrate()
 
         // Use the Renderer aspect ratio when shifting window center to avoid bug when resizing windows.
         camera->SetWindowCenter(wcx / this->getRenderer()->GetAspect()[0], wcy);
+
+        // Set the image aspect ratio as an indirect way of setting the x focal distance
+        vtkMatrix4x4* m = vtkMatrix4x4::New();
+        m->Identity();
+        m->SetElement(0, 0, 1. / (fy / fx));
+
+        vtkTransform* t = vtkTransform::New();
+        t->SetMatrix(m);
+
+        camera->SetUserTransform(t);
 
         this->updateFromTMatrix3D();
         this->setVtkPipelineModified();
