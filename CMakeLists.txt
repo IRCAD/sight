@@ -14,6 +14,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
 set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+mark_as_advanced(ENABLE_PCH)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
 if(MSVC)
