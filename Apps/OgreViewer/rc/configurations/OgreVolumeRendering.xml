@@ -8,8 +8,6 @@
         <param name="idvrBoolParamChannel" />
         <param name="idvrDoubleParamChannel" />
         <param name="idvrColorParamChannel" />
-        <!-- The object 'TF' is deferred, its id is given between configuration to
-             receive the signal emitted when the object is created. -->
         <param name="TF" />
     </parameters>
     <config>

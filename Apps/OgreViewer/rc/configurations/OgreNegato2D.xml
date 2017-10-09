@@ -3,8 +3,6 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="imageUID" />
-        <!-- The object 'TF' is deferred, its id is given between configuration to
-             receive the signal emitted when the object is created. -->
         <param name="TF" />
     </parameters>
     <config>

@@ -190,34 +190,28 @@
                 <inout key="modelSeriesUID" uid="modelSeriesUID" />
                 <inout key="cameraTF" uid="cameraTF_UID" />
                 <inout key="imageUID" uid="imageUID" />
+                <inout replace="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="OgreSceneView" />
                 <parameter replace="genericSceneUID" uid="genericSceneUID" />
-                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
-                     configuration to receive the signal emitted when the object is created. -->
-                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
                 <inout key="imageUID" uid="imageUID" />
+                <inout replace="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
-                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
-                     configuration to receive the signal emitted when the object is created. -->
-                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
                 <appConfig id="OgreVolumeRendering" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
+                <inout replace="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
                 <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
-                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
-                     configuration to receive the signal emitted when the object is created. -->
-                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -237,11 +231,9 @@
                 <appConfig id="OgreHistogramManager" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
+                <inout replace="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="histogramView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
-                <!-- The object 'TF' is deferred and is created in 'OgreHistogramManager', its id is given between
-                     configuration to receive the signal emitted when the object is created. -->
-                <parameter replace="TF" by="TF" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
