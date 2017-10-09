@@ -205,10 +205,8 @@
             <inout key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <inout key="landmarks" uid="landmarks" />
+            <inout key="transferFunctionOutput" uid="transferFunction" optional="yes" />
             <parameter replace="WID_PARENT" by="tfEditor" />
-            <!-- The object 'transferFunction' is deferred, its id is given between configuration to receive
-                 the signal emitted when the object is created. -->
-            <parameter replace="transferFunctionOutput" by="transferFunction" />
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">

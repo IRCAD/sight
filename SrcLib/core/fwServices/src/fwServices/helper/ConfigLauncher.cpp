@@ -71,8 +71,26 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
         parameterCfg.add("<xmlattr>.replace", key);
 
+        const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
+        const bool optional           = strOptional == "yes" ? true : false;
+
         auto obj = service->getInOut< ::fwData::Object>(key);
-        parameterCfg.add("<xmlattr>.uid", obj->getID());
+        if(optional)
+        {
+            if(obj)
+            {
+                parameterCfg.add("<xmlattr>.uid", obj->getID());
+            }
+            else
+            {
+                parameterCfg.add("<xmlattr>.uid", uid);
+            }
+        }
+        else
+        {
+            SLM_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
+            parameterCfg.add("<xmlattr>.uid", obj->getID());
+        }
 
         newCfg.add_child("parameters.parameter", parameterCfg);
     }
