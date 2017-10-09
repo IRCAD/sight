@@ -17,6 +17,7 @@
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
             <object uid="backgroundMask" type="::fwData::Image" />
+            <object uid="foregroundMask" type="::fwData::Image" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
@@ -101,6 +102,9 @@
                         <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                         <menuItem name="Manage organs color" icon="media-0.1/icons/ManageOrgan.png" style="check" />
+                        <separator/>
+                        <menuItem name="Learn background model" icon="media-0.1/icons/icon-frontal.png" />
+                        <menuItem name="Learn foreground model" icon="media-0.1/icons/icon-blend.png" />
                     </layout>
                 </gui>
                 <registry>
@@ -112,6 +116,8 @@
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="organManager" start="no" />
+                    <menuItem sid="learnBackground" start="yes" />
+                    <menuItem sid="learnForeground" start="yes" />
                 </registry>
             </service>
 
@@ -214,6 +220,18 @@
                 </out>
             </service>
 
+            <service uid="learnBackground" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>extractForeground/setBackground</slot>
+                </slots>
+            </service>
+
+            <service uid="learnForeground" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>extractForeground/setForeground</slot>
+                </slots>
+            </service>
+
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -221,11 +239,13 @@
                 <scene>
                     <renderer id="video" layer="0" background="0.0" />
                     <renderer id="default" layer="1" background="0.0" />
+                    <renderer id="foreground" layer="2" background="0.0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="registrationTransform" />
                     <adaptor uid="modelseriesAdpt" />
                     <adaptor uid="cameraAdpt" />
+                    <adaptor uid="foregroundAdpt" />
                 </scene>
             </service>
 
@@ -233,6 +253,12 @@
                 <in key="frame" uid="videoImage" />
                 <in key="camera" uid="cameraRGB" />
                 <config renderer="video" />
+            </service>
+
+            <service uid="foregroundAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="foregroundMask" />
+                <in key="camera" uid="cameraRGB" />
+                <config renderer="foreground" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -325,6 +351,7 @@
                 <tolerance>100</tolerance>
             </service>
 
+            <!-- Extract model called "Skin" in the model series -->
             <service uid="extractSkin" type="::ctrlCamp::SExtractMeshByType" >
                <inout key="source" uid="modelseries">
                    <extract type="Skin" />
@@ -332,6 +359,13 @@
                <out group="target">
                    <key uid="skinMesh"/>
                </out>
+            </service>
+
+            <!-- Split background and foreground image -->
+            <service uid="extractForeground" type="::colourSegmentation::SColourImageMasking" worker="videoExtraction">
+                <in key="video" uid="frameTL" autoConnect="yes" />
+                <in key="mask" uid="backgroundMask" />
+                <inout key="videoMask" uid="foregroundMask" />
             </service>
 
             <!-- signal/slot connection -->
@@ -352,7 +386,6 @@
                 <slot>frameGrabber/stopCamera</slot>
             </connect>
 
-            <!-- start services -->
             <connect channel="ModelRepresentationChannel">
                 <slot>modelseriesAdpt/updateNormalMode</slot>
             </connect>
@@ -361,6 +394,7 @@
                 <slot>modelseriesAdpt/showReconstructions</slot>
             </connect>
 
+            <!-- start services -->
             <start uid="mainFrame" />
             <start uid="extractModelSeries" />
             <start uid="frameGrabber" />
@@ -375,12 +409,14 @@
             <start uid="genericScene" />
             <start uid="offscreenRender" />
             <start uid="extractSkin" />
+            <start uid="extractForeground" />
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
             <start uid="registrationTransform" />
             <start uid="modelseriesAdpt" />
             <start uid="cameraAdpt" />
+            <start uid="foregroundAdpt" />
             <!-- VTK scene 'offscreenRender' -->
             <start uid="interactorStyleOffscreen" />
             <start uid="registrationTransformOffscreen" />
