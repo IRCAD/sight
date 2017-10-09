@@ -118,14 +118,7 @@ void SNegato2D::starting()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
-    {
-        this->setTransferFunction(tf);
-    }
-    else
-    {
-        this->createTransferFunction(image);
-    }
+    this->setOrCreateTF(tf, image);
 
     this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
 
@@ -147,8 +140,6 @@ void SNegato2D::starting()
                                         OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
 
     this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
-
-    this->installTFConnections();
 
     bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if(isValid)
@@ -190,19 +181,11 @@ void SNegato2D::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        this->removeTFConnections();
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
-        {
-            this->setTransferFunction(tf);
-        }
-        else
-        {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("Missing image", image);
-            this->createTransferFunction(image);
-        }
-        this->installTFConnections();
+        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
         this->updateTFPoints();
     }
 }
