@@ -1,4 +1,4 @@
-<plugin id="uiCPR" class="::uiCPR::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiCPR" class="::uiCPR::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="uiCPR" />
 

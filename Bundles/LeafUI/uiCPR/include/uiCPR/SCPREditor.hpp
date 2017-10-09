@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,17 @@
 
 #include "uiCPR/config.hpp"
 
-#include <vector>
-#include <string>
+#include <fwCom/Signals.hpp>
 
 #include <fwTools/Failed.hpp>
-
-#include <fwCom/Signals.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
+
+#include <string>
+#include <vector>
 
 class QSlider;
 class QLineEdit;
@@ -76,17 +76,16 @@ protected:
     /**
      * @name Overrides
      * @{ */
-    virtual void starting();
-    virtual void stopping();
-    virtual void updating();
+    virtual void starting() override;
+    virtual void stopping() override;
+    virtual void updating() override;
     /**  @} */
-
 
     /**
      * @brief Overrides IService::configuring().
      * @throw fwTools::Failed
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Signal emitted when the height value changes.
     HeightChangedSignalType::sptr m_sigHeightChanged;

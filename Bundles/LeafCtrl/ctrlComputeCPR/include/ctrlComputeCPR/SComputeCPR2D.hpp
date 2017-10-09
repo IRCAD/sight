@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,7 +56,7 @@ class CTRLCOMPUTECPR_CLASS_API SComputeCPR2D : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SComputeCPR2D)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SComputeCPR2D)(::fwServices::IController) );
 
     /// Constructor.
     CTRLCOMPUTECPR_API SComputeCPR2D() noexcept;
@@ -88,16 +88,16 @@ protected:
     /**
      * @name Overrides
      * @{ */
-    virtual void starting();
-    virtual void stopping();
-    virtual void updating();
+    virtual void starting() override;
+    virtual void stopping() override;
+    virtual void updating() override;
     /**  @} */
 
     /**
      * @brief Overrides IService::configuring().
      * @throw fwTools::Failed
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Computes the image of CPR.
     void computeCPRImage();

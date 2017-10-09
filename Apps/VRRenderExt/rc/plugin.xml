@@ -1,14 +1,14 @@
-<plugin id="VRRenderExt" version="@DASH_VERSION@" >
+<plugin id="VRRenderExt" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
-    
+
     <requirement id="patchMedicalData" />
-    
+
     <requirement id="filterVRRender" />
     <requirement id="activities" />
     <requirement id="preferences" />
-    
+
     <requirement id="gui" />
     <requirement id="guiQt" />
     <requirement id="media" />
@@ -21,7 +21,7 @@
         <id>VRRenderExtAppBase</id>
         <parameters>
             <param name="appName" value="VRRenderExt 0.9.6" />
-            <param name="appIconPath" value="@BUNDLE_PREFIX@/VRRenderExt_0-9/vrrenderext.ico" />
+            <param name="appIconPath" value="VRRenderExt-0.9/vrrenderext.ico" />
             <param name="appVersion" value="0-9" />
         </parameters>
     </extension>
@@ -30,7 +30,7 @@
         <id>SDBVRRenderExt</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="SDBVRRenderExt">
             <parameters />
@@ -41,7 +41,7 @@
         <id>activitySelector</id>
         <title>Choose your activity</title>
         <desc>Activity selector for VRRenderExt</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="activitySelector">
             <parameters />

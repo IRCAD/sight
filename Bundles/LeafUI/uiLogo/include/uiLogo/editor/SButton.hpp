@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #include "uiLogo/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 
@@ -32,8 +32,7 @@ class UILOGO_CLASS_API SButton : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SButton)(::gui::editor::IEditor) );
-
+    fwCoreServiceClassDefinitionsMacro( (SButton)(::gui::editor::IEditor) );
 
     /// Triggered signal type
 
@@ -49,13 +48,13 @@ public:
      * @brief This method launches the IEditor::starting method
      * Initializes button according to xml configuration
      */
-    UILOGO_API void starting();
+    UILOGO_API void starting() override;
 
     /// This method launches the IEditor::stopping method
-    UILOGO_API void stopping();
+    UILOGO_API void stopping() override;
 
     /// This method is used to update services. Sends triggered signal
-    UILOGO_API void updating();
+    UILOGO_API void updating() override;
 
     /// This method is used to update services on notification. Do nothing
     UILOGO_API void receiving( );
@@ -66,16 +65,16 @@ public:
      *
      * @code{.xml}
             <service uid="${GENERIC_UID}_logo_button" impl="::uiLogo::editor::SButton" autoConnect="no">
-                <image>@BUNDLE_PREFIX@/media_0-1/icons/*.png</image>
+                <image>media-0.1/icons/*.png</image>
                 <label>Label</label>
                 <tooltip>Tooltip</tooltip>
             </service>
        @endcode
      */
-    UILOGO_API void configuring();
+    UILOGO_API void configuring() override;
 
     /// This method is used to give information about the service. Do nothing
-    UILOGO_API void info(std::ostream& _sstream);
+    UILOGO_API void info(std::ostream& _sstream) override;
 
 protected Q_SLOTS:
     /// This method is called when the user clicks OK button

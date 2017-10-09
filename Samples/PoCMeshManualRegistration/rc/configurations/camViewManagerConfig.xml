@@ -21,7 +21,7 @@
             <gui>
                 <frame>
                     <name>Cam View</name>
-                    <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                    <icon>PoCMeshManualRegistration-0.1/tuto.ico</icon>
                     <minSize width="400" height="600" />
                     <style mode="STAY_ON_TOP" />
                 </frame>

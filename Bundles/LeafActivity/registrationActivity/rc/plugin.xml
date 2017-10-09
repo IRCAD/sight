@@ -1,4 +1,4 @@
-<plugin id="registrationActivity" version="@DASH_VERSION@" >
+<plugin id="registrationActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
@@ -12,7 +12,7 @@
         <id>registrationActivity</id>
         <title>Registration</title>
         <desc>Activity to register two images.</desc>
-        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-blend.png</icon>
+        <icon>media-0.1/icons/icon-blend.png</icon>
         <requirements>
             <requirement name="referenceSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" >
                 <desc>The object that will be transformed in order to be superimposed to the Target.</desc>

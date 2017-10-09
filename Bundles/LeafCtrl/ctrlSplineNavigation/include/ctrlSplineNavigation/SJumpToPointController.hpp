@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,7 @@
 #ifndef __CTRLSPLINENAVIGATION_SJUMPTOPOINTCONTROLLER_HPP__
 #define __CTRLSPLINENAVIGATION_SJUMPTOPOINTCONTROLLER_HPP__
 
-#include <fwTools/Failed.hpp>
-
-#include <fwServices/IController.hpp>
+#include "ctrlSplineNavigation/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -17,7 +15,9 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include "ctrlSplineNavigation/config.hpp"
+#include <fwServices/IController.hpp>
+
+#include <fwTools/Failed.hpp>
 
 namespace ctrlSplineNavigation
 {
@@ -37,7 +37,7 @@ class CTRLSPLINENAVIGATION_CLASS_API SJumpToPointController : public ::fwService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SJumpToPointController)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SJumpToPointController)(::fwServices::IController) );
 
     /// Constructor.
     CTRLSPLINENAVIGATION_API SJumpToPointController() noexcept;
@@ -56,10 +56,10 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    virtual void starting();
-    virtual void stopping();
-    virtual void updating();
-    virtual void configuring();
+    virtual void starting() override;
+    virtual void stopping() override;
+    virtual void updating() override;
+    virtual void configuring() override;
     /**  @} */
 
     /**

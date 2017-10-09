@@ -1,4 +1,4 @@
-<plugin id="BeginnerTraining04" version="@DASH_VERSION@">
+<plugin id="BeginnerTraining04" version="@PROJECT_VERSION@">
 
     <requirement id="visuVTKQt" />
 
@@ -69,8 +69,8 @@
             <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
-<!--                        <menuItem name="Switch data" icon="@BUNDLE_PREFIX@/media_0-1/icons/Modifier.svg" />-->
-                        <menuItem name="Open mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg" />
+<!--                        <menuItem name="Switch data" icon="media-0.1/icons/Modifier.svg" />-->
+                        <menuItem name="Open mesh" icon="media-0.1/icons/Plus.svg" />
                         <editor/>
                     </layout>
                 </gui>
@@ -99,7 +99,7 @@
 
             <service uid="myReader" type="::beginnerTraining::tuto03::SStringReader" >
                 <inout key="targetString" uid="string" />
-                <file>@BUNDLE_PREFIX@/beginnerTraining_0-1/data.txt</file>
+                <file>beginnerTraining-0.1/data.txt</file>
             </service>
 
             <!-- Mesh displayed in the scene -->
