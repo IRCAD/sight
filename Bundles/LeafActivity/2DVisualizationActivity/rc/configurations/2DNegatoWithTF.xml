@@ -7,10 +7,7 @@
         <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="CrossTypeChannel" default="crossTypeChannel"/>
-
-        <!-- The object 'transferFunctionDeferred' is deferred, its id is given between configuration to
-             receive the signal emitted when the object is created. -->
-        <param name="transferFunctionDeferred" default="transferFunction" />
+        <param name="transferFunctionDeferred" />
     </parameters>
     <config>
         <object uid="${image}" type="::fwData::Image" src="ref" />

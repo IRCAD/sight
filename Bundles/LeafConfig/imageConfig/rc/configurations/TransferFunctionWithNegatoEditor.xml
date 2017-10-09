@@ -6,13 +6,9 @@ Example:
     <inout key="image" uid="..." />
     <inout key="histogram" uid="..." />
     <inout key="landmarks" uid="..." />
+    <inout replace="transferFunctionOutput" by="..." />
     <parameter replace="WID_PARENT" by="..." />
-    <parameter replace="transferFunctionOutput" by="..." />
 </service>
-
-Note: The object 'transferFunctionOutput' is deferred and created by this configuration.
-      Its id is given between configuration to receive the signal emitted when the object is created (it is an internal
-      mechanism of AppConfigManager).
 -->
 <extension implements="::fwServices::registry::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
@@ -22,10 +18,7 @@ Note: The object 'transferFunctionOutput' is deferred and created by this config
         <param name="histogram" />
         <param name="landmarks" />
         <param name="TFPath" default="uiTF-0.1/tf"/>
-
-        <!-- The object 'transferFunctionOutput' is deferred, its id is given between configuration to
-             receive the signal emitted when the object is created. -->
-        <param name="transferFunctionOutput" default="transferFunction" />
+        <param name="transferFunctionOutput" />
     </parameters>
     <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
     <config>
@@ -87,10 +80,8 @@ Note: The object 'transferFunctionOutput' is deferred and created by this config
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
+            <inout key="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="yes" />
             <parameter replace="WID_PARENT" by="negatoView" />
-            <!-- The object 'transferFunctionDeferred' is deferred, its id is given between configuration to
-                 receive the signal emitted when the object is created. -->
-            <parameter replace="transferFunctionDeferred" by="${transferFunctionOutput}" />
         </service>
 
         <service uid="tfWidget" type="::fwServices::SConfigController">
