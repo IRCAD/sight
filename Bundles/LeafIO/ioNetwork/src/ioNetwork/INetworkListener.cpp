@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioNetwork/INetworkListener.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include "ioNetwork/INetworkListener.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -27,9 +27,9 @@ INetworkListener::INetworkListener()
     m_sigReceivedObject     = ReceivedObjectSignalType::New();
     m_sigClientDisconnected = ClientDisconnectSignalType::New();
 
-    ::fwCom::HasSignals::m_signals (s_CLIENT_CONNECTED_SIGNAL, m_sigClientConnected);
-    ::fwCom::HasSignals::m_signals (s_CLIENT_DISCONNECTED_SIGNAL, m_sigClientDisconnected);
-    ::fwCom::HasSignals::m_signals (s_RECEIVED_OBJECT_SIGNAL, m_sigReceivedObject);
+    ::fwCom::HasSignals::m_signals(s_CLIENT_CONNECTED_SIGNAL, m_sigClientConnected);
+    ::fwCom::HasSignals::m_signals(s_CLIENT_DISCONNECTED_SIGNAL, m_sigClientDisconnected);
+    ::fwCom::HasSignals::m_signals(s_RECEIVED_OBJECT_SIGNAL, m_sigReceivedObject);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,19 +64,6 @@ void INetworkListener::updating()
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::notifyObjectUpdated()
-{
-    ::fwData::Object::sptr obj = this->getObject();
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void INetworkListener::swapping()
 {
     // Classic default approach to update service when oject change
@@ -87,5 +74,4 @@ void INetworkListener::swapping()
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-
 

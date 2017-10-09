@@ -9,16 +9,9 @@
 
 #include "ioNetwork/config.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwData/Object.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <map>
 
 namespace ioNetwork
 {
@@ -36,11 +29,6 @@ class IONETWORK_CLASS_API INetworkSender : public ::fwServices::IController
 public:
 
     fwCoreServiceClassDefinitionsMacro( (INetworkSender) (::fwServices::IController));
-
-    /**
-     * @brief Send data slot can be used if you want to connect a custom signal to this slot
-     */
-    IONETWORK_API static const ::fwCom::Slots::SlotKeyType s_SEND_DATA_SLOT;
 
     /**
      * @brief Server started signal is emitted when the server is started
@@ -88,18 +76,6 @@ protected:
 
     /// Calls stopping and starting
     IONETWORK_API virtual void swapping() override;
-
-    /**
-     * @brief SLOT: called to send obj
-     *
-     * @param[in] obj the obj to send
-     */
-    IONETWORK_API void sendData(const ::fwData::Object::csptr& obj);
-
-    /**
-     * @brief Sends the obj
-     */
-    virtual void sendObject(const ::fwData::Object::csptr& obj) = 0;
 
     /**
      * @brief Sends the obj at index

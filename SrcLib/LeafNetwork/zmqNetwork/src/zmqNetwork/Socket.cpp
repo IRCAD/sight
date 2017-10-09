@@ -63,13 +63,13 @@ void Socket::sendObject(const ::fwData::Object::csptr& data)
 
 //------------------------------------------------------------------------------
 
-bool Socket::receiveObject(::fwData::Object::sptr obj)
+::fwData::Object::sptr Socket::receiveObject()
 {
+    ::fwData::Object::sptr obj;
     ::igtl::MessageBase::Pointer msg;
     ::zmq::message_t response;
-    ::igtl::MessageHeader::Pointer headerMsg;
 
-    headerMsg = ::igtl::MessageHeader::New();
+    ::igtl::MessageHeader::Pointer headerMsg = ::igtl::MessageHeader::New();
     headerMsg->InitPack();
     m_socket->recv(&response);
     if (response.size() > Socket::s_HEADER_SIZE)
@@ -86,15 +86,14 @@ bool Socket::receiveObject(::fwData::Object::sptr obj)
             {
                 throw Exception("Cannot unpack body");
             }
-            m_dataConverter->fromIgtlMessage(msg, obj);
-            return true;
+            obj = m_dataConverter->fromIgtlMessage(msg);
         }
         else
         {
             throw Exception("Cannot unpack header");
         }
     }
-    return false;
+    return obj;
 }
 
 //------------------------------------------------------------------------------

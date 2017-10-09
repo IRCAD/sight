@@ -53,34 +53,29 @@ bool INetwork::sendMsg (igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-bool INetwork::receiveObject(::fwData::Object::sptr obj)
+::fwData::Object::sptr INetwork::receiveObject(std::string& deviceName)
 {
-    ::igtl::MessageHeader::Pointer headerMsg;
-    ::igtl::MessageBase::Pointer msg;
-
-    headerMsg = this->receiveHeader();
+    ::fwData::Object::sptr obj;
+    ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
     if (headerMsg.IsNotNull())
     {
-        msg = this->receiveBody(headerMsg);
+        ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg);
         if (msg.IsNotNull())
         {
-            m_dataConverter->fromIgtlMessage(msg, obj);
-            return true;
+            obj        = m_dataConverter->fromIgtlMessage(msg);
+            deviceName = headerMsg->GetDeviceName();
         }
     }
-    return false;
+    return obj;
 }
 
 //------------------------------------------------------------------------------
 
 ::igtl::MessageHeader::Pointer INetwork::receiveHeader()
 {
-    ::igtl::MessageHeader::Pointer headerMsg;
-    int sizeReceive;
-
-    headerMsg = ::igtl::MessageHeader::New();
+    ::igtl::MessageHeader::Pointer headerMsg = ::igtl::MessageHeader::New();
     headerMsg->InitPack();
-    sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+    const int sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
     if (sizeReceive == -1 || sizeReceive == 0)
     {
@@ -94,7 +89,7 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
         }
         else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
         {
-            std::string deviceName = headerMsg->GetDeviceName();
+            const std::string deviceName = headerMsg->GetDeviceName();
 
             if(m_filteringByDeviceName)
             {

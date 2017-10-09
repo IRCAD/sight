@@ -113,17 +113,6 @@ void SServerSender::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SServerSender::sendObject(const ::fwData::Object::csptr& obj)
-{
-    if(!m_deviceName.empty())
-    {
-        m_server->setMessageDeviceName(m_deviceName);
-    }
-    m_server->broadcast(obj);
-}
-
-//-----------------------------------------------------------------------------
-
 void SServerSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
     if (!m_deviceNames[index].empty())

@@ -25,11 +25,9 @@ namespace ioIGTL
  * @code{.xml}
  * <service uid="..." type="::ioIGTL::SClientSender" autoConnect="yes">
  *      <server>127.0.0.1:4242</server>
- *      <deviceName>name1</deviceName>
- *      <deviceName>...</deviceName>
  *      <in group="objects">
- *           <key uid="..." name="..." />
- *           <key uid="..." />
+ *           <key uid="..." name="device01" />
+ *           <key uid="..." name="device02" />
  *      </in>
  * </service>
  * @endcode
@@ -94,13 +92,6 @@ private:
      * @brief method to send data.
      *
      * @param[in] obj obj to send
-     */
-    void sendObject(const ::fwData::Object::csptr& obj) override;
-
-    /**
-     * @brief method to send data.
-     *
-     * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
     void sendObject(const ::fwData::Object::csptr& obj, const size_t index) override;
@@ -123,8 +114,8 @@ private:
     /// port config key
     std::string m_portConfig;
 
-    /// device name
-    std::string m_deviceName;
+    /// default device name
+    std::string m_defaultDeviceName;
 
     /// Vector of device name used if there are specified names in the group configuration.
     std::vector< std::string > m_deviceNames;

@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/converter/TrackingStopConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
 #include <fwData/Boolean.hpp>
@@ -43,28 +44,15 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-void TrackingStopConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                            ::fwData::Object::sptr& destObj) const
+::fwData::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a "
-                                                "::fwData::Composite"),
-                          destObj->getClassname() != TrackingStopConverter::s_FWDATA_OBJECT_TYPE);
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+    ::fwData::Boolean::sptr status      = ::fwData::Boolean::New();
+    (*composite)[s_statusKey]           = status;
 
-
-    ::fwData::Boolean::sptr status;
-    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(destObj);
-    ::fwData::Composite::iterator iter  = composite->find(s_statusKey);
-    if( iter != composite->end())
-    {
-        status = ::fwData::Boolean::dynamicCast(iter->second);
-        SLM_ASSERT("Object '"+s_statusKey+"' already exist, but it's not a Boolean.", status);
-    }
-    else
-    {
-        status                    = ::fwData::Boolean::New();
-        (*composite)[s_statusKey] = status;
-    }
     status->setValue(false);
+
+    return composite;
 }
 
 //-----------------------------------------------------------------------------

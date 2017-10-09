@@ -6,12 +6,7 @@
 
 #include "ioNetwork/INetworkSender.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Object.hpp>
 
@@ -22,7 +17,7 @@
 
 namespace ioNetwork
 {
-const ::fwCom::Slots::SlotKeyType INetworkSender::s_SEND_DATA_SLOT            = "sendData";
+
 const ::fwCom::Signals::SignalKeyType INetworkSender::s_SERVER_STARTED_SIGNAL = "serverStarted";
 const ::fwCom::Signals::SignalKeyType INetworkSender::s_SERVER_STOPPED_SIGNAL = "serverStopped";
 
@@ -32,8 +27,6 @@ const ::fwServices::IService::KeyType s_OBJECTS_INOUT = "objects";
 
 INetworkSender::INetworkSender()
 {
-    newSlot(s_SEND_DATA_SLOT, &INetworkSender::sendData, this);
-
     m_sigServerStarted = newSignal<ServerStartedSignalType>(s_SERVER_STARTED_SIGNAL);
     m_sigServerStopped = newSignal<ServerStoppedSignalType>(s_SERVER_STOPPED_SIGNAL);
 }
@@ -79,17 +72,6 @@ void INetworkSender::updating()
                 this->sendObject(object, i);
             }
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void INetworkSender::sendData(const ::fwData::Object::csptr& obj)
-{
-    SLM_WARN_IF("Service is stopped, object cannot be sent", !this->isStarted());
-    if (this->isStarted())
-    {
-        this->sendObject(obj);
     }
 }
 

@@ -74,12 +74,6 @@ protected:
     IOIGTL_API virtual void stopping() override;
 
 private:
-    /**
-     * @brief method to send data. Linked to m_slotSendData
-     *
-     * @param[in] obj obj to send
-     */
-    void sendObject(const ::fwData::Object::csptr& obj);
 
     /**
      * @brief method to send data.

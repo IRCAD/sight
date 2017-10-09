@@ -64,26 +64,22 @@ void SAtomNetworkWriter::stopping()
 
 void SAtomNetworkWriter::updating()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Object::sptr obj;
-    ::fwData::Object::sptr response = ::fwData::String::New();
-
     try
     {
-        obj      = this->getObject();
-        m_socket = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(::zmqNetwork::Socket::Server,
-                                                                       ::zmqNetwork::Socket::Reply));
+        ::fwData::Object::sptr obj = this->getObject();
+
+        m_socket = std::make_shared< ::zmqNetwork::Socket >(::zmqNetwork::Socket::Server, ::zmqNetwork::Socket::Reply);
         m_socket->start(m_host);
-        m_socket->receiveObject(response);
+        ::fwData::Object::sptr response = m_socket->receiveObject();
         m_socket->sendObject(obj);
-        m_socket->receiveObject(response);
+        response = m_socket->receiveObject();
         m_socket->stop();
 
     }
     catch (std::exception& err)
     {
         m_socket->stop();
-        msgDialog.showMessageDialog("Error", std::string(err.what()));
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", std::string(err.what()));
     }
 }
 

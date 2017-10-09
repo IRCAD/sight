@@ -47,7 +47,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IGTLNETWORK_API bool receiveObject(::fwData::Object::sptr dest);
+    IGTLNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName);
 
     /**
      * @brief generic method to receive message the type of the message is determined by response header

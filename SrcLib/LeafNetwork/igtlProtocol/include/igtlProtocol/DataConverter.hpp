@@ -64,7 +64,7 @@ public:
     /**
      * @brief convert a ::igtl::MessageBase to a ::fwData::Object
      */
-    IGTLPROTOCOL_API void fromIgtlMessage(::igtl::MessageBase::Pointer const& src, ::fwData::Object::sptr& dest) const;
+    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
      * @brief get status message
@@ -77,7 +77,7 @@ public:
      */
     IGTLPROTOCOL_API ::igtl::MessageBase::Pointer getStatusMessage(int igtlCode,
                                                                    int igtlSubCode,
-                                                                   std::string const& errMsg) const;
+                                                                   const std::string& errMsg) const;
 
     /**
      * @brief get capability message

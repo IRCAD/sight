@@ -53,19 +53,15 @@ void SImageNetworkWriter::stopping()
 
 void SImageNetworkWriter::updating()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Image::sptr img;
-    ::fwData::Object::sptr response = ::fwData::String::New();
-
     try
     {
-        img      = this->getObject< ::fwData::Image >();
-        m_socket = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(::zmqNetwork::Socket::Server,
-                                                                       ::zmqNetwork::Socket::Reply));
+        ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+
+        m_socket = std::make_shared< ::zmqNetwork::Socket >(::zmqNetwork::Socket::Server, ::zmqNetwork::Socket::Reply);
         m_socket->start(m_host);
-        m_socket->receiveObject(response);
+        ::fwData::Object::sptr response = m_socket->receiveObject();
         m_socket->sendObject(img);
-        m_socket->receiveObject(response);
+        response = m_socket->receiveObject();
     }
     catch (std::exception& err)
     {
@@ -73,7 +69,7 @@ void SImageNetworkWriter::updating()
         {
             m_socket->stop();
         }
-        msgDialog.showMessageDialog("Error", std::string(err.what()));
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", std::string(err.what()));
     }
 }
 

@@ -1,15 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/converter/LineConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
 #include <fwData/Line.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
+
 #include <igtl/igtlPositionMessage.h>
 
 #include <algorithm>
@@ -56,19 +58,14 @@ LineConverter::~LineConverter()
 
 //-----------------------------------------------------------------------------
 
-void LineConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                    ::fwData::Object::sptr& destObj) const
+::fwData::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a ::fwData::Line"),
-                          destObj->getClassname() != LineConverter::s_FWDATA_OBJECT_TYPE);
-
     float igtlPos[3];
     float igtlDirection[3];
-    ::igtl::PositionMessage::Pointer srcLine;
-    ::fwData::Line::sptr dest;
 
-    dest    = ::fwData::Line::dynamicCast(destObj);
-    srcLine = ::igtl::PositionMessage::Pointer(dynamic_cast< ::igtl::PositionMessage* >(src.GetPointer()));
+    ::fwData::Line::sptr dest                = ::fwData::Line::New();
+    ::igtl::PositionMessage*  msg            = dynamic_cast< ::igtl::PositionMessage* >(src.GetPointer());
+    ::igtl::PositionMessage::Pointer srcLine = ::igtl::PositionMessage::Pointer(msg);
     dest->setPosition(::fwData::Point::New());
     dest->setDirection(::fwData::Point::New());
     srcLine->GetPosition(igtlPos);
@@ -77,6 +74,8 @@ void LineConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
                    ::boost::numeric_cast<float, double>);
     std::transform(&igtlDirection[0], &igtlDirection[3], dest->getDirection()->getRefCoord().begin(),
                    ::boost::numeric_cast<float, double>);
+
+    return dest;
 }
 
 //-----------------------------------------------------------------------------

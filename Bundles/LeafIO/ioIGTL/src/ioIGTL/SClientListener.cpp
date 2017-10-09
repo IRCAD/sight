@@ -31,16 +31,15 @@
 
 fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SClientListener);
 
+const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
+
 namespace ioIGTL
 {
-
-static const std::string s_TARGET_KEY = "target";
 
 //-----------------------------------------------------------------------------
 
 SClientListener::SClientListener() :
-    m_timelineType(NONE),
-    m_frameTLInitialized(false)
+    m_tlInitialized(false)
 {
 }
 
@@ -70,33 +69,24 @@ void SClientListener::configuring()
         throw ::fwTools::Failed("Server element not found");
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
-    if(!deviceNames.empty())
+    const auto inoutCfgs = m_configuration->find("inout");
+    SLM_ASSERT("Missing 'in group=\"objects\"'", inoutCfgs[0]->getAttributeValue("group") == s_OBJECTS_GROUP);
+    const auto objectsCfgs = inoutCfgs[0]->find("key");
+    for(const auto& cfg : objectsCfgs)
     {
-        for(auto dn : deviceNames)
-        {
-            m_client.addAuthorizedDevice(dn->getValue());
-        }
-        m_client.setFilteringByDeviceName(true);
+        SLM_ASSERT("missing attribute name", cfg->hasAttribute("name"));
+
+        const std::string deviceName = cfg->getAttributeValue("name");
+        m_deviceNames.push_back(deviceName);
+        m_client.addAuthorizedDevice(deviceName);
     }
+    m_client.setFilteringByDeviceName(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void SClientListener::runClient()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
-
-    if(m_timelineType == SClientListener::MATRIX)
-    {
-        obj = ::fwData::TransformationMatrix3D::New();
-    }
-    else if(m_timelineType == SClientListener::FRAME)
-    {
-        obj = ::fwData::Image::New();
-    }
-
     // 1. Connection
     try
     {
@@ -112,7 +102,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Connection error", ex.what());
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -130,15 +120,31 @@ void SClientListener::runClient()
     {
         while (m_client.isConnected())
         {
-            if (m_client.receiveObject(obj))
+            std::string deviceName;
+            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            if (receiveObject)
             {
-                if(m_timelineType != SClientListener::NONE)
+                const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
+
+                if(iter != m_deviceNames.end())
                 {
-                    this->manageTimeline(obj);
-                }
-                else
-                {
-                    this->notifyObjectUpdated();
+                    const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
+                    ::fwData::Object::sptr obj =
+                        this->getInOut< ::fwData::Object >(s_OBJECTS_GROUP, indexReceiveObject);
+
+                    const bool isATimeline = obj->isA("::arData::MatrixTL") || obj->isA("::arData::FrameTL");
+                    if(isATimeline)
+                    {
+                        this->manageTimeline(receiveObject, indexReceiveObject);
+                    }
+                    else
+                    {
+                        obj->shallowCopy(receiveObject);
+
+                        ::fwData::Object::ModifiedSignalType::sptr sig;
+                        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                        sig->asyncEmit();
+                    }
                 }
             }
         }
@@ -150,7 +156,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Error", ex.what());
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -166,29 +172,6 @@ void SClientListener::runClient()
 
 void SClientListener::starting()
 {
-    ::fwData::Object::sptr obj  = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
-    ::arData::TimeLine::sptr tl = ::arData::TimeLine::dynamicCast(obj);
-
-    if(tl)
-    {
-        if(obj->isA("::arData::MatrixTL"))
-        {
-            m_timelineType                 = SClientListener::MATRIX;
-            ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TARGET_KEY);
-            matTL->setMaximumSize(10);
-            matTL->initPoolSize(1);
-
-        }
-        else if(obj->isA("::arData::FrameTL"))
-        {
-            m_timelineType = SClientListener::FRAME;
-        }
-        else
-        {
-            SLM_WARN("This type of timeline is not managed !");
-        }
-    }
-
     m_clientFuture = std::async(std::launch::async, std::bind(&SClientListener::runClient, this));
 }
 
@@ -198,18 +181,26 @@ void SClientListener::stopping()
 {
     m_client.disconnect();
     m_clientFuture.wait();
-    m_frameTLInitialized = false;
+    m_tlInitialized = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void SClientListener::manageTimeline(::fwData::Object::sptr obj)
+void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 {
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    ::arData::MatrixTL::sptr matTL                 = this->getInOut< ::arData::MatrixTL>(s_OBJECTS_GROUP, index);
+    ::arData::FrameTL::sptr frameTL                = this->getInOut< ::arData::FrameTL>(s_OBJECTS_GROUP, index);
+
     //MatrixTL
-    if(m_timelineType == SClientListener::MATRIX)
+    if(matTL)
     {
-        ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TARGET_KEY);
+        if(!m_tlInitialized)
+        {
+            matTL->setMaximumSize(10);
+            matTL->initPoolSize(1);
+            m_tlInitialized = true;
+        }
 
         SPTR(::arData::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
@@ -231,16 +222,15 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj)
         sig->asyncEmit(timestamp);
     }
     //FrameTL
-    else if(m_timelineType == SClientListener::FRAME)
+    else if(frameTL)
     {
         ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
         ::fwDataTools::helper::Image helper(im);
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL>(s_TARGET_KEY);
-        if(!m_frameTLInitialized)
+        if(!m_tlInitialized)
         {
             frameTL->setMaximumSize(10);
             frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), im->getNumberOfComponents());
-            m_frameTLInitialized = true;
+            m_tlInitialized = true;
         }
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
@@ -257,10 +247,6 @@ void SClientListener::manageTimeline(::fwData::Object::sptr obj)
         sig = frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >
                   (::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
-    }
-    else
-    {
-        //TODO: otherTL
     }
 }
 

@@ -91,14 +91,6 @@ protected:
     /// Overrides
     IONETWORK_API virtual void swapping() override;
 
-    /**
-     * @brief notify application the object has updated use the s_MODIFIED_SIG signal from Object
-     * You should use a service class to transform this signal to the signal you wanted
-     *
-     * @param[in] obj the new object
-     */
-    IONETWORK_API void notifyObjectUpdated();
-
     /// Signal emitted when you receive an object
     ReceivedObjectSignalType::sptr m_sigReceivedObject;
 

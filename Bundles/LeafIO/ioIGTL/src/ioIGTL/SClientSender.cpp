@@ -32,7 +32,7 @@ const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 //-----------------------------------------------------------------------------
 
 SClientSender::SClientSender() :
-    m_deviceName("F4S")
+    m_defaultDeviceName("F4S")
 {
     newSlot(s_START_SENDING_SLOT, &SClientSender::startSending, this);
     newSlot(s_STOP_SENDING_SLOT, &SClientSender::stopSending, this);
@@ -50,21 +50,11 @@ void SClientSender::configuring()
 {
     SLM_ASSERT("Configuration not found", m_configuration != nullptr);
 
-    const auto deviceNames = m_configuration->find("deviceName");
-    if(!deviceNames.empty())
-    {
-        for(const auto& dn : deviceNames)
-        {
-            m_client.addAuthorizedDevice(dn->getValue());
-        }
-        m_client.setFilteringByDeviceName(true);
-    }
+    const auto inCfgs = m_configuration->find("in");
 
-    const auto inoutCfgs = m_configuration->find("in");
+    SLM_ASSERT("Missing 'in group=\"objects\"'", inCfgs[0]->getAttributeValue("group") == s_OBJECTS_GROUP);
 
-    SLM_ASSERT("Missing 'in group=\"objects\"'", inoutCfgs[0]->getAttributeValue("group") == s_OBJECTS_GROUP);
-
-    const auto objectsCfgs = inoutCfgs[0]->find("key");
+    const auto objectsCfgs = inCfgs[0]->find("key");
     for(const auto& cfg : objectsCfgs)
     {
         if (cfg->hasAttribute("name"))
@@ -75,7 +65,7 @@ void SClientSender::configuring()
         }
         else
         {
-            m_deviceNames.push_back(m_deviceName);
+            m_deviceNames.push_back(m_defaultDeviceName);
         }
     }
 
@@ -170,28 +160,13 @@ void SClientSender::stopSending()
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::sendObject(const ::fwData::Object::csptr& obj)
-{
-    if (m_client.isConnected())
-    {
-        if (!m_deviceName.empty())
-        {
-            m_client.setDeviceNameOut(m_deviceName);
-        }
-        m_client.sendObject(obj);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SClientSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
+    OSLM_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
+
     if (m_client.isConnected())
     {
-        if (!m_deviceNames[index].empty())
-        {
-            m_client.setDeviceNameOut(m_deviceNames[index]);
-        }
+        m_client.setDeviceNameOut(m_deviceNames[index]);
         m_client.sendObject(obj);
     }
 }

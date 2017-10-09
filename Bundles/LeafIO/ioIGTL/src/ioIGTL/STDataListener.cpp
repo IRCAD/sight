@@ -103,7 +103,7 @@ void STDataListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
@@ -133,8 +133,11 @@ void STDataListener::runClient()
     {
         while (m_client.isConnected())
         {
-            if (m_client.receiveObject(composite))
+            std::string deviceName;
+            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            if (receiveObject)
             {
+                composite->shallowCopy(receiveObject);
                 this->manageTimeline(composite);
             }
         }
@@ -217,8 +220,7 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
     matTL->pushObject(matrixBuf);
 
     ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

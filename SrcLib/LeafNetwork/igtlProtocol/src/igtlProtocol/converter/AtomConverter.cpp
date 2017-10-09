@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/converter/AtomConverter.hpp"
-#include "igtlProtocol/RawMessage.hpp"
+
 #include "igtlProtocol/archiver/MemoryReadArchive.hpp"
 #include "igtlProtocol/archiver/MemoryWriteArchive.hpp"
 #include "igtlProtocol/DataConverter.hpp"
-
-#include <fwAtoms/Object.hpp>
-#include <fwAtomsBoostIO/Writer.hpp>
-#include <fwAtomsBoostIO/Reader.hpp>
+#include "igtlProtocol/RawMessage.hpp"
 
 #include <fwAtomConversion/convert.hpp>
+
+#include <fwAtoms/Object.hpp>
+
+#include <fwAtomsBoostIO/Reader.hpp>
+#include <fwAtomsBoostIO/Writer.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -43,12 +45,10 @@ AtomConverter::~AtomConverter()
 {
     typedef ::igtlProtocol::archiver::MemoryWriteArchive MemoryWriteArchiveType;
 
-    SPTR(MemoryWriteArchiveType) memoryWriter;
     ::fwAtomsBoostIO::Writer writer(::fwAtomConversion::convert(::fwData::Object::constCast(src)));
-    RawMessage::Pointer msg;
 
-    msg          = RawMessage::New(AtomConverter::s_IGTL_TYPE);
-    memoryWriter = SPTR (MemoryWriteArchiveType) (new MemoryWriteArchiveType(msg->getMessage()));
+    RawMessage::Pointer msg                   = RawMessage::New(AtomConverter::s_IGTL_TYPE);
+    MemoryWriteArchiveType::sptr memoryWriter = std::make_shared<MemoryWriteArchiveType>(msg->getMessage());
     writer.write(memoryWriter);
     memoryWriter->writeArchive();
     return ::igtl::MessageBase::Pointer(msg.GetPointer());
@@ -56,21 +56,20 @@ AtomConverter::~AtomConverter()
 
 //-----------------------------------------------------------------------------
 
-void AtomConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                    ::fwData::Object::sptr& dest) const
+::fwData::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     typedef ::igtlProtocol::archiver::MemoryReadArchive MemoryReadArchiveType;
-
-    SPTR(MemoryReadArchiveType) memoryReader;
     ::fwAtomsBoostIO::Reader reader;
-    ::fwAtoms::Base::sptr atomObj;
-    RawMessage::Pointer msg;
 
-    msg          = RawMessage::Pointer(dynamic_cast< RawMessage* >(src.GetPointer()));
-    memoryReader = SPTR (MemoryReadArchiveType) (new MemoryReadArchiveType(&msg->getMessage()[0],
-                                                                           msg->getMessage().size()));
-    atomObj = reader.read(memoryReader);
-    dest->shallowCopy(fwAtomConversion::convert(fwAtoms::Object::dynamicCast(atomObj)));
+    RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast< RawMessage* >(src.GetPointer()));
+
+    MemoryReadArchiveType::sptr memoryReader = std::make_shared<MemoryReadArchiveType>(&msg->getMessage()[0],
+                                                                                       msg->getMessage().size());
+
+    ::fwAtoms::Base::sptr atomObj = reader.read(memoryReader);
+    ::fwData::Object::sptr obj    = ::fwAtomConversion::convert(::fwAtoms::Object::dynamicCast(atomObj));
+
+    return obj;
 }
 
 //-----------------------------------------------------------------------------

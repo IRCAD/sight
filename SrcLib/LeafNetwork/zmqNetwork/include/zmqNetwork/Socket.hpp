@@ -87,7 +87,7 @@ public:
      * @throw ::fwCore::Exception
      * @return object received null if response size equal 0
      */
-    ZMQNETWORK_API bool receiveObject(::fwData::Object::sptr obj);
+    ZMQNETWORK_API ::fwData::Object::sptr receiveObject();
 
     /**
      * @brief start socket (connect or bind)

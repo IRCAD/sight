@@ -27,11 +27,11 @@ namespace ioIGTL
  * @section XML XML Configuration
  * @code{.xml}
  * <service uid="..." type="::ioIGTL::SClientListener" >
- *      <inout key="target" uid="..." />
  *      <server>127.0.0.1:4242</server>
- *      <deviceName>...</deviceName>
- *      <deviceName>...</deviceName>
- *      ...
+ *      <inout group="objects">
+ *          <key uid="..." name="device01" />
+ *          <key uid="..." name="device02" />
+ *      </inout>
  * </service>
  * @endcode
  * @subsection In-Out In-Out:
@@ -81,7 +81,7 @@ private:
      * @brief method called when the current object is a timeline
      * @note Currently only arData::MatrixTL and arData::FrameTL are managed
      */
-    void manageTimeline(::fwData::Object::sptr obj);
+    void manageTimeline(::fwData::Object::sptr obj, size_t index);
 
     /// client socket
     ::igtlNetwork::Client m_client;
@@ -95,17 +95,10 @@ private:
     /// port config key
     std::string m_portConfig;
 
-    ///Type of timeline
-    typedef enum TimelineType
-    {
-        NONE = -1,
-        MATRIX,
-        FRAME
-    }TimelineType;
+    bool m_tlInitialized;
 
-    TimelineType m_timelineType;
-
-    bool m_frameTLInitialized;
+    /// map to associate device-name and object uid
+    std::vector<std::string> m_deviceNames;
 };
 
 } // namespace ioIGTL
