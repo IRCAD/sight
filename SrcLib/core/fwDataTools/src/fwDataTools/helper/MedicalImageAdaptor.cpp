@@ -302,6 +302,22 @@ void MedicalImageAdaptor::createTransferFunction( ::fwData::Image::sptr image )
     }
 }
 
+//------------------------------------------------------------------------------v
+
+void MedicalImageAdaptor::setOrCreateTF(const fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image)
+{
+    this->removeTFConnections();
+    if (_tf)
+    {
+        this->setTransferFunction(_tf);
+    }
+    else
+    {
+        this->createTransferFunction(_image);
+    }
+    this->installTFConnections();
+}
+
 //------------------------------------------------------------------------------
 
 ::fwData::TransferFunction::sptr MedicalImageAdaptor::getTransferFunction() const

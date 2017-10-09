@@ -232,22 +232,15 @@ void SVolume::starting()
     this->initialize();
 
     ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    if (tf)
-    {
-        this->setTransferFunction(tf);
-    }
-    else
-    {
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing image", image);
-        this->createTransferFunction(image);
-    }
+    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
+    this->setOrCreateTF(tf, image);
 
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
     this->updating(); //TODO: remove me ?
-    this->installTFConnections();
 
     this->activateBoxClipping( m_croppingBoxDefaultState );
 
@@ -318,19 +311,11 @@ void SVolume::swapping(const KeyType& key)
 {
     if (key == s_TF_INOUT)
     {
-        this->removeTFConnections();
         ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-        if (tf)
-        {
-            this->setTransferFunction(tf);
-        }
-        else
-        {
-            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("Missing image", image);
-            this->createTransferFunction(image);
-        }
-        this->installTFConnections();
+        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
         this->updating();
     }
 }

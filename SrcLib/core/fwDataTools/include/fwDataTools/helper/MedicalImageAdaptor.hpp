@@ -186,6 +186,13 @@ protected:
      */
     FWDATATOOLS_API void createTransferFunction( ::fwData::Image::sptr image );
 
+    /**
+     * @brief Sets the transfer function, creates one if _tf is null (@see createTransferFunction).
+     *
+     * Connects the TF's signals to the updateTFPoints and updateTFWindowing slots.
+     */
+    FWDATATOOLS_API void setOrCreateTF(const ::fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image);
+
     /// Get the current transfer function
     FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
 
