@@ -237,14 +237,22 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
 
     if(buffer)
     {
-        int height = static_cast<int>(tl->getWidth());
-        int width  = static_cast<int>(tl->getHeight());
+        int height = static_cast<int>(tl->getHeight());
+        int width  = static_cast<int>(tl->getWidth());
 
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
-        cv::Mat img(width, height, CV_8UC4, frameBuff);
         cv::Mat grayImg;
-        cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+        if (tl->getNumberOfComponents() == 1)
+        {
+            grayImg = cv::Mat(height, width, CV_8UC1, frameBuff);
+        }
+        else
+        {
+            cv::Mat img(height, width, CV_8UC4, frameBuff);
+            cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+        }
+
         cv::Size boardSize(static_cast<int>(xDim) - 1, static_cast<int>(yDim) - 1);
         std::vector< cv::Point2f > corners;
 
