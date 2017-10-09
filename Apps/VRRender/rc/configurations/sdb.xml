@@ -102,8 +102,8 @@
                 </parameters>
                 <filter>
                     <mode>exclude</mode>
-                    <id>ImageSeriesExport2</id>
-                    <id>ModelSeriesExport2</id>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
                     <id>SDBVRRender</id>
                 </filter>
             </config>
@@ -201,8 +201,8 @@
             <in key="series" uid="selections" />
             <filter>
                 <mode>exclude</mode>
-                <id>ImageSeriesExport2</id>
-                <id>ModelSeriesExport2</id>
+                <id>ImageSeriesExport</id>
+                <id>ModelSeriesExport</id>
                 <id>SDBVRRender</id>
             </filter>
         </service>
@@ -215,8 +215,8 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>ImageSeriesExport2</id>
-                    <id>ModelSeriesExport2</id>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
                 </filter>
             </config>
         </service>
