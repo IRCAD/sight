@@ -7,7 +7,17 @@
         <id>Ex03IgtlConfig</id>
         <config>
             <object uid="objectMeshUid" type="::fwData::Mesh" />
-            <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="meshMatrix" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                    <![CDATA[
+                        1    0    0    5
+                        0    1    0    0
+                        0    0    1    0
+                        0    0    0    1
+                    ]]>
+                </matrix>
+            </object>
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
@@ -103,19 +113,31 @@
                 <scene>
                     <renderer id="default" layer="1" background="0.0" />
                     <renderer id="background" layer="0" background="0.0" />
-                    <adaptor uid="camera" />
-                    <adaptor uid="markerObjectMesh" />
+                    <adaptor uid="cameraAdaptor" />
+                    <adaptor uid="boxWidgetAdaptor" />
+                    <adaptor uid="meshMatrixAdaptor" />
+                    <adaptor uid="meshAdaptor" />
                 </scene>
             </service>
 
-            <service uid="camera" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identityMatrix" />
+            <service uid="cameraAdaptor" type="::visuVTKAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="cameraMatrix" />
                 <config renderer="default" />
             </service>
-
-            <service uid="markerObjectMesh" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+            
+            <service uid="boxWidgetAdaptor" type="::visuVTKAdaptor::SBoxWidget" autoConnect="yes">
+               <inout key="transform" uid="meshMatrix" />
+               <config renderer="default" transform="meshMatrixTransform" enableScaling="yes" />
+           </service>
+   
+            <service uid="meshMatrixAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+                <inout key="tm3d" uid="meshMatrix" />
+                <config renderer="default" picker="" transform="meshMatrixTransform" />
+            </service>
+            
+            <service uid="meshAdaptor" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
                 <in key="mesh" uid="objectMeshUid" />
-                <config renderer="default" picker="" transform="trackingObjectMatrixTransform" autoresetcamera="no" />
+                <config renderer="default" picker="" transform="meshMatrixTransform" autoresetcamera="no" />
             </service>
 
             <!-- *************************** End generic scene *************************** -->
@@ -125,14 +147,17 @@
             </service>
 
             <service uid="matrixNetworkListener" type="::ioIGTL::SClientListener">
-                <inout key="target" uid="identityMatrix" />
-                <deviceName>device01</deviceName>
+                <inout group="objects">
+                    <key uid="meshMatrix" deviceName="device01" />
+                    <key uid="cameraMatrix" deviceName="device02" />
+                </inout>
                 <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
             </service>
 
             <service uid="matrixNetworkSender" type="::ioIGTL::SServerSender" autoConnect="yes" >
                 <in group="objects">
-                    <key uid="identityMatrix" name="device01" />
+                    <key uid="meshMatrix" deviceName="device01" />
+                    <key uid="cameraMatrix" deviceName="device02" />
                 </in>
                 <port>%SERVER_PORT_KEY%</port>
             </service>
@@ -163,10 +188,12 @@
 
             <start uid="mainFrame" />
             <start uid="objectMeshReader" />
+
             <!-- VTK scene '3DView' -->
-            <start uid="camera" />
-            <start uid="markerObjectMesh" />
-            <update uid="startServer" />
+            <start uid="cameraAdaptor" />
+            <start uid="boxWidgetAdaptor" />
+            <start uid="meshMatrixAdaptor" />
+            <start uid="meshAdaptor" />
         </config>
     </extension>
 </plugin>
