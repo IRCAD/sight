@@ -87,7 +87,7 @@ public:
      * @throw ::fwCore::Exception
      * @return object received null if response size equal 0
      */
-    ZMQNETWORK_API ::fwData::Object::sptr receiveObject();
+    ZMQNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName);
 
     /**
      * @brief start socket (connect or bind)

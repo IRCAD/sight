@@ -79,7 +79,8 @@ void SImageNetworkReader::updating()
                                                                        ::zmqNetwork::Socket::Request));
         m_socket->start(m_host);
         m_socket->sendObject(request);
-        ::fwData::Object::sptr receiveObject = m_socket->receiveObject();
+        std::string deviceName;
+        ::fwData::Object::sptr receiveObject = m_socket->receiveObject(deviceName);
         m_socket->sendObject(request);
         m_socket->stop();
 

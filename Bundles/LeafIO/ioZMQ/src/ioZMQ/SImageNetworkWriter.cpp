@@ -59,9 +59,10 @@ void SImageNetworkWriter::updating()
 
         m_socket = std::make_shared< ::zmqNetwork::Socket >(::zmqNetwork::Socket::Server, ::zmqNetwork::Socket::Reply);
         m_socket->start(m_host);
-        ::fwData::Object::sptr response = m_socket->receiveObject();
+        std::string deviceName;
+        ::fwData::Object::sptr response = m_socket->receiveObject(deviceName);
         m_socket->sendObject(img);
-        response = m_socket->receiveObject();
+        response = m_socket->receiveObject(deviceName);
     }
     catch (std::exception& err)
     {

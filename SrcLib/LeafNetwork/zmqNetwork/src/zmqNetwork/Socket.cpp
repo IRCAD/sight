@@ -63,7 +63,7 @@ void Socket::sendObject(const ::fwData::Object::csptr& data)
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr Socket::receiveObject()
+::fwData::Object::sptr Socket::receiveObject(std::string& deviceName)
 {
     ::fwData::Object::sptr obj;
     ::igtl::MessageBase::Pointer msg;
@@ -86,7 +86,8 @@ void Socket::sendObject(const ::fwData::Object::csptr& data)
             {
                 throw Exception("Cannot unpack body");
             }
-            obj = m_dataConverter->fromIgtlMessage(msg);
+            deviceName = msg->GetDeviceName();
+            obj        = m_dataConverter->fromIgtlMessage(msg);
         }
         else
         {

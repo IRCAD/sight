@@ -100,7 +100,8 @@ void SZeroMQListener::runReceiver()
     {
         try
         {
-            ::fwData::Object::sptr receiveObject = m_socket->receiveObject();
+            std::string deviceName;
+            ::fwData::Object::sptr receiveObject = m_socket->receiveObject(deviceName);
             if(receiveObject)
             {
                 obj->shallowCopy(receiveObject);
