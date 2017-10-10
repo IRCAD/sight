@@ -77,14 +77,7 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         auto obj = service->getInOut< ::fwData::Object>(key);
         if(optional)
         {
-            if(obj)
-            {
-                parameterCfg.add("<xmlattr>.uid", obj->getID());
-            }
-            else
-            {
-                parameterCfg.add("<xmlattr>.uid", uid);
-            }
+            parameterCfg.add("<xmlattr>.uid", uid);
         }
         else
         {
