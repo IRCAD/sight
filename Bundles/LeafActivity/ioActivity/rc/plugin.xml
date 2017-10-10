@@ -40,6 +40,27 @@
         </appConfig>
     </extension>
 
+    <!-- Activity used to export a model series. -->
+    <extension implements="::fwActivities::registry::Activities">
+        <id>DicomSeriesExport</id>
+        <title>DicomSeries Export</title>
+        <desc>Activity to export an ImageSeries as a DICOM file, and optionally a ModelSeries.</desc>
+        <icon>media-0.1/icons/Export.svg</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
+                <key>optionalModelKey</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportDicomSelection">
+            <parameters>
+                <parameter replace="image" by="@values.imageSeries" />
+                <parameter replace="optionalModel" by="@values.modelSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
     <!-- App config used to export the selected series. -->
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
@@ -48,6 +69,7 @@
         </parameters>
         <config>
             <object uid="${selection}" src="ref" />
+
             <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
                 <in key="selection" uid="${selection}" />
                 <type mode="writer" />
@@ -56,6 +78,61 @@
             </service>
             <start uid="export_selection" />
             <update uid="export_selection" />
+        </config>
+    </extension>
+
+    <!-- App config used to export a dicom selected series. -->
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExportDicomSelection</id>
+        <parameters>
+            <param name="image" />
+            <param name="optionalModel" />
+        </parameters>
+        <config>
+            <object uid="${image}" type="::fwMedData::ImageSeries" src="ref" />
+            <object uid="${optionalModel}" type="::fwData::Composite" src="ref" />
+            <object uid="model" type="::fwMedData::ModelSeries" src="deferred" />
+
+            <!-- We build a vector with the image and model series. -->
+            <object uid="vectorToSave" type="::fwData::Vector" />
+
+            <!-- This service extracts the model if it exists from the optional model parameter. -->
+            <service uid="extractImage" type="::gui::action::SPushObject" >
+                <inout key="source" uid="${optionalModel}" />
+                <out key="destination" uid="model" />
+                <push srcKey="optionalModelKey" />
+            </service>
+
+            <service uid="addImage" type="::ctrlSelection::SManage">
+               <inout key="object" uid="${image}" />
+               <inout key="vector" uid="vectorToSave" />
+            </service>
+
+            <service uid="addModel" type="::ctrlSelection::SManage">
+               <inout key="object" uid="model" />
+               <inout key="vector" uid="vectorToSave" />
+            </service>
+
+            <service uid="exportSelection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
+                <in key="selection" uid="vectorToSave" />
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioGdcm::SSeriesDBWriter" />
+            </service>
+
+            <connect>
+                <signal>extractImage/updated</signal>
+                <slot>addImage/add</slot>
+                <slot>addModel/add</slot>
+            </connect>
+
+            <start uid="extractImage" />
+            <start uid="addImage" />
+            <start uid="addModel" />
+            <start uid="exportSelection" />
+
+            <update uid="extractImage" />
+            <update uid="exportSelection" />
         </config>
     </extension>
 

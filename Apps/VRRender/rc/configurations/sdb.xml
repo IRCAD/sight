@@ -217,6 +217,7 @@
                     <mode>include</mode>
                     <id>ImageSeriesExport</id>
                     <id>ModelSeriesExport</id>
+                    <id>DicomSeriesExport</id>
                 </filter>
             </config>
         </service>
