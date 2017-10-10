@@ -125,8 +125,8 @@ static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBo
 static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT = "activateBoxClipping";
 static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 
-const ::fwServices::IService::KeyType SVolume::s_IMAGE_INOUT        = "image";
-const ::fwServices::IService::KeyType SVolume::s_TF_SELECTION_INOUT = "tfSelection";
+const ::fwServices::IService::KeyType SVolume::s_IMAGE_INOUT = "image";
+const ::fwServices::IService::KeyType SVolume::s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -216,8 +216,6 @@ void SVolume::configuring()
 
     m_autoResetCamera = config.get<std::string>("autoresetcamera", "yes") == "yes";
 
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
-
     // Show croppingBox
     m_croppingBoxDefaultState = config.get<std::string>("croppingBox", "yes") == "yes";
 
@@ -233,14 +231,16 @@ void SVolume::starting()
 {
     this->initialize();
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("Missing image", image);
+
+    this->setOrCreateTF(tf, image);
 
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
     this->updating(); //TODO: remove me ?
-    this->installTFConnections();
 
     this->activateBoxClipping( m_croppingBoxDefaultState );
 
@@ -301,25 +301,28 @@ void SVolume::updating()
         this->buildPipeline();
         this->updateImage(image);
         this->updateVolumeTransferFunction(image);
-    }
-    else
-    {
-        this->updateTransferFunction(image);
+        this->requestRender();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SVolume::swapping()
+void SVolume::swapping(const KeyType& key)
 {
-    this->removeTFConnections();
-    this->updating();
-    this->installTFConnections();
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void SVolume::updatingTFPoints()
+void SVolume::updateTFPoints()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);
@@ -328,7 +331,7 @@ void SVolume::updatingTFPoints()
 
 //------------------------------------------------------------------------------
 
-void SVolume::updatingTFWindowing(double window, double level)
+void SVolume::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);
@@ -386,7 +389,6 @@ void SVolume::updateImage( ::fwData::Image::sptr image  )
 
 void SVolume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 {
-    this->updateTransferFunction(image);
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", pTF);
 

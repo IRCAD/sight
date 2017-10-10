@@ -45,7 +45,7 @@ public:
     /**
      * @code{.xml}
        <object type="::fwData::TransferFunction">
-           <colors>
+           <colors isClamped="true">
                <step color="#ffffff" value="0" />
                <step color="#0000ff" value="1000" />
                <step color="#00ff00" value="2000" />
@@ -56,6 +56,8 @@ public:
        </object>
        @endcode
      * - \b step : defines a step in the legend given with the arguments color in hex-code and the max value.
+     * - \b isClamped(optional, default: yes) : defines interpolation mode on extremities, if yes then after extremity
+     *       point, the returned TF color is TFColor(0,0,0,0), else it is the color value of the extremity.
      */
     DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 protected:

@@ -1,19 +1,29 @@
+<!--
+Example:
+
+<service uid="..." type="::fwServices::SConfigController">
+    <appConfig id="TransferFunctionWidget" />
+    <inout key="image" uid="..."/>
+    <inout key="histogram" uid="..."/>
+    <inout key="transferFunction" uid="..." />
+    <parameter replace="WID_PARENT" by="..."/>
+</service>
+-->
 <extension implements="::fwServices::registry::AppConfig">
     <id>TransferFunctionWidget</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="histogram" />
-        <param name="TFSelections" />
-        <param name="SelectedTFKey" />
+        <param name="transferFunction" />
     </parameters>
-
+    <desc>This configuration displays the transfer function in a scene2D editor.</desc>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}"     type="::fwData::Image"     src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+        <object uid="${transferFunction}" type="::fwData::TransferFunction" src="ref" />
         <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
 
         <object uid="viewport" type="::fwRenderQt::data::Viewport" />
@@ -147,9 +157,9 @@
 
         <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="${TFSelections}" />
+            <inout key="tf" uid="${transferFunction}" />
             <inout key="viewport" uid="viewport" />
-            <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" selectedTFKey="${SelectedTFKey}" />
+            <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" />
         </service>
 
         <service uid="viewportRangeUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes" >

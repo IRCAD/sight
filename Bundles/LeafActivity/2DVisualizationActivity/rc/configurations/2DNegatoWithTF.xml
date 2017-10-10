@@ -4,16 +4,16 @@
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="landmarks" />
-        <param name="selectedTFKey" />
-        <param name="TFSelections" />
         <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="CrossTypeChannel" default="crossTypeChannel"/>
+        <param name="transferFunctionDeferred" />
     </parameters>
     <config>
         <object uid="${image}" type="::fwData::Image" src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
+        <object uid="${transferFunctionDeferred}" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -76,14 +76,14 @@
 
         <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="${TFSelections}" />
-            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" selectedTFKey="${selectedTFKey}" />
+            <inout key="tf" uid="${transferFunctionDeferred}" optional="yes" />
+            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" />
         </service>
 
         <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="${TFSelections}" />
-            <config renderer="default" picker="negatodefault" text="" selectedTFKey="${selectedTFKey}" />
+            <inout key="tf" uid="${transferFunctionDeferred}" />
+            <config renderer="default" picker="negatodefault" text="" />
         </service>
 
         <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
@@ -125,7 +125,8 @@
             <placeInScene uid="negato" />
         </service>
 
-        <!-- START AND STOP SERVICES -->
+        <!-- ************************************* Connections ************************************ -->
+
         <connect>
             <signal>snapshotNegatoEditor/snapped</signal>
             <slot>snapshot/snap</slot>
@@ -140,6 +141,7 @@
             <slot>MPRNegato/setCrossScale</slot>
         </connect>
 
+        <!-- START AND STOP SERVICES -->
         <start uid="LockImageSrv" />
         <start uid="mainView" />
 
@@ -152,6 +154,7 @@
         <start uid="landmarksNegato" />
         <start uid="nameAdaptor" />
         <start uid="imageSliceOrientationText" />
+
 
     </config>
 </extension>

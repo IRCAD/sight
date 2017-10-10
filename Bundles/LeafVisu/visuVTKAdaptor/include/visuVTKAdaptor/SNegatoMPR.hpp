@@ -36,15 +36,15 @@ class SliceCursor;
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
+       <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"
-               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
-               selectedTFKey="tkKey" />
+               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0" />
    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
@@ -60,7 +60,6 @@ class SliceCursor;
  *    - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API SNegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
                                             public ::fwRenderVTK::IAdaptor
@@ -75,7 +74,7 @@ public:
     VISUVTKADAPTOR_API virtual ~SNegatoMPR() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
-    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     typedef enum
     {
@@ -120,6 +119,7 @@ protected:
     VISUVTKADAPTOR_API void starting() override;
     VISUVTKADAPTOR_API void updating() override;
     VISUVTKADAPTOR_API void stopping() override;
+    VISUVTKADAPTOR_API void swapping(const KeyType& key);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

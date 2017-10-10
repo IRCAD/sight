@@ -31,21 +31,25 @@ namespace adaptor
  * - \b updateSliceType() : update image slice type
  * - \b updateBuffer() : update image buffer
  * - \b updateVisibility() : update image visibility
- *
+ * - \b updateTFPoints() : update the displayed image according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed image according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  *
    @code{.xml}
    <service uid="negato" type="::scene2D::adaptor::SNegato" autoConnect="yes">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
-       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" selectedTFKey="tfKey"/>
+       <inout key="tf" uid="..." />
+       <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration
@@ -55,7 +59,6 @@ namespace adaptor
  *    - \b opacity (optional, default=1.0): adaptor opacity (float)
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
- *    - \b selectedTFKey: key of the transfer function to use in negato
  */
 class SCENE2D_CLASS_API SNegato : public ::fwDataTools::helper::MedicalImageAdaptor,
                                   public ::fwRenderQt::IAdaptor
@@ -86,13 +89,15 @@ protected:
     SCENE2D_API void starting() override;
     SCENE2D_API void updating() override;
     SCENE2D_API void stopping() override;
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    /// Retrives the current transfer function
+    SCENE2D_API void swapping(const KeyType& key) override;
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
-    /// Called when transfer function points are modified.
-    SCENE2D_API virtual void updatingTFPoints() override;
+    /// Slot: updates the displayed image
+    SCENE2D_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function windowing is modified.
-    SCENE2D_API virtual void updatingTFWindowing(double window, double level) override;
+    /// Slot: updates the displayed image
+    SCENE2D_API virtual void updateTFWindowing(double window, double level) override;
 
 private:
 

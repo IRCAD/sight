@@ -82,6 +82,11 @@ void STransformFromWheel::configuring()
 void STransformFromWheel::starting()
 {
     this->initialize();
+
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("No 'image' found.", image);
+
+    this->updateImageInfos(image);
 }
 
 //------------------------------------------------------------------------------
@@ -141,10 +146,7 @@ void STransformFromWheel::updateTransform(double cx, double cy, double wheelAngl
     ::fwRenderVTK::vtk::getNearestPickedPosition(picker, this->getRenderer(), worldPos);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
     SLM_ASSERT("No 'image' found.", image);
-
-    m_weakImage = image;
 
     int imageIndex[3];
     this->worldToSliceIndex(worldPos, imageIndex);

@@ -26,7 +26,39 @@ namespace uiTF
 {
 
 /**
- * @brief   TransferFunctionEditor service.
+ * @brief Editor to select a transfer function.
+ *
+ * The available transfer function are stored in a composite (transferFunctionPool), if it contains at most one
+ * transfert function, this service will read transfer function from the given pathes.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::uiTF::TransferFunctionEditor">
+       <in key="currentTF" uid="..." optional="yes" />
+       <inout key="tfPool" uid="..." />
+       <out key="tf" uid="..." />
+       <config useDefaultPath="yes">
+           <path>....</path>
+           <path>....</path>
+           <path>....</path>
+       </config>
+   </service>
+   @endcode
+ *
+ * @subsection Input Input
+ * - \b currentTF [::fwData::TransferFunction](optional) : current transfer function used to change editor selection. It
+ *      should be the same TF as the output.
+ *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
+ *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
+ *      not start if a TF is not previously defined.
+ * @subsection In-Out In-Out
+ * - \b tfPool [::fwData::Composite]: composite containing the transfer function.
+ * @subsection Output Output
+ * - \b tf [::fwData::TransferFunction]: selected transfer function.
+ * @subsection Configuration Configuration
+ * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF bundle.
+ * - \b path (optional): path to a directory containing tf files.
  */
 class UITF_CLASS_API TransferFunctionEditor : public QObject,
                                               public ::gui::editor::IEditor
@@ -43,37 +75,9 @@ public:
     /// Basic destructor, do nothing.
     UITF_API virtual ~TransferFunctionEditor() noexcept;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
-     */
-    UITF_API virtual KeyConnectionsType getObjSrvConnections() const override;
-
 protected:
 
-    /**
-     * @brief Configuring the transfer function editor.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor"
-     * autoConnect="yes" >
-        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" useDefaultPath="yes">
-            <path>....</path>
-            <path>....</path>
-            <path>....</path>
-        </config>
-       </service>
-       @endcode
-     * - \b selectedTFKey: key of the ::fwData::String containing the key of the selected tf.
-     * - \b tfSelectionFwID: fwID of the composite containing the selected tf.
-     * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF bundle.
-     * - \b path (optional): path to a directory containing tf files.
-     */
+    /// Configure the transfer function editor.
     UITF_API virtual void configuring() override;
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
@@ -85,6 +89,19 @@ protected:
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() override;
 
+    /// Selects the current transfer function
+    UITF_API void swapping(const KeyType& key);
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+    UITF_API virtual KeyConnectionsMap getAutoConnections() const;
+
     /**
      * @brief Initialize the transfer functions.
      *
@@ -94,26 +111,17 @@ protected:
     UITF_API void initTransferFunctions();
 
     /// Check if the image contain the specified TF.
-    UITF_API bool hasTransferFunctionName(const std::string& _sName);
+    UITF_API bool hasTransferFunctionName(const std::string& _sName) const;
 
     /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
     /// already used, it will return blabla_1.
-    UITF_API std::string createTransferFunctionName( const std::string& _sBasename );
+    UITF_API std::string createTransferFunctionName( const std::string& _sBasename ) const;
 
-    /// Update the image with the selected TF in the ComboBox.
+    /// Update the output transferFunction with the selected TF in the ComboBox.
     UITF_API void updateTransferFunction();
 
     /// Update the TF preset from the TF pool
     UITF_API void updateTransferFunctionPreset();
-
-    /// Get the current transfer function pool
-    UITF_API ::fwData::Composite::sptr getTFSelection() const;
-
-    /// Get the current transfer function
-    UITF_API ::fwData::TransferFunction::sptr getSelectedTransferFunction() const;
-
-    /// TEMP_V2: Return the transfer functions set composite
-    UITF_API ::fwData::Composite::sptr getTFPool();
 
 private Q_SLOTS:
 
@@ -137,11 +145,7 @@ private:
     QPushButton* m_importButton;
     QPushButton* m_exportButton;
 
-    /// fwID of tf selection ( used during configuration )
-    std::string m_tfSelectionFwID;
-
-    /// Identifier of the key containing the current selection of TransferFunction in TFSelection.
-    std::string m_selectedTFKey;
+    ::fwData::TransferFunction::sptr m_selectedTF;
 
     /// Paths of the tf files to load.
     PathContainerType m_paths;
