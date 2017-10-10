@@ -40,28 +40,26 @@ namespace visuVTKARAdaptor
 {
 
 static const ::fwServices::IService::KeyType s_IMAGE_IN           = "frame";
-static const ::fwServices::IService::KeyType s_CAMERA_IN          = "camera";
 static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
 static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                 = "show";
-static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrate";
 
 //------------------------------------------------------------------------------
 
 SVideo::SVideo() noexcept :
     m_imageData(vtkSmartPointer<vtkImageData>::New()),
     m_actor(vtkSmartPointer<vtkImageActor>::New()),
+    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
     m_isTextureInit(false),
     m_reverse(true),
-    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
     m_hasTF(false)
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideo::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideo::updateImageOpacity, this);
     newSlot(s_SHOW_SLOT, &SVideo::show, this);
-    newSlot(s_CALIBRATE_SLOT, &SVideo::offsetOpticalCenter, this);
+
     this->installTFSlots(this);
 }
 
@@ -80,9 +78,6 @@ SVideo::~SVideo() noexcept
     connections.push( s_IMAGE_IN, ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
     connections.push( s_IMAGE_IN, ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT);
     connections.push( s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    connections.push( s_CAMERA_IN, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push( s_CAMERA_IN, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
     return connections;
 }
@@ -177,8 +172,7 @@ void SVideo::updating()
         this->getRenderer()->InteractiveOff();
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
         this->getRenderer()->ResetCamera();
-        this->getRenderer()->GetActiveCamera()->SetParallelScale(size[1] / 2.0);
-        this->offsetOpticalCenter();
+        this->getRenderer()->GetActiveCamera()->SetParallelScale(static_cast<double>(size[1]) / 2.0);
     }
 
     m_imageData->Modified();
@@ -243,37 +237,6 @@ void SVideo::show(bool visible)
 
     this->setVtkPipelineModified();
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SVideo::offsetOpticalCenter()
-{
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_IN);
-    if (camera)
-    {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-        const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-        if (!imageIsValid)
-        {
-            return;
-        }
-
-        const ::fwData::Image::SizeType size = image->getSize();
-
-        const double shiftX = size[0] / 2. - camera->getCx();
-        const double shiftY = size[1] / 2. - camera->getCy();
-
-        if (m_reverse)
-        {
-            m_actor->SetPosition(shiftX, -shiftY, 0);
-        }
-        else
-        {
-            m_actor->SetPosition(-shiftX, shiftY, 0);
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

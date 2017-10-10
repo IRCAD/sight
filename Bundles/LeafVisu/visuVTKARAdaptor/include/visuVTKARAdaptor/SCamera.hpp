@@ -97,6 +97,8 @@ private:
 
     vtkPerspectiveTransform* m_transOrig; ///<  VTK original perspective transform.
     vtkCommand* m_cameraCommand; ///< VTK camera command.
+    vtkCommand* m_resizeCommand; ///< VTK renderer resize command.
+
 };
 
 } //namespace visuVTKARAdaptor

@@ -36,14 +36,12 @@ namespace visuVTKARAdaptor
  * @code{.xml}
         <service type="::visuVTKARAdaptor::SVideo" autoConnect="yes" >
             <in key="frame" uid="..." />
-            <in key="camera" uid="..." />
             <inout key="tfSelection" uid="..." />
             <config renderer="default" reversed="true" selectedTFKey="..." />
         </service>
    @endcode
  * @subsection Input Input
  * - \b frame [::fwData::Image]: frame displayed.
- * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
  *
  * @subsection In-Out In-Out
  * - \b tfSelection [::fwData::Composite] (optional): a composite containing transfer functions that can be
@@ -77,8 +75,6 @@ public:
      * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      *
-     * Connect Camera::s_MODIFIED_SIG to this::s_CALIBRATE_SLOT
-     * Connect Camera::s_INTRINSIC_CALIBRATED_SIG to this::s_CALIBRATE_SLOT
      */
     VISUVTKARADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -119,9 +115,6 @@ private:
 
     /// Slot: set the visibility  of the image
     void show(bool visible);
-
-    /// Slot: apply the optical center offset to our video plane
-    void offsetOpticalCenter();
 
     vtkSmartPointer<vtkImageData> m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
     vtkSmartPointer<vtkImageActor> m_actor;   ///< actor to show frame

@@ -8,17 +8,10 @@
 
 #include <arData/Camera.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
-#include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -37,6 +30,36 @@ namespace visuVTKARAdaptor
 
 static const ::fwServices::IService::KeyType s_CAMERA_IN       = "camera";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
+
+class WindowResizeCallBack : public ::vtkCommand
+{
+public:
+    //------------------------------------------------------------------------------
+
+    static WindowResizeCallBack* New(::visuVTKARAdaptor::SCamera* adaptor)
+    {
+        WindowResizeCallBack* cb = new WindowResizeCallBack;
+        cb->m_adaptor = adaptor;
+        return cb;
+    }
+
+    WindowResizeCallBack()
+    {
+        m_adaptor = NULL;
+    }
+    ~WindowResizeCallBack()
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void Execute(::vtkObject* pCaller, unsigned long eventId, void*)
+    {
+        m_adaptor->updateFromVtk();
+    }
+
+    ::visuVTKARAdaptor::SCamera* m_adaptor;
+};
 
 //------------------------------------------------------------------------------
 
@@ -86,7 +109,8 @@ static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
 SCamera::SCamera() noexcept :
     m_transOrig(nullptr),
-    m_cameraCommand(CameraCallback::New(this))
+    m_cameraCommand(CameraCallback::New(this)),
+    m_resizeCommand(WindowResizeCallBack::New(this))
 {
     newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
     newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
@@ -102,7 +126,6 @@ SCamera::~SCamera() noexcept
 
 void SCamera::configuring()
 {
-    SLM_TRACE_FUNC();
 
     this->configureParams();
 }
@@ -128,11 +151,12 @@ void SCamera::starting()
     camera->SetViewUp(viewUp);
     camera->SetClippingRange(s_nearPlane, s_farPlane);
 
-    camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
-
     this->calibrate();
 
     this->updateFromTMatrix3D();
+
+    camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
+    this->getRenderer()->AddObserver(::vtkCommand::ModifiedEvent, m_resizeCommand);
 }
 
 //------------------------------------------------------------------------------
@@ -163,6 +187,12 @@ void SCamera::stopping()
 
 void SCamera::updateFromVtk()
 {
+
+    if(this->isStopped())
+    {
+        return;
+    }
+
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
 
@@ -171,6 +201,7 @@ void SCamera::updateFromVtk()
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
     trans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
+
     this->calibrate();
 
     trans->Inverse();
@@ -191,8 +222,6 @@ void SCamera::updateFromVtk()
         sig->asyncEmit();
     }
 
-    camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
-
     trans->Delete();
 }
 
@@ -212,6 +241,11 @@ fwServices::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 
 void SCamera::updateFromTMatrix3D()
 {
+    if(this->isStopped())
+    {
+        return;
+    }
+
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
 
@@ -246,7 +280,6 @@ void SCamera::updateFromTMatrix3D()
 
     // Reset the clipping range as well since vtk interactor modifies it
     camera->SetClippingRange(s_nearPlane, s_farPlane);
-    camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
 
     mat->Delete();
     oldTrans->Delete();
@@ -270,11 +303,33 @@ void SCamera::calibrate()
         vtkCamera* camera = this->getRenderer()->GetActiveCamera();
         camera->RemoveObserver(m_cameraCommand);
 
+        const double fx = cameraCalibration->getFx();
         const double fy = cameraCalibration->getFy();
+
+        const double cx = cameraCalibration->getCx();
+        const double cy = cameraCalibration->getCy();
+
+        const double nx = static_cast<double>(cameraCalibration->getWidth());
+        const double ny = static_cast<double>(cameraCalibration->getHeight());
+
+        const double wcx = -2. * ( cx - nx / 2. ) / nx;
+        const double wcy = 2. * ( cy - ny / 2. ) / ny;
         camera->SetViewAngle(2.0 * atan(cameraCalibration->getHeight() / 2.0 / fy) * 180./ vtkMath::Pi());
 
+        // Use the Renderer aspect ratio when shifting window center to avoid bug when resizing windows.
+        camera->SetWindowCenter(wcx / this->getRenderer()->GetAspect()[0], wcy);
+
+        // Set the image aspect ratio as an indirect way of setting the x focal distance
+        vtkMatrix4x4* m = vtkMatrix4x4::New();
+        m->Identity();
+        m->SetElement(0, 0, 1. / (fy / fx));
+
+        vtkTransform* t = vtkTransform::New();
+        t->SetMatrix(m);
+
+        camera->SetUserTransform(t);
+
         this->updateFromTMatrix3D();
-        camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
         this->setVtkPipelineModified();
     }
 }
