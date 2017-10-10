@@ -45,7 +45,6 @@ void SServerSender::configuring()
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_portConfig = config.get("port", "4242");
-    m_deviceName = config.get("deviceName", "");
 
     const ConfigType configIn = config.get_child("in");
 
@@ -56,7 +55,7 @@ void SServerSender::configuring()
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
         const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string name                         = attr.get("name", "");
+        const std::string name                         = attr.get("deviceName", "F4S");
         m_deviceNames.push_back(name);
     }
 }

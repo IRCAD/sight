@@ -26,8 +26,8 @@ namespace ioIGTL
  * <service uid="..." type="::ioIGTL::SClientSender" autoConnect="yes">
  *      <server>127.0.0.1:4242</server>
  *      <in group="objects">
- *           <key uid="..." name="device01" />
- *           <key uid="..." name="device02" />
+ *           <key uid="..." deviceName="device01" />
+ *           <key uid="..." deviceName="device02" />
  *      </in>
  * </service>
  * @endcode
@@ -113,9 +113,6 @@ private:
 
     /// port config key
     std::string m_portConfig;
-
-    /// default device name
-    std::string m_defaultDeviceName;
 
     /// Vector of device name used if there are specified names in the group configuration.
     std::vector< std::string > m_deviceNames;

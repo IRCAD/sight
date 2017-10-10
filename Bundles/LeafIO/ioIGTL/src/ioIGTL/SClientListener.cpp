@@ -53,11 +53,26 @@ SClientListener::~SClientListener()
 
 void SClientListener::configuring()
 {
-    SLM_ASSERT("Configuration not found", m_configuration != NULL);
-    if (m_configuration->findConfigurationElement("server"))
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+
+    const ConfigType configInOut = config.get_child("inout");
+
+    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+               configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+
+    const auto keyCfg = configInOut.equal_range("key");
+    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
-        SLM_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
+        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName                   = attr.get("deviceName", "F4S");
+        m_deviceNames.push_back(deviceName);
+        m_client.addAuthorizedDevice(deviceName);
+    }
+    m_client.setFilteringByDeviceName(true);
+
+    const std::string serverInfo = config.get("server", "");
+    if(!serverInfo.empty())
+    {
         const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
@@ -68,19 +83,6 @@ void SClientListener::configuring()
     {
         throw ::fwTools::Failed("Server element not found");
     }
-
-    const auto inoutCfgs = m_configuration->find("inout");
-    SLM_ASSERT("Missing 'in group=\"objects\"'", inoutCfgs[0]->getAttributeValue("group") == s_OBJECTS_GROUP);
-    const auto objectsCfgs = inoutCfgs[0]->find("key");
-    for(const auto& cfg : objectsCfgs)
-    {
-        SLM_ASSERT("missing attribute name", cfg->hasAttribute("name"));
-
-        const std::string deviceName = cfg->getAttributeValue("name");
-        m_deviceNames.push_back(deviceName);
-        m_client.addAuthorizedDevice(deviceName);
-    }
-    m_client.setFilteringByDeviceName(true);
 }
 
 //-----------------------------------------------------------------------------

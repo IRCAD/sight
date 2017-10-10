@@ -31,8 +31,7 @@ const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
-SClientSender::SClientSender() :
-    m_defaultDeviceName("F4S")
+SClientSender::SClientSender()
 {
     newSlot(s_START_SENDING_SLOT, &SClientSender::startSending, this);
     newSlot(s_STOP_SENDING_SLOT, &SClientSender::stopSending, this);
@@ -48,31 +47,24 @@ SClientSender::~SClientSender()
 
 void SClientSender::configuring()
 {
-    SLM_ASSERT("Configuration not found", m_configuration != nullptr);
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
 
-    const auto inCfgs = m_configuration->find("in");
+    const ConfigType configIn = config.get_child("in");
 
-    SLM_ASSERT("Missing 'in group=\"objects\"'", inCfgs[0]->getAttributeValue("group") == s_OBJECTS_GROUP);
+    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+               configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
 
-    const auto objectsCfgs = inCfgs[0]->find("key");
-    for(const auto& cfg : objectsCfgs)
+    const auto keyCfg = configIn.equal_range("key");
+    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        if (cfg->hasAttribute("name"))
-        {
-            const std::string deviceName = cfg->getAttributeValue("name");
-            m_deviceNames.push_back(deviceName);
-            m_client.addAuthorizedDevice(deviceName);
-        }
-        else
-        {
-            m_deviceNames.push_back(m_defaultDeviceName);
-        }
+        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string name                         = attr.get("deviceName", "F4S");
+        m_deviceNames.push_back(name);
     }
 
-    if (m_configuration->findConfigurationElement("server"))
+    const std::string serverInfo = config.get("server", "");
+    if(!serverInfo.empty())
     {
-        const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
-        SLM_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
         const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 

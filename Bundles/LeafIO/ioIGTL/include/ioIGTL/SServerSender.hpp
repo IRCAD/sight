@@ -35,10 +35,9 @@ namespace ioIGTL
  * @code{.xml}
  * <service uid="..." type="::ioIGTL::SServerSender" autoConnect="yes" >
  *      <port>...</port>
- *      <deviceName>...</deviceName>
  *      <in group="objects">
- *           <key uid="..." name="..." />
- *           <key uid="..." />
+ *           <key uid="..." deviceName="..." />
+ *           <key uid="..." deviceName="..." />
  *      </in>
  * </service>
  * @endcode
@@ -91,9 +90,6 @@ private:
 
     /// port preference key
     std::string m_portConfig;
-
-    ///device name
-    std::string m_deviceName;
 
     /// Vector of device name if the group configuration exists.
     std::vector< std::string > m_deviceNames;

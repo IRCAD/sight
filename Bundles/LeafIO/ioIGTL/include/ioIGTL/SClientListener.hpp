@@ -29,8 +29,8 @@ namespace ioIGTL
  * <service uid="..." type="::ioIGTL::SClientListener" >
  *      <server>127.0.0.1:4242</server>
  *      <inout group="objects">
- *          <key uid="..." name="device01" />
- *          <key uid="..." name="device02" />
+ *          <key uid="..." deviceName="device01" />
+ *          <key uid="..." deviceName="device02" />
  *      </inout>
  * </service>
  * @endcode
