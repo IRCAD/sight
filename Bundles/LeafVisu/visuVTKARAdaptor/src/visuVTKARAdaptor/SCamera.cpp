@@ -9,7 +9,7 @@
 #include <arData/Camera.hpp>
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
