@@ -17,6 +17,8 @@
 
 #include <gdcmReader.h>
 
+#include <cstdint>
+
 namespace fwGdcmIO
 {
 namespace reader
@@ -32,20 +34,22 @@ class FWGDCMIO_CLASS_API InformationObjectDefinition
 
 public:
 
-    typedef std::function< void (unsigned int&) > ProgressCallback;
+    typedef std::function< void(std::uint64_t) > ProgressCallback;
+    typedef std::function< bool() > CancelRequestedCallback;
 
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries
      * @param[in] instance Instance
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API InformationObjectDefinition(::fwMedData::DicomSeries::sptr dicomSeries,
-                                             SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                             ::fwLog::Logger::sptr logger,
-                                             ProgressCallback& callback, bool& cancelled);
+    FWGDCMIO_API InformationObjectDefinition(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                             const ::fwLog::Logger::sptr& logger = nullptr,
+                                             ProgressCallback progress = nullptr,
+                                             CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationObjectDefinition();
@@ -54,7 +58,7 @@ public:
      * @brief Read a DICOM File
      * @param[in,out] series Series that must be enriched
      */
-    FWGDCMIO_API virtual void read(::fwMedData::Series::sptr series) = 0;
+    FWGDCMIO_API virtual void read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed) = 0;
 
 protected:
 
@@ -68,10 +72,10 @@ protected:
     ::fwLog::Logger::sptr m_logger;
 
     /// Progress callback for jobs
-    ProgressCallback& m_progressCallback;
+    ProgressCallback m_progressCallback;
 
     /// Cancel information for jobs
-    const bool& m_cancelled;
+    CancelRequestedCallback m_cancelRequestedCallback;
 
 };
 

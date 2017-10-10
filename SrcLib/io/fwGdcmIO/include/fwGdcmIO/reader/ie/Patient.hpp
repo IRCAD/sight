@@ -32,16 +32,16 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] patient Patient data
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Patient(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                         SPTR(::gdcm::Reader)reader,
-                         SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                         ::fwMedData::Patient::sptr patient,
-                         ::fwLog::Logger::sptr logger,
-                         const ProgressCallback& callback,
-                         const bool& cancelled);
+    FWGDCMIO_API Patient(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                         const SPTR(::gdcm::Reader)& reader,
+                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                         const ::fwMedData::Patient::sptr& patient,
+                         const ::fwLog::Logger::sptr& logger = nullptr,
+                         ProgressCallback progress = nullptr,
+                         CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Patient();

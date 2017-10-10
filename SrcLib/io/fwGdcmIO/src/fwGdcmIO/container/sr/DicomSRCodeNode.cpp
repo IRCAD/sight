@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRCodeNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwCore/spyLog.hpp>
 
@@ -42,7 +42,7 @@ void DicomSRCodeNode::write(::gdcm::DataSet& dataset) const
     // Concept Code Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
         this->createConceptNameCodeSequence(dataset, m_codedEntry);
-    ::fwGdcmIO::helper::DicomData::insertSQ< 0x0040, 0xa168 >(codeSequence, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setAndMergeSequenceTagValue< 0x0040, 0xa168 >(codeSequence, dataset);
 }
 
 //------------------------------------------------------------------------------

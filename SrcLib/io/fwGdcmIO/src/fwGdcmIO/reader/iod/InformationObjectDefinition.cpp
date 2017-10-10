@@ -17,12 +17,16 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-InformationObjectDefinition::InformationObjectDefinition(::fwMedData::DicomSeries::sptr dicomSeries,
-                                                         SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                                         ::fwLog::Logger::sptr logger,
-                                                         ProgressCallback& callback, bool& cancelled) :
-    m_instance(instance), m_dicomSeries(dicomSeries), m_logger(logger), m_progressCallback(callback),
-    m_cancelled(cancelled)
+InformationObjectDefinition::InformationObjectDefinition(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                                                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                                         const ::fwLog::Logger::sptr& logger,
+                                                         ProgressCallback progress,
+                                                         CancelRequestedCallback cancel):
+    m_instance(instance),
+    m_dicomSeries(dicomSeries),
+    m_logger(logger),
+    m_progressCallback(progress),
+    m_cancelRequestedCallback(cancel)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Instance should not be null.", instance);
@@ -34,6 +38,8 @@ InformationObjectDefinition::InformationObjectDefinition(::fwMedData::DicomSerie
 InformationObjectDefinition::~InformationObjectDefinition()
 {
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace iod
 } // namespace reader

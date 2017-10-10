@@ -11,6 +11,7 @@
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
+#include "fwGdcmIO/exception/Failed.hpp"
 
 #include <fwData/Image.hpp>
 
@@ -43,16 +44,16 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Document(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                          SPTR(::gdcm::Reader)reader,
-                          SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                          ::fwData::Image::sptr image,
-                          ::fwLog::Logger::sptr logger,
-                          const ProgressCallback& callback,
-                          const bool& cancelled);
+    FWGDCMIO_API Document(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                          const SPTR(::gdcm::Reader)& reader,
+                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                          const ::fwData::Image::sptr& image,
+                          const ::fwLog::Logger::sptr& logger = nullptr,
+                          ProgressCallback progress = nullptr,
+                          CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Document();
@@ -60,7 +61,7 @@ public:
     /**
      * @brief Read the Structured Report
      */
-    FWGDCMIO_API void readSR();
+    FWGDCMIO_API void readSR() throw (::fwGdcmIO::exception::Failed);
 
 };
 

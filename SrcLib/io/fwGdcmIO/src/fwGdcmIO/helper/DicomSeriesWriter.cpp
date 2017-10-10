@@ -21,7 +21,7 @@
 
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <stdio.h>
+
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -30,8 +30,9 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <fstream>
+#include <stdio.h>
 #include <utility>
+#include <fstream>
 
 fwDataIOWriterRegisterMacro( ::fwGdcmIO::helper::DicomSeriesWriter );
 
@@ -59,7 +60,7 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
         longestPrefix = paths.begin()->second;
     }
 
-    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value: paths)
+    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value : paths)
     {
         std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
             = std::mismatch(longestPrefix.begin(), longestPrefix.end(), value.second.begin());
@@ -80,8 +81,8 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path& path,
-                                           const ::boost::filesystem::path& prefix)
+::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path &path,
+                                           const ::boost::filesystem::path &prefix)
 {
     std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
         = std::mismatch(path.begin(), path.end(), prefix.begin());
@@ -189,8 +190,7 @@ void DicomSeriesWriter::processWrite()
     // Write binary files
     if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
     {
-        BOOST_FOREACH(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value,
-                      dicomSeries->getDicomBinaries())
+        for(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value : dicomSeries->getDicomBinaries())
         {
             if(m_job->cancelRequested())
             {
@@ -202,7 +202,7 @@ void DicomSeriesWriter::processWrite()
             ::fwData::Array::sptr array = value.second;
             ::fwDataTools::helper::Array arrayHelper(array);
             char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size  = array->getSizeInBytes();
+            size_t size = array->getSizeInBytes();
 
             std::ifstream stream;
             stream.rdbuf()->pubsetbuf(buffer, size);
@@ -215,7 +215,7 @@ void DicomSeriesWriter::processWrite()
                 ::boost::filesystem::create_directories(dest_dir);
             }
 
-            const ::boost::filesystem::path& dest_file = dest_dir/filename;
+            const ::boost::filesystem::path& dest_file = dest_dir / filename;
 
             ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
             FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
@@ -231,8 +231,7 @@ void DicomSeriesWriter::processWrite()
         ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
         SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        BOOST_FOREACH(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type &value,
-                      dicomSeries->getLocalDicomPaths())
+        for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type &value : dicomSeries->getLocalDicomPaths())
         {
             if(m_job->cancelRequested())
             {
@@ -240,11 +239,10 @@ void DicomSeriesWriter::processWrite()
             }
 
             const ::boost::filesystem::path& src = value.second;
-            const std::string filename           = this->getFilename(src.filename().string());
+            const std::string filename = this->getFilename(src.filename().string());
 
             const ::boost::filesystem::path& dest_dir = folder /
-                                                        (m_anonymizer ? m_subPath : removePathPrefix(src.parent_path(),
-                                                                                                     longestPrefix));
+                (m_anonymizer ? m_subPath : removePathPrefix(src.parent_path(), longestPrefix));
 
             if(!::boost::filesystem::exists(dest_dir))
             {
@@ -278,16 +276,15 @@ void DicomSeriesWriter::processWriteArchive()
     ::fwMedData::DicomSeries::sptr dicomSeries = this->getConcreteObject();
 
     FW_RAISE_IF("Dicom series should contain binaries.",
-                dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
+            dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
 
     const unsigned int nbInstances = dicomSeries->getNumberOfInstances();
-    unsigned int count             = 0;
+    unsigned int count = 0;
 
     m_job->setTotalWorkUnits(nbInstances);
     if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
     {
-        BOOST_FOREACH(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value,
-                      dicomSeries->getDicomBinaries())
+        for(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value : dicomSeries->getDicomBinaries())
         {
             if(m_job->cancelRequested())
             {
@@ -299,7 +296,7 @@ void DicomSeriesWriter::processWriteArchive()
             ::fwData::Array::sptr array = value.second;
             ::fwDataTools::helper::Array arrayHelper(array);
             char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size  = array->getSizeInBytes();
+            size_t size = array->getSizeInBytes();
 
             std::ifstream stream;
             stream.rdbuf()->pubsetbuf(buffer, size);
@@ -309,7 +306,7 @@ void DicomSeriesWriter::processWriteArchive()
                 m_anonymizer ? m_subPath : "";
 
 
-            const ::boost::filesystem::path& dest_file = dest_dir/filename;
+            const ::boost::filesystem::path& dest_file = dest_dir / filename;
             SPTR(std::ostream) fs = m_archive->createFile(dest_file);
             FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
@@ -324,8 +321,7 @@ void DicomSeriesWriter::processWriteArchive()
         ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
         SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        BOOST_FOREACH(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type &value,
-                      dicomSeries->getLocalDicomPaths())
+        for(const auto &value : dicomSeries->getLocalDicomPaths())
         {
             if(m_job->cancelRequested())
             {
@@ -333,7 +329,7 @@ void DicomSeriesWriter::processWriteArchive()
             }
 
             const ::boost::filesystem::path& src = value.second;
-            const std::string filename           = this->getFilename(src.filename().string());
+            const std::string filename = this->getFilename(src.filename().string());
 
             const ::boost::filesystem::path& dest_dir =
                 m_anonymizer ? m_subPath : removePathPrefix(src.parent_path(), longestPrefix);
@@ -342,7 +338,7 @@ void DicomSeriesWriter::processWriteArchive()
             ::boost::filesystem::ifstream stream(src, std::ios::binary);
             FW_RAISE_IF("Can't open '" << src.string() << "' for read.", !stream.good());
 
-            const ::boost::filesystem::path& dest_file = dest_dir/filename;
+            const ::boost::filesystem::path& dest_file = dest_dir / filename;
             SPTR(std::ostream) fs = m_archive->createFile(dest_file);
             FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
@@ -372,6 +368,8 @@ SPTR(::fwJobs::IJob) DicomSeriesWriter::getJob() const
 {
     return m_job;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace helper
 } // namespace fwGdcmIO

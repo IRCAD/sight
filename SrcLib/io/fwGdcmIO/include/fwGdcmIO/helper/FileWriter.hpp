@@ -13,6 +13,7 @@
 
 #include <gdcmDataSet.h>
 #include <gdcmWriter.h>
+#include <boost/filesystem/path.hpp>
 
 namespace fwGdcmIO
 {
@@ -31,7 +32,8 @@ public:
      * @brief[in] filename Filename
      * @brief[in] writer GDCM writer
      */
-    FWGDCMIO_API static void write(const std::string& filename, SPTR(::gdcm::Writer) writer);
+    FWGDCMIO_API static void write(const ::boost::filesystem::path& filename,
+                                   const SPTR(::gdcm::Writer)& writer);
 };
 
 } // namespace helper

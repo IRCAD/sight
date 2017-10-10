@@ -6,7 +6,6 @@
 
 #include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
 #include "fwGdcmIO/writer/ie/Equipment.hpp"
 #include "fwGdcmIO/writer/ie/Image.hpp"
@@ -40,9 +39,12 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(
-    SPTR(::fwGdcmIO::container::DicomInstance)instance, ::boost::filesystem::path folderPath) :
-    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, folderPath)
+SpatialFiducialsIOD::SpatialFiducialsIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                         const ::boost::filesystem::path& destinationPath,
+                                         const ::fwLog::Logger::sptr& logger,
+                                         ProgressCallback progress,
+                                         CancelRequestedCallback cancel) :
+    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel)
 {
 }
 
@@ -54,7 +56,7 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::write(::fwMedData::Series::sptr series)
+void SpatialFiducialsIOD::write(const ::fwMedData::Series::sptr& series)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
@@ -63,8 +65,7 @@ void SpatialFiducialsIOD::write(::fwMedData::Series::sptr series)
     // Retrieve image
     ::fwData::Image::sptr image = imageSeries->getImage();
 
-    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(
-        ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
@@ -105,10 +106,11 @@ void SpatialFiducialsIOD::write(::fwMedData::Series::sptr series)
     spatialFiducialsIE.writeSOPCommonModule();
 
     // Write document
-    ::fwGdcmIO::helper::FileWriter::write(m_folderPath.string() + "/imSF", writer);
+    ::fwGdcmIO::helper::FileWriter::write(m_destinationPath, writer);
 
 }
 
+//------------------------------------------------------------------------------
 } // namespace iod
 } // namespace writer
 } // namespace fwGdcmIO

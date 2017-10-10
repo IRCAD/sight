@@ -14,13 +14,12 @@
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
 
+#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
@@ -42,9 +41,9 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Measurement::Measurement(SPTR(::gdcm::Writer)writer,
-                         SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                         ::fwData::Image::sptr image) :
+Measurement::Measurement(const SPTR(::gdcm::Writer)& writer,
+                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                         const ::fwData::Image::sptr& image) :
     ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
 {
 }
@@ -57,14 +56,15 @@ Measurement::~Measurement()
 
 //------------------------------------------------------------------------------
 
-void Measurement::createNodes(SPTR(::fwGdcmIO::container::sr::DicomSRNode)parent, bool useSCoord3D)
+void Measurement::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
+                              bool useSCoord3D)
 {
     ::fwData::Vector::sptr distanceVector =
         m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     if (distanceVector)
     {
         unsigned int id = 1;
-        for(::fwData::Object::sptr object: distanceVector->getContainer())
+        for(::fwData::Object::sptr object : distanceVector->getContainer())
         {
             ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
             if(pointList)
@@ -77,8 +77,10 @@ void Measurement::createNodes(SPTR(::fwGdcmIO::container::sr::DicomSRNode)parent
 
 //------------------------------------------------------------------------------
 
-void Measurement::createMeasurement(SPTR(::fwGdcmIO::container::sr::DicomSRNode)parent,
-                                    const ::fwData::PointList::sptr& pointList, unsigned int id, bool useSCoord3D)
+void Measurement::createMeasurement(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
+                                    const ::fwData::PointList::sptr& pointList,
+                                    unsigned int id,
+                                    bool useSCoord3D)
 {
     const ::fwData::Point::sptr point1 = pointList->getPoints()[0];
     const ::fwData::Point::sptr point2 = pointList->getPoints()[1];
@@ -92,15 +94,15 @@ void Measurement::createMeasurement(SPTR(::fwGdcmIO::container::sr::DicomSRNode)
     coordinates[5] = point2->getCoord()[2];
 
     double distance = sqrt( (coordinates[0] - coordinates[3]) * (coordinates[0] - coordinates[3]) +
-                            (coordinates[1] - coordinates[4]) * (coordinates[1] - coordinates[4]) +
-                            (coordinates[2] - coordinates[5]) * (coordinates[2] - coordinates[5]) );
+    (coordinates[1] - coordinates[4]) * (coordinates[1] - coordinates[4]) +
+    (coordinates[2] - coordinates[5]) * (coordinates[2] - coordinates[5]) );
 
     // Retrieve Frame Numbers
-    int frameNumber1 = ::fwGdcmIO::helper::DicomData::convertPointToFrameNumber(m_object, point1);
+    std::size_t frameNumber1 = ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point1);
 
     // Create Measurement Node
     SPTR(::fwGdcmIO::container::sr::DicomSRNumNode) numNode =
-        std::make_shared< ::fwGdcmIO::container::sr::DicomSRNumNode >(
+            std::make_shared< ::fwGdcmIO::container::sr::DicomSRNumNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("121206", "DCM", "Distance"), "CONTAINS", distance,
             ::fwGdcmIO::container::DicomCodedAttribute("mm", "UCUM", "millimeter", "1.4"));
     parent->addSubNode(numNode);
@@ -118,7 +120,7 @@ void Measurement::createMeasurement(SPTR(::fwGdcmIO::container::sr::DicomSRNode)
         };
         std::vector<float> scoordVector (scoord, scoord + 6);
         SPTR(::fwGdcmIO::container::sr::DicomSRSCoord3DNode) scoordNode =
-            std::make_shared< ::fwGdcmIO::container::sr::DicomSRSCoord3DNode >(
+                std::make_shared< ::fwGdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::fwGdcmIO::container::DicomCodedAttribute("121230", "DCM", "Path"),
                 "INFERRED FROM", "POLYLINE", scoordVector, m_instance->getSOPInstanceUIDContainer()[0]);
         numNode->addSubNode(scoordNode);
@@ -126,7 +128,7 @@ void Measurement::createMeasurement(SPTR(::fwGdcmIO::container::sr::DicomSRNode)
     else
     {
         SLM_ASSERT("Unable to save a 3D distance using a SCOORD object.",
-                   frameNumber1 == ::fwGdcmIO::helper::DicomData::convertPointToFrameNumber(m_object, point2));
+                   frameNumber1 == ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point2));
 
         // Create SCoord Node
         const float scoord[] = {

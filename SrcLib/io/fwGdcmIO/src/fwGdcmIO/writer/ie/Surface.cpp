@@ -7,14 +7,16 @@
 #include "fwGdcmIO/container/DicomSurface.hpp"
 #include "fwGdcmIO/writer/ie/Surface.hpp"
 
+#include "fwGdcmIO/helper/DicomCodedAttribute.hpp"
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 #include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/DictionarySegment.hpp"
 
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataIO/reader/DictionaryReader.hpp>
-
 #include <fwDataTools/helper/Mesh.hpp>
+#include <fwDataIO/reader/DictionaryReader.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
@@ -41,12 +43,16 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(SPTR(::gdcm::Writer)writer,
-                 SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                 SPTR(::fwGdcmIO::container::DicomInstance)imageInstance,
-                 ::fwMedData::ModelSeries::sptr series) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series),
-    m_imageInstance(imageInstance)
+Surface::Surface(const SPTR(::gdcm::Writer)& writer,
+                 const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                 const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
+                 const ::fwMedData::ModelSeries::sptr& series,
+                 const ::fwLog::Logger::sptr& logger,
+                 ProgressCallback progress,
+                 CancelRequestedCallback cancel) :
+        ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series,
+                                                                              logger, progress, cancel),
+        m_imageInstance(imageInstance)
 {
     SLM_ASSERT("Image instance should not be null.", imageInstance);
     SLM_ASSERT("Image instance SOPInstanceUID container should not be empty.",
@@ -69,7 +75,6 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
     {
         SLM_ERROR(e.what());
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -77,6 +82,31 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
 Surface::~Surface()
 {
 }
+
+//------------------------------------------------------------------------------
+
+bool Surface::loadSegmentedPropertyRegistry(const ::boost::filesystem::path& filepath)
+{
+    return m_segmentedPropertyRegistry.readSegmentedPropertyRegistryFile(filepath, true, m_logger);
+}
+
+//------------------------------------------------------------------------------
+
+void Surface::writeSOPCommonModule()
+{
+    // Retrieve dataset
+    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
+
+    // SOP Class UID
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
+    SLM_TRACE("SOP Class UID : " + m_instance->getSOPClassUID());
+
+    // SOP Instance UID
+    ::gdcm::UIDGenerator uidGenerator;
+    std::string sopInstanceUID = uidGenerator.Generate();
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0018 >(sopInstanceUID, dataset);
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -276,6 +306,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned short segmentationNumber)
 
 void Surface::writeSurfaceMeshModule(unsigned short segmentationNumber)
 {
+/// TO REIMPLEMENT FROM VP
+#if 0
     // Retrieve Surface Writer
     SPTR(::gdcm::SurfaceWriter) surfaceWriter = std::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
 
@@ -459,24 +491,7 @@ void Surface::writeSurfaceMeshModule(unsigned short segmentationNumber)
     // Algorithm Name (0x0066,0x0036) - Type 1
     std::string algorithName = (profile) ? (profile->getName()) : "Unknown";
     surface->SetAlgorithmName(algorithName.c_str());
-
-}
-
-//------------------------------------------------------------------------------
-
-void Surface::writeSOPCommonModule()
-{
-    // Retrieve dataset
-    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
-
-    // SOP Class UID
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
-    SLM_TRACE("SOP Class UID : " + m_instance->getSOPClassUID());
-
-    // SOP Instance UID
-    ::gdcm::UIDGenerator uidGenerator;
-    std::string sopInstanceUID = uidGenerator.Generate();
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0018 >(sopInstanceUID, dataset);
+#endif
 }
 
 //------------------------------------------------------------------------------

@@ -21,15 +21,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Document::Document(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                   SPTR(::gdcm::Reader)reader,
-                   SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                   ::fwData::Image::sptr image,
-                   ::fwLog::Logger::sptr logger,
-                   const ProgressCallback& callback,
-                   const bool& cancelled) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image, logger,
-                                                                 callback, cancelled)
+Document::Document(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                   const SPTR(::gdcm::Reader)& reader,
+                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                   const ::fwData::Image::sptr& image,
+                   const ::fwLog::Logger::sptr& logger,
+                   ProgressCallback progress,
+                   CancelRequestedCallback cancel):
+    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image,
+                                                                 logger, progress, cancel)
 {
 }
 
@@ -41,7 +41,7 @@ Document::~Document()
 
 //------------------------------------------------------------------------------
 
-void Document::readSR()
+void Document::readSR() throw (::fwGdcmIO::exception::Failed)
 {
     // Retrieve dataset
     const ::gdcm::DataSet& datasetRoot = m_reader->GetFile().GetDataSet();

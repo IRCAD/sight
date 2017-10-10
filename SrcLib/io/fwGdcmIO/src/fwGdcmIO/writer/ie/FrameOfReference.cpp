@@ -4,12 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 #include "fwGdcmIO/writer/ie/FrameOfReference.hpp"
 
 #include <fwMedData/Series.hpp>
-
-#include <gdcmUIDGenerator.h>
 
 namespace fwGdcmIO
 {
@@ -20,10 +18,14 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-FrameOfReference::FrameOfReference(SPTR(::gdcm::Writer)writer,
-                                   SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                   ::fwMedData::Series::sptr series) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Series >(writer, instance, series)
+FrameOfReference::FrameOfReference(const SPTR(::gdcm::Writer)& writer,
+                                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                   const ::fwMedData::Series::sptr& series,
+                                   const ::fwLog::Logger::sptr& logger,
+                                   ProgressCallback progress,
+                                   CancelRequestedCallback cancel) :
+    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Series >(writer, instance, series,
+                                                                     logger, progress, cancel)
 {
 }
 
@@ -42,13 +44,14 @@ void FrameOfReference::writeFrameOfReferenceModule()
 
     // Frame of Reference UID
     const std::string frameOfReferenceUID = m_instance->getSOPInstanceUIDContainer()[0];
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0020, 0x0052 >(frameOfReferenceUID, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x0052 >(frameOfReferenceUID, dataset);
 
     // Position Reference Indicator - Type 2
-    ::gdcm::Attribute< 0x0020, 0x1040 > positionReferenceIndicatorAttribute;
-    dataset.Insert(positionReferenceIndicatorAttribute.GetAsDataElement());
+    ::fwGdcmIO::helper::DicomDataWriter::setEmptyTagValue< 0x0020, 0x1040 >(dataset);
 
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ie
 } // namespace writer

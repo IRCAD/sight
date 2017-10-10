@@ -61,7 +61,7 @@ public:
      * It manages writing of the following general DICOM modules : patient, study and series
      * @note Currently, it handles image, SR and RT document writing.
      */
-    FWGDCMIO_API void write() override;
+    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed) override;
 
     /**
      * Override
@@ -87,7 +87,7 @@ private:
      * @brief Check if there is comment on acquisition.
      * @param[in] series ImageSeries that must be checked.
      */
-    bool hasDocumentSR(::fwMedData::ImageSeries::csptr series) const;
+    bool hasDocumentSR(const ::fwMedData::ImageSeries::csptr& series) const;
 
     /**
      * @brief Returns the image instance used to create the reconstruction

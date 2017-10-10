@@ -4,9 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/exception/InvalidTag.hpp"
+#include "fwGdcmIO/helper/CsvIO.hpp"
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
-
 #include "fwGdcmIO/helper/DicomSearch.hpp"
+#include "fwGdcmIO/helper/tags.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -15,11 +17,12 @@
 
 #include <fwTools/System.hpp>
 
+#include <boost/algorithm/string/join.hpp>
 #include <boost/assign/list_of.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/foreach.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
 #include <gdcmGlobal.h>
@@ -36,7 +39,30 @@ namespace fwGdcmIO
 namespace helper
 {
 
+const std::string c_MIN_DATE_STRING = "19000101";
+
 ::gdcm::UIDGenerator GENERATOR;
+
+DicomAnonymizer::DicomAnonymizer() :
+        m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
+        m_observer(::fwJobs::Observer::New("Anonymization process")),
+        m_archiving(false),
+        m_fileIndex(0),
+        m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING)),
+        m_actionCodeDTags(s_ACTION_CODE_D_TAGS),
+        m_actionCodeZTags(s_ACTION_CODE_Z_TAGS),
+        m_actionCodeXTags(s_ACTION_CODE_X_TAGS),
+        m_actionCodeKTags(s_ACTION_CODE_K_TAGS),
+        m_actionCodeCTags(s_ACTION_CODE_C_TAGS),
+        m_actionCodeUTags(s_ACTION_CODE_U_TAGS)
+{
+}
+
+DicomAnonymizer::~DicomAnonymizer()
+{
+}
+
+//------------------------------------------------------------------------------
 
 const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_D_TAGS =
 {{
@@ -304,29 +330,10 @@ const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_U_TAGS =
      ::gdcm::Tag(0x0040, 0xA124), //UID
  }};
 
-DicomAnonymizer::DicomAnonymizer() :
-    m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
-    m_observer(::fwJobs::Observer::New("Anonymization process")),
-    m_archiving(false),
-    m_fileIndex(0),
-    m_actionCodeDTags(s_ACTION_CODE_D_TAGS),
-    m_actionCodeZTags(s_ACTION_CODE_Z_TAGS),
-    m_actionCodeXTags(s_ACTION_CODE_X_TAGS),
-    m_actionCodeKTags(s_ACTION_CODE_K_TAGS),
-    m_actionCodeCTags(s_ACTION_CODE_C_TAGS),
-    m_actionCodeUTags(s_ACTION_CODE_U_TAGS)
-{
-}
 
 //------------------------------------------------------------------------------
 
-DicomAnonymizer::~DicomAnonymizer()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void DicomAnonymizer::anonymize(const ::boost::filesystem::path& dirPath)
+void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
 {
     m_archiving = false;
     m_observer->setTotalWorkUnits(100);
@@ -336,7 +343,8 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path& dirPath)
 
 //------------------------------------------------------------------------------
 
-void moveDirectory(::boost::filesystem::path input, ::boost::filesystem::path output)
+void moveDirectory(const ::boost::filesystem::path& input,
+                   const ::boost::filesystem::path& output)
 {
     ::boost::system::error_code ec;
     ::boost::filesystem::copy_directory(input, output, ec);
@@ -358,9 +366,8 @@ void moveDirectory(::boost::filesystem::path input, ::boost::filesystem::path ou
         else
         {
             ::boost::filesystem::rename(*it, dest, ec);
-            FW_RAISE_IF(
-                "rename " << it->path().string() << " " << dest.string() << " error : " << ec.message(),
-                ec.value());
+            FW_RAISE_IF("rename " << it->path().string() << " " << dest.string() 
+                     << " error : " << ec.message(), ec.value());
         }
 
         ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, ec);
@@ -386,7 +393,7 @@ void DicomAnonymizer::anonymizationProcess(const ::boost::filesystem::path& dirP
 {
     // Create temporary directory
     ::boost::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
-    tmpPath                          /= "tmp";
+    tmpPath /= "tmp";
 
     // Doesn't use ::boost::filesystem::rename because of potential issues when moving folders across volumes
     moveDirectory(dirPath, tmpPath);
@@ -405,28 +412,28 @@ void DicomAnonymizer::anonymizationProcess(const ::boost::filesystem::path& dirP
         }
     }
 
-    std::vector<std::string> dicomFiles;
+    std::vector< ::boost::filesystem::path > dicomFiles;
     ::fwGdcmIO::helper::DicomSearch::searchRecursively(tmpPath, dicomFiles, false);
 
     unsigned int fileIndex = 0;
-    for(std::string file: dicomFiles)
+    for(const auto file : dicomFiles)
     {
         if(m_observer->cancelRequested())
         {
             break;
         }
 
-        std::ifstream inStream(file, std::ios::binary);
+        ::boost::filesystem::ifstream inStream(file, std::ios::binary);
 
         std::stringstream ss;
         ss << "im" << std::setfill('0') << std::setw(5) << fileIndex++;
 
-        std::ofstream outStream((dirPath / ss.str()).string(), std::ios::binary | std::ios::trunc);
+        ::boost::filesystem::ofstream outStream(dirPath / ss.str(), std::ios::binary | std::ios::trunc);
 
         this->anonymize(inStream, outStream);
 
         std::uint64_t progress = static_cast<std::uint64_t>(
-            ((m_archiving) ? 50 : 100) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
+            ((m_archiving)?50:100) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
         m_observer->doneWork(progress);
     }
 
@@ -469,9 +476,15 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     m_anonymizer.RemoveGroupLength();
     m_anonymizer.RemoveRetired();
 
-    for(ExceptionTagMapType::value_type exception: m_exceptionTagMap)
+    for(ExceptionTagMapType::value_type exception : m_exceptionTagMap)
     {
         m_anonymizer.Replace(exception.first, exception.second.c_str());
+    }
+
+    // Shift dates
+    for(auto dateTag : m_actionShiftDateTags)
+    {
+        this->applyActionShiftDate(dateTag);
     }
 
     ::boost::range::for_each(m_actionCodeDTags, [this](const ::gdcm::Tag& tag)
@@ -557,7 +570,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const std::string& value)
+void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const std::string &value)
 {
     ::gdcm::Tag tag(group, element);
 
@@ -569,6 +582,19 @@ void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const st
     m_actionCodeKTags.erase(tag);
     m_actionCodeCTags.erase(tag);
     m_actionCodeUTags.erase(tag);
+}
+
+//------------------------------------------------------------------------------
+
+void DicomAnonymizer::preservePrivateTag(const ::gdcm::Tag& tag)
+{
+    const bool found = std::find(m_privateTags.begin(), m_privateTags.end(), tag) != m_privateTags.end();
+    OSLM_WARN_IF("Private tag " << tag.GetGroup() << ", " << tag.GetElement() << " has already been added", !found);
+
+    if(!found)
+    {
+        m_privateTags.push_back(tag);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -615,8 +641,8 @@ void DicomAnonymizer::applyActionCodeK(const ::gdcm::Tag& tag)
 
 void DicomAnonymizer::applyActionCodeC(const ::gdcm::Tag& tag)
 {
-    SLM_FATAL(
-        "Basic profile \"C\" is not supported yet : Only basic profile is supported by the current implementation.");
+    SLM_FATAL("Basic profile \"C\" is not supported yet: "
+              "Only basic profile is supported by the current implementation.");
 }
 
 //------------------------------------------------------------------------------
@@ -638,6 +664,37 @@ void DicomAnonymizer::applyActionCodeU(const ::gdcm::Tag& tag)
         }
         m_anonymizer.Replace(tag, uid.c_str());
     }
+}
+
+//------------------------------------------------------------------------------
+
+void DicomAnonymizer::addShiftDateTag(const ::gdcm::Tag& tag)
+{
+    m_actionCodeDTags.erase(tag);
+    m_actionCodeZTags.erase(tag);
+    m_actionCodeXTags.erase(tag);
+    m_actionCodeKTags.erase(tag);
+    m_actionCodeCTags.erase(tag);
+    m_actionCodeUTags.erase(tag);
+
+    m_actionShiftDateTags.insert(tag);
+}
+
+//------------------------------------------------------------------------------
+
+void DicomAnonymizer::applyActionShiftDate(const ::gdcm::Tag& tag)
+{
+    const std::string oldDate = m_stringFilter.ToString(tag);
+    ::boost::gregorian::date date = ::boost::gregorian::from_undelimited_string(oldDate);
+
+    auto shift = date - m_referenceDate;
+
+    //Minimum date
+    ::boost::gregorian::date min_date = ::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING);
+
+    auto shiftedDate = min_date + shift;
+
+    m_anonymizer.Replace(tag, ::boost::gregorian::to_iso_string(shiftedDate).c_str());
 }
 
 //------------------------------------------------------------------------------
@@ -677,7 +734,7 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
         }
         case ::gdcm::VR::DA:
         {
-            m_anonymizer.Replace(tag, "19700101");
+            m_anonymizer.Replace(tag, c_MIN_DATE_STRING.c_str());
             break;
         }
         case ::gdcm::VR::DS:
@@ -687,7 +744,7 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
         }
         case ::gdcm::VR::DT:
         {
-            m_anonymizer.Replace(tag, "19700101000000.000000");
+            m_anonymizer.Replace(tag, std::string(c_MIN_DATE_STRING + "000000.000000").c_str());
             break;
         }
         case ::gdcm::VR::FD:
@@ -792,7 +849,8 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
         }
         default:
         {
-            SLM_FATAL("Unknown value representation.");
+            OSLM_ERROR(tag<<" is not supported. Emptied value. ");
+            m_anonymizer.Empty(tag);
             break;
         }
     }
@@ -800,12 +858,13 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::copyDirectory(::boost::filesystem::path input, ::boost::filesystem::path output)
+void DicomAnonymizer::copyDirectory(const ::boost::filesystem::path& input,
+                                    const ::boost::filesystem::path& output)
 {
     ::boost::system::error_code ec;
     ::boost::filesystem::copy_directory(input, output, ec);
-    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string() << " error : " << ec.message(),
-                ec.value());
+    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string()
+             << " error : " << ec.message(), ec.value());
 
     ::boost::filesystem::directory_iterator it(input);
     ::boost::filesystem::directory_iterator end;
@@ -847,6 +906,7 @@ SPTR(::fwJobs::IJob) DicomAnonymizer::getJob() const
 {
     return m_observer;
 }
+//------------------------------------------------------------------------------
 
 } // namespace helper
 } // namespace fwGdcmIO

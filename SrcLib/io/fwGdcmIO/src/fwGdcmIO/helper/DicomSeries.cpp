@@ -6,7 +6,6 @@
 
 #include "fwGdcmIO/helper/DicomSeries.hpp"
 #include "fwGdcmIO/helper/DicomDir.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 
 #include <fwCore/exceptionmacros.hpp>
 #include <fwCore/spyLog.hpp>
@@ -61,11 +60,21 @@ static const ::gdcm::Tag s_PatientAgeTag(0x0010, 0x1010);
 
 //------------------------------------------------------------------------------
 
-std::string getStringValue(const ::gdcm::Scanner& scanner, const std::string& filename, const gdcm::Tag& tag)
+std::string getStringValue(const ::gdcm::Scanner& scanner,
+                           const std::string& filename,
+                           const gdcm::Tag& tag)
 {
-    const char* value  = scanner.GetValue( filename.c_str(), tag );
-    std::string result = (value) ? value : "";
-    ::boost::algorithm::trim(result);
+    std::string result = "";
+
+    const char* value = scanner.GetValue( filename.c_str(), tag );
+
+    if(value)
+    {
+        // Trim buffer
+        const std::string trimmedBuffer = ::gdcm::LOComp::Trim(value);
+        result = trimmedBuffer;
+    }
+
     return result;
 }
 
@@ -83,7 +92,7 @@ DicomSeries::~DicomSeries()
 
 // ----------------------------------------------------------------------------
 
-DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType& filenames,
+DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType &filenames,
                                                         const SPTR(::fwJobs::Observer)& readerObserver,
                                                         const SPTR(::fwJobs::Observer)& completeSeriesObserver)
 {
@@ -107,7 +116,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
 
     unsigned int progress = 0;
 
-    for(auto series: seriesDB)
+    for(auto series : seriesDB)
     {
         if(series->getLocalDicomPaths().empty())
         {
@@ -115,8 +124,9 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
             break;
         }
 
-        const std::string filename = series->getLocalDicomPaths().begin()->second.string();
-        FilenameContainerType filenames;
+        std::vector< std::string > filenames;
+        auto seriesPath = series->getLocalDicomPaths().begin()->second;
+        const std::string filename = seriesPath.string();
         filenames.push_back(filename);
 
         bool status = seriesScanner.Scan( filenames );
@@ -174,7 +184,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
     series->setPatient(patient);
 
     auto instanceNumber = 0;
-    for(auto file: filenames)
+    for(auto file : filenames)
     {
         series->addDicomPath(++instanceNumber, file);
     }
@@ -199,7 +209,13 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     readerObserver->setTotalWorkUnits(filenames.size());
     readerObserver->doneWork(0);
 
-    bool status = seriesScanner.Scan( filenames );
+    std::vector< std::string > fileVec;
+    for(auto file : filenames)
+    {
+        fileVec.push_back(file.string());
+    }
+
+    bool status = seriesScanner.Scan( fileVec );
     FW_RAISE_IF("Unable to read the files.", !status);
 
     ::gdcm::Directory::FilenamesType keys = seriesScanner.GetKeys();
@@ -213,11 +229,17 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     for(it = keys.begin(); it != keys.end() && !readerObserver->cancelRequested(); ++it)
     {
         const std::string filename = it->c_str();
+
         OSLM_ASSERT("The file \"" << filename << "\" is not a key of the gdcm scanner",
                     seriesScanner.IsKey(filename.c_str()));
 
         // Create Series
         this->createSeries(seriesDB, seriesScanner, filename);
+
+        if (!readerObserver || readerObserver->cancelRequested())
+        {
+            break;
+        }
 
         readerObserver->doneWork(++progress);
     }
@@ -252,7 +274,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
     std::uint64_t progress = 0;
 
     // Fill series
-    for(::fwMedData::DicomSeries::sptr series: seriesDB)
+    for(::fwMedData::DicomSeries::sptr series : seriesDB)
     {
         // Compute number of instances
         auto size = series->getLocalDicomPaths().size();
@@ -266,7 +288,8 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
 
         // Get first instance filename
-        const std::string filename = series->getLocalDicomPaths().begin()->second.string();
+        const std::string filename =
+              series->getLocalDicomPaths().begin()->second.string();
 
         // Load first instance
         std::vector< std::string > firstInstanceContainer;
@@ -297,16 +320,19 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm::Scanner& scanner,
-                               const std::string& filename)
+void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
+                               const ::gdcm::Scanner& scanner,
+                               const ::boost::filesystem::path& filename)
 {
     ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::sptr();
 
+    auto stringFilename = filename.string();
+
     // Get Series Instance UID
-    std::string seriesInstanceUID = getStringValue( scanner, filename, s_SeriesInstanceUIDTag );
+    std::string seriesInstanceUID = getStringValue( scanner, stringFilename, s_SeriesInstanceUIDTag );
 
     // Check if the series already exists
-    for(::fwMedData::DicomSeries::sptr dicomSeries: seriesDB)
+    for(::fwMedData::DicomSeries::sptr dicomSeries : seriesDB)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
@@ -327,24 +353,24 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
         series->setInstanceUID(seriesInstanceUID);
 
         //Modality
-        std::string modality = getStringValue( scanner, filename, s_ModalityTag );
+        std::string modality = getStringValue( scanner, stringFilename, s_ModalityTag );
         series->setModality(modality);
 
         //Date
-        std::string seriesDate = getStringValue( scanner, filename, s_SeriesDateTag );
+        std::string seriesDate = getStringValue( scanner, stringFilename, s_SeriesDateTag );
         series->setDate(seriesDate);
 
         //Time
-        std::string seriesTime = getStringValue( scanner, filename, s_SeriesTimeTag );
+        std::string seriesTime = getStringValue( scanner, stringFilename, s_SeriesTimeTag );
         series->setTime(seriesTime);
 
         //Description
-        std::string seriesDescription = getStringValue( scanner, filename, s_SeriesDescriptionTag );
+        std::string seriesDescription = getStringValue( scanner, stringFilename, s_SeriesDescriptionTag );
         series->setDescription(seriesDescription);
 
         //Performing Physicians Name
-        std::string performingPhysicianNamesStr = getStringValue( scanner, filename,
-                                                                  s_PerformingPhysicianNameTag );
+        std::string performingPhysicianNamesStr = getStringValue( scanner, stringFilename,
+                s_PerformingPhysicianNameTag );
 
         if(!performingPhysicianNamesStr.empty())
         {
@@ -355,7 +381,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
     }
 
     // Add the SOPClassUID to the series
-    std::string sopClassUID = getStringValue( scanner, filename, s_SOPClassUIDTag );
+    std::string sopClassUID = getStringValue( scanner, stringFilename, s_SOPClassUIDTag );
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
     sopClassUIDContainer.insert(sopClassUID);
     series->setSOPClassUIDs(sopClassUIDContainer);
@@ -367,7 +393,8 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Patient::sptr DicomSeries::createPatient(const ::gdcm::Scanner& scanner, const std::string& filename)
+::fwMedData::Patient::sptr DicomSeries::createPatient(const ::gdcm::Scanner& scanner,
+                                                      const std::string& filename)
 {
     ::fwMedData::Patient::sptr result;
 
@@ -377,7 +404,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
     {
-        result                  = ::fwMedData::Patient::New();
+        result = ::fwMedData::Patient::New();
         m_patientMap[patientID] = result;
 
         //Patient ID
@@ -406,7 +433,8 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Study::sptr DicomSeries::createStudy(const ::gdcm::Scanner& scanner, const std::string& filename)
+::fwMedData::Study::sptr DicomSeries::createStudy(const ::gdcm::Scanner& scanner,
+                                                  const std::string& filename)
 {
     ::fwMedData::Study::sptr result;
 
@@ -416,7 +444,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
     // Check if the study already exists
     if(m_studyMap.find(studyInstanceUID) == m_studyMap.end())
     {
-        result                       = ::fwMedData::Study::New();
+        result = ::fwMedData::Study::New();
         m_studyMap[studyInstanceUID] = result;
 
         //Study ID
@@ -453,7 +481,8 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::Scanner& scanner, const std::string& filename)
+::fwMedData::Equipment::sptr DicomSeries::createEquipment(const ::gdcm::Scanner& scanner,
+                                                          const std::string& filename)
 {
     ::fwMedData::Equipment::sptr result;
 
@@ -463,7 +492,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm:
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
     {
-        result                          = ::fwMedData::Equipment::New();
+        result = ::fwMedData::Equipment::New();
         m_equipmentMap[institutionName] = result;
 
         //Institution Name

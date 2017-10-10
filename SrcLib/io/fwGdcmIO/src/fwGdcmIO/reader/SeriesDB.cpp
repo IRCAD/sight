@@ -4,26 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/reader/SeriesDB.hpp"
+#include "fwGdcmIO/reader/Series.hpp"
 
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/reader/SeriesDB.hpp"
 #include "fwGdcmIO/helper/DicomDir.hpp"
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 #include "fwGdcmIO/helper/DicomSeries.hpp"
-#include "fwGdcmIO/reader/Series.hpp"
 
-#include <fwDataIO/reader/registry/macros.hpp>
-
-#include <fwDicomIOFilter/IFilter.hpp>
-#include <fwDicomIOFilter/factory/new.hpp>
-#include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwMedDataTools/helper/SeriesDB.hpp>
+#include <fwDataIO/reader/registry/macros.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
+#include <fwDicomIOFilter/factory/new.hpp>
+#include <fwDicomIOFilter/helper/Filter.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -33,7 +31,6 @@
 #include <gdcmUIDs.h>
 
 #include <boost/algorithm/string/split.hpp>
-#include <boost/foreach.hpp>
 
 fwDataIOReaderRegisterMacro( ::fwGdcmIO::reader::SeriesDB );
 
@@ -50,6 +47,7 @@ SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false),
     m_dicomFilterType(""),
+    m_logger(::fwLog::Logger::New()),
     m_job(::fwJobs::Aggregator::New("DICOM reader")),
     m_enableBufferRotation(true),
     m_dicomdirFileLookupJob(::fwJobs::Observer::New("Extracting information from DICOMDIR")),
@@ -59,9 +57,6 @@ SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
     m_converterJob(::fwJobs::Observer::New("DICOM data convertion"))
 {
     SLM_TRACE_FUNC();
-
-    // Create logger
-    m_logger = ::fwLog::Logger::New();
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +86,7 @@ void SeriesDB::read()
     catch (const std::exception& e)
     {
         m_logger->clear();
-        m_logger->critical("An error has occured during the reading process : unable to retrieve series.");
+        m_logger->critical("An error has occurred during the reading process : unable to retrieve series.");
 
         // Finish jobs
         m_dicomdirFileLookupJob->finish();
@@ -124,16 +119,16 @@ void SeriesDB::read()
 
     try
     {
-        // .get() throws exception that might have occured
+        // .get() throws exception that might have occurred
         m_job->run().get();
     }
     catch (const std::exception& e)
     {
-        m_logger->critical("An error has occured during the reading process : " + std::string(e.what()));
+        m_logger->critical("An error has occurred during the reading process : " + std::string(e.what()));
     }
     catch( ... )
     {
-        m_logger->critical("An unkown error has occured during the reading process.");
+        m_logger->critical("An unkown error has occurred during the reading process.");
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -161,7 +156,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
     catch (const std::exception& e)
     {
         m_logger->clear();
-        m_logger->critical("An error has occured during the reading process : unable to retrieve series.");
+        m_logger->critical("An error has occurred during the reading process : unable to retrieve series.");
 
         // Finish jobs
         m_dicomdirFileLookupJob->finish();
@@ -178,7 +173,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
     // Push Dicom Series
     if(!m_job->cancelRequested())
     {
-        for(::fwMedData::DicomSeries::sptr series: m_dicomSeriesContainer)
+        for(::fwMedData::DicomSeries::sptr series : m_dicomSeriesContainer)
         {
             seriesDBHelper.add(series);
         }
@@ -186,16 +181,16 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
 
     try
     {
-        // .get() throws exception that might have occured
+        // .get() throws exception that might have occurred
         m_job->run().get();
     }
     catch (const std::exception& e)
     {
-        m_logger->critical("An error has occured during the reading process : " + std::string(e.what()));
+        m_logger->critical("An error has occurred during the reading process : " + std::string(e.what()));
     }
     catch( ... )
     {
-        m_logger->critical("An unkown error has occured during the reading process.");
+        m_logger->critical("An unkown error has occurred during the reading process.");
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -238,7 +233,7 @@ void SeriesDB::readDicom(const bool checkIsDicom)
         m_readerJob->doneWork(0);
 
         // Recursively search for dicom files
-        std::vector< std::string > filenames;
+        std::vector< ::boost::filesystem::path > filenames;
         ::fwGdcmIO::helper::DicomSearch::searchRecursively(
             this->getFolder(), filenames, checkIsDicom, m_regularFileLookupJob);
 
@@ -270,7 +265,8 @@ void SeriesDB::readDicom(const bool checkIsDicom)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB, ::fwServices::IService::sptr notifier)
+void SeriesDB::readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSeriesDB,
+                                     const ::fwServices::IService::sptr& notifier)
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -278,7 +274,7 @@ void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB,
     m_job->add(m_converterJob);
 
     // Read series
-    for(::fwMedData::Series::sptr series: dicomSeriesDB->getContainer())
+    for(::fwMedData::Series::sptr series : dicomSeriesDB->getContainer())
     {
         ::fwMedData::DicomSeries::sptr dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
         SLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
@@ -306,16 +302,16 @@ void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB,
 
     try
     {
-        // .get() throws exception that might have occured
+        // .get() throws exception that might have occurred
         m_job->run().get();
     }
     catch (const std::exception& e)
     {
-        m_logger->critical("An error has occured during the reading process : " + std::string(e.what()));
+        m_logger->critical("An error has occurred during the reading process : " + std::string(e.what()));
     }
     catch( ... )
     {
-        m_logger->critical("An unkown error has occured during the reading process.");
+        m_logger->critical("An unkown error has occurred during the reading process.");
     }
 
 }
@@ -330,7 +326,7 @@ bool SeriesDB::isDicomDirAvailable()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
+void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
@@ -343,15 +339,33 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
     seriesReader->setLogger(m_logger);
 
     // needed for seriesReader
-    seriesReader->addCallback([&](unsigned int& progress)
+    /*
+    seriesReader->addCallback([&](std::uint64_t progress)
             {
             });
+    */
 
     m_converterJob->setTotalWorkUnits(m_dicomSeriesContainer.size());
 
+    // Compute total work units
+    // We do not use an Aggregator here as the jobs
+    // are created after updating the main aggregator.
+    std::uint64_t totalWorkUnits = 0;
+    for(const ::fwMedData::DicomSeries::sptr &dicomSeries : m_dicomSeriesContainer)
+    {
+        totalWorkUnits += dicomSeries->getLocalDicomPaths().size();
+    }
+    m_converterJob->setTotalWorkUnits(totalWorkUnits);
+
+    std::uint64_t completedProgress = 0;
+    auto progressCallback = [&](std::uint64_t progress)
+    {
+        m_converterJob->doneWork(completedProgress + progress);
+    };
+
     // Read series
     std::uint64_t progress = 0;
-    for(const ::fwMedData::DicomSeries::sptr& dicomSeries: m_dicomSeriesContainer)
+    for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
         ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
         FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
@@ -363,6 +377,8 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
 
         if(m_supportedSOPClassContainer.empty() || std::find(bIt, eIt, sopClassUID) != eIt)
         {
+            seriesReader->setProgressCallback(progressCallback);
+            seriesReader->setCancelRequestedCallback(m_converterJob->cancelRequestedCallback());
             try
             {
 
@@ -395,7 +411,8 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
             break;
         }
 
-        m_converterJob->doneWork(++progress);
+        // m_converterJob->doneWork(++progress);
+        completedProgress = m_converterJob->getDoneWorkUnits();
     }
 
     m_converterJob->done();
@@ -405,7 +422,8 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::dicomSeriesComparator(SPTR(::fwMedData::DicomSeries)a, SPTR(::fwMedData::DicomSeries)b)
+bool SeriesDB::dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
+                                     const SPTR(::fwMedData::DicomSeries)& b)
 {
     ::fwMedData::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
     std::string aSOPClassUID = *(aSOPClassUIDContainer.begin());
@@ -413,21 +431,19 @@ bool SeriesDB::dicomSeriesComparator(SPTR(::fwMedData::DicomSeries)a, SPTR(::fwM
     std::string bSOPClassUID = *(bSOPClassUIDContainer.begin());
 
     // a > b if a contains a SR and not b
-    bool aIsAnImage = (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-                       ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                       aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
-                       ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-                       ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-                       ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-                       ::gdcm::MediaStorage::SurfaceSegmentationStorage);
+    bool aIsAnImage =
+        (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
+         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
+         aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
+         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
-    bool bIsAnImage = (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-                       ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                       bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
-                       ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
-                       ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-                       ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
-                       ::gdcm::MediaStorage::SurfaceSegmentationStorage);
+    bool bIsAnImage =
+        (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
+         ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
+         bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+         ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
+         ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
     return bIsAnImage && !aIsAnImage;
 }

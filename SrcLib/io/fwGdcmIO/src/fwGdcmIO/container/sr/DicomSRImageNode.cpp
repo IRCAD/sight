@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRImageNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwCore/spyLog.hpp>
 
@@ -20,10 +20,15 @@ namespace sr
 
 //------------------------------------------------------------------------------
 
-DicomSRImageNode::DicomSRImageNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-                                   const std::string& sopClassUID, const std::string& sopInstanceUID, int frameNumber) :
-    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship), m_sopClassUID(sopClassUID),
-    m_sopInstanceUID(sopInstanceUID), m_frameNumber(frameNumber)
+DicomSRImageNode::DicomSRImageNode(const DicomCodedAttribute& codedAttribute,
+                                   const std::string& relationship,
+                                   const std::string& sopClassUID,
+                                   const std::string& sopInstanceUID,
+                                   int frameNumber) :
+    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship),
+    m_sopClassUID(sopClassUID),
+    m_sopInstanceUID(sopInstanceUID),
+    m_frameNumber(frameNumber)
 {
 }
 
@@ -35,7 +40,7 @@ DicomSRImageNode::~DicomSRImageNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::write(::gdcm::DataSet& dataset) const
+void DicomSRImageNode::write(::gdcm::DataSet &dataset) const
 {
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
@@ -45,7 +50,7 @@ void DicomSRImageNode::write(::gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-void DicomSRImageNode::writeReferencedSOPSequence(::gdcm::DataSet& dataset) const
+void DicomSRImageNode::writeReferencedSOPSequence(::gdcm::DataSet &dataset) const
 {
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
     ::gdcm::Item item;
@@ -53,16 +58,16 @@ void DicomSRImageNode::writeReferencedSOPSequence(::gdcm::DataSet& dataset) cons
     ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Referenced SOP Class UID - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_sopClassUID, itemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(m_sopClassUID, itemDataset);
 
     // Referenced SOP Instance UID  - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_sopInstanceUID, itemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(m_sopInstanceUID, itemDataset);
 
     // Referenced Frame Number - Type 1C
-    ::fwGdcmIO::helper::DicomData::setTagValues< int, 0x0008, 0x1160 >(&m_frameNumber, 1, itemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< int, 0x0008, 0x1160 >(&m_frameNumber, 1, itemDataset);
 
     sequence->AddItem(item);
-    ::fwGdcmIO::helper::DicomData::setSQ< 0x0008, 0x1199 >(sequence, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x1199 >(sequence, dataset);
 }
 
 //------------------------------------------------------------------------------

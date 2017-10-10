@@ -38,12 +38,11 @@ public:
      * @param[in] object FW4SPL data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API TemplateID(
-        SPTR(::fwMedData::DicomSeries)dicomSeries,
-        SPTR(::gdcm::Reader)reader,
-        SPTR(::fwGdcmIO::container::DicomInstance)instance,
-        SPTR(DATATYPE)object,
-        ::fwLog::Logger::sptr logger);
+    FWGDCMIO_API TemplateID(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                            const SPTR(::gdcm::Reader)& reader,
+                            const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                            const SPTR(DATATYPE)& object,
+                            const ::fwLog::Logger::sptr& logger);
 
     /// Destructor
     FWGDCMIO_API virtual ~TemplateID();
@@ -69,11 +68,16 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-TemplateID<DATATYPE>::TemplateID(
-    SPTR(::fwMedData::DicomSeries)dicomSeries,
-    SPTR(::gdcm::Reader)reader,
-    SPTR(::fwGdcmIO::container::DicomInstance)instance, SPTR(DATATYPE)object, ::fwLog::Logger::sptr logger) :
-    m_dicomSeries(dicomSeries), m_reader(reader), m_instance(instance), m_object(object), m_logger(logger)
+TemplateID<DATATYPE>::TemplateID(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                                 const SPTR(::gdcm::Reader)& reader,
+                                 const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                 const SPTR(DATATYPE)& object,
+                                 const ::fwLog::Logger::sptr& logger) :
+    m_dicomSeries(dicomSeries),
+    m_reader(reader),
+    m_instance(instance),
+    m_object(object),
+    m_logger(logger)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Reader should not be null.", reader);
@@ -88,6 +92,8 @@ template< class DATATYPE >
 TemplateID<DATATYPE>::~TemplateID()
 {
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace tid
 } // namespace reader

@@ -7,8 +7,8 @@
 #ifndef __FWGDCMIO_READER_IE_IMAGE_HPP__
 #define __FWGDCMIO_READER_IE_IMAGE_HPP__
 
-#include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
+#include "fwGdcmIO/exception/Failed.hpp"
 
 #include <fwData/Image.hpp>
 
@@ -35,16 +35,16 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Image(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                       SPTR(::gdcm::Reader)reader,
-                       SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                       ::fwData::Image::sptr image,
-                       ::fwLog::Logger::sptr logger,
-                       const ProgressCallback& callback,
-                       const bool& cancelled);
+    FWGDCMIO_API Image(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                       const SPTR(::gdcm::Reader)& reader,
+                       const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                       const ::fwData::Image::sptr& image,
+                       const ::fwLog::Logger::sptr& logger = nullptr,
+                       ProgressCallback progress = nullptr,
+                       CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Image();
@@ -87,8 +87,10 @@ protected:
      * @param[in] performRescale Set to true when a rescale must be perfromed
      * @return Global raw buffer of the image.
      */
-    char* readImageBuffer(const std::vector<unsigned int>& dimensions, unsigned short bitsAllocated,
-                          unsigned short newBitsAllocated, bool performRescale);
+    char* readImageBuffer(const std::vector<unsigned int>& dimensions,
+                          unsigned short bitsAllocated,
+                          unsigned short newBitsAllocated,
+                          bool performRescale) throw(::fwGdcmIO::exception::Failed);
 
     /**
      * @brief Correct image buffer according to image orientation

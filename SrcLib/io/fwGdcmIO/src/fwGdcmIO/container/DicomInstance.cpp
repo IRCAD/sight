@@ -25,6 +25,7 @@ namespace container
 
 DicomInstance::DicomInstance() :
     m_isMultiFiles(true),
+    m_logger(nullptr),
     m_SOPClassUID("")
 {
     SLM_TRACE_FUNC();
@@ -32,11 +33,14 @@ DicomInstance::DicomInstance() :
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(SPTR(::fwMedData::Series)series, bool isMultiFiles) :
+DicomInstance::DicomInstance(const ::fwMedData::Series::sptr& series,
+                             const ::fwLog::Logger::sptr& logger,
+                             bool isMultiFiles) :
     m_isMultiFiles(isMultiFiles),
     m_SOPClassUID(""),
     m_studyInstanceUID(series->getStudy()->getInstanceUID()),
-    m_seriesInstanceUID(series->getInstanceUID())
+    m_seriesInstanceUID(series->getInstanceUID()),
+    m_logger(logger)
 {
     // Compute SOPClassUID
     this->computeSOPClassUID(series);
@@ -47,24 +51,36 @@ DicomInstance::DicomInstance(SPTR(::fwMedData::Series)series, bool isMultiFiles)
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(SPTR(::fwMedData::DicomSeries)dicomSeries) :
+DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                             const ::fwLog::Logger::sptr& logger) :
     m_isMultiFiles(dicomSeries->getLocalDicomPaths().size()>1),
     m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
-    m_seriesInstanceUID(dicomSeries->getInstanceUID())
+    m_seriesInstanceUID(dicomSeries->getInstanceUID()),
+    m_logger(logger)
 {
+    SLM_ASSERT("DicomSeries is not instantiated", dicomSeries);
+    SLM_ASSERT("DicomSeries availability shall be PATHS.",
+        dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::PATHS);
+
     // Get SOPClassUID
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
-    m_SOPClassUID                                                           = sopClassUIDContainer.begin()->c_str();
+    if(!sopClassUIDContainer.empty())
+    {
+        m_SOPClassUID = sopClassUIDContainer.begin()->c_str();
+    }
+
+
 }
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(const DicomInstance& dicomInstance)
+DicomInstance::DicomInstance(const DicomInstance &dicomInstance)
 {
     SLM_TRACE_FUNC();
-    m_isMultiFiles            = dicomInstance.m_isMultiFiles;
-    m_SOPClassUID             = dicomInstance.m_SOPClassUID;
+    m_isMultiFiles = dicomInstance.m_isMultiFiles;
+    m_SOPClassUID = dicomInstance.m_SOPClassUID;
     m_SOPInstanceUIDContainer = dicomInstance.m_SOPInstanceUIDContainer;
+    m_logger = dicomInstance.m_logger;
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +92,7 @@ DicomInstance::~DicomInstance()
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::computeSOPClassUID(::fwMedData::Series::sptr series)
+void DicomInstance::computeSOPClassUID(const ::fwMedData::Series::csptr& series)
 {
     // Retrieve series type
     ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicConstCast(series);
@@ -120,7 +136,7 @@ void DicomInstance::computeSOPClassUID(::fwMedData::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::generateSOPInstanceUIDs(::fwMedData::Series::sptr series)
+void DicomInstance::generateSOPInstanceUIDs(const ::fwMedData::Series::csptr& series)
 {
     // Retrieve ImageSeries
     ::fwMedData::ImageSeries::csptr imageSeries = ::fwMedData::ImageSeries::dynamicConstCast(series);

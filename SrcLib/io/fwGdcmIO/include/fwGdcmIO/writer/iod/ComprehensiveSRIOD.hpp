@@ -28,15 +28,24 @@ public:
     /**
      * @brief Constructor
      * @param[in] instance DICOM instance used to share informations between modules
+     * @param[in] destinationPath Destination path
+     * @param[in] use3DSR Use 3D Structural Report IOD
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API ComprehensiveSRIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                    ::boost::filesystem::path folderPath, bool use3DSR = false);
+    FWGDCMIO_API ComprehensiveSRIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                    const ::boost::filesystem::path& destinationPath,
+                                    bool use3DSR = false,
+                                    const ::fwLog::Logger::sptr& logger = nullptr,
+                                    ProgressCallback progress = nullptr,
+                                    CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~ComprehensiveSRIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(::fwMedData::Series::sptr series);
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series);
 
 protected:
     /// True if we must use 3DSR

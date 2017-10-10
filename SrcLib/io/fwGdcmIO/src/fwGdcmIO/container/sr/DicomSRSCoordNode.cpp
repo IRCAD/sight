@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwCore/spyLog.hpp>
 
@@ -20,19 +20,22 @@ namespace sr
 
 //------------------------------------------------------------------------------
 
-DicomSRSCoordNode::DicomSRSCoordNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-                                     const std::string& graphicType, GraphicDataContainerType graphicDataContainer) :
+DicomSRSCoordNode::DicomSRSCoordNode(const DicomCodedAttribute& codedAttribute,
+                                     const std::string& relationship,
+                                     const std::string& graphicType,
+                                     GraphicDataContainerType graphicDataContainer) :
     ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "SCOORD", relationship),
-    m_graphicType(graphicType), m_graphicDataContainer(graphicDataContainer)
+    m_graphicType(graphicType),
+    m_graphicDataContainer(graphicDataContainer)
 {
     SLM_ASSERT("Only POINT and POLYLINE are supported by SCoord node for now.",
-               graphicType == "POINT" || graphicType == "POLYLINE");
+            graphicType == "POINT" || graphicType == "POLYLINE");
 
     SLM_ASSERT("Graphic data doesn't match graphic type POINT.",
-               m_graphicType != "POINT" || m_graphicDataContainer.size() == 2);
+            m_graphicType != "POINT" || m_graphicDataContainer.size() == 2);
 
     SLM_ASSERT("Graphic data doesn't match graphic type POLYLINE.",
-               m_graphicType != "POLYLINE" || m_graphicDataContainer.size() == 4);
+            m_graphicType != "POLYLINE" || m_graphicDataContainer.size() == 4);
 
 }
 
@@ -44,16 +47,16 @@ DicomSRSCoordNode::~DicomSRSCoordNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRSCoordNode::write(::gdcm::DataSet& dataset) const
+void DicomSRSCoordNode::write(::gdcm::DataSet &dataset) const
 {
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
     // Graphic Data - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValues< float, 0x0070, 0x0022 >(
-        &m_graphicDataContainer[0], m_graphicDataContainer.size(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(
+            &m_graphicDataContainer[0], m_graphicDataContainer.size(), dataset);
 
     // Graphic Type - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0070, 0x0023 >(m_graphicType, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x0023 >(m_graphicType, dataset);
 }
 
 //------------------------------------------------------------------------------

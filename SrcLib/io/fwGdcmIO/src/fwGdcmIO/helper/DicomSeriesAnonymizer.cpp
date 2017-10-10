@@ -34,15 +34,15 @@ DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(::fwMedData::DicomSeries::sptr source)
+void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& source)
 {
     this->anonymize(source, source);
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(::fwMedData::DicomSeries::sptr source,
-                                      ::fwMedData::DicomSeries::sptr destination)
+void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& source,
+                                      const ::fwMedData::DicomSeries::sptr& destination)
 {
     FW_RAISE_IF("Dicom series should be available on the local computer.",
                 source->getDicomAvailability() != ::fwMedData::DicomSeries::PATHS);
@@ -50,9 +50,9 @@ void DicomSeriesAnonymizer::anonymize(::fwMedData::DicomSeries::sptr source,
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
     ::fwGdcmIO::reader::SeriesDB::sptr reader          = ::fwGdcmIO::reader::SeriesDB::New();
 
-    auto writerObserver     = writer->getJob();
+    auto writerObserver = writer->getJob();
     auto anonymizerObserver = m_anonymizer.getJob();
-    auto readerObserver     = reader->getJob();
+    auto readerObserver = reader->getJob();
 
     // Set up observer cancel callback
     m_job->addSimpleCancelHook([&] {
@@ -115,6 +115,8 @@ void DicomSeriesAnonymizer::anonymize(::fwMedData::DicomSeries::sptr source,
 {
     return m_job;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace helper
 } // namespace fwGdcmIO

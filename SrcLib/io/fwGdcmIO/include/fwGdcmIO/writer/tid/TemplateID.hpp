@@ -35,10 +35,9 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] object FW4SPL data object
      */
-    FWGDCMIO_API TemplateID(
-        SPTR(::gdcm::Writer)writer,
-        SPTR(::fwGdcmIO::container::DicomInstance)instance,
-        SPTR(DATATYPE)object);
+    FWGDCMIO_API TemplateID(const SPTR(::gdcm::Writer)& writer,
+                            const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                            const SPTR(DATATYPE)& object);
 
     /// Destructor
     FWGDCMIO_API virtual ~TemplateID();
@@ -58,9 +57,12 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-TemplateID<DATATYPE>::TemplateID(SPTR(::gdcm::Writer)writer,
-                                 SPTR(::fwGdcmIO::container::DicomInstance)instance, SPTR(DATATYPE)object) :
-    m_writer(writer), m_instance(instance), m_object(object)
+TemplateID<DATATYPE>::TemplateID(const SPTR(::gdcm::Writer)& writer,
+                                 const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                 const SPTR(DATATYPE)& object) :
+    m_writer(writer),
+    m_instance(instance),
+    m_object(object)
 {
     SLM_ASSERT("Writer should not be null.", writer);
     SLM_ASSERT("Instance should not be null.", instance);
@@ -73,6 +75,8 @@ template< class DATATYPE >
 TemplateID<DATATYPE>::~TemplateID()
 {
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace tid
 } // namespace writer

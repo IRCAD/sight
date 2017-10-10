@@ -132,14 +132,14 @@ void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPa
 
     // Save old UID
     m_uidContainer.clear();
-    std::vector< std::string > oldFilenames;
+    std::vector< ::boost::filesystem::path > oldFilenames;
     ::fwGdcmIO::helper::DicomSearch::searchRecursively(srcPath, oldFilenames, true);
-    for(std::string filename: oldFilenames)
+    for(::boost::filesystem::path filename: oldFilenames)
     {
         // Try to open the file
         ::gdcm::Reader reader;
         reader.SetFileName( filename.c_str() );
-        CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \""+filename+"\"", reader.Read());
+        CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \"" + filename.string() + "\"", reader.Read());
         ::gdcm::File& gdcmFile   = reader.GetFile();
         ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
@@ -235,9 +235,9 @@ void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPa
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
 
     // Read DICOM files
-    std::vector< std::string > filenames;
+    std::vector< ::boost::filesystem::path > filenames;
     ::fwGdcmIO::helper::DicomSearch::searchRecursively(path, filenames, true);
-    for(std::string filename: filenames)
+    for(::boost::filesystem::path filename : filenames)
     {
         this->testAnonymizedFile(filename);
     }
@@ -437,12 +437,12 @@ void processTag(const ::gdcm::DataSet& dataset, const std::string& actionCode,
 }
 //------------------------------------------------------------------------------
 
-void DicomAnonymizerTest::testAnonymizedFile(const std::string& filename)
+void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& filename)
 {
     // Try to open the file
     ::gdcm::Reader reader;
     reader.SetFileName( filename.c_str() );
-    CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \""+filename+"\"", reader.Read());
+    CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \"" + filename.string() + "\"", reader.Read());
     ::gdcm::File& gdcmFile   = reader.GetFile();
     ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 

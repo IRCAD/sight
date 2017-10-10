@@ -15,15 +15,13 @@
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/writer/tid/Fiducial.hpp"
 #include "fwGdcmIO/writer/tid/Measurement.hpp"
 
+#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
@@ -43,9 +41,9 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-MeasurementReport::MeasurementReport(SPTR(::gdcm::Writer)writer,
-                                     SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                     ::fwData::Image::sptr image) :
+MeasurementReport::MeasurementReport(const SPTR(::gdcm::Writer)& writer,
+                                     const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                     const ::fwData::Image::sptr& image) :
     ::fwGdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
 {
 }
@@ -70,7 +68,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRCodeNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("121049", "DCM", "Language of Content Item and Descendants"),
             "HAS CONCEPT MOD",
-            ::fwGdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States"));          // FIXME Do we keep English US ?
+            ::fwGdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States")); // FIXME Do we keep English US ?
     rootNode->addSubNode(languagesNode);
 
     // Create Observation Context Node (TID 1001) FIXME Do we need to add that template ?
@@ -80,7 +78,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRCodeNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("121058", "DCM", "Procedure reported"),
             "HAS CONCEPT MOD",
-            ::fwGdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance"));          // FIXME Find a good value
+            ::fwGdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance")); // FIXME Find a good value
     rootNode->addSubNode(procedureReportedNode);
 
     // Create ImageLibrary Node

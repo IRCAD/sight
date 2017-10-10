@@ -16,11 +16,13 @@ namespace fwGdcmIO
 {
 namespace helper
 {
+//------------------------------------------------------------------------------
 
-void FileWriter::write(const std::string& filename, SPTR(::gdcm::Writer)writer)
+void FileWriter::write(const ::boost::filesystem::path& filename,
+                       const SPTR(::gdcm::Writer)& writer)
 {
     // Set file header
-    ::gdcm::FileMetaInformation& metaInformation = writer->GetFile().GetHeader();
+    ::gdcm::FileMetaInformation &metaInformation = writer->GetFile().GetHeader();
 
     // Transfer syntax - Type 1
     metaInformation.SetDataSetTransferSyntax(::gdcm::TransferSyntax::ExplicitVRLittleEndian);
@@ -31,11 +33,12 @@ void FileWriter::write(const std::string& filename, SPTR(::gdcm::Writer)writer)
     // Write data
     if (!writer->Write())
     {
-        const std::string msg = "Unable to write the file " + filename;
+        const std::string msg = "Unable to write the file " + filename.string();
         throw ::fwGdcmIO::exception::Failed(msg);
     }
-
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace helper
 } // namespace fwGdcmIO

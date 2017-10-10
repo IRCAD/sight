@@ -59,11 +59,11 @@ void SeriesDB::write()
     std::sort(seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
 
     // Write all patients
-    for( ::fwMedData::Series::sptr series: seriesContainer)
+    for( ::fwMedData::Series::sptr series : seriesContainer)
     {
         // Create a new directory
         const ::boost::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();
-        ::boost::filesystem::create_directory(seriesPath);
+        ::boost::filesystem::create_directories(seriesPath);
         writer->setObject(series);
         writer->setFolder(seriesPath);
 
@@ -86,13 +86,15 @@ std::string SeriesDB::extension()
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::seriesComparator(SPTR(::fwMedData::Series)a, SPTR(::fwMedData::Series)b)
+bool SeriesDB::seriesComparator(const SPTR(::fwMedData::Series)& a,
+                                const SPTR(::fwMedData::Series)& b)
 {
     ::fwMedData::ModelSeries::sptr ma = ::fwMedData::ModelSeries::dynamicCast(a);
     ::fwMedData::ModelSeries::sptr mb = ::fwMedData::ModelSeries::dynamicCast(b);
     return (mb && !ma);
 }
 
-} // namespace writer
+//------------------------------------------------------------------------------
 
+} // namespace writer
 } // namespace fwGdcmIO

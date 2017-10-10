@@ -9,7 +9,7 @@
 
 #include "fwGdcmIO/container/sr/DicomSRContainerNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 
 #include <gdcmDataSet.h>
 #include <gdcmSequenceOfItems.h>
@@ -31,7 +31,8 @@ public:
      * @brief Read a Structured Report
      * @param[in] dataset Dataset from which the SR must be created
      */
-    FWGDCMIO_API static SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) readSR(const ::gdcm::DataSet& dataset);
+    FWGDCMIO_API static SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode)
+        readSR(const ::gdcm::DataSet& dataset);
 
     /**
      * @brief Dump the SR in graphviz format
@@ -56,7 +57,8 @@ protected:
      * @param[in] dataset Dataset from which the sub node must been read
      * @param[in] parent Parent node
      */
-    static void readSubNode(const ::gdcm::DataSet& dataset, SPTR(::fwGdcmIO::container::sr::DicomSRNode) parent);
+    static void readSubNode(const ::gdcm::DataSet& dataset,
+                            SPTR(::fwGdcmIO::container::sr::DicomSRNode) parent);
 
     /**
      * @brief Dump an SR node in graphviz format
@@ -64,8 +66,8 @@ protected:
      * @param[in] out Destination stream
      * @param[in] index Node index
      */
-    FWGDCMIO_API static void dumpSRNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node, std::ostream& out,
-                                        int& index);
+    FWGDCMIO_API static void dumpSRNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node,
+                                        std::ostream& out, int& index);
 
     /**
      * @brief Read content of a code sequence (eg : Concept Name Code Sequence, ...)
@@ -96,18 +98,21 @@ protected:
         const ::gdcm::DataSet& itemDataset = sequence->GetItem(1).GetNestedDataSet();
 
         // Code value - Type 1
-        codedAttributes.setCodeValue(DicomData::getTrimmedTagValue<0x0008,0x0100>(itemDataset));
+        auto codeValue = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008,0x0100>(itemDataset);
 
         // Coding Scheme Designator - Type 1
-        codedAttributes.setCodingSchemeDesignator(DicomData::getTrimmedTagValue<0x0008,0x0102>(itemDataset));
+        auto codingSchemeDesignator = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008,0x0102>(itemDataset);
 
         // Coding Scheme Version - Type 1C
-        codedAttributes.setCodingSchemeVersion(DicomData::getTrimmedTagValue<0x0008,0x0103>(itemDataset));
+        auto codingSchemeVersion = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008,0x0103>(itemDataset);
 
         // Code Meaning - Type 1
-        codedAttributes.setCodeMeaning(DicomData::getTrimmedTagValue<0x0008,0x0104>(itemDataset));
+        auto codeMeaning = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008,0x0104>(itemDataset);
 
-        return codedAttributes;
+        return ::fwGdcmIO::container::DicomCodedAttribute(codeValue,
+                                                          codingSchemeDesignator,
+                                                          codeMeaning,
+                                                          codingSchemeVersion);
     }
 };
 

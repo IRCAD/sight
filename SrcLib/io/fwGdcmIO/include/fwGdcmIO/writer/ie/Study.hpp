@@ -30,10 +30,16 @@ public:
      * @param[in] writer GDCM writer that must be enriched
      * @param[in] instance DICOM instance used to share information between modules
      * @param[in] study Study data
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Study(SPTR(::gdcm::Writer)writer,
-                       SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                       ::fwMedData::Study::sptr study);
+    FWGDCMIO_API Study(const SPTR(::gdcm::Writer)& writer,
+                       const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                       const ::fwMedData::Study::sptr& study,
+                       const ::fwLog::Logger::sptr& logger = nullptr,
+                       ProgressCallback progress = nullptr,
+                       CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Study();

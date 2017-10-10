@@ -33,10 +33,14 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentationIOD::SurfaceSegmentationIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                               SPTR(::fwGdcmIO::container::DicomInstance)imageInstance,
-                                               ::boost::filesystem::path folderPath) :
-    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, folderPath), m_imageInstance(imageInstance)
+SurfaceSegmentationIOD::SurfaceSegmentationIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                               const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
+                                               const ::boost::filesystem::path& destinationPath,
+                                               const ::fwLog::Logger::sptr& logger,
+                                               ProgressCallback progress,
+                                               CancelRequestedCallback cancel) :
+    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),
+    m_imageInstance(imageInstance)
 {
 }
 
@@ -48,7 +52,7 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::write(::fwMedData::Series::sptr series)
+void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
 {
     // Retrieve model series
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
@@ -65,7 +69,7 @@ void SurfaceSegmentationIOD::write(::fwMedData::Series::sptr series)
     // Use Image as frame of reference
     ::fwGdcmIO::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_imageInstance, series);
     ::fwGdcmIO::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
-    ::fwGdcmIO::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries);
+    ::fwGdcmIO::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Write Patient Module - PS 3.3 C.7.1.1
     patientIE.writePatientModule();
@@ -131,11 +135,12 @@ void SurfaceSegmentationIOD::write(::fwMedData::Series::sptr series)
     OSLM_TRACE("Number of Surfaces : " << writer->GetNumberOfSurfaces());
 
     // Write the file
-    ::fwGdcmIO::helper::FileWriter::write(m_folderPath.string() + "/imSEG", writer);
+    ::fwGdcmIO::helper::FileWriter::write(m_destinationPath.string(), writer);
 
 
 }
 
+//------------------------------------------------------------------------------
 
 } // namespace iod
 } // namespace writer

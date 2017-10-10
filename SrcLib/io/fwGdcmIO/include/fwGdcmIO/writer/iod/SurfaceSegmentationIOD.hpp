@@ -30,16 +30,24 @@ public:
     /**
      * @brief Constructor
      * @param[in] instance DICOM instance used to share information between modules
+     * @param[in] imageInstance Associated image instance
+     * @param[in] destinationPath Destination path
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API SurfaceSegmentationIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                        SPTR(::fwGdcmIO::container::DicomInstance)imageInstance,
-                                        ::boost::filesystem::path folderPath);
+    FWGDCMIO_API SurfaceSegmentationIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                        const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
+                                        const ::boost::filesystem::path& destinationPath,
+                                        const ::fwLog::Logger::sptr& logger = ::fwLog::Logger::New(),
+                                        ProgressCallback progress = nullptr,
+                                        CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SurfaceSegmentationIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(::fwMedData::Series::sptr series);
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series);
 
 protected:
     /// Image instance

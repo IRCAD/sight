@@ -9,6 +9,7 @@
 
 #include "fwGdcmIO/config.hpp"
 
+#include <gdcmSegmentHelper.h>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -19,20 +20,34 @@ namespace container
 {
 
 /**
- * @brief This class defines a coded entry of a SR
+ * @brief This class represents a DICOM basic coded entry.
+ * It stores the four mains attributes : Code Value, Coding Scheme Designator,
+ * Coding Scheme Version and Code Meaning.
+ * See DICOM PS 3.3 - Table 8.8-1a. Basic Code Sequence Macro Attributes
  */
 class FWGDCMIO_CLASS_API DicomCodedAttribute
 {
 public:
-    /// Constructor
-    FWGDCMIO_API DicomCodedAttribute(const std::string& codeValue = "", const std::string& codingSchemeDesignator = "",
-                                     const std::string& codeMeaning = "", const std::string& codingSchemeVersion = "");
+    /**
+     * @brief Constructor
+     * @param[in] codeValue Code Value (0008,0100)
+     * @param[in] codingSchemeDesignator Coding Shceme Designator (0008,0102)
+     * @param[in] codeMeaning Code Meaning (0008,0104)
+     * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
+     */
+    FWGDCMIO_API DicomCodedAttribute(const std::string& codeValue = "",
+                                     const std::string& codingSchemeDesignator = "",
+                                     const std::string& codeMeaning = "",
+                                     const std::string& codingSchemeVersion = "");
 
-    /// Return true if the attribute is empty
+    /// Returns true if the attribute is empty
     FWGDCMIO_API bool isEmpty() const;
 
-    /// Return true if the DicomCodedAttribute are the same
+    /**
+     * @brief Comparison operators overloading
+     * @{ */
     FWGDCMIO_API bool operator==(const DicomCodedAttribute& other) const;
+    /**  @} */
 
     /// Dump operator
     FWGDCMIO_API friend std::ostream& operator<< (std::ostream& os, const DicomCodedAttribute& attribute)
@@ -91,6 +106,9 @@ public:
     {
         m_codingSchemeVersion = codingSchemeVersion;
     }
+
+    /// Convert entry to GDCM format
+    FWGDCMIO_API ::gdcm::SegmentHelper::BasicCodedEntry toGDCMFormat() const;
 
 protected:
     /// Code Value (see : Tag(0008,0100) )

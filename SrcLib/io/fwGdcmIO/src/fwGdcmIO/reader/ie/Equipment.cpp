@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/Equipment.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
@@ -20,15 +20,14 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Equipment::Equipment(::fwMedData::DicomSeries::sptr dicomSeries,
-                     SPTR(::gdcm::Reader)reader,
-                     SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                     ::fwMedData::Equipment::sptr equipment,
-                     ::fwLog::Logger::sptr logger,
-                     const ProgressCallback& callback,
-                     const bool& cancelled) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Equipment >(dicomSeries, reader, instance, equipment,
-                                                                        logger, callback, cancelled)
+Equipment::Equipment(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                     const SPTR(::gdcm::Reader)& reader,
+                     const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                     const ::fwMedData::Equipment::sptr& equipment,
+                     const ::fwLog::Logger::sptr& logger,
+                     ProgressCallback progress,
+                     CancelRequestedCallback cancel) :
+    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Equipment >(dicomSeries, reader, instance, equipment, logger, progress, cancel)
 {
 }
 
@@ -43,10 +42,11 @@ Equipment::~Equipment()
 void Equipment::readGeneralEquipmentModule()
 {
     // Retrieve dataset
-    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
+    const ::gdcm::DataSet &dataset = m_reader->GetFile().GetDataSet();
 
     // Institution Name - Type 3
-    const std::string& institutName = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x0080 >(dataset);
+    const std::string& institutName =
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0080 >(dataset);
     m_object->setInstitutionName(institutName);
 
     // Manufacturer - Type 2

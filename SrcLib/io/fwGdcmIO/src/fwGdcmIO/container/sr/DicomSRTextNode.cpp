@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwCore/spyLog.hpp>
 
@@ -21,8 +21,10 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRTextNode::DicomSRTextNode(const DicomCodedAttribute& codedAttribute,
-                                 const std::string& relationship, const std::string textValue) :
-    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "TEXT", relationship), m_textValue(textValue)
+                                 const std::string& relationship,
+                                 const std::string textValue) :
+    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "TEXT", relationship),
+    m_textValue(textValue)
 {
 }
 
@@ -34,12 +36,12 @@ DicomSRTextNode::~DicomSRTextNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRTextNode::write(::gdcm::DataSet& dataset) const
+void DicomSRTextNode::write(::gdcm::DataSet &dataset) const
 {
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
     // Text Value - Type 1C
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0040, 0xa160 >(m_textValue, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0040, 0xa160 >(m_textValue, dataset);
 }
 
 //------------------------------------------------------------------------------

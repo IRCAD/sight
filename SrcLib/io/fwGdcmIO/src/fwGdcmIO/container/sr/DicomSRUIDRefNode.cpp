@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwCore/spyLog.hpp>
 
@@ -21,8 +21,10 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRUIDRefNode::DicomSRUIDRefNode(const DicomCodedAttribute& codedAttribute,
-                                     const std::string& relationship, const std::string uidValue) :
-    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "UIDREF", relationship), m_uidValue(uidValue)
+                                     const std::string& relationship,
+                                     const std::string uidValue) :
+    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "UIDREF", relationship),
+    m_uidValue(uidValue)
 {
 }
 
@@ -34,12 +36,12 @@ DicomSRUIDRefNode::~DicomSRUIDRefNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRUIDRefNode::write(::gdcm::DataSet& dataset) const
+void DicomSRUIDRefNode::write(::gdcm::DataSet &dataset) const
 {
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
     // UID Value - Type 1C
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0040, 0xa124 >(m_uidValue, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0040, 0xa124 >(m_uidValue, dataset);
 }
 
 //------------------------------------------------------------------------------

@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/ie/Equipment.hpp"
 #include "fwGdcmIO/reader/ie/Patient.hpp"
 #include "fwGdcmIO/reader/ie/Series.hpp"
@@ -30,11 +29,12 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentationIOD::SurfaceSegmentationIOD(::fwMedData::DicomSeries::sptr dicomSeries,
-                                               SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                               ::fwLog::Logger::sptr logger,
-                                               ProgressCallback& callback, bool& cancelled) :
-    ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, callback, cancelled)
+SurfaceSegmentationIOD::SurfaceSegmentationIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                                               const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                               const ::fwLog::Logger::sptr& logger,
+                                               ProgressCallback progress,
+                                               CancelRequestedCallback cancel):
+    ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
 
@@ -47,7 +47,7 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
+void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
 {
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
     SLM_ASSERT("ModelSeries should not be null.", modelSeries);
@@ -59,8 +59,8 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
     ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
     if(pathContainer.size() > 1)
     {
-        m_logger->warning(
-            "More than one surface segmentation storage was found in the series. Only the first one will be read.");
+        m_logger->warning("More than one surface segmentation storage have been found in the series. "
+                          "Only the first one will be read.");
     }
 
     // Read first file
@@ -68,20 +68,20 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
     reader->SetFileName( filename.c_str() );
     bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                        filename+"\" using the GDCM Image Reader."), !success);
+                                                      filename+"\" using the GDCM Image Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
-                                              m_progressCallback, m_cancelled);
+                                            m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
-                                          m_progressCallback, m_cancelled);
+                                            m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                            m_progressCallback, m_cancelled);
+                                            m_progressCallback, m_cancelRequestedCallback);
     // Use Image as frame of reference
     ::fwGdcmIO::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
-                                                  m_progressCallback, m_cancelled);
+                                            m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Surface surfaceIE(m_dicomSeries, reader, m_instance, modelSeries, m_logger,
-                                              m_progressCallback, m_cancelled);
+                                            m_progressCallback, m_cancelRequestedCallback);
 
     // Read Patient Module - PS 3.3 C.7.1.1
     patientIE.readPatientModule();
@@ -107,7 +107,12 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
     // Read SOP Common Module - PS 3.3 C.12.1
     // NOTE: Not used in FW4SPL
 
-    // Skipped segmentation count
+    // Read Surface Segmentation Module - PS 3.3 C.8.23.1
+    // And Surface Mesh Module - PS 3.3 C.27.1
+    surfaceIE.readSurfaceSegmentationAndSurfaceMeshModules();
+
+#if 0
+// Skipped segmentation count
     unsigned int skippedSegmentationCount = 0;
 
     // Read each surface segmentation
@@ -138,9 +143,11 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series)
     }
 
     OSLM_TRACE("Number of reconstructions : " << modelSeries->getReconstructionDB().size());
+#endif
 
-    // Display reconstructions
-    series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
+   // Display reconstructions
+   series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
+
 }
 
 //------------------------------------------------------------------------------

@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRContainerNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwCore/spyLog.hpp>
 
@@ -39,7 +39,7 @@ void DicomSRContainerNode::write(::gdcm::DataSet& dataset) const
 
     // Continuity of content - Type 1 - See PS 3.3 C.18.8 (Only for type CONTAINER)
     // NOTE : Continuity is fixed to SEPARATE because it provides a better compatibility.
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0040, 0xa050 >("SEPARATE", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0040, 0xa050 >("SEPARATE", dataset);
 }
 
 //------------------------------------------------------------------------------
