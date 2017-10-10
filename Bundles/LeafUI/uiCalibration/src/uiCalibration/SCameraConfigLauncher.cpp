@@ -26,11 +26,18 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwMedData/SeriesDB.hpp>
+
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <io/IReader.hpp>
 
 #include <QHBoxLayout>
+#include <QInputDialog>
+#include <QStringList>
 
 namespace uiCalibration
 {
@@ -202,55 +209,81 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    ::fwGui::dialog::LocationDialog dialog;
-    dialog.addFilter("Matrix", "*.trf");
-    dialog.setTitle("Select the matrix file to load");
-    dialog.setOption(::fwGui::dialog::ILocationDialog::READ);
+    auto sdb = ::fwMedData::SeriesDB::New();
+    ::fwServices::IService::sptr readerService =
+        ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
 
-    auto result = ::fwData::location::SingleFile::dynamicCast( dialog.show() );
+    ::fwServices::OSR::registerService(sdb, readerService);
 
-    bool success = true;
-    size_t width, height;
-    try
+    ::io::IReader::sptr reader = ::io::IReader::dynamicCast(readerService);
+    reader->start();
+    reader->configureWithIHM();
+    reader->update();
+    reader->stop();
+    ::fwServices::OSR::unregisterService(readerService);
+
+    auto series       = sdb->getContainer();
+    auto cameraSeries = std::vector< ::arData::CameraSeries::sptr>();
+
+    for (auto& series_ : series)
     {
-        ::fwGui::dialog::InputDialog widthDialog;
-        widthDialog.setTitle("Width of the camera frames");
-        widthDialog.setMessage("Enter the width in pixels of the camera frames: ");
-        widthDialog.setInput("<Width>");
-        auto widthStr = widthDialog.getInput();
-        width = std::stoul(widthStr);
-
-        ::fwGui::dialog::InputDialog heightDialog;
-        heightDialog.setTitle("Height of the camera frames");
-        heightDialog.setMessage("Enter the height in pixels of the camera frames: ");
-        heightDialog.setInput("<Height>");
-        auto heightStr = heightDialog.getInput();
-        height = std::stoul(heightStr);
-    }
-    catch(std::exception const& e)
-    {
-        success = false;
+        auto cameraSeries_ = ::arData::CameraSeries::dynamicCast(series_);
+        if (cameraSeries_ != nullptr)
+        {
+            cameraSeries.push_back(cameraSeries_);
+        }
     }
 
-    if(result && success)
+    if (cameraSeries.size() == 0)
     {
-        auto matrix = ::fwData::TransformationMatrix3D::New();
-        auto reader = ::fwDataIO::reader::TransformationMatrix3DReader::New();
-        reader->setObject( matrix );
-        reader->setFile(result->getPath());
-        reader->read();
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "No CameraSeries in SDB",
+            "There are no CameraSeries present in the loaded SeriesDB",
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
+    }
+    else
+    {
+        QStringList cameras;
+        using CameraMap = std::map< std::string, ::arData::Camera::sptr>;
+        CameraMap map;
+        for (auto nSeries = 0; nSeries != cameraSeries.size(); ++nSeries)
+        {
+            auto cameraSeries_ = cameraSeries[nSeries];
+            for (auto nCam = 0; nCam != cameraSeries_->getNumberOfCameras(); ++nCam)
+            {
+                auto cam      = cameraSeries_->getCamera(nCam);
+                auto cameraID =
+                    cam->getCameraID() + " [" + std::to_string(nSeries) + ", " +  std::to_string(nCam) + "]";
+                map.insert(std::make_pair(cameraID, cam));
+                cameras << QString(cameraID.data());
+            }
+        }
 
-        const auto camIdx = m_cameraComboBox->currentIndex();
-        auto camera       = m_cameraSeries->getCamera(camIdx);
-        camera->setFx(matrix->getCoefficient(0, 0));
-        camera->setFy(matrix->getCoefficient(1, 1));
-        camera->setCx(matrix->getCoefficient(0, 2));
-        camera->setCy(matrix->getCoefficient(1, 2));
-        camera->setHeight(height);
-        camera->setWidth(width);
-        camera->setIsCalibrated(true);
-        camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType>(::arData::Camera::s_INTRINSIC_CALIBRATED_SIG)
-        ->asyncEmit();
+        if (cameras.size() == 0)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "No Cameras in SDB",
+                "There are CameraSeries present in the loaded SeriesDB, but no Cameras were found",
+                ::fwGui::dialog::IMessageDialog::CRITICAL);
+        }
+        else
+        {
+            auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+            bool ok          = false;
+            auto selected    = QInputDialog::getItem(
+                qtContainer->getQtContainer(), "Please select a camera", "Camera", cameras, 0, false, &ok);
+            if (ok)
+            {
+                const auto selectedStd    = selected.toStdString();
+                const auto selectedCamera = map[selectedStd];
+                const auto camIdx         = m_cameraComboBox->currentIndex();
+                auto camera               = m_cameraSeries->getCamera(camIdx);
+                camera->deepCopy(selectedCamera);
+                camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType>(
+                    ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG)
+                ->asyncEmit();
+            }
+        }
     }
 }
 

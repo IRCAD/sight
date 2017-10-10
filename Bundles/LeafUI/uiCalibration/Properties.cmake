@@ -16,6 +16,7 @@ set( DEPENDENCIES
         fwMedData
 
         gui
+        io
 )
 set( REQUIREMENTS  )
 
