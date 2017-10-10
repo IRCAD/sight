@@ -209,7 +209,6 @@
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="videoImage" />
-                <in key="camera" uid="camera" />
                 <config renderer="video" />
             </service>
 

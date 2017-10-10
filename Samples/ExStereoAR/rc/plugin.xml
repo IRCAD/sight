@@ -243,7 +243,6 @@
 
             <service uid="videoLeft" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="videoImage1" />
-                <in key="camera" uid="camera1" />
                 <config renderer="video" />
             </service>
 
@@ -285,7 +284,6 @@
 
             <service uid="videoRight" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="videoImage2" />
-                <in key="camera" uid="camera2" />
                 <config renderer="video" />
             </service>
 
