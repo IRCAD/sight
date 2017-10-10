@@ -6,16 +6,16 @@
         <param name="genericSceneUID" />
         <!-- 3D negato image -->
         <param name="imageUID" />
-        <param name="TFSelections" />
+        <param name="TF" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
         <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="camera" type="::arData::Camera" />
+        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreSceneView" type="::gui::view::SDefaultView">
             <gui>
@@ -129,8 +129,8 @@
 
         <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TF" uid="${TFSelections}" />
-            <config layer="default" selectedTFKey="SelectedTF" />
+            <inout key="tf" uid="${TF}" optional="yes" />
+            <config layer="default" />
         </service>
 
         <!-- ********************************* End Generic Scene ******************************* -->
@@ -159,6 +159,9 @@
             <inout key="camera" uid="camera" />
             <videoSupport>yes</videoSupport>
         </service>
+
+        <!-- *************************************** Starts ************************************ -->
+
 
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />

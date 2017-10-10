@@ -25,23 +25,28 @@ namespace visuOgreAdaptor
  * - \b newImage() : update the image display to show the new content.
  * - \b sliceType(int, int) : update image slice index .
  * - \b sliceIndex(int, int, int) : update image slice type.
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ *      window and level
 
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="..." />
-            <inout key="tfSelection" uid="..." />
-            <config renderer="default" sliceIndex="axial" filtering="none" />
+            <inout key="tf" uid="..." optional="yes" />
+            <config layer="default" sliceIndex="axial" filtering="none" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *
  * @subsection Configuration Configuration:
- * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
- * - \b selectedTFKey: key of the transfer function to use in negato
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwDataTools::helper::MedicalImageAdaptor
@@ -70,15 +75,17 @@ protected:
     VISUOGREADAPTOR_API virtual void stopping() override;
     /// Requests a rendering of the scene.
     VISUOGREADAPTOR_API virtual void updating() override;
+    /// Select the current tf
+    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Called when transfer function points are modified.
-    VISUOGREADAPTOR_API virtual void updatingTFPoints() override;
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function windowing is modified.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
 private:
 

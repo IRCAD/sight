@@ -4,17 +4,17 @@
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="maskUID" />
-        <param name="TFSelections" />
         <param name="idvrEnumParamChannel" />
         <param name="idvrBoolParamChannel" />
         <param name="idvrDoubleParamChannel" />
         <param name="idvrColorParamChannel" />
+        <param name="TF" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
         <object uid="${maskUID}" type="::fwData::Image" src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
         <!-- ******************************* UI declaration *********************************** -->
         <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
@@ -60,10 +60,10 @@
         </service>
 
         <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
-            <in key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TF" uid="${TFSelections}" />
+            <inout key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="tf" uid="${TF}" optional="yes" />
             <inout key="mask" uid="${maskUID}" autoConnect="yes" />
-            <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" />
         </service>
 
         <!-- End Generic Scene ***************************************** -->
@@ -92,7 +92,7 @@
             </parameters>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
+        <!-- ************************************* Connections ************************************ -->
         <connect>
             <signal>vrBasicEditor/boolChanged</signal>
             <slot>volumeRender/setBoolParameter</slot>
@@ -139,9 +139,13 @@
             <slot>volumeRender/setColorParameter</slot>
         </connect>
 
+        <!-- *************************************** Starts ************************************ -->
+
         <start uid="OgreVolumeRendering" />
+
         <!-- Ogre scene 'volumeRenderingScene' -->
         <start uid="interactorAdaptor" />
         <start uid="volumeRender" />
+
     </config>
 </extension>

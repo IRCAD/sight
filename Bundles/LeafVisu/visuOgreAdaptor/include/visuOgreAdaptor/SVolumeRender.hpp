@@ -60,31 +60,35 @@ namespace visuOgreAdaptor
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
  * - \b setColorParameter(array<uint8_t, 4>, string): Calls a color parameter slot according to the given key.
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SVolumeRender" >
-        <in key="image" uid="..." autoConnect="yes" />
-        <inout key="TF" uid="..." />
+        <inout key="image" uid="..." autoConnect="yes" />
+        <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
-        <config renderer="default"
+        <config layer="default"
                 preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
-                aoFactor="0.5" colorBleedingFactor="0.5" selectedTFKey="SelectedTF" />
+                aoFactor="0.5" colorBleedingFactor="0.5" />
     </service>
    @endcode
  * @subsection Input Input
  * - \b image [::fwData::Image]: input volume data.
  * @subsection In-Out In-Out
- * - \b TF [::fwData::Composite]: composite containing transfer functions.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  * - \b mask [::fwData::Image] (optional): segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
- * - \b renderer (optional): defines the renderer displaying the volume.
+ * - \b layer (mandatory): id of the layer where this adaptor applies.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
- * - \b selectedTFKey (mandatory): TF key.
  * Only if the raycasting render mode is activated :
  * - \b ao (optional, yes/no, default=no): Ambient occlusion usage.
  * - \b colorBleeding (optional, yes/no, default=no): Color bleeding usage.
@@ -164,11 +168,14 @@ protected:
     /// Configures the service
     VISUOGREADAPTOR_API virtual void configuring() override;
 
-    /// Slot called on TF update.
-    VISUOGREADAPTOR_API virtual void updatingTFPoints() override;
+    /// Retrieves the current transfer function
+    VISUOGREADAPTOR_API void swapping(const KeyType& key) override;
 
-    /// Slot called on TF window update.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFPoints() override;
+
+    /// Slot: update the displayed transfer function
+    VISUOGREADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

@@ -56,6 +56,11 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT    
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
 
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT           = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT              = "tf";
+static const ::fwServices::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
+static const ::fwServices::IService::KeyType s_MASK_INOUT            = "mask";
+
 //-----------------------------------------------------------------------------
 
 SVolumeRender::SVolumeRender() noexcept :
@@ -201,19 +206,13 @@ void SVolumeRender::configuring()
     {
         m_widgetVisibilty = (config.get<std::string>("widgets") == "yes");
     }
-
-    auto cfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Tag 'config' not found.", cfg);
-    this->parseTFConfig(cfg);
 }
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updatingTFPoints()
+void SVolumeRender::updateTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-
-    this->updateTransferFunction(this->getImage());
 
     m_gpuTF.updateTexture(tf);
 
@@ -234,7 +233,7 @@ void SVolumeRender::updatingTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updatingTFWindowing(double window, double level)
+void SVolumeRender::updateTFWindowing(double window, double level)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -261,11 +260,11 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 {
     ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( "mask", ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
-    connections.push( "mask", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
-    connections.push( "clippingMatrix", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_MASK_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
+    connections.push( s_MASK_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
+    connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
 
     return connections;
 }
@@ -275,14 +274,13 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 void SVolumeRender::starting()
 {
     this->initialize();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT +"' is missing.", image);
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction>(s_TF_INOUT);
+    this->setOrCreateTF(tf, image);
 
-    this->updateImageInfos(this->getObject< ::fwData::Image >());
-    this->updateTransferFunction(this->getImage());
-
-    this->installTFConnections();
+    this->updateImageInfos(image);
 
     m_sceneManager    = this->getSceneManager();
     m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
@@ -348,7 +346,7 @@ void SVolumeRender::starting()
     this->initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
 
-    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if (isValid)
     {
         this->newImage();
@@ -360,7 +358,7 @@ void SVolumeRender::starting()
 
     if (m_autoResetCamera )
     {
-        if(this->getImage()->getField("cameraTransform"))
+        if(image->getField("cameraTransform"))
         {
             this->getLayer()->computeCameraParameters();
         }
@@ -416,24 +414,40 @@ void SVolumeRender::updating()
 {
 }
 
+//------------------------------------------------------------------------------
+
+void SVolumeRender::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
+        this->updateTFPoints();
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::newImage()
 {
-    this->updateImageInfos(this->getObject< ::fwData::Image >());
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+    this->updateImageInfos(image);
 
     this->getRenderService()->makeCurrent();
-
-    ::fwData::Image::sptr image = this->getImage();
 
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    this->createTransferFunction(image);
 
-    this->updateTransferFunction(this->getImage());
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     m_gpuTF.updateTexture(tf);
 
@@ -467,7 +481,7 @@ void SVolumeRender::newImage()
 
 void SVolumeRender::newMask()
 {
-    ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>("mask");
+    ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>(s_MASK_INOUT);
     ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
 
     this->requestRender();
@@ -557,7 +571,10 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
         if(m_preIntegratedRendering)
         {
-            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+            m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
         }
 
         this->requestRender();
@@ -654,7 +671,10 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
     if(m_preIntegratedRendering)
     {
-        m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+        m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 
@@ -979,7 +999,7 @@ void SVolumeRender::initWidgets()
 {
     // Create widgets.
     {
-        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>("clippingMatrix");
+        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
 
         m_widgets = ::std::make_shared< ::fwRenderOgre::ui::VRWidget >(this->getID(), m_volumeSceneNode,
                                                                        m_camera, this->getRenderService(),
@@ -1073,7 +1093,10 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
 
         if(m_preIntegratedRendering)
         {
-            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+            ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+            SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
+            m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
         }
 
         this->requestRender();
