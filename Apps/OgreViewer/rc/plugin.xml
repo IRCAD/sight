@@ -190,7 +190,7 @@
                 <inout key="modelSeriesUID" uid="modelSeriesUID" />
                 <inout key="cameraTF" uid="cameraTF_UID" />
                 <inout key="imageUID" uid="imageUID" />
-                <inout replace="TF" uid="TF" optional="yes" />
+                <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="OgreSceneView" />
                 <parameter replace="genericSceneUID" uid="genericSceneUID" />
             </service>
@@ -198,7 +198,7 @@
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
                 <inout key="imageUID" uid="imageUID" />
-                <inout replace="TF" uid="TF" optional="yes" />
+                <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
             </service>
 
@@ -206,7 +206,7 @@
                 <appConfig id="OgreVolumeRendering" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
-                <inout replace="TF" uid="TF" optional="yes" />
+                <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
@@ -231,7 +231,7 @@
                 <appConfig id="OgreHistogramManager" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
-                <inout replace="TF" uid="TF" optional="yes" />
+                <inout key="TF" uid="TF" optional="yes" />
                 <parameter replace="WID_PARENT" uid="histogramView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
