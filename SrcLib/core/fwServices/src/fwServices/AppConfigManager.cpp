@@ -553,12 +553,20 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                         createService = false;
                     }
                 }
+                else
+                {
+                    SLM_ERROR_IF(
+                        this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
+                        "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
+                        "intended to use a deferred object instead ?", objectCfg.m_optional);
+                }
 
                 // Extra check to warn the user that an object is used as output but not marked as deferred
                 if(objectCfg.m_access == ::fwServices::IService::AccessType::OUTPUT)
                 {
-                    SLM_ERROR_IF("Object '" + objectCfg.m_uid + "' is used as output in service '" + srvConfig.m_uid +
-                                 "' but it not declared as 'deferred'.", it == m_deferredObjects.end());
+                    SLM_ERROR_IF(this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '" +
+                                 srvConfig.m_uid + "' but it not declared as 'deferred'.",
+                                 it == m_deferredObjects.end());
                 }
             }
 
