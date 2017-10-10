@@ -57,6 +57,13 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
             tf->addTFColor(value, color);
         }
         tf->setWLMinMax(tf->getMinMaxTFValues());
+
+        if (colorCfg->hasAttribute("isClamped"))
+        {
+            const std::string isClamped = colorCfg->getAttributeValue("isClamped");
+            SLM_ASSERT("'isClamped' value must be 'yes' or 'no'.", isClamped == "yes" || isClamped == "false");
+            tf->setIsClamped(isClamped == "yes");
+        }
     }
 }
 

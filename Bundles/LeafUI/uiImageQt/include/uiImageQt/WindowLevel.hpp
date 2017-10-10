@@ -46,27 +46,31 @@ namespace uiImageQt
  *
  * This is represented by two sliders to modify the min and max values of windowing
  *
+ * @section Slots Slots
+ * - \b updateTFPoints() : update the slider according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the slider according to the new window and level
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
     <service uid="..." type="::uiImageQt::WindowLevel" autoConnect="yes">
         <inout key="image" uid="..."/>
-        <inout key="TFSelections" uid="..."/>
-        <config autoWindowing="yes" selectedTFKey="mySelectedTF" useImageGreyLevelTF="yes" />
+        <inout key="tf" uid="..." optional="yes" />
+        <config autoWindowing="yes" enableSquareTF="no" />
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image on which the windowing will be changed
- * - \b TFSelections [::fwData::Composite]: composite containing the selected transfer function
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration
- *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
+ * - \b autoWindowing(optional, default no) : if 'yes', image windowing will be automatically compute from image pixel
+ * min/max
  *  intensity when this service receive BUFFER event
- *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use
- * default selection field.
- *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
- *
+ * - \b enableSquareTF(optional, default: yes) : if 'yes' enable the button to switch between current TF and square TF
  */
 class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
                                         public ::fwDataTools::helper::MedicalImageAdaptor,
@@ -99,8 +103,8 @@ protected:
     /// Update editor information from the image
     virtual void updating() override;
 
-    /// Swap of image
-    virtual void swapping() override;
+    /// Select the current tf
+    virtual void swapping(const KeyType& key) override;
 
     /// Parse the xml configuration
     virtual void configuring() override;
@@ -117,13 +121,11 @@ protected:
     /// Overrides
     UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
 
-    virtual void setEnabled(bool enable);
+    /// Slot: Updates the slider position
+    UIIMAGEQT_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function points are modified.
-    UIIMAGEQT_API virtual void updatingTFPoints() override;
-
-    /// Called when transfer function windowing is modified.
-    UIIMAGEQT_API virtual void updatingTFWindowing(double window, double level) override;
+    /// Slot: Updates the slider position
+    UIIMAGEQT_API virtual void updateTFWindowing(double window, double level) override;
 
 protected Q_SLOTS:
 
@@ -151,12 +153,6 @@ protected:
     void setWidgetDynamicRange(double min, double max);
     bool getWidgetDoubleValue(QLineEdit* widget, double& val);
 
-    /// Returns the current grey level tf of image
-    ::fwData::TransferFunction::sptr getImageGreyLevelTF();
-
-    /// Swap current tf and notify other services
-    void swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF );
-
 private:
 
     QPointer< QLineEdit >   m_valueTextMin;
@@ -171,15 +167,11 @@ private:
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
-    double m_notifiedImageMin;
-    double m_notifiedImageMax;
     bool m_autoWindowing;
-    bool m_useImageGreyLevelTF;
+    bool m_enableSquareTF;
 
-    /// Identifier of the field containing the specific selection of TransferFunction
-    /// if m_tfSelection is empty => use default TF selection
-    std::string m_tfSelection;
-
+    /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
+    ::fwData::TransferFunction::sptr m_previousTF;
 };
 
 } // uiImageQt

@@ -40,8 +40,8 @@ namespace visuVTKAdaptor
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT      = "updateImage";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -148,12 +148,11 @@ void SNegatoOneSlice::cleanImageSource()
         imgAdaptor->setAutoRender( this->getAutoRender() );
 
         imgAdaptor->setVtkImageRegister(this->getImageSource());
-        imgAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
 
-        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-        if (tfSelection)
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
         {
-            imgAdaptor->registerInOut(tfSelection, s_TF_SELECTION_INOUT, true);
+            imgAdaptor->registerInOut(tf, s_TF_INOUT, true, true);
         }
 
         imgAdaptor->setImageOpacity(1.);
@@ -196,6 +195,29 @@ void SNegatoOneSlice::updating()
         this->getImageAdaptor()->update();
     }
     this->getImageSliceAdaptor()->update();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegatoOneSlice::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT
+        &&  nullptr == vtkImageBlend::SafeDownCast(this->getImageSource())
+        && nullptr == vtkImageCheckerboard::SafeDownCast(this->getImageSource()))
+    {
+        IAdaptor::sptr imageAdaptor = this->getImageAdaptor();
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        if (tf)
+        {
+            imageAdaptor->registerInOut(tf, s_TF_INOUT, true, true);
+            imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+        }
+        else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, imageAdaptor))
+        {
+            ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, imageAdaptor);
+            imageAdaptor->swapKey(s_TF_INOUT, nullptr);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -255,8 +277,6 @@ void SNegatoOneSlice::configuring()
     this->setVtkImageSourceId( config.get<std::string>("vtkimagesource", ""));
 
     m_actorOpacity = config.get<double>("actorOpacity", 1.);
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------

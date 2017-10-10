@@ -45,8 +45,8 @@ static const ::fwCom::Slots::SlotKeyType S_CHANGE_IMAGE_SOURCE_SLOT = "changeIma
 static const std::string s_slicingStartingProxy = "slicingStartingProxy";
 static const std::string s_slicingStoppingProxy = "slicingStoppingProxy";
 
-const ::fwServices::IService::KeyType SNegatoMPR::s_IMAGE_INOUT        = "image";
-const ::fwServices::IService::KeyType SNegatoMPR::s_TF_SELECTION_INOUT = "tfSelection";
+const ::fwServices::IService::KeyType SNegatoMPR::s_IMAGE_INOUT = "image";
+const ::fwServices::IService::KeyType SNegatoMPR::s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -177,6 +177,32 @@ void SNegatoMPR::updating()
         }
         this->setVtkPipelineModified();
         this->requestRender();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegatoMPR::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        this->setTransferFunction(tf);
+
+        for (const auto& srv: this->getRegisteredServices())
+        {
+            ::fwServices::IService::sptr service = srv.lock();
+            if (tf)
+            {
+                service->registerInOut(tf, s_TF_INOUT, true, true);
+                service->swapKey(s_TF_INOUT, nullptr);
+            }
+            else if(::fwServices::OSR::isRegistered(s_TF_INOUT, AccessType::INOUT, service))
+            {
+                ::fwServices::OSR::unregisterService(s_TF_INOUT, AccessType::INOUT, service);
+                service->swapKey(s_TF_INOUT, nullptr);
+            }
+        }
     }
 }
 
@@ -328,8 +354,6 @@ void SNegatoMPR::configuring()
     this->setVtkImageSourceId( config.get<std::string>("vtkimagesource", ""));
 
     m_actorOpacity = config.get<double>("actorOpacity", 1.);
-
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey", ""));
 }
 
 //------------------------------------------------------------------------------
@@ -382,8 +406,7 @@ void SNegatoMPR::set3dMode( bool enabled )
         adaptorSrv->setOrientation((Orientation) axis);
     }
 
-    auto negatoAdaptor          = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
-    auto negatoWindowingAdaptor = ::visuVTKAdaptor::SNegatoWindowingInteractor::dynamicCast(service);
+    auto negatoAdaptor = ::visuVTKAdaptor::SNegatoOneSlice::dynamicCast(service);
 
     if (negatoAdaptor)
     {
@@ -394,24 +417,13 @@ void SNegatoMPR::set3dMode( bool enabled )
             negatoAdaptor->setVtkImageSourceId(m_imageSourceId);
         }
         negatoAdaptor->setActorOpacity(m_actorOpacity);
-
-        negatoAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
-
-        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-        if (tfSelection)
-        {
-            negatoAdaptor->registerInOut(tfSelection, s_TF_SELECTION_INOUT, true);
-        }
     }
-    else if (negatoWindowingAdaptor)
-    {
-        negatoWindowingAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
 
-        ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-        if (tfSelection)
-        {
-            negatoWindowingAdaptor->registerInOut(tfSelection, s_TF_SELECTION_INOUT, true);
-        }
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    if (tf)
+    {
+        // register the TF as optional
+        service->registerInOut(tf, s_TF_INOUT, true, true);
     }
 
     service->setRenderService(this->getRenderService());

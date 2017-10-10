@@ -553,12 +553,20 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                         createService = false;
                     }
                 }
+                else
+                {
+                    SLM_ERROR_IF(
+                        this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
+                        "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
+                        "intended to use a deferred object instead ?", objectCfg.m_optional);
+                }
 
                 // Extra check to warn the user that an object is used as output but not marked as deferred
                 if(objectCfg.m_access == ::fwServices::IService::AccessType::OUTPUT)
                 {
-                    SLM_ERROR_IF("Object '" + objectCfg.m_uid + "' is used as output in service '" + srvConfig.m_uid +
-                                 "' but it not declared as 'deferred'.", it == m_deferredObjects.end());
+                    SLM_ERROR_IF(this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '" +
+                                 srvConfig.m_uid + "' but it not declared as 'deferred'.",
+                                 it == m_deferredObjects.end());
                 }
             }
 
@@ -842,7 +850,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
         auto& uid = srvCfg->m_uid;
 
         bool createService = true;
-        bool reconnect     = false;
 
         // Look for all objects (there could be more than the current object) and check if they are all created
         for(const auto& objCfg : srvCfg->m_objects)
@@ -883,7 +890,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                     }
 
                     createService = false;
-                    reconnect     = true;
                 }
             }
         }
@@ -897,15 +903,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
             // Debug message
             SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically created because its "
                       "objects are all available.");
-        }
-        else if(reconnect)
-        {
-            // Update auto connections
-            ::fwServices::IService::sptr srv = ::fwServices::get(uid);
-            OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << uid << "\".", srv);
-
-            srv->autoDisconnect();
-            srv->autoConnect();
         }
     }
 

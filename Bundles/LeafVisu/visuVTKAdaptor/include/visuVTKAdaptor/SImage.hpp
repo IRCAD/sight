@@ -29,20 +29,25 @@ namespace visuVTKAdaptor
  *
  * @section Slots Slots
  * - \b updateImageOpacity() : update the image opacity and visibility according to image fields
+ * - \b updateTFPoints() : update the displayed transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : update the displayed transfer function according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::visuVTKAdaptor::Image" autoConnect="yes">
-       <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
+   <service type="::visuVTKAdaptor::Image">
+       <inout key="image" uid="..." autoConnect="yes" />
+       <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" picker="negatodefault" transform="trf" tfalpha="yes" vtkimageregister="imgSource"
-               opacity="1.0" selectedTFKey="tkKey" />
+               opacity="1.0" />
    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
@@ -53,7 +58,6 @@ namespace visuVTKAdaptor
  *    - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato.
  *    - \b vtkimageregister (optional): source image, used for blend
  *    - \b opacity (optional, default=1.0): actor opacity (float)
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API SImage : public ::fwDataTools::helper::MedicalImageAdaptor,
                                         public ::fwRenderVTK::IAdaptor
@@ -68,7 +72,7 @@ public:
     VISUVTKADAPTOR_API virtual ~SImage() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
-    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     //------------------------------------------------------------------------------
 
@@ -101,6 +105,7 @@ protected:
     VISUVTKADAPTOR_API void starting() override;
     VISUVTKADAPTOR_API void updating() override;
     VISUVTKADAPTOR_API void stopping() override;
+    VISUVTKADAPTOR_API void swapping(const KeyType& key);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -120,14 +125,13 @@ protected:
 
     /// Slot: Update image opacity and visibility
     void updateImageOpacity();
-    void updateWindowing();
-    void updateImageTransferFunction( ::fwData::Image::sptr image );
+    void updateImageTransferFunction();
 
-    /// Called when transfer function points are modified.
-    VISUVTKADAPTOR_API virtual void updatingTFPoints() override;
+    /// Slot: update the displayed lookup table
+    VISUVTKADAPTOR_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function windowing is modified.
-    VISUVTKADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
+    /// Slot: update the windowing of the displayed lookup table
+    VISUVTKADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
 private:
 
