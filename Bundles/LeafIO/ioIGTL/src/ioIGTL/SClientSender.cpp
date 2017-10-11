@@ -88,6 +88,7 @@ void SClientSender::runClient()
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
+        m_sigConnected->asyncEmit();
     }
     catch (::fwCore::Exception& ex)
     {
@@ -118,7 +119,6 @@ void SClientSender::starting()
 
 void SClientSender::stopping()
 {
-    this->::ioNetwork::INetworkSender::stopping();
     this->stopSending();
 }
 
@@ -142,6 +142,7 @@ void SClientSender::stopSending()
         {
             m_client.disconnect();
             m_clientFuture.wait();
+            m_sigDisconnected->asyncEmit();
         }
         catch (::fwCore::Exception& e)
         {

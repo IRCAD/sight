@@ -64,15 +64,13 @@ void SServerSender::configuring()
 
 void SServerSender::starting()
 {
-    ::ioNetwork::INetworkSender::starting();
-
     try
     {
         const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
-        m_sigServerStarted->asyncEmit();
+        m_sigConnected->asyncEmit();
     }
     catch (::fwCore::Exception& e)
     {
@@ -96,7 +94,7 @@ void SServerSender::stopping()
             m_server->stop();
         }
         m_serverFuture.wait();
-        m_sigServerStopped->asyncEmit();
+        m_sigDisconnected->asyncEmit();
     }
     catch (::fwCore::Exception& e)
     {
@@ -106,8 +104,6 @@ void SServerSender::stopping()
     {
         // This happens when the server failed to start, so we just ignore it silently.
     }
-
-    ::ioNetwork::INetworkSender::stopping();
 }
 
 //-----------------------------------------------------------------------------

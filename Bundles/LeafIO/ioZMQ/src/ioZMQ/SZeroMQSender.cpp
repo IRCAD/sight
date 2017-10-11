@@ -90,10 +90,9 @@ void SZeroMQSender::starting()
 {
     try
     {
-        ::ioNetwork::INetworkSender::starting();
         m_socket = std::make_shared< ::zmqNetwork::Socket >(m_sockMode, m_patternMode);
         m_socket->start(m_hostStr);
-        m_sigServerStarted->asyncEmit();
+        m_sigConnected->asyncEmit();
     }
     catch (std::exception& err)
     {
@@ -118,8 +117,7 @@ void SZeroMQSender::updateConfiguration (const ::zmqNetwork::Socket::PatternMode
 void SZeroMQSender::stopping()
 {
     m_socket->stop();
-    ::ioNetwork::INetworkSender::stopping();
-    m_sigServerStopped->asyncEmit();
+    m_sigDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

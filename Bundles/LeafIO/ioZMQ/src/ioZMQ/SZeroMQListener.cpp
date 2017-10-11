@@ -95,7 +95,7 @@ void SZeroMQListener::runReceiver()
     }
     m_socket->setReceiveTimeout(1000);
     obj = this->getObject();
-    m_sigClientConnected->asyncEmit();
+    m_sigConnected->asyncEmit();
     while (m_socket->isStarted())
     {
         try
@@ -120,7 +120,7 @@ void SZeroMQListener::runReceiver()
         }
     }
     m_socket->stop();
-    m_sigClientDisconnected->asyncEmit();
+    m_sigDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

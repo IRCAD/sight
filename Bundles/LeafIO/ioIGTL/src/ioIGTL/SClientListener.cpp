@@ -96,6 +96,7 @@ void SClientListener::runClient()
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
+        m_sigConnected->asyncEmit();
     }
     catch (::fwCore::Exception& ex)
     {
@@ -114,8 +115,6 @@ void SClientListener::runClient()
         }
         return;
     }
-
-    m_sigClientConnected->asyncEmit();
 
     // 2. Receive messages
     try
@@ -167,7 +166,6 @@ void SClientListener::runClient()
             OSLM_ERROR(ex.what());
         }
     }
-    m_sigClientDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,6 +182,7 @@ void SClientListener::stopping()
     m_client.disconnect();
     m_clientFuture.wait();
     m_tlInitialized = false;
+    m_sigDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

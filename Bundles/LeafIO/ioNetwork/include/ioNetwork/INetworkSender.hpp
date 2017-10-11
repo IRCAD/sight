@@ -17,11 +17,8 @@ namespace ioNetwork
 {
 
 /**
- * @brief Abstract class for network senders(you need to inherit from this class if you want implement a new network
- * sender).
- *
- * @note The inherited service will automatically be connected to its object. This bypass the "autoConnect" because of
- * the OSLM_FATAL_IF when service receives a message.
+ * @brief Abstract class for network senders
+ * You need to inherit from this class if you want implement a new network sender
  */
 class IONETWORK_CLASS_API INetworkSender : public ::fwServices::IController
 {
@@ -31,28 +28,28 @@ public:
     fwCoreServiceClassDefinitionsMacro( (INetworkSender) (::fwServices::IController));
 
     /**
-     * @brief Server started signal is emitted when the server is started
+     * @brief Service connected signal is emitted when the server is started
      */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_SERVER_STARTED_SIGNAL;
+    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
 
     /**
-     * @typedef ServerStartedSignalType
+     * @typedef ConnectedSignalType
      *
-     * @brief ServerStartedSignalType is stored and emitted when the sender is started
+     * @brief ConnectedSignalType is stored and emitted when the sender is started
      */
-    typedef ::fwCom::Signal< void () > ServerStartedSignalType;
+    typedef ::fwCom::Signal< void () > ConnectedSignalType;
 
     /**
-     * @brief Server stopped signal is emitted when the sender is stopped
+     * @brief Service disconnected signal is emitted when the sender is stopped
      */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_SERVER_STOPPED_SIGNAL;
+    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
 
     /**
-     * @typedef ServerStoppedSignalType
+     * @typedef DisconnectSignalType
      *
-     * @brief ServerStoppedSignalType is stored and emitted when the sender is stopped
+     * @brief DisconnectSignalType is stored and emitted when the sender is stopped
      */
-    typedef ::fwCom::Signal< void () > ServerStoppedSignalType;
+    typedef ::fwCom::Signal< void () > DisconnectSignalType;
 
     /// Constructor
     IONETWORK_API INetworkSender();
@@ -62,15 +59,6 @@ public:
 
 protected:
 
-    /// Overrides
-    IONETWORK_API virtual void configuring() override;
-
-    /// Make connection like autoConnect enable message reception
-    IONETWORK_API virtual void starting() override;
-
-    /// Disconnect connection to bypass the OSLM_FATAL_IF when service receives a message
-    IONETWORK_API virtual void stopping() override;
-
     /// Sends the object
     IONETWORK_API virtual void updating() override;
 
@@ -79,15 +67,15 @@ protected:
 
     /**
      * @brief Sends the obj at index
-     * Useable if the configuration group exists.
+     * Usable if the configuration group exists.
      */
     virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
 
-    /// Signal when server started
-    ServerStartedSignalType::sptr m_sigServerStarted;
+    /// Signal emitted when service is connected
+    ConnectedSignalType::sptr m_sigConnected;
 
-    /// Signal when server stopped
-    ServerStoppedSignalType::sptr m_sigServerStopped;
+    /// Signal emitted when service is disconnected
+    DisconnectSignalType::sptr m_sigDisconnected;
 };
 
 } // namespace ioNetwork

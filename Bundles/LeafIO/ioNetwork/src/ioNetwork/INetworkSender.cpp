@@ -10,16 +10,11 @@
 
 #include <fwData/Object.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <boost/lexical_cast.hpp>
-
 namespace ioNetwork
 {
 
-const ::fwCom::Signals::SignalKeyType INetworkSender::s_SERVER_STARTED_SIGNAL = "serverStarted";
-const ::fwCom::Signals::SignalKeyType INetworkSender::s_SERVER_STOPPED_SIGNAL = "serverStopped";
+const ::fwCom::Signals::SignalKeyType INetworkSender::s_CONNECTED_SIGNAL    = "connected";
+const ::fwCom::Signals::SignalKeyType INetworkSender::s_DISCONNECTED_SIGNAL = "disconnected";
 
 const ::fwServices::IService::KeyType s_OBJECTS_INOUT = "objects";
 
@@ -27,31 +22,13 @@ const ::fwServices::IService::KeyType s_OBJECTS_INOUT = "objects";
 
 INetworkSender::INetworkSender()
 {
-    m_sigServerStarted = newSignal<ServerStartedSignalType>(s_SERVER_STARTED_SIGNAL);
-    m_sigServerStopped = newSignal<ServerStoppedSignalType>(s_SERVER_STOPPED_SIGNAL);
+    m_sigConnected    = newSignal<ConnectedSignalType>(s_CONNECTED_SIGNAL);
+    m_sigDisconnected = newSignal<DisconnectSignalType>(s_DISCONNECTED_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
 
 INetworkSender::~INetworkSender()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void INetworkSender::configuring()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void INetworkSender::starting()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void INetworkSender::stopping()
 {
 }
 
