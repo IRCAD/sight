@@ -1,0 +1,110 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __COLOURSEGMENTATION_SCOLOURIMAGEMASKING_HPP__
+#define __COLOURSEGMENTATION_SCOLOURIMAGEMASKING_HPP__
+
+#include "colourSegmentation/config.hpp"
+
+#include <colourImageMasking/Masker.hpp>
+
+#include <fwData/Image.hpp>
+
+#include <fwServices/IOperator.hpp>
+
+namespace colourSegmentation
+{
+
+/**
+ * @brief   Service that learns a foreground and background model color and allow to segment the foreground on a new
+ * image
+ *
+ * @see ::fwServices::IOperator
+ *
+ * @section Slots Slots
+ * - \b setBackground() : Slot to set the background image to learn the background model color
+ * - \b setForeground() : Slot to set the foreground image to learn the foreground model color
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::colourSegmentaion::SColourImageMasking" >
+            <in key="videoTL" uid="..." autoConnect="yes" />
+            <in key="mask" uid="..." />
+            <inout key="videoMaskTL" uid="..." />
+            <config scaleFactor="0.5" />
+        </service>
+   @endcode
+ * @subsection Input Input
+ * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
+ * - \b mask [::fwData::Image] : mask image to perform image segmentation in
+ * @subsection In-Out In-Out
+ * - \b videoMaskTL [::arData::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of the
+ * mask = 0)
+ *
+ * @subsection Configuration Configuration
+ * - \b scaleFactor (optional)(default: 1.0) : factor to scale the image to perform image masking on
+ */
+class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
+{
+public:
+    fwCoreServiceClassDefinitionsMacro( (SColourImageMasking) (::fwServices::IOperator) );
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_SLOT;
+    ///@}
+
+    ///Constructor
+    COLOURSEGMENTATION_API SColourImageMasking() noexcept;
+
+    /// Destructor
+    COLOURSEGMENTATION_API virtual ~SColourImageMasking() noexcept;
+
+    /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
+protected:
+
+    /// Does nothing
+    COLOURSEGMENTATION_API virtual void configuring() override;
+
+    /// Initializes the colour image masker
+    COLOURSEGMENTATION_API virtual void starting() override;
+
+    /// Does nothing
+    COLOURSEGMENTATION_API virtual void stopping() override;
+
+    /// Compute the image mask on a frame
+    COLOURSEGMENTATION_API virtual void updating() override;
+
+private:
+
+    /// Slot: Set background image and learn background model
+    void setBackground();
+
+    /// Slot: Set foreground image and learn foreground model
+    void setForeground();
+
+    /// Masker of puppets i'm pulling your strings
+    std::unique_ptr< ::colourImageMasking::Masker > m_masker;
+
+    /// Current timestampt
+    fwCore::HiResClock::HiResClockType m_lastVideoTimestamp;
+
+    /// Reduction factor
+    float m_scaleFactor;
+
+    /// Opencv scale factor
+    ::cv::Size m_maskDownsize;
+};
+
+} // namespace colourSegmentation
+
+#endif // __COLOURSEGMENTATION_SCOLOURIMAGEMASKING_HPP__
