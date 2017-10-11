@@ -13,8 +13,6 @@
 
 #include <ioNetwork/INetworkSender.hpp>
 
-#include <future>
-
 namespace ioIGTL
 {
 
@@ -32,14 +30,13 @@ namespace ioIGTL
  * </service>
  * @endcode
  * @subsection Input Input:
- * - \b objects [::fwData::Object]: specified objects to send to the connected server. They can have an attribute
- * to change the devicename used for this specific data.
+ * - \b objects [::fwData::Object]: specified objects to send to the connected server.
+ * They must have an attribute 'deviceName' to known the device-name used for this specific data.
  * @subsection Configuration Configuration:
- * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
+ * - \b deviceName : filter by device Name in Message
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>)
-
  */
 class IOIGTL_CLASS_API SClientSender : public ::ioNetwork::INetworkSender
 {
@@ -76,34 +73,12 @@ protected:
 private:
 
     /**
-     * @brief slot called when configuration of sender is updated
-     *
-     * @see ioNetwork::INetworkSender
-     */
-    void updateConfiguration(::boost::uint16_t const port);
-
-    /// Starts the server
-    void startSending();
-
-    /// Stops the server
-    void stopSending();
-
-    /**
      * @brief method to send data.
      *
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
     void sendObject(const ::fwData::Object::csptr& obj, const size_t index) override;
-
-    /**
-     * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
-     *        this method run in a thread
-     */
-    void runClient();
-
-    /// Future used to wait for receiving data from client socket
-    std::future<void> m_clientFuture;
 
     /// client socket
     ::igtlNetwork::Client m_client;
@@ -114,9 +89,8 @@ private:
     /// port config key
     std::string m_portConfig;
 
-    /// Vector of device name used if there are specified names in the group configuration.
+    /// Vector of device name used
     std::vector< std::string > m_deviceNames;
-
 };
 
 } // namespace ioIGTL

@@ -9,7 +9,6 @@
 #include "ioIGTL/helper/preferences.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -17,15 +16,10 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <functional>
-
 fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SClientSender);
 
 namespace ioIGTL
 {
-
-const ::fwCom::Slots::SlotKeyType SClientSender::s_START_SENDING_SLOT = "startSending";
-const ::fwCom::Slots::SlotKeyType SClientSender::s_STOP_SENDING_SLOT  = "stopSending";
 
 const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 
@@ -33,8 +27,6 @@ const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 SClientSender::SClientSender()
 {
-    newSlot(s_START_SENDING_SLOT, &SClientSender::startSending, this);
-    newSlot(s_STOP_SENDING_SLOT, &SClientSender::stopSending, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,75 +71,43 @@ void SClientSender::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SClientSender::runClient()
-{
-    // 1. Connection
-    try
-    {
-        const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
-        const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
-
-        m_client.connect(hostname, port);
-        m_sigConnected->asyncEmit();
-    }
-    catch (::fwCore::Exception& ex)
-    {
-        // Only open a dialog if the service is started.
-        // connect may throw if we request the service to stop,
-        // in this case opening a dialog will result in a deadlock
-        if(this->getStatus() == STARTED)
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
-        }
-        else
-        {
-            // Only report the error on console (this normally happens only if we have requested the disconnection)
-            SLM_ERROR(ex.what());
-        }
-        return;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SClientSender::starting()
 {
+    if(!m_client.isConnected())
+    {
+        try
+        {
+            const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+            const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
+
+            m_client.connect(hostname, port);
+            m_sigConnected->asyncEmit();
+        }
+        catch (::fwCore::Exception& ex)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+            SLM_ERROR(ex.what());
+            this->slot(s_STOP_SLOT)->asyncRun();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SClientSender::stopping()
 {
-    this->stopSending();
-}
-
-//-----------------------------------------------------------------------------
-
-void SClientSender::startSending()
-{
-    if(!m_client.isConnected())
+    try
     {
-        m_clientFuture = std::async(std::launch::async, std::bind(&SClientSender::runClient, this));
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SClientSender::stopSending()
-{
-    if(m_client.isConnected())
-    {
-        try
+        if(m_client.isConnected())
         {
             m_client.disconnect();
-            m_clientFuture.wait();
-            m_sigDisconnected->asyncEmit();
         }
-        catch (::fwCore::Exception& e)
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
-        }
+        m_sigDisconnected->asyncEmit();
+    }
+    catch (::fwCore::Exception& e)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
+        SLM_ERROR(e.what());
     }
 }
 
