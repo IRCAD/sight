@@ -113,7 +113,7 @@
                <inout key="vector" uid="vectorToSave" />
             </service>
 
-            <service uid="exportSelection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
+            <service uid="exportSelection" type="::uiIO::editor::SIOSelector">
                 <in key="selection" uid="vectorToSave" />
                 <type mode="writer" />
                 <selection mode="include" />
@@ -121,8 +121,11 @@
             </service>
 
             <connect>
-                <signal>extractImage/updated</signal>
+                <signal>addImage/started</signal>
                 <slot>addImage/add</slot>
+            </connect>
+            <connect>
+                <signal>addModel/started</signal>
                 <slot>addModel/add</slot>
             </connect>
 
