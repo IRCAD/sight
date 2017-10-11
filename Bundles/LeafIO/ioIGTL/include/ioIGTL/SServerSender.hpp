@@ -29,23 +29,23 @@ namespace ioIGTL
 {
 
 /**
- * @brief    Network server that uses OpenIGTLink protocol
+ * @brief OpenIGTLink server that will send objects to the connected clients
  *
  * @section XML XML Configuration
  * @code{.xml}
  * <service uid="..." type="::ioIGTL::SServerSender" autoConnect="yes" >
  *      <port>...</port>
  *      <in group="objects">
- *           <key uid="..." deviceName="..." />
- *           <key uid="..." deviceName="..." />
+ *           <key uid="..." deviceName="device01" />
+ *           <key uid="..." deviceName="device02" />
  *      </in>
  * </service>
  * @endcode
  * @subsection Configuration Configuration:
  * - \b port : defines the port where the objects will be sent
- * - \b deviceName : defines the name of the device (here, our server)
  * @subsection Input Input:
- * - \b objects [::fwData::Object] : defines the objects to send.
+ * - \b objects [::fwData::Object]: specified objects to send.
+ * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 
 class IOIGTL_CLASS_API SServerSender : public ::ioNetwork::INetworkSender

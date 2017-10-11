@@ -22,7 +22,7 @@ namespace ioIGTL
 {
 
 /**
- * @brief   Network client that uses OpenIGTLink protocol
+ * @brief   OpenIGTLink client that will listen objects to the connected server
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -36,12 +36,12 @@ namespace ioIGTL
  * @endcode
  * @subsection In-Out In-Out:
  * - \b object [::fwData::Object]:
- *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL): received IGTL data are pushed in
- * timeline
+ *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL):
+ *   received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data
  * @subsection Configuration Configuration:
- * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
- * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
+ * - \b deviceName: filter by device Name in Message
+ * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
@@ -72,8 +72,8 @@ protected:
 private:
 
     /**
-     * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
-     *        this method run in a thread
+     * @brief method contain the receive loop
+     * this method run in a thread
      */
     void    runClient();
 
@@ -97,7 +97,7 @@ private:
 
     bool m_tlInitialized;
 
-    /// map to associate device-name and object uid
+    /// Vector of device name used
     std::vector<std::string> m_deviceNames;
 };
 

@@ -111,7 +111,7 @@ public:
                                                               unsigned int client);
 
     /**
-     * @brief set the device name when a message is sended
+     * @brief set the device name when a message is sent
      */
     IGTLNETWORK_API void setMessageDeviceName(const std::string& deviceName);
 

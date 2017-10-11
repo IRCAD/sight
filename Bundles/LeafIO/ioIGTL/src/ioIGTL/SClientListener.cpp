@@ -11,7 +11,6 @@
 #include <arData/FrameTL.hpp>
 #include <arData/MatrixTL.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
@@ -23,8 +22,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <functional>
 #include <string>
@@ -179,10 +176,21 @@ void SClientListener::starting()
 
 void SClientListener::stopping()
 {
-    m_client.disconnect();
-    m_clientFuture.wait();
-    m_tlInitialized = false;
-    m_sigDisconnected->asyncEmit();
+    try
+    {
+        if(m_client.isConnected())
+        {
+            m_client.disconnect();
+        }
+        m_clientFuture.wait();
+        m_tlInitialized = false;
+        m_sigDisconnected->asyncEmit();
+    }
+    catch (::fwCore::Exception& ex)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+        SLM_ERROR(ex.what());
+    }
 }
 
 //-----------------------------------------------------------------------------
