@@ -113,6 +113,8 @@ private:
     bool m_isTextureInit; /// true if the texture is initialized
 
     bool m_reverse; ///< if true, the actor is rotated by 180° along the z and y axis.
+
+    bool m_interpolate; ///< set the actor interpolation
 };
 
 } //namespace visuVTKARAdaptor

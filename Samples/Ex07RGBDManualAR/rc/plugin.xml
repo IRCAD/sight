@@ -14,7 +14,7 @@
             <object uid="cameraDepth" type="::arData::Camera" src="deferred" />
             <object uid="seriesDB" type="::fwMedData::SeriesDB" />
             <object uid="frameTL" type="::arData::FrameTL" />
-            <object uid="tagTL" type="::arData::MarkerTL" />
+            <object uid="maskTL" type="::arData::FrameTL" />
             <object uid="videoImage" type="::fwData::Image" />
             <object uid="backgroundMask" type="::fwData::Image" />
             <object uid="foregroundMask" type="::fwData::Image" />
@@ -251,13 +251,12 @@
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="videoImage" />
-                <config renderer="video" />
+                <config renderer="video" interpolate="false" />
             </service>
 
             <service uid="foregroundAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="foregroundMask" />
-                <in key="camera" uid="cameraRGB" />
-                <config renderer="foreground" />
+                <config renderer="foreground" interpolate="false" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -342,12 +341,14 @@
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
+                    <key uid="maskTL" />
                 </in>
                 <inout group="image">
                     <key uid="videoImage" />
+                    <key uid="foregroundMask" />
                 </inout>
-                <framerate>30</framerate>
-                <tolerance>100</tolerance>
+                <framerate>25</framerate>
+                <tolerance>2000</tolerance>
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
@@ -362,9 +363,10 @@
 
             <!-- Split background and foreground image -->
             <service uid="extractForeground" type="::colourSegmentation::SColourImageMasking" worker="videoExtraction">
-                <in key="video" uid="videoImage" autoConnect="yes" />
+                <in key="videoTL" uid="frameTL" autoConnect="yes" />
                 <in key="mask" uid="backgroundMask" />
-                <inout key="videoMask" uid="foregroundMask" />
+                <inout key="videoMaskTL" uid="maskTL" />
+                <config scaleFactor="0.8" />
             </service>
 
             <!-- signal/slot connection -->
