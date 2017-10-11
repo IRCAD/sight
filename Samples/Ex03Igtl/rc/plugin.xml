@@ -163,25 +163,25 @@
             </service>
 
             <connect>
-                <signal>matrixNetworkSender/serverStarted</signal>
+                <signal>matrixNetworkSender/connected</signal>
                 <slot>startServer/setInexecutable</slot>
                 <slot>stopServer/setExecutable</slot>
             </connect>
 
             <connect>
-                <signal>matrixNetworkSender/serverStopped</signal>
+                <signal>matrixNetworkSender/disconnected</signal>
                 <slot>startServer/setExecutable</slot>
                 <slot>stopServer/setInexecutable</slot>
             </connect>
 
             <connect>
-                <signal>matrixNetworkListener/clientConnected</signal>
+                <signal>matrixNetworkListener/connected</signal>
                 <slot>startClient/setInexecutable</slot>
                 <slot>stopClient/setExecutable</slot>
             </connect>
 
             <connect>
-                <signal>matrixNetworkListener/clientDisconnected</signal>
+                <signal>matrixNetworkListener/disconnected</signal>
                 <slot>startClient/setExecutable</slot>
                 <slot>stopClient/setInexecutable</slot>
             </connect>
