@@ -30,6 +30,13 @@ Masker::Masker(const ColSpace& c, const DetectionMode& d) :
 
 //------------------------------------------------------------------------------
 
+Masker::~Masker()
+{
+
+}
+
+//------------------------------------------------------------------------------
+
 void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
                                   const unsigned int numClusters)
 {
