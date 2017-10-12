@@ -33,7 +33,7 @@ namespace colourSegmentation
  * @code{.xml}
         <service uid="..." type="::colourSegmentaion::SColourImageMasking" >
             <in key="videoTL" uid="..." autoConnect="yes" />
-            <in key="mask" uid="..." />
+            <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
             <config scaleFactor="0.5" noise="30" />
         </service>

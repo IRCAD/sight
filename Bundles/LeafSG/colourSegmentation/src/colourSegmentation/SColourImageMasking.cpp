@@ -8,6 +8,9 @@
 
 #include <arData/FrameTL.hpp>
 
+#include <cvIO/FrameTL.hpp>
+#include <cvIO/Image.hpp>
+
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/helper/ArrayGetter.hpp>
@@ -86,7 +89,7 @@ void SColourImageMasking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        auto mask        = this->getInput< ::fwData::Image >(s_MASK_KEY);
+        auto mask        = this->getInOut< ::fwData::Image >(s_MASK_KEY);
         auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
         auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
@@ -112,38 +115,24 @@ void SColourImageMasking::updating()
 
         m_lastVideoTimestamp = videoTimestamp;
 
-        // Get Mask image
-        ::fwData::mt::ObjectReadLock imageLock(mask);
-        const ::fwData::Array::sptr arrayMask = mask->getDataArray();
-        const ::fwDataTools::helper::ArrayGetter arrayMaskHelper(arrayMask);
-        SLM_ASSERT("Empty image buffer", arrayMaskHelper.getBuffer());
-
         // convert mask to an OpenCV image:
-        ::cv::Mat maskCV;
-
-        maskCV = ::cv::Mat(
-            ::cv::Size(static_cast<int>(mask->getSize()[0]),
-                       static_cast<int>(mask->getSize()[1])),
-            CV_8UC4, (void*)arrayMaskHelper.getBuffer(), ::cv::Mat::AUTO_STEP);
+        ::cv::Mat maskCV = ::cvIO::Image::moveToCv(mask);
 
         ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
         //convert mask to an OpenCV image:
-        ::cv::Mat videoCV;
-        videoCV = ::cv::Mat(
-            ::cv::Size(static_cast<int>(videoTL->getWidth()),
-                       static_cast<int>(videoTL->getHeight())),
-            CV_8UC4, (void*)frameBuffOutVideo, ::cv::Mat::AUTO_STEP);
+        const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
         // Create image mask to put inside the timeline
         SPTR(::arData::FrameTL::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
         std::uint8_t* frameBuffOutMask = maskBuffer->addElement(0);
 
+        ::cv::Mat videoMaskCV = ::cvIO::FrameTL::moveToCv(videoMaskTL, frameBuffOutMask);
+
         // Get the foreground mask
         ::cv::Mat foregroundMask = m_masker->makeMask(videoCV, m_maskDownsize, maskCV);
 
         // Create an openCV mat that aliases the buffer created from the output timeline
-        ::cv::Mat videoMaskCV(videoCV.size(), videoCV.type(), (void*)frameBuffOutMask, ::cv::Mat::AUTO_STEP);
         videoCV.copyTo(videoMaskCV, foregroundMask);
 
         // Push the mask object in the timeline
@@ -159,7 +148,7 @@ void SColourImageMasking::updating()
 
 void SColourImageMasking::setBackground()
 {
-    auto mask    = this->getInput< ::fwData::Image >(s_MASK_KEY);
+    auto mask    = this->getInOut< ::fwData::Image >(s_MASK_KEY);
     auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
@@ -173,24 +162,10 @@ void SColourImageMasking::setBackground()
     }
 
     //convert mask to an OpenCV image:
-    ::cv::Mat videoCV;
-    videoCV = ::cv::Mat(
-        ::cv::Size(static_cast<int>(videoTL->getWidth()),
-                   static_cast<int>(videoTL->getHeight())),
-        CV_8UC4, (void*)frameBuffOutVideo, ::cv::Mat::AUTO_STEP);
+    const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
     //convert mask to an OpenCV image:
-    ::cv::Mat maskCV;
-
-    ::fwData::mt::ObjectReadLock imageLock(mask);
-    const ::fwData::Array::sptr arrayMask = mask->getDataArray();
-    const ::fwDataTools::helper::ArrayGetter arrayMaskHelper(arrayMask);
-    SLM_ASSERT("Empty image buffer", arrayMaskHelper.getBuffer());
-
-    maskCV = ::cv::Mat(
-        ::cv::Size(static_cast<int>(mask->getSize()[0]),
-                   static_cast<int>(mask->getSize()[1])),
-        CV_8UC4, (void*)arrayMaskHelper.getBuffer(), ::cv::Mat::AUTO_STEP);
+    ::cv::Mat maskCV = ::cvIO::Image::moveToCv(mask);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
     m_maskDownsize = ::cv::Size(static_cast<int>(static_cast<float>(maskCV.size[0])*m_scaleFactor),
@@ -240,11 +215,7 @@ void SColourImageMasking::setForeground()
     }
 
     //convert mask to an OpenCV image:
-    ::cv::Mat videoCV;
-    videoCV = ::cv::Mat(
-        ::cv::Size(static_cast<int>(videoTL->getWidth()),
-                   static_cast<int>(videoTL->getHeight())),
-        CV_8UC4, (void*)frameBuffOutVideo, ::cv::Mat::AUTO_STEP);
+    ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
     // Convert RGB to HSV
     ::cv::Mat videoBGR, videoHSV;

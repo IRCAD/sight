@@ -151,8 +151,7 @@ static void testMoveToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     ::fwData::Image::sptr image = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::cv::Mat cvImage;
-    ::cvIO::Image::moveToCv(image, cvImage);
+    ::cv::Mat cvImage = ::cvIO::Image::moveToCv(image);
 
     // Since we share the same buffer, compare the pointers
     ::fwDataTools::helper::ImageGetter helper(image);
@@ -187,8 +186,7 @@ static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChann
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     ::fwData::Image::csptr image = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    ::cv::Mat cvImage;
-    ::cvIO::Image::copyToCv(image, cvImage);
+    ::cv::Mat cvImage = ::cvIO::Image::copyToCv(image);
 
     // Since we copy the buffer, ensure the pointers are different
     ::fwDataTools::helper::ImageGetter helper(image);
@@ -233,12 +231,12 @@ void ImageTest::moveToCv()
     testMoveToCV<std::int16_t>(10, 0, 0, 1);
     testMoveToCV<std::int16_t>(10, 20, 0, 2);
     testMoveToCV<std::int16_t>(23, 20, 30, 3);
-    testMoveToCV<std::int16_t>(76, 2, 0, 4);
+    testMoveToCV<std::int16_t>(76, 2, 1, 4);
 
     testMoveToCV<std::int32_t>(10, 32, 0, 1);
     testMoveToCV<std::int32_t>(10, 20, 3, 2);
     testMoveToCV<std::int32_t>(23, 20, 0, 3);
-    testMoveToCV<std::int32_t>(76, 2, 4, 4);
+    testMoveToCV<std::int32_t>(76, 2, 1, 4);
 
     testMoveToCV<float>(10, 32, 0, 1);
     testMoveToCV<float>(10, 20, 3, 2);
@@ -266,7 +264,7 @@ void ImageTest::copyFromCv()
     testCopyFromCV<std::int8_t>(23, 20, 30, 3);
     testCopyFromCV<std::int8_t>(76, 2, 0, 4);
 
-    testCopyFromCV<std::uint16_t>(10, 0, 0, 1);
+    testCopyFromCV<std::uint16_t>(10, 1, 1, 1);
     testCopyFromCV<std::uint16_t>(10, 2, 30, 1);
     testCopyFromCV<std::uint16_t>(10, 20, 5, 2);
     testCopyFromCV<std::uint16_t>(6, 20, 0, 3);

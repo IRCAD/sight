@@ -19,7 +19,7 @@ namespace cvIO
 
 //------------------------------------------------------------------------------
 
-static void toCv(const fwData::Image::csptr& _image, cv::Mat& _cvImage, bool _copy)
+static ::cv::Mat toCv(const fwData::Image::csptr& _image, bool _copy)
 {
     const auto imageType = _image->getType();
     const auto imageComp = _image->getNumberOfComponents();
@@ -38,32 +38,34 @@ static void toCv(const fwData::Image::csptr& _image, cv::Mat& _cvImage, bool _co
     }
     if(cvSize.size() == 1)
     {
-        // If we have a single row, we want to initialize the cv::Math with (1, N) since it takes (rows,cols)
+        // If we have a single row, we want to initialize the ::cv::Math with (1, N) since it takes (rows,cols)
         cvSize.push_back(1);
     }
     std::reverse(cvSize.begin(), cvSize.end());
 
+    ::cv::Mat cvImage;
     if(_copy)
     {
         ::cv::Mat mat = ::cv::Mat(cvSize, cvType, const_cast<void*>(arraySrcHelper.getBuffer()));
-        _cvImage      = mat.clone();
+        cvImage       = mat.clone();
     }
     else
     {
-        _cvImage = ::cv::Mat(cvSize, cvType, const_cast<void*>(arraySrcHelper.getBuffer()));
+        cvImage = ::cv::Mat(cvSize, cvType, const_cast<void*>(arraySrcHelper.getBuffer()));
     }
+    return cvImage;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::moveToCv(fwData::Image::sptr& _image, cv::Mat& _cvImage)
+::cv::Mat Image::moveToCv(fwData::Image::sptr& _image)
 {
-    toCv(_image, _cvImage, false);
+    return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::copyFromCv(fwData::Image::sptr& _image, const cv::Mat& _cvImage)
+void Image::copyFromCv(fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
 {
     const auto prevImageType = _image->getType();
     const auto prevImageComp = _image->getNumberOfComponents();
@@ -100,9 +102,9 @@ void Image::copyFromCv(fwData::Image::sptr& _image, const cv::Mat& _cvImage)
 
 //------------------------------------------------------------------------------
 
-void Image::copyToCv(const fwData::Image::csptr& _image, cv::Mat& _cvImage)
+::cv::Mat Image::copyToCv(const fwData::Image::csptr& _image)
 {
-    toCv(_image, _cvImage, true);
+    return toCv(_image, true);
 }
 
 //------------------------------------------------------------------------------

@@ -40,6 +40,15 @@ public:
                                   ::cv::Mat& _cvImage);
 
     /**
+     * @brief Convert an timeline buffer into an OpenCV image.
+     *
+     * The resulting ::cv::Mat does not allocate to a new buffer and points to the ::arData::FrameTL::BufferType.
+     * The returned cvMat is const because the input buffer is const as well.
+     */
+    CVIO_API static const ::cv::Mat moveToCv(const ::arData::FrameTL::csptr& _timeline,
+                                             const ::arData::FrameTL::BufferType::ElementType* _buffer);
+
+    /**
      * @brief Copy a OpenCV image into our internal image data.
      */
     CVIO_API static void copyFromCv(const ::arData::FrameTL::csptr& _timeline,

@@ -77,13 +77,24 @@ static void testMoveToCV(size_t _w, size_t _h, std::uint8_t _numChannels)
     auto eltBuffer = buffer->addElement(0);
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
-    ::cv::Mat cvImage;
-    ::cvIO::FrameTL::moveToCv(frameTL, eltBuffer, cvImage);
+    {
+        ::cv::Mat cvImage;
+        ::cvIO::FrameTL::moveToCv(frameTL, eltBuffer, cvImage);
 
-    // Since we share the same buffer, compare the pointers
-    CPPUNIT_ASSERT_EQUAL(static_cast<void*>(eltBuffer), static_cast<void*>(cvImage.data));
+        // Since we share the same buffer, compare the pointers
+        CPPUNIT_ASSERT_EQUAL(static_cast<void*>(eltBuffer), static_cast<void*>(cvImage.data));
 
-    compareImages<T>(cvImage, eltBuffer, _w, _h, _numChannels);
+        compareImages<T>(cvImage, eltBuffer, _w, _h, _numChannels);
+    }
+    {
+        ::cv::Mat cvImage2;
+        cvImage2 = ::cvIO::FrameTL::moveToCv(frameTL, eltBuffer);
+
+        // Since we share the same buffer, compare the pointers
+        CPPUNIT_ASSERT_EQUAL(static_cast<void*>(eltBuffer), static_cast<void*>(cvImage2.data));
+
+        compareImages<T>(cvImage2, eltBuffer, _w, _h, _numChannels);
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -52,6 +52,16 @@ void FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
 
 //------------------------------------------------------------------------------
 
+const cv::Mat FrameTL::moveToCv(const arData::FrameTL::csptr& _timeline,
+                                const::arData::FrameTL::BufferType::ElementType* _buffer)
+{
+    ::cv::Mat mat;
+    toCv(_timeline, _buffer, mat, false);
+    return mat;
+}
+
+//------------------------------------------------------------------------------
+
 void FrameTL::copyFromCv(const ::arData::FrameTL::csptr& _timeline,
                          ::arData::FrameTL::BufferType::ElementType* _buffer,
                          const ::cv::Mat& _cvImage)

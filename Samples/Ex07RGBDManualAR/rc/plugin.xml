@@ -364,7 +364,7 @@
             <!-- Split background and foreground image -->
             <service uid="extractForeground" type="::colourSegmentation::SColourImageMasking" worker="videoExtraction">
                 <in key="videoTL" uid="frameTL" autoConnect="yes" />
-                <in key="mask" uid="backgroundMask" />
+                <inout key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
                 <config scaleFactor="0.8" noise="30" />
             </service>

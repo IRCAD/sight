@@ -35,7 +35,7 @@ public:
      * The resulting ::cv::Mat does not allocate to a new buffer and points to the buffer of the ::fwData::Image.
      * That's why the source image is not const, because the _cvImage may alter the existing buffer.
      */
-    CVIO_API static void moveToCv(::fwData::Image::sptr& _image, ::cv::Mat& _cvImage);
+    CVIO_API static ::cv::Mat moveToCv(::fwData::Image::sptr& _image);
 
     /**
      * @brief Copy a OpenCV image into our internal image data.
@@ -47,7 +47,7 @@ public:
      *
      * @note The cvImage allocates its own buffer and has the ownership.
      */
-    CVIO_API static void copyToCv(const ::fwData::Image::csptr& _image, ::cv::Mat& _cvImage);
+    CVIO_API static ::cv::Mat copyToCv(const ::fwData::Image::csptr& _image);
 
 };
 
