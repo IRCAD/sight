@@ -35,7 +35,7 @@ namespace colourSegmentation
             <in key="videoTL" uid="..." autoConnect="yes" />
             <in key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
-            <config scaleFactor="0.5" />
+            <config scaleFactor="0.5" noise="30" />
         </service>
    @endcode
  * @subsection Input Input
@@ -47,6 +47,8 @@ namespace colourSegmentation
  *
  * @subsection Configuration Configuration
  * - \b scaleFactor (optional)(default: 1.0) : factor to scale the image to perform image masking on
+ * - \b noise (optional)(default: 0.0) : additive noise used during the foreground learning step (make more robust
+ * learning method)
  */
 class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
 {
@@ -103,6 +105,9 @@ private:
 
     /// Opencv scale factor
     ::cv::Size m_maskDownsize;
+
+    /// Noise level to add during the foreground learning step
+    double m_noise;
 };
 
 } // namespace colourSegmentation

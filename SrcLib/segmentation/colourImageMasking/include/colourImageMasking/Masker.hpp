@@ -34,7 +34,7 @@ public:
 
     /// Train the foreground color model define with a number of clusters inside a mask on a given image
     COLOURIMAGEMASKING_API void trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
-                                                     const unsigned int numClusters);
+                                                     const unsigned int numClusters, const double noise = 0.0);
 
     /// Train the background color model define with a number of clusters inside a mask on a given image
     COLOURIMAGEMASKING_API void trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,

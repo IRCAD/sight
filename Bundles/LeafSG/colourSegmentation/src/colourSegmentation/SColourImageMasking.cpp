@@ -49,6 +49,7 @@ void SColourImageMasking::configuring()
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_scaleFactor = config.get<float>("scaleFactor", 1.0);
+    m_noise       = config.get<double>("noise", 0.0);
 }
 
 // ------------------------------------------------------------------------------
@@ -272,7 +273,7 @@ void SColourImageMasking::setForeground()
     ::cv::erode(foregroundMask, openForegroundMask, elementErode);
 
     // Learn foreground color model
-    m_masker->trainForegroundModel(videoCV, openForegroundMask, 5);
+    m_masker->trainForegroundModel(videoCV, openForegroundMask, 5, m_noise);
 }
 
 // ------------------------------------------------------------------------------

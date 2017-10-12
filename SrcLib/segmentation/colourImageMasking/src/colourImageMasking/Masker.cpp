@@ -40,11 +40,19 @@ Masker::~Masker()
 //------------------------------------------------------------------------------
 
 void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
-                                  const unsigned int numClusters)
+                                  const unsigned int numClusters, const double noise)
 {
-    const ::cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, m_COLORSPACE);
-    m_foregroundModel = this->trainModelFromSamples(s, numClusters);
+    cv::Mat rgbImgCopy;
+    rgbImg.copyTo(rgbImgCopy, selectionMask);
 
+    // This step put some additive gaussian noise in the image.
+    // It allows to perform a more robust learning step by providing different value close to the pixel values.
+    ::cv::Mat gaussian_noise = ::cv::Mat(rgbImgCopy.size(), rgbImg.type());
+    ::cv::randn(gaussian_noise, 0, noise);
+    ::cv::addWeighted(rgbImgCopy, 1.0, gaussian_noise, 1.0, 0.0, rgbImgCopy);
+
+    const ::cv::Mat s = this->makeTrainingSamples(rgbImgCopy, selectionMask, this->m_COLORSPACE);
+    this->m_foregroundModel = this->trainModelFromSamples(s, numClusters);
 }
 
 //------------------------------------------------------------------------------
