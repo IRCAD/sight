@@ -64,6 +64,7 @@ void Server::runServer()
         newClient = this->waitForConnection();
         if (newClient != nullptr)
         {
+            ::fwCore::mt::ScopedLock lock(m_mutex);
             m_clients.push_back(newClient);
             OSLM_TRACE("New client on server port: "<<m_port);
         }
@@ -80,6 +81,7 @@ void Server::broadcast(const ::fwData::Object::csptr& obj)
     {
         if (!(*it)->sendObject(obj))
         {
+            ::fwCore::mt::ScopedLock lock(m_mutex);
             (*it)->disconnect();
             it = m_clients.erase(it);
         }
@@ -100,6 +102,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
     {
         if (!(*it)->sendMsg(msg))
         {
+            ::fwCore::mt::ScopedLock lock(m_mutex);
             (*it)->disconnect();
             it = m_clients.erase(it);
         }
@@ -176,7 +179,7 @@ size_t Server::getNumberOfClients() const
 
 //------------------------------------------------------------------------------
 
-std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
+std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeaders()
 {
     std::vector< ::igtl::MessageHeader::Pointer > headerMsgs;
 
@@ -228,7 +231,6 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
                     {
                         headerMsgs.push_back( headerMsg );
                     }
-
                 }
             }
         }
@@ -238,7 +240,7 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 
 //------------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer Server::receiveBody (::igtl::MessageHeader::Pointer const headerMsg, unsigned int client)
+::igtl::MessageBase::Pointer Server::receiveBody(::igtl::MessageHeader::Pointer const headerMsg, unsigned int client)
 {
     ::igtl::MessageBase::Pointer msg;
 
@@ -265,9 +267,31 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 
 //------------------------------------------------------------------------------
 
+std::vector< ::fwData::Object::sptr > Server::receiveObjects(std::vector<std::string>& deviceNames)
+{
+    std::vector< ::fwData::Object::sptr > objVect;
+    std::vector< ::igtl::MessageHeader::Pointer > headerMsgVect = this->receiveHeaders();
+    size_t client                                               = 0;
+    for(const auto& headerMsg : headerMsgVect)
+    {
+        if (headerMsg.IsNotNull())
+        {
+            ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg, client);
+            if (msg.IsNotNull())
+            {
+                objVect.push_back(m_dataConverter->fromIgtlMessage(msg));
+                deviceNames.push_back(headerMsg->GetDeviceName());
+            }
+        }
+        ++client;
+    }
+    return objVect;
+}
+
+//------------------------------------------------------------------------------
+
 void Server::setMessageDeviceName(const std::string& deviceName)
 {
-    std::vector<Client::sptr>::iterator it;
     for(const auto& client : m_clients)
     {
         if(client)

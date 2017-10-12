@@ -38,7 +38,7 @@ namespace ioIGTL
  *      <inout group="objects">
  *           <key uid="..." deviceName="device01" />
  *           <key uid="..." deviceName="device02" />
- *      </in>
+ *      </inout>
  * </service>
  * @endcode
  * @subsection Configuration Configuration:

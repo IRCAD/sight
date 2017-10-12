@@ -116,24 +116,31 @@ void SServerListener::receiveObject()
     {
         while (m_server->isStarted())
         {
-            std::string deviceName;
-            ::fwData::Object::sptr receiveObject = m_server->receiveObject(deviceName);
-            if (receiveObject)
+            std::vector<std::string> deviceNamesReceive;
+            std::vector< ::fwData::Object::sptr > receiveObjects = m_server->receiveObjects(deviceNamesReceive);
+
+            size_t client = 0;
+            for(const auto& receiveObject : receiveObjects)
             {
-                const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
-
-                if(iter != m_deviceNames.end())
+                if (receiveObject)
                 {
-                    const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
-                    ::fwData::Object::sptr obj =
-                        this->getInOut< ::fwData::Object >(s_OBJECTS_GROUP, indexReceiveObject);
+                    const std::string deviceName = deviceNamesReceive[client];
 
-                    obj->shallowCopy(receiveObject);
+                    const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
+                    if(iter != m_deviceNames.end())
+                    {
+                        const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
+                        ::fwData::Object::sptr obj =
+                            this->getInOut< ::fwData::Object >(s_OBJECTS_GROUP, indexReceiveObject);
 
-                    ::fwData::Object::ModifiedSignalType::sptr sig;
-                    sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-                    sig->asyncEmit();
+                        obj->shallowCopy(receiveObject);
+
+                        ::fwData::Object::ModifiedSignalType::sptr sig;
+                        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                        sig->asyncEmit();
+                    }
                 }
+                ++client;
             }
         }
     }

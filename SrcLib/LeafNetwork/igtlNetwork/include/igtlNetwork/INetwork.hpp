@@ -50,14 +50,6 @@ public:
     IGTLNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName);
 
     /**
-     * @brief generic method to receive message the type of the message is determined by response header
-     *
-     * @return a smart pointer of igtl::MessageHeader and a pointer on igtlMessageBase
-     */
-    IGTLNETWORK_API bool receiveMsg(::igtl::MessageHeader::Pointer headerMsg,
-                                    ::igtl::MessageBase::Pointer msg);
-
-    /**
      * @brief generic method to send a object the type of object is determined by classname
      *        this method call the correct sender method. If the client is not connected you receive
      *        a sigpipe signal
@@ -140,7 +132,7 @@ protected:
     /// Set of authorized device names
     std::set< std::string > m_deviceNamesIn;
 
-    /// device name in the sended message
+    /// device name in the sent message
     std::string m_deviceNameOut;
 };
 
