@@ -57,7 +57,7 @@ void SColourImageMasking::starting()
 {
     m_masker = ::boost::make_unique< ::colourImageMasking::Masker >(::colourImageMasking::HSv,
                                                                     ::colourImageMasking::LLRatio);
-    m_masker->setThreshold(1);
+    m_masker->setThreshold(1.);
 
     m_lastVideoTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 }

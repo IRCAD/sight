@@ -45,7 +45,7 @@ public:
                                               ::cv::InputArray filterMask) const;
 
     /// Set threshold value to get final binary image
-    COLOURIMAGEMASKING_API void setThreshold(float t);
+    COLOURIMAGEMASKING_API void setThreshold(double t);
 
     /// Return if a model is learned
     COLOURIMAGEMASKING_API bool isModelLearned(void);
@@ -66,7 +66,7 @@ private:
     static ::cv::Mat makeTrainingSamples(const ::cv::Mat& trainImg, const ::cv::Mat& mask, const ColSpace& c);
 
     /// OpenCV operations to remove holes in the mask
-    static ::cv::Mat removeMaskHoles(const ::cv::Mat& m, size_t filterSize, size_t n);
+    static ::cv::Mat removeMaskHoles(const ::cv::Mat& m, size_t n);
 
     /// Foreground and background models
     ::cv::Ptr< ::cv::ml::EM > m_foregroundModel;
@@ -77,7 +77,7 @@ private:
     const DetectionMode m_DETECTIONMODE;
 
     /// Threshold of image masking model to get binary mask
-    float m_threshold;
+    double m_threshold;
 
     /// Store if the threshold is set
     bool m_hasSetThreshold;

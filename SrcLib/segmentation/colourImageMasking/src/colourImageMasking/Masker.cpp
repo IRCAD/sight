@@ -6,6 +6,8 @@
 
 #include "colourImageMasking/Masker.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 using namespace std;
 using namespace colourImageMasking;
 
@@ -40,8 +42,8 @@ Masker::~Masker()
 void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
                                   const unsigned int numClusters)
 {
-    const ::cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, this->m_COLORSPACE);
-    this->m_foregroundModel = this->trainModelFromSamples(s, numClusters);
+    const ::cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, m_COLORSPACE);
+    m_foregroundModel = this->trainModelFromSamples(s, numClusters);
 
 }
 
@@ -50,15 +52,15 @@ void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
 void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
                                   const unsigned int numClusters)
 {
-    const ::cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, this->m_COLORSPACE);
-    this->m_backgroundModel = this->trainModelFromSamples(s, numClusters);
+    const ::cv::Mat s = this->makeTrainingSamples(rgbImg, selectionMask, m_COLORSPACE);
+    m_backgroundModel = this->trainModelFromSamples(s, numClusters);
 }
 
 //------------------------------------------------------------------------------
 
 ::cv::Mat Masker::makeMask(const ::cv::Mat& testImg, const ::cv::Size& downSize, ::cv::InputArray testImgMask) const
 {
-    assert(this->m_hasSetThreshold);
+    SLM_ASSERT("Threshold is not set", m_hasSetThreshold);
 
     ::cv::Mat t2, testImgMask2;
     ::cv::resize(testImg, t2, downSize);
@@ -69,27 +71,27 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
         ::cv::resize(testImgMask.getMat(), testImgMask2, downSize);
     }
 
-    const ::cv::Mat I = convertColourSpace(t2, this->m_COLORSPACE);
+    const ::cv::Mat I = convertColourSpace(t2, m_COLORSPACE);
 
     switch(m_DETECTIONMODE)
     {
         case fgLL:
         {
-            ::cv::Mat fgResponse = makeResponseImage(I, this->m_foregroundModel, testImgMask2);
-            ::cv::threshold(fgResponse, m, this->m_threshold, 255, ::cv::THRESH_BINARY);
+            ::cv::Mat fgResponse = makeResponseImage(I, m_foregroundModel, testImgMask2);
+            ::cv::threshold(fgResponse, m, m_threshold, 255, ::cv::THRESH_BINARY);
             break;
         }
         case bgLL:
         {
-            ::cv::Mat bgResponse = makeResponseImage(I, this->m_backgroundModel, testImgMask2);
-            ::cv::threshold(bgResponse, m, this->m_threshold, 255, ::cv::THRESH_BINARY_INV);
+            ::cv::Mat bgResponse = makeResponseImage(I, m_backgroundModel, testImgMask2);
+            ::cv::threshold(bgResponse, m, m_threshold, 255, ::cv::THRESH_BINARY_INV);
             break;
         }
         case LLRatio:
         {
-            ::cv::Mat fgResponse = makeResponseImage(I, this->m_foregroundModel, testImgMask2);
-            ::cv::Mat bgResponse = makeResponseImage(I, this->m_backgroundModel, testImgMask2);
-            ::cv::threshold(fgResponse - bgResponse, m, this->m_threshold, 255, ::cv::THRESH_BINARY);
+            ::cv::Mat fgResponse = makeResponseImage(I, m_foregroundModel, testImgMask2);
+            ::cv::Mat bgResponse = makeResponseImage(I, m_backgroundModel, testImgMask2);
+            ::cv::threshold(fgResponse - bgResponse, m, m_threshold, 255, ::cv::THRESH_BINARY);
             break;
         }
     }
@@ -101,40 +103,36 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
     ::cv::threshold(m, m, 125, 255, ::cv::THRESH_BINARY);
 
     //eliminate mask holes with erosion/dilation
-    ::cv::Mat filteredMask1 = removeMaskHoles(m, 3, 2);
+    ::cv::Mat filteredMask1 = removeMaskHoles(m, 2);
 
     return filteredMask1;
 }
 
 //------------------------------------------------------------------------------
 
-void Masker::setThreshold(float t)
+void Masker::setThreshold(double t)
 {
-    this->m_threshold       = t;
-    this->m_hasSetThreshold = true;
+    m_threshold       = t;
+    m_hasSetThreshold = true;
 }
 
 //------------------------------------------------------------------------------
 
 bool Masker::isModelLearned(void)
 {
-    switch(this->m_DETECTIONMODE)
+    switch(m_DETECTIONMODE)
     {
         case fgLL:
         {
-            return !this->m_foregroundModel.empty();
+            return !m_foregroundModel.empty();
         }
         case bgLL:
         {
-            return !this->m_backgroundModel.empty();
+            return !m_backgroundModel.empty();
         }
         case LLRatio:
         {
-            return !this->m_foregroundModel.empty() && !this->m_backgroundModel.empty();
-        }
-        default:
-        {
-            return false;
+            return !m_foregroundModel.empty() && !m_backgroundModel.empty();
         }
     }
 }
@@ -149,7 +147,7 @@ bool Masker::isModelLearned(void)
     ::cv::Mat output = ::cv::Mat::zeros(I.rows, I.cols, CV_32FC1);
 
     ::cv::Mat sample(cn, 1, CV_32FC1);
-    uchar* pixelPtr = (uchar*)I.data;
+    const uchar* pixelPtr = static_cast<uchar*>(I.data);
 
     const int h = I.rows;
     const int w = I.cols;
@@ -242,7 +240,7 @@ bool Masker::isModelLearned(void)
 ::cv::Ptr< ::cv::ml::EM > Masker::trainModelFromSamples(const ::cv::Mat& samples, const unsigned int numClusters)
 {
     ::cv::Ptr < ::cv::ml::EM > m = ::cv::ml::EM::create();
-    m->setClustersNumber(numClusters);
+    m->setClustersNumber(static_cast<int>(numClusters));
     m->setCovarianceMatrixType(::cv::ml::EM::COV_MAT_SPHERICAL);
     m->setTermCriteria(::cv::TermCriteria(::cv::TermCriteria::COUNT + ::cv::TermCriteria::EPS, 300, 0.1));
     m->trainEM(samples, ::cv::noArray(), ::cv::noArray(), ::cv::noArray());
@@ -287,7 +285,7 @@ bool Masker::isModelLearned(void)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Masker::removeMaskHoles(const ::cv::Mat& m, size_t filterSize, size_t n)
+::cv::Mat Masker::removeMaskHoles(const ::cv::Mat& m, size_t n)
 {
     ::cv::Mat mask;
     m.copyTo(mask);
