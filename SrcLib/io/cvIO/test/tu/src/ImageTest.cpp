@@ -6,10 +6,11 @@
 
 #include "ImageTest.hpp"
 
+#include "cvCommon.hpp"
+
 #include <cvIO/Image.hpp>
 
 #include <fwData/Array.hpp>
-#include <fwData/Image.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Image.hpp>
@@ -26,27 +27,8 @@ namespace ut
 //------------------------------------------------------------------------------
 
 template <typename T>
-static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
-{
-    const size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
-    std::vector<T> buffer;
-
-    buffer.resize(imageSize);
-    for(size_t i = 0; i < imageSize; ++i)
-    {
-        int value    = std::rand();
-        T boundValue = static_cast<T>(value);
-        buffer[i] = boundValue;
-    }
-
-    return buffer;
-}
-
-//------------------------------------------------------------------------------
-
-template <typename T>
-static const ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
-                                            std::uint8_t _numChannels)
+static ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
+                                      std::uint8_t _numChannels)
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwDataTools::helper::Image imgHelper(image);
@@ -89,58 +71,8 @@ static const ::fwData::Image::sptr genImage(const std::vector<T>& _imageBuffer, 
 //------------------------------------------------------------------------------
 
 template <typename T>
-struct getCvFormat;
-
-#define declareCvFormat(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4 ) \
-    template <> \
-    struct getCvFormat<_TYPE> \
-    { \
-        static const std::array< std::int32_t, 4 > type; \
-    }; \
-    const std::array< std::int32_t, 4 > getCvFormat<_TYPE>::type = {{ _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4 }}; \
-
-declareCvFormat(std::uint8_t, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4)
-declareCvFormat(std::int8_t, CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4)
-declareCvFormat(std::uint16_t, CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4)
-declareCvFormat(std::int16_t, CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4)
-declareCvFormat(std::int32_t, CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4)
-declareCvFormat(float, CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4)
-declareCvFormat(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
-
-//------------------------------------------------------------------------------
-
-template <typename T>
-static const ::cv::Mat genCvImage(  const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
-                                    std::uint8_t _numChannels)
-{
-    SLM_ASSERT("Width should be at least 1", _w >= 1);
-
-    std::vector<int> cvSize;
-    if(_d > 0)
-    {
-        cvSize.push_back( static_cast<int>(_d) );
-    }
-    if(_h > 0)
-    {
-        cvSize.push_back( static_cast<int>(_h) );
-    }
-    else
-    {
-        cvSize.push_back( static_cast<int>(1) );
-    }
-    cvSize.push_back( static_cast<int>(_w) );
-
-    const auto cvType = getCvFormat<T>::type[_numChannels - 1];
-    ::cv::Mat cvImage = ::cv::Mat(cvSize, cvType, static_cast<void*>(const_cast<T*>(_imageBuffer.data())));
-
-    return cvImage;
-}
-
-//------------------------------------------------------------------------------
-
-template <typename T>
 static void compareImages( const ::cv::Mat& _cvImage,
-                           const ::fwData::Image::sptr& _image,
+                           const ::fwData::Image::csptr& _image,
                            size_t _w, size_t _h, size_t _d,
                            std::uint8_t _numChannels)
 {
@@ -235,7 +167,7 @@ template <typename T>
 static void testCopyFromCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    ::cv::Mat cvImage = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    const ::cv::Mat cvImage          = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::cvIO::Image::copyFromCv(image, cvImage);
@@ -253,7 +185,7 @@ template <typename T>
 static void testCopyToCV(size_t _w, size_t _h, size_t _d, std::uint8_t _numChannels)
 {
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
-    ::fwData::Image::sptr image = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
+    ::fwData::Image::csptr image = genImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
     ::cv::Mat cvImage;
     ::cvIO::Image::copyToCv(image, cvImage);
@@ -400,6 +332,8 @@ void ImageTest::copyToCv()
     testCopyToCV<double>(23, 8, 0, 3);
     testCopyToCV<double>(76, 2, 4, 4);
 }
+
+//------------------------------------------------------------------------------
 
 }// namespace ut
 

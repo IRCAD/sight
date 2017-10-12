@@ -6,6 +6,7 @@ set( DEPENDENCIES
     fwDataTools
     arData
     colourImageMasking
+    cvIO
 )
 set( REQUIREMENTS  )
 

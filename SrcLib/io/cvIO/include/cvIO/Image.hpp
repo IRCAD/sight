@@ -18,7 +18,7 @@ namespace cvIO
 /**
  * @brief Helper to manage conversion from/to OpenCV to/from ::fwData::Image
  *
- * N@note There is no method to move a OpenCV image into a ::fwData::Image. This is because it is tough and not
+ * @note There is no method to move a OpenCV image into a ::fwData::Image. This is because it is tough and not
  * really recommended to detach a buffer allocated by a ::cv::Mat, cause we may not free it in the same way than OpenCV.
  * Instead you can allocate a ::fwData::Image of the correct size/type, and then use moveToCv() to wrap the image
  * with a ::cv::Mat. This way every modification made to the buffer will be applied to the ::fwData::Image, and you
