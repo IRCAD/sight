@@ -26,8 +26,6 @@
 
 #include <fwTools/Stringizer.hpp>
 
-#include <gdcmUIDGenerator.h>
-
 #include <boost/algorithm/string/split.hpp>
 
 #include <sstream>

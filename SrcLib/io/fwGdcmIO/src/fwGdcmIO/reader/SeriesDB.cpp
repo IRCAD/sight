@@ -10,6 +10,7 @@
 #include "fwGdcmIO/helper/DicomDir.hpp"
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 #include "fwGdcmIO/helper/DicomSeries.hpp"
+#include "fwGdcmIO/helper/SOPClass.hpp"
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
@@ -215,7 +216,8 @@ void SeriesDB::readDicom(const bool checkIsDicom)
         ::fwGdcmIO::helper::DicomDir::retrieveDicomSeries(dicomdir,
                                                           m_dicomSeriesContainer,
                                                           m_logger,
-                                                          m_dicomdirFileLookupJob
+                                                          m_readerJob->progressCallback(),
+                                                          m_readerJob->cancelRequestedCallback()
                                                           );
         // Fill Dicom Series
         ::fwGdcmIO::helper::DicomSeries helper;
@@ -403,7 +405,8 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
         }
         else
         {
-            m_logger->critical("DICOM SOP Class UID \"" + sopClassUID +"\" is not supported by the selected reader.");
+            const std::string sopClassName = ::fwGdcmIO::helper::SOPClass::getSOPClassName(sopClassUID);
+            m_logger->critical("DICOM SOP Class \"" + sopClassName +"\" is not supported by the selected reader.");
         }
 
         if(m_job->cancelRequested())
@@ -411,7 +414,6 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
             break;
         }
 
-        // m_converterJob->doneWork(++progress);
         completedProgress = m_converterJob->getDoneWorkUnits();
     }
 

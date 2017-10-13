@@ -118,6 +118,18 @@ public:
         m_studyInstanceUID = studyInstanceUID;
     }
 
+/// Get Study Instance UID
+    const std::string& getFrameOfReferenceUID() const
+    {
+        return m_frameOfReferenceUID;
+    }
+
+    /// Set Study Instance UID
+    void setFrameOfReferenceUID(const std::string& frameOfReferenceUID)
+    {
+        m_frameOfReferenceUID = frameOfReferenceUID;
+    }
+
     /// Get SOP Instance UID container
     const SOPInstanceUIDContainerType& getSOPInstanceUIDContainer() const
     {
@@ -149,6 +161,12 @@ protected:
      */
     void generateSOPInstanceUIDs(const CSPTR(::fwMedData::Series)& series);
 
+    /**
+     * @brief Extract 'SOP Instance UIDs' and 'Frame of Reference UID' from a DICOM series
+     * @param[in] dicomSeries DICOM Series from which the UIDs are extracted
+     */
+    void readUIDFromDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries);
+
 private:
 
     /// Define if the instance must be split in several files
@@ -162,6 +180,9 @@ private:
 
     /// Series Instance UID
     std::string m_seriesInstanceUID;
+
+    /// Frame Of Reference UID
+    std::string m_frameOfReferenceUID;
 
     /// SOP Instance UID container
     SOPInstanceUIDContainerType m_SOPInstanceUIDContainer;

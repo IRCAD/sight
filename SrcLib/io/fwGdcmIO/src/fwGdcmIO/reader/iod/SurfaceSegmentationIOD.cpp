@@ -14,6 +14,7 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwRuntime/operations.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
 #include <gdcmSegmentReader.h>
@@ -82,6 +83,14 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
                                             m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Surface surfaceIE(m_dicomSeries, reader, m_instance, modelSeries, m_logger,
                                             m_progressCallback, m_cancelRequestedCallback);
+
+    // Load Segmented Property Registry
+    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath("fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
+    if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
+    {
+        throw  ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
+                                             filepath.string() + "'. File does not exist.");
+    }
 
     // Read Patient Module - PS 3.3 C.7.1.1
     patientIE.readPatientModule();

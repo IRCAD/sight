@@ -15,6 +15,8 @@
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
 #include <fwCore/spyLog.hpp>
+
+#include <fwRuntime/operations.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
@@ -71,6 +73,15 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
     ::fwGdcmIO::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
     ::fwGdcmIO::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
+    // Load Segmented Property Registry
+    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath("fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
+
+    if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
+    {
+        throw  ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
+                                             filepath.string() + "'. File does not exist.");
+    }
+
     // Write Patient Module - PS 3.3 C.7.1.1
     patientIE.writePatientModule();
 
@@ -92,52 +103,22 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
     // Write General Equipment Module - PS 3.3 C.7.5.1
     equipmentIE.writeGeneralEquipmentModule();
 
-    // Copy dataset to avoid writing conflict with GDCM
-    const ::gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
+    // Write Enhanced General Equipment Module - PS 3.3 C.7.5.2
+    equipmentIE.writeEnhancedGeneralEquipmentModule();
 
     // Write SOP Common Module - PS 3.3 C.12.1
     surfaceIE.writeSOPCommonModule();
 
-    // Skipped segmentation count
-    unsigned int skippedSegmentationCount = 0;
-
-    // Write surface segmentations
-    for(unsigned short index = 0; index < modelSeries->getReconstructionDB().size(); ++index)
-    {
-        try
-        {
-            // Write Surface Segmentation Module - PS 3.3 C.8.23.1
-            surfaceIE.writeSurfaceSegmentationModule(index);
-
-            // Write Surface Mesh Module - PS 3.3 C.27.1
-            surfaceIE.writeSurfaceMeshModule(index);
-
-        }
-        catch (::fwGdcmIO::exception::Failed& e)
-        {
-            ++skippedSegmentationCount;
-            SLM_ERROR(e.what());
-        }
-    }
-
-    if (skippedSegmentationCount == modelSeries->getReconstructionDB().size())
-    {
-        throw ::fwGdcmIO::exception::Failed("All 3D reconstructions have been rejected");
-    }
-    else if (skippedSegmentationCount > 0)
-    {
-        OSLM_WARN(skippedSegmentationCount<<" 3D reconstruction(s) have been rejected");
-    }
-
-
-    // Number of Surfaces Tag(0x0066,0x0001) - Type 1
-    writer->SetNumberOfSurfaces(modelSeries->getReconstructionDB().size() - skippedSegmentationCount);
-    OSLM_TRACE("Number of Surfaces : " << writer->GetNumberOfSurfaces());
+    // Write Surface Segmentation Module - PS 3.3 C.8.23.1
+    // And Surface Mesh Module - PS 3.3 C.27.1
+    surfaceIE.writeSurfaceSegmentationAndSurfaceMeshModules();
 
     // Write the file
-    ::fwGdcmIO::helper::FileWriter::write(m_destinationPath.string(), writer);
-
-
+    if((!m_cancelRequestedCallback || !m_cancelRequestedCallback()) &&
+       (!m_logger || !m_logger->count(::fwLog::Log::CRITICAL)))
+    {
+        ::fwGdcmIO::helper::FileWriter::write(m_destinationPath, writer);
+    }
 }
 
 //------------------------------------------------------------------------------

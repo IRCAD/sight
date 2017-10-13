@@ -7,7 +7,7 @@
 #include "DicomAnonymizerTest.hpp"
 
 #include <fwGdcmIO/helper/DicomAnonymizer.hpp>
-#include <fwGdcmIO/helper/DicomData.hpp>
+#include <fwGdcmIO/helper/DicomDataReader.hxx>
 #include <fwGdcmIO/helper/DicomSearch.hpp>
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 #include <fwGdcmIO/reader/SeriesDB.hpp>
@@ -102,9 +102,9 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getEquipment()->getInstitutionName());
     CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED"), anonymizedSeries->getPatient()->getName());
     CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED"), anonymizedSeries->getPatient()->getPatientId());
-    CPPUNIT_ASSERT_EQUAL(std::string("19700101"), anonymizedSeries->getPatient()->getBirthdate());
+    CPPUNIT_ASSERT_EQUAL(std::string("19000101"), anonymizedSeries->getPatient()->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(std::string("O"), anonymizedSeries->getPatient()->getSex());
-    CPPUNIT_ASSERT_EQUAL(std::string("19700101"), anonymizedSeries->getStudy()->getDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("19000101"), anonymizedSeries->getStudy()->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("000000.000000"), anonymizedSeries->getStudy()->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED"),
                          anonymizedSeries->getStudy()->getReferringPhysicianName());
@@ -144,71 +144,71 @@ void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPa
         ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
         std::string data;
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0020, 0x9161>(dataset);    //Concatenation UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x9161>(dataset);    //Concatenation UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x010D>(dataset);    //Context Group Extension Creator
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x010D>(dataset);    //Context Group Extension Creator
                                                                                        // UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x9123>(dataset);    //Creator Version UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x9123>(dataset);    //Creator Version UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0018, 0x1002>(dataset);    //Device UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x1002>(dataset);    //Device UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0020, 0x9164>(dataset);    //Dimension Organization UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x9164>(dataset);    //Dimension Organization UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x300A, 0x0013>(dataset);    //Dose Reference UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x300A, 0x0013>(dataset);    //Dose Reference UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x0058>(dataset);    //Failed SOP Instance UID List
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0058>(dataset);    //Failed SOP Instance UID List
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0070, 0x031A>(dataset);    //Fiducial UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0070, 0x031A>(dataset);    //Fiducial UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0020, 0x0052>(dataset);    //Frame of Reference UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x0052>(dataset);    //Frame of Reference UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x0014>(dataset);    //Instance Creator UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0014>(dataset);    //Instance Creator UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x3010>(dataset);    //Irradiation Event UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x3010>(dataset);    //Irradiation Event UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028, 0x1214>(dataset);    //Large Palette Color Lookup
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1214>(dataset);    //Large Palette Color Lookup
                                                                                        // Table UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0002, 0x0003>(dataset);    //Media Storage SOP Instance UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0002, 0x0003>(dataset);    //Media Storage SOP Instance UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028, 0x1199>(dataset);    //Palette Color Lookup Table UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1199>(dataset);    //Palette Color Lookup Table UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x3006, 0x0024>(dataset);    //Referenced Frame of Reference
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x3006, 0x0024>(dataset);    //Referenced Frame of Reference
                                                                                        // UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0040, 0x4023>(dataset);    //Referenced General Purpose
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0x4023>(dataset);    //Referenced General Purpose
                                                                                        // Scheduled Procedure Step
                                                                                        // Transaction UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x1155>(dataset);    //Referenced SOP Instance UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x1155>(dataset);    //Referenced SOP Instance UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0004, 0x1511>(dataset);    //Referenced SOP Instance UID in
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0004, 0x1511>(dataset);    //Referenced SOP Instance UID in
                                                                                        // File
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x3006, 0x00C2>(dataset);    //Related Frame of Reference UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x3006, 0x00C2>(dataset);    //Related Frame of Reference UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0000, 0x1001>(dataset);    //Requested SOP Instance UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0000, 0x1001>(dataset);    //Requested SOP Instance UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0020, 0x000E>(dataset);    //Series Instance UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x000E>(dataset);    //Series Instance UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x0018>(dataset);    //SOP Instance UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(dataset);    //SOP Instance UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0088, 0x0140>(dataset);    //Storage Media File-set UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0088, 0x0140>(dataset);    //Storage Media File-set UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0020, 0x000D>(dataset);    //Study Instance UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x000D>(dataset);    //Study Instance UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0020, 0x0200>(dataset);    //Synchronization Frame of
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0020, 0x0200>(dataset);    //Synchronization Frame of
                                                                                        // Reference UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0040, 0xDB0D>(dataset);    //Template Extension Creator UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0xDB0D>(dataset);    //Template Extension Creator UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0040, 0xDB0C>(dataset);    //Template Extension Organization
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0xDB0C>(dataset);    //Template Extension Organization
                                                                                        // UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0008, 0x1195>(dataset);    //Transaction UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x1195>(dataset);    //Transaction UID
         m_uidContainer.insert(data);
-        data = ::fwGdcmIO::helper::DicomData::getTagValue<0x0040, 0xA124>(dataset);    //UID
+        data = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0040, 0xA124>(dataset);    //UID
         m_uidContainer.insert(data);
     }
     m_uidContainer.erase("");
@@ -275,7 +275,7 @@ std::string getDummyValue(const ::gdcm::Tag& tag)
         }
         case ::gdcm::VR::DA:
         {
-            return "19700101";
+            return "19000101";
         }
         case ::gdcm::VR::DS:
         {
@@ -283,7 +283,7 @@ std::string getDummyValue(const ::gdcm::Tag& tag)
         }
         case ::gdcm::VR::DT:
         {
-            return "19700101000000.000000";
+            return "19000101000000.000000";
         }
         case ::gdcm::VR::FD:
         {
@@ -383,7 +383,7 @@ void processTag(const ::gdcm::DataSet& dataset, const std::string& actionCode,
                 const std::set< std::string >& uidContainer)
 {
     // Retrieve tag value
-    const std::string& dataStr = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<GROUP, ELEMENT>(dataset);
+    const std::string& dataStr = ::fwGdcmIO::helper::DicomDataReader::getTagValue<GROUP, ELEMENT>(dataset);
 
     //X – remove
     //X/Z – X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)

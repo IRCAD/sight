@@ -10,7 +10,6 @@
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>

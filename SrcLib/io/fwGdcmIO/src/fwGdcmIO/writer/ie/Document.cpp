@@ -14,8 +14,6 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-
-
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 #include <gdcmUIDGenerator.h>

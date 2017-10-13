@@ -68,8 +68,7 @@ Surface::~Surface()
 
 bool Surface::loadSegmentedPropertyRegistry(const ::boost::filesystem::path& filepath)
 {
-    //return m_segmentedPropertyRegistry.readSegmentedPropertyRegistryFile(filepath, true, m_logger);
-    return true;
+    return m_segmentedPropertyRegistry.readSegmentedPropertyRegistryFile(filepath, true, m_logger);
 }
 
 //------------------------------------------------------------------------------
@@ -201,44 +200,6 @@ std::string getStructureTypeFromSegmentIdentification(const ::gdcm::SmartPointer
 
 //------------------------------------------------------------------------------
 
-#if 0
-void Surface::readSurfaceSegmentationModule(::gdcm::SmartPointer< ::gdcm::Segment > segment)
-{
-    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
-
-    // We only handle segment containing one surface
-    if (segment->GetSurfaceCount() != 1)
-    {
-        throw ::fwGdcmIO::exception::Failed("Inappropriate surface count for a segment.");
-    }
-
-    // Organ Name - TODO : if empty, try to get label with DictionarySegment
-    std::string organName = segment->GetSegmentDescription();
-    ::boost::algorithm::trim(organName);
-    reconstruction->setOrganName(organName);
-    SLM_TRACE("Organ Name : " + reconstruction->getOrganName());
-
-    // Structure Type
-    std::string structureType = segment->GetSegmentLabel();
-    ::boost::algorithm::trim(structureType);
-    reconstruction->setStructureType(structureType);
-    SLM_TRACE("Structure type : " + reconstruction->getStructureType());
-
-    // Get the associated surface of the current segmentation
-    ::gdcm::SmartPointer< ::gdcm::Surface > surface = segment->GetSurface(0);
-
-    this->readSurfaceMeshModule(surface, reconstruction);
-
-    // Add the Reconstruction in the ModelSeries
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
-    reconstructionDB.push_back(reconstruction);
-    m_object->setReconstructionDB(reconstructionDB);
-
-}
-#endif
-
-//------------------------------------------------------------------------------
-
 void Surface::readSurfaceSegmentationModule(const ::fwData::Reconstruction::sptr& reconstruction,
                                             const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
                                             const ::gdcm::Item& segmentItem)
@@ -255,7 +216,7 @@ void Surface::readSurfaceSegmentationModule(const ::fwData::Reconstruction::sptr
     // Structure Type from Private Tag (0x5649,0x1000)
     const ::gdcm::Tag structureTypeTag(0x5649,0x1000);
     auto privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(structureTypeTag).c_str());
-    if(segmentDataset.FindDataElement(structureTypeTag) && privateCreator == "Visible Patient")
+    if(segmentDataset.FindDataElement(structureTypeTag))
     {
         const auto structureType = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x5649, 0x1000 >(segmentDataset);
         reconstruction->setStructureType(structureType);
@@ -280,7 +241,7 @@ void Surface::readSurfaceSegmentationModule(const ::fwData::Reconstruction::sptr
     // Computed Mask Volume (0x5649, 0x1001)
     const ::gdcm::Tag computedMaskVolumeTag(0x5649,0x1001);
     privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
-    if(segmentDataset.FindDataElement(computedMaskVolumeTag) && privateCreator == "Visible Patient")
+    if(segmentDataset.FindDataElement(computedMaskVolumeTag))
     {
         ::gdcm::Attribute< 0x5649, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1 > attribute;
         attribute.SetFromDataSet(segmentDataset);

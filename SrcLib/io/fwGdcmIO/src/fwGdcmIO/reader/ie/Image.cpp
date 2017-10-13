@@ -62,6 +62,53 @@ Image::~Image()
 
 //------------------------------------------------------------------------------
 
+double getInstanceZPosition(const ::boost::filesystem::path& path)
+{
+    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
+    reader->SetFileName( path.string().c_str() );
+
+    if (!reader->Read())
+    {
+        return 0;
+    }
+
+    // Retrieve dataset
+    const ::gdcm::DataSet &dataset = reader->GetFile().GetDataSet();
+
+    // Check tags availability
+    if(!dataset.FindDataElement(::gdcm::Tag(0x0020,0x0032)) || !dataset.FindDataElement(::gdcm::Tag(0x0020,0x0037)))
+    {
+        const std::string msg = "Unable to compute the spacing between slices of the series.";
+        throw ::fwGdcmIO::exception::Failed(msg);
+    }
+
+    // Retrieve image position
+    const ::gdcm::Image &gdcmImage = reader->GetImage();
+    const double *gdcmOrigin = gdcmImage.GetOrigin();
+    fwVec3d imagePosition = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
+
+    // Retrieve image orientation
+    const double* directionCosines = gdcmImage.GetDirectionCosines();
+    fwVec3d imageOrientationU = {{
+        ::boost::math::round(directionCosines[0]),
+        ::boost::math::round(directionCosines[1]),
+        ::boost::math::round(directionCosines[2])}};
+    fwVec3d imageOrientationV = {{
+        ::boost::math::round(directionCosines[3]),
+        ::boost::math::round(directionCosines[4]),
+        ::boost::math::round(directionCosines[5])}};
+
+    //Compute Z direction (cross product)
+    fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+
+    //Compute dot product to get the index
+    double index = ::fwMath::dot(imagePosition, zVector);
+
+    return index;
+}
+
+//------------------------------------------------------------------------------
+
 void Image::readImagePlaneModule()
 {
     // Retrieve GDCM image

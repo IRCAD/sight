@@ -36,6 +36,8 @@ namespace helper
 {
 
 //Series
+static const ::gdcm::Tag s_MediaStorageSOPClassUID(0x0002,0x0002);
+static const ::gdcm::Tag s_SpecificCharacterSetTag(0x0008, 0x0005);
 static const ::gdcm::Tag s_SeriesInstanceUIDTag(0x0020, 0x000e);
 static const ::gdcm::Tag s_SeriesDateTag(0x0008, 0x0021);
 static const ::gdcm::Tag s_SeriesTimeTag(0x0008, 0x0031);
@@ -106,6 +108,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType &f
 void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJobs::Observer)& completeSeriesObserver)
 {
     ::gdcm::Scanner seriesScanner;
+    seriesScanner.AddTag(s_SpecificCharacterSetTag);
     seriesScanner.AddTag(s_SeriesInstanceUIDTag);
     seriesScanner.AddTag(s_ModalityTag);
     seriesScanner.AddTag(s_SeriesDateTag);
@@ -198,6 +201,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
                                                               const ::fwJobs::Observer::sptr& readerObserver)
 {
     ::gdcm::Scanner seriesScanner;
+    seriesScanner.AddTag(s_SpecificCharacterSetTag);
     seriesScanner.AddTag(s_SeriesInstanceUIDTag);
     seriesScanner.AddTag(s_ModalityTag);
     seriesScanner.AddTag(s_SeriesDateTag);
@@ -205,9 +209,10 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     seriesScanner.AddTag(s_SeriesDescriptionTag);
     seriesScanner.AddTag(s_PerformingPhysicianNameTag);
     seriesScanner.AddTag(s_SOPClassUIDTag);
+    seriesScanner.AddTag(s_MediaStorageSOPClassUID);
 
-    readerObserver->setTotalWorkUnits(filenames.size());
-    readerObserver->doneWork(0);
+    //readerObserver->setTotalWorkUnits(filenames.size());
+    //readerObserver->doneWork(0);
 
     std::vector< std::string > fileVec;
     for(auto file : filenames)
@@ -226,22 +231,31 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     DicomSeriesContainerType seriesDB;
 
     //Loop through every files available in the scanner
-    for(it = keys.begin(); it != keys.end() && !readerObserver->cancelRequested(); ++it)
+for(const ::boost::filesystem::path& dicomFile : filenames)
     {
-        const std::string filename = it->c_str();
+        auto filename = dicomFile.string();
 
-        OSLM_ASSERT("The file \"" << filename << "\" is not a key of the gdcm scanner",
+
+        OSLM_ASSERT("The file \"" << dicomFile << "\" is not a key of the gdcm scanner",
                     seriesScanner.IsKey(filename.c_str()));
 
-        // Create Series
-        this->createSeries(seriesDB, seriesScanner, filename);
+        const std::string sopClassUID = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
+        const std::string mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
+
+        if(sopClassUID != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage)
+                && mediaStorageSopClassUID
+                != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
+        {
+
+            this->createSeries(seriesDB, seriesScanner, dicomFile);
+        }
 
         if (!readerObserver || readerObserver->cancelRequested())
         {
             break;
         }
 
-        readerObserver->doneWork(++progress);
+        readerObserver->doneWork(static_cast<unsigned int>(++progress * 100 / keys.size()));
     }
 
     return seriesDB;
@@ -257,6 +271,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
     m_equipmentMap.clear();
 
     ::gdcm::Scanner attributeScanner;
+    attributeScanner.AddTag(s_SpecificCharacterSetTag);
     attributeScanner.AddTag(s_PatientIDTag);
     attributeScanner.AddTag(s_PatientNameTag);
     attributeScanner.AddTag(s_PatientBirthDateTag);
@@ -270,15 +285,14 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
     attributeScanner.AddTag(s_InstitutionNameTag);
     attributeScanner.AddTag(s_SeriesInstanceUIDTag);
 
-    completeSeriesObserver->setTotalWorkUnits(seriesDB.size());
-    std::uint64_t progress = 0;
+    unsigned int progress = 0;
 
     // Fill series
     for(::fwMedData::DicomSeries::sptr series : seriesDB)
     {
         // Compute number of instances
         auto size = series->getLocalDicomPaths().size();
-        series->setNumberOfInstances(size);
+        series->setNumberOfInstances(static_cast< unsigned int >(size));
 
         if(!size)
         {
@@ -309,11 +323,14 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
         series->setStudy(study);
         series->setEquipment(equipment);
 
-        completeSeriesObserver->doneWork(++progress);
-
-        if(completeSeriesObserver->cancelRequested())
+        if(completeSeriesObserver)
         {
-            break;
+            completeSeriesObserver->doneWork(static_cast<unsigned int>(++progress*100/seriesDB.size() ));
+
+            if(completeSeriesObserver->cancelRequested())
+            {
+                break;
+            }
         }
     }
 }
@@ -387,7 +404,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     series->setSOPClassUIDs(sopClassUIDContainer);
 
     // Add the instance to the series
-    auto instanceNumber = series->getLocalDicomPaths().size();
+    auto instanceNumber = static_cast< unsigned int >(series->getLocalDicomPaths().size());
     series->addDicomPath(instanceNumber, filename);
 }
 
@@ -425,7 +442,8 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     }
     else
     {
-        result = m_patientMap[patientID];
+        result = ::fwMedData::Patient::New();
+        result->deepCopy(m_patientMap[patientID]);
     }
 
     return result;
@@ -473,7 +491,8 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     }
     else
     {
-        result = m_studyMap[studyInstanceUID];
+        result = ::fwMedData::Study::New();
+        result->deepCopy(m_studyMap[studyInstanceUID]);
     }
 
     return result;
@@ -501,7 +520,8 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     }
     else
     {
-        result = m_equipmentMap[institutionName];
+        result = ::fwMedData::Equipment::New();
+        result->deepCopy(m_equipmentMap[institutionName]);
     }
 
     return result;

@@ -8,10 +8,12 @@
 #define __FWGDCMIO_WRITER_IE_SURFACE_HPP__
 
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
-#include <fwData/StructureTraitsDictionary.hpp>
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
 
 #include <fwMedData/ModelSeries.hpp>
+#include <gdcmSegment.h>
+
+#include <boost/filesystem/path.hpp>
 
 namespace fwGdcmIO
 {
@@ -62,27 +64,37 @@ public:
 
     /**
      * @brief Write Surface Segmentation Module tags
-     * @see PS 3.3 C.8.23.1
+     * @see PS 3.3 C.8.23.1 & PS 3.3 C.27.1
      */
-    FWGDCMIO_API virtual void writeSurfaceSegmentationModule(unsigned short segmentationNumber);
-
-    /**
-     * @brief Write Surface Mesh Module tags
-     * @see PS 3.3 C.27.1
-     */
-    FWGDCMIO_API virtual void writeSurfaceMeshModule(unsigned short segmentationNumber);
+    FWGDCMIO_API virtual void writeSurfaceSegmentationAndSurfaceMeshModules();
 
 
 protected:
 
     /**
-     * @brief Write Content Identification Macro
-     * @see PS 3.3 C.8.23.1 and C.10.9
+     * @brief Write Segment Item into Segment Sequence
+     * @see PS 3.3 C.8.23.1
+     * @param[in] reconstruction Reconstruction data
+     * @param[in] segmentItem GDCM segment item
+     * @param[in] segment GDCM segment
+     * @param[in] segmentNumber Segment number
      */
-    void writeContentIdentificationMacro(unsigned int segmentationNumber);
-
-    /// Structure Dictionary
-    ::fwData::StructureTraitsDictionary::sptr m_structureDictionary;
+    FWGDCMIO_API virtual void writeSegmentSequence(const CSPTR(::fwData::Reconstruction)& reconstruction,
+                                                   ::gdcm::Item& segmentItem,
+                                                   const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
+                                                   unsigned short segmentNumber);
+    /**
+     * @brief Write Surface Item into Surface Sequence
+     * @see PS 3.3 C.27.1
+     * @param[in] reconstruction Reconstruction data
+     * @param[in] surfaceItem GDCM surface item
+     * @param[in] surface GDCM surface
+     * @param[in] segmentNumber Associated segment number
+     */
+    FWGDCMIO_API virtual void writeSurfaceSequence(const CSPTR(::fwData::Reconstruction)& reconstruction,
+                                                   ::gdcm::Item& surfaceItem,
+                                                   const ::gdcm::SmartPointer< ::gdcm::Surface >& surface,
+                                                   unsigned short segmentNumber);
 
     /// Structure Dictionary
     ::fwGdcmIO::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;

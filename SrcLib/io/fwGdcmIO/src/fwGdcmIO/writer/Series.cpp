@@ -18,8 +18,6 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-
-
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>

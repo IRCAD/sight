@@ -43,7 +43,7 @@ void FrameOfReference::writeFrameOfReferenceModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Frame of Reference UID
-    const std::string frameOfReferenceUID = m_instance->getSOPInstanceUIDContainer()[0];
+    const std::string frameOfReferenceUID = m_instance->getFrameOfReferenceUID();
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x0052 >(frameOfReferenceUID, dataset);
 
     // Position Reference Indicator - Type 2

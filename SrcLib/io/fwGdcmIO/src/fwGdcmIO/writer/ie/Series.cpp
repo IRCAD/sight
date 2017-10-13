@@ -48,7 +48,11 @@ void Series::writeGeneralSeriesModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Serie's instance UID - Type 1
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000e >(m_object->getInstanceUID(), dataset);
+    // As the data may have been updated between two export, we regenerate an UID
+    ::gdcm::UIDGenerator uidGenerator;
+    const std::string instanceUID = uidGenerator.Generate();
+
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000e >(instanceUID, dataset);
 
     // Series's modality - Type 1
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >(m_object->getModality(), dataset);
