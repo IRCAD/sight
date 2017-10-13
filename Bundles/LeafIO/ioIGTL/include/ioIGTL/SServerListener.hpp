@@ -9,12 +9,7 @@
 
 #include "ioIGTL/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwData/Object.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <igtlNetwork/Client.hpp>
 #include <igtlNetwork/Server.hpp>

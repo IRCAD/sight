@@ -45,10 +45,6 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (SClientSender)(::ioNetwork::INetworkSender) );
 
-    IOIGTL_API static const ::fwCom::Slots::SlotKeyType s_START_SENDING_SLOT;
-
-    IOIGTL_API static const ::fwCom::Slots::SlotKeyType s_STOP_SENDING_SLOT;
-
     /// Constructor
     IOIGTL_API SClientSender();
 
