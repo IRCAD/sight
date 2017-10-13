@@ -111,7 +111,7 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
     ::cv::threshold(m, m, 125, 255, ::cv::THRESH_BINARY);
 
     //eliminate mask holes with erosion/dilation
-    ::cv::Mat filteredMask1 = removeMaskHoles(m, 2);
+    ::cv::Mat filteredMask1 = removeMaskHoles(m, 2, testImgMask);
 
     return filteredMask1;
 }
@@ -293,7 +293,7 @@ bool Masker::isModelLearned(void)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Masker::removeMaskHoles(const ::cv::Mat& m, size_t n)
+::cv::Mat Masker::removeMaskHoles(const ::cv::Mat& m, size_t n, cv::InputArray insideMask)
 {
     ::cv::Mat mask;
     m.copyTo(mask);
@@ -301,6 +301,7 @@ bool Masker::isModelLearned(void)
     ::cv::Mat k = s_MORPHELEMENT.clone();
     k.setTo(1);
 
+    // Performe some erison/dilatation to remove small areas
     for (size_t i = 0; i < n; i++)
     {
         ::cv::erode(mask, mask, k);
@@ -311,32 +312,41 @@ bool Masker::isModelLearned(void)
         ::cv::dilate(mask, mask, k);
     }
 
+    // Perform a last opening to smooth the edge of the final mask
     ::cv::morphologyEx(mask, mask, ::cv::MORPH_OPEN, s_MORPHELEMENT);
     ::cv::dilate(mask, mask, s_MORPHELEMENT);
 
-    return mask;
+    // Get connected components from the mask and label them
+    ::cv::Mat labels;
+    int nbLabels = ::cv::connectedComponents(mask, labels, 8, CV_32S);
+
+    // Erode the original mask
+    ::cv::Mat insideMaskEroded;
+    ::cv::erode(insideMask, insideMaskEroded, k);
+
+    // Perform a diff to get areas connected to the border of the mask
+    ::cv::Mat diff = mask - insideMaskEroded;
+    ::cv::Mat res  = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
+
+    // Browse all labels
+    for(int i = 1; i < nbLabels; ++i)
+    {
+        ::cv::Mat tmp = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
+        // Get the binary image corresponding to the current label
+        ::cv::Mat binTmp = (labels == i);
+        // Do a 'and' between the diff mask and the current label mask
+        ::cv::bitwise_and(diff, binTmp, tmp);
+
+        // If the 'and' is not empty, it means that it's an area connected to the border of the insideMask
+        // Otherwise, it's an unconnecter small area inside the mask
+        if(::cv::countNonZero(tmp) != 0)
+        {
+            res.setTo(255, binTmp);
+        }
+    }
+
+    return res;
 }
-
-//------------------------------------------------------------------------------
-
-class Parallel_predict : public ::cv::ParallelLoopBody
-{
-private:
-    ::cv::Mat* m_sample;
-    ::cv::Mat* m_output;
-public:
-    Parallel_predict(::cv::Mat* sample, ::cv::Mat* output) :
-        m_sample(sample),
-        m_output(output)
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void operator()(const ::cv::Range& r) const
-    {
-    }
-};
 
 //------------------------------------------------------------------------------
 

@@ -66,7 +66,7 @@ private:
     static ::cv::Mat makeTrainingSamples(const ::cv::Mat& trainImg, const ::cv::Mat& mask, const ColSpace& c);
 
     /// OpenCV operations to remove holes in the mask
-    static ::cv::Mat removeMaskHoles(const ::cv::Mat& m, size_t n);
+    static ::cv::Mat removeMaskHoles(const ::cv::Mat& m, size_t n, ::cv::InputArray insideMask);
 
     /// Foreground and background models
     ::cv::Ptr< ::cv::ml::EM > m_foregroundModel;
