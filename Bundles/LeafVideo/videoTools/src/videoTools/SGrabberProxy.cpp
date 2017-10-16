@@ -17,6 +17,7 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 
 namespace videoTools
 {
@@ -72,6 +73,48 @@ void SGrabberProxy::stopping()
 
 void SGrabberProxy::configuring()
 {
+    const auto config = this->getConfigTree();
+
+    auto itSubConfig = config.find("config");
+
+    m_selectedServices.clear();
+    m_serviceToConfig.clear();
+
+    if(itSubConfig != config.not_found())
+    {
+        const auto& subConfig  = itSubConfig->second;
+        const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode");
+        SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+                    "'exclude' (to exclude the selection of the selector list).",
+                    mode == "exclude" || mode == "include" );
+        m_excludeOrInclude = ( mode == "exclude" );
+        OSLM_DEBUG( "selection mode => " << (m_excludeOrInclude ? "Exclude" : "Include") );
+
+        const auto selectionCfg = subConfig.equal_range("addSelection");
+        for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
+        {
+            const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
+            m_selectedServices.insert(service);
+            SLM_DEBUG( "add selection => " + service );
+
+            const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
+            if(!configId.empty())
+            {
+                m_serviceToConfig[service] = configId;
+                SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+            }
+        }
+
+        const auto configCfg = subConfig.equal_range("config");
+        for (auto itCfg = configCfg.first; itCfg != configCfg.second; ++itCfg)
+        {
+            const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
+            const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
+
+            m_serviceToConfig[service] = configId;
+            SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +140,27 @@ void SGrabberProxy::startCamera()
             {
                 if(srv != "::videoTools::SGrabberProxy")
                 {
-                    availableExtensionsSelector.push_back(srv);
+                    if(m_selectedServices.empty())
+                    {
+                        availableExtensionsSelector.push_back(srv);
+                    }
+                    else
+                    {
+                        if(m_excludeOrInclude)
+                        {
+                            if(m_selectedServices.find(srv) == m_selectedServices.end())
+                            {
+                                availableExtensionsSelector.push_back(srv);
+                            }
+                        }
+                        else
+                        {
+                            if(m_selectedServices.find(srv) != m_selectedServices.end())
+                            {
+                                availableExtensionsSelector.push_back(srv);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -106,7 +169,6 @@ void SGrabberProxy::startCamera()
                 ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
                 selector->setTitle("Choose a video grabber");
-
                 selector->setSelections(availableExtensionsSelector);
 
                 m_grabberImpl = selector->show();
@@ -137,8 +199,18 @@ void SGrabberProxy::startCamera()
 
         auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
         m_service->registerInOut(frameTL, s_FRAMETL_KEY);
-        m_service->setWorker(m_associatedWorker);
 
+        ::fwRuntime::ConfigurationElement::csptr srvCfg;
+        if ( m_serviceToConfig.find( m_grabberImpl ) != m_serviceToConfig.end() )
+        {
+            const auto& srvConfigRegistry = ::fwServices::registry::ServiceConfig::getDefault();
+            srvCfg = srvConfigRegistry->getServiceConfig(m_serviceToConfig[m_grabberImpl], m_grabberImpl );
+            SLM_ASSERT("No service configuration called '" + m_serviceToConfig[m_grabberImpl] + "' was found for "
+                       "service type '" + m_grabberImpl + "'", srvCfg );
+            m_service->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
+            m_service->configure();
+        }
+        m_service->setWorker(m_associatedWorker);
         m_service->start();
 
         m_connections.connect(m_service, ::arServices::IGrabber::s_POSITION_MODIFIED_SIG,

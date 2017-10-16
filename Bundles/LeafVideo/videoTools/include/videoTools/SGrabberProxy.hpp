@@ -24,7 +24,11 @@ namespace videoTools
 {
 
 /**
- * @brief   Defines the service which grab video frame.
+ * @brief   This service allows you to select a frame grabber implementation at runtime.
+ *
+ * Actually as its name indicates it, this service is a proxy and behaves like exactly a video frame grabber. The
+ * difference is that it selects a valid video grabber implementation when playing is requested. If there are several
+ * implementation available, a dialog proposes the user to make a choice.
  *
  * @section Signals Signals
  * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
@@ -36,6 +40,8 @@ namespace videoTools
  * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
  * - \b loopVideo() : Toggle the loop of the playing.
  * - \b setPositionVideo(int) : Force the current time in the video.
+ * - \b reconfigure() : Allows to erase the implementation choice, so that the selection routine is ran again, thus,
+ * potentially the selection dialog is shown.
  *
  * @section XML XML Configuration
  *
@@ -43,12 +49,24 @@ namespace videoTools
         <service type="::videoQt::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
+            <selection mode="include" />
+            <addSelection service="::videoQt::SFrameGrabber" />
+            <config id="cvGrabberConfig" service="::videoOpenCV::SFrameGrabber" />
         </service>
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera used to display video.
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * @subsection Configuration Configuration
+ *  - \b selection
+ *      - \b mode (optional) : must be include (to add the selection to selector list ) or exclude (to exclude the
+ * selection of the selector list).
+ *  - \b addSelection
+ *      - \b service (mandatory) : name of the service to include/exclude to the choice list of the selector.
+ *  - \b config
+ *      - \b id (mandatory) : the id of the configuration to use.
+ *      - \b service (mandatory) :  the name of the service.
  */
 class VIDEOTOOLS_CLASS_API SGrabberProxy :  public ::arServices::IGrabber,
                                             public ::fwServices::IHasServices
@@ -110,9 +128,6 @@ private:
     /// SLOT : duration of the video has changed.
     void modifyDuration(int64_t position);
 
-    /// state of the loop mode
-    bool m_loopVideo { false };
-
     /// grabber implementation chosen by the user
     std::string m_grabberImpl;
 
@@ -121,6 +136,19 @@ private:
 
     /// connections with service signals
     ::fwCom::helper::SigSlotConnection m_connections;
+
+    /// List of services to be included or excluded.
+    std::set< std::string > m_selectedServices;
+
+    /// Map that specifies a configuration extension for a service
+    std::map< std::string, std::string > m_serviceToConfig;
+
+    /// state of the loop mode
+    bool m_loopVideo { false };
+
+    /// Configure if selected services are excluded (true) or included (false).
+    bool m_excludeOrInclude { false };
+
 };
 
 } // namespace videoTools
