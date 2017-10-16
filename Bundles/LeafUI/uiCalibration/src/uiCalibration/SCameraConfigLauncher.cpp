@@ -212,14 +212,27 @@ void SCameraConfigLauncher::onImportClicked()
     auto sdb = ::fwMedData::SeriesDB::New();
     ::fwServices::IService::sptr readerService =
         ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
-
     ::fwServices::OSR::registerService(sdb, readerService);
 
-    ::io::IReader::sptr reader = ::io::IReader::dynamicCast(readerService);
-    reader->start();
-    reader->configureWithIHM();
-    reader->update();
-    reader->stop();
+    try
+    {
+        ::io::IReader::sptr reader = ::io::IReader::dynamicCast(readerService);
+        reader->start();
+        reader->configureWithIHM();
+        reader->update();
+        reader->stop();
+    }
+    catch(std::exception const& e)
+    {
+        ::fwGui::dialog::MessageDialog dlg;
+        const auto msg = "Cannot read file: " + std::string(e.what());
+        dlg.setTitle("Read error");
+        dlg.setMessage(msg);
+        dlg.setIcon(::fwGui::dialog::IMessageDialog::Icons::CRITICAL);
+        SLM_ERROR(msg);
+
+        throw;
+    }
     ::fwServices::OSR::unregisterService(readerService);
 
     auto series       = sdb->getContainer();

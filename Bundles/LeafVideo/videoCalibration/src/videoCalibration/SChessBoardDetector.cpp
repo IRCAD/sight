@@ -237,6 +237,9 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
 
     if(buffer)
     {
+        const auto pixType = tl->getType();
+        OSLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
+
         int height = static_cast<int>(tl->getHeight());
         int width  = static_cast<int>(tl->getWidth());
 
