@@ -45,22 +45,24 @@ int main(int argc, char** argv)
 
     if (vm.count("help"))
     {
-        std::cout << desc << "\n";
+        std::cout << desc << std::endl;
         return EXIT_SUCCESS;
     }
     else if(!vm.count("input"))
     {
-        std::cout << "You must specify an input file." << "\n";
+        std::cout << "You must specify an input file." << std::endl << std::endl;
+        std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
     else if(!vm.count("output"))
     {
-        std::cout << "You must specify an output file." << "\n";
+        std::cout << "You must specify an output file." << std::endl << std::endl;
+        std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
     else if(vm["input"].as< std::string >() == vm["output"].as< std::string >())
     {
-        std::cout << "The output folder can not be the input folder." << "\n";
+        std::cout << "The output folder can not be the input folder." << std::endl;
         return EXIT_FAILURE;
     }
 

@@ -14,7 +14,6 @@
 #include <fwData/location/MultiFiles.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
-#include <fwDataIO/reader/IObjectReader.hpp>
 #include <fwMedData/DicomSeries.hpp>
 #include <fwLog/Logger.hpp>
 

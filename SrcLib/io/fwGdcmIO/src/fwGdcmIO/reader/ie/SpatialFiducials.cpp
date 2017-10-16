@@ -11,15 +11,9 @@
 #include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Vector.hpp>
-
 #include <fwMedData/DicomSeries.hpp>
-
-
-#include <fwTools/dateAndTime.hpp>
 
 namespace fwGdcmIO
 {

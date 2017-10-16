@@ -117,8 +117,6 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
     seriesScanner.AddTag(s_PerformingPhysicianNameTag);
     seriesScanner.AddTag(s_SOPClassUIDTag);
 
-    unsigned int progress = 0;
-
     for(auto series : seriesDB)
     {
         if(series->getLocalDicomPaths().empty())
@@ -212,7 +210,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     seriesScanner.AddTag(s_MediaStorageSOPClassUID);
 
     //readerObserver->setTotalWorkUnits(filenames.size());
-    //readerObserver->doneWork(0);
+    readerObserver->doneWork(0);
 
     std::vector< std::string > fileVec;
     for(auto file : filenames)
@@ -231,7 +229,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     DicomSeriesContainerType seriesDB;
 
     //Loop through every files available in the scanner
-for(const ::boost::filesystem::path& dicomFile : filenames)
+    for(const ::boost::filesystem::path& dicomFile : filenames)
     {
         auto filename = dicomFile.string();
 

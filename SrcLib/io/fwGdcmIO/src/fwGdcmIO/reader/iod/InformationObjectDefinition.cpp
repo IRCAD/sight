@@ -6,8 +6,6 @@
 
 #include "fwGdcmIO/reader/iod/InformationObjectDefinition.hpp"
 
-#include <fwCore/spyLog.hpp>
-
 namespace fwGdcmIO
 {
 namespace reader

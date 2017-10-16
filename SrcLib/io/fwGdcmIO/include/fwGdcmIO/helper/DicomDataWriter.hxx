@@ -14,7 +14,6 @@
 #include <gdcmDataSet.h>
 #include <gdcmElement.h>
 #include <gdcmSequenceOfItems.h>
-#include <gdcmVM.h>
 
 namespace fwGdcmIO
 {

@@ -12,6 +12,8 @@
 
 #include <gdcmUIDGenerator.h>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <sstream>
 
 namespace fwGdcmIO
@@ -57,11 +59,24 @@ void Series::writeGeneralSeriesModule()
     // Series's modality - Type 1
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >(m_object->getModality(), dataset);
 
+    ::boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
+
+    std::string fulldate = ::boost::posix_time::to_iso_string(ptime);
+
+    // Split iso time in YYYYMMDDTHHMMSS
+    ::boost::char_separator<char> sep("T");
+    ::boost::tokenizer<boost::char_separator<char> > tokens(fulldate, sep);
+
+    ::boost::tokenizer<boost::char_separator<char> >::iterator tok_iter = tokens.begin();
+    const std::string date = *tok_iter;
+    tok_iter++;
+    const std::string time = *tok_iter;
+
     // Serie's date - Type 3
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0021 >(m_object->getDate(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0021 >(date, dataset);
 
     // Serie's time - Type 3
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0031 >(m_object->getTime(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0031 >(time, dataset);
 
     // Serie's description
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x103e >(m_object->getDescription(), dataset);
@@ -70,6 +85,7 @@ void Series::writeGeneralSeriesModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
 
     // Performing physicians name - Type 3
+#if 0
     ::fwMedData::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
     if (!performingPhysicians.empty())
     {
@@ -81,6 +97,7 @@ void Series::writeGeneralSeriesModule()
         }
         ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< >, 0x0008, 0x1050 >(physicians, count, dataset);
     }
+#endif
 
     // Laterality - Type 2C - FIXME: Fake Value - Should be absent for the abdomen or chest
     if(m_instance->getSOPClassUID() !=

@@ -10,8 +10,6 @@
 #include "fwGdcmIO/reader/ie/Document.hpp"
 #include "fwGdcmIO/reader/tid/MeasurementReport.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
-
 namespace fwGdcmIO
 {
 namespace reader

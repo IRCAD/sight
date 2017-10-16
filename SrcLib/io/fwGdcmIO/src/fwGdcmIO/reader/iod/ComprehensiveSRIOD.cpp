@@ -7,10 +7,8 @@
 #include "fwGdcmIO/reader/ie/Document.hpp"
 #include "fwGdcmIO/reader/iod/ComprehensiveSRIOD.hpp"
 
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-
 
 #include <fwMedData/ImageSeries.hpp>
 

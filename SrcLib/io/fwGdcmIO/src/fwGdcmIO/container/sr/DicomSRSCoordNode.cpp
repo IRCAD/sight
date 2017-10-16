@@ -7,9 +7,7 @@
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwCore/spyLog.hpp>
-
-#include <gdcmSequenceOfItems.h>
+#include <fwServices/macros.hpp>
 
 namespace fwGdcmIO
 {

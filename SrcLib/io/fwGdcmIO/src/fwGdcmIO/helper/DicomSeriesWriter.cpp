@@ -16,23 +16,10 @@
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
-
 #include <fwMedData/DicomSeries.hpp>
-
 #include <fwZip/WriteZipArchive.hpp>
 
-
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
-
-#include <algorithm>
-#include <cstdint>
-#include <stdio.h>
-#include <utility>
-#include <fstream>
 
 fwDataIOWriterRegisterMacro( ::fwGdcmIO::helper::DicomSeriesWriter );
 

@@ -14,8 +14,6 @@
 
 #include <gdcmMediaStorage.h>
 
-#include <string>
-#include <vector>
 
 namespace fwMedData
 {

@@ -13,7 +13,6 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>

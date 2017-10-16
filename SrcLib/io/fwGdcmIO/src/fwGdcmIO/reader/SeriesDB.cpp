@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/reader/Series.hpp"
-
 #include "fwGdcmIO/reader/SeriesDB.hpp"
 #include "fwGdcmIO/helper/DicomDir.hpp"
 #include "fwGdcmIO/helper/DicomSearch.hpp"
@@ -15,7 +14,6 @@
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 

@@ -12,8 +12,6 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
 
-
-
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 

@@ -10,7 +10,6 @@
 #include "fwGdcmIO/helper/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
-#include "fwGdcmIO/helper/DictionarySegment.hpp"
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
 #include <fwData/Reconstruction.hpp>
@@ -54,28 +53,6 @@ Surface::Surface(const SPTR(::gdcm::Writer)& writer,
         m_imageInstance(imageInstance)
 {
     SLM_ASSERT("Image instance should not be null.", imageInstance);
-#if 0
-    SLM_ASSERT("Image instance SOPInstanceUID container should not be empty.",
-               !imageInstance->getSOPInstanceUIDContainer().empty());
-
-    // Create dictionary
-    m_structureDictionary = ::fwData::StructureTraitsDictionary::New();
-
-    // Ready the dictionary
-    ::fwDataIO::reader::DictionaryReader::sptr dictionaryReader = ::fwDataIO::reader::DictionaryReader::New();
-    dictionaryReader->setObject(m_structureDictionary);
-
-    const auto path = ::fwRuntime::getLibraryResourceFilePath("fwDataIO-0.2/OrganDictionary.dic");
-    dictionaryReader->setFile(path.string());
-    try
-    {
-        dictionaryReader->read();
-    }
-    catch (const std::exception& e)
-    {
-        SLM_ERROR(e.what());
-    }
-#endif
 }
 
 //------------------------------------------------------------------------------

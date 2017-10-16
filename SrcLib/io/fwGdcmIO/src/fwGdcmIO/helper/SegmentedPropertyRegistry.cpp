@@ -8,17 +8,9 @@
 #include "fwGdcmIO/helper/CsvIO.hpp"
 #include "fwGdcmIO/helper/DicomCodedAttribute.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-
 #include <fwLog/Logger.hpp>
 
-#include <boost/tokenizer.hpp>
 #include <boost/filesystem/operations.hpp>
-
-#include <algorithm>
-#include <regex>
-#include <vector>
 
 namespace fwGdcmIO
 {

@@ -21,15 +21,9 @@
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
 
-
-
 #include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/types.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
-
-#include <fwTools/dateAndTime.hpp>
 
 #include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/string/trim.hpp>

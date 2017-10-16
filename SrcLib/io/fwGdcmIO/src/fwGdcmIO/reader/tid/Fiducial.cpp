@@ -14,7 +14,6 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 

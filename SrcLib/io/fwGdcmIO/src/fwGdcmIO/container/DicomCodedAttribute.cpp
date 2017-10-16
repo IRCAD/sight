@@ -6,8 +6,6 @@
 
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 
-#include <fwCore/spyLog.hpp>
-
 namespace fwGdcmIO
 {
 namespace container

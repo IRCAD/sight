@@ -11,13 +11,8 @@
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
-
-#include <fwTools/Stringizer.hpp>
 
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
-#include <boost/lambda/lambda.hpp>  // for ProgessHandler
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SeriesDB);
 

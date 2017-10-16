@@ -16,7 +16,6 @@
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Series.hpp>
 
 #include <fwTools/ProgressAdviser.hpp>
 

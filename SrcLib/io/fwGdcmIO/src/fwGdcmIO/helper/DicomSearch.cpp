@@ -7,23 +7,9 @@
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 
 #include <fwCore/base.hpp>
-
 #include <fwJobs/Observer.hpp>
 
-#include <fwTools/System.hpp>
-
-#include <boost/foreach.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/assign/list_of.hpp>
-#include <boost/regex.hpp>
-
-#include <fstream>
-#include <set>
-#include <string>
 
 namespace fwGdcmIO
 {

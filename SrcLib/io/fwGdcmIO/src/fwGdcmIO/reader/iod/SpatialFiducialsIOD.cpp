@@ -10,9 +10,7 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwMedData/ImageSeries.hpp>

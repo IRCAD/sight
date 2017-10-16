@@ -11,7 +11,6 @@
 
 #include <fwLog/Logger.hpp>
 
-#include <functional>
 
 namespace fwGdcmIO
 {

@@ -14,10 +14,6 @@
 
 #include <gdcmDataSet.h>
 
-#include <string>
-#include <vector>
-
-
 namespace fwGdcmIO
 {
 namespace container

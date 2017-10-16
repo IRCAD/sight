@@ -13,7 +13,6 @@
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwLog/Logger.hpp>
-#include <fwMedData/Series.hpp>
 
 #include <gdcmReader.h>
 

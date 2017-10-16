@@ -15,10 +15,8 @@
 #include <fwDicomTools/Series.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-#include <fwTools/dateAndTime.hpp>
 
 #include <gdcmImageReader.h>
 #include <gdcmScanner.h>

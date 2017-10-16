@@ -24,6 +24,8 @@ namespace helper
 DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
     m_job(::fwJobs::Aggregator::New("Anonymization process"))
 {
+    m_writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
+    m_reader = ::fwGdcmIO::reader::SeriesDB::New();
 }
 
 //------------------------------------------------------------------------------
@@ -47,12 +49,9 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     FW_RAISE_IF("Dicom series should be available on the local computer.",
                 source->getDicomAvailability() != ::fwMedData::DicomSeries::PATHS);
 
-    ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
-    ::fwGdcmIO::reader::SeriesDB::sptr reader          = ::fwGdcmIO::reader::SeriesDB::New();
-
-    auto writerObserver = writer->getJob();
+    auto writerObserver = m_writer->getJob();
     auto anonymizerObserver = m_anonymizer.getJob();
-    auto readerObserver = reader->getJob();
+    auto readerObserver = m_reader->getJob();
 
     // Set up observer cancel callback
     m_job->addSimpleCancelHook([&] {
@@ -72,11 +71,11 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     ::boost::filesystem::create_directories( destPath );
 
     // Write DicomSeries (Copy files)
-    writer->setObject(source);
+    m_writer->setObject(source);
     ::fwData::location::Folder::sptr loc = ::fwData::location::Folder::New();
     loc->setFolder(destPath);
-    writer->setLocation(loc);
-    writer->write();
+    m_writer->setLocation(loc);
+    m_writer->write();
 
     if(m_job->cancelRequested())
     {
@@ -92,11 +91,10 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     }
 
     // Read anonymized series
-    ::fwGdcmIO::reader::SeriesDB::sptr readerAnonymized = ::fwGdcmIO::reader::SeriesDB::New();
-    ::fwMedData::SeriesDB::sptr seriesDB                = ::fwMedData::SeriesDB::New();
-    readerAnonymized->setObject(seriesDB);
-    readerAnonymized->setFolder(destPath);
-    readerAnonymized->readDicomSeries();
+    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    m_reader->setObject(seriesDB);
+    m_reader->setFolder(destPath);
+    m_reader->readDicomSeries();
 
     if(m_job->cancelRequested())
     {

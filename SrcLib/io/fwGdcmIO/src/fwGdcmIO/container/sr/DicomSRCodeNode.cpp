@@ -7,11 +7,6 @@
 #include "fwGdcmIO/container/sr/DicomSRCodeNode.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwCore/spyLog.hpp>
-
-#include <gdcmSequenceOfItems.h>
-#include <gdcmUIDGenerator.h>
-
 namespace fwGdcmIO
 {
 namespace container

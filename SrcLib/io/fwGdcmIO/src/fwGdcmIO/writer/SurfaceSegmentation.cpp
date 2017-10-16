@@ -21,13 +21,9 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 
-
-#include <fwJobs/IJob.hpp>
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
-
-#include <boost/make_shared.hpp>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SurfaceSegmentation);
 
@@ -109,8 +105,6 @@ void SurfaceSegmentation::write() throw (::fwGdcmIO::exception::Failed)
 
     m_writerJob->doneWork(0);
     m_writerJob->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
-
-    std::cout << "OUTPUT FILE:" << this->getFile() << std::endl;
 
     ::fwGdcmIO::writer::iod::SurfaceSegmentationIOD iod(modelInstance,
                                                         associatedDicomInstance,

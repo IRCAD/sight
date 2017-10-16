@@ -11,7 +11,6 @@
 
 #include <gdcmSegmentHelper.h>
 #include <string>
-#include <vector>
 #include <iostream>
 
 namespace fwGdcmIO

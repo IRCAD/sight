@@ -7,8 +7,6 @@
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
 
-#include <fwCore/spyLog.hpp>
-
 #include <gdcmFileMetaInformation.h>
 #include <gdcmWriter.h>
 

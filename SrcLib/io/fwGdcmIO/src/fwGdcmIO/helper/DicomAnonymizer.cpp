@@ -17,6 +17,7 @@
 
 #include <fwTools/System.hpp>
 
+#include <fwRuntime/operations.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -48,15 +49,67 @@ DicomAnonymizer::DicomAnonymizer() :
         m_observer(::fwJobs::Observer::New("Anonymization process")),
         m_archiving(false),
         m_fileIndex(0),
-        m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING)),
-        m_actionCodeDTags(s_ACTION_CODE_D_TAGS),
-        m_actionCodeZTags(s_ACTION_CODE_Z_TAGS),
-        m_actionCodeXTags(s_ACTION_CODE_X_TAGS),
-        m_actionCodeKTags(s_ACTION_CODE_K_TAGS),
-        m_actionCodeCTags(s_ACTION_CODE_C_TAGS),
-        m_actionCodeUTags(s_ACTION_CODE_U_TAGS)
+        m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
+    const ::boost::filesystem::path tagsPathStr = ::fwRuntime::getLibraryResourceFilePath("fwGdcmIO-" FWGDCMIO_VER "/tags.csv");
+    ::boost::filesystem::path tagsPath = tagsPathStr;
+    SLM_ASSERT("File '" + tagsPath.string() + "' must exists",
+            ::boost::filesystem::is_regular_file(tagsPath));
+
+    auto csvStream = std::ifstream(tagsPath.string());
+    ::fwGdcmIO::helper::CsvIO csvReader(csvStream);
+    ::fwGdcmIO::helper::CsvIO::TokenContainerType tagVec = csvReader.getLine();
+
+    while(!tagVec.empty())
+    {
+        if(tagVec.size() < 3)
+        {
+            const std::string errorMessage = "Error when loading tag '" + ::boost::algorithm::join(tagVec, ", ") + "'";
+            OSLM_WARN_IF(errorMessage, tagVec.size() != 4);
+            FW_RAISE_EXCEPTION(::fwGdcmIO::exception::InvalidTag(errorMessage));
+        }
+
+        const std::string& actionCode = tagVec[0];
+        ::gdcm::Tag tag = ::fwGdcmIO::helper::getGdcmTag(tagVec[1], tagVec[2]);
+
+        if(actionCode == "D")
+        {
+            m_actionCodeDTags.insert(tag);
+        }
+        else if(actionCode == "Z" || actionCode == "Z/D")
+        {
+            m_actionCodeZTags.insert(tag);
+        }
+        else if(actionCode == "X"
+                || actionCode == "X/Z"
+                || actionCode == "X/D"
+                || actionCode == "X/Z/D"
+                || actionCode == "X/Z/U*")
+        {
+            m_actionCodeXTags.insert(tag);
+        }
+        else if(actionCode == "K")
+        {
+            m_actionCodeKTags.insert(tag);
+        }
+        else if(actionCode == "C")
+        {
+            m_actionCodeCTags.insert(tag);
+        }
+        else if(actionCode == "U")
+        {
+            m_actionCodeUTags.insert(tag);
+        }
+        else
+        {
+            OSLM_ERROR("Action code '" + actionCode + "' is not managed.");
+        }
+
+        tagVec = csvReader.getLine();
+    }
 }
+
+//------------------------------------------------------------------------------
 
 DicomAnonymizer::~DicomAnonymizer()
 {
@@ -64,272 +117,10 @@ DicomAnonymizer::~DicomAnonymizer()
 
 //------------------------------------------------------------------------------
 
-const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_D_TAGS =
-{{
-     ::gdcm::Tag(0x0070, 0x0001), //Graphic Annotation Sequence
-     ::gdcm::Tag(0x0040, 0x1101), //Person Identification Code Sequence
-     ::gdcm::Tag(0x0040, 0xA123), //Person Name
-     ::gdcm::Tag(0x0040, 0xA075), //Verifying Observer Name
-     ::gdcm::Tag(0x0040, 0xA073) //Verifying Observer Sequence
- }};
-
-const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_Z_TAGS =
-{{
-     ::gdcm::Tag(0x0008, 0x0050), //Accession Number
-     ::gdcm::Tag(0x0070, 0x0084), //Content Creator’s Name
-     ::gdcm::Tag(0x0008, 0x0023), //Content Date
-     ::gdcm::Tag(0x0008, 0x0033), //Content Time
-     ::gdcm::Tag(0x0018, 0x0010), //Contrast Bolus Agent
-     ::gdcm::Tag(0x0040, 0x2017), //Filler Order Number of Imaging Service Request
-     ::gdcm::Tag(0x0010, 0x0020), //Patient ID
-     ::gdcm::Tag(0x0010, 0x0030), //Patient’s Birth Date
-     ::gdcm::Tag(0x0010, 0x0010), //Patient’s Name
-     ::gdcm::Tag(0x0010, 0x0040), //Patient’s Sex
-     ::gdcm::Tag(0x0040, 0x2016), //Placer Order Number of Imaging Service Request
-     ::gdcm::Tag(0x0008, 0x0090), //Referring Physician’s Name
-     ::gdcm::Tag(0x0008, 0x0020), //Study Date
-     ::gdcm::Tag(0x0020, 0x0010), //Study ID
-     ::gdcm::Tag(0x0008, 0x0030), //Study Time
-     ::gdcm::Tag(0x0040, 0xA088) //Verifying Observer Identification Code Sequence
- }};
-
-const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_X_TAGS =
-{{
-     ::gdcm::Tag(0x0018, 0x4000), //Acquisition Comments
-     ::gdcm::Tag(0x0040, 0x0555), //Acquisition Context Sequence
-     ::gdcm::Tag(0x0008, 0x0022), //Acquisition Date
-     ::gdcm::Tag(0x0008, 0x002A), //Acquisition DateTime
-     ::gdcm::Tag(0x0018, 0x1400), //Acquisition Device Processing Description
-     ::gdcm::Tag(0x0018, 0x9424), //Acquisition Protocol Description
-     ::gdcm::Tag(0x0008, 0x0032), //Acquisition Time
-     ::gdcm::Tag(0x0040, 0x4035), //Actual Human Performers Sequence
-     ::gdcm::Tag(0x0010, 0x21B0), //Additional Patient’s History
-     ::gdcm::Tag(0x0038, 0x0010), //Admission ID
-     ::gdcm::Tag(0x0038, 0x0020), //Admitting Date
-     ::gdcm::Tag(0x0008, 0x1084), //Admitting Diagnoses Code Sequence
-     ::gdcm::Tag(0x0008, 0x1080), //Admitting Diagnoses Description
-     ::gdcm::Tag(0x0038, 0x0021), //Admitting Time
-     ::gdcm::Tag(0x0000, 0x1000), //Affected SOP Instance UID
-     ::gdcm::Tag(0x0010, 0x2110), //Allergies
-     ::gdcm::Tag(0x4000, 0x0010), //Arbitrary
-     ::gdcm::Tag(0x0040, 0xA078), //Author Observer Sequence
-     ::gdcm::Tag(0x0010, 0x1081), //Branch of Service
-     ::gdcm::Tag(0x0018, 0x1007), //Cassette ID
-     ::gdcm::Tag(0x0040, 0x0280), //Comments on Performed Procedure Step
-     ::gdcm::Tag(0x0040, 0x3001), //Confidentiality Constraint on Patient Data Description
-     ::gdcm::Tag(0x0070, 0x0086), //Content Creator’s Identification Code Sequence
-     ::gdcm::Tag(0x0040, 0xA730), //Content Sequence
-     ::gdcm::Tag(0x0018, 0xA003), //Contribution Description
-     ::gdcm::Tag(0x0010, 0x2150), //Country of Residence
-     ::gdcm::Tag(0x0038, 0x0300), //Current Patient Location
-     ::gdcm::Tag(0x0008, 0x0025), //Curve Date
-     ::gdcm::Tag(0x0008, 0x0035), //Curve Time
-     ::gdcm::Tag(0x0040, 0xA07C), //Custodial Organization Sequence
-     ::gdcm::Tag(0xFFFC, 0xFFFC), //Data Set Trailing Padding
-     ::gdcm::Tag(0x0008, 0x2111), //Derivation Description
-     ::gdcm::Tag(0x0018, 0x700A), //Detector ID
-     ::gdcm::Tag(0x0018, 0x1000), //Device Serial Number
-     ::gdcm::Tag(0x0400, 0x0100), //Digital Signature UID
-     ::gdcm::Tag(0xFFFA, 0xFFFA), //Digital Signatures Sequence
-     ::gdcm::Tag(0x0038, 0x0040), //Discharge Diagnosis Description
-     ::gdcm::Tag(0x4008, 0x011A), //Distribution Address
-     ::gdcm::Tag(0x4008, 0x0119), //Distribution Name
-     ::gdcm::Tag(0x0010, 0x2160), //Ethnic Group
-     ::gdcm::Tag(0x0020, 0x9158), //Frame Comments
-     ::gdcm::Tag(0x0018, 0x1008), //Gantry ID
-     ::gdcm::Tag(0x0018, 0x1005), //Generator ID
-     ::gdcm::Tag(0x0040, 0x4037), //Human Performers Name
-     ::gdcm::Tag(0x0040, 0x4036), //Human Performers Organization
-     ::gdcm::Tag(0x0088, 0x0200), //Icon Image Sequence(see Note 12
-     ::gdcm::Tag(0x0008, 0x4000), //Identifying Comments
-     ::gdcm::Tag(0x0020, 0x4000), //Image Comments
-     ::gdcm::Tag(0x0028, 0x4000), //Image Presentation Comments
-     ::gdcm::Tag(0x0040, 0x2400), //Imaging Service Request Comments
-     ::gdcm::Tag(0x4008, 0x0300), //Impressions
-     ::gdcm::Tag(0x0008, 0x0081), //Institution Address
-     ::gdcm::Tag(0x0008, 0x0082), //Institution Code Sequence
-     ::gdcm::Tag(0x0008, 0x0080), //Institution Name
-     ::gdcm::Tag(0x0008, 0x1040), //Institutional Department Name
-     ::gdcm::Tag(0x0010, 0x1050), //Insurance Plan Identification
-     ::gdcm::Tag(0x0040, 0x1011), //Intended Recipients of Results Identification Sequence
-     ::gdcm::Tag(0x4008, 0x0111), //Interpretation Approver Sequence
-     ::gdcm::Tag(0x4008, 0x010C), //Interpretation Author
-     ::gdcm::Tag(0x4008, 0x0115), //Interpretation Diagnosis Description
-     ::gdcm::Tag(0x4008, 0x0202), //Interpretation ID Issuer
-     ::gdcm::Tag(0x4008, 0x0102), //Interpretation Recorder
-     ::gdcm::Tag(0x4008, 0x010B), //Interpretation Text
-     ::gdcm::Tag(0x4008, 0x010A), //Interpretation Transcriber
-     ::gdcm::Tag(0x0038, 0x0011), //Issuer of Admission ID
-     ::gdcm::Tag(0x0010, 0x0021), //Issuer of Patient ID
-     ::gdcm::Tag(0x0038, 0x0061), //Issuer of Service Episode ID
-     ::gdcm::Tag(0x0010, 0x21D0), //Last Menstrual Date
-     ::gdcm::Tag(0x0400, 0x0404), //MAC
-     ::gdcm::Tag(0x0010, 0x2000), //Medical Alerts
-     ::gdcm::Tag(0x0010, 0x1090), //Medical Record Locator
-     ::gdcm::Tag(0x0010, 0x1080), //Military Rank
-     ::gdcm::Tag(0x0400, 0x0550), //Modified Attributes Sequence
-     ::gdcm::Tag(0x0020, 0x3406), //Modified Image Description
-     ::gdcm::Tag(0x0020, 0x3401), //Modifying Device ID
-     ::gdcm::Tag(0x0020, 0x3404), //Modifying Device Manufacturer
-     ::gdcm::Tag(0x0008, 0x1060), //Name of Physician(s Reading Study
-     ::gdcm::Tag(0x0040, 0x1010), //Names of Intended Recipient of Results
-     ::gdcm::Tag(0x0010, 0x2180), //Occupation
-     ::gdcm::Tag(0x0008, 0x1072), //Operators’ Identification Sequence
-     ::gdcm::Tag(0x0008, 0x1070), //Operators’ Name
-     ::gdcm::Tag(0x0400, 0x0561), //Original Attributes Sequence
-     ::gdcm::Tag(0x0040, 0x2010), //Order Callback Phone Number
-     ::gdcm::Tag(0x0040, 0x2008), //Order Entered By
-     ::gdcm::Tag(0x0040, 0x2009), //Order Enterer Location
-     ::gdcm::Tag(0x0010, 0x1000), //Other Patient IDs
-     ::gdcm::Tag(0x0010, 0x1002), //Other Patient IDs Sequence
-     ::gdcm::Tag(0x0010, 0x1001), //Other Patient Names
-     ::gdcm::Tag(0x0008, 0x0024), //Overlay Date
-     ::gdcm::Tag(0x0008, 0x0034), //Overlay Time
-     ::gdcm::Tag(0x0040, 0xA07A), //Participant Sequence
-     ::gdcm::Tag(0x0010, 0x1040), //Patient Address
-     ::gdcm::Tag(0x0010, 0x4000), //Patient Comments
-     ::gdcm::Tag(0x0010, 0x2203), //Patient Sex Neutered (X/Z)
-     ::gdcm::Tag(0x0038, 0x0500), //Patient State
-     ::gdcm::Tag(0x0040, 0x1004), //Patient Transport Arrangements
-     ::gdcm::Tag(0x0010, 0x1010), //Patient’s Age
-     ::gdcm::Tag(0x0010, 0x1005), //Patient’s Birth Name
-     ::gdcm::Tag(0x0010, 0x0032), //Patient’s Birth Time
-     ::gdcm::Tag(0x0038, 0x0400), //Patient’s Institution Residence
-     ::gdcm::Tag(0x0010, 0x0050), //Patient’s Insurance Plan Code Sequence
-     ::gdcm::Tag(0x0010, 0x1060), //Patient’s Mother’s Birth Name
-     ::gdcm::Tag(0x0010, 0x0101), //Patient’s Primary Language Code Sequence
-     ::gdcm::Tag(0x0010, 0x0102), //Patient’s Primary Language Modifier Code Sequence
-     ::gdcm::Tag(0x0010, 0x21F0), //Patient’s Religious Preference
-     ::gdcm::Tag(0x0010, 0x1020), //Patient’s Size
-     ::gdcm::Tag(0x0010, 0x2154), //Patient’s Telephone Number
-     ::gdcm::Tag(0x0010, 0x1030), //Patient’s Weight
-     ::gdcm::Tag(0x0040, 0x0243), //Performed Location
-     ::gdcm::Tag(0x0040, 0x0254), //Performed Procedure Step Description
-     ::gdcm::Tag(0x0040, 0x0253), //Performed Procedure Step ID
-     ::gdcm::Tag(0x0040, 0x0244), //Performed Procedure Step Start Date
-     ::gdcm::Tag(0x0040, 0x0245), //Performed Procedure Step Start Time
-     ::gdcm::Tag(0x0040, 0x0241), //Performed Station AE Title
-     ::gdcm::Tag(0x0040, 0x4030), //Performed Station Geographic Location Code Sequence
-     ::gdcm::Tag(0x0040, 0x0242), //Performed Station Name
-     ::gdcm::Tag(0x0040, 0x0248), //Performed Station Name Code Sequence
-     ::gdcm::Tag(0x0008, 0x1052), //Performing Physicians’ Identification Sequence
-     ::gdcm::Tag(0x0008, 0x1050), //Performing Physicians’ Name
-     ::gdcm::Tag(0x0040, 0x1102), //Person Address
-     ::gdcm::Tag(0x0040, 0x1103), //Person Telephone Numbers
-     ::gdcm::Tag(0x4008, 0x0114), //Physician Approving Interpretation
-     ::gdcm::Tag(0x0008, 0x1062), //Physician Reading Study Identification Sequence
-     ::gdcm::Tag(0x0008, 0x1048), //Physician(s Record
-     ::gdcm::Tag(0x0008, 0x1049), //Physician(s of Record Identification Sequence
-     ::gdcm::Tag(0x0018, 0x1004), //Plate ID
-     ::gdcm::Tag(0x0040, 0x0012), //Pre-Medication
-     ::gdcm::Tag(0x0010, 0x21C0), //Pregnancy Status
-     ::gdcm::Tag(0x0018, 0x1030), //Protocol Name (X/D)
-     ::gdcm::Tag(0x0040, 0x2001), //Reason for Imaging Service Request
-     ::gdcm::Tag(0x0032, 0x1030), //Reason for Study
-     ::gdcm::Tag(0x0400, 0x0402), //Referenced Digital Signature Sequence
-     ::gdcm::Tag(0x0008, 0x1140), //Referenced Image Sequence (X/Z/U*)
-     ::gdcm::Tag(0x0038, 0x1234), //Referenced Patient Alias Sequence
-     ::gdcm::Tag(0x0008, 0x1120), //Referenced Patient Sequence
-     ::gdcm::Tag(0x0008, 0x1111), //Referenced Performed Procedure Step Sequence (X/Z/D)
-     ::gdcm::Tag(0x0400, 0x0403), //Referenced SOP Instance MAC Sequence
-     ::gdcm::Tag(0x0008, 0x1110), //Referenced Study Sequence (X/Z)
-     ::gdcm::Tag(0x0008, 0x0092), //Referring Physician’s Address
-     ::gdcm::Tag(0x0008, 0x0096), //Referring Physician’s Identification Sequence
-     ::gdcm::Tag(0x0008, 0x0094), //Referring Physician’s Telephone Numbers
-     ::gdcm::Tag(0x0010, 0x2152), //Region of Residence
-     ::gdcm::Tag(0x0040, 0x0275), //Request Attributes Sequence
-     ::gdcm::Tag(0x0032, 0x1070), //Requested Contrast Agent
-     ::gdcm::Tag(0x0040, 0x1400), //Requested Procedure Comments
-     ::gdcm::Tag(0x0032, 0x1060), //Requested Procedure Description (X/Z)
-     ::gdcm::Tag(0x0040, 0x1001), //Requested Procedure ID
-     ::gdcm::Tag(0x0040, 0x1005), //Requested Procedure Location
-     ::gdcm::Tag(0x0032, 0x1032), //Requesting Physician
-     ::gdcm::Tag(0x0032, 0x1033), //Requesting Service
-     ::gdcm::Tag(0x0010, 0x2299), //Responsible Organization
-     ::gdcm::Tag(0x0010, 0x2297), //Responsible Person
-     ::gdcm::Tag(0x4008, 0x4000), //Results Comments
-     ::gdcm::Tag(0x4008, 0x0118), //Results Distribution List Sequence
-     ::gdcm::Tag(0x4008, 0x0042), //Results ID Issuer
-     ::gdcm::Tag(0x300E, 0x0008), //Reviewer Name (X/Z)
-     ::gdcm::Tag(0x0040, 0x4034), //Scheduled Human Performers Sequence
-     ::gdcm::Tag(0x0038, 0x001E), //Scheduled Patient Institution Residence
-     ::gdcm::Tag(0x0040, 0x000B), //Scheduled Performing Physician Identification Sequence
-     ::gdcm::Tag(0x0040, 0x0006), //Scheduled Performing Physician Name
-     ::gdcm::Tag(0x0040, 0x0004), //Scheduled Procedure Step End Date
-     ::gdcm::Tag(0x0040, 0x0005), //Scheduled Procedure Step End Time
-     ::gdcm::Tag(0x0040, 0x0007), //Scheduled Procedure Step Description
-     ::gdcm::Tag(0x0040, 0x0011), //Scheduled Procedure Step Location
-     ::gdcm::Tag(0x0040, 0x0002), //Scheduled Procedure Step Start Date
-     ::gdcm::Tag(0x0040, 0x0003), //Scheduled Procedure Step Start Time
-     ::gdcm::Tag(0x0040, 0x0001), //Scheduled Station AE Title
-     ::gdcm::Tag(0x0040, 0x4027), //Scheduled Station Geographic Location Code Sequence
-     ::gdcm::Tag(0x0040, 0x0010), //Scheduled Station Name
-     ::gdcm::Tag(0x0040, 0x4025), //Scheduled Station Name Code Sequence
-     ::gdcm::Tag(0x0032, 0x1020), //Scheduled Study Location
-     ::gdcm::Tag(0x0032, 0x1021), //Scheduled Study Location AE Title
-     ::gdcm::Tag(0x0008, 0x0021), //Series Date (X/D)
-     ::gdcm::Tag(0x0008, 0x0031), //Series Time (X/D)
-     ::gdcm::Tag(0x0038, 0x0062), //Service Episode Description
-     ::gdcm::Tag(0x0038, 0x0060), //Service Episode ID
-     ::gdcm::Tag(0x0010, 0x21A0), //Smoking Status
-     ::gdcm::Tag(0x0008, 0x2112), //Source Image Sequence (X/Z/U*)
-     ::gdcm::Tag(0x0038, 0x0050), //Special Needs
-     ::gdcm::Tag(0x0008, 0x1010), //Station Name (X/Z/D)
-     ::gdcm::Tag(0x0032, 0x4000), //Study Comments
-     ::gdcm::Tag(0x0008, 0x1030), //Study Description
-     ::gdcm::Tag(0x0032, 0x0012), //Study ID Issuer
-     ::gdcm::Tag(0x4000, 0x4000), //Text Comments
-     ::gdcm::Tag(0x2030, 0x0020), //Text String
-     ::gdcm::Tag(0x0008, 0x0201), //Timezone Offset From UTC
-     ::gdcm::Tag(0x0088, 0x0910), //Topic Author
-     ::gdcm::Tag(0x0088, 0x0912), //Topic Key Words
-     ::gdcm::Tag(0x0088, 0x0906), //Topic Subject
-     ::gdcm::Tag(0x0088, 0x0904), //Topic Title
-     ::gdcm::Tag(0x0040, 0xA027), //Verifying Organization
-     ::gdcm::Tag(0x0038, 0x4000), //Visit Comments
- }};
-
-const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_K_TAGS =
-{{
-     ::gdcm::Tag(0x0008, 0x103E) //Series Description (action code should probably be X for anonymity reasons)
-
- }};
-
-const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_C_TAGS;
-
-const DicomAnonymizer::TagContainerType DicomAnonymizer::s_ACTION_CODE_U_TAGS =
-{{
-     ::gdcm::Tag(0x0020, 0x9161), //Concatenation UID
-     ::gdcm::Tag(0x0008, 0x010D), //Context Group Extension Creator UID
-     ::gdcm::Tag(0x0008, 0x9123), //Creator Version UID
-     ::gdcm::Tag(0x0018, 0x1002), //Device UID
-     ::gdcm::Tag(0x0020, 0x9164), //Dimension Organization UID
-     ::gdcm::Tag(0x300A, 0x0013), //Dose Reference UID
-     ::gdcm::Tag(0x0008, 0x0058), //Failed SOP Instance UID List
-     ::gdcm::Tag(0x0070, 0x031A), //Fiducial UID
-     ::gdcm::Tag(0x0020, 0x0052), //Frame of Reference UID
-     ::gdcm::Tag(0x0008, 0x0014), //Instance Creator UID
-     ::gdcm::Tag(0x0008, 0x3010), //Irradiation Event UID
-     ::gdcm::Tag(0x0028, 0x1214), //Large Palette Color Lookup Table UID
-     ::gdcm::Tag(0x0002, 0x0003), //Media Storage SOP Instance UID
-     ::gdcm::Tag(0x0028, 0x1199), //Palette Color Lookup Table UID
-     ::gdcm::Tag(0x3006, 0x0024), //Referenced Frame of Reference UID
-     ::gdcm::Tag(0x0040, 0x4023), //Referenced General Purpose Scheduled Procedure Step Transaction UID
-     ::gdcm::Tag(0x0008, 0x1155), //Referenced SOP Instance UID
-     ::gdcm::Tag(0x0004, 0x1511), //Referenced SOP Instance UID in File
-     ::gdcm::Tag(0x3006, 0x00C2), //Related Frame of Reference UID
-     ::gdcm::Tag(0x0000, 0x1001), //Requested SOP Instance UID
-     ::gdcm::Tag(0x0020, 0x000E), //Series Instance UID
-     ::gdcm::Tag(0x0008, 0x0018), //SOP Instance UID
-     ::gdcm::Tag(0x0088, 0x0140), //Storage Media File-set UID
-     ::gdcm::Tag(0x0020, 0x000D), //Study Instance UID
-     ::gdcm::Tag(0x0020, 0x0200), //Synchronization Frame of Reference UID
-     ::gdcm::Tag(0x0040, 0xDB0D), //Template Extension Creator UID
-     ::gdcm::Tag(0x0040, 0xDB0C), //Template Extension Organization UID
-     ::gdcm::Tag(0x0008, 0x1195), //Transaction UID
-     ::gdcm::Tag(0x0040, 0xA124), //UID
- }};
-
+void DicomAnonymizer::setReferenceDate(const ::boost::gregorian::date& referenceDate)
+{
+    m_referenceDate = referenceDate;
+}
 
 //------------------------------------------------------------------------------
 
@@ -385,6 +176,48 @@ void DicomAnonymizer::removeAnonymizeTag(const ::gdcm::Tag& tag)
     m_actionCodeKTags.erase(tag);
     m_actionCodeCTags.erase(tag);
     m_actionCodeUTags.erase(tag);
+}
+
+//------------------------------------------------------------------------------
+
+const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeDTags()
+{
+    return m_actionCodeDTags;
+}
+
+//------------------------------------------------------------------------------
+
+const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeZTags()
+{
+    return m_actionCodeZTags;
+}
+
+//------------------------------------------------------------------------------
+
+const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeXTags()
+{
+    return m_actionCodeXTags;
+}
+
+//------------------------------------------------------------------------------
+
+const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeKTags()
+{
+    return m_actionCodeKTags;
+}
+
+//------------------------------------------------------------------------------
+
+const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeCTags()
+{
+    return m_actionCodeCTags;
+}
+
+//------------------------------------------------------------------------------
+
+const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeUTags()
+{
+    return m_actionCodeUTags;
 }
 
 //------------------------------------------------------------------------------
@@ -471,7 +304,16 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     const ::gdcm::File& datasetFile = reader.GetFile();
     ::gdcm::DataSet dataset = datasetFile.GetDataSet();
 
-    m_anonymizer.SetFile( reader.GetFile() );
+    std::vector< ::gdcm::DataElement > preservedTags;
+    for(const ::gdcm::Tag& t : m_privateTags)
+    {
+        if(dataset.FindDataElement(t))
+        {
+            preservedTags.push_back(dataset.GetDataElement(t));
+        }
+    }
+
+    m_anonymizer.SetFile( datasetFile );
 
     m_anonymizer.RemoveGroupLength();
     m_anonymizer.RemoveRetired();
@@ -520,50 +362,40 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
                                              }
                                          };
 
+    const auto dataElementSet = dataset.GetDES();
+
     // Curve Data (0x50xx,0xxxxx)
-    dataElement = dataset.FindNextDataElement(::gdcm::Tag(0x5000, 0x0));
-    tag         = dataElement.GetTag();
-    while (((tag.GetGroup() >> 8) & 0xff) == 0x50 )
+    auto element = dataElementSet.lower_bound(::gdcm::Tag(0x5000, 0x0));
+    auto end = dataElementSet.upper_bound(::gdcm::Tag(0x50ff, 0xffff));
+    for(; element != end; ++element)
     {
-        applyActionCodeXWithException(tag);    //Curve Data
-        dataElement = dataset.FindNextDataElement(
-            ::gdcm::Tag(tag.GetGroup(), static_cast< uint16_t >(tag.GetElement() + 1)));
-        tag = dataElement.GetTag();
+        tag = element->GetTag();
+        applyActionCodeXWithException(tag);
     }
 
-    // Overlay Comments (0x60xx,0x4000)
-    dataElement = dataset.FindNextDataElement(::gdcm::Tag(0x6000, 0x4000));
-    tag         = dataElement.GetTag();
-    while (((tag.GetGroup() >> 8) & 0xff) == 0x60 )
+    // Overlay Data (0x60xx,0x3000) && Overlay Comments (0x60xx,0x4000)
+    element = dataElementSet.lower_bound(::gdcm::Tag(0x6000, 0x3000));
+    end = dataElementSet.upper_bound(::gdcm::Tag(0x60ff, 0x4000));
+    for(; element != end; ++element)
     {
-        if(tag.GetElement() == 0x4000)
+        tag = element->GetTag();
+        if(tag.GetElement() == 0x3000 || tag.GetElement() == 0x4000)
         {
             applyActionCodeXWithException(tag);
         }
-        dataElement = dataset.FindNextDataElement(
-            ::gdcm::Tag(static_cast< uint16_t >(tag.GetGroup() + 1), 0x4000));
-        tag = dataElement.GetTag();
     }
 
-    // Overlay Data (0x60xx,0x3000)
-    dataElement = dataset.FindNextDataElement(::gdcm::Tag(0x6000, 0x3000));
-    tag         = dataElement.GetTag();
-    while (((tag.GetGroup() >> 8) & 0xff) == 0x60 )
+    m_anonymizer.RemovePrivateTags();   // Private attributes (X)
+
+    for(const ::gdcm::DataElement& de : preservedTags)
     {
-        if(tag.GetElement() == 0x3000)
-        {
-            applyActionCodeXWithException(tag);
-        }
-        dataElement = dataset.FindNextDataElement(::gdcm::Tag(static_cast< uint16_t >(tag.GetGroup() + 1), 0x3000));
-        tag         = dataElement.GetTag();
+        dataset.Insert(de);
     }
-
-    m_anonymizer.RemovePrivateTags();   //Private attributes (X)
 
     // Write file
     ::gdcm::Writer writer;
     writer.SetStream(outputStream);
-    writer.SetFile(reader.GetFile());
+    writer.SetFile(datasetFile);
 
     FW_RAISE_IF("Unable to anonymize (file write failed)", !writer.Write());
 }
@@ -650,18 +482,21 @@ void DicomAnonymizer::applyActionCodeC(const ::gdcm::Tag& tag)
 void DicomAnonymizer::applyActionCodeU(const ::gdcm::Tag& tag)
 {
     const std::string oldUID = m_stringFilter.ToString(tag);
-    if(oldUID.empty())
+    if(!oldUID.empty())
     {
-        m_anonymizer.Replace(tag, GENERATOR.Generate());
-    }
-    else
-    {
-        std::string uid = m_uidMap[oldUID];
-        if(uid.empty())
+        auto it = m_uidMap.find(oldUID);
+        std::string uid;
+
+        if(it == m_uidMap.end())
         {
-            uid              = GENERATOR.Generate();
-            m_uidMap[oldUID] = uid;
+            uid = GENERATOR.Generate();
+            m_uidMap.insert(std::pair<std::string, std::string>(oldUID, uid));
         }
+        else
+        {
+            uid = it->second;
+        }
+
         m_anonymizer.Replace(tag, uid.c_str());
     }
 }

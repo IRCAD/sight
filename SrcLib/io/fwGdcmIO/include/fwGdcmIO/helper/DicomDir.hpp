@@ -12,7 +12,6 @@
 #include <fwCore/macros.hpp>
 
 #include <boost/filesystem/path.hpp>
-
 #include <cstdint>
 
 namespace fwMedData

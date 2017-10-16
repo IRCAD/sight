@@ -140,6 +140,33 @@ void Image::readImagePlaneModule()
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
     }
 
+#if 1
+    // Compute Z image spacing
+    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
+    if(pathContainer.size() > 1)
+    {
+        ::fwMedData::DicomSeries::DicomPathContainerType::iterator it = pathContainer.begin();
+        const ::fwMedData::DicomSeries::DicomPathContainerType::reverse_iterator rit = pathContainer.rbegin();
+
+        // Compute the spacing between slices of the 2 first slices.
+        double firstIndex = getInstanceZPosition(it->second);
+        double secondIndex = getInstanceZPosition((++it)->second);
+        double lastIndex = getInstanceZPosition(rit->second);
+        spacing[2] = std::abs(secondIndex - firstIndex);
+
+        // Check that the same spacing is used for all the instances
+        const double epsilon = 1e-2;
+        double totalZSpacing = std::abs(lastIndex - firstIndex);
+        double errorGap = std::abs( spacing[2] * static_cast<double>(pathContainer.size() - 1 ) ) - totalZSpacing;
+        if(errorGap > epsilon)
+        {
+            std::stringstream ss;
+            ss << "Computed spacing between slices may not be correct. (Error gap : " << errorGap << ")";
+            m_logger->warning(ss.str());
+        }
+    }
+
+#else
     // Compute Z image spacing when extra information is required
     std::string sliceThickness       = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x0050>(dataset);
     std::string spacingBetweenSlices = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x0088>(dataset);
@@ -168,6 +195,7 @@ void Image::readImagePlaneModule()
             spacing[2] << ".";
         m_logger->information(ss.str());
     }
+#endif
 
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
     m_object->setSpacing( spacing );

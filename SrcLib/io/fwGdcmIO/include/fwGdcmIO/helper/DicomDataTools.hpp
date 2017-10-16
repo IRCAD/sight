@@ -14,8 +14,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Point.hpp>
-#include <fwTools/DynamicType.hpp>
-#include <fwTools/Type.hpp>
 
 #include <gdcmImage.h>
 #include <gdcmSurface.h>

@@ -8,7 +8,6 @@
 #include "fwGdcmIO/reader/ie/Equipment.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Equipment.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
 namespace fwGdcmIO

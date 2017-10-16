@@ -104,6 +104,18 @@ public:
      */
     FWGDCMIO_API void preservePrivateTag(const ::gdcm::Tag& tag);
 
+    /**
+     * @name Access tags according to their associated action code
+     * @{ */
+    typedef std::set< ::gdcm::Tag > TagContainerType;
+    FWGDCMIO_API const TagContainerType& getActionCodeDTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeZTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeXTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeKTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeCTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeUTags();
+    /**  @} */
+
 private:
 
     void anonymizationProcess(const ::boost::filesystem::path& dirPath);
@@ -183,20 +195,6 @@ private:
 
     /// Index of anonymizer
     unsigned int m_fileIndex;
-
-    /**
-     * @name Default tags to be processed with associated action code.
-     * @{ */
-    typedef std::set< ::gdcm::Tag > TagContainerType;
-
-    static const TagContainerType s_ACTION_CODE_D_TAGS;
-    static const TagContainerType s_ACTION_CODE_Z_TAGS;
-    static const TagContainerType s_ACTION_CODE_X_TAGS;
-    static const TagContainerType s_ACTION_CODE_K_TAGS;
-    static const TagContainerType s_ACTION_CODE_C_TAGS;
-    static const TagContainerType s_ACTION_CODE_U_TAGS;
-    /**  @} */
-
 
     /// Reference date for shifting
     ::boost::gregorian::date m_referenceDate;

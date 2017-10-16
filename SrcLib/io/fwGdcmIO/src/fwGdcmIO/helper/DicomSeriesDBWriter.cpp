@@ -10,7 +10,6 @@
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 
 #include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 

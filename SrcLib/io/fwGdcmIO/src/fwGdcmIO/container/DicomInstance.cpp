@@ -6,7 +6,6 @@
 
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
-#include <fwCore/spyLog.hpp>
 #include <fwData/Image.hpp>
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
