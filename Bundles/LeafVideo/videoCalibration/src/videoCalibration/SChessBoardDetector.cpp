@@ -247,6 +247,11 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
         {
             grayImg = cv::Mat(height, width, CV_8UC1, frameBuff);
         }
+        else if (tl->getNumberOfComponents() == 3)
+        {
+            cv::Mat img(height, width, CV_8UC3, frameBuff);
+            cv::cvtColor(img, grayImg, CV_RGB2GRAY);
+        }
         else
         {
             cv::Mat img(height, width, CV_8UC4, frameBuff);
