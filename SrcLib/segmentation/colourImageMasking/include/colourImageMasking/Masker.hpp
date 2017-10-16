@@ -54,7 +54,7 @@ private:
 
     /// Make a response mask from a model on a given image inside a mask
     static ::cv::Mat makeResponseImage(const ::cv::Mat& inImg, const ::cv::Ptr< ::cv::ml::EM > model,
-                                       ::cv::InputArray filterMask);
+                                       cv::Mat& filterMask);
 
     /// Convert the colorpsace of an image
     static ::cv::Mat convertColourSpace(const ::cv::Mat& src, const ColSpace& c);

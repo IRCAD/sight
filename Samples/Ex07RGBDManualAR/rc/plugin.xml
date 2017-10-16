@@ -347,8 +347,8 @@
                     <key uid="videoImage" />
                     <key uid="foregroundMask" />
                 </inout>
-                <framerate>25</framerate>
-                <tolerance>2000</tolerance>
+                <framerate>30</framerate>
+                <tolerance>200</tolerance>
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
@@ -366,7 +366,7 @@
                 <in key="videoTL" uid="frameTL" autoConnect="yes" />
                 <inout key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
-                <config scaleFactor="0.8" noise="30" />
+                <config scaleFactor="1.0" noise="30" />
             </service>
 
             <!-- signal/slot connection -->

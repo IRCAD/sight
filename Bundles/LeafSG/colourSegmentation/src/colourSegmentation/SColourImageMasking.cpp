@@ -168,8 +168,8 @@ void SColourImageMasking::setBackground()
     ::cv::Mat maskCV = ::cvIO::Image::moveToCv(mask);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
-    m_maskDownsize = ::cv::Size(static_cast<int>(static_cast<float>(maskCV.size[0])*m_scaleFactor),
-                                static_cast<int>(static_cast<float>(maskCV.size[1])*m_scaleFactor));
+    m_maskDownsize = ::cv::Size(static_cast<int>(static_cast<float>(maskCV.size[1])*m_scaleFactor),
+                                static_cast<int>(static_cast<float>(maskCV.size[0])*m_scaleFactor));
 
     // Flip mask image (Y axis) because of the offscreen render
     ::cv::flip(maskCV, maskCV, 0);

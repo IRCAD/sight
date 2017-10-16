@@ -103,7 +103,6 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
             break;
         }
     }
-
     m.convertTo(m, CV_8UC1);
 
     //get mask back to original size:
@@ -148,45 +147,45 @@ bool Masker::isModelLearned(void)
 //------------------------------------------------------------------------------
 
 ::cv::Mat Masker::makeResponseImage(const ::cv::Mat& I, const ::cv::Ptr< ::cv::ml::EM > model,
-                                    ::cv::InputArray inImgMask)
+                                    ::cv::Mat& inImgMask)
 {
     const int cn = I.channels();
 
     ::cv::Mat output = ::cv::Mat::zeros(I.rows, I.cols, CV_32FC1);
 
-    ::cv::Mat sample(cn, 1, CV_32FC1);
     const uchar* pixelPtr = static_cast<uchar*>(I.data);
 
     const int h = I.rows;
     const int w = I.cols;
 
-    bool usesFilterMask = !inImgMask.empty();
-    ::cv::Mat filterMask;
-    if (usesFilterMask)
-    {
-        filterMask = inImgMask.getMat();
-    }
+    const bool usesFilterMask = !inImgMask.empty();
 
-    for(int i = 0; i < h; ++i )
-    {
-        for(int j = 0; j < w; ++j)
+    // Parallelization of pixel prediction
+    ::cv::parallel_for_(::cv::Range(0, I.rows*I.cols), [&](const ::cv::Range& range)
         {
-            if(usesFilterMask)
+            ::cv::Mat sample = ::cv::Mat::zeros(cn, 1, CV_32FC1);
+            for(int r = range.start; r < range.end; ++r)
             {
-                if (filterMask.at<uchar>(i, j) == 0)
+                const int i = r / w;
+                const int j = r % w;
+
+                if(usesFilterMask)
                 {
-                    continue;
+                    if (inImgMask.at<uchar>(i, j) == 0)
+                    {
+                        continue;
+                    }
                 }
-            }
 
-            for(int chnInxs = 0; chnInxs < cn; ++chnInxs)
-            {
-                sample.at<float>(chnInxs) = pixelPtr[i*w*cn + j*cn + chnInxs];
-            }
+                for(int chnInxs = 0; chnInxs < cn; ++chnInxs)
+                {
+                    sample.at<float>(chnInxs) = pixelPtr[i*w*cn + j*cn + chnInxs];
+                }
 
-            output.at<float>(i, j) = static_cast<float>(model->predict2( sample, ::cv::noArray() )[0]);
-        }
-    }
+                output.at<float>(i, j) = static_cast<float>(model->predict2(sample, ::cv::noArray())[0]);
+            }
+        });
+
     return output;
 }
 
@@ -329,25 +328,27 @@ bool Masker::isModelLearned(void)
     ::cv::Mat res  = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
 
     // Browse all labels
-    for(int i = 1; i < nbLabels; ++i)
-    {
-        ::cv::Mat tmp = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
-        // Get the binary image corresponding to the current label
-        ::cv::Mat binTmp = (labels == i);
-        // Do a 'and' between the diff mask and the current label mask
-        ::cv::bitwise_and(diff, binTmp, tmp);
-
-        // If the 'and' is not empty, it means that it's an area connected to the border of the insideMask
-        // Otherwise, it's an unconnecter small area inside the mask
-        if(::cv::countNonZero(tmp) != 0)
+    ::cv::parallel_for_(::cv::Range(0, nbLabels), [&](const ::cv::Range& range)
         {
-            res.setTo(255, binTmp);
-        }
-    }
+            for(int r = range.start; r < range.end; ++r)
+            {
+                ::cv::Mat tmp = ::cv::Mat::zeros(mask.rows, mask.cols, mask.type());
+                // Get the binary image corresponding to the current label
+                ::cv::Mat binTmp = (labels == r);
+                // Do a 'and' between the diff mask and the current label mask
+                ::cv::bitwise_and(diff, binTmp, tmp);
+
+                // If the 'and' is not empty, it means that it's an area connected to the border of the insideMask
+                // Otherwise, it's an unconnecter small area inside the mask
+                if(::cv::countNonZero(tmp) != 0)
+                {
+                    res.setTo(255, binTmp);
+                }
+            }
+        });
 
     return res;
 }
 
 //------------------------------------------------------------------------------
-
 }
