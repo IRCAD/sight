@@ -44,7 +44,7 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(::fwServices::IService)() > FactoryType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory);
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory)
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
@@ -75,8 +75,8 @@ public:
     FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object,
                                                                             const std::string& type ) const;
 
-    /// return the associated object implementation.
-    FWSERVICES_API std::string getObjectImplementation(const std::string& srvImpl) const;
+    /// return the objects registered for a given service.
+    FWSERVICES_API const std::vector<std::string>& getServiceObjects(const std::string& srvImpl) const;
 
     /// return the service description.
     FWSERVICES_API std::string getServiceDescription(const std::string& srvImpl) const;
@@ -107,7 +107,8 @@ private:
     struct ServiceInfo
     {
         std::string serviceType;
-        std::string objectImpl;
+        std::vector<std::string> objectImpl;
+        bool objectsSetFromBundle {false}; // True if the objects implementation are set from the bundle information
         std::string desc;
         std::shared_ptr< ::fwRuntime::Bundle > bundle;
         FactoryType factory;

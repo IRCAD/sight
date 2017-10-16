@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,14 +61,18 @@ namespace fwServices
  */
 #if !BOOST_PP_VARIADICS_MSVC
 
-#define fwServicesRegisterMacro(...) BOOST_PP_OVERLOAD(__FWSERVICES_REGISTER_MACRO_,__VA_ARGS__)(__VA_ARGS__)
+#define fwServicesRegisterMacro(...) BOOST_PP_OVERLOAD(__FWSERVICES_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 
 #else
 
 #define fwServicesRegisterMacro(...) \
-    BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWSERVICES_REGISTER_MACRO_,__VA_ARGS__)(__VA_ARGS__),BOOST_PP_EMPTY())
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWSERVICES_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 
 #endif
+
+#define fwServicesRegisterObjectMacro(ServiceImpl, ServiceObject) \
+    __FWSERVICES_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
+
 //@}
 
 }

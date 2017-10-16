@@ -284,7 +284,7 @@ void SIOSelector::updating()
                 {
                     ::fwServices::registry::ServiceFactory::sptr services =
                         ::fwServices::registry::ServiceFactory::getDefault();
-                    std::string objType = services->getObjectImplementation(extensionId);
+                    std::string objType = services->getServiceObjects(extensionId);
                     if(!objType.compare("::fwData::Object"))
                     {
                         object = this->getObject< ::fwData::Composite>();

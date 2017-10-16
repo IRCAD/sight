@@ -44,7 +44,7 @@ void ClassFactoryRegistryInfo::updating( )
 
     for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )
     {
-        const std::string objImpl = ServiceRegistry::getDefault()->getObjectImplementation(key);
+        const std::string objImpl = ServiceRegistry::getDefault()->getServiceObjects(key);
         QTreeWidgetItem* srvItem  = new QTreeWidgetItem();
         srvItem->setText(0, QString::fromStdString(key));
         srvItem->setText(1, QString::fromStdString(objImpl));
