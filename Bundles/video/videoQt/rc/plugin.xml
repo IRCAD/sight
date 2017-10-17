@@ -6,6 +6,8 @@
         <type>::arServices::IGrabber</type>
         <service>::videoQt::SFrameGrabber</service>
         <object>::arData::FrameTL</object>
+        <desc>QtMultimedia plugin</desc>
+        <caps>FILE,STREAM,DEVICE</caps>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

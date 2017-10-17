@@ -19,6 +19,8 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
+#include <boost/tokenizer.hpp>
+
 namespace videoTools
 {
 
@@ -138,18 +140,21 @@ void SGrabberProxy::startCamera()
         {
             const auto srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
 
-            // We select all simple grabbers. If they can't fill the data requirements, they will be eliminated later
-            // by the data test
+            // We select all RGBD grabbers. They should be capable to output a single color frame
             auto srvImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
                                                                             "::arServices::IRGBDGrabber");
-
-            // If we chose RGB cameras, we add
             if(m_type == CameraType::RGB)
             {
                 auto rgbSrvImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
                                                                                    "::arServices::IGrabber");
+                std::move(rgbSrvImpl.begin(), rgbSrvImpl.end(), std::back_inserter(srvImpl));
+            }
 
-                std::move(rgbSrvImpl.begin(), rgbSrvImpl.end(), std::inserter(srvImpl, srvImpl.begin()));
+            auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+            ::arData::Camera::SourceType sourceType = ::arData::Camera::UNKNOWN;
+            if(camera)
+            {
+                sourceType = camera->getCameraSource();
             }
 
             std::vector< std::string > availableExtensionsSelector;
@@ -162,6 +167,7 @@ void SGrabberProxy::startCamera()
                     const auto objectsType = srvFactory->getServiceObjects(srvImpl);
                     const auto config      = this->getConfigTree();
 
+                    // 1. Filter against the objects types
                     size_t numTL   = 0;
                     auto inoutsCfg = config.equal_range("inout");
                     for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
@@ -184,6 +190,42 @@ void SGrabberProxy::startCamera()
                         continue;
                     }
 
+                    // 2. Filter against the source type
+                    if(sourceType != ::arData::Camera::UNKNOWN)
+                    {
+                        const auto caps = srvFactory->getServiceCaps(srvImpl);
+
+                        const ::boost::char_separator<char> sep(",");
+                        const ::boost::tokenizer< ::boost::char_separator<char> > tokens(caps, sep);
+                        bool capsMatch = false;
+                        for(const auto& token : tokens)
+                        {
+                            ::arData::Camera::SourceType handledSourceType = ::arData::Camera::UNKNOWN;
+                            if(token == "FILE")
+                            {
+                                handledSourceType = ::arData::Camera::FILE;
+                            }
+                            else if(token == "STREAM")
+                            {
+                                handledSourceType = ::arData::Camera::STREAM;
+                            }
+                            else if(token == "DEVICE")
+                            {
+                                handledSourceType = ::arData::Camera::DEVICE;
+                            }
+                            if(handledSourceType == sourceType)
+                            {
+                                capsMatch = true;
+                                break;
+                            }
+                        }
+                        if(!capsMatch)
+                        {
+                            continue;
+                        }
+                    }
+
+                    // 3. Filter against user choices
                     if(m_selectedServices.empty())
                     {
                         availableExtensionsSelector.push_back(srvImpl);

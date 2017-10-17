@@ -1,0 +1,26 @@
+<plugin id="videoOpenCV" class="::videoOpenCV::Plugin" version="0.1" >
+    <library name="videoOpenCV" />
+    <requirement id="io"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+         <type>::arServices::IGrabber</type>
+         <service>::videoOpenCV::SFrameGrabber</service>
+         <object>::arData::FrameTL</object>
+         <desc>OpenCV plugin</desc>
+         <caps>FILE,DEVICE</caps>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+         <type>::io::IWriter</type>
+         <service>::videoOpenCV::SFrameWriter</service>
+         <object>::arData::FrameTL</object>
+         <desc>This service allows to save the timeline frames in files in a folder.</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+         <type>::io::IWriter</type>
+         <service>::videoOpenCV::SVideoWriter</service>
+         <object>::arData::FrameTL</object>
+         <desc>This service allows to save the timeline frames in a video file.</desc>
+    </extension>
+</plugin>
