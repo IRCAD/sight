@@ -24,8 +24,12 @@ namespace colourSegmentation
 
 fwServicesRegisterMacro( ::fwServices::IOperator, ::colourSegmentation::SColourImageMasking);
 
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT = "setBackground";
-const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_SLOT = "setForeground";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_SLOT            = "setBackground";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_SLOT            = "setForeground";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_THRESHOLD_SLOT             = "setThreshold";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
+const ::fwCom::Slots::SlotKeyType SColourImageMasking::s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
 
 const ::fwServices::IService::KeyType s_MASK_KEY          = "mask";
 const ::fwServices::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
@@ -37,6 +41,10 @@ SColourImageMasking::SColourImageMasking() noexcept
 {
     newSlot( s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this );
     newSlot( s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this );
+    newSlot( s_SET_THRESHOLD_SLOT, &SColourImageMasking::setThreshold, this );
+    newSlot( s_SET_NOISE_LEVEL_SLOT, &SColourImageMasking::setNoiseLevel, this );
+    newSlot( s_SET_BACKGROUND_COMPONENTS_SLOT, &SColourImageMasking::setBackgroundComponents, this );
+    newSlot( s_SET_FOREGROUND_COMPONENTS_SLOT, &SColourImageMasking::setForegroundComponents, this );
 }
 
 // ------------------------------------------------------------------------------
@@ -51,8 +59,11 @@ void SColourImageMasking::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_scaleFactor = config.get<float>("scaleFactor", 1.0);
-    m_noise       = config.get<double>("noise", 0.0);
+    // TODO: check if 0 < scale factor <= 1.0
+    m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
+    m_noise                = config.get<double>("noise", 0.0);
+    m_foregroundComponents = config.get<int>("foregroundComponents", 5);
+    m_backgroundComponents = config.get<int>("backgroundComponents", 5);
 }
 
 // ------------------------------------------------------------------------------
@@ -101,7 +112,7 @@ void SColourImageMasking::updating()
 
         if(!videoBuffer)
         {
-            OSLM_INFO("Buffer not found with timestamp "<< timestamp);
+            OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);
             return;
         }
 
@@ -153,13 +164,12 @@ void SColourImageMasking::setBackground()
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
-    const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
-
     if(!videoBuffer)
     {
-        OSLM_INFO("Buffer not found with timestamp "<< timestamp);
+        OSLM_INFO("Buffer not found with timestamp " << currentTimestamp);
         return;
     }
+    const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert mask to an OpenCV image:
     const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
@@ -170,9 +180,6 @@ void SColourImageMasking::setBackground()
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
     m_maskDownsize = ::cv::Size(static_cast<int>(static_cast<float>(maskCV.size[1])*m_scaleFactor),
                                 static_cast<int>(static_cast<float>(maskCV.size[0])*m_scaleFactor));
-
-    // Flip mask image (Y axis) because of the offscreen render
-    ::cv::flip(maskCV, maskCV, 0);
 
     // Convert color mask to grayscale value
     ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2BGR);
@@ -191,7 +198,7 @@ void SColourImageMasking::setBackground()
     ::cv::erode(maskCV, maskCV, elementErode);
 
     // Learn background color model
-    m_masker->trainBackgroundModel(videoCV, maskCV, 5);
+    m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
 
     // Initialize the mask timeline
     auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
@@ -206,13 +213,12 @@ void SColourImageMasking::setForeground()
 
     fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
-    const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
-
     if(!videoBuffer)
     {
-        OSLM_INFO("Buffer not found with timestamp "<< timestamp);
+        OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);
         return;
     }
+    const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert mask to an OpenCV image:
     ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
@@ -244,7 +250,38 @@ void SColourImageMasking::setForeground()
     ::cv::erode(foregroundMask, openForegroundMask, elementErode);
 
     // Learn foreground color model
-    m_masker->trainForegroundModel(videoCV, openForegroundMask, 5, m_noise);
+    m_masker->trainForegroundModel(videoCV, openForegroundMask, m_foregroundComponents, m_noise);
+}
+
+// ------------------------------------------------------------------------------
+
+void SColourImageMasking::setThreshold(int threshold)
+{
+    if(m_masker)
+    {
+        m_masker->setThreshold(threshold);
+    }
+}
+
+// ------------------------------------------------------------------------------
+
+void SColourImageMasking::setNoiseLevel(double noiseLevel)
+{
+    m_noise = noiseLevel;
+}
+
+// ------------------------------------------------------------------------------
+
+void SColourImageMasking::setBackgroundComponents(int bgComponents)
+{
+    m_backgroundComponents = bgComponents;
+}
+
+// ------------------------------------------------------------------------------
+
+void SColourImageMasking::setForegroundComponents(int fgComponents)
+{
+    m_foregroundComponents = fgComponents;
 }
 
 // ------------------------------------------------------------------------------

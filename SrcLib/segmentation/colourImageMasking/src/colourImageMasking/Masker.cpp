@@ -149,16 +149,12 @@ bool Masker::isModelLearned(void)
 ::cv::Mat Masker::makeResponseImage(const ::cv::Mat& I, const ::cv::Ptr< ::cv::ml::EM > model,
                                     ::cv::Mat& inImgMask)
 {
-    const int cn = I.channels();
+    const int cn              = I.channels();
+    const int w               = I.cols;
+    const bool usesFilterMask = !inImgMask.empty();
 
     ::cv::Mat output = ::cv::Mat::zeros(I.rows, I.cols, CV_32FC1);
-
     const uchar* pixelPtr = static_cast<uchar*>(I.data);
-
-    const int h = I.rows;
-    const int w = I.cols;
-
-    const bool usesFilterMask = !inImgMask.empty();
 
     // Parallelization of pixel prediction
     ::cv::parallel_for_(::cv::Range(0, I.rows*I.cols), [&](const ::cv::Range& range)

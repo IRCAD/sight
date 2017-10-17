@@ -44,12 +44,14 @@
             <service uid="mainView" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
+                        <orientation value="vertical" />
+                        <view proportion="1" />
                         <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="genericScene" />
+                    <view sid="thresholdSlider" start="yes"/>
                 </registry>
             </service>
 
@@ -105,6 +107,10 @@
                         <separator/>
                         <menuItem name="Learn background model" icon="media-0.1/icons/icon-frontal.png" />
                         <menuItem name="Learn foreground model" icon="media-0.1/icons/icon-blend.png" />
+                        <menuItem name="Segmentation parameters" icon="media-0.1/icons/Settings.svg" style="check" />
+                        <editor />
+                        <editor />
+                        <editor />
                     </layout>
                 </gui>
                 <registry>
@@ -118,6 +124,10 @@
                     <menuItem sid="organManager" start="no" />
                     <menuItem sid="learnBackground" start="yes" />
                     <menuItem sid="learnForeground" start="yes" />
+                    <menuItem sid="segmentationParameters" start="yes" />
+                    <editor sid="noiseLevel" start="yes" />
+                    <editor sid="bgComponents" start="yes" />
+                    <editor sid="fgComponents" start="yes" />
                 </registry>
             </service>
 
@@ -232,6 +242,40 @@
                 </slots>
             </service>
 
+            <service uid="segmentationParameters" type="::gui::action::SModifyLayout">
+                <state active="false" />
+                <config>
+                    <show_or_hide sid="noiseLevel" />
+                    <show_or_hide sid="bgComponents" />
+                    <show_or_hide sid="fgComponents" />
+                    <show_or_hide sid="thresholdSlider" />
+                </config>
+            </service>
+
+            <service uid="thresholdSlider" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
+                </parameters>
+            </service>
+
+            <service uid="noiseLevel" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
+                </parameters>
+            </service>
+
+            <service uid="bgComponents" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
+                </parameters>
+            </service>
+
+            <service uid="fgComponents" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
+                </parameters>
+            </service>
+
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -285,6 +329,7 @@
 
             <service uid="offscreenRender" type="::fwRenderVTK::SRender" autoConnect="yes">
                 <inout key="offScreen" uid="backgroundMask" />
+                <flip>true</flip>
                 <scene width="640" height="480">
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="interactorStyleOffscreen" />
@@ -366,7 +411,11 @@
                 <in key="videoTL" uid="frameTL" autoConnect="yes" />
                 <inout key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
-                <config scaleFactor="1.0" noise="30" />
+                <config scaleFactor="1.0" noise="30" foregroundComponents="5" backgroundComponents="5"/>
+                <HSV>
+                    <lower>35,0,0</lower>
+                    <upper>360,255,255</upper>
+                </HSV>
             </service>
 
             <!-- signal/slot connection -->
@@ -393,6 +442,26 @@
 
             <connect channel="ModelDisplayChannel">
                 <slot>modelseriesAdpt/showReconstructions</slot>
+            </connect>
+
+            <connect>
+                <signal>thresholdSlider/intChanged</signal>
+                <slot>extractForeground/setThreshold</slot>
+            </connect>
+
+            <connect>
+                <signal>noiseLevel/doubleChanged</signal>
+                <slot>extractForeground/setNoiseLevel</slot>
+            </connect>
+
+            <connect>
+                <signal>bgComponents/intChanged</signal>
+                <slot>extractForeground/setBackgroundComponents</slot>
+            </connect>
+
+            <connect>
+                <signal>fgComponents/intChanged</signal>
+                <slot>extractForeground/setForegroundComponents</slot>
             </connect>
 
             <!-- start services -->
@@ -425,6 +494,7 @@
             <start uid="cameraAdptOffscreen" />
             <!-- Update -->
             <update uid="extractSkin" />
+            <update uid="segmentationParameters" />
         </config>
     </extension>
 </plugin>

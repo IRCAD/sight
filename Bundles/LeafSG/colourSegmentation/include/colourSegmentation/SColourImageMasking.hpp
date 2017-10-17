@@ -61,6 +61,10 @@ public:
      */
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_SLOT;
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_SLOT;
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_THRESHOLD_SLOT;
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT;
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT;
+    COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT;
     ///@}
 
     ///Constructor
@@ -94,6 +98,18 @@ private:
     /// Slot: Set foreground image and learn foreground model
     void setForeground();
 
+    /// Slot: Set the threshold value to compute final binary image
+    void setThreshold(int threshold);
+
+    /// Slot: Set the threshold value to compute final binary image
+    void setNoiseLevel(double noiseLevel);
+
+    /// Slot: Set the threshold value to compute final binary image
+    void setBackgroundComponents(int bgComponents);
+
+    /// Slot: Set the threshold value to compute final binary image
+    void setForegroundComponents(int fgComponents);
+
     /// Masker of puppets i'm pulling your strings
     std::unique_ptr< ::colourImageMasking::Masker > m_masker;
 
@@ -108,6 +124,12 @@ private:
 
     /// Noise level to add during the foreground learning step
     double m_noise;
+
+    /// Number of background components
+    int m_backgroundComponents;
+
+    /// Number of foreground components
+    int m_foregroundComponents;
 };
 
 } // namespace colourSegmentation
