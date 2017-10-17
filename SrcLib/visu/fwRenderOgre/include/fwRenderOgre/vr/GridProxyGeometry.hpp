@@ -32,10 +32,10 @@ namespace vr
  *
  * The geometry we compute here is quite simple though :
  * - first we divide the image volume in equally sized bricks (set to 8x8x8 empirically for now)
- * - we create a smaller volume with where every voxel corresponds to a brick
+ * - we create a smaller volume where every voxel corresponds to a brick
  * - then for each brick we check if it is empty (contains at least one visible voxel after TF application) and store
  * this value in the smaller volume.
- * - finally we generate a small cube for every non-empty voxel in the smaller.
+ * - finally we generate a small cube for every non-empty voxel in the grid volume.
  *
  * This is all done on the GPU using shaders and R2VB making it quite efficient.
  * The geometry needs to be recomputed when the TF changes or when the whole image changes.

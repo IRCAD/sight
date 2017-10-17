@@ -197,10 +197,6 @@ private:
     /// Compute the focal length in camera space.
     void computeRealFocalLength();
 
-    /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original
-    /// camera.
-    ::Ogre::Matrix4 frustumShearTransform(float angle) const;
-
     /// Updates the ray traced and volume illumination materials according to pre-integration and volume illumination
     /// flags.
     void updateVolIllumMat();
@@ -227,13 +223,11 @@ private:
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;
 
-    ///
+    /// Proxy geometry defining ray entry and exit points.
     ::fwRenderOgre::vr::GridProxyGeometry* m_proxyGeometry;
 
     /// Ray entry and exit points for each pixel of each viewpoint.
     std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
-
-    std::vector< ::Ogre::TextureUnitState* > m_rayTracedTexUnitStates;
 
     /// Image dimensions.
     ::fwData::Image::SizeType m_imageSize;

@@ -395,6 +395,10 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
         m_proxyGeometry->updateGridSize();
     }
+    else
+    {
+        m_proxyGeometry->computeGrid();
+    }
 
     if(m_preIntegratedRendering)
     {
@@ -1005,21 +1009,6 @@ void RayTracingVolumeRenderer::computeRealFocalLength()
     const float realFocalLength = m_camera->getRealPosition().distance(focusPoint);
 
     m_camera->setFocalLength(realFocalLength);
-}
-
-//-----------------------------------------------------------------------------
-
-::Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
-{
-    ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
-
-    const float focalLength  = m_camera->getFocalLength();
-    const float xshearFactor = std::tan(angle);
-
-    shearTransform[0][2] = -xshearFactor;
-    shearTransform[0][3] = -focalLength * xshearFactor;
-
-    return shearTransform;
 }
 
 //-----------------------------------------------------------------------------
