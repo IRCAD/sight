@@ -50,6 +50,7 @@ void ServiceFactory::parseBundleInformation()
         std::string service;
         std::vector<std::string> objects;
         std::string desc;
+        std::string caps;
 
         for(ConfigurationType cfgElt :  cfgEltVec)
         {
@@ -70,6 +71,10 @@ void ServiceFactory::parseBundleInformation()
             {
                 desc = cfgElt->getValue();
             }
+            else if(elt == "caps")
+            {
+                caps = cfgElt->getValue();
+            }
             else
             {
                 SLM_FATAL("Unknown element !");
@@ -83,6 +88,7 @@ void ServiceFactory::parseBundleInformation()
         info.objectsSetFromBundle = !objects.empty();
         info.objectImpl           = std::move(objects);
         info.desc                 = desc;
+        info.caps                 = caps;
         info.bundle               = cfgEltVec[0]->getBundle();
         SLM_ASSERT("Bundle not find.", info.bundle );
 
@@ -416,12 +422,20 @@ const std::vector<std::string>& ServiceFactory::getServiceObjects(const std::str
 
 std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) const
 {
-    std::string srvDescription;
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
-    srvDescription = iter->second.desc;
-    return srvDescription;
+    return iter->second.desc;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string ServiceFactory::getServiceCaps(const std::string& srvImpl) const
+{
+    ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
+    SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
+    SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
+    return iter->second.caps;
 }
 
 //-----------------------------------------------------------------------------
