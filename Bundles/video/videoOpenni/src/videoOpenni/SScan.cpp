@@ -66,10 +66,9 @@ void SScan::configuring()
 
 void SScan::starting()
 {
-    m_depthTL           = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
-    m_colorTL           = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
-    m_irTL              = this->getInOut< ::arData::FrameTL>(s_IRTL_INOUT);
-    m_positionsTimeline = this->getInOut< ::arData::FrameTL>("frameTLPositions");
+    m_depthTL = this->getInOut< ::arData::FrameTL>(s_DEPTHTL_INOUT);
+    m_colorTL = this->getInOut< ::arData::FrameTL>(s_FRAMETL_INOUT);
+    m_irTL    = this->getInOut< ::arData::FrameTL>(s_IRTL_INOUT);
 
     m_snapshotDepthTL = this->getInOut< ::arData::FrameTL>("snapshotTLDepth");
     m_snapshotColorTL = this->getInOut< ::arData::FrameTL>("snapshotTLColors");
@@ -230,12 +229,6 @@ void SScan::startCamera()
 
         m_depthTL->initPoolSize(width, height, ::fwTools::Type::s_UINT16, 1);
         m_depthTL->setMaximumSize(50);
-
-        if(m_positionsTimeline)
-        {
-            m_positionsTimeline->initPoolSize(width, height, ::fwTools::Type::s_FLOAT, 3);
-            m_positionsTimeline->setMaximumSize(50);
-        }
     }
 
     if(m_colorTL != nullptr)
@@ -418,37 +411,11 @@ void SScan::presentFrame()
             SPTR(::arData::FrameTL::BufferType) depthBuffer = depthTL->createBuffer(timestamp);
             uint16_t* destDepthBuffer = reinterpret_cast< uint16_t* >( depthBuffer->addElement(0) );
 
-            SPTR(::arData::FrameTL::BufferType) positionsBuffer;
-            float* destPositionsBuffer;
-            if (m_positionsTimeline)
-            {
-                positionsBuffer     = m_positionsTimeline->createBuffer(timestamp);
-                destPositionsBuffer = reinterpret_cast< float* >( positionsBuffer->addElement(0) );
-            }
-
             // Filling depth buffer
             if (m_depthFrame.isValid())
             {
                 ::openni::DepthPixel* pDepth = (::openni::DepthPixel*)m_depthFrame.getData();
                 memcpy(destDepthBuffer, pDepth,  static_cast<size_t>(m_depthFrame.getDataSize()));
-
-                if (m_positionsTimeline)
-                {
-                    const int height = m_depthFrame.getHeight();
-                    const int width  = m_depthFrame.getWidth();
-                    for (int y = 0; y < height; ++y)
-                    {
-                        for (int x = 0; x < width; ++x)
-                        {
-                            ::openni::CoordinateConverter::convertDepthToWorld(m_depthStream, x, y, *pDepth,
-                                                                               &destPositionsBuffer[0],
-                                                                               &destPositionsBuffer[1],
-                                                                               &destPositionsBuffer[2]);
-                            ++pDepth;
-                            destPositionsBuffer += 3;
-                        }
-                    }
-                }
             }
 
             // Push buffer and notify
@@ -456,14 +423,6 @@ void SScan::presentFrame()
             auto sig = depthTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
                 ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
             sig->asyncEmit(timestamp);
-
-            if (m_positionsTimeline)
-            {
-                m_positionsTimeline->pushObject(positionsBuffer);
-                sig = m_positionsTimeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-                sig->asyncEmit(timestamp);
-            }
         }
 
         if (changedVideoStream == &m_colorStream)

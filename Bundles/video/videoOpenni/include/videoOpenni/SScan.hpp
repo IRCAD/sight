@@ -40,7 +40,6 @@ namespace videoOpenni
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <inout key="irTL"    uid="..." />
-        <inout key="frameTLPositions" uid="..." />
         <inout key="snapshotTLDepth" uid="..." />
         <inout key="snapshotTLColors" uid="..." />
         <inout key="snapshotTLIR" uid="..." />
@@ -50,7 +49,6 @@ namespace videoOpenni
  * - \b depthTL [::arData::FrameTL]: Frame timeline of the depth stream.
  * - \b frameTL [::arData::FrameTL]: Frame timeline of the color stream.
  * - \b irTL [::arData::FrameTL]: Frame timeline of the infrared stream.
- * - \b frameTLPositions [::arData::FrameTL]: Timeline storing a point cloud computed from the depth stream.
  * - \b snapshotTLDepth [::arData::FrameTL]: Frame timeline used to store snaphots of the color stream.
  * - \b snapshotTLColors [::arData::FrameTL]: Frame timeline used to store snaphots of the depth stream.
  * - \b snapshotTLIR [::arData::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
@@ -122,7 +120,6 @@ private:
     ::arData::FrameTL::sptr m_depthTL; ///< Depth timeline.
     ::arData::FrameTL::sptr m_colorTL; ///< Color timeline.
     ::arData::FrameTL::sptr m_irTL; ///< Infrared timeline.
-    ::arData::FrameTL::sptr m_positionsTimeline; ///< Positions timeline.
 
     // Snapshot timelines
     ::arData::FrameTL::sptr m_snapshotDepthTL; ///< Depth timeline.
