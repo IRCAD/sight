@@ -49,9 +49,11 @@ namespace videoTools
         <service type="::videoQt::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
-            <selection mode="include" />
-            <addSelection service="::videoQt::SFrameGrabber" />
-            <config id="cvGrabberConfig" service="::videoOpenCV::SFrameGrabber" />
+            <config>
+                <selection mode="include" />
+                <addSelection service="::videoQt::SFrameGrabber" />
+                <config id="cvGrabberConfig" service="::videoOpenCV::SFrameGrabber" />
+            </config>
         </service>
    @endcode
  * @subsection Input Input
