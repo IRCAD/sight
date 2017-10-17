@@ -25,8 +25,8 @@ namespace container
 
 DicomInstance::DicomInstance() :
     m_isMultiFiles(true),
-    m_logger(nullptr),
-    m_SOPClassUID("")
+    m_SOPClassUID(""),
+    m_logger(nullptr)
 {
     SLM_TRACE_FUNC();
 }

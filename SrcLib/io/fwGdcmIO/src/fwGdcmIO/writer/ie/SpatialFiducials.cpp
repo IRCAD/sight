@@ -170,8 +170,8 @@ throw(::fwGdcmIO::exception::Failed)
 
             // Graphic Data - Type 1
             float coordinates[2];
-            coordinates[0] = point->getCoord()[0];
-            coordinates[1] = point->getCoord()[1];
+            coordinates[0] = static_cast<float>(point->getCoord()[0]);
+            coordinates[1] = static_cast<float>(point->getCoord()[1]);
             ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(coordinates, 2, graphicDataItemDataset);
             OSLM_TRACE("WRITE NEW POINT : [" << label << "] " << coordinates[0] << " / " << coordinates[1]);
 
@@ -179,7 +179,7 @@ throw(::fwGdcmIO::exception::Failed)
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence = new ::gdcm::SequenceOfItems();
             ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x1140 >(referencedImageSequence, graphicDataItemDataset);
 
-            int frameNumber = ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point);
+            int frameNumber = static_cast<int>(::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point));
             this->addReferencedImage(frameNumber, referencedImageSequence);
 
             // Add graphic data to sequence

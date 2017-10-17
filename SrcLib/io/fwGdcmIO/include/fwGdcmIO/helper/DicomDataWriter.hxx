@@ -80,12 +80,12 @@ public:
      * @tparam ELEMENT Element of the tag.
      */
     template< typename T, uint16_t GROUP, uint16_t ELEMENT >
-    static void setTagValues(const T * array, const unsigned int size, ::gdcm::DataSet &dataset)
+    static void setTagValues(const T * array, const size_t size, ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         if(array)
         {
-            attribute.SetValues(array, size);
+            attribute.SetValues(array, static_cast<unsigned int>(size));
         }
         dataset.Insert(attribute.GetAsDataElement());
     }

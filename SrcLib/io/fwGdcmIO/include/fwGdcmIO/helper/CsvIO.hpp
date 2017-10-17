@@ -23,7 +23,7 @@ namespace helper
  * @brief Read CSV file and returns parsed tokens.
  * The input file is supposed to use comma separator, but another separator can be used when reading file.
  */
-FWGDCMIO_CLASS_API class CsvIO
+class FWGDCMIO_CLASS_API CsvIO
 {
 
 public:

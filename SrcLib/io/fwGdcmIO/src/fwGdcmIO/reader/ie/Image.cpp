@@ -115,9 +115,6 @@ void Image::readImagePlaneModule()
     SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
     const ::gdcm::Image &gdcmImage = imageReader->GetImage();
 
-    // Retrieve dataset
-    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
-
     // Image Position (Patient) - Type 1
     const double *gdcmOrigin = gdcmImage.GetOrigin();
     ::fwData::Image::OriginType origin(3, 0);
@@ -140,7 +137,6 @@ void Image::readImagePlaneModule()
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
     }
 
-#if 1
     // Compute Z image spacing
     ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
     if(pathContainer.size() > 1)
@@ -165,37 +161,6 @@ void Image::readImagePlaneModule()
             m_logger->warning(ss.str());
         }
     }
-
-#else
-    // Compute Z image spacing when extra information is required
-    std::string sliceThickness       = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x0050>(dataset);
-    std::string spacingBetweenSlices = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0018, 0x0088>(dataset);
-
-    if(m_dicomSeries->hasComputedValues("SliceThickness"))
-    {
-        spacing[2] = ::boost::lexical_cast< double >(m_dicomSeries->getComputedTagValues().at("SliceThickness"));
-        std::stringstream ss;
-        ss << "Voxel depth has been computed using the image slice positions. The computed value is " << spacing[2] <<
-            " instead of " << sliceThickness << " for the SliceThickness tag.";
-        m_logger->warning(ss.str());
-    }
-    else if(!sliceThickness.empty())
-    {
-        spacing[2] = ::boost::lexical_cast< double >(sliceThickness);
-        std::stringstream ss;
-        ss << "Voxel depth has been retrieved using the SliceThickness tag value. The retrieved value is " <<
-            spacing[2] << ".";
-        m_logger->information(ss.str());
-    }
-    else if(!spacingBetweenSlices.empty())
-    {
-        spacing[2] = ::boost::lexical_cast< double >(spacingBetweenSlices);
-        std::stringstream ss;
-        ss << "Voxel depth has been retrieved using the SpacingBetweenSlices tag value. The retrieved value is " <<
-            spacing[2] << ".";
-        m_logger->information(ss.str());
-    }
-#endif
 
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
     m_object->setSpacing( spacing );

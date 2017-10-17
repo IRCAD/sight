@@ -364,7 +364,6 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     };
 
     // Read series
-    std::uint64_t progress = 0;
     for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
         ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();

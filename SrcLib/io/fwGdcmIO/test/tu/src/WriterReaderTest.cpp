@@ -179,16 +179,16 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwData::Image::SizeType size = image->getSize();
     ::fwData::Point::sptr point3   = ::fwData::Point::New(1.2 + origin[0],
                                                           2.4 + origin[1],
-                                                          (size[2]-1) * spacing[2] + origin[2]);
+                                                          static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
     point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("toto") );
     landmarks->getRefPoints().push_back(point3);
 
     // Add distance
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
     ::fwData::Point::sptr pt1    = ::fwData::Point::New(0., 0., 0.);
-    ::fwData::Point::sptr pt2    = ::fwData::Point::New((size[0]-1) * spacing[0],
-                                                        (size[1]-1) * spacing[1],
-                                                        (size[2]-1) * spacing[2]);
+    ::fwData::Point::sptr pt2    = ::fwData::Point::New(static_cast<double>(size[0]-1) * spacing[0],
+                                                        static_cast<double>(size[1]-1) * spacing[1],
+                                                        static_cast<double>(size[2]-1) * spacing[2]);
     pl->getRefPoints().push_back( pt1 );
     pl->getRefPoints().push_back( pt2 );
 

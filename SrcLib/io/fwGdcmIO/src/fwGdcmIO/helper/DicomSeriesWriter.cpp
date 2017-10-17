@@ -265,7 +265,7 @@ void DicomSeriesWriter::processWriteArchive()
     FW_RAISE_IF("Dicom series should contain binaries.",
             dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
 
-    const unsigned int nbInstances = dicomSeries->getNumberOfInstances();
+    const size_t nbInstances = dicomSeries->getNumberOfInstances();
     unsigned int count = 0;
 
     m_job->setTotalWorkUnits(nbInstances);

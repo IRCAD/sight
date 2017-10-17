@@ -161,7 +161,7 @@ throw(::fwGdcmIO::exception::Failed)
     std::size_t frameIndex = (frameNumber-1);
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
             frameIndex >= image->getSize()[2]);
-    double zCoordinate = zOrigin + frameIndex * zSpacing;
+    double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 
     return zCoordinate;
 }

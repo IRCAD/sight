@@ -483,7 +483,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         // Point Coordinates Data (0x0066,0x0016) - Type 1
         ::gdcm::DataElement &pointCoordData = surface->GetPointCoordinatesData();
         pointCoordData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getPointBuffer().data()),
-                                    static_cast<uint32_t>(surfaceContainer.getPointBufferSize()) * sizeof(float));
+                                    static_cast<uint32_t>(surfaceContainer.getPointBufferSize()) * static_cast<uint32_t>(sizeof(float)));
     }
     pointsSequence->AddItem(pointsItem);
 
@@ -510,7 +510,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         // Vector Coordinate Data (0x0066,0x0021) - Type 1
         ::gdcm::DataElement &normalCoordData = surface->GetVectorCoordinateData();
         normalCoordData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getNormalBuffer().data()),
-                                     static_cast<uint32_t>(surfaceContainer.getNormalBufferSize()) * sizeof(float));
+                                     static_cast<uint32_t>(surfaceContainer.getNormalBufferSize()) * static_cast<uint32_t>(sizeof(float)));
 
         normalsSequence->AddItem(normalsItem);
     }
@@ -532,7 +532,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         ::gdcm::DataElement &pointIndexData = primitive->GetPrimitiveData();
         pointIndexData.SetVL(sizeof(uint32_t));
         pointIndexData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getCellBuffer().data()),
-                                    static_cast<uint32_t>(surfaceContainer.getCellBufferSize()) * sizeof(uint32_t));
+                                    static_cast<uint32_t>(surfaceContainer.getCellBufferSize()) * static_cast<uint32_t>(sizeof(uint32_t)));
     }
 
 
