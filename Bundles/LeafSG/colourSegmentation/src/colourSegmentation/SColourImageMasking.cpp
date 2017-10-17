@@ -62,11 +62,19 @@ void SColourImageMasking::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    // TODO: check if 0 < scale factor <= 1.0
-    m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
-    m_noise                = config.get<double>("noise", 0.0);
+    m_scaleFactor = config.get<float>("scaleFactor", 1.0);
+    OSLM_FATAL_IF("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
+                  (m_scaleFactor < 0 || m_scaleFactor > 1));
+    m_noise = config.get<double>("noise", 0.0);
+    OSLM_FATAL_IF("Noise value must be >= 0. Current value:" << m_noise, m_noise < 0);
     m_foregroundComponents = config.get<int>("foregroundComponents", 5);
+    OSLM_FATAL_IF(
+        "The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
+        m_foregroundComponents <= 0);
     m_backgroundComponents = config.get<int>("backgroundComponents", 5);
+    OSLM_FATAL_IF(
+        "The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
+        m_backgroundComponents <= 0);
 }
 
 // ------------------------------------------------------------------------------

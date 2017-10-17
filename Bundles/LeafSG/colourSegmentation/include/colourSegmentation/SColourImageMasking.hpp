@@ -27,6 +27,10 @@ namespace colourSegmentation
  * @section Slots Slots
  * - \b setBackground() : Slot to set the background image to learn the background model color
  * - \b setForeground() : Slot to set the foreground image to learn the foreground model color
+ * - \b setThreshold(int threshold) : Slot to set the threshold value to get the final binary image
+ * - \b setNoiseLevel(double noiseLevel) : Slot to set the noise level added in the learning steps
+ * - \b setBackgroundComponents(int bgComponents) : Slot to set the number of background components learned
+ * - \b setForegroundComponents(int fgComponents) : Slot to set the number of foreground components learned
  *
  * @section XML XML Configuration
  *
@@ -35,7 +39,7 @@ namespace colourSegmentation
             <in key="videoTL" uid="..." autoConnect="yes" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
-            <config scaleFactor="0.5" noise="30" />
+            <config scaleFactor="0.5" noise="30" foregroundComponents="5" backgroundComponents="5"/>
         </service>
    @endcode
  * @subsection Input Input
@@ -46,9 +50,11 @@ namespace colourSegmentation
  * mask = 0)
  *
  * @subsection Configuration Configuration
- * - \b scaleFactor (optional)(default: 1.0) : factor to scale the image to perform image masking on
- * - \b noise (optional)(default: 0.0) : additive noise used during the foreground learning step (make more robust
+ * - \b scaleFactor (optional)(default: 1.0): factor to scale the image to perform image masking on
+ * - \b noise (optional)(default: 0.0): additive noise used during the foreground learning step (make more robust
  * learning method)
+ * - \b foregroundComponents (optional)(default: 5): number of components learned in the foreground color model
+ * - \b backgroundComponents (optional)(default: 5): number of components learned in the foreground color model
  */
 class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
 {
@@ -101,13 +107,13 @@ private:
     /// Slot: Set the threshold value to compute final binary image
     void setThreshold(int threshold);
 
-    /// Slot: Set the threshold value to compute final binary image
+    /// Slot: Set the noise level added in the learning steps
     void setNoiseLevel(double noiseLevel);
 
-    /// Slot: Set the threshold value to compute final binary image
+    /// Slot: Set the number of background components learned
     void setBackgroundComponents(int bgComponents);
 
-    /// Slot: Set the threshold value to compute final binary image
+    /// Slot: Set the number of foreground components learned
     void setForegroundComponents(int fgComponents);
 
     /// Masker of puppets i'm pulling your strings
