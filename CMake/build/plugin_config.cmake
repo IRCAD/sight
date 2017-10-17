@@ -54,6 +54,7 @@ function(plugin_setup ${PROJECT})
         endif()
 
         file(STRINGS ${CPP_FILE} CPP_FILE_CONTENT NEWLINE_CONSUME)
+        file(STRINGS ${CPP_FILE} CPP_FILE_LINES_CONTENT)
         set(SRV_REGISTER_REGEX "fwServicesRegisterMacro\\(([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]*)\\);")
 
         if("${CPP_FILE_CONTENT}" MATCHES ${SRV_REGISTER_REGEX})
@@ -65,17 +66,30 @@ function(plugin_setup ${PROJECT})
                 list(APPEND EXTENSION_LIST "\n    <extension implements=\"::fwServices::registry::ServiceFactory\">"
                                            "         <type>${SRV_TYPE}</type>"
                                            "         <service>${SRV_IMPL}</service>"
-                                           "         <object>${SRV_OBJECT}</object>"
-                                           "         <desc>${SRV_DESC}</desc>"
-                                           "    </extension>")
+                                           "         <object>${SRV_OBJECT}</object>")
             else()
                 list(APPEND EXTENSION_LIST "\n    <extension implements=\"::fwServices::registry::ServiceFactory\">"
                                            "         <type>${SRV_TYPE}</type>"
-                                           "         <service>${SRV_IMPL}</service>"
-                                           "         <desc>${SRV_DESC}</desc>"
-                                           "    </extension>")
+                                           "         <service>${SRV_IMPL}</service>")
             endif()
+
+            set(SRV_REGISTER_OBJECT_REGEX "fwServicesRegisterObjectMacro\\(([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]*)\\);")
+
+            foreach(LINE ${CPP_FILE_LINES_CONTENT})
+                if("${LINE}" MATCHES ${SRV_REGISTER_OBJECT_REGEX})
+                    if(CMAKE_MATCH_2)
+                        string(STRIP ${CMAKE_MATCH_2} SRV_OBJECT)
+                        list(APPEND EXTENSION_LIST "         <object>${SRV_OBJECT}</object>")
+                    endif()
+                endif()
+            endforeach()
+
+            list(APPEND EXTENSION_LIST "         <desc>${SRV_DESC}</desc>"
+                                       "    </extension>")
+
         endif()
+
+
     endforeach()
     if(EXTENSION_LIST)
         string(REPLACE ";" "\n" EXTENSION_LIST "${EXTENSION_LIST}")
