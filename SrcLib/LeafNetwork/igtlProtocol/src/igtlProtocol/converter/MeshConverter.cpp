@@ -18,8 +18,6 @@
 
 #include <igtl/igtlPolyDataMessage.h>
 
-#include <vtkPolyData.h>
-
 #include <algorithm>
 
 namespace igtlProtocol
