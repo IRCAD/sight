@@ -77,8 +77,8 @@ public:
      * @name Data API
      * @{
      */
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_CAMERA_KEY;
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAMETL_KEY;
+    ARSERVICES_API static const ::fwServices::IService::KeyType s_CAMERA_INPUT;
+    ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAMETL_INOUT;
     /** @} */
     /**
      * @brief Constructor.

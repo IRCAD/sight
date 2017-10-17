@@ -28,8 +28,8 @@
 
         <!-- Manages Sense camera configuration -->
         <service uid="${frameGrabber}" type="::videoOpenni::SScan" worker="scanWorker">
-            <inout key="frameTLDepth" uid="depthFrameTL" />
-            <inout key="frameTLColors" uid="${frameTL}" />
+            <inout key="frameTL" uid="${frameTL}" />
+            <inout key="depthTL" uid="depthFrameTL" />
         </service>
 
         <service uid="extractCamera" type="::ctrlCamp::SExtractObj">

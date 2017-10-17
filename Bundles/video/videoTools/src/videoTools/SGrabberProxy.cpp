@@ -64,7 +64,7 @@ void SGrabberProxy::stopping()
         this->unregisterService(m_service);
         m_service.reset();
 
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
+        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
         frameTL->clearTimeline();
     }
 }
@@ -82,8 +82,13 @@ void SGrabberProxy::configuring()
 
     if(itSubConfig != config.not_found())
     {
-        const auto& subConfig  = itSubConfig->second;
-        const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode");
+        const auto& subConfig = itSubConfig->second;
+
+        m_type = subConfig.get<std::string>("camera.<xmlattr>.type", "RGB") == "RGB" ?
+                 CameraType::RGB :
+                 CameraType::RGBD;
+
+        const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
         SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
                     "'exclude' (to exclude the selection of the selector list).",
                     mode == "exclude" || mode == "include" );
@@ -131,33 +136,72 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            const auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
-            auto servicesImpl         = serviceFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
-                                                                                             "::arServices::IGrabber");
+            const auto srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+
+            // We select all simple grabbers. If they can't fill the data requirements, they will be eliminated later
+            // by the data test
+            auto srvImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                            "::arServices::IRGBDGrabber");
+
+            // If we chose RGB cameras, we add
+            if(m_type == CameraType::RGB)
+            {
+                auto rgbSrvImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                                   "::arServices::IGrabber");
+
+                std::move(rgbSrvImpl.begin(), rgbSrvImpl.end(), std::inserter(srvImpl, srvImpl.begin()));
+            }
+
             std::vector< std::string > availableExtensionsSelector;
 
-            for(const auto& srv : servicesImpl)
+            for(const auto& srvImpl : srvImpl)
             {
-                if(srv != "::videoTools::SGrabberProxy")
+                if(srvImpl != "::videoTools::SGrabberProxy")
                 {
+                    SLM_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
+                    const auto objectsType = srvFactory->getServiceObjects(srvImpl);
+                    const auto config      = this->getConfigTree();
+
+                    size_t numTL   = 0;
+                    auto inoutsCfg = config.equal_range("inout");
+                    for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+                    {
+                        ::fwServices::IService::ConfigType parameterCfg;
+
+                        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+                        SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
+                        const auto obj = this->getInOut< ::fwData::Object >(key);
+                        SLM_ASSERT("Object key '" + key + "' not found", obj);
+                        if(obj->getClassname() != objectsType[numTL])
+                        {
+                            // Skip this implementation if we don't have the same object type
+                            continue;
+                        }
+                        ++numTL;
+                    }
+                    if(numTL != config.count("inout"))
+                    {
+                        continue;
+                    }
+
                     if(m_selectedServices.empty())
                     {
-                        availableExtensionsSelector.push_back(srv);
+                        availableExtensionsSelector.push_back(srvImpl);
                     }
                     else
                     {
                         if(m_excludeOrInclude)
                         {
-                            if(m_selectedServices.find(srv) == m_selectedServices.end())
+                            if(m_selectedServices.find(srvImpl) == m_selectedServices.end())
                             {
-                                availableExtensionsSelector.push_back(srv);
+                                availableExtensionsSelector.push_back(srvImpl);
                             }
                         }
                         else
                         {
-                            if(m_selectedServices.find(srv) != m_selectedServices.end())
+                            if(m_selectedServices.find(srvImpl) != m_selectedServices.end())
                             {
-                                availableExtensionsSelector.push_back(srv);
+                                availableExtensionsSelector.push_back(srvImpl);
                             }
                         }
                     }
@@ -194,11 +238,25 @@ void SGrabberProxy::startCamera()
 
         m_service = this->registerService< ::arServices::IGrabber>(m_grabberImpl);
 
-        auto camera = this->getInput< ::arData::Camera >(s_CAMERA_KEY);
-        m_service->registerInput(camera, s_CAMERA_KEY);
+        auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+        if(camera)
+        {
+            m_service->registerInput(camera, s_CAMERA_INPUT);
+        }
 
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
-        m_service->registerInOut(frameTL, s_FRAMETL_KEY);
+        const auto config = this->getConfigTree();
+        auto inoutsCfg    = config.equal_range("inout");
+        for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+        {
+            const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+            SLM_ASSERT("Missing 'key' tag.", !key.empty());
+
+            auto frameTL = this->getInOut< ::arData::FrameTL >(key);
+            if(frameTL)
+            {
+                m_service->registerInOut(frameTL, key);
+            }
+        }
 
         ::fwRuntime::ConfigurationElement::csptr srvCfg;
         if ( m_serviceToConfig.find( m_grabberImpl ) != m_serviceToConfig.end() )
@@ -273,7 +331,7 @@ void SGrabberProxy::reconfigure()
         this->unregisterService(m_service);
         m_service.reset();
 
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
+        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
         frameTL->clearTimeline();
     }
     m_grabberImpl = "";

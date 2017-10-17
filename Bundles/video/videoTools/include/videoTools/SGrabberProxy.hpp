@@ -50,6 +50,7 @@ namespace videoTools
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <config>
+                <camera type="RGBD" />
                 <selection mode="include" />
                 <addSelection service="::videoQt::SFrameGrabber" />
                 <config id="cvGrabberConfig" service="::videoOpenCV::SFrameGrabber" />
@@ -61,6 +62,8 @@ namespace videoTools
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
+ *  - \b type
+ *      - \b
  *  - \b selection
  *      - \b mode (optional) : must be include (to add the selection to selector list ) or exclude (to exclude the
  * selection of the selector list).
@@ -130,6 +133,15 @@ private:
     /// SLOT : duration of the video has changed.
     void modifyDuration(int64_t position);
 
+    enum class CameraType : std::uint8_t
+    {
+        RGB,
+        RGBD,
+    };
+
+    /// Camera type (RGB, RGBD,...)
+    CameraType m_type { CameraType::RGB };
+
     /// grabber implementation chosen by the user
     std::string m_grabberImpl;
 
@@ -150,7 +162,6 @@ private:
 
     /// Configure if selected services are excluded (true) or included (false).
     bool m_excludeOrInclude { false };
-
 };
 
 } // namespace videoTools

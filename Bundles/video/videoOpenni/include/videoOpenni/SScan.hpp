@@ -11,7 +11,7 @@
 
 #include <arData/FrameTL.hpp>
 
-#include <arServices/IGrabber.hpp>
+#include <arServices/IRGBDGrabber.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -37,9 +37,9 @@ namespace videoOpenni
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type ="::videoOpenni::SScan" >
-        <inout key="frameTLDepth" uid="..." />
-        <inout key="frameTLColors" uid="..." />
-        <inout key="frameTLIR" uid="..." />
+        <inout key="depthTL" uid="..." />
+        <inout key="frameTL" uid="..." />
+        <inout key="irTL"    uid="..." />
         <inout key="frameTLPositions" uid="..." />
         <inout key="snapshotTLDepth" uid="..." />
         <inout key="snapshotTLColors" uid="..." />
@@ -47,19 +47,19 @@ namespace videoOpenni
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b frameTLDepth [::arData::FrameTL]: Frame timeline of the depth stream.
- * - \b frameTLColors [::arData::FrameTL]: Frame timeline of the color stream.
- * - \b frameTLIR [::arData::FrameTL]: Frame timeline of the infrared stream.
+ * - \b depthTL [::arData::FrameTL]: Frame timeline of the depth stream.
+ * - \b frameTL [::arData::FrameTL]: Frame timeline of the color stream.
+ * - \b irTL [::arData::FrameTL]: Frame timeline of the infrared stream.
  * - \b frameTLPositions [::arData::FrameTL]: Timeline storing a point cloud computed from the depth stream.
  * - \b snapshotTLDepth [::arData::FrameTL]: Frame timeline used to store snaphots of the color stream.
  * - \b snapshotTLColors [::arData::FrameTL]: Frame timeline used to store snaphots of the depth stream.
  * - \b snapshotTLIR [::arData::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
  */
-class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IGrabber
+class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IRGBDGrabber) );
 
     /// Constructor. Creates/Connects slots and creates a worker for the frame grabber slot.
     VIDEOOPENNI_API SScan() noexcept;
