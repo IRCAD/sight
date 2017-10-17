@@ -11,6 +11,9 @@
 #include <cvIO/FrameTL.hpp>
 #include <cvIO/Image.hpp>
 
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwDataTools/helper/ArrayGetter.hpp>

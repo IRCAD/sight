@@ -8,6 +8,8 @@
 
 #include <opencv2/core.hpp>
 
+#include <array>
+
 namespace cvIO
 {
 namespace ut
