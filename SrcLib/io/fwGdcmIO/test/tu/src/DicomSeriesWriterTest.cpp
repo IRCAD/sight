@@ -14,6 +14,7 @@
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+#include <fwMedDataCamp/Version.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/helper/compare.hpp>
@@ -39,6 +40,12 @@ namespace ut
 
 void DicomSeriesWriterTest::setUp()
 {
+    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
+    m_medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+
+    // HACK, we don't want the compiler to optimize 'm_medDataCampVersion' out.
+    CPPUNIT_ASSERT_EQUAL(::fwMedDataCamp::Version::s_CURRENT_VERSION, m_medDataCampVersion);
+
     // Set up context before running a test.
     ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::New();
     const ::boost::filesystem::path srcPath = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";

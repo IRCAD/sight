@@ -38,6 +38,9 @@ public:
     void writeReadAnonymiseTest();
     void writeReadDirArchiveTest();
 
+    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
+    int m_medDataCampVersion;
+
 private:
 
     /**
