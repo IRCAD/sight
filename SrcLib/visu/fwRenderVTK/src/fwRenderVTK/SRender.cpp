@@ -244,10 +244,7 @@ void SRender::configuring()
     }
     else // no offscreen rendering.
     {
-        if(m_flip)
-        {
-            SLM_WARN("Flip tag is set to 'true' but no off screen render image is used.")
-        }
+        SLM_WARN_IF("Flip tag is set to 'true' but no off screen render image is used.", m_flip);
         this->initialize();
     }
 
