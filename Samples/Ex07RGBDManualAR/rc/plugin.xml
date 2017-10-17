@@ -412,6 +412,10 @@
                 <inout key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
                 <config scaleFactor="1.0" noise="30" foregroundComponents="5" backgroundComponents="5"/>
+                <HSV>
+                    <lower>35,0,0</lower>
+                    <upper>360.5,255,255</upper>
+                </HSV>
             </service>
 
             <!-- signal/slot connection -->

@@ -40,6 +40,10 @@ namespace colourSegmentation
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
             <config scaleFactor="0.5" noise="30" foregroundComponents="5" backgroundComponents="5"/>
+            <HSV>
+                <lower>35,0,0</lower>
+                <upper>360.5,255,255</upper>
+            </HSV>
         </service>
    @endcode
  * @subsection Input Input
@@ -55,6 +59,8 @@ namespace colourSegmentation
  * learning method)
  * - \b foregroundComponents (optional)(default: 5): number of components learned in the foreground color model
  * - \b backgroundComponents (optional)(default: 5): number of components learned in the foreground color model
+ * - \b HSV (optional): values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
+ * allowing to compute automatically the mask during the foreground color model learning step
  */
 class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
 {
@@ -127,6 +133,12 @@ private:
 
     /// Opencv scale factor
     ::cv::Size m_maskDownsize;
+
+    /// Opencv HSV lower value to threshold the image used during foreground color model learning step
+    ::cv::Scalar m_lowerColor;
+
+    /// Opencv HSV upper value to threshold the image used during foreground color model learning step
+    ::cv::Scalar m_upperColor;
 
     /// Noise level to add during the foreground learning step
     double m_noise;

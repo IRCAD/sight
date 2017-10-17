@@ -21,6 +21,7 @@
 #include <fwServices/macros.hpp>
 
 #include <boost/make_unique.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace colourSegmentation
 {
@@ -62,19 +63,43 @@ void SColourImageMasking::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_scaleFactor = config.get<float>("scaleFactor", 1.0);
-    OSLM_FATAL_IF("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
-                  (m_scaleFactor < 0 || m_scaleFactor > 1));
-    m_noise = config.get<double>("noise", 0.0);
-    OSLM_FATAL_IF("Noise value must be >= 0. Current value:" << m_noise, m_noise < 0);
+    m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
+    m_noise                = config.get<double>("noise", 0.0);
     m_foregroundComponents = config.get<int>("foregroundComponents", 5);
-    OSLM_FATAL_IF(
-        "The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
-        m_foregroundComponents <= 0);
     m_backgroundComponents = config.get<int>("backgroundComponents", 5);
-    OSLM_FATAL_IF(
-        "The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
-        m_backgroundComponents <= 0);
+
+    OSLM_ASSERT("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
+                (m_scaleFactor > 0 && m_scaleFactor <= 1));
+    OSLM_ASSERT("The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
+                m_backgroundComponents > 0);
+    OSLM_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
+    OSLM_ASSERT("The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
+                m_foregroundComponents > 0);
+
+    m_lowerColor = ::cv::Scalar(0, 0, 0);
+    m_upperColor = ::cv::Scalar(255, 255, 255);
+
+    const ::fwServices::IService::ConfigType hsvConfig = this->getConfigTree().get_child("HSV");
+    std::string s_lowerValue                           = hsvConfig.get<std::string>("lower", "0,0,0");
+    std::string s_upperValue                           = hsvConfig.get<std::string>("upper", "255,255,255");
+
+    const ::boost::char_separator<char> sep {",", ";"};
+
+    const ::boost::tokenizer<boost::char_separator<char> > tokLower {s_lowerValue, sep};
+    int i = 0;
+    for(const auto& it : tokLower)
+    {
+        SLM_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
+        m_lowerColor[i++] = ::boost::lexical_cast< double >(it);
+    }
+
+    const ::boost::tokenizer<boost::char_separator<char> > tokUpper {s_upperValue, sep};
+    i = 0;
+    for(const auto& it : tokUpper)
+    {
+        SLM_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
+        m_upperColor[i++] = ::boost::lexical_cast< double >(it);
+    }
 }
 
 // ------------------------------------------------------------------------------
@@ -239,13 +264,9 @@ void SColourImageMasking::setForeground()
     ::cv::cvtColor(videoCV, videoBGR, CV_RGBA2BGR);
     ::cv::cvtColor(videoBGR, videoHSV, CV_BGR2HSV);
 
-    // Define a range of color in HSV
-    ::cv::Scalar lowerColor(35, 0, 0);
-    ::cv::Scalar upperColor(360, 255, 255);
-
     // Get the mask to learn the foreground model
     ::cv::Mat foregroundMask;
-    ::cv::inRange(videoHSV, lowerColor, upperColor, foregroundMask);
+    ::cv::inRange(videoHSV, m_lowerColor, m_upperColor, foregroundMask);
 
     // Remove small objects by performing an opening
     ::cv::Mat openForegroundMask;
