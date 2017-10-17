@@ -29,6 +29,10 @@ namespace factory
 {
 class R2VBRenderable;
 }
+namespace vr
+{
+class GridProxyGeometryFactory;
+}
 }
 
 namespace fwRenderOgre
@@ -121,6 +125,7 @@ private:
     static ::Ogre::OverlaySystem* s_overlaySystem;
 
     static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;
+    static ::fwRenderOgre::vr::GridProxyGeometryFactory* s_gridProxyGeometryFactory;
 };
 
 } // namespace fwRenderOgre

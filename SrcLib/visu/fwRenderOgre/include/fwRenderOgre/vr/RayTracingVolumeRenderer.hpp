@@ -11,6 +11,7 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
+#include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
@@ -226,31 +227,16 @@ private:
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;
 
-    /// Creates and updates the proxy geometry.
-    R2VBRenderable* m_proxyGeometryGenerator;
-
-    /// Entity holding the source geometry used for proxy geometry rendering.
-    ::Ogre::Entity* m_r2vbSource;
-
-    /// Grid defining volume bricks.
-    ::Ogre::TexturePtr m_gridTexture;
+    ///
+    ::fwRenderOgre::vr::GridProxyGeometry* m_proxyGeometry;
 
     /// Ray entry and exit points for each pixel of each viewpoint.
     std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
 
     std::vector< ::Ogre::TextureUnitState* > m_rayTracedTexUnitStates;
 
-    /// Render operation used to compute the brick grid.
-    ::Ogre::RenderOperation m_gridRenderOp;
-
     /// Image dimensions.
     ::fwData::Image::SizeType m_imageSize;
-
-    /// Brick Grid dimensions.
-    std::array< int, 3 > m_gridSize;
-
-    /// Size of a volume brick.
-    std::array< int, 3 > m_brickSize;
 
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
     ::fwRenderOgre::Layer::StereoModeType m_stereoMode;

@@ -30,12 +30,8 @@
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreMesh.h>
-#include <OGRE/OgreMeshManager.h>
-#include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreRoot.h>
-#include <OGRE/OgreSubMesh.h>
 #include <OGRE/OgreTexture.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
@@ -231,6 +227,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
     m_maskTexture(maskTexture),
     m_entryPointGeometry(nullptr),
+    m_proxyGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
     m_stereoMode(stereoMode),
     m_ambientOcclusion(ambientOcclusion),
@@ -265,9 +262,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_fullScreenQuad(new ::Ogre::Rectangle2D())
 {
     m_fullScreenQuad->setCorners(-1, 1, 1, -1);
-
-    m_gridSize  = {{ 2, 2, 2 }};
-    m_brickSize = {{ 8, 8, 8 }};
 
     const unsigned int numViewPoints = m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
                                        m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
@@ -368,28 +362,17 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     delete m_cameraListener;
     m_cameraListener = nullptr;
 
-    if(m_r2vbSource)
-    {
-        auto mesh = m_r2vbSource->getMesh();
-        m_sceneManager->destroyEntity(m_r2vbSource);
-        m_r2vbSource = nullptr;
-        ::Ogre::MeshManager::getSingleton().remove(mesh->getHandle());
-    }
     m_volumeSceneNode->detachObject(m_entryPointGeometry);
-    m_volumeSceneNode->detachObject(m_proxyGeometryGenerator);
+    m_volumeSceneNode->detachObject(m_proxyGeometry);
+
     m_sceneManager->destroyManualObject(m_entryPointGeometry);
-    m_sceneManager->destroyMovableObject(m_proxyGeometryGenerator);
+    m_sceneManager->destroyMovableObject(m_proxyGeometry);
 
     for(auto& texture : m_entryPointsTextures)
     {
         ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
     }
     m_entryPointsTextures.clear();
-
-    if(!m_gridTexture.isNull())
-    {
-        ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -410,21 +393,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
     {
         m_imageSize = newSize;
 
-        for(size_t i = 0; i < 3; ++i)
-        {
-            m_gridSize[i] =
-                static_cast<int>(m_imageSize[i]) / m_brickSize[i] +
-                (static_cast<int>(m_imageSize[i]) % m_brickSize[i] != 0);
-        }
-
-        if(!m_gridTexture.isNull())
-        {
-            ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
-            m_gridTexture.setNull();
-        }
-
-        this->createGridTexture();
-        this->tfUpdate(tf);
+        m_proxyGeometry->updateGridSize();
     }
 
     if(m_preIntegratedRendering)
@@ -442,43 +411,11 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
+void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr /*tf*/)
 {
     FW_PROFILE("TF Update")
     {
-        // Compute grid
-        {
-            size_t count = m_gridRenderOp.vertexData->vertexCount;
-            m_gridRenderOp.vertexData->vertexCount = 4;
-            m_gridRenderOp.operationType           = ::Ogre::RenderOperation::OT_TRIANGLE_STRIP;
-
-            for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
-            {
-                ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
-
-                rt->getViewport(0)->clear();
-
-                ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
-
-                ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
-                ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
-
-                params->setNamedConstant("u_slice", static_cast<int>(i));
-
-                m_sceneManager->manualRender(
-                    &m_gridRenderOp,
-                    gridPass,
-                    rt->getViewport(0),
-                    ::Ogre::Matrix4::IDENTITY,
-                    ::Ogre::Matrix4::IDENTITY,
-                    ::Ogre::Matrix4::IDENTITY);
-            }
-
-            m_gridRenderOp.vertexData->vertexCount = count;
-            m_gridRenderOp.operationType           = ::Ogre::RenderOperation::OT_POINT_LIST;
-        }
-
-        m_proxyGeometryGenerator->manualUpdate();
+        m_proxyGeometry->computeGrid();
     }
 }
 
@@ -610,30 +547,6 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 {
     IVolumeRenderer::clipImage(clippingBox);
 
-    const ::Ogre::AxisAlignedBox maxBoxSize(::Ogre::Vector3::ZERO, ::Ogre::Vector3(1.f, 1.f, 1.f));
-    const ::Ogre::AxisAlignedBox realClippingBox = maxBoxSize.intersection(clippingBox);
-
-    ::Ogre::MaterialPtr geomMtl =
-        ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
-    ::Ogre::GpuProgramParametersSharedPtr geomParams =
-        geomMtl->getTechnique(0)->getPass(0)->getGeometryProgramParameters();
-
-    if(realClippingBox.isFinite())
-    {
-        geomParams->setNamedConstant("u_boundingBoxMin", realClippingBox.getMinimum());
-        geomParams->setNamedConstant("u_boundingBoxMax", realClippingBox.getMaximum());
-    }
-    else if(realClippingBox.isNull())
-    {
-        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(NAN));
-        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(NAN));
-    }
-    else // Infinite box
-    {
-        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
-        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));
-    }
-
     m_entryPointGeometry->beginUpdate(0);
     {
         for(const auto& face : s_cubeFaces)
@@ -650,7 +563,7 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     }
     m_entryPointGeometry->end();
 
-    m_proxyGeometryGenerator->manualUpdate();
+    m_proxyGeometry->clipGrid(clippingBox);
 }
 
 //-----------------------------------------------------------------------------
@@ -975,91 +888,28 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
-    // Create R2VB object used to generate proxy geometry
-    {
-        ::Ogre::MeshPtr gridMesh = ::Ogre::MeshManager::getSingleton().createManual(
-            m_parentId + "_gridMesh",
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME
-            );
+    m_proxyGeometry = ::fwRenderOgre::vr::GridProxyGeometry::New(this->m_parentId + "_GridProxyGeometry",
+                                                                 m_sceneManager, m_3DOgreTexture,
+                                                                 m_gpuTF, "RayEntryPoints");
+    m_volumeSceneNode->attachObject(m_proxyGeometry);
 
-        ::Ogre::SubMesh* subMesh = gridMesh->createSubMesh();
-
-        const int nbVtx = m_gridSize[0] * m_gridSize[1] * m_gridSize[2];
-
-        subMesh->useSharedVertices = false;
-        subMesh->operationType     = ::Ogre::RenderOperation::OT_POINT_LIST;
-
-        subMesh->vertexData              = new ::Ogre::VertexData();
-        subMesh->vertexData->vertexStart = 0;
-        subMesh->vertexData->vertexCount = static_cast<size_t>(nbVtx);
-
-        ::Ogre::VertexDeclaration* decl = subMesh->vertexData->vertexDeclaration;
-
-        decl->addElement(0, 0, ::Ogre::VET_INT1, ::Ogre::VES_POSITION);
-
-        gridMesh->_setBounds(::Ogre::AxisAlignedBox::BOX_INFINITE);
-        gridMesh->_setBoundingSphereRadius(1000);
-        gridMesh->load();
-
-        m_r2vbSource = m_sceneManager->createEntity(gridMesh);
-
-        while(!m_r2vbSource->isInitialised())
-        {
-            m_r2vbSource->_initialise();
-        }
-
-        m_r2vbSource->setVisible(true);
-
-        m_proxyGeometryGenerator = R2VBRenderable::New(
-            m_parentId + "_proxyBricks",
-            m_r2vbSource->getSubEntity(0),
-            m_sceneManager,
-            ::fwData::Mesh::POINT,
-            "RayEntryPoints");
-
-        m_cameraListener = new CameraListener(this);
-        m_camera->addListener(m_cameraListener);
-
-        m_r2vbSource->getSubEntity(0)->getRenderOperation(m_gridRenderOp);
-
-        m_volumeSceneNode->attachObject(m_proxyGeometryGenerator);
-    }
-
-    // Create grid texture and set parameters in it's associated shader.
-    {
-        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
-
-        ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::TextureUnitState* tex3DState = gridPass->getTextureUnitState("image");
-        ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
-
-        SLM_ASSERT("'image' texture unit is not found", tex3DState);
-        SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
-
-        tex3DState->setTexture(m_3DOgreTexture);
-        texTFState->setTexture(m_gpuTF.getTexture());
-
-        this->createGridTexture();
-    }
-
-    // Render geometry.
-    m_proxyGeometryGenerator->manualUpdate();
+    m_cameraListener = new CameraListener(this);
+    m_camera->addListener(m_cameraListener);
 }
 
 //-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
-    m_proxyGeometryGenerator->setVisible(false);
+    m_proxyGeometry->setVisible(false);
 
     ::Ogre::RenderOperation renderOp;
-    m_proxyGeometryGenerator->getRenderOperation(renderOp);
+    m_proxyGeometry->getRenderOperation(renderOp);
     m_entryPointGeometry->setVisible(true);
     m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 
     ::Ogre::Matrix4 worldMat;
-    m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
+    m_proxyGeometry->getWorldTransforms(&worldMat);
 
     float eyeAngle = 0.f;
     float angle    = 0.f;
@@ -1102,12 +952,12 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
                                    ::Ogre::SOP_KEEP,
                                    ::Ogre::SOP_REPLACE);
 
-        ::Ogre::Pass* pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFacesMax");
+        ::Ogre::Pass* pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("BackFacesMax");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
         // SECOND STEP - Back Faces: find the closest back faces and initialize the entry points with their depths.
         rs->setStencilCheckEnabled(false);
-        pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFaces");
+        pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("BackFaces");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
         // THIRD STEP - Front Faces: update the entry points depths with the closest front faces occluding closest back
@@ -1119,7 +969,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
                                    ::Ogre::SOP_KEEP,
                                    ::Ogre::SOP_REPLACE);
 
-        pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("FrontFaces");
+        pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("FrontFaces");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
         // FOURTH STEP - Near Plane: update the entry points depths with the near plane depth when when it is inside a
@@ -1129,7 +979,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         rs->setStencilBufferParams(::Ogre::CMPF_EQUAL, 0x1, 0xFFFFFFFF);
 
         ::Ogre::Matrix4 identity;
-        pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("NearPlane");
+        pass = m_proxyGeometry->getMaterial()->getTechnique(0)->getPass("NearPlane");
 
         m_sceneManager->manualRender(&fsRenderOp, pass, entryPtsVp, identity, m_camera->getViewMatrix(), projMat);
 
@@ -1628,96 +1478,6 @@ void RayTracingVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrectio
     {
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         this->getLayer()->requestRender();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::createGridTexture()
-{
-    // Create grid texture and set initialize render targets.
-    {
-        m_gridTexture = ::Ogre::TextureManager::getSingleton().createManual(
-            m_parentId + "_gridTexture",
-            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            ::Ogre::TEX_TYPE_3D,
-            static_cast<unsigned int>(m_gridSize[0]),
-            static_cast<unsigned int>(m_gridSize[1]),
-            static_cast<unsigned int>(m_gridSize[2]),
-            1,
-            ::Ogre::PF_R8,
-            ::Ogre::TU_RENDERTARGET
-            );
-
-        for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++i)
-        {
-            ::Ogre::RenderTexture* rt = m_gridTexture->getBuffer()->getRenderTarget(i);
-            rt->addViewport(m_camera);
-        }
-    }
-
-    // Update R2VB source geometry.
-    {
-        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingleton().getByName(m_parentId + "_gridMesh");
-
-        ::Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
-
-        meshVtxData->vertexCount = static_cast<size_t>(m_gridSize[0] * m_gridSize[1] * m_gridSize[2]);
-
-        ::Ogre::HardwareVertexBufferSharedPtr vtxBuffer =
-            ::Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
-                ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
-                meshVtxData->vertexCount,
-                ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-
-        for(size_t i = 0; i < meshVtxData->vertexCount; ++i)
-        {
-            vtxBuffer->writeData(
-                i * ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
-                ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
-                &i,
-                false);
-        }
-
-        meshVtxData->vertexBufferBinding->setBinding(0, vtxBuffer);
-
-        r2vbSrcMesh->load();
-
-        m_r2vbSource->getSubEntity(0)->getRenderOperation(m_gridRenderOp);
-
-        m_proxyGeometryGenerator->setOutputSettings(meshVtxData->vertexCount * 36, false, false, "VolumeBricks");
-    }
-
-    // Set shader parameters.
-    {
-        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
-
-        ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
-
-        gridGeneratorParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
-        gridGeneratorParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
-
-        ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
-        ::Ogre::Pass* geomGenerationPass     = geomGeneratorMtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::GpuProgramParametersSharedPtr geomGeneratorVtxParams = geomGenerationPass->getVertexProgramParameters();
-        geomGeneratorVtxParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
-
-        ::Ogre::GpuProgramParametersSharedPtr geomGeneratorGeomParams =
-            geomGenerationPass->getGeometryProgramParameters();
-
-        // Cast size_t to int.
-        const std::vector<int> imageSize(m_imageSize.begin(), m_imageSize.end());
-
-        geomGeneratorGeomParams->setNamedConstant("u_imageResolution", imageSize.data(), 3, 1);
-        geomGeneratorGeomParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
-
-        ::Ogre::TextureUnitState* gridTexState = geomGenerationPass->getTextureUnitState("gridVolume");
-
-        SLM_ASSERT("'gridVolume' texture unit is not found", gridTexState);
-        gridTexState->setTexture(m_gridTexture);
     }
 }
 

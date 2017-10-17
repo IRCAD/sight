@@ -8,6 +8,7 @@
 
 #include "fwRenderOgre/compositor/MaterialMgrListener.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -40,8 +41,9 @@ namespace fwRenderOgre
 
 static std::set<std::string> s_resourcesPath;
 
-::Ogre::OverlaySystem* Utils::s_overlaySystem                           = nullptr;
-::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory = nullptr;
+::Ogre::OverlaySystem* Utils::s_overlaySystem                                   = nullptr;
+::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
+::fwRenderOgre::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -126,9 +128,9 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
         renderOrder.push_back("OpenGL");
         //renderOrder.push_back("OpenGL 3+");
-        for (::Ogre::StringVector::iterator iter = renderOrder.begin(); iter != renderOrder.end(); iter++)
+        for (::Ogre::StringVector::iterator iter = renderOrder.begin(); iter != renderOrder.end(); ++iter)
         {
-            for (::Ogre::RenderSystemList::const_iterator it = rsList.begin(); it != rsList.end(); it++)
+            for (::Ogre::RenderSystemList::const_iterator it = rsList.begin(); it != rsList.end(); ++it)
             {
                 if ((*it)->getName().find(*iter) != Ogre::String::npos)
                 {
@@ -169,6 +171,10 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
         s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
 
+        // Register factory for GridProxyGeometry objects
+        s_gridProxyGeometryFactory = OGRE_NEW ::fwRenderOgre::vr::GridProxyGeometryFactory();
+        ::Ogre::Root::getSingleton().addMovableObjectFactory(s_gridProxyGeometryFactory);
+
         // Add the material manager listener that allows us to generate OIT techniques
         ::Ogre::MaterialManager::getSingleton().addListener(new ::fwRenderOgre::compositor::MaterialMgrListener());
     }
@@ -180,6 +186,9 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
 void Utils::destroyOgreRoot()
 {
+    ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_gridProxyGeometryFactory);
+    delete s_gridProxyGeometryFactory;
+
     ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_R2VBRenderableFactory);
     delete s_R2VBRenderableFactory;
 
@@ -199,12 +208,12 @@ void Utils::destroyOgreRoot()
     SLM_ASSERT("Image is null", imageFw);
 
     ::Ogre::Image imageOgre;
-    uint32_t width = 1, height = 1, depth = 1;
 
     // If image is flipped, try to switch image
     ::fwData::Image::SizeType imageSize = imageFw->getSize();
 
-    width = static_cast<uint32_t>(imageSize[0]);
+    uint32_t width  = static_cast<uint32_t>(imageSize[0]);
+    uint32_t height = 1, depth = 1;
 
     if(imageSize.size() >= 2)
     {

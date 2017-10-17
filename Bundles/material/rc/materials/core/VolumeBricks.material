@@ -40,7 +40,6 @@ fragment_program VolumeBricksGrid_FP glsl
         param_named u_slice int 0
         param_named u_image int 0
         param_named u_tfTexture int 1
-        param_named u_sampleDistance float 1.0
     }
 }
 
