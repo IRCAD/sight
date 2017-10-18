@@ -106,14 +106,14 @@ protected:
     /// - Comma separated list of preprocessor defines to use in vertex shaders.
     /// - Comma separated list of preprocessor defines to use in fragment shaders.
     /// - Hash allowing to identify the material
-    FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const;
+    FWRENDEROGRE_API virtual std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const override;
 
     /// Sets all texture units needed by the material during the ray casting pass.
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
-                                                                const std::string& _fpPPDefines) const;
+                                                                const std::string& _fpPPDefines) const override;
 
     /// When using AutoStereo compositor, initialize the raytracing material.
-    FWRENDEROGRE_API virtual void createRayTracingMaterial();
+    FWRENDEROGRE_API virtual void createRayTracingMaterial() override;
 
 private:
 
