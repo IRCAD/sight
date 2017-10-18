@@ -15,6 +15,7 @@
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
+#include <fwRenderOgre/vr/ImportanceDrivenVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/SliceVolumeRenderer.hpp>
 
@@ -315,16 +316,16 @@ void SVolumeRender::starting()
     {
         const auto stereoMode = layer->getStereoMode();
 
-        m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
-                                                                            layer,
-                                                                            m_volumeSceneNode,
-                                                                            m_3DOgreTexture,
-                                                                            m_maskTexture,
-                                                                            m_gpuTF,
-                                                                            m_preIntegrationTable,
-                                                                            stereoMode,
-                                                                            m_ambientOcclusion,
-                                                                            m_colorBleeding);
+        m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
+                                                                                  layer,
+                                                                                  m_volumeSceneNode,
+                                                                                  m_3DOgreTexture,
+                                                                                  m_maskTexture,
+                                                                                  m_gpuTF,
+                                                                                  m_preIntegrationTable,
+                                                                                  stereoMode,
+                                                                                  m_ambientOcclusion,
+                                                                                  m_colorBleeding);
 
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
@@ -777,37 +778,43 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     }
     else if(key == "idvrCSG")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCountersinkGeometry(val);
     }
     else if(key == "idvrCSGBorder")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGBorder(val);
     }
     else if(key == "idvrCSGModulation")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGModulation(val);
     }
     else if(key == "idvrCSGOpacityDecrease")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGOpacityDecrease(val);
     }
     else if(key == "idvrCSGDepthLines")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRDepthLines(val);
     }
     else if(key == "idvrCSGDisableContext")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCSGDisableContext(val);
     }
@@ -861,49 +868,57 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     }
     else if(key == "idvrCSGSlope")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCountersinkSlope(val);
     }
     else if(key == "idvrCSGBlurWeight")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBlurWeight(val);
     }
     else if(key == "idvrCSGBorderThickness")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderThickness(val);
     }
     else if(key == "idvrCSGDepthLinesThreshold")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGDepthLinesThreshold(val);
     }
     else if(key == "idvrCSGModulationFactor")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGModulationFactor(val);
     }
     else if(key == "idvrCSGOpacityDecreaseFactor")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
     }
     else if(key == "idvrVPImCAlphaCorrection")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRVPImCAlphaCorrection(val);
     }
     else if(key == "idvrAImCAlphaCorrection")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRAImCAlphaCorrection(val);
     }
@@ -915,50 +930,52 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
 {
     if(key == "idvrMethod")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRMethod(val);
         this->requestRender();
     }
     else if(key == "idvrCSGModulationMethod")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
 
         if(val == "Average_grayscale")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::AVERAGE_GRAYSCALE);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::AVERAGE_GRAYSCALE);
         }
         else if(val == "Lightness_grayscale")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE);
         }
         else if(val == "Luminosity_grayscale")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
         }
         else if(val == "Brightness_increase")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
         }
         else if(val == "Saturation_increase")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
         }
         else if(val == "SaturationBrightness_increase")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
         }
         else if(val == "Saturation_decrease")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
+                ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
         }
     }
     else if(key == "stereoMode")
@@ -987,7 +1004,8 @@ void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::st
 {
     if(key == "idvrCSGBorderColor")
     {
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        auto rayCastVolumeRenderer =
+            dynamic_cast< ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderColor(color);
     }
