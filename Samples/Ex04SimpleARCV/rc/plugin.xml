@@ -246,7 +246,7 @@
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
                     <param type="enum" name="Detection Method" key="method" defaultValue="ADPT_THRES" values="ADPT_THRES,FIXED_THRES,CANNY" />
                     <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
-                    <param type="doundistorduble" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
+                    <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
                     <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
                     <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
                     <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
