@@ -94,6 +94,7 @@ class IVtkRenderWindowInteractorManager;
  *   - \b tolerance (optional, by default 0.0): the picker tolerance specified as fraction of rendering window size.
  * - \b adaptor
  *   - \b uid (mandatory): the uid of the adaptor
+ * - \b flip (optional): tag used to flip the off screen image when set to true.
  */
 class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
