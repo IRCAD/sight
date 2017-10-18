@@ -457,7 +457,7 @@
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
-            <service uid="inverseMatrix" type="::maths::SConcatenateMatrices">
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="matrix" autoConnect="yes" inverse="true" />
                 </in>
@@ -558,7 +558,7 @@
             <start uid="reprojectionErrorLeft" />
             <start uid="reprojectionErrorRight" />
 
-            <start uid="inverseMatrix" />
+            <start uid="matrixReverser" />
             <start uid="concatenate" />
             <start uid="hideAxis" />
 

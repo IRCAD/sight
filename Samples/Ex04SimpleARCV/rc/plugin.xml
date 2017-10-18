@@ -338,10 +338,9 @@
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
-            <service uid="concatenate" type="::maths::SConcatenateMatrices">
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="matrix" autoConnect="yes" inverse="true" />
-                    <key uid="identity" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
@@ -407,7 +406,7 @@
             <start uid="CameraSelector" />
             <start uid="Extractor" />
             <start uid="registration" />
-            <start uid="concatenate" />
+            <start uid="matrixReverser" />
             <start uid="genericScene" />
             <start uid="error" />
             <start uid="hideAxis" />
