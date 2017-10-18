@@ -252,12 +252,21 @@ void SGrabberProxy::startCamera()
 
             if(availableExtensionsSelector.size() > 1)
             {
+                std::map<std::string, std::string> descToExtension;
+                std::vector<std::string> descriptions;
+                for(const auto& extension : availableExtensionsSelector)
+                {
+                    const auto desc = srvFactory->getServiceDescription(extension);
+                    descToExtension[desc] = extension;
+                    descriptions.push_back(desc);
+                }
                 ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
                 selector->setTitle("Choose a video grabber");
-                selector->setSelections(availableExtensionsSelector);
+                selector->setSelections(descriptions);
 
-                m_grabberImpl = selector->show();
+                const auto selectedDesc = selector->show();
+                m_grabberImpl = descToExtension[selectedDesc];
             }
             else if( availableExtensionsSelector.size() == 1)
             {
