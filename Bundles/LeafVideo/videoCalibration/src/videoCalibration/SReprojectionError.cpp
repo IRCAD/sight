@@ -208,7 +208,7 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
             if(m_display) //draw reprojected points
             {
-                auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INPUT);
+                auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
                 SLM_ASSERT("The input "+ s_FRAMETL_INPUT +" is not valid.", frameTL);
 
                 CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
