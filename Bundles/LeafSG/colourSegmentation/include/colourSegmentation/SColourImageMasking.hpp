@@ -46,12 +46,15 @@ namespace colourSegmentation
             </HSV>
         </service>
    @endcode
- * @subsection Input Input
- * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
+
+ * @subsection InOut InOut:
  * - \b mask [::fwData::Image] : mask image to perform image segmentation in
  * @subsection In-Out In-Out
  * - \b videoMaskTL [::arData::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of the
  * mask = 0)
+ *
+ * @subsection Input Input
+ * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
  *
  * @subsection Configuration Configuration
  * - \b scaleFactor (optional)(default: 1.0): factor to scale the image to perform image masking on
