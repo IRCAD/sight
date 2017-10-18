@@ -19,6 +19,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <io/ioTypes.hpp>
+
 #include <opencv2/core.hpp>
 
 #include <sstream>
@@ -105,7 +107,7 @@ void SOpenCVReader::stopping()
 void SOpenCVReader::updating()
 {
 
-    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("target");
+    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >(::io::s_DATA_KEY);
 
     bool use_dialog = false;
     //use dialog only if no file was configured
@@ -190,6 +192,7 @@ void SOpenCVReader::updating()
                                       dist.at<double>(4));
 
         cam->setScale(scale);
+        cam->setIsCalibrated(true);
 
         ::fwData::mt::ObjectWriteLock writeLock(camSeries);
         camSeries->addCamera(cam);

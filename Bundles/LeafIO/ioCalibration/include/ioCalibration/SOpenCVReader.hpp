@@ -17,8 +17,8 @@ namespace ioCalibration
  * @brief SOpenCVReader class read a xml/yaml file using opencv and fill a arData::CameraSeries.
  *
  * @code{.xml}
-       <service uid="..." type="::ioCalibration::SExportCalibrationXml" >
-           <inout key="target" uid="..." />
+       <service uid="..." type="::ioCalibration::SOpenCVReader" >
+           <inout key="data" uid="..." />
        </service>
  * @endcode
  */
@@ -36,7 +36,6 @@ public:
 protected:
 
     /// configure with IHM
-    ///
     IOCALIBRATION_API void configureWithIHM() override;
 
     /**
