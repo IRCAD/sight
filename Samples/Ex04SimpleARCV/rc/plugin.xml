@@ -6,6 +6,7 @@
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
     <requirement id="preferences" />
+    <requirement id="visuVTKARAdaptor" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04SimpleARCVConfig</id>
         <config>
@@ -15,10 +16,13 @@
             <object uid="frameTL" type="::arData::FrameTL" />
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
+            <object uid="videoImageCorrected" type="::fwData::Image" />
+
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
+            <object uid="plane" type="::fwData::Mesh" />
 
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -168,9 +172,16 @@
                 </slots>
             </service>
 
+            <!-- hide axis adaptor until a marker is found -->
+            <service uid="hideAxis" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>axis/updateVisibility</slot>
+                </slots>
+            </service>
+
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-                <inout key="target" uid="cameraSeries" />
+                <inout key="data" uid="cameraSeries" />
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
@@ -192,7 +203,6 @@
                     <key uid="camera" /> <!-- destination -->
                 </out>
             </service>
-
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -202,32 +212,28 @@
                     <renderer id="default" layer="1" background="0.0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
-                    <adaptor uid="registrationTransform" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
+                    <adaptor uid="mesh" />
                 </scene>
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="videoImage" />
+                <in key="camera" uid="camera" />
                 <config renderer="video" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
-            </service>
-
-            <service uid="registrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="inverseMat" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
+                <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
             <service uid="axis" type="::visuVTKAdaptor::SAxis">
-                <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50" />
+                <config renderer="default" transform="id" autoresetcamera="no" length="30" />
             </service>
 
             <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="inverseMat" />
                 <in key="camera" uid="camera" />
                 <config renderer="default" />
             </service>
@@ -240,7 +246,7 @@
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
                     <param type="enum" name="Detection Method" key="method" defaultValue="ADPT_THRES" values="ADPT_THRES,FIXED_THRES,CANNY" />
                     <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
-                    <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
+                    <param type="doundistorduble" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
                     <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
                     <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
                     <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
@@ -281,8 +287,8 @@
                 </inout>
                 <config>
                     <track>
+                        <!-- list of tag's id -->
                         <marker id="101" />
-                        <!-- list of id -->
                     </track>
                     <threshold>
                         <method>ADPT_THRES</method>
@@ -337,11 +343,12 @@
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="concatenate" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
-                    <key uid="matrix" autoConnect="yes" inverse="false" />
+                    <key uid="matrix" autoConnect="yes" inverse="true" />
                     <key uid="identity" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
+
 
             <!-- signal/slot connection -->
             <connect>
@@ -399,21 +406,23 @@
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
             <start uid="tracker" />
-            <start uid="error" />
             <start uid="CalibrationReader" />
             <start uid="CameraSelector" />
             <start uid="Extractor" />
             <start uid="registration" />
             <start uid="concatenate" />
             <start uid="genericScene" />
+            <start uid="error" />
+            <start uid="hideAxis" />
+
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
-            <start uid="registrationTransform" />
             <start uid="axis" />
             <start uid="cameraAdpt" />
 
             <update uid="actionHide" />
+            <update uid="hideAxis" />
         </config>
     </extension>
 </plugin>
