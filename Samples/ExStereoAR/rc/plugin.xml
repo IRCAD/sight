@@ -422,7 +422,7 @@
                 <in key="matrixTL"   uid="matrixTL" autoConnect="yes" />
                 <in key="camera"     uid="camera1" />
                 <in key="markerTL"   uid="tagTL1" />
-                <in key="frameTL" uid="frameTL1" />
+                <inout key="frameTL" uid="frameTL1" />
                 <patternWidth>60</patternWidth>
             </service>
 
@@ -431,7 +431,7 @@
                 <in key="extrinsic"  uid="extrinsic" />
                 <in key="camera"     uid="camera2" />
                 <in key="markerTL"   uid="tagTL2" />
-                <in key="frameTL" uid="frameTL2" />
+                <inout key="frameTL" uid="frameTL2" />
                 <patternWidth>60</patternWidth>
             </service>
 

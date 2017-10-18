@@ -16,13 +16,11 @@
             <object uid="frameTL" type="::arData::FrameTL" />
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
-            <object uid="videoImageCorrected" type="::fwData::Image" />
 
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
-            <object uid="plane" type="::fwData::Mesh" />
 
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -214,7 +212,6 @@
                     <adaptor uid="interactorStyle" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
-                    <adaptor uid="mesh" />
                 </scene>
             </service>
 
@@ -316,7 +313,7 @@
             <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
                 <in key="matrixTL" uid="matrixTL" autoConnect="yes" /> <!-- automaticaly updates when matrixTL is modified -->
                 <in key="markerTL" uid="tagTL" />
-                <in key="frameTL" uid="frameTL" />
+                <inout key="frameTL" uid="frameTL" />
                 <in key="camera" uid="camera" />
                 <in key="extrinsic" uid="matrix" />
                 <patternWidth>60</patternWidth>
