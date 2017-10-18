@@ -105,7 +105,7 @@ void SOpenCVWriter::stopping()
 void SOpenCVWriter::updating()
 {
 
-    ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >("target");
+    ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >(::io::s_DATA_KEY);
     SLM_ASSERT("CameraSeries is null", camSeries);
 
     bool use_dialog = false;
@@ -142,9 +142,9 @@ void SOpenCVWriter::updating()
         cameraMatrices[i].at<double>(0, 2) = cameras[i]->getCx();
         cameraMatrices[i].at<double>(1, 2) = cameras[i]->getCy();
 
-        for(int c = 0; c < 5; ++c)
+        for(std::uint8_t c = 0; c < 5; ++c)
         {
-            cameraDistCoefs[i].at<double>(c, 0) = cameras[i]->getDistortionCoefficient()[static_cast<size_t>(c)];
+            cameraDistCoefs[i].at<double>(c, 0) = cameras[i]->getDistortionCoefficient()[c];
         }
     }
 
@@ -169,12 +169,11 @@ void SOpenCVWriter::updating()
         extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
         if(extrinsicMatrix)
         {
-            for(int i = 0; i < 4; ++i)
+            for(std::uint8_t i = 0; i < 4; ++i)
             {
-                for(int j = 0; j < 4; ++j)
+                for(std::uint8_t j = 0; j < 4; ++j)
                 {
-                    extrinsic.at< double >(i, j) = extrinsicMatrix->getCoefficient(static_cast<size_t>(i),
-                                                                                   static_cast<size_t>(j));
+                    extrinsic.at< double >(i, j) = extrinsicMatrix->getCoefficient(i, j);
                 }
             }
             fs << "extrinsic"<< extrinsic;

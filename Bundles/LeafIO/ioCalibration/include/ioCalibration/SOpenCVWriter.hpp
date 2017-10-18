@@ -18,7 +18,7 @@ namespace ioCalibration
  *
  * @code{.xml}
        <service uid="..." type="::ioCalibration::SExportCalibrationXml" >
-           <in key="target" uid="..." />
+           <in key="data" uid="..." />
        </service>
  * @endcode
  *
@@ -44,6 +44,7 @@ namespace ioCalibration
               -5.2791699999999997e-02 -1.7561800000000000e-01
               -5.7609100000000004e-04 -2.5522000000000001e-03
               5.0100999999999996e-01</data></distortion>
+              <scale>1</scale>
             <extrinsic>
             </extrinsic>
         </camera>
