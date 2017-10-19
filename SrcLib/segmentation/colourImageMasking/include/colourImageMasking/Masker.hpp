@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,11 +15,32 @@
 namespace colourImageMasking
 {
 
-enum ColSpace {RGB, HSv, lAB, yCrCb}; /// Define supported color spaces
-enum DetectionMode {fgLL, bgLL, LLRatio}; /// Define supported image masking mode
+/**
+ * @brief Define supported color spaces
+ */
+enum ColSpace
+{
+    BGR,
+    HSv,
+    lAB,
+    yCrCb
+};
 
 /**
- * @brief Class performing OpenCV
+ * @brief Define supported image masking mode
+ */
+enum DetectionMode
+{
+    fgLL, /// Using only a foreground likelihood color model
+    bgLL, /// Using only a background likelihood color model
+    LLRatio /// Using a ratio between foreground and background color model
+};
+
+/**
+ * @brief Class performing OpenCV Expectation Maximization segmentation after a learning step of two color models. One
+ * for the foreground objects that we need to segment and a second one for the background.
+ *
+ * @see Documentation from OpenCV https://docs.opencv.org/master/dc/dd6/ml_intro.html#ml_intro_em
  */
 class COLOURIMAGEMASKING_CLASS_API Masker
 {
@@ -32,15 +53,15 @@ public:
     /// Destructor
     COLOURIMAGEMASKING_API ~Masker();
 
-    /// Train the foreground color model define with a number of clusters inside a mask on a given image
+    /// Train the foreground color model defined with a number of clusters inside a mask on a given image
     COLOURIMAGEMASKING_API void trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
                                                      const unsigned int numClusters, const double noise = 0.0);
 
-    /// Train the background color model define with a number of clusters inside a mask on a given image
+    /// Train the background color model defined with a number of clusters inside a mask on a given image
     COLOURIMAGEMASKING_API void trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
                                                      const unsigned int numClusters);
 
-    /// Perform an image masking base on the learned model on a downscaled image inside a given mask
+    /// Perform an image masking based on the learned model on a downscaled image inside a given mask
     COLOURIMAGEMASKING_API ::cv::Mat makeMask(const ::cv::Mat& testImg, const ::cv::Size& downSize,
                                               ::cv::InputArray filterMask) const;
 
@@ -54,9 +75,9 @@ private:
 
     /// Make a response mask from a model on a given image inside a mask
     static ::cv::Mat makeResponseImage(const ::cv::Mat& inImg, const ::cv::Ptr< ::cv::ml::EM > model,
-                                       cv::Mat& filterMask);
+                                       ::cv::Mat& filterMask);
 
-    /// Convert the colorpsace of an image
+    /// Convert the colorspace of an image
     static ::cv::Mat convertColourSpace(const ::cv::Mat& src, const ColSpace& c);
 
     /// Train the model from samples

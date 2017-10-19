@@ -409,7 +409,7 @@
             <!-- Split background and foreground image -->
             <service uid="extractForeground" type="::colourSegmentation::SColourImageMasking" worker="videoExtraction">
                 <in key="videoTL" uid="frameTL" autoConnect="yes" />
-                <inout key="mask" uid="backgroundMask" />
+                <in key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
                 <config scaleFactor="1.0" noise="30" foregroundComponents="5" backgroundComponents="5"/>
                 <HSV>

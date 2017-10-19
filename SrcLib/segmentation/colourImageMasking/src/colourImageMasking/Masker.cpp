@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-using namespace std;
 using namespace colourImageMasking;
 
 namespace colourImageMasking
@@ -42,7 +41,7 @@ Masker::~Masker()
 void Masker::trainForegroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& selectionMask,
                                   const unsigned int numClusters, const double noise)
 {
-    cv::Mat rgbImgCopy;
+    ::cv::Mat rgbImgCopy;
     rgbImg.copyTo(rgbImgCopy, selectionMask);
 
     // This step put some additive gaussian noise in the image.
@@ -106,7 +105,7 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
     m.convertTo(m, CV_8UC1);
 
     //get mask back to original size:
-    ::cv::resize(m, m, ::cv::Size(testImg.cols, testImg.rows));
+    ::cv::resize(m, m, testImg.size());
     ::cv::threshold(m, m, 125, 255, ::cv::THRESH_BINARY);
 
     //eliminate mask holes with erosion/dilation
@@ -192,7 +191,7 @@ bool Masker::isModelLearned(void)
     ::cv::Mat output;
     switch(c)
     {
-        case RGB:
+        case BGR:
         {
             src.copyTo(output);
             break;
@@ -201,7 +200,7 @@ bool Masker::isModelLearned(void)
         {
             ::cv::cvtColor(src, output, CV_BGR2HSV);
             ::cv::Mat s[3]; //destination array
-            split(output, s);//split source
+            ::cv::split(output, s);//split source
             std::vector< ::cv::Mat > array_to_merge;
             array_to_merge.push_back(s[0]);
             array_to_merge.push_back(s[1]);
@@ -214,7 +213,7 @@ bool Masker::isModelLearned(void)
         {
             ::cv::cvtColor(src, output, CV_BGR2Lab);
             ::cv::Mat s[3]; //destination array
-            split(output, s);//split source
+            ::cv::split(output, s);//split source
             std::vector< ::cv::Mat > array_to_merge;
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[2]);
@@ -226,7 +225,7 @@ bool Masker::isModelLearned(void)
         {
             ::cv::cvtColor(src, output, CV_BGR2YCrCb);
             ::cv::Mat s[3]; //destination array
-            split(output, s);//split source
+            ::cv::split(output, s);//split source
             std::vector< ::cv::Mat > array_to_merge;
             array_to_merge.push_back(s[1]);
             array_to_merge.push_back(s[2]);
@@ -256,32 +255,29 @@ bool Masker::isModelLearned(void)
 {
     ::cv::Mat trainImg = Masker::convertColourSpace(t, c);
 
-    //gather training samples:
-    const int h  = trainImg.rows;
-    const int w  = trainImg.cols;
     const int cn = trainImg.channels();
 
-    ::cv::Mat samples(h*w, cn, CV_64FC1);
+    // Get the N non zero coordinates inside the mask
+    ::cv::Mat nonZeroCoordinates;
+    ::cv::findNonZero(mask, nonZeroCoordinates);
 
-    int sampleCount = 0;
+    // Create a N*cn matrix to store the value of each non zero pixels in a linear matrix
+    ::cv::Mat samples(nonZeroCoordinates.rows, cn, CV_64FC1);
 
-    for(int i = 0; i < h; ++i)
-    {
-        for(int j = 0; j < w; ++j)
+    // Fill it by copying from the original image to the linear one
+    ::cv::parallel_for_(::cv::Range(0, nonZeroCoordinates.rows), [&](const ::cv::Range& range)
         {
-            if(mask.at<uchar>(i, j) > 0)
+            for(int r = range.start; r < range.end; ++r)
             {
+                ::cv::Point position = nonZeroCoordinates.at< ::cv::Point >(r);
+                // Implicit cast from Vec3b to Vec3d avoiding static_cast<float> in next for loop
+                ::cv::Vec3d pixel = trainImg.at< ::cv::Vec3b >(position);
                 for(int chnInxs = 0; chnInxs < cn; ++chnInxs)
                 {
-                    samples.at<double>(sampleCount,
-                                       chnInxs) = static_cast<double>(trainImg.at< ::cv::Vec3b >(i, j)[chnInxs]);
+                    samples.at<double>(r, chnInxs) = pixel[chnInxs];
                 }
-                sampleCount++;
             }
-        }
-    }
-
-    samples = samples.rowRange(0, sampleCount);
+        });
 
     return samples;
 }
@@ -296,7 +292,7 @@ bool Masker::isModelLearned(void)
     ::cv::Mat k = s_MORPHELEMENT.clone();
     k.setTo(1);
 
-    // Performe some erison/dilatation to remove small areas
+    // Performe some eroson/dilatation to remove small areas
     for (size_t i = 0; i < n; i++)
     {
         ::cv::erode(mask, mask, k);

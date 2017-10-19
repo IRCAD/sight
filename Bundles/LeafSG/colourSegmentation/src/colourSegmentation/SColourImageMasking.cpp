@@ -41,7 +41,15 @@ const ::fwServices::IService::KeyType s_VIDEO_MASK_TL_KEY = "videoMaskTL";
 
 // ------------------------------------------------------------------------------
 
-SColourImageMasking::SColourImageMasking() noexcept
+SColourImageMasking::SColourImageMasking() noexcept :
+    m_lastVideoTimestamp(::fwCore::HiResClock::getTimeInMilliSec()),
+    m_scaleFactor(1.),
+    m_maskDownsize(::cv::Size(0, 0)),
+    m_lowerColor(::cv::Scalar(0, 0, 0)),
+    m_upperColor(::cv::Scalar(255, 255, 255)),
+    m_noise(0.),
+    m_backgroundComponents(5),
+    m_foregroundComponents(5)
 {
     newSlot( s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this );
     newSlot( s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this );
@@ -80,25 +88,31 @@ void SColourImageMasking::configuring()
     m_upperColor = ::cv::Scalar(255, 255, 255);
 
     const ::fwServices::IService::ConfigType hsvConfig = this->getConfigTree().get_child("HSV");
-    std::string s_lowerValue                           = hsvConfig.get<std::string>("lower", "0,0,0");
-    std::string s_upperValue                           = hsvConfig.get<std::string>("upper", "255,255,255");
+    std::string s_lowerValue                           = hsvConfig.get<std::string>("lower", "");
+    std::string s_upperValue                           = hsvConfig.get<std::string>("upper", "");
 
     const ::boost::char_separator<char> sep {",", ";"};
 
-    const ::boost::tokenizer<boost::char_separator<char> > tokLower {s_lowerValue, sep};
-    int i = 0;
-    for(const auto& it : tokLower)
+    if(!s_lowerValue.empty())
     {
-        SLM_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
-        m_lowerColor[i++] = ::boost::lexical_cast< double >(it);
+        const ::boost::tokenizer<boost::char_separator<char> > tokLower {s_lowerValue, sep};
+        int i = 0;
+        for(const auto& it : tokLower)
+        {
+            SLM_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
+            m_lowerColor[i++] = ::boost::lexical_cast< double >(it);
+        }
     }
 
-    const ::boost::tokenizer<boost::char_separator<char> > tokUpper {s_upperValue, sep};
-    i = 0;
-    for(const auto& it : tokUpper)
+    if(!s_upperValue.empty())
     {
-        SLM_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
-        m_upperColor[i++] = ::boost::lexical_cast< double >(it);
+        const ::boost::tokenizer<boost::char_separator<char> > tokUpper {s_upperValue, sep};
+        int i = 0;
+        for(const auto& it : tokUpper)
+        {
+            SLM_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
+            m_upperColor[i++] = ::boost::lexical_cast< double >(it);
+        }
     }
 }
 
@@ -136,12 +150,12 @@ void SColourImageMasking::updating()
 {
     if(m_masker->isModelLearned())
     {
-        auto mask        = this->getInOut< ::fwData::Image >(s_MASK_KEY);
+        auto mask        = this->getInput< ::fwData::Image >(s_MASK_KEY);
         auto videoTL     = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
         auto videoMaskTL = this->getInOut< ::arData::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
         // Get current timestamp
-        fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
         // Get image from the video timeline
         CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
@@ -154,7 +168,7 @@ void SColourImageMasking::updating()
 
         const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
-        fwCore::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
+        ::fwCore::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
         if(videoTimestamp <= m_lastVideoTimestamp)
         {
             return;
@@ -162,12 +176,12 @@ void SColourImageMasking::updating()
 
         m_lastVideoTimestamp = videoTimestamp;
 
-        // convert mask to an OpenCV image:
-        ::cv::Mat maskCV = ::cvIO::Image::moveToCv(mask);
+        // convert the ::fw::Data::Image mask to an OpenCV image
+        ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask);
 
         ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
-        //convert mask to an OpenCV image:
+        //convert the ::arData::FrameTL videoTL to an OpenCV image
         const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
         // Create image mask to put inside the timeline
@@ -195,7 +209,7 @@ void SColourImageMasking::updating()
 
 void SColourImageMasking::setBackground()
 {
-    auto mask    = this->getInOut< ::fwData::Image >(s_MASK_KEY);
+    auto mask    = this->getInput< ::fwData::Image >(s_MASK_KEY);
     auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
@@ -207,19 +221,18 @@ void SColourImageMasking::setBackground()
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
-    //convert mask to an OpenCV image:
+    //convert the ::arData::FrameTL videoTL to an OpenCV image
     const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
-    //convert mask to an OpenCV image:
-    ::cv::Mat maskCV = ::cvIO::Image::moveToCv(mask);
+    // convert the ::fw::Data::Image mask to an OpenCV image
+    ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask);
+
+    // Convert color mask to grayscale value
+    ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
     m_maskDownsize = ::cv::Size(static_cast<int>(static_cast<float>(maskCV.size[1])*m_scaleFactor),
                                 static_cast<int>(static_cast<float>(maskCV.size[0])*m_scaleFactor));
-
-    // Convert color mask to grayscale value
-    ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2BGR);
-    ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
     // Erode a little bit the mask to avoid the borders
     // Construct element type
@@ -247,8 +260,8 @@ void SColourImageMasking::setForeground()
 {
     auto videoTL = this->getInput< ::arData::FrameTL >(s_VIDEO_TL_KEY);
 
-    fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    CSPTR(::arData::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
+    ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    CSPTR(::arData::FrameTL::BufferType) videoBuffer      = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
         OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);

@@ -19,8 +19,8 @@ namespace colourSegmentation
 {
 
 /**
- * @brief   Service that learns a foreground and background model color and allow to segment the foreground on a new
- * image
+ * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
+ * image using an Eexpectation Maximization algorithm
  *
  * @see ::fwServices::IOperator
  *
@@ -46,23 +46,21 @@ namespace colourSegmentation
             </HSV>
         </service>
    @endcode
-
- * @subsection InOut InOut:
+ *
+ * @subsection Input Input
  * - \b mask [::fwData::Image] : mask image to perform image segmentation in
+ * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
+ *
  * @subsection In-Out In-Out
  * - \b videoMaskTL [::arData::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of the
  * mask = 0)
  *
- * @subsection Input Input
- * - \b videoTL [::arData::FrameTL] : Timeline to extract image from a video to perform the learning steps
- *
  * @subsection Configuration Configuration
- * - \b scaleFactor (optional)(default: 1.0): factor to scale the image to perform image masking on
- * - \b noise (optional)(default: 0.0): additive noise used during the foreground learning step (make more robust
- * learning method)
- * - \b foregroundComponents (optional)(default: 5): number of components learned in the foreground color model
- * - \b backgroundComponents (optional)(default: 5): number of components learned in the foreground color model
- * - \b HSV (optional): values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
+ * - \b scaleFactor (optional)(default: 1.0) : factor to scale the image to perform image masking on
+ * - \b noise (optional)(default: 0.0) : additive noise used during the foreground learning step
+ * - \b foregroundComponents (optional)(default: 5) : number of components learned in the foreground color model
+ * - \b backgroundComponents (optional)(default: 5) : number of components learned in the foreground color model
+ * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
 class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
@@ -88,12 +86,12 @@ public:
     /// Destructor
     COLOURSEGMENTATION_API virtual ~SColourImageMasking() noexcept;
 
-    /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
+    /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    /// Does nothing
+    /// Initialize segmentation method parameters
     COLOURSEGMENTATION_API virtual void configuring() override;
 
     /// Initializes the colour image masker
@@ -125,11 +123,11 @@ private:
     /// Slot: Set the number of foreground components learned
     void setForegroundComponents(int fgComponents);
 
-    /// Masker of puppets i'm pulling your strings
+    /// Object performing the Expectation Maximization segmentation
     std::unique_ptr< ::colourImageMasking::Masker > m_masker;
 
-    /// Current timestampt
-    fwCore::HiResClock::HiResClockType m_lastVideoTimestamp;
+    /// Current timestamp
+    ::fwCore::HiResClock::HiResClockType m_lastVideoTimestamp;
 
     /// Reduction factor
     float m_scaleFactor;
