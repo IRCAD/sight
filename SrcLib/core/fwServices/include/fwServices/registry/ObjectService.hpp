@@ -151,12 +151,17 @@ public:
                                                  ::fwServices::IService::sptr service );
 
     /**
-     * @brief Remove the service (service) from the m_container
+     * @brief Return true of a key is registered for a given service
      */
     FWSERVICES_API bool isRegistered( const ::fwServices::IService::KeyType& objKey,
                                       ::fwServices::IService::AccessType access,
-                                      ::fwServices::IService::sptr service );
+                                      ::fwServices::IService::sptr service) const;
 
+    /**
+     * @brief Return the object pointer of a key of a given service
+     */
+    ::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                          ::fwServices::IService::AccessType access, IService::sptr service) const;
     //@}
 
     /**
@@ -388,9 +393,16 @@ FWSERVICES_API void unregisterServiceOutput( const ::fwServices::IService::KeyTy
 /**
  * @brief Wraps ObjectService::isRegistered
  */
-FWSERVICES_API bool isRegistered( const ::fwServices::IService::KeyType& objKey,
-                                  ::fwServices::IService::AccessType access,
-                                  ::fwServices::IService::sptr service );
+FWSERVICES_API bool isRegistered(const ::fwServices::IService::KeyType& objKey,
+                                 ::fwServices::IService::AccessType access,
+                                 ::fwServices::IService::sptr service);
+
+/**
+ * @brief Wraps ObjectService::getRegistered
+ */
+FWSERVICES_API ::fwData::Object::csptr getRegistered( const ::fwServices::IService::KeyType& objKey,
+                                                      ::fwServices::IService::AccessType access,
+                                                      ::fwServices::IService::sptr service );
 
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getRegisterSignal();
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getUnregisterSignal();
