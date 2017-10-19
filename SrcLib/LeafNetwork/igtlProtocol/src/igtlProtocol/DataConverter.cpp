@@ -84,7 +84,7 @@ DataConverter::~DataConverter()
         }
     }
 
-    SLM_WARN(exception::Conversion("Message type not supported : " + std::string(src->GetDeviceType())));
+    SLM_WARN("Message type not supported : " + std::string(src->GetDeviceType()));
     return obj;
 }
 
