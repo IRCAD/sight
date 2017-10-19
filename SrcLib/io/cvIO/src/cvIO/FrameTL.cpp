@@ -32,12 +32,12 @@ static void toCv(const ::arData::FrameTL::csptr& _timeline, const ::arData::Fram
     auto buffer = static_cast<void*>(const_cast< ::arData::FrameTL::BufferType::ElementType*>(_buffer));
     if(_copy)
     {
-        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, buffer, ::cv::Mat::AUTO_STEP);
+        ::cv::Mat mat = ::cv::Mat(cvSize, cvType, buffer);
         _cvImage      = mat.clone();
     }
     else
     {
-        _cvImage = ::cv::Mat(cvSize, cvType, buffer, ::cv::Mat::AUTO_STEP);
+        _cvImage = ::cv::Mat(cvSize, cvType, buffer);
     }
 }
 
@@ -52,8 +52,8 @@ void FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
 
 //------------------------------------------------------------------------------
 
-const cv::Mat FrameTL::moveToCv(const arData::FrameTL::csptr& _timeline,
-                                const::arData::FrameTL::BufferType::ElementType* _buffer)
+const cv::Mat FrameTL::moveToCv(const ::arData::FrameTL::csptr& _timeline,
+                                const ::arData::FrameTL::BufferType::ElementType* _buffer)
 {
     ::cv::Mat mat;
     toCv(_timeline, _buffer, mat, false);

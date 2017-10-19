@@ -19,7 +19,7 @@ namespace cvIO
 
 //------------------------------------------------------------------------------
 
-static ::cv::Mat toCv(const fwData::Image::csptr& _image, bool _copy)
+static ::cv::Mat toCv(const ::fwData::Image::csptr& _image, bool _copy)
 {
     const auto imageType = _image->getType();
     const auto imageComp = _image->getNumberOfComponents();
@@ -41,6 +41,7 @@ static ::cv::Mat toCv(const fwData::Image::csptr& _image, bool _copy)
         // If we have a single row, we want to initialize the ::cv::Math with (1, N) since it takes (rows,cols)
         cvSize.push_back(1);
     }
+    // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
     std::reverse(cvSize.begin(), cvSize.end());
 
     ::cv::Mat cvImage;
@@ -58,14 +59,14 @@ static ::cv::Mat toCv(const fwData::Image::csptr& _image, bool _copy)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::moveToCv(fwData::Image::sptr& _image)
+::cv::Mat Image::moveToCv(::fwData::Image::sptr& _image)
 {
     return toCv(_image, false);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::copyFromCv(fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
+void Image::copyFromCv(::fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
 {
     const auto prevImageType = _image->getType();
     const auto prevImageComp = _image->getNumberOfComponents();
@@ -75,21 +76,24 @@ void Image::copyFromCv(fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
     const auto imageComp   = imageFormat.second;
     SLM_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
 
-    std::vector<size_t> cvImageSize;
-    for(int i = _cvImage.dims - 1; i >= 0; --i)
+    std::vector<size_t> imageSize;
+    for(int i = 0; i < _cvImage.dims; ++i)
     {
-        cvImageSize.push_back(static_cast<size_t>(_cvImage.size[i]));
+        imageSize.push_back(static_cast<size_t>(_cvImage.size[i]));
     }
 
     if(_cvImage.dims == 2 && _cvImage.rows == 1)
     {
-        cvImageSize.erase(cvImageSize.begin() + 1);
+        // This means this is actually a 1D image so remove the first dimension (==1)
+        imageSize.erase(imageSize.begin());
     }
+    // Reverse from (d,h,w) to  because OpenCV uses a row major format
+    std::reverse(imageSize.begin(), imageSize.end());
 
-    const auto imageSize = _image->getSize();
-    if(prevImageComp != imageComp || prevImageType != imageType || cvImageSize != imageSize)
+    const auto prevImageSize = _image->getSize();
+    if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
     {
-        _image->allocate(cvImageSize, imageType, imageComp);
+        _image->allocate(imageSize, imageType, imageComp);
     }
 
     ::fwData::Array::sptr arraySrc = _image->getDataArray();
@@ -102,7 +106,7 @@ void Image::copyFromCv(fwData::Image::sptr& _image, const ::cv::Mat& _cvImage)
 
 //------------------------------------------------------------------------------
 
-::cv::Mat Image::copyToCv(const fwData::Image::csptr& _image)
+::cv::Mat Image::copyToCv(const ::fwData::Image::csptr& _image)
 {
     return toCv(_image, true);
 }

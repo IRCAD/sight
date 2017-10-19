@@ -18,7 +18,7 @@ namespace cvIO
 /**
  * @brief Helper to manage conversion from/to OpenCV to/from ::arData::FrameTL buffer
  *
- * N@note There is no method to move a OpenCV image into a ::arData::FrameTL buffer. This is because it is tough and not
+ * @note There is no method to move a OpenCV image into a ::arData::FrameTL buffer. This is because it is tough and not
  * really recommended to detach a buffer allocated by a ::cv::Mat, cause we may not free it in the same way than OpenCV.
  * Instead you can allocate a ::arData::FrameTL buffer of the correct size/type, and then use moveToCv() to wrap the
  * image with a ::cv::Mat. This way every modification made to the buffer will be applied to the ::arData::FrameTL
@@ -30,9 +30,9 @@ class CVIO_CLASS_API FrameTL
 public:
 
     /**
-     * @brief Convert an timeline buffer into an OpenCV image.
+     * @brief Convert a timeline buffer into an OpenCV image.
      *
-     * The resulting ::cv::Mat does not allocate to a new buffer and points to the ::arData::FrameTL::BufferType.
+     * The resulting ::cv::Mat does not allocate a new buffer and points to the ::arData::FrameTL::BufferType.
      * That's why the source buffer is not const, because the _cvImage may alter the existing buffer.
      */
     CVIO_API static void moveToCv(const ::arData::FrameTL::csptr& _timeline,
@@ -40,9 +40,9 @@ public:
                                   ::cv::Mat& _cvImage);
 
     /**
-     * @brief Convert an timeline buffer into an OpenCV image.
+     * @brief Convert a timeline buffer into an OpenCV image.
      *
-     * The resulting ::cv::Mat does not allocate to a new buffer and points to the ::arData::FrameTL::BufferType.
+     * The resulting ::cv::Mat does not allocate a new buffer and points to the ::arData::FrameTL::BufferType.
      * The returned cvMat is const because the input buffer is const as well.
      */
     CVIO_API static const ::cv::Mat moveToCv(const ::arData::FrameTL::csptr& _timeline,

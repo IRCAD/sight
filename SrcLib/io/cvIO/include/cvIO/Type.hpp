@@ -17,11 +17,11 @@ namespace cvIO
 class CVIO_CLASS_API Type
 {
 public:
-    /// Returns a OpenCV format given a FW4SPL pixel type and a number of components
-    static CVIO_API std::int32_t toCv(const ::fwTools::Type _type, const size_t _numComponents);
+    /// Returns an OpenCV format given a FW4SPL pixel type and a number of components
+    CVIO_API static std::int32_t toCv(const ::fwTools::Type _type, const size_t _numComponents);
 
-    /// Returns a FW4SPL pixel type and a number of components given a OpenCV format
-    static CVIO_API std::pair< ::fwTools::Type, std::uint8_t> fromCv(std::int32_t _cvType);
+    /// Returns a FW4SPL pixel type and a number of components given an OpenCV format
+    CVIO_API static std::pair< ::fwTools::Type, std::uint8_t> fromCv(std::int32_t _cvType);
 };
 
 } // namespace cvIO
