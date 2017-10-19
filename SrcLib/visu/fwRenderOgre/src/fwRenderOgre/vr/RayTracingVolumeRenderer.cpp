@@ -173,27 +173,27 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
-    // First check that we did not already instanced Shared parameters
+    // First check that we did not already instance Shared parameters
     // This can happen when reinstancing this class (e.g. switching 3D mode)
     ::Ogre::GpuProgramManager::SharedParametersMap spMap =
         ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
     if(spMap["RTVParams"].isNull())
     {
         m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
-
-        // define the shared param structure
-        m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
-        m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
-        m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
-        m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
-        m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
-        m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
-        m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
     }
     else
     {
         m_RTVSharedParameters = spMap["RTVParams"];
     }
+
+    // define the shared param structure
+    m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
+    m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
+    m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
+    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
 
     for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
     {
@@ -238,6 +238,8 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
         ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
     }
     m_entryPointsTextures.clear();
+
+    m_RTVSharedParameters->removeAllConstantDefinitions();
 }
 
 //-----------------------------------------------------------------------------

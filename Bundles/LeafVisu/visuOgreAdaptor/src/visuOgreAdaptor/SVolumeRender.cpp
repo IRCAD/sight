@@ -381,6 +381,7 @@ void SVolumeRender::stopping()
 
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
+    m_volumeRenderer = nullptr;
 
     m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
 
