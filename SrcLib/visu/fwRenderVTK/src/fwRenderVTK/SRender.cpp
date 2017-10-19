@@ -386,21 +386,20 @@ void SRender::render()
         windowToImageFilter->SetInput( renderWindow );
         windowToImageFilter->Update();
 
-        vtkSmartPointer<vtkImageData> vtkImage = windowToImageFilter->GetOutput();
         {
             ::fwData::mt::ObjectWriteLock lock(image);
             if(m_flip)
             {
                 vtkSmartPointer<vtkImageFlip> flipImage = vtkSmartPointer<vtkImageFlip>::New();
                 flipImage->SetFilteredAxes(1);
-                flipImage->SetInputData(vtkImage);
+                flipImage->SetInputData(windowToImageFilter->GetOutput());
                 flipImage->Update();
 
                 ::fwVtkIO::fromVTKImage(flipImage->GetOutput(), image);
             }
             else
             {
-                ::fwVtkIO::fromVTKImage(vtkImage, image);
+                ::fwVtkIO::fromVTKImage(windowToImageFilter->GetOutput(), image);
             }
         }
 
