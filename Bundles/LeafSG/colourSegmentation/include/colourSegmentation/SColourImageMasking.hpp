@@ -57,7 +57,10 @@ namespace colourSegmentation
  *
  * @subsection Configuration Configuration
  * - \b scaleFactor (optional)(default: 1.0) : factor to scale the image to perform image masking on
- * - \b noise (optional)(default: 0.0) : additive noise used during the foreground learning step
+ * - \b noise (optional)(default: 0.0) : standard deviation value for the additive noise used during the foreground
+ * learning step. It allows to perform a more robust learning step by providing different values close to the initial
+ * pixel. It is sometimes needed when real values are a little bit different than the given input image used during the
+ * learning step. For example, to avoid missing pixels when brightness or shadows is changing.
  * - \b foregroundComponents (optional)(default: 5) : number of components learned in the foreground color model
  * - \b backgroundComponents (optional)(default: 5) : number of components learned in the foreground color model
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags

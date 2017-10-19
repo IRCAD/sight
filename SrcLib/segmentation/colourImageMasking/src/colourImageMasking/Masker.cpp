@@ -292,7 +292,7 @@ bool Masker::isModelLearned(void)
     ::cv::Mat k = s_MORPHELEMENT.clone();
     k.setTo(1);
 
-    // Performe some eroson/dilatation to remove small areas
+    // Perform some erosion/dilatation to remove small areas
     for (size_t i = 0; i < n; i++)
     {
         ::cv::erode(mask, mask, k);
