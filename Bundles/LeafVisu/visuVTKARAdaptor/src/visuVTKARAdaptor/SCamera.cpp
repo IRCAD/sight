@@ -187,7 +187,6 @@ void SCamera::stopping()
 
 void SCamera::updateFromVtk()
 {
-
     if(this->isStopped())
     {
         return;
@@ -201,9 +200,6 @@ void SCamera::updateFromVtk()
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
     trans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
-
-    this->calibrate();
-
     trans->Inverse();
     trans->Concatenate(m_transOrig);
     vtkMatrix4x4* mat = trans->GetMatrix();
@@ -223,6 +219,8 @@ void SCamera::updateFromVtk()
     }
 
     trans->Delete();
+
+    this->calibrate();
 }
 
 //-----------------------------------------------------------------------------
@@ -270,10 +268,11 @@ void SCamera::updateFromTMatrix3D()
     oldTrans->Concatenate(m_transOrig);
     oldTrans->Inverse();
 
-    // Apply new transform
+    //Apply new transform
     vtkTransform* trans = vtkTransform::New();
     trans->SetMatrix(mat);
     trans->Concatenate(oldTrans->GetMatrix());
+
     camera->ApplyTransform(trans);
 
     this->setVtkPipelineModified();
@@ -309,20 +308,58 @@ void SCamera::calibrate()
         const double cx = cameraCalibration->getCx();
         const double cy = cameraCalibration->getCy();
 
-        const double nx = static_cast<double>(cameraCalibration->getWidth());
-        const double ny = static_cast<double>(cameraCalibration->getHeight());
+        const double imW = static_cast<double>(cameraCalibration->getWidth());
+        const double imH = static_cast<double>(cameraCalibration->getHeight());
 
-        const double wcx = -2. * ( cx - nx / 2. ) / nx;
-        const double wcy = 2. * ( cy - ny / 2. ) / ny;
-        camera->SetViewAngle(2.0 * atan(cameraCalibration->getHeight() / 2.0 / fy) * 180./ vtkMath::Pi());
+        const int winW = this->getRenderer()->GetSize()[0];
+        const int winH = this->getRenderer()->GetSize()[1];
 
-        // Use the Renderer aspect ratio when shifting window center to avoid bug when resizing windows.
-        camera->SetWindowCenter(wcx / this->getRenderer()->GetAspect()[0], wcy);
+        //compute the ratio between calibration image size and current viewport size
+        const double ratio = winH / imH;
+
+        //compute new fx, fy
+        const double nfx = fx * ratio;
+        const double nfy = fy * ratio;
+
+        //set the view angle
+        camera->SetViewAngle(2.0 * std::atan2(winH / 2.0, nfy) * 180./ vtkMath::Pi());
+
+        //Compute Principle point offset
+
+        double px    = 0.;
+        double width = 0.;
+
+        double py     = 0.;
+        double height = 0.;
+
+        px    = ratio * cx;
+        width = winW;
+        const long expectedWindowSize = std::lround(ratio * imW);
+
+        if( expectedWindowSize != winW )
+        {
+            const long diffX = (winW - expectedWindowSize) / 2;
+            px += static_cast<double>(diffX);
+        }
+
+        py     = ratio * cy;
+        height = winH;
+
+        const double cx1 = width - px;
+        const double cy1 = height - py;
+
+        const double wcx = cx1 / ( ( width - 1. ) / 2. ) - 1.;
+        const double wcy = cy1 / ( ( height - 1. ) / 2. ) - 1.;
+
+        camera->SetWindowCenter(wcx, -wcy );
 
         // Set the image aspect ratio as an indirect way of setting the x focal distance
         vtkMatrix4x4* m = vtkMatrix4x4::New();
         m->Identity();
-        m->SetElement(0, 0, 1. / (fy / fx));
+
+        const double r = ( nfy / nfx );
+
+        m->SetElement(0, 0, 1. / r);
 
         vtkTransform* t = vtkTransform::New();
         t->SetMatrix(m);
