@@ -70,7 +70,7 @@ class IVtkRenderWindowInteractorManager;
  *
  * @subsection In-Out In-Out
  * - \b offScreen [::fwData::Image] (optional, unused by default): If used, render the scene in an image
- * and not in a window.
+ * and not in a window. You can add a <flip>true</flip> tag if you want to flip the off screen image result.
  *
  * @subsection Configuration Configuration
  * - \b renderMode (optional, "auto" by default): this attribute is forwarded to all adaptors. For each adaptor,
@@ -94,6 +94,7 @@ class IVtkRenderWindowInteractorManager;
  *   - \b tolerance (optional, by default 0.0): the picker tolerance specified as fraction of rendering window size.
  * - \b adaptor
  *   - \b uid (mandatory): the uid of the adaptor
+ * - \b flip (optional): if true, flip the output of the renderer in offscreen mode.
  */
 class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
@@ -214,6 +215,7 @@ private:
     unsigned int m_width; ///< width for off screen render
     unsigned int m_height; ///< height for off screen render
     bool m_offScreen; ///< if true, scene is render in off screen
+    bool m_flip; ///< if true, flip off screen render scene
 
     /// Timer used for the update
     SPTR( ::fwThread::Timer ) m_timer;
