@@ -33,7 +33,6 @@ Masker::Masker(const ColSpace& c, const DetectionMode& d) :
 
 Masker::~Masker()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +69,7 @@ void Masker::trainBackgroundModel(const ::cv::Mat& rgbImg, const ::cv::Mat& sele
     SLM_ASSERT("Threshold is not set", m_hasSetThreshold);
 
     ::cv::Mat t2, testImgMask2;
+    // OpenCV check if the downSize is different from the testImg size. If not, a copy is just performed.
     ::cv::resize(testImg, t2, downSize);
     ::cv::Mat m;
 

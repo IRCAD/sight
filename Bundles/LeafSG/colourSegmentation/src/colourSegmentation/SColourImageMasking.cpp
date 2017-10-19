@@ -224,7 +224,7 @@ void SColourImageMasking::setBackground()
     //convert the ::arData::FrameTL videoTL to an OpenCV image
     const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
-    // convert the ::fw::Data::Image mask to an OpenCV image
+    // convert the ::fwData::Image mask to an OpenCV image
     ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask);
 
     // Convert color mask to grayscale value
