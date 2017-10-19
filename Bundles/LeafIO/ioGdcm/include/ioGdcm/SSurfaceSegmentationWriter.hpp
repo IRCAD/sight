@@ -79,8 +79,8 @@ private:
      * @param[in] model ModelSeries that must be writen
      */
     void saveSurfaceSegmentation( const ::boost::filesystem::path filename,
-                                  SPTR(::fwMedData::DicomSeries) dicom,
-                                  SPTR(::fwMedData::ModelSeries) model);
+                                  ::fwMedData::DicomSeries::sptr dicom,
+                                  ::fwMedData::ModelSeries::sptr model);
 };
 
 } // namespace ioGdcm

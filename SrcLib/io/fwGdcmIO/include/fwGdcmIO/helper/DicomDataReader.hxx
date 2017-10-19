@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ public:
      * definied and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
      */
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static std::string getTagValue(const ::gdcm::DataSet &dataset,
                                    const std::string &charset = "",
                                    const ::fwLog::Logger::sptr& logger = 0)
@@ -98,7 +98,7 @@ public:
      * definied and tag's VR is SH, LO, ST, PN, LT or UT.
      * @return The tag value as string
      */
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static std::string getTagValue(const std::string& buffer,
                                    const std::string &charset = "",
                                    const ::fwLog::Logger::sptr& logger = 0)
@@ -136,7 +136,7 @@ public:
      * @param[in] dataset Data set of tags.
      * @return The tag value.
      */
-    template< uint16_t GROUP, uint16_t ELEMENT, typename T >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT, typename T >
     static const T getTagValue(const ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;

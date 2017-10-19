@@ -15,8 +15,6 @@
 #include <boost/filesystem/path.hpp>
 
 #include <array>
-#include <iostream>
-#include <map>
 #include <string>
 
 namespace fwLog
@@ -134,7 +132,7 @@ public:
                                               const std::string& anatomicRegionModifiers) const;
 
 
-protected:
+private:
 
     /// Entry registry type
     typedef std::map<std::string, EntryType> EntryRegistryType;

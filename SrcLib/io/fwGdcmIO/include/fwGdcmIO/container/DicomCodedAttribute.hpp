@@ -109,7 +109,7 @@ public:
     /// Convert entry to GDCM format
     FWGDCMIO_API ::gdcm::SegmentHelper::BasicCodedEntry toGDCMFormat() const;
 
-protected:
+private:
     /// Code Value (see : Tag(0008,0100) )
     std::string m_codeValue;
 

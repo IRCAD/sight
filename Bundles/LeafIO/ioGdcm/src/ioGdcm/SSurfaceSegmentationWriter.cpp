@@ -33,7 +33,7 @@
 namespace ioGdcm
 {
 
-    fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwData::Vector );
+fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -123,8 +123,8 @@ void SSurfaceSegmentationWriter::updating()
             SLM_FATAL("Writing with more than one DICOM Series is not supported as of now.");
         }
 
-        SPTR(::fwMedData::DicomSeries) dicom = nullptr;
-        SPTR(::fwMedData::ModelSeries) model = nullptr;
+        ::fwMedData::DicomSeries::sptr dicom = nullptr;
+        ::fwMedData::ModelSeries::sptr model = nullptr;
 
         /* Look for a DicomSeries and a ModelSeries in the input vector */
         for(size_t i = 0; i < vector->getContainer().size(); i++)
@@ -161,8 +161,8 @@ void SSurfaceSegmentationWriter::updating()
 //------------------------------------------------------------------------------
 
 void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesystem::path filename,
-                                                          SPTR(::fwMedData::DicomSeries) dicom,
-                                                          SPTR(::fwMedData::ModelSeries) model)
+                                                          ::fwMedData::DicomSeries::sptr dicom,
+                                                          ::fwMedData::ModelSeries::sptr model)
 {
     ::fwGdcmIO::writer::SurfaceSegmentation::sptr writer = ::fwGdcmIO::writer::SurfaceSegmentation::New();
     writer->setObject(model);

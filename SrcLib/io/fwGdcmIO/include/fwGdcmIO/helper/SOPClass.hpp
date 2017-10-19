@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ public:
      */
     FWGDCMIO_API static bool isHazardousSOPClass(const std::string& SOPClassUID);
 
-protected:
+private:
 
     /// Container holding SOP Class Names and associated Hazardousness
     typedef std::pair< std::string, bool > SOPClassNameAndHazardousnessPairType;

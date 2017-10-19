@@ -27,7 +27,7 @@ namespace helper
 {
     SLM_ASSERT("Group and element can not be empty", !group.empty() && !element.empty());
 
-    typedef uint16_t DestType;
+    typedef std::uint16_t DestType;
     DestType groupDest;
     DestType elementDest;
 

@@ -28,7 +28,6 @@
 #include <boost/assign.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/math/special_functions/round.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
@@ -90,13 +89,13 @@ double getInstanceZPosition(const ::boost::filesystem::path& path)
     // Retrieve image orientation
     const double* directionCosines = gdcmImage.GetDirectionCosines();
     fwVec3d imageOrientationU = {{
-        ::boost::math::round(directionCosines[0]),
-        ::boost::math::round(directionCosines[1]),
-        ::boost::math::round(directionCosines[2])}};
+        std::round(directionCosines[0]),
+        std::round(directionCosines[1]),
+        std::round(directionCosines[2])}};
     fwVec3d imageOrientationV = {{
-        ::boost::math::round(directionCosines[3]),
-        ::boost::math::round(directionCosines[4]),
-        ::boost::math::round(directionCosines[5])}};
+        std::round(directionCosines[3]),
+        std::round(directionCosines[4]),
+        std::round(directionCosines[5])}};
 
     //Compute Z direction (cross product)
     fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
@@ -497,24 +496,24 @@ char* Image::correctImageOrientation(char* buffer,
 
     // Compute U vector
     fwVec3d imageOrientationU = {{
-        ::boost::math::round(directionCosines[0]),
-        ::boost::math::round(directionCosines[1]),
-        ::boost::math::round(directionCosines[2]) }};
+        std::round(directionCosines[0]),
+        std::round(directionCosines[1]),
+        std::round(directionCosines[2]) }};
     // Try to find the closest axe
-    if((fabs(imageOrientationU[0]) + fabs(imageOrientationU[1]) + fabs(imageOrientationU[2])) > 1)
+    if((std::fabs(imageOrientationU[0]) + std::fabs(imageOrientationU[1]) + std::fabs(imageOrientationU[2])) > 1)
     {
-        if(fabs(directionCosines[0]) < fabs(directionCosines[1]) ||
-           fabs(directionCosines[0]) < fabs(directionCosines[2]))
+        if(std::fabs(directionCosines[0]) < std::fabs(directionCosines[1]) ||
+           std::fabs(directionCosines[0]) < std::fabs(directionCosines[2]))
         {
             imageOrientationU[0] = 0;
         }
-        if(fabs(directionCosines[1]) < fabs(directionCosines[0]) ||
-           fabs(directionCosines[1]) < fabs(directionCosines[2]))
+        if(std::fabs(directionCosines[1]) < std::fabs(directionCosines[0]) ||
+           std::fabs(directionCosines[1]) < std::fabs(directionCosines[2]))
         {
             imageOrientationU[1] = 0;
         }
-        if(fabs(directionCosines[2]) < fabs(directionCosines[0]) ||
-           fabs(directionCosines[2]) < fabs(directionCosines[1]))
+        if(std::fabs(directionCosines[2]) < std::fabs(directionCosines[0]) ||
+           std::fabs(directionCosines[2]) < std::fabs(directionCosines[1]))
         {
             imageOrientationU[2] = 0;
         }
@@ -524,24 +523,24 @@ char* Image::correctImageOrientation(char* buffer,
 
     // Compute V vector
     fwVec3d imageOrientationV = {{
-        ::boost::math::round(directionCosines[3]),
-        ::boost::math::round(directionCosines[4]),
-        ::boost::math::round(directionCosines[5]) }};
+        std::round(directionCosines[3]),
+        std::round(directionCosines[4]),
+        std::round(directionCosines[5]) }};
     // Try to find the closest axe
-    if((fabs(imageOrientationV[0]) + fabs(imageOrientationV[1]) + fabs(imageOrientationV[2])) > 1)
+    if((std::fabs(imageOrientationV[0]) + std::fabs(imageOrientationV[1]) + std::fabs(imageOrientationV[2])) > 1)
     {
-        if(fabs(directionCosines[3]) < fabs(directionCosines[4]) ||
-           fabs(directionCosines[3]) < fabs(directionCosines[5]))
+        if(std::fabs(directionCosines[3]) < std::fabs(directionCosines[4]) ||
+           std::fabs(directionCosines[3]) < std::fabs(directionCosines[5]))
         {
             imageOrientationV[0] = 0;
         }
-        if(fabs(directionCosines[4]) < fabs(directionCosines[3]) ||
-           fabs(directionCosines[4]) < fabs(directionCosines[5]))
+        if(std::fabs(directionCosines[4]) < std::fabs(directionCosines[3]) ||
+           std::fabs(directionCosines[4]) < std::fabs(directionCosines[5]))
         {
             imageOrientationV[1] = 0;
         }
-        if(fabs(directionCosines[5]) < fabs(directionCosines[3]) ||
-           fabs(directionCosines[5]) < fabs(directionCosines[4]))
+        if(std::fabs(directionCosines[5]) < std::fabs(directionCosines[3]) ||
+           std::fabs(directionCosines[5]) < std::fabs(directionCosines[4]))
         {
             imageOrientationV[2] = 0;
         }
@@ -584,9 +583,9 @@ char* Image::correctImageOrientation(char* buffer,
         sizeVector(1) = dimensions.at(1);
         sizeVector(2) = dimensions.at(2);
         VectorType newSizeVector = ::boost::numeric::ublas::prod(sizeVector, inverseMatrix);
-        unsigned short newSizeX = static_cast<unsigned short>(fabs(newSizeVector[0]));
-        unsigned short newSizeY = static_cast<unsigned short>(fabs(newSizeVector[1]));
-        unsigned short newSizeZ = static_cast<unsigned short>(fabs(newSizeVector[2]));
+        unsigned short newSizeX = static_cast<unsigned short>(std::fabs(newSizeVector[0]));
+        unsigned short newSizeY = static_cast<unsigned short>(std::fabs(newSizeVector[1]));
+        unsigned short newSizeZ = static_cast<unsigned short>(std::fabs(newSizeVector[2]));
         newSizeVector(0) = newSizeX;
         newSizeVector(1) = newSizeY;
         newSizeVector(2) = newSizeZ;
@@ -644,9 +643,9 @@ char* Image::correctImageOrientation(char* buffer,
         spacingVector(2) = spacing[2];
         VectorType newSpacingVector = ::boost::numeric::ublas::prod(spacingVector, inverseMatrix);
         ::fwData::Image::SpacingType newSpacing(3, 1);
-        newSpacing[0] = fabs(newSpacingVector[0]);
-        newSpacing[1] = fabs(newSpacingVector[1]);
-        newSpacing[2] = fabs(newSpacingVector[2]);
+        newSpacing[0] = std::fabs(newSpacingVector[0]);
+        newSpacing[1] = std::fabs(newSpacingVector[1]);
+        newSpacing[2] = std::fabs(newSpacingVector[2]);
         m_object->setSpacing( newSpacing );
 
         // Update image origin

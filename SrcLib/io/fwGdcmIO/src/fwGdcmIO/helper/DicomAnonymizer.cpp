@@ -329,30 +329,30 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
         this->applyActionShiftDate(dateTag);
     }
 
-    ::boost::range::for_each(m_actionCodeDTags, [this](const ::gdcm::Tag& tag)
-            {
-                this->applyActionCodeD(tag);
-            });
-    ::boost::range::for_each(m_actionCodeZTags, [this](const ::gdcm::Tag& tag)
-            {
-                this->applyActionCodeZ(tag);
-            });
-    ::boost::range::for_each(m_actionCodeXTags, [this](const ::gdcm::Tag& tag)
-            {
-                this->applyActionCodeX(tag);
-            });
-    ::boost::range::for_each(m_actionCodeKTags, [this](const ::gdcm::Tag& tag)
-            {
-                this->applyActionCodeK(tag);
-            });
-    ::boost::range::for_each(m_actionCodeCTags, [this](const ::gdcm::Tag& tag)
-            {
-                this->applyActionCodeC(tag);
-            });
-    ::boost::range::for_each(m_actionCodeUTags, [this](const ::gdcm::Tag& tag)
-            {
-                this->applyActionCodeU(tag);
-            });
+    for(auto tag : m_actionCodeDTags)
+    {
+        this->applyActionCodeD(tag);
+    }
+    for(auto tag : m_actionCodeZTags)
+    {
+        this->applyActionCodeZ(tag);
+    }
+    for(auto tag : m_actionCodeXTags)
+    {
+        this->applyActionCodeX(tag);
+    }
+    for(auto tag : m_actionCodeKTags)
+    {
+        this->applyActionCodeK(tag);
+    }
+    for(auto tag : m_actionCodeCTags)
+    {
+        this->applyActionCodeC(tag);
+    }
+    for(auto tag : m_actionCodeUTags)
+    {
+        this->applyActionCodeU(tag);
+    }
 
     auto applyActionCodeXWithException = [this](const ::gdcm::Tag& tag)
                                          {

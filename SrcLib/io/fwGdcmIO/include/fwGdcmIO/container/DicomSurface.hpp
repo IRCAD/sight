@@ -31,7 +31,7 @@ public:
      * Typedef for cell index in DICOM world (32 bits see VR OL).
      * FW4SPL uses uint64_t (see ::fwData::Mesh::CellValueType).
      */
-    typedef uint32_t DicomCellValueType;
+    typedef std::uint32_t DicomCellValueType;
 
     /**
      * @brief Container types to store points, cells and normals.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setEmptyTagValue(::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
@@ -49,7 +49,7 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< typename T, uint16_t GROUP, uint16_t ELEMENT >
+    template< typename T, std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setTagValue(const T &value, ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
@@ -64,7 +64,7 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setTagValue(const std::string &value, ::gdcm::DataSet &dataset)
     {
         setTagValue<std::string, GROUP, ELEMENT>(value, dataset);
@@ -79,7 +79,7 @@ public:
      * @tparam GROUP Group of the tag.
      * @tparam ELEMENT Element of the tag.
      */
-    template< typename T, uint16_t GROUP, uint16_t ELEMENT >
+    template< typename T, std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setTagValues(const T * array, const size_t size, ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
@@ -97,7 +97,7 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setSequenceTagValue(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
             ::gdcm::DataSet &dataset)
     {
@@ -112,7 +112,7 @@ public:
     }
 
 
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createAndSetSequenceTagValue(::gdcm::DataSet &dataset)
     {
         ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
@@ -130,7 +130,7 @@ public:
      * @tparam GROUP Group of the tag
      * @tparam ELEMENT Element of the tag
      */
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setAndMergeSequenceTagValue(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
             ::gdcm::DataSet &dataset)
     {
@@ -155,7 +155,7 @@ public:
         }
     }
 
-    template< uint16_t GROUP, uint16_t ELEMENT >
+    template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setCodeSequenceTagValue(::fwGdcmIO::container::DicomCodedAttribute attribute,
                                         ::gdcm::DataSet &dataset)
     {
