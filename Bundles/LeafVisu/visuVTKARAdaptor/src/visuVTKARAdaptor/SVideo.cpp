@@ -54,7 +54,8 @@ SVideo::SVideo() noexcept :
     m_actor(vtkSmartPointer<vtkImageActor>::New()),
     m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
     m_isTextureInit(false),
-    m_reverse(true)
+    m_reverse(true),
+    m_interpolate(true)
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideo::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideo::updateImageOpacity, this);
@@ -91,7 +92,8 @@ void SVideo::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    m_reverse = config.get<bool>("reverse", m_reverse);
+    m_reverse     = config.get<bool>("reverse", m_reverse);
+    m_interpolate = config.get<bool>("interpolate", m_interpolate);
 }
 
 //------------------------------------------------------------------------------
@@ -161,6 +163,8 @@ void SVideo::updating()
             m_actor->SetInputData(m_imageData);
         }
         this->addToRenderer(m_actor);
+
+        m_actor->SetInterpolate(m_interpolate);
 
         m_isTextureInit = true;
 
