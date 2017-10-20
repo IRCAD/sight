@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,8 @@ public:
     FWDATATOOLS_API ~Field();
 
     /**
-     * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if defaultValue is not null.
+     * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
+     * defaultValue is not null.
      * @param[in] name Field name
      * @param[in] defaultValue default return value if field was not found
      * @return pointer to corresponding field.
@@ -41,6 +42,7 @@ public:
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
+     * * @deprecated use addOrSwap() instead
      */
     FWDATATOOLS_API void setField( const ::fwData::Object::FieldNameType& name, ::fwData::Object::sptr obj );
 
@@ -56,8 +58,56 @@ public:
 
     /**
      * @brief Removes field with specified name.
+     * @deprecated use remove() instead
      */
     FWDATATOOLS_API void removeField( const ::fwData::Object::FieldNameType& name );
+
+    /**
+     * @brief Add a field in the object.
+     * @param[in] _name key of the field.
+     * @param[in] _obj object to add as a field
+     *
+     * @throw ::fwData::Exception if the field already exists
+     * Prepare the message to announce the modification.
+     */
+    FWDATATOOLS_API void add( const ::fwData::Object::FieldNameType& _name, ::fwData::Object::sptr _obj );
+
+    /**
+     * @brief Replace a field in the object.
+     * @param[in] _name key of the field.
+     * @param[in] _obj object to add  as a field
+     *
+     * @throw ::fwData::Exception if the field does not exist.
+     *
+     * Prepare the message to announce the modification.
+     */
+    FWDATATOOLS_API void swap( const ::fwData::Object::FieldNameType& _name, ::fwData::Object::sptr _obj );
+
+    /**
+     * @brief Add or replace a field in the object.
+     * @param[in] _name key of the field.
+     * @param[in] _obj object to add  as a field
+     *
+     * Prepare the message to announce the modification.
+     */
+    FWDATATOOLS_API void addOrSwap( const ::fwData::Object::FieldNameType& _name, ::fwData::Object::sptr _obj );
+
+    /**
+     * @brief Remove a field from the object.
+     * @param[in] _name  key of the field.
+     *
+     * @throw ::fwData::Exception if the field does not exist.
+     *
+     * Prepare the message to announce the modification.
+     */
+    FWDATATOOLS_API void remove(  const ::fwData::Object::FieldNameType& _name );
+
+    /**
+     * @brief Clear all fields in the object.
+     *
+     * Prepare the message to announce the modification.
+     */
+    FWDATATOOLS_API void clear();
 
     /// Send the built message
     FWDATATOOLS_API void notify();
@@ -80,8 +130,6 @@ protected:
 
     ::fwData::Object::wptr m_object;
 };
-
-
 
 template<typename DATA_TYPE>
 inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue)
