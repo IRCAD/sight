@@ -73,7 +73,7 @@ namespace visuOgreAdaptor
         <config layer="default"
                 preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
-                aoFactor="0.5" colorBleedingFactor="0.5" />
+                aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="yes"/>
     </service>
    @endcode
  * @subsection Input Input
@@ -102,6 +102,7 @@ namespace visuOgreAdaptor
  * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
  * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
  * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
+ * - \b autoresetcamera (optional, yes/no, default=yes): reset the camera at image update to view the whole volume.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
