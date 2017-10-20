@@ -79,11 +79,6 @@ void FrameTL::copyFromCv(const ::arData::FrameTL::csptr& _timeline,
     {
         cvImageSize.push_back(static_cast<size_t>(_cvImage.size[i]));
     }
-
-    if(_cvImage.dims == 2 && _cvImage.rows == 1)
-    {
-        cvImageSize.erase(cvImageSize.begin() + 1);
-    }
     const std::vector<size_t> imageSize = {{ _timeline->getWidth(), _timeline->getHeight() }};
 
     if(prevImageComp != imageComp || prevImageType != imageType || cvImageSize != imageSize)
