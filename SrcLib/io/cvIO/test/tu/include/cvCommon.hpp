@@ -11,6 +11,8 @@
 
 #include <opencv2/core.hpp>
 
+#include <random>
+
 namespace cvIO
 {
 namespace ut
@@ -72,13 +74,32 @@ static const std::vector<T> genImageBuffer(size_t _w, size_t _h, size_t _d, std:
 {
     const size_t imageSize = _w * (_h == 0 ? 1 : _h) * (_d == 0 ? 1 : _d) * _numChannels;
     std::vector<T> buffer;
-
     buffer.resize(imageSize);
-    for(size_t i = 0; i < imageSize; ++i)
+
+    std::random_device rd;
+    std::mt19937 engine(rd());
+
+    if(std::is_integral<T>::value)
     {
-        int value    = std::rand();
-        T boundValue = static_cast<T>(value);
-        buffer[i] = boundValue;
+        std::uniform_int_distribution<> dist(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+
+        for(size_t i = 0; i < imageSize; ++i)
+        {
+            auto value   = dist(engine);
+            T boundValue = static_cast<T>(value);
+            buffer[i] = boundValue;
+        }
+    }
+    else
+    {
+        std::uniform_real_distribution<> dist(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
+
+        for(size_t i = 0; i < imageSize; ++i)
+        {
+            auto value   = dist(engine);
+            T boundValue = static_cast<T>(value);
+            buffer[i] = boundValue;
+        }
     }
 
     return buffer;
