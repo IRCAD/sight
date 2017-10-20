@@ -84,7 +84,6 @@ public:
         m_eventId(nullptr),
         m_picker(nullptr)
     {
-        this->PassiveObserverOn();
     }
 
     ~SPickerInteractorCallback()
@@ -166,6 +165,12 @@ public:
                 auto sig = m_adaptor->signal<SPickerInteractor::PickedSignalType>(
                     SPickerInteractor::s_PICKED_SIGNAL);
                 sig->asyncEmit(info);
+
+                // The "abortOnPick" flag has been set
+                if(this->GetPassiveObserver() != 1)
+                {
+                    this->AbortFlagOn();
+                }
             }
         }
     }
@@ -229,7 +234,7 @@ void SPickerInteractor::configuring()
 
         ::boost::char_separator<char> sep(", ;");
         ::boost::tokenizer< ::boost::char_separator<char> > tok(eventTxt, sep);
-        for( const auto it : tok)
+        for( const auto& it : tok)
         {
             const auto iter = m_eventIdConversion.find(it);
             SLM_ASSERT("Unknown eventId '"+ it+"'.", iter != m_eventIdConversion.end());
@@ -243,6 +248,8 @@ void SPickerInteractor::configuring()
             m_eventId.insert(elt.second);
         }
     }
+
+    m_abortOnPick = config.get<bool>("abortOnPick", false);
 }
 
 //------------------------------------------------------------------------------
@@ -252,6 +259,7 @@ void SPickerInteractor::starting()
     this->initialize();
 
     SPickerInteractorCallback* observer = SPickerInteractorCallback::New();
+    observer->SetPassiveObserver(static_cast<int>(!m_abortOnPick));
     observer->setAdaptor( SPickerInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setEventId(&m_eventId);

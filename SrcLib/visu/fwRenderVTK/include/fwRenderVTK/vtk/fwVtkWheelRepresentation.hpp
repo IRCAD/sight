@@ -126,9 +126,6 @@ private:
     /// 2D Translation to convert from widget to wheel space.
     ::glm::dvec2 m_widgetToCenterTranslation;
 
-    /// Rainbow mode
-    bool m_rainbowMode;
-
     /// Mouse hover
     bool m_hover;
 };

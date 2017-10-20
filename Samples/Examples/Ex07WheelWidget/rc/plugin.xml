@@ -97,17 +97,16 @@
             <config renderer="default" />
         </service>
 
-        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" autoConnect="yes" >
-            <inout key="image" uid="image" autoConnect="yes"/>
+        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
             <inout key="transform" uid="transform" />
-            <config renderer="default" picker="picker" />
+            <config renderer="default" picker="picker" orientation="axial"/>
         </service>
 
         <!-- *************************** End generic scene *************************** -->
 
         <connect>
             <signal>2DWheel/wheelUpdated</signal>
-            <slot>transformFromWheel/updateTransform</slot>
+            <slot>transformFromWheel/rotateTransform</slot>
         </connect>
 
         <start uid="mainFrame" />
