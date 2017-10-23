@@ -144,15 +144,15 @@ void Image::readImagePlaneModule()
         const ::fwMedData::DicomSeries::DicomPathContainerType::reverse_iterator rit = pathContainer.rbegin();
 
         // Compute the spacing between slices of the 2 first slices.
-        double firstIndex = getInstanceZPosition(it->second);
-        double secondIndex = getInstanceZPosition((++it)->second);
-        double lastIndex = getInstanceZPosition(rit->second);
+        const double firstIndex = getInstanceZPosition(it->second);
+        const double secondIndex = getInstanceZPosition((++it)->second);
+        const double lastIndex = getInstanceZPosition(rit->second);
         spacing[2] = std::abs(secondIndex - firstIndex);
 
         // Check that the same spacing is used for all the instances
         const double epsilon = 1e-2;
-        double totalZSpacing = std::abs(lastIndex - firstIndex);
-        double errorGap = std::abs( spacing[2] * static_cast<double>(pathContainer.size() - 1 ) ) - totalZSpacing;
+        const double totalZSpacing = std::abs(lastIndex - firstIndex);
+        const double errorGap = std::abs( spacing[2] * static_cast<double>(pathContainer.size() - 1 ) ) - totalZSpacing;
         if(errorGap > epsilon)
         {
             std::stringstream ss;
@@ -236,11 +236,11 @@ void Image::readImagePixelModule()
     double rescaleIntercept = rescale[0];
     double rescaleSlope = rescale[1];
 
-    unsigned short samplesPerPixel = pixelFormat.GetSamplesPerPixel();
-    unsigned short bitsAllocated = pixelFormat.GetBitsAllocated();
-    unsigned short bitsStored = pixelFormat.GetBitsStored();
-    unsigned short highBit = pixelFormat.GetHighBit();
-    unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
+    const unsigned short samplesPerPixel = pixelFormat.GetSamplesPerPixel();
+    const unsigned short bitsAllocated = pixelFormat.GetBitsAllocated();
+    const unsigned short bitsStored = pixelFormat.GetBitsStored();
+    const unsigned short highBit = pixelFormat.GetHighBit();
+    const unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
 
     // Compute final image type
     ::fwDicomTools::Image imageHelper(
@@ -248,7 +248,7 @@ void Image::readImagePixelModule()
     ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
     m_object->setType(imageType);
     ::gdcm::PixelFormat targetPixelFormat = ::fwGdcmIO::helper::DicomDataTools::getPixelType(m_object);
-   
+
     if(targetPixelFormat == ::gdcm::PixelFormat::UNKNOWN)
     {
         throw ::fwGdcmIO::exception::Failed("Unsupported image pixel format.");
@@ -348,9 +348,9 @@ void Image::readImagePixelModule()
 //------------------------------------------------------------------------------
 
 char* Image::readImageBuffer(const std::vector<unsigned int> &dimensions,
-                             unsigned short bitsAllocated,
-                             unsigned short newBitsAllocated,
-                             bool performRescale) throw(::fwGdcmIO::exception::Failed)
+                             const unsigned short bitsAllocated,
+                             const unsigned short newBitsAllocated,
+                             const bool performRescale) throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
@@ -583,9 +583,9 @@ char* Image::correctImageOrientation(char* buffer,
         sizeVector(1) = dimensions.at(1);
         sizeVector(2) = dimensions.at(2);
         VectorType newSizeVector = ::boost::numeric::ublas::prod(sizeVector, inverseMatrix);
-        unsigned short newSizeX = static_cast<unsigned short>(std::fabs(newSizeVector[0]));
-        unsigned short newSizeY = static_cast<unsigned short>(std::fabs(newSizeVector[1]));
-        unsigned short newSizeZ = static_cast<unsigned short>(std::fabs(newSizeVector[2]));
+        const unsigned short newSizeX = static_cast<unsigned short>(std::fabs(newSizeVector[0]));
+        const unsigned short newSizeY = static_cast<unsigned short>(std::fabs(newSizeVector[1]));
+        const unsigned short newSizeZ = static_cast<unsigned short>(std::fabs(newSizeVector[2]));
         newSizeVector(0) = newSizeX;
         newSizeVector(1) = newSizeY;
         newSizeVector(2) = newSizeZ;

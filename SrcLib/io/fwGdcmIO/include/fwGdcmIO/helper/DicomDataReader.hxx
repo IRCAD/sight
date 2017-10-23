@@ -44,7 +44,7 @@ public:
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static std::string getTagValue(const ::gdcm::DataSet &dataset,
                                    const std::string &charset = "",
-                                   const ::fwLog::Logger::sptr& logger = 0)
+                                   const ::fwLog::Logger::sptr& logger = nullptr)
     {
         std::string result = "";
 

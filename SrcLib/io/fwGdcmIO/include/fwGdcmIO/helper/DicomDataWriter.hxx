@@ -91,7 +91,7 @@ public:
     }
 
     /**
-     * @brief Set and insert a sequence of items with a tag in the data set specified.
+     * @brief Set and insert a sequence of items with a tag in the specified data set.
      * @param[in] sequence Sequence of items to insert
      * @param[in] dataset Data set
      * @tparam GROUP Group of the tag
@@ -111,7 +111,12 @@ public:
         dataset.Insert(dataElement);
     }
 
-
+    /**
+     * @brief Create and set a sequence of items with a tag in the specified data set.
+     * @param[in] dataset Data set
+     * @tparam GROUP Group of the tag
+     * @tparam ELEMENT Element of the tag
+     */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createAndSetSequenceTagValue(::gdcm::DataSet &dataset)
     {
@@ -122,7 +127,7 @@ public:
     }
 
     /**
-     * @brief Insert a sequence of items with a tag in the data set specified.
+     * @brief Insert a sequence of items with a tag in the specified data set.
      * If the tag already exists, items of the old and new sequences are added in a new one.
      * @param[in] sequence Sequence of items to insert
      * @param[in] dataset Data set
@@ -155,6 +160,14 @@ public:
         }
     }
 
+    /**
+     * @brief Set tag value for the code sequence.
+     * @param[in] attribute attribute to set
+     * @param[in] dataset Data set
+     *
+     * @tparam GROUP Group of the tag
+     * @tparam ELEMENT Element of the tag
+     */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setCodeSequenceTagValue(::fwGdcmIO::container::DicomCodedAttribute attribute,
                                         ::gdcm::DataSet &dataset)

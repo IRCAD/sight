@@ -21,7 +21,7 @@ namespace sr
 DicomSRSCoord3DNode::DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribute,
                                          const std::string& relationship,
                                          const std::string& graphicType,
-                                         GraphicDataContainerType graphicDataContainer,
+                                         const GraphicDataContainerType graphicDataContainer,
                                          const std::string& frameOfReferenceUID) :
     ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "SCOORD3D", relationship),
     m_frameOfReferenceUID(frameOfReferenceUID),

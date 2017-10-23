@@ -30,7 +30,7 @@ public:
     /**
      * @brief Constructor
      * @param[in] codeValue Code Value (0008,0100)
-     * @param[in] codingSchemeDesignator Coding Shceme Designator (0008,0102)
+     * @param[in] codingSchemeDesignator Coding Scheme Designator (0008,0102)
      * @param[in] codeMeaning Code Meaning (0008,0104)
      * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
      */

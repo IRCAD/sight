@@ -134,7 +134,7 @@ generator.Generate());
         rootNode->addSubNode(scoordNode);
 
         // Create Image Node
-        std::size_t frameNumber = ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point);
+        const std::size_t frameNumber = ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point);
         SPTR(::fwGdcmIO::container::sr::DicomSRImageNode) imageNode =
             std::make_shared< ::fwGdcmIO::container::sr::DicomSRImageNode >(
                 ::fwGdcmIO::container::DicomCodedAttribute(), "SELECTED FROM", m_instance->getSOPClassUID(),

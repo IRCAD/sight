@@ -18,7 +18,7 @@ namespace sr
 
 DicomSRNumNode::DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
                                const std::string& relationship,
-                               double numValue,
+                               const double numValue,
                                const DicomCodedAttribute& measurementUnits) :
     ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "NUM", relationship),
     m_numValue(numValue),

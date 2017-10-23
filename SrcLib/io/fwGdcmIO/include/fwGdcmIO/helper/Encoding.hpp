@@ -46,7 +46,7 @@ public:
      */
     FWGDCMIO_API static std::string convertString(const std::string &source,
                                                   const std::string &definedCharsetTerm,
-                                                  const SPTR(::fwLog::Logger)& logger = 0)
+                                                  const SPTR(::fwLog::Logger)& logger = nullptr)
         throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
 
 private:

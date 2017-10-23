@@ -282,7 +282,7 @@ void writeSegmentIdentification(const std::string& structureType,
 void writePrivateTags(const ::fwData::Reconstruction::csptr& reconstruction,
                       ::gdcm::DataSet& dataset)
 {
-    // VP private group ('VI' in ASCII)
+    // Private group
     const auto reservedGroup = 0x5649;
     const auto reservingElement = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
     const auto privateCreator = "FW4SPL";

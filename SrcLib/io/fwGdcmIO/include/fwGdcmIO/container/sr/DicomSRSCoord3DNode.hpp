@@ -30,8 +30,10 @@ public:
     typedef std::vector<float> GraphicDataContainerType;
 
     /// Constructor
-    FWGDCMIO_API DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-                                     const std::string& graphicType, GraphicDataContainerType graphicDataContainer,
+    FWGDCMIO_API DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribute,
+                                     const std::string& relationship,
+                                     const std::string& graphicType,
+                                     const GraphicDataContainerType graphicDataContainer,
                                      const std::string& frameOfReferenceUID);
 
     /// Destructor

@@ -6,8 +6,6 @@
 
 #include "ioGdcm/SSurfaceSegmentationWriter.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwData/location/Folder.hpp>
 #include <fwData/Vector.hpp>
 
@@ -118,7 +116,7 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+        ::fwData::Vector::csptr vector = this->getObject< ::fwData::Vector >();
 
         if(vector->getContainer().size() > 2)
         {
@@ -181,7 +179,7 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesys
     catch (const std::exception& e)
     {
         std::stringstream ss;
-        ss << "Warning during saving : " << e.what();
+        ss << "Warning during saving: " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
                  "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }

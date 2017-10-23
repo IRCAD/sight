@@ -59,15 +59,15 @@ void Series::writeGeneralSeriesModule()
     // Series's modality - Type 1
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >(m_object->getModality(), dataset);
 
-    ::boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
+    ::boost::posix_time::ptime ptime = ::boost::posix_time::second_clock::local_time();
 
     std::string fulldate = ::boost::posix_time::to_iso_string(ptime);
 
     // Split iso time in YYYYMMDDTHHMMSS
     ::boost::char_separator<char> sep("T");
-    ::boost::tokenizer<boost::char_separator<char> > tokens(fulldate, sep);
+    ::boost::tokenizer< ::boost::char_separator<char> > tokens(fulldate, sep);
 
-    ::boost::tokenizer<boost::char_separator<char> >::iterator tok_iter = tokens.begin();
+    ::boost::tokenizer< ::boost::char_separator<char> >::iterator tok_iter = tokens.begin();
     const std::string date = *tok_iter;
     tok_iter++;
     const std::string time = *tok_iter;

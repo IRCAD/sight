@@ -91,7 +91,7 @@ public:
     /**
     * @brief Add a date tag that must be shifted.
     * The shift is made according to the interval between the date and the reference date.
-    * @param dateTag Date tag that must be shifted. (This tag shall be a date : VR shall be DA)
+    * @param dateTag Date tag that must be shifted. (This tag shall be a date: VR shall be DA)
     *
     * @note The shift is done from Jan 1, 1900.
     */
@@ -120,42 +120,42 @@ private:
 
     void anonymizationProcess(const ::boost::filesystem::path& dirPath);
 
-    ///D : replace with a non-zero length value that may be a dummy value and consistent with the VR
+    ///D: replace with a non-zero length value that may be a dummy value and consistent with the VR
     void applyActionCodeD(const ::gdcm::Tag& tag);
 
     /**
-     * Z : replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
+     * Z: replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
      * the VR
      *
-     * Z/D : Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
+     * Z/D: Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
      *
      * @note This method applies action code D only.
      */
     void applyActionCodeZ(const ::gdcm::Tag& tag);
 
     /**
-     * X : remove tag
-     * X/Z : X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)
-     * X/D : X unless D is required to maintain IOD conformance (Type 3 versus Type 1)
-     * X/Z/D : X unless Z or D is required to maintain IOD conformance (Type 3 versus Type 2 versus Type 1)
+     * X: remove tag
+     * X/Z: X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)
+     * X/D: X unless D is required to maintain IOD conformance (Type 3 versus Type 1)
+     * X/Z/D: X unless Z or D is required to maintain IOD conformance (Type 3 versus Type 2 versus Type 1)
      *
-     * X/Z/U* : X unless Z or replacement of contained instance UIDs (U) is required to maintain IOD conformance
+     * X/Z/U*: X unless Z or replacement of contained instance UIDs (U) is required to maintain IOD conformance
      * (Type 3 versus Type 2 versus Type 1 sequences containing UID references)
      *
      * @note This method applies action code X only.
      */
     void applyActionCodeX(const ::gdcm::Tag& tag);
 
-    /// K : keep (unchanged for non-sequence attributes, cleaned for sequences)
+    /// K: keep (unchanged for non-sequence attributes, cleaned for sequences)
     void applyActionCodeK(const ::gdcm::Tag& tag);
 
     /**
-     * C : clean, that is replace with values of similar meaning known not to contain identifying information and
+     * C: clean, that is replace with values of similar meaning known not to contain identifying information and
      * consistent with the VR
      */
     void applyActionCodeC(const ::gdcm::Tag& tag);
 
-    /// U : if UID is not empty, replace with a non-zero length UID
+    /// U: if UID is not empty, replace with a non-zero length UID
     /// that is internally consistent within a set of Instances
     void applyActionCodeU(const ::gdcm::Tag& tag);
 

@@ -176,10 +176,10 @@ void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr
         filenames.push_back(path);
     }
 
-    bool status = scanner.Scan( filenames );
+    const bool status = scanner.Scan( filenames );
     FW_RAISE_IF("Unable to read the files.", !status);
 
-    ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
+    const ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
     ::gdcm::Directory::FilenamesType::const_iterator it;
     for(it = keys.begin(); it != keys.end(); ++it)
     {

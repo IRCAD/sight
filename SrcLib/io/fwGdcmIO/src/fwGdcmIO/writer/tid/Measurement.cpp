@@ -91,12 +91,12 @@ void Measurement::createMeasurement(const SPTR(::fwGdcmIO::container::sr::DicomS
     coordinates[4] = point2->getCoord()[1];
     coordinates[5] = point2->getCoord()[2];
 
-    double distance = sqrt( (coordinates[0] - coordinates[3]) * (coordinates[0] - coordinates[3]) +
+    const double distance = sqrt( (coordinates[0] - coordinates[3]) * (coordinates[0] - coordinates[3]) +
     (coordinates[1] - coordinates[4]) * (coordinates[1] - coordinates[4]) +
     (coordinates[2] - coordinates[5]) * (coordinates[2] - coordinates[5]) );
 
     // Retrieve Frame Numbers
-    std::size_t frameNumber1 = ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point1);
+    const std::size_t frameNumber1 = ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point1);
 
     // Create Measurement Node
     SPTR(::fwGdcmIO::container::sr::DicomSRNumNode) numNode =

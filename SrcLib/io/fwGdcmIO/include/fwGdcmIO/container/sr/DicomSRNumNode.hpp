@@ -29,7 +29,8 @@ public:
 
     /// Constructor
     FWGDCMIO_API DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
-                                const std::string& relationship, double numValue,
+                                const std::string& relationship,
+                                const double numValue,
                                 const DicomCodedAttribute& measurementUnits);
 
     /// Destructor
