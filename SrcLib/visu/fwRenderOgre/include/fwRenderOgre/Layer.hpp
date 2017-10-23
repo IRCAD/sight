@@ -65,6 +65,7 @@ public:
         NONE,
         AUTOSTEREO_5,
         AUTOSTEREO_8,
+        STEREO
     };
 
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);

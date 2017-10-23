@@ -985,6 +985,11 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
             ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
             layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::NONE);
         }
+        else if(val == "Stereo")
+        {
+            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::STEREO);
+        }
         else if(val == "Autostereo(5)")
         {
             ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);

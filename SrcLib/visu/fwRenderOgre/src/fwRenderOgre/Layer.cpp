@@ -63,6 +63,15 @@ const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
 
 //-----------------------------------------------------------------------------
 
+static const std::map<Layer::StereoModeType, std::string> s_stereoCompositorMap = {
+    { Layer::StereoModeType::AUTOSTEREO_5, "AutoStereo5" },
+    { Layer::StereoModeType::AUTOSTEREO_8, "AutoStereo8" },
+    { Layer::StereoModeType::STEREO, "Stereo" },
+    { Layer::StereoModeType::NONE, "" }
+};
+
+//-----------------------------------------------------------------------------
+
 struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 {
     Layer* m_layer;
@@ -109,6 +118,11 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
                 {
                     eyeAngle = 0.01625f;
                     angle    = eyeAngle * -3.5f;
+                }
+                else if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
+                {
+                    eyeAngle = 0.10472f;
+                    angle    = -0.05235f;
                 }
 
                 auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
@@ -375,12 +389,12 @@ void Layer::createScene()
         }
         if(m_stereoMode != StereoModeType::NONE)
         {
-            compositorChain.push_back(m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
-                                      "AutoStereo8" : "AutoStereo5");
+            compositorChain.push_back(s_stereoCompositorMap.at(m_stereoMode));
         }
 
         m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
 
+        m_compositorChainManager->addAvailableCompositor("Stereo");
         m_compositorChainManager->addAvailableCompositor("AutoStereo5");
         m_compositorChainManager->addAvailableCompositor("AutoStereo8");
     }
@@ -796,8 +810,7 @@ void Layer::requestRender()
 
 void Layer::setStereoMode(StereoModeType mode)
 {
-    const std::string oldCompositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
-                                          "AutoStereo8" : "AutoStereo5";
+    const std::string oldCompositorName = s_stereoCompositorMap.at(m_stereoMode);
 
     // Disable the old compositor
     if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
@@ -808,8 +821,8 @@ void Layer::setStereoMode(StereoModeType mode)
     // Enable the new one
     m_stereoMode = mode;
 
-    const std::string compositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
-                                       "AutoStereo8" : "AutoStereo5";
+    const std::string compositorName = s_stereoCompositorMap.at(m_stereoMode);
+
     if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
     {
         m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());

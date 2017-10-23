@@ -146,10 +146,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_fullScreenQuad->setCorners(-1, 1, 1, -1);
 
     const unsigned int numViewPoints = m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
+                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 :
+                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO       ? 2 : 1;
 
-    const float wRatio = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
-    const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
+    const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
+    const float hRatio = numViewPoints != 1 && numViewPoints != 2 ? 0.5f : 1.f;
 
     for(unsigned int i = 0; i < numViewPoints; ++i)
     {
@@ -422,8 +423,8 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
     const auto numViewPoints = m_entryPointsTextures.size();
-    const float wRatio       = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
-    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
+    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
+    const float hRatio       = numViewPoints != 1 && numViewPoints != 2 ? 0.5f : 1.f;
 
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
@@ -674,6 +675,11 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     {
         eyeAngle = 0.01625f;
         angle    = eyeAngle * -3.5f;
+    }
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
+    {
+        eyeAngle = 0.10472f;
+        angle    = -0.05235f;
     }
 
     ::Ogre::RenderOperation fsRenderOp;
