@@ -257,8 +257,7 @@ void SCameraConfigLauncher::onImportClicked()
     else
     {
         QStringList cameras;
-        using CameraMap = std::map< std::string, ::arData::Camera::sptr>;
-        CameraMap map;
+        std::map< std::string, ::arData::Camera::sptr> map;
         for (auto nSeries = 0; nSeries != cameraSeries.size(); ++nSeries)
         {
             auto cameraSeries_ = cameraSeries[nSeries];

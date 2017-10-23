@@ -131,9 +131,9 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
-            auto servicesImpl   = serviceFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
-                                                                                       "::arServices::IGrabber");
+            const auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
+            auto servicesImpl         = serviceFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                                             "::arServices::IGrabber");
             std::vector< std::string > availableExtensionsSelector;
 
             for(const auto& srv : servicesImpl)

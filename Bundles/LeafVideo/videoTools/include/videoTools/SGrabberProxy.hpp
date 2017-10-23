@@ -46,7 +46,7 @@ namespace videoTools
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoQt::SGrabberProxy">
+        <service uid="..." type="::videoQt::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <config>
@@ -92,16 +92,16 @@ public:
 
 protected:
 
-    /// Initialize the layout and the camera.
+    /// Does nothing.
     VIDEOTOOLS_API virtual void starting() final;
 
-    /// Destroy the layout.
+    /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
     VIDEOTOOLS_API virtual void stopping() final;
 
-    /// Do nothing.
+    /// Does nothing.
     VIDEOTOOLS_API virtual void updating() final;
 
-    /// Do nothing.
+    /// Parses the XML configuration of the service.
     VIDEOTOOLS_API virtual void configuring() final;
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
@@ -117,7 +117,7 @@ protected:
     VIDEOTOOLS_API virtual void toggleLoopMode() final;
 
     /// SLOT : set the new position in the video.
-    VIDEOTOOLS_API virtual void setPosition(int64_t position) final;
+    VIDEOTOOLS_API virtual void setPosition(std::int64_t position) final;
 
 private:
 
