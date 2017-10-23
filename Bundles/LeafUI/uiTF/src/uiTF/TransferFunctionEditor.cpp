@@ -232,7 +232,13 @@ void TransferFunctionEditor::deleteTF()
             ::fwDataTools::helper::Composite compositeHelper(poolTF);
             SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
-            compositeHelper.notify();
+
+            {
+                auto sig = poolTF->signal< ::fwData::Composite::RemovedObjectsSignalType >(
+                    ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                compositeHelper.notify();
+            }
 
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
             std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
