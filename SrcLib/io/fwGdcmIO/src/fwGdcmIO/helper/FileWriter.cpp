@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
+
+#include "fwGdcmIO/exception/Failed.hpp"
 
 #include <gdcmFileMetaInformation.h>
 #include <gdcmWriter.h>
@@ -20,7 +21,7 @@ void FileWriter::write(const ::boost::filesystem::path& filename,
                        const SPTR(::gdcm::Writer)& writer)
 {
     // Set file header
-    ::gdcm::FileMetaInformation &metaInformation = writer->GetFile().GetHeader();
+    ::gdcm::FileMetaInformation& metaInformation = writer->GetFile().GetHeader();
 
     // Transfer syntax - Type 1
     metaInformation.SetDataSetTransferSyntax(::gdcm::TransferSyntax::ExplicitVRLittleEndian);

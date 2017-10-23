@@ -19,8 +19,8 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwMedData/Series.hpp>
 #include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -181,12 +181,12 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesys
         std::stringstream ss;
         ss << "Warning during saving: " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                 "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                 "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

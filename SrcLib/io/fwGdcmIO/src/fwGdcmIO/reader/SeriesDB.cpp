@@ -1,35 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/reader/Series.hpp"
 #include "fwGdcmIO/reader/SeriesDB.hpp"
+
 #include "fwGdcmIO/helper/DicomDir.hpp"
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 #include "fwGdcmIO/helper/DicomSeries.hpp"
 #include "fwGdcmIO/helper/SOPClass.hpp"
+#include "fwGdcmIO/reader/Series.hpp"
 
-#include <fwMedDataTools/helper/SeriesDB.hpp>
+#include <fwDataIO/reader/registry/macros.hpp>
+
+#include <fwDicomIOFilter/factory/new.hpp>
+#include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/IFilter.hpp>
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
-#include <fwDicomIOFilter/IFilter.hpp>
-#include <fwDicomIOFilter/factory/new.hpp>
-#include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <boost/algorithm/string/split.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDirectory.h>
 #include <gdcmMediaStorage.h>
 #include <gdcmUIDs.h>
-
-#include <boost/algorithm/string/split.hpp>
 
 fwDataIOReaderRegisterMacro( ::fwGdcmIO::reader::SeriesDB );
 
@@ -101,7 +103,7 @@ void SeriesDB::read()
     if(!m_dicomFilterType.empty())
     {
         ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(m_dicomFilterType);
-        ::fwDicomIOFilter::helper::Filter::applyFilter(m_dicomSeriesContainer,filter, true, m_logger);
+        ::fwDicomIOFilter::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -285,7 +287,7 @@ void SeriesDB::readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSe
     if(!m_dicomFilterType.empty())
     {
         ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(m_dicomFilterType);
-        ::fwDicomIOFilter::helper::Filter::applyFilter(m_dicomSeriesContainer,filter, true, m_logger);
+        ::fwDicomIOFilter::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -340,10 +342,10 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
 
     // needed for seriesReader
     /*
-    seriesReader->addCallback([&](std::uint64_t progress)
+       seriesReader->addCallback([&](std::uint64_t progress)
             {
             });
-    */
+     */
 
     m_converterJob->setTotalWorkUnits(m_dicomSeriesContainer.size());
 
@@ -351,17 +353,17 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     // We do not use an Aggregator here as the jobs
     // are created after updating the main aggregator.
     std::uint64_t totalWorkUnits = 0;
-    for(const ::fwMedData::DicomSeries::sptr &dicomSeries : m_dicomSeriesContainer)
+    for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
     {
         totalWorkUnits += dicomSeries->getLocalDicomPaths().size();
     }
     m_converterJob->setTotalWorkUnits(totalWorkUnits);
 
     std::uint64_t completedProgress = 0;
-    auto progressCallback = [&](std::uint64_t progress)
-    {
-        m_converterJob->doneWork(completedProgress + progress);
-    };
+    auto progressCallback           = [&](std::uint64_t progress)
+                                      {
+                                          m_converterJob->doneWork(completedProgress + progress);
+                                      };
 
     // Read series
     for(const ::fwMedData::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
@@ -433,14 +435,18 @@ bool SeriesDB::dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
     bool aIsAnImage =
         (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-         aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+         aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by
+                                                            // "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
+                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
     bool bIsAnImage =
         (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
          ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-         bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+         bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by
+                                                            // "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
+                                                            // ::gdcm::MediaStorage::Comprehensive3DSR"
          ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 

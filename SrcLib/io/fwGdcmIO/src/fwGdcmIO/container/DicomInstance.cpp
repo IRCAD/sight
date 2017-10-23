@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,15 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
 #include <fwData/Image.hpp>
+
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <gdcmUIDGenerator.h>
 #include <gdcmScanner.h>
+#include <gdcmUIDGenerator.h>
 
 namespace fwGdcmIO
 {
@@ -57,14 +58,14 @@ DicomInstance::DicomInstance(const ::fwMedData::Series::sptr& series,
 
 DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::sptr& dicomSeries,
                              const ::fwLog::Logger::sptr& logger) :
-    m_isMultiFiles(dicomSeries->getLocalDicomPaths().size()>1),
+    m_isMultiFiles(dicomSeries->getLocalDicomPaths().size() > 1),
     m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
     m_seriesInstanceUID(dicomSeries->getInstanceUID()),
     m_logger(logger)
 {
     SLM_ASSERT("DicomSeries is not instantiated", dicomSeries);
     SLM_ASSERT("DicomSeries availability shall be PATHS.",
-        dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::PATHS);
+               dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::PATHS);
 
     // Get SOPClassUID
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
@@ -79,13 +80,13 @@ DicomInstance::DicomInstance(const ::fwMedData::DicomSeries::sptr& dicomSeries,
 
 //------------------------------------------------------------------------------
 
-DicomInstance::DicomInstance(const DicomInstance &dicomInstance)
+DicomInstance::DicomInstance(const DicomInstance& dicomInstance)
 {
     SLM_TRACE_FUNC();
-    m_isMultiFiles = dicomInstance.m_isMultiFiles;
-    m_SOPClassUID = dicomInstance.m_SOPClassUID;
+    m_isMultiFiles            = dicomInstance.m_isMultiFiles;
+    m_SOPClassUID             = dicomInstance.m_SOPClassUID;
     m_SOPInstanceUIDContainer = dicomInstance.m_SOPInstanceUIDContainer;
-    m_logger = dicomInstance.m_logger;
+    m_logger                  = dicomInstance.m_logger;
 }
 
 //------------------------------------------------------------------------------
@@ -200,7 +201,7 @@ void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr
     else if(frameOfReferenceUIDContainer.size() > 1)
     {
         const std::string msg = "The selected DICOM series contain several Frame of Reference.";
-        SLM_WARN_IF(msg,!m_logger);
+        SLM_WARN_IF(msg, !m_logger);
         if(m_logger)
         {
             m_logger->critical(msg);
@@ -209,7 +210,7 @@ void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr
     else
     {
         const std::string msg = "No Frame of Reference has been found in the selected series.";
-        SLM_WARN_IF(msg,!m_logger);
+        SLM_WARN_IF(msg, !m_logger);
         if(m_logger)
         {
             m_logger->critical(msg);

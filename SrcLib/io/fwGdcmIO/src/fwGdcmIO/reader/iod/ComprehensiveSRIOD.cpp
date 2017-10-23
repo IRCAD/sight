@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/reader/ie/Document.hpp"
 #include "fwGdcmIO/reader/iod/ComprehensiveSRIOD.hpp"
+
+#include "fwGdcmIO/reader/ie/Document.hpp"
 
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
@@ -25,7 +26,7 @@ ComprehensiveSRIOD::ComprehensiveSRIOD(const ::fwMedData::DicomSeries::sptr& dic
                                        const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                        const ::fwLog::Logger::sptr& logger,
                                        ProgressCallback progress,
-                                       CancelRequestedCallback cancel):
+                                       CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
@@ -54,11 +55,11 @@ void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO
     reader->SetFileName( filename.c_str() );
     bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                      filename+"\" using the GDCM Image Reader."), !success);
+                                                        filename+"\" using the GDCM Image Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
-                                              m_progressCallback, m_cancelRequestedCallback);
+                                                m_progressCallback, m_cancelRequestedCallback);
 
     // Read SR
     documentIE.readSR();

@@ -60,6 +60,5 @@ private:
 } // namespace helper
 } // namespace fwGdcmIO
 
-
 #endif // __FWGDCMIO_HELPER_CSVIO_HPP__
 

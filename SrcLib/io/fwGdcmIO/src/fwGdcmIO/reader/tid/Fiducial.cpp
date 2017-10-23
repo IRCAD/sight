@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,10 +12,11 @@
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -87,7 +88,7 @@ void Fiducial::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node
                         {
                             const int frameNumber = imageNode->getFrameNumber();
                             z = ::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object,
-                                                                                               frameNumber);
+                                                                                                    frameNumber);
                             foundLandmark = true;
                         }
                     }
@@ -103,9 +104,9 @@ void Fiducial::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node
                     // Retrieve coordinates
                     ::fwGdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
                         scoord3DNode->getGraphicDataContainer();
-                    x = coordinates[0];
-                    y = coordinates[1];
-                    z = coordinates[2];
+                    x             = coordinates[0];
+                    y             = coordinates[1];
+                    z             = coordinates[2];
                     foundLandmark = true;
                 }
             }
@@ -124,7 +125,7 @@ void Fiducial::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node
 
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
-    ::fwData::Point::sptr point = ::fwData::Point::New(x,y,z);
+    ::fwData::Point::sptr point = ::fwData::Point::New(x, y, z);
     point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
 
     ::fwData::PointList::sptr pointList =

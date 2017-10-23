@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRNumNode.hpp"
+
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 namespace fwGdcmIO
@@ -34,7 +35,7 @@ DicomSRNumNode::~DicomSRNumNode()
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::write(::gdcm::DataSet &dataset) const
+void DicomSRNumNode::write(::gdcm::DataSet& dataset) const
 {
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
@@ -44,7 +45,7 @@ void DicomSRNumNode::write(::gdcm::DataSet &dataset) const
 
 //------------------------------------------------------------------------------
 
-void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet &dataset) const
+void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet& dataset) const
 {
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
     ::gdcm::Item item;
@@ -56,7 +57,7 @@ void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet &dataset) const
 
     // Add measured units code sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-            this->createConceptNameCodeSequence(itemDataset, m_measurementUnits);
+        this->createConceptNameCodeSequence(itemDataset, m_measurementUnits);
     ::fwGdcmIO::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(codeSequence, itemDataset);
 
     sequence->AddItem(item);

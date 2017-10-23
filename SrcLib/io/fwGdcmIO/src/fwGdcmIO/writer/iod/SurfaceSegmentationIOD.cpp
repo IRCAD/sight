@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
 #include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
@@ -12,19 +14,19 @@
 #include "fwGdcmIO/writer/ie/Series.hpp"
 #include "fwGdcmIO/writer/ie/Study.hpp"
 #include "fwGdcmIO/writer/ie/Surface.hpp"
-#include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwRuntime/operations.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <gdcmSurfaceWriter.h>
+#include <fwRuntime/operations.hpp>
 
 #include <boost/make_shared.hpp>
+
+#include <gdcmSurfaceWriter.h>
 
 namespace fwGdcmIO
 {
@@ -63,7 +65,6 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
     // Create writer
     SPTR(::gdcm::SurfaceWriter) writer = std::make_shared< ::gdcm::SurfaceWriter >();
 
-
     // Create Information Entity helpers
     ::fwGdcmIO::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
     ::fwGdcmIO::writer::ie::Study studyIE(writer, m_instance, series->getStudy());
@@ -74,7 +75,8 @@ void SurfaceSegmentationIOD::write(const ::fwMedData::Series::sptr& series)
     ::fwGdcmIO::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Load Segmented Property Registry
-    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath("fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
+    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
+        "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
 
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {

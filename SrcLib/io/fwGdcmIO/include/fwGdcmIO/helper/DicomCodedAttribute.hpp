@@ -41,7 +41,7 @@ public:
      * @param[in] entry Entry containing one or several coded attributes.
      */
     FWGDCMIO_API static ::gdcm::Segment::BasicCodedEntryVector
-        convertEntryToGDCMCodedAttribute(const std::string& entry);
+    convertEntryToGDCMCodedAttribute(const std::string& entry);
 
     /**
      * @brief Retrieve '(AAA;BBB;CCC)' patterns inside of the entry string.

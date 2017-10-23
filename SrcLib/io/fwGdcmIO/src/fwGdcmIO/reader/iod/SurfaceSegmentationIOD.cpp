@@ -1,21 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
 #include "fwGdcmIO/reader/ie/Equipment.hpp"
 #include "fwGdcmIO/reader/ie/Patient.hpp"
 #include "fwGdcmIO/reader/ie/Series.hpp"
 #include "fwGdcmIO/reader/ie/Study.hpp"
 #include "fwGdcmIO/reader/ie/Surface.hpp"
-#include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwRuntime/operations.hpp>
+
 #include <fwMedData/ModelSeries.hpp>
+
+#include <fwRuntime/operations.hpp>
 
 #include <gdcmSegmentReader.h>
 #include <gdcmSurfaceHelper.h>
@@ -34,7 +37,7 @@ SurfaceSegmentationIOD::SurfaceSegmentationIOD(const ::fwMedData::DicomSeries::s
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const ::fwLog::Logger::sptr& logger,
                                                ProgressCallback progress,
-                                               CancelRequestedCallback cancel):
+                                               CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
@@ -69,23 +72,24 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
     reader->SetFileName( filename.c_str() );
     bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                      filename+"\" using the GDCM Image Reader."), !success);
+                                                        filename+"\" using the GDCM Image Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
-                                            m_progressCallback, m_cancelRequestedCallback);
+                                              m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
-                                            m_progressCallback, m_cancelRequestedCallback);
+                                          m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                             m_progressCallback, m_cancelRequestedCallback);
     // Use Image as frame of reference
     ::fwGdcmIO::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
-                                            m_progressCallback, m_cancelRequestedCallback);
+                                                  m_progressCallback, m_cancelRequestedCallback);
     ::fwGdcmIO::reader::ie::Surface surfaceIE(m_dicomSeries, reader, m_instance, modelSeries, m_logger,
-                                            m_progressCallback, m_cancelRequestedCallback);
+                                              m_progressCallback, m_cancelRequestedCallback);
 
     // Load Segmented Property Registry
-    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath("fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
+    const ::boost::filesystem::path filepath = ::fwRuntime::getLibraryResourceFilePath(
+        "fwGdcmIO-" FWGDCMIO_VER "/SegmentedPropertyRegistry.csv");
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {
         throw  ::fwGdcmIO::exception::Failed("Unable to load segmented property registry: '" +
@@ -154,13 +158,12 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
     OSLM_TRACE("Number of reconstructions : " << modelSeries->getReconstructionDB().size());
 #endif
 
-   // Display reconstructions
-   series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
+    // Display reconstructions
+    series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
 
 }
 
 //------------------------------------------------------------------------------
-
 
 }  // namespace iod
 }  // namespace reader

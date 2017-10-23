@@ -42,8 +42,8 @@ public:
      * @return The tag value as string
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static std::string getTagValue(const ::gdcm::DataSet &dataset,
-                                   const std::string &charset = "",
+    static std::string getTagValue(const ::gdcm::DataSet& dataset,
+                                   const std::string& charset = "",
                                    const ::fwLog::Logger::sptr& logger = nullptr)
     {
         std::string result = "";
@@ -52,12 +52,12 @@ public:
 
         if (dataset.FindDataElement(tag))
         {
-            const ::gdcm::DataElement &dataElement = dataset.GetDataElement(tag);
+            const ::gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
 
             if (!dataElement.IsEmpty()) // Can be type 2
             {
                 // Retrieve buffer
-                const ::gdcm::ByteValue *bv = dataElement.GetByteValue();
+                const ::gdcm::ByteValue* bv = dataElement.GetByteValue();
 
                 if(bv)
                 {
@@ -100,7 +100,7 @@ public:
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static std::string getTagValue(const std::string& buffer,
-                                   const std::string &charset = "",
+                                   const std::string& charset = "",
                                    const ::fwLog::Logger::sptr& logger = 0)
     {
         std::string result = "";
@@ -137,7 +137,7 @@ public:
      * @return The tag value.
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT, typename T >
-    static const T getTagValue(const ::gdcm::DataSet &dataset)
+    static const T getTagValue(const ::gdcm::DataSet& dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         attribute.SetFromDataSet(dataset);

@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
+
 #include "fwGdcmIO/helper/CsvIO.hpp"
 #include "fwGdcmIO/helper/DicomCodedAttribute.hpp"
 
@@ -20,8 +21,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 const SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::s_DEFAULT_ENTRY_VALUE =
-    {{"(111176;DCM;Unspecified)", "(T-D000A;SRT;Anatomical Structure)", "", "", ""}};
-
+{{"(111176;DCM;Unspecified)", "(T-D000A;SRT;Anatomical Structure)", "", "", ""}};
 
 //------------------------------------------------------------------------------
 
@@ -39,15 +39,15 @@ bool checkAndFormatEntry(const std::string& structureType,
 
     // Check condition and add critical log on failure
     auto checkCondition = [&](bool condition, const std::string& msg)
-    {
-        result &= condition;
+                          {
+                              result &= condition;
 
-        SLM_ERROR_IF(msg, !condition && !logger);
-        if(!condition && logger)
-        {
-            logger->critical(msg);
-        }
-    };
+                              SLM_ERROR_IF(msg, !condition && !logger);
+                              if(!condition && logger)
+                              {
+                                  logger->critical(msg);
+                              }
+                          };
 
     // Structure type
     checkCondition(!structureType.empty(), "Structure type of registry entries shall not be empty.");
@@ -116,7 +116,7 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(std::istream& 
     ::fwGdcmIO::helper::CsvIO reader(csvStream);
 
     const std::string separator = "|";
-    auto tokens = reader.getLine(separator);
+    auto tokens                 = reader.getLine(separator);
 
     if(omitFirstLine)
     {
@@ -157,11 +157,11 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(std::istream& 
         if(uniquenessSet.find(entry.second) != uniquenessSet.end())
         {
             const std::string msg = "Several structure types have the same attribute combination : {" +
-                entry.second[0] + ";" +
-                entry.second[1] + ";" +
-                entry.second[2] + ";" +
-                entry.second[3] + ";" +
-                entry.second[4] + "}";
+                                    entry.second[0] + ";" +
+                                    entry.second[1] + ";" +
+                                    entry.second[2] + ";" +
+                                    entry.second[3] + ";" +
+                                    entry.second[4] + "}";
 
             SLM_ERROR_IF(msg, !logger);
             if(logger)
@@ -230,26 +230,35 @@ SegmentedPropertyRegistry::EntryType SegmentedPropertyRegistry::getEntry(const s
     }                                                   \
     return s_DEFAULT_ENTRY_VALUE[index];
 
+//------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getPropertyType(const std::string& structureType) const
 {
     GET_ENTRY_VALUE(0);
 }
 
+//------------------------------------------------------------------------------
+
 std::string SegmentedPropertyRegistry::getPropertyCategory(const std::string& structureType) const
 {
     GET_ENTRY_VALUE(1);
 }
+
+//------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getPropertyTypeModifiers(const std::string& structureType) const
 {
     GET_ENTRY_VALUE(2);
 }
 
+//------------------------------------------------------------------------------
+
 std::string SegmentedPropertyRegistry::getAnatomicRegion(const std::string& structureType) const
 {
     GET_ENTRY_VALUE(3);
 }
+
+//------------------------------------------------------------------------------
 
 std::string SegmentedPropertyRegistry::getAnatomicRegionModifiers(const std::string& structureType) const
 {
@@ -275,9 +284,9 @@ std::string SegmentedPropertyRegistry::getStructureType(const std::string& prope
 
     // Search predicate
     const auto predicate = [&](const EntryRegistryType::value_type& value) -> bool
-    {
-        return value.second == entry;
-    };
+                           {
+                               return value.second == entry;
+                           };
 
     // Search for entry
     const auto it = std::find_if(m_registry.begin(), m_registry.end(), predicate);

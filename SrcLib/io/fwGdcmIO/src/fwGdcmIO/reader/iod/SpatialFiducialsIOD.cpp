@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataReader.hxx"
-#include "fwGdcmIO/reader/ie/SpatialFiducials.hpp"
 #include "fwGdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
+#include "fwGdcmIO/reader/ie/SpatialFiducials.hpp"
 
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -30,7 +31,7 @@ SpatialFiducialsIOD::SpatialFiducialsIOD(const ::fwMedData::DicomSeries::sptr& d
                                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                          const ::fwLog::Logger::sptr& logger,
                                          ProgressCallback progress,
-                                         CancelRequestedCallback cancel):
+                                         CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
@@ -58,7 +59,7 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcm
     // Read the first file
     ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
 
-    if(pathContainer.size() >1)
+    if(pathContainer.size() > 1)
     {
         m_logger->warning("More than one Spatial Fiducials files have been found in the series. "
                           "Only the first one will be read.");
@@ -68,21 +69,21 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcm
     reader->SetFileName( filename.c_str() );
     bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Unable to read the DICOM instance \""+
-                                                      filename+"\" using the GDCM Image Reader."), !success);
+                                                        filename+"\" using the GDCM Image Reader."), !success);
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::SpatialFiducials spatialFiducialsIE(
-            m_dicomSeries, reader, m_instance, imageSeries->getImage(),
-            m_logger, m_progressCallback, m_cancelRequestedCallback);
+        m_dicomSeries, reader, m_instance, imageSeries->getImage(),
+        m_logger, m_progressCallback, m_cancelRequestedCallback);
 
     // Retrieve dataset
-    const ::gdcm::DataSet &datasetRoot = reader->GetFile().GetDataSet();
+    const ::gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
 
     // Retrieve Fiducial Set Sequence
     const ::gdcm::DataElement& fiducialSetSequenceDataElement =
-            datasetRoot.GetDataElement( ::gdcm::Tag(0x0070, 0x031C) );
+        datasetRoot.GetDataElement( ::gdcm::Tag(0x0070, 0x031C) );
     const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSetSequence =
-            fiducialSetSequenceDataElement.GetValueAsSQ();
+        fiducialSetSequenceDataElement.GetValueAsSQ();
 
     for(unsigned int i = 1; i <= fiducialSetSequence->GetNumberOfItems(); ++i)
     {
@@ -90,16 +91,16 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcm
         const ::gdcm::DataSet& sequenceSetDataset = sequenceSetItem.GetNestedDataSet();
 
         const ::gdcm::DataElement& fiducialSequenceDataElement =
-                sequenceSetDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x031E) );
+            sequenceSetDataset.GetDataElement( ::gdcm::Tag(0x0070, 0x031E) );
         const ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSequence =
-                fiducialSequenceDataElement.GetValueAsSQ();
+            fiducialSequenceDataElement.GetValueAsSQ();
 
         for(unsigned int j = 1; j <= fiducialSequence->GetNumberOfItems(); ++j)
         {
             ::gdcm::Item fiducialItem = fiducialSequence->GetItem(j);
             const ::gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
-            const std::string shapeType =
-              ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0070,0x0306>(fiducialDataset);
+            const std::string shapeType            =
+                ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0070, 0x0306>(fiducialDataset);
 
             if(shapeType == "POINT")
             {

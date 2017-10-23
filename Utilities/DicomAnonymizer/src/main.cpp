@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwGdcmIO/helper/DicomAnonymizer.hpp>
 
-#include <boost/program_options.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/program_options.hpp>
 
 #include <stdlib.h>
-#include <string>
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
+#include <string>
 
 /** \file DicomAnonymizer/src/main
  *

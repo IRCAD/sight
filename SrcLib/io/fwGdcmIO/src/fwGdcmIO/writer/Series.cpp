@@ -1,22 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/writer/Series.hpp"
 
-#include "fwGdcmIO/writer/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/writer/iod/ComprehensiveSRIOD.hpp"
+#include "fwGdcmIO/writer/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -89,7 +90,7 @@ void Series::write() throw (::fwGdcmIO::exception::Failed)
             else
             {
                 ::fwGdcmIO::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->getFolder() / "imSR",
-                        m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
+                                                                        m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
                 documentIOD.write(series);
             }
         }
@@ -120,7 +121,8 @@ bool Series::hasDocumentSR(const ::fwMedData::ImageSeries::csptr& imageSeries) c
     ::fwData::PointList::sptr pl;
     pl = image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     // Check if image has landmark and distance
-    return ((pl && pl->getPoints().size() > 0) || image->getField(::fwDataTools::fieldHelper::Image::m_imageDistancesId));
+    return ((pl && pl->getPoints().size() > 0) ||
+            image->getField(::fwDataTools::fieldHelper::Image::m_imageDistancesId));
 }
 
 //------------------------------------------------------------------------------

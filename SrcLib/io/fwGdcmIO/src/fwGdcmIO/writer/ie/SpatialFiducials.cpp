@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,18 +9,19 @@
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-#include <gdcmUIDGenerator.h>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 
-
-
 #include <boost/foreach.hpp>
+
+#include <gdcmUIDGenerator.h>
 
 namespace fwGdcmIO
 {
@@ -77,7 +78,6 @@ void SpatialFiducials::writeSpatialFiducialsModule()
     // Content Creator's Name - Type 2 - TODO: Set fiducial creator name ?
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x0084 >("Unknown^Unknown", dataset);
 
-
     // Fiducial Set Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSetSequence = new ::gdcm::SequenceOfItems();
     ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0070, 0x031C >(fiducialSetSequence, dataset);
@@ -101,22 +101,22 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 
         // Referenced Frame Number - Type 1C
         int frameNumber = index + 1;
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< int, 0x0008, 0x1160 >(&frameNumber, 1, referencedImageItemDataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< int, 0x0008, 0x1160 >(&frameNumber, 1,
+                                                                                 referencedImageItemDataset);
 
         // Referenced SOP Class UID - Type 1
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(),
-                referencedImageItemDataset);
+                                                                           referencedImageItemDataset);
 
         // Referenced SOP Instance UID - Type 1
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(
-                m_instance->getSOPInstanceUIDContainer()[index],
-                referencedImageItemDataset);
+            m_instance->getSOPInstanceUIDContainer()[index],
+            referencedImageItemDataset);
 
         // Add referenced image to sequence
         referencedImageSequence->AddItem(referencedImageItem);
 
     }
-
 
     // Fiducial Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > fiducialSequence = new ::gdcm::SequenceOfItems();
@@ -137,7 +137,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
 throw(::fwGdcmIO::exception::Failed)
 {
     ::fwData::PointList::sptr pointList =
-            m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int index = 0;
@@ -153,7 +153,8 @@ throw(::fwGdcmIO::exception::Failed)
             ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x0310 >(ssIdentifier.str(), fiducialItemDataset);
 
             // Fiducial Description - Type 3
-            std::string label = point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+            std::string label =
+                point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
             ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x030F >(label, fiducialItemDataset);
 
             // Shape Type - Type 1
@@ -161,8 +162,9 @@ throw(::fwGdcmIO::exception::Failed)
 
             // Graphic Coordinates Data Sequence - Type 1C
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > graphicCoodinatesDataSequence =
-                    new ::gdcm::SequenceOfItems();
-            ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0070, 0x0318 >(graphicCoodinatesDataSequence, fiducialItemDataset);
+                new ::gdcm::SequenceOfItems();
+            ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0070, 0x0318 >(graphicCoodinatesDataSequence,
+                                                                                       fiducialItemDataset);
 
             ::gdcm::Item graphicDataItem;
             graphicDataItem.SetVLToUndefined();
@@ -172,14 +174,18 @@ throw(::fwGdcmIO::exception::Failed)
             float coordinates[2];
             coordinates[0] = static_cast<float>(point->getCoord()[0]);
             coordinates[1] = static_cast<float>(point->getCoord()[1]);
-            ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(coordinates, 2, graphicDataItemDataset);
+            ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(coordinates, 2,
+                                                                                       graphicDataItemDataset);
             OSLM_TRACE("WRITE NEW POINT : [" << label << "] " << coordinates[0] << " / " << coordinates[1]);
 
             // Referenced Image Sequence - Type 1
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence = new ::gdcm::SequenceOfItems();
-            ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x1140 >(referencedImageSequence, graphicDataItemDataset);
+            ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x1140 >(referencedImageSequence,
+                                                                                       graphicDataItemDataset);
 
-            int frameNumber = static_cast<int>(::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object, point));
+            int frameNumber =
+                static_cast<int>(::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(m_object,
+                                                                                               point));
             this->addReferencedImage(frameNumber, referencedImageSequence);
 
             // Add graphic data to sequence
@@ -211,11 +217,14 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
     ::gdcm::DataSet& referencedSeriesItemDataset = referencedSeriesItem.GetNestedDataSet();
 
     // Series Instance UID - Type 1
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000E >(m_instance->getSeriesInstanceUID(),                                                                    referencedSeriesItemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000E >(
+        m_instance->getSeriesInstanceUID(),
+        referencedSeriesItemDataset);
 
     // Referenced Instance Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedInstanceSequence = new ::gdcm::SequenceOfItems();
-    ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x114A >(referencedInstanceSequence, referencedSeriesItemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0008, 0x114A >(referencedInstanceSequence,
+                                                                               referencedSeriesItemDataset);
 
     // Add all referenced image
     for(unsigned int index = 0; index < m_instance->getSOPInstanceUIDContainer().size(); ++index)
@@ -226,17 +235,16 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
 
         // Referenced SOP Class UID - Type 1
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(),
- referencedInstanceItemDataset);
+                                                                           referencedInstanceItemDataset);
 
         // Referenced SOP Instance UID - Type 1
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(
-                m_instance->getSOPInstanceUIDContainer()[index],
-                referencedInstanceItemDataset);
+            m_instance->getSOPInstanceUIDContainer()[index],
+            referencedInstanceItemDataset);
 
         // Add referenced image to sequence
         referencedInstanceSequence->AddItem(referencedInstanceItem);
     }
-
 
     referencedSeriesSequence->AddItem(referencedSeriesItem);
 
@@ -279,7 +287,8 @@ void SpatialFiducials::writeSOPCommonModule()
 //------------------------------------------------------------------------------
 
 void SpatialFiducials::addReferencedImage(int frameNumber,
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::fwGdcmIO::exception::Failed)
+                                          ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence)
+throw(::fwGdcmIO::exception::Failed)
 {
     ::gdcm::Item referencedImageItem;
     referencedImageItem.SetVLToUndefined();
@@ -287,11 +296,11 @@ void SpatialFiducials::addReferencedImage(int frameNumber,
 
     // Referenced Frame Number - Type 1C
     ::fwGdcmIO::helper::DicomDataWriter::setTagValues< int, 0x0008, 0x1160 >(&frameNumber, 1,
-            referencedImageItemDataset);
+                                                                             referencedImageItemDataset);
 
     // Referenced SOP Class UID - Type 1
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(),
-            referencedImageItemDataset);
+                                                                       referencedImageItemDataset);
 
     // Referenced SOP Instance UID - Type 1
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(

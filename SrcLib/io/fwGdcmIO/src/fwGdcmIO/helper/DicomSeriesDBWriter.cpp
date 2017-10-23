@@ -115,51 +115,49 @@ void DicomSeriesDBWriter::write()
     {
         const ::fwMedData::DicomSeries::sptr& dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
 
-        ::fwJobs::Job::sptr job = ::fwJobs::Job::New("Write Dicom series",
-            [&, dicomSeries](::fwJobs::Job& runningJob){
-                if(!runningJob.cancelRequested())
+        ::fwJobs::Job::sptr job = ::fwJobs::Job::New("Write Dicom series", [&, dicomSeries](::fwJobs::Job& runningJob)
                 {
-                    m_anonymizer->resetIndex();
+                    if(!runningJob.cancelRequested())
+                    {
+                        m_anonymizer->resetIndex();
 
-                    ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer =
-                        ::fwGdcmIO::helper::DicomSeriesWriter::New();
-                    writer->setObject(dicomSeries);
-                    writer->setAnonymizer(m_anonymizer);
-                    writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
+                        ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
+                        writer->setObject(dicomSeries);
+                        writer->setAnonymizer(m_anonymizer);
+                        writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
 
-                    runningJob.addCancelHook([&](::fwJobs::IJob& subJob)
+                        runningJob.addCancelHook([&](::fwJobs::IJob& subJob)
                         {
                             writer->getJob()->cancel();
                         }
-                                            );
+                                                 );
 
-                    writer->getJob()->addDoneWorkHook(
-                        [&](::fwJobs::IJob& subJob, std::uint64_t oldWork)
+                        writer->getJob()->addDoneWorkHook([&](::fwJobs::IJob& subJob, std::uint64_t oldWork)
                         {
                             runningJob.doneWork(subJob.getDoneWorkUnits());
                         });
 
-                    try
-                    {
-                        writer->write();
+                        try
+                        {
+                            writer->write();
+                        }
+                        catch(std::exception& e)
+                        {
+                            runningJob.log(std::string("Failed to write series :\n") + e.what());
+                        }
+                        catch(...)
+                        {
+                            runningJob.log("An unexpected error occurred while writing series");
+                        }
                     }
-                    catch(std::exception& e)
-                    {
-                        runningJob.log(std::string("Failed to write series :\n") + e.what());
-                    }
-                    catch(...)
-                    {
-                        runningJob.log("An unexpected error occurred while writing series");
-                    }
-                }
-            },
-            ::fwServices::registry::ActiveWorkers::getDefaultWorker());
+                },
+                                                     ::fwServices::registry::ActiveWorkers::getDefaultWorker());
 
         m_aggregator->addCancelHook([&](::fwJobs::IJob& subJob)
                 {
                     job->cancel();
                 }
-                                   );
+                                    );
         m_aggregator->add(job);
     }
 

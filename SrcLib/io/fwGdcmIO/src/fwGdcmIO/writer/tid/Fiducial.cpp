@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,19 +15,20 @@
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
-#include <gdcmUIDGenerator.h>
 #include <fwTools/Stringizer.hpp>
 
 #include <boost/algorithm/string/split.hpp>
+
+#include <gdcmUIDGenerator.h>
 
 #include <sstream>
 
@@ -80,13 +81,15 @@ void Fiducial::createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)
     SPTR(::fwGdcmIO::container::sr::DicomSRCodeNode) rootNode =
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRCodeNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature"), "CONTAINS",
-            ::fwGdcmIO::container::DicomCodedAttribute("111123", "DCM", "Marker placement")); //FIXME : Find a better representation
+            ::fwGdcmIO::container::DicomCodedAttribute("111123", "DCM", "Marker placement")); //FIXME : Find a better
+                                                                                              // representation
     parent->addSubNode(rootNode);
 
     // Create Fiducial ID node
     SPTR(::fwGdcmIO::container::sr::DicomSRUIDRefNode) idNode =
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRUIDRefNode >(
-            ::fwGdcmIO::container::DicomCodedAttribute("dd1201", "DCM", "Fiducial ID"), "HAS PROPERTIES", ::fwTools::getString(id));
+            ::fwGdcmIO::container::DicomCodedAttribute("dd1201", "DCM",
+                                                       "Fiducial ID"), "HAS PROPERTIES", ::fwTools::getString(id));
     rootNode->addSubNode(idNode);
 
     // Create Fiducial UID node
@@ -94,7 +97,7 @@ void Fiducial::createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)
     SPTR(::fwGdcmIO::container::sr::DicomSRUIDRefNode) uidNode =
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRUIDRefNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("dd1202", "DCM", "Fiducial UID"), "HAS PROPERTIES",
-generator.Generate());
+            generator.Generate());
     rootNode->addSubNode(uidNode);
 
     // Create Fiducial intent node
@@ -113,7 +116,7 @@ generator.Generate());
             static_cast<float>(point->getCoord()[1]),
             static_cast<float>(point->getCoord()[2])
         };
-        std::vector<float> scoordVector (scoord, scoord + 3);
+        std::vector<float> scoordVector(scoord, scoord + 3);
         SPTR(::fwGdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
             std::make_shared< ::fwGdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::fwGdcmIO::container::DicomCodedAttribute(), "HAS PROPERTIES", "POINT", scoordVector,
@@ -127,9 +130,9 @@ generator.Generate());
             static_cast<float>(point->getCoord()[0]),
             static_cast<float>(point->getCoord()[1])
         };
-        std::vector<float> scoordVector (scoord, scoord + 2);
+        std::vector<float> scoordVector(scoord, scoord + 2);
         SPTR(::fwGdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-                std::make_shared< ::fwGdcmIO::container::sr::DicomSRSCoordNode >(
+            std::make_shared< ::fwGdcmIO::container::sr::DicomSRSCoordNode >(
                 ::fwGdcmIO::container::DicomCodedAttribute(), "HAS PROPERTIES", "POINT", scoordVector);
         rootNode->addSubNode(scoordNode);
 

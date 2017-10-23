@@ -14,9 +14,10 @@
 #include <fwData/location/MultiFiles.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
 #include <fwLog/Logger.hpp>
 
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/IService.hpp>

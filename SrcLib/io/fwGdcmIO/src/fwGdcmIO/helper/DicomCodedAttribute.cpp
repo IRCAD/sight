@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 DicomCodedAttribute::DicomCodedAttributeVectorType
-    DicomCodedAttribute::convertEntryToCodedAttribute(const std::string& entry)
+DicomCodedAttribute::convertEntryToCodedAttribute(const std::string& entry)
 {
     DicomCodedAttributeVectorType result;
 
@@ -34,7 +34,7 @@ DicomCodedAttribute::DicomCodedAttributeVectorType
         // - match[3] = Code Meaning 'CCC'
         while(std::regex_search(textIt, entry.end(), match, codeRegex))
         {
-            result.push_back(::fwGdcmIO::container::DicomCodedAttribute(match[1],match[2],match[3]));
+            result.push_back(::fwGdcmIO::container::DicomCodedAttribute(match[1], match[2], match[3]));
             textIt = match[0].second;
         }
     }

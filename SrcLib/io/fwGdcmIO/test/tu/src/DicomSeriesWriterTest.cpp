@@ -14,6 +14,7 @@
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwMedDataCamp/Version.hpp>
 
 #include <fwTest/Data.hpp>

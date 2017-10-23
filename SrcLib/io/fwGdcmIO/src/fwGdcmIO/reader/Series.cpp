@@ -1,29 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/Series.hpp"
-#include "fwGdcmIO/reader/iod/CTMRImageIOD.hpp"
+
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/iod/ComprehensiveSRIOD.hpp"
+#include "fwGdcmIO/reader/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
 #include <fwData/Image.hpp>
+
 #include <fwDicomTools/Series.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <gdcmImageReader.h>
-#include <gdcmScanner.h>
-
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/make_shared.hpp>
+
+#include <gdcmImageReader.h>
+#include <gdcmScanner.h>
 
 namespace fwGdcmIO
 {
@@ -32,7 +35,8 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-Series::Series() : m_enableBufferRotation(true)
+Series::Series() :
+    m_enableBufferRotation(true)
 {
 
 }
@@ -71,12 +75,12 @@ throw(::fwGdcmIO::exception::Failed)
         {
             // Read the image
             ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
-            ::fwData::Image::sptr image = ::fwData::Image::New();
+            ::fwData::Image::sptr image                = ::fwData::Image::New();
             imageSeries->setImage(image);
 
             // Create IOD Reader
             ::fwGdcmIO::reader::iod::CTMRImageIOD iod(dicomSeries, instance, m_logger,
-m_progressCallback, m_cancelRequestedCallback);
+                                                      m_progressCallback, m_cancelRequestedCallback);
             iod.setBufferRotationEnabled(m_enableBufferRotation);
 
             try
@@ -96,14 +100,13 @@ m_progressCallback, m_cancelRequestedCallback);
 
         // Get the RT file names (ModelSeries)
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) ==
-                ::gdcm::MediaStorage::SurfaceSegmentationStorage)
+                 ::gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
             ::fwMedData::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
 
             // Create IOD Reader
             ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger,
-m_progressCallback, m_cancelRequestedCallback);
-
+                                                                m_progressCallback, m_cancelRequestedCallback);
 
             try
             {
@@ -133,7 +136,7 @@ m_progressCallback, m_cancelRequestedCallback);
 
                 // Create IOD Reader
                 ::fwGdcmIO::reader::iod::SpatialFiducialsIOD iod(dicomSeries, instance, m_logger,
-m_progressCallback, m_cancelRequestedCallback);
+                                                                 m_progressCallback, m_cancelRequestedCallback);
 
                 try
                 {
@@ -154,7 +157,9 @@ m_progressCallback, m_cancelRequestedCallback);
         // If the DicomSeries contains a SR
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
                  ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                 sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+                 sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by
+                                                                 // "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())
+                                                                 // == ::gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
             SPTR(::fwGdcmIO::container::DicomInstance) imageInstance =
@@ -167,7 +172,7 @@ m_progressCallback, m_cancelRequestedCallback);
             {
                 // Create readers
                 ::fwGdcmIO::reader::iod::ComprehensiveSRIOD iod(dicomSeries, imageInstance, m_logger,
-m_progressCallback, m_cancelRequestedCallback);
+                                                                m_progressCallback, m_cancelRequestedCallback);
 
                 try
                 {
@@ -301,7 +306,8 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
                     {
                         ::gdcm::Item seriesItem = seriesSequence->GetItem(1);
                         const ::gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
-                        seriesInstanceUID = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000E >(seriesItemDataset);
+                        seriesInstanceUID = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000E >(
+                            seriesItemDataset);
                     }
                 }
 

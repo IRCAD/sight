@@ -12,10 +12,13 @@
 #include "fwGdcmIO/exception/Failed.hpp"
 
 #include <fwData/location/SingleFile.hpp>
+
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
+
+#include <fwLog/Logger.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-#include <fwLog/Logger.hpp>
 
 namespace fwDicomData
 {
@@ -24,8 +27,8 @@ class DicomSeries;
 
 namespace fwJobs
 {
-    class Aggregator;
-    class Observer;
+class Aggregator;
+class Observer;
 }
 
 namespace fwGdcmIO
@@ -36,7 +39,7 @@ namespace writer
 /**
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
-class FWGDCMIO_CLASS_API SurfaceSegmentation:
+class FWGDCMIO_CLASS_API SurfaceSegmentation :
     public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
     public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
@@ -81,7 +84,6 @@ private:
 
     /// Writer job
     SPTR(::fwJobs::Observer) m_writerJob;
-
 
 };
 

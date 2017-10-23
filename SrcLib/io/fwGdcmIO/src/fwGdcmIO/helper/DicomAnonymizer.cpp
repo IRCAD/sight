@@ -4,9 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/helper/DicomAnonymizer.hpp"
+
 #include "fwGdcmIO/exception/InvalidTag.hpp"
 #include "fwGdcmIO/helper/CsvIO.hpp"
-#include "fwGdcmIO/helper/DicomAnonymizer.hpp"
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 #include "fwGdcmIO/helper/tags.hpp"
 
@@ -15,9 +16,10 @@
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwTools/System.hpp>
 
-#include <fwRuntime/operations.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -45,16 +47,17 @@ const std::string c_MIN_DATE_STRING = "19000101";
 ::gdcm::UIDGenerator GENERATOR;
 
 DicomAnonymizer::DicomAnonymizer() :
-        m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
-        m_observer(::fwJobs::Observer::New("Anonymization process")),
-        m_archiving(false),
-        m_fileIndex(0),
-        m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
+    m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
+    m_observer(::fwJobs::Observer::New("Anonymization process")),
+    m_archiving(false),
+    m_fileIndex(0),
+    m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
-    const ::boost::filesystem::path tagsPathStr = ::fwRuntime::getLibraryResourceFilePath("fwGdcmIO-" FWGDCMIO_VER "/tags.csv");
+    const ::boost::filesystem::path tagsPathStr = ::fwRuntime::getLibraryResourceFilePath(
+        "fwGdcmIO-" FWGDCMIO_VER "/tags.csv");
     ::boost::filesystem::path tagsPath = tagsPathStr;
     SLM_ASSERT("File '" + tagsPath.string() + "' must exists",
-            ::boost::filesystem::is_regular_file(tagsPath));
+               ::boost::filesystem::is_regular_file(tagsPath));
 
     auto csvStream = std::ifstream(tagsPath.string());
     ::fwGdcmIO::helper::CsvIO csvReader(csvStream);
@@ -124,7 +127,7 @@ void DicomAnonymizer::setReferenceDate(const ::boost::gregorian::date& reference
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
+void DicomAnonymizer::anonymize(const ::boost::filesystem::path& dirPath)
 {
     m_archiving = false;
     m_observer->setTotalWorkUnits(100);
@@ -157,8 +160,8 @@ void moveDirectory(const ::boost::filesystem::path& input,
         else
         {
             ::boost::filesystem::rename(*it, dest, ec);
-            FW_RAISE_IF("rename " << it->path().string() << " " << dest.string() 
-                     << " error : " << ec.message(), ec.value());
+            FW_RAISE_IF("rename " << it->path().string() << " " << dest.string()
+                                  << " error : " << ec.message(), ec.value());
         }
 
         ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, ec);
@@ -226,7 +229,7 @@ void DicomAnonymizer::anonymizationProcess(const ::boost::filesystem::path& dirP
 {
     // Create temporary directory
     ::boost::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
-    tmpPath /= "tmp";
+    tmpPath                          /= "tmp";
 
     // Doesn't use ::boost::filesystem::rename because of potential issues when moving folders across volumes
     moveDirectory(dirPath, tmpPath);
@@ -266,7 +269,7 @@ void DicomAnonymizer::anonymizationProcess(const ::boost::filesystem::path& dirP
         this->anonymize(inStream, outStream);
 
         std::uint64_t progress = static_cast<std::uint64_t>(
-            ((m_archiving)?50:100) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
+            ((m_archiving) ? 50 : 100) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
         m_observer->doneWork(progress);
     }
 
@@ -366,7 +369,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
     // Curve Data (0x50xx,0xxxxx)
     auto element = dataElementSet.lower_bound(::gdcm::Tag(0x5000, 0x0));
-    auto end = dataElementSet.upper_bound(::gdcm::Tag(0x50ff, 0xffff));
+    auto end     = dataElementSet.upper_bound(::gdcm::Tag(0x50ff, 0xffff));
     for(; element != end; ++element)
     {
         tag = element->GetTag();
@@ -375,7 +378,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
     // Overlay Data (0x60xx,0x3000) && Overlay Comments (0x60xx,0x4000)
     element = dataElementSet.lower_bound(::gdcm::Tag(0x6000, 0x3000));
-    end = dataElementSet.upper_bound(::gdcm::Tag(0x60ff, 0x4000));
+    end     = dataElementSet.upper_bound(::gdcm::Tag(0x60ff, 0x4000));
     for(; element != end; ++element)
     {
         tag = element->GetTag();
@@ -402,7 +405,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
 
 //------------------------------------------------------------------------------
 
-void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const std::string &value)
+void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const std::string& value)
 {
     ::gdcm::Tag tag(group, element);
 
@@ -699,7 +702,7 @@ void DicomAnonymizer::copyDirectory(const ::boost::filesystem::path& input,
     ::boost::system::error_code ec;
     ::boost::filesystem::copy_directory(input, output, ec);
     FW_RAISE_IF("copy_directory " << input.string() << " " << output.string()
-             << " error : " << ec.message(), ec.value());
+                                  << " error : " << ec.message(), ec.value());
 
     ::boost::filesystem::directory_iterator it(input);
     ::boost::filesystem::directory_iterator end;

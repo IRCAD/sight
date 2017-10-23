@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 #include "fwGdcmIO/reader/iod/InformationObjectDefinition.hpp"
 
 #include <fwLog/Logger.hpp>
-
 
 namespace fwGdcmIO
 {
@@ -26,8 +25,8 @@ public:
 
     typedef std::map< SPTR(::fwGdcmIO::container::DicomInstance), ::fwMedData::Series::sptr > SeriesContainerMapType;
 
-    typedef std::function< void(std::uint64_t) > ProgressCallback;
-    typedef std::function< bool() > CancelRequestedCallback;
+    typedef std::function< void (std::uint64_t) > ProgressCallback;
+    typedef std::function< bool () > CancelRequestedCallback;
 
     /// Constructor
     FWGDCMIO_API Series();
@@ -40,7 +39,7 @@ public:
      * @param[in] dicomSeries DICOM series that shall be read
      */
     FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::sptr& dicomSeries)
-        throw(::fwGdcmIO::exception::Failed);
+    throw(::fwGdcmIO::exception::Failed);
 
     /// Get Logger
     const ::fwLog::Logger::sptr& getLogger() const
@@ -66,9 +65,9 @@ public:
      * @brief Set cancel callback
      * @param[in] callback Cancel callback
      */
-    void setCancelRequestedCallback(CancelRequestedCallback callback) 
+    void setCancelRequestedCallback(CancelRequestedCallback callback)
     {
-       m_cancelRequestedCallback = callback; 
+        m_cancelRequestedCallback = callback;
     }
 
     /// Enable buffer rotation
@@ -81,11 +80,11 @@ protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
     SPTR(::fwGdcmIO::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
-            const ::fwMedData::DicomSeries::sptr& dicomSeries);
+        const ::fwMedData::DicomSeries::sptr& dicomSeries);
 
     /// Get referenced series when dealing with Structured Report
     SPTR(::fwGdcmIO::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
-            const ::fwMedData::DicomSeries::sptr& dicomSeries);
+        const ::fwMedData::DicomSeries::sptr& dicomSeries);
 
     /// Series Container Map
     SeriesContainerMapType m_seriesContainerMap;

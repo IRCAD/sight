@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,7 +57,7 @@ public:
      */
     FWGDCMIO_API DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
                               const ::fwData::Mesh::Id pointBufferSize,
-                              const DicomCellValueType *cellBuffer,
+                              const DicomCellValueType* cellBuffer,
                               const ::fwData::Mesh::Id cellBufferSize,
                               const ::fwData::Mesh::NormalValueType* normalBuffer);
 
@@ -68,12 +68,12 @@ public:
     FWGDCMIO_API ::fwData::Mesh::sptr convertToData();
 
     /// Return point coordinates buffer
-    FWGDCMIO_API const DicomPointBufferType &getPointBuffer() const;
+    FWGDCMIO_API const DicomPointBufferType& getPointBuffer() const;
     /// Return cell buffer
-    FWGDCMIO_API const DicomCellBufferType &getCellBuffer() const;
+    FWGDCMIO_API const DicomCellBufferType& getCellBuffer() const;
 
     /// Return normal buffer
-    FWGDCMIO_API const DicomNormalBufferType &getNormalBuffer() const;
+    FWGDCMIO_API const DicomNormalBufferType& getNormalBuffer() const;
 
     /// Return point coordinates buffer size
     FWGDCMIO_API std::size_t getPointBufferSize() const;

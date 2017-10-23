@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/writer/SurfaceSegmentation.hpp"
+
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
 #include <fwData/Image.hpp>
@@ -13,17 +14,16 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
+#include <fwJobs/Aggregator.hpp>
+#include <fwJobs/Job.hpp>
+#include <fwJobs/Observer.hpp>
 
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SurfaceSegmentation);
 
@@ -38,12 +38,14 @@ SurfaceSegmentation::SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key 
     ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
     m_logger(::fwLog::Logger::New()),
     m_writerJob(::fwJobs::Observer::New("Writing DICOM file"))
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SurfaceSegmentation::~SurfaceSegmentation()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -94,14 +96,11 @@ void SurfaceSegmentation::write() throw (::fwGdcmIO::exception::Failed)
     modelSeries->setPatient(m_associatedDicomSeries->getPatient());
     modelSeries->setStudy(m_associatedDicomSeries->getStudy());
 
-
     SPTR(::fwGdcmIO::container::DicomInstance) associatedDicomInstance =
-            std::make_shared< ::fwGdcmIO::container::DicomInstance >(m_associatedDicomSeries, m_logger);
-
+        std::make_shared< ::fwGdcmIO::container::DicomInstance >(m_associatedDicomSeries, m_logger);
 
     SPTR(::fwGdcmIO::container::DicomInstance) modelInstance =
-            std::make_shared< ::fwGdcmIO::container::DicomInstance >(modelSeries, m_logger, false);
-
+        std::make_shared< ::fwGdcmIO::container::DicomInstance >(modelSeries, m_logger, false);
 
     m_writerJob->doneWork(0);
     m_writerJob->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
@@ -116,7 +115,7 @@ void SurfaceSegmentation::write() throw (::fwGdcmIO::exception::Failed)
     {
         iod.write(modelSeries);
     }
-    catch (const ::fwGdcmIO::exception::Failed & e)
+    catch (const ::fwGdcmIO::exception::Failed& e)
     {
         m_logger->critical(e.what());
     }

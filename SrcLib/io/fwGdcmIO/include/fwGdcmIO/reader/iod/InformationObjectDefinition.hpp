@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,9 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
 #include <fwLog/Logger.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 
 #include <gdcmReader.h>
 
@@ -33,8 +34,8 @@ class FWGDCMIO_CLASS_API InformationObjectDefinition
 
 public:
 
-    typedef std::function< void(std::uint64_t) > ProgressCallback;
-    typedef std::function< bool() > CancelRequestedCallback;
+    typedef std::function< void (std::uint64_t) > ProgressCallback;
+    typedef std::function< bool () > CancelRequestedCallback;
 
     /**
      * @brief Constructor

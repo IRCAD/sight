@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwJobs/Observer.hpp>
 
 #include <boost/assign/list_of.hpp>
@@ -15,6 +16,8 @@ namespace fwGdcmIO
 {
 namespace helper
 {
+
+//------------------------------------------------------------------------------
 
 bool isDICOM(const ::boost::filesystem::path& filepath)
 {
@@ -95,7 +98,7 @@ void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPat
 
         if(!::boost::filesystem::is_directory(*it))
         {
-            auto path = it->path();
+            auto path       = it->path();
             std::string ext = path.extension().string();
             std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
@@ -117,5 +120,4 @@ void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPat
 
 } //namespace helper
 } //namespace fwGdcmIO
-
 

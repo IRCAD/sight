@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
+
 #include "fwGdcmIO/helper/Encoding.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwTools/IntrinsicTypes.hpp>
 
 #include <gdcmGlobal.h>
@@ -24,17 +26,17 @@ namespace helper
 typedef std::map< ::fwTools::Type, ::gdcm::PixelFormat::ScalarType > PixelTypeConversionMapType;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
-    {::fwTools::Type::create("uint8")  , ::gdcm::PixelFormat::UINT8}   ,
-    {::fwTools::Type::create("int8")   , ::gdcm::PixelFormat::INT8}    ,
+    {::fwTools::Type::create("uint8"), ::gdcm::PixelFormat::UINT8},
+    {::fwTools::Type::create("int8"), ::gdcm::PixelFormat::INT8},
     // {::fwTools::Type::create("XXX")    , ::gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
     // {::fwTools::Type::create("XXX")    , ::gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
-    {::fwTools::Type::create("uint16") , ::gdcm::PixelFormat::UINT16}  ,
-    {::fwTools::Type::create("int16")  , ::gdcm::PixelFormat::INT16}   ,
-    {::fwTools::Type::create("uint32") , ::gdcm::PixelFormat::UINT32}  ,
-    {::fwTools::Type::create("int32")  , ::gdcm::PixelFormat::INT32}   ,
+    {::fwTools::Type::create("uint16"), ::gdcm::PixelFormat::UINT16},
+    {::fwTools::Type::create("int16"), ::gdcm::PixelFormat::INT16},
+    {::fwTools::Type::create("uint32"), ::gdcm::PixelFormat::UINT32},
+    {::fwTools::Type::create("int32"), ::gdcm::PixelFormat::INT32},
     // { ::fwTools::Type::create("XXX")   , ::gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
-    {::fwTools::Type::create("float")  , ::gdcm::PixelFormat::FLOAT32} ,
-    {::fwTools::Type::create("double") , ::gdcm::PixelFormat::FLOAT64}
+    {::fwTools::Type::create("float"), ::gdcm::PixelFormat::FLOAT32},
+    {::fwTools::Type::create("double"), ::gdcm::PixelFormat::FLOAT64}
 };
 
 //------------------------------------------------------------------------------
@@ -42,7 +44,7 @@ static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
 const ::gdcm::PixelFormat DicomDataTools::getPixelType(const ::fwData::Image::csptr& image)
 {
     auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(image->getType());
-    if(it !=  s_PIXEL_TYPE_CONVERSION_MAP.end())
+    if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
     {
         return it->second;
     }
@@ -52,7 +54,7 @@ const ::gdcm::PixelFormat DicomDataTools::getPixelType(const ::fwData::Image::cs
 //------------------------------------------------------------------------------
 
 const ::gdcm::PhotometricInterpretation
-    DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image)
+DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image)
 {
     ::gdcm::PhotometricInterpretation pi;
     size_t components = image->getNumberOfComponents();
@@ -60,19 +62,19 @@ const ::gdcm::PhotometricInterpretation
     // Attempt a guess (VTK do the same choice)
     switch (components)
     {
-    case 1: // It could well be MONOCHROME1
-        pi = ::gdcm::PhotometricInterpretation::MONOCHROME2;
-        break;
-    case 3: // It could well be YBR
-        pi = ::gdcm::PhotometricInterpretation::RGB;
-        break;
-    case 4: // It could well be CMYK
-        pi = ::gdcm::PhotometricInterpretation::ARGB;
-        break;
-    default:
-        SLM_ERROR("Photometric interpretation not found");
-        pi = ::gdcm::PhotometricInterpretation::UNKNOWN;
-        break;
+        case 1: // It could well be MONOCHROME1
+            pi = ::gdcm::PhotometricInterpretation::MONOCHROME2;
+            break;
+        case 3: // It could well be YBR
+            pi = ::gdcm::PhotometricInterpretation::RGB;
+            break;
+        case 4: // It could well be CMYK
+            pi = ::gdcm::PhotometricInterpretation::ARGB;
+            break;
+        default:
+            SLM_ERROR("Photometric interpretation not found");
+            pi = ::gdcm::PhotometricInterpretation::UNKNOWN;
+            break;
     }
 
     return pi;
@@ -81,44 +83,44 @@ const ::gdcm::PhotometricInterpretation
 //------------------------------------------------------------------------------
 
 ::gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
-        ::fwData::Material::RepresentationType representationMode)
+    ::fwData::Material::RepresentationType representationMode)
 {
     switch (representationMode)
     {
-    case ::fwData::Material::SURFACE:
-        return ::gdcm::Surface::SURFACE;
-        break;
-    case ::fwData::Material::POINT:
-        return ::gdcm::Surface::POINTS;
-        break;
-    case ::fwData::Material::WIREFRAME:
-        return ::gdcm::Surface::WIREFRAME;
-        break;
-    default:
-        SLM_WARN("Representation type not handle (changed to : SURFACE)");
-        return ::gdcm::Surface::SURFACE;
+        case ::fwData::Material::SURFACE:
+            return ::gdcm::Surface::SURFACE;
+            break;
+        case ::fwData::Material::POINT:
+            return ::gdcm::Surface::POINTS;
+            break;
+        case ::fwData::Material::WIREFRAME:
+            return ::gdcm::Surface::WIREFRAME;
+            break;
+        default:
+            SLM_WARN("Representation type not handle (changed to : SURFACE)");
+            return ::gdcm::Surface::SURFACE;
     }
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::Material::RepresentationType DicomDataTools::convertToRepresentationMode(
-        ::gdcm::Surface::VIEWType presentationType)
+    ::gdcm::Surface::VIEWType presentationType)
 {
     switch (presentationType)
     {
-    case ::gdcm::Surface::SURFACE:
-        return ::fwData::Material::SURFACE;
-        break;
-    case ::gdcm::Surface::WIREFRAME:
-        return ::fwData::Material::WIREFRAME;
-        break;
-    case ::gdcm::Surface::POINTS:
-        return ::fwData::Material::POINT;
-        break;
-    default:
-        SLM_WARN("Presentation type not handle (changed to : SURFACE)");
-        return ::fwData::Material::SURFACE;
+        case ::gdcm::Surface::SURFACE:
+            return ::fwData::Material::SURFACE;
+            break;
+        case ::gdcm::Surface::WIREFRAME:
+            return ::fwData::Material::WIREFRAME;
+            break;
+        case ::gdcm::Surface::POINTS:
+            return ::fwData::Material::POINT;
+            break;
+        default:
+            SLM_WARN("Presentation type not handle (changed to : SURFACE)");
+            return ::fwData::Material::SURFACE;
     }
 }
 
@@ -129,10 +131,10 @@ std::size_t DicomDataTools::convertPointToFrameNumber(const ::fwData::Image::csp
 throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
-    double zSpacing = (image->getNumberOfDimensions() > 2)?(image->getSpacing()[2]):1;
+    double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    double zOrigin = (image->getNumberOfDimensions() > 2)?(image->getOrigin()[2]):0;
+    double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
     double zCoordinate = static_cast<double>(point->getCoord()[2]);
@@ -140,7 +142,7 @@ throw(::fwGdcmIO::exception::Failed)
     // Compute frame number
     std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
-            frameNumber < 1 || frameNumber > image->getSize()[2]);
+                          frameNumber < 1 || frameNumber > image->getSize()[2]);
 
     return frameNumber;
 }
@@ -152,15 +154,15 @@ double DicomDataTools::convertFrameNumberToZCoordinate(const ::fwData::Image::cs
 throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
-    double zSpacing = (image->getNumberOfDimensions() > 2)?(image->getSpacing()[2]):1;
+    double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    double zOrigin = (image->getNumberOfDimensions() > 2)?(image->getOrigin()[2]):0;
+    double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Compute coordinate
     std::size_t frameIndex = (frameNumber-1);
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
-            frameIndex >= image->getSize()[2]);
+                          frameIndex >= image->getSize()[2]);
     double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 
     return zCoordinate;

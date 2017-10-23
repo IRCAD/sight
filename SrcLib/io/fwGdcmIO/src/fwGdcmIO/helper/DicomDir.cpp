@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/helper/DicomDir.hpp"
+
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 
 #include <fwCore/exceptionmacros.hpp>
@@ -19,8 +20,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/regex.h>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.h>
 
 #include <gdcmMediaStorage.h>
 #include <gdcmReader.h>
@@ -31,7 +32,7 @@ namespace helper
 {
 // ----------------------------------------------------------------------------
 
-::boost::filesystem::path DicomDir::findDicomDir(const ::boost::filesystem::path &root)
+::boost::filesystem::path DicomDir::findDicomDir(const ::boost::filesystem::path& root)
 {
     ::boost::filesystem::path current = root;
 
@@ -59,17 +60,17 @@ namespace helper
 // ----------------------------------------------------------------------------
 
 void processDirInformation(const ::boost::filesystem::path& dicomdir,
-        const ::boost::filesystem::path &rootDicomDirPath,
-        ::fwMedData::DicomSeries::sptr currentSeries,
-        std::map < std::string, ::fwMedData::DicomSeries::sptr > &dicomSeriesMap,
-        const ::fwLog::Logger::sptr &logger,
-        std::function< void(std::uint64_t) > &progress,
-        std::function< bool() >& cancel,
-        double &p,
-        double &ptotal)
+                           const ::boost::filesystem::path& rootDicomDirPath,
+                           ::fwMedData::DicomSeries::sptr currentSeries,
+                           std::map < std::string, ::fwMedData::DicomSeries::sptr >& dicomSeriesMap,
+                           const ::fwLog::Logger::sptr& logger,
+                           std::function< void(std::uint64_t) >& progress,
+                           std::function< bool() >& cancel,
+                           double& p,
+                           double& ptotal)
 {
     SLM_ASSERT("You must specify a valid dicomdir.", ::boost::filesystem::exists(dicomdir)
-               && ! ::boost::filesystem::is_directory(dicomdir));
+               && !::boost::filesystem::is_directory(dicomdir));
 
     // Try to read the file
     ::gdcm::Reader reader;
@@ -79,8 +80,8 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
         return;
     }
 
-    const ::gdcm::File &gdcmFile = reader.GetFile();
-    const ::gdcm::DataSet &dataset = gdcmFile.GetDataSet();
+    const ::gdcm::File& gdcmFile   = reader.GetFile();
+    const ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
     // Check if the file is a DICOMDIR
     ::gdcm::MediaStorage mediaStorage;
@@ -92,8 +93,8 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
     }
 
     // Check the MediaStorageSOPClass
-    const ::gdcm::FileMetaInformation &fileMetaInformation = gdcmFile.GetHeader();
-    const std::string& mediaStorageSOP =
+    const ::gdcm::FileMetaInformation& fileMetaInformation = gdcmFile.GetHeader();
+    const std::string& mediaStorageSOP                     =
         ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0002, 0x0002 >(fileMetaInformation);
 
     if (mediaStorageSOP != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
@@ -106,7 +107,7 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
     typedef std::set<gdcm::DataElement> DataElementSet;
     typedef DataElementSet::const_iterator ConstIterator;
 
-    for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end(); ++it)
+    for(ConstIterator it = dataset.GetDES().begin(); it != dataset.GetDES().end(); ++it)
     {
         // Directory Record Sequence
         if (it->GetTag() == ::gdcm::Tag(0x0004, 0x1220))
@@ -127,11 +128,11 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
                 std::string refFileID =
                     ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0004, 0x1500 >(item.GetNestedDataSet());
 
-
                 if(recordType == "IMAGE")
                 {
                     // Read file path
-                    std::string file = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0004, 0x1500 >(item.GetNestedDataSet());
+                    std::string file = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0004, 0x1500 >(
+                        item.GetNestedDataSet());
                     std::replace( file.begin(), file.end(), '\\', '/');
                     SLM_WARN_IF("Dicom instance doesn't have a referenced file id.", file.empty());
 
@@ -145,7 +146,9 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
                     }
                     else if(::boost::filesystem::exists(path))
                     {
-                        auto instanceNumber = ::boost::lexical_cast<unsigned int>(::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x0013 >(item.GetNestedDataSet()));
+                        auto instanceNumber = ::boost::lexical_cast<unsigned int>(
+                            ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020,
+                                                                              0x0013 >(item.GetNestedDataSet()));
                         currentSeries->addDicomPath(instanceNumber, path);
                     }
                     else
@@ -203,8 +206,7 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
                                    std::function< bool() > cancel)
 {
     SLM_ASSERT("You must specify a valid dicomdir.", ::boost::filesystem::exists(dicomdir)
-               && ! ::boost::filesystem::is_directory(dicomdir));
-
+               && !::boost::filesystem::is_directory(dicomdir));
 
     // Try to read the file
     ::gdcm::Reader reader;
@@ -214,8 +216,8 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
         return;
     }
 
-    const ::gdcm::File &gdcmFile = reader.GetFile();
-    const ::gdcm::DataSet &dataset = gdcmFile.GetDataSet();
+    const ::gdcm::File& gdcmFile   = reader.GetFile();
+    const ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
 
     // Check if the file is a DICOMDIR
     ::gdcm::MediaStorage mediaStorage;
@@ -227,8 +229,8 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
     }
 
     // Check the MediaStorageSOPClass
-    const ::gdcm::FileMetaInformation &fileMetaInformation = gdcmFile.GetHeader();
-    const std::string& mediaStorageSOP =
+    const ::gdcm::FileMetaInformation& fileMetaInformation = gdcmFile.GetHeader();
+    const std::string& mediaStorageSOP                     =
         ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0002, 0x0002 >(fileMetaInformation);
 
     if (mediaStorageSOP != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
@@ -241,7 +243,7 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
     typedef std::set<gdcm::DataElement> DataElementSet;
     typedef DataElementSet::const_iterator ConstIterator;
 
-    double p = 0.;
+    double p      = 0.;
     double ptotal = 0.;
 
     if(progress)
@@ -276,7 +278,7 @@ void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
     for(auto entry : dicomSeriesMap)
     {
         auto series = entry.second;
-        auto size = static_cast< unsigned int >(series->getLocalDicomPaths().size());
+        auto size   = static_cast< unsigned int >(series->getLocalDicomPaths().size());
         if(size)
         {
             series->setDicomAvailability(::fwMedData::DicomSeries::PATHS);

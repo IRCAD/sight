@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,14 @@
 #include "fwGdcmIO/helper/DicomSeriesAnonymizer.hpp"
 
 #include <fwCore/base.hpp>
+
+#include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
-#include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Observer.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwTools/System.hpp>
 
 #include <boost/foreach.hpp>
@@ -49,9 +52,9 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
     FW_RAISE_IF("Dicom series should be available on the local computer.",
                 source->getDicomAvailability() != ::fwMedData::DicomSeries::PATHS);
 
-    auto writerObserver = m_writer->getJob();
+    auto writerObserver     = m_writer->getJob();
     auto anonymizerObserver = m_anonymizer.getJob();
-    auto readerObserver = m_reader->getJob();
+    auto readerObserver     = m_reader->getJob();
 
     // Set up observer cancel callback
     m_job->addSimpleCancelHook([&] {
@@ -118,5 +121,4 @@ void DicomSeriesAnonymizer::anonymize(const ::fwMedData::DicomSeries::sptr& sour
 
 } // namespace helper
 } // namespace fwGdcmIO
-
 

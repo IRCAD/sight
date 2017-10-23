@@ -1,16 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/Fiducial.hpp"
 
-#include <fwDataTools/fieldHelper/Image.hpp>
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -19,7 +21,6 @@ namespace fwGdcmIO
 {
 namespace helper
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -97,7 +98,7 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
                         {
                             const ::fwData::Point::sptr point1 = *pointList->getCRefPoints().begin();
                             const ::fwData::Point::sptr point2 = *(++pointList->getCRefPoints().begin());
-                            const int frameNumber1 =
+                            const int frameNumber1             =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
                             const int frameNumber2 =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point2);

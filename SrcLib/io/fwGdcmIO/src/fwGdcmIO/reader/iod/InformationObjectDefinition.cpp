@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ InformationObjectDefinition::InformationObjectDefinition(const ::fwMedData::Dico
                                                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                          const ::fwLog::Logger::sptr& logger,
                                                          ProgressCallback progress,
-                                                         CancelRequestedCallback cancel):
+                                                         CancelRequestedCallback cancel) :
     m_instance(instance),
     m_dicomSeries(dicomSeries),
     m_logger(logger),

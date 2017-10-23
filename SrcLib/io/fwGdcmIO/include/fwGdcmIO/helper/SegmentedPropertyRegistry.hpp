@@ -115,7 +115,6 @@ public:
     FWGDCMIO_API std::string getAnatomicRegionModifiers(const std::string& structureType) const;
     /**  @} */
 
-
     /**
      * @brief Returns the structure type associated to the attribute list.
      * If no match is found, it returns an empty string.
@@ -130,7 +129,6 @@ public:
                                               const std::string& propertyTypeModifiers,
                                               const std::string& anatomicRegion,
                                               const std::string& anatomicRegionModifiers) const;
-
 
 private:
 

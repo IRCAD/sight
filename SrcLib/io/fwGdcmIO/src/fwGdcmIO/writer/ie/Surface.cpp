@@ -10,9 +10,10 @@
 #include "fwGdcmIO/helper/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
-#include <fwDataIO/reader/DictionaryReader.hpp>
 
 #include <fwData/Reconstruction.hpp>
+
+#include <fwDataIO/reader/DictionaryReader.hpp>
 
 #include <fwDataTools/helper/Mesh.hpp>
 
@@ -23,12 +24,12 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwTools/dateAndTime.hpp>
+
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include <gdcmUIDGenerator.h>
 #include <gdcmSurfaceHelper.h>
 #include <gdcmSurfaceWriter.h>
-
+#include <gdcmUIDGenerator.h>
 
 #include <sstream>
 
@@ -48,9 +49,9 @@ Surface::Surface(const SPTR(::gdcm::Writer)& writer,
                  const ::fwLog::Logger::sptr& logger,
                  ProgressCallback progress,
                  CancelRequestedCallback cancel) :
-        ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series,
-                                                                              logger, progress, cancel),
-        m_imageInstance(imageInstance)
+    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series,
+                                                                          logger, progress, cancel),
+    m_imageInstance(imageInstance)
 {
     SLM_ASSERT("Image instance should not be null.", imageInstance);
 }
@@ -93,7 +94,7 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
     SPTR(::gdcm::SurfaceWriter) surfaceWriter = std::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
 
     // Retrieve dataset
-    ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
+    ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     //=======================================================
     // Table C.8.23-1. Surface Segmentation Module Attributes
@@ -144,7 +145,7 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
     // Write segmentations
     //====================
     unsigned short segmentNumber = 1;
-    const auto& reconstuctionDB = m_object->getReconstructionDB();
+    const auto& reconstuctionDB  = m_object->getReconstructionDB();
     for(const auto& reconstruction : reconstuctionDB)
     {
         // Add segmentation to GDCM Surface Writer
@@ -157,7 +158,6 @@ void Surface::writeSurfaceSegmentationAndSurfaceMeshModules()
         // Surface Segmentation Module - SegmentSequence
         writeSegmentSequence(reconstruction, segmentItem, segment, segmentNumber);
         segmentSequence->AddItem(segmentItem);
-
 
         // Add a surface to the segmentation
         ::gdcm::SmartPointer< ::gdcm::Surface > surface = new ::gdcm::Surface();
@@ -192,7 +192,7 @@ void writeSegmentIdentification(const std::string& structureType,
     if(!registry.hasEntry(structureType))
     {
         const std::string msg = "No match in segmented property registry for structure '" + structureType + "'";
-        SLM_WARN_IF(msg,!logger);
+        SLM_WARN_IF(msg, !logger);
         if(logger)
         {
             logger->warning(msg);
@@ -238,7 +238,7 @@ void writeSegmentIdentification(const std::string& structureType,
     // Segmented Property Category Code Sequence (0x0062,0x0003) - Type 1
     {
         const std::string& propertyCategory = entry[1];
-        const auto codedAttributes =
+        const auto codedAttributes          =
             ::fwGdcmIO::helper::DicomCodedAttribute::convertEntryToGDCMCodedAttribute(propertyCategory);
         if(!codedAttributes.empty())
         {
@@ -250,7 +250,7 @@ void writeSegmentIdentification(const std::string& structureType,
     // Segmented Property Type Code Sequence (0x0062,0x000F) - Type 1
     {
         const std::string& propertyType = entry[0];
-        const auto codedAttributes =
+        const auto codedAttributes      =
             ::fwGdcmIO::helper::DicomCodedAttribute::convertEntryToGDCMCodedAttribute(propertyType);
         if(!codedAttributes.empty())
         {
@@ -283,9 +283,9 @@ void writePrivateTags(const ::fwData::Reconstruction::csptr& reconstruction,
                       ::gdcm::DataSet& dataset)
 {
     // Private group
-    const auto reservedGroup = 0x5649;
+    const auto reservedGroup    = 0x5649;
     const auto reservingElement = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
-    const auto privateCreator = "FW4SPL";
+    const auto privateCreator   = "FW4SPL";
 
     // Reserve group
     {
@@ -310,7 +310,6 @@ void writePrivateTags(const ::fwData::Reconstruction::csptr& reconstruction,
         attribute.SetValue(volume);
         dataset.Insert(attribute.GetAsDataElement());
     }
-
 
 }
 
@@ -368,7 +367,6 @@ void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& recons
         //=======================================================
         // This section is handled in the surface section because of the GDCM soup
 
-
         // Segment Surface Source Instance Sequence - Type 2
         auto surfaceSourceInstanceSequence =
             ::fwGdcmIO::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0066, 0x002E >(
@@ -380,7 +378,7 @@ void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& recons
         {
             const std::vector< std::string >& referencedSOPInstanceUIDContainer =
                 m_imageInstance->getSOPInstanceUIDContainer();
-            const std::string &referencedSOPClassUID = m_imageInstance->getSOPClassUID();
+            const std::string& referencedSOPClassUID = m_imageInstance->getSOPClassUID();
 
             //=====================================================
             // Table 10-11. SOP Instance Reference Macro Attributes
@@ -390,7 +388,7 @@ void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& recons
                 // Create the item
                 ::gdcm::Item imageSOPItem;
                 imageSOPItem.SetVLToUndefined();
-                ::gdcm::DataSet &imageSOPDataset = imageSOPItem.GetNestedDataSet();
+                ::gdcm::DataSet& imageSOPDataset = imageSOPItem.GetNestedDataSet();
 
                 // Referenced SOP Class UID - Type 1
                 ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(referencedSOPClassUID,
@@ -411,9 +409,8 @@ void Surface::writeSegmentSequence(const ::fwData::Reconstruction::csptr& recons
     }
     referencedSurfaceSequence->AddItem(refSurfaceSeqItem);
 
-    // Visible Patient Private Tags
+    // Private Tags
     writePrivateTags(reconstruction, segmentItemDataset);
-
 
 }
 
@@ -425,13 +422,13 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
                                    unsigned short segmentNumber)
 {
     // Retrieve surface dataset
-    ::gdcm::DataSet &surfaceItemDataset = surfaceItem.GetNestedDataSet();
+    ::gdcm::DataSet& surfaceItemDataset = surfaceItem.GetNestedDataSet();
 
     // Retrieve material
     ::fwData::Material::csptr material = reconstruction->getMaterial();
 
     // Set DicomSurface data - NOTE: must be called before points and primitives writing
-   ::fwGdcmIO::container::DicomSurface surfaceContainer(reconstruction);
+    ::fwGdcmIO::container::DicomSurface surfaceContainer(reconstruction);
 
     // Surface Number (0x0066,0x0003) - Type 1
     surface->SetSurfaceNumber(segmentNumber);
@@ -460,7 +457,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
 
     // Finite Volume (0x0066,0x000E) - Type 1
     ::fwDataTools::helper::Mesh helperMesh(reconstruction->getMesh());
-    surface->SetFiniteVolume(helperMesh.isClosed()?(::gdcm::Surface::YES):(::gdcm::Surface::NO));
+    surface->SetFiniteVolume(helperMesh.isClosed() ? (::gdcm::Surface::YES): (::gdcm::Surface::NO));
 
     // Manifold (0x0066,0x0010) - Type 1
     surface->SetManifold(::gdcm::Surface::NO);
@@ -481,12 +478,12 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         surface->SetNumberOfSurfacePoints(surfaceContainer.getPointBufferSize() / 3);
 
         // Point Coordinates Data (0x0066,0x0016) - Type 1
-        ::gdcm::DataElement &pointCoordData = surface->GetPointCoordinatesData();
+        ::gdcm::DataElement& pointCoordData = surface->GetPointCoordinatesData();
         pointCoordData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getPointBuffer().data()),
-                                    static_cast<uint32_t>(surfaceContainer.getPointBufferSize()) * static_cast<uint32_t>(sizeof(float)));
+                                    static_cast<uint32_t>(surfaceContainer.getPointBufferSize()) *
+                                    static_cast<uint32_t>(sizeof(float)));
     }
     pointsSequence->AddItem(pointsItem);
-
 
     // Surface Points Normals Sequence (0x0066,0x0012) - Type 2
     auto normalsSequence =
@@ -508,13 +505,13 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         surface->SetVectorDimensionality(1);
 
         // Vector Coordinate Data (0x0066,0x0021) - Type 1
-        ::gdcm::DataElement &normalCoordData = surface->GetVectorCoordinateData();
+        ::gdcm::DataElement& normalCoordData = surface->GetVectorCoordinateData();
         normalCoordData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getNormalBuffer().data()),
-                                     static_cast<uint32_t>(surfaceContainer.getNormalBufferSize()) * static_cast<uint32_t>(sizeof(float)));
+                                     static_cast<uint32_t>(surfaceContainer.getNormalBufferSize()) *
+                                     static_cast<uint32_t>(sizeof(float)));
 
         normalsSequence->AddItem(normalsItem);
     }
-
 
     // Surface Mesh Primitives Sequence (0x0066,0x0013) - Type 1
     auto primitivesSequence =
@@ -529,19 +526,19 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
         primitive->SetPrimitiveType(::gdcm::MeshPrimitive::TRIANGLE);
 
         // Long Triangle Point Index List (0x0066,0x0041) - Type 2
-        ::gdcm::DataElement &pointIndexData = primitive->GetPrimitiveData();
+        ::gdcm::DataElement& pointIndexData = primitive->GetPrimitiveData();
         pointIndexData.SetVL(sizeof(uint32_t));
         pointIndexData.SetByteValue(reinterpret_cast<const char*>(surfaceContainer.getCellBuffer().data()),
-                                    static_cast<uint32_t>(surfaceContainer.getCellBufferSize()) * static_cast<uint32_t>(sizeof(uint32_t)));
+                                    static_cast<uint32_t>(surfaceContainer.getCellBufferSize()) *
+                                    static_cast<uint32_t>(sizeof(uint32_t)));
     }
-
 
     //=======================================================
     // Table 10-19. Algorithm Identification Macro Attributes
     //=======================================================
     {
         // Algorithm Family Code Sequence - Type 1
-        surface->SetAlgorithmFamily(::gdcm::SegmentHelper::BasicCodedEntry("123109","DCM","Manual Processing"));
+        surface->SetAlgorithmFamily(::gdcm::SegmentHelper::BasicCodedEntry("123109", "DCM", "Manual Processing"));
 
         // Algorithm Name (0x0066,0x0036) - Type 1
         surface->SetAlgorithmName("FW4SPL");

@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/StructuredReport.hpp"   // For graphviz dump
 #include "fwGdcmIO/writer/ie/Document.hpp"
 
 #include "fwGdcmIO/helper/DicomDataWriter.hxx"
+#include "fwGdcmIO/helper/StructuredReport.hpp"   // For graphviz dump
 #include "fwGdcmIO/writer/tid/MeasurementReport.hpp"
 
 #include <fwData/PointList.hpp>
@@ -16,12 +16,12 @@
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
-#include <gdcmUIDGenerator.h>
+
 #include <fwTools/dateAndTime.hpp>
 
-
-
 #include <boost/algorithm/string/split.hpp>
+
+#include <gdcmUIDGenerator.h>
 
 #include <sstream>
 
@@ -102,7 +102,8 @@ void Document::writePertinentOtherEvidenceSequence()
     ::gdcm::Item studyItem;
     studyItem.SetVLToUndefined();
     ::gdcm::DataSet& studyItemDataset = studyItem.GetNestedDataSet();
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000D >(m_instance->getStudyInstanceUID(), studyItemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000D >(
+        m_instance->getStudyInstanceUID(), studyItemDataset);
 
     // Referenced Series Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > seriesSequence = new ::gdcm::SequenceOfItems();
@@ -113,7 +114,8 @@ void Document::writePertinentOtherEvidenceSequence()
     ::gdcm::Item seriesItem;
     seriesItem.SetVLToUndefined();
     ::gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
-    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000E >(m_instance->getSeriesInstanceUID(), seriesItemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000E >(
+        m_instance->getSeriesInstanceUID(), seriesItemDataset);
 
     // Referenced SOP Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sopSequence = new ::gdcm::SequenceOfItems();
@@ -128,7 +130,8 @@ void Document::writePertinentOtherEvidenceSequence()
         ::gdcm::DataSet& instanceItemDataset = instanceItem.GetNestedDataSet();
 
         // Referenced SOP Class UID - Type 1
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(), instanceItemDataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1150 >(
+            m_instance->getSOPClassUID(), instanceItemDataset);
 
         // Referenced SOP Instance UID - Type 1
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x1155 >(instanceUID, instanceItemDataset);

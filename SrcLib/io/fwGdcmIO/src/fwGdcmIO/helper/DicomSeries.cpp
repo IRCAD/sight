@@ -1,32 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/helper/DicomSeries.hpp"
+
 #include "fwGdcmIO/helper/DicomDir.hpp"
 
 #include <fwCore/exceptionmacros.hpp>
 #include <fwCore/spyLog.hpp>
 
-#include <fwMedData/DicomSeries.hpp>
-
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-
-#include <fwJobs/IJob.hpp>
 #include <fwJobs/Aggregator.hpp>
+#include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/regex.h>
 
-#include <gdcmReader.h>
 #include <gdcmMediaStorage.h>
+#include <gdcmReader.h>
 
 #include <algorithm>
 
@@ -36,7 +36,7 @@ namespace helper
 {
 
 //Series
-static const ::gdcm::Tag s_MediaStorageSOPClassUID(0x0002,0x0002);
+static const ::gdcm::Tag s_MediaStorageSOPClassUID(0x0002, 0x0002);
 static const ::gdcm::Tag s_SpecificCharacterSetTag(0x0008, 0x0005);
 static const ::gdcm::Tag s_SeriesInstanceUIDTag(0x0020, 0x000e);
 static const ::gdcm::Tag s_SeriesDateTag(0x0008, 0x0021);
@@ -94,7 +94,7 @@ DicomSeries::~DicomSeries()
 
 // ----------------------------------------------------------------------------
 
-DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType &filenames,
+DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType& filenames,
                                                         const SPTR(::fwJobs::Observer)& readerObserver,
                                                         const SPTR(::fwJobs::Observer)& completeSeriesObserver)
 {
@@ -126,7 +126,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
         }
 
         std::vector< std::string > filenames;
-        auto seriesPath = series->getLocalDicomPaths().begin()->second;
+        auto seriesPath            = series->getLocalDicomPaths().begin()->second;
         const std::string filename = seriesPath.string();
         filenames.push_back(filename);
 
@@ -233,16 +233,15 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     {
         auto filename = dicomFile.string();
 
-
         OSLM_ASSERT("The file \"" << dicomFile << "\" is not a key of the gdcm scanner",
                     seriesScanner.IsKey(filename.c_str()));
 
-        const std::string sopClassUID = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
+        const std::string sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
         const std::string mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
 
         if(sopClassUID != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage)
-                && mediaStorageSopClassUID
-                != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
+           && mediaStorageSopClassUID
+           != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
         {
 
             this->createSeries(seriesDB, seriesScanner, dicomFile);
@@ -298,10 +297,9 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
             break;
         }
 
-
         // Get first instance filename
         const std::string filename =
-              series->getLocalDicomPaths().begin()->second.string();
+            series->getLocalDicomPaths().begin()->second.string();
 
         // Load first instance
         std::vector< std::string > firstInstanceContainer;
@@ -385,7 +383,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
 
         //Performing Physicians Name
         std::string performingPhysicianNamesStr = getStringValue( scanner, stringFilename,
-                s_PerformingPhysicianNameTag );
+                                                                  s_PerformingPhysicianNameTag );
 
         if(!performingPhysicianNamesStr.empty())
         {
@@ -419,7 +417,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
     {
-        result = ::fwMedData::Patient::New();
+        result                  = ::fwMedData::Patient::New();
         m_patientMap[patientID] = result;
 
         //Patient ID
@@ -460,7 +458,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // Check if the study already exists
     if(m_studyMap.find(studyInstanceUID) == m_studyMap.end())
     {
-        result = ::fwMedData::Study::New();
+        result                       = ::fwMedData::Study::New();
         m_studyMap[studyInstanceUID] = result;
 
         //Study ID
@@ -509,7 +507,7 @@ void DicomSeries::createSeries(DicomSeriesContainerType& seriesDB,
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
     {
-        result = ::fwMedData::Equipment::New();
+        result                          = ::fwMedData::Equipment::New();
         m_equipmentMap[institutionName] = result;
 
         //Institution Name

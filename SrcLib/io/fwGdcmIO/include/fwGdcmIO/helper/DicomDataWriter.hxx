@@ -35,7 +35,7 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setEmptyTagValue(::gdcm::DataSet &dataset)
+    static void setEmptyTagValue(::gdcm::DataSet& dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         dataset.Insert(attribute.GetAsDataElement());
@@ -50,7 +50,7 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< typename T, std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setTagValue(const T &value, ::gdcm::DataSet &dataset)
+    static void setTagValue(const T& value, ::gdcm::DataSet& dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         attribute.SetValue(value);
@@ -65,7 +65,7 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setTagValue(const std::string &value, ::gdcm::DataSet &dataset)
+    static void setTagValue(const std::string& value, ::gdcm::DataSet& dataset)
     {
         setTagValue<std::string, GROUP, ELEMENT>(value, dataset);
     }
@@ -80,7 +80,7 @@ public:
      * @tparam ELEMENT Element of the tag.
      */
     template< typename T, std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static void setTagValues(const T * array, const size_t size, ::gdcm::DataSet &dataset)
+    static void setTagValues(const T* array, const size_t size, ::gdcm::DataSet& dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         if(array)
@@ -99,7 +99,7 @@ public:
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setSequenceTagValue(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-            ::gdcm::DataSet &dataset)
+                                    ::gdcm::DataSet& dataset)
     {
         // Create the sequence of items
         ::gdcm::DataElement dataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
@@ -118,7 +118,7 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
-    static ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createAndSetSequenceTagValue(::gdcm::DataSet &dataset)
+    static ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createAndSetSequenceTagValue(::gdcm::DataSet& dataset)
     {
         ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
         sequence->SetLengthToUndefined();
@@ -137,7 +137,7 @@ public:
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setAndMergeSequenceTagValue(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-            ::gdcm::DataSet &dataset)
+                                            ::gdcm::DataSet& dataset)
     {
         // Set or add the SQ
         if (!dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))
@@ -147,13 +147,13 @@ public:
         else
         {
             // Get old SQ
-            const ::gdcm::DataElement &dataElement =
-                    dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
+            const ::gdcm::DataElement& dataElement =
+                dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > oldSequence = dataElement.GetValueAsSQ();
 
             // Add items of the new SQ to the old SQ
             auto nbItem = sequence->GetNumberOfItems();
-            for (decltype(nbItem) i = 1; i <= nbItem; ++i) // WARN : item start at 1
+            for (decltype(nbItem)i = 1; i <= nbItem; ++i)  // WARN : item start at 1
             {
                 oldSequence->AddItem(sequence->GetItem(i));
             }
@@ -170,7 +170,7 @@ public:
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static void setCodeSequenceTagValue(::fwGdcmIO::container::DicomCodedAttribute attribute,
-                                        ::gdcm::DataSet &dataset)
+                                        ::gdcm::DataSet& dataset)
     {
         auto sequence = createAndSetSequenceTagValue< GROUP, ELEMENT >(dataset);
 

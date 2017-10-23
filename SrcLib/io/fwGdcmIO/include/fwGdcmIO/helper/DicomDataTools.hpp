@@ -46,7 +46,7 @@ public:
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     FWGDCMIO_API static const ::gdcm::PhotometricInterpretation getPhotometricInterpretation(
-            const ::fwData::Image::csptr& image);
+        const ::fwData::Image::csptr& image);
 
     /**
      * @brief Convert a surface representation mode (FW4SPL) into recommended presentation type (DICOM).
@@ -55,7 +55,7 @@ public:
      * @return Corresponding recommended presentation type.
      */
     FWGDCMIO_API static ::gdcm::Surface::VIEWType convertToPresentationType(
-            ::fwData::Material::RepresentationType representationMode);
+        ::fwData::Material::RepresentationType representationMode);
 
     /**
      * @brief Convert a surface recommended presentation type (DICOM) into representation mode (FW4SPL).
@@ -63,7 +63,7 @@ public:
      * @return Corresponding representation mode
      */
     FWGDCMIO_API static ::fwData::Material::RepresentationType convertToRepresentationMode(
-            ::gdcm::Surface::VIEWType presentationType);
+        ::gdcm::Surface::VIEWType presentationType);
 
     /**
      * @brief Convert a 3D point to the closest frame number index
@@ -72,7 +72,7 @@ public:
      */
     FWGDCMIO_API static std::size_t convertPointToFrameNumber(const ::fwData::Image::csptr& image,
                                                               const ::fwData::Point::sptr& point)
-                                                              throw(::fwGdcmIO::exception::Failed);
+    throw(::fwGdcmIO::exception::Failed);
 
     /**
      * @brief Convert a frame number to a Z coordinate
@@ -81,7 +81,7 @@ public:
      */
     FWGDCMIO_API static double convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image,
                                                                std::size_t frameNumber)
-                                                               throw(::fwGdcmIO::exception::Failed);
+    throw(::fwGdcmIO::exception::Failed);
 
 };
 

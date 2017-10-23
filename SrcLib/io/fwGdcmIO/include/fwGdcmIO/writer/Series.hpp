@@ -60,7 +60,7 @@ public:
      * It manages writing of the following general DICOM modules : patient, study and series
      * @note Currently, it handles image, SR and RT document writing.
      */
-    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed) override;
+    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed)override;
 
     /**
      * Override

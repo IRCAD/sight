@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,14 @@
 #ifndef __FWGDCMIO_WRITER_IE_SURFACE_HPP__
 #define __FWGDCMIO_WRITER_IE_SURFACE_HPP__
 
-#include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 #include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
+#include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 
 #include <fwMedData/ModelSeries.hpp>
-#include <gdcmSegment.h>
 
 #include <boost/filesystem/path.hpp>
+
+#include <gdcmSegment.h>
 
 namespace fwGdcmIO
 {
@@ -67,7 +68,6 @@ public:
      * @see PS 3.3 C.8.23.1 & PS 3.3 C.27.1
      */
     FWGDCMIO_API virtual void writeSurfaceSegmentationAndSurfaceMeshModules();
-
 
 protected:
 

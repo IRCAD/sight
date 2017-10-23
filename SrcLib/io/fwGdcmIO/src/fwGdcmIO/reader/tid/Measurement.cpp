@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -70,8 +70,7 @@ void Measurement::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& n
                         if(imageNode)
                         {
                             const int frameNumber = imageNode->getFrameNumber();
-                            double zCoordinate =
-::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(
+                            double zCoordinate    = ::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object, frameNumber);
 
                             auto origin = ::fwData::Point::New(static_cast<double>(coordinates[0]),
@@ -94,7 +93,7 @@ void Measurement::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& n
                     ::fwGdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
                         scoord3DNode->getGraphicDataContainer();
                     this->addDistance(::fwData::Point::New(coordinates[0], coordinates[1], coordinates[2]),
-                            ::fwData::Point::New(coordinates[3], coordinates[4], coordinates[5]));
+                                      ::fwData::Point::New(coordinates[3], coordinates[4], coordinates[5]));
                 }
             }
         }

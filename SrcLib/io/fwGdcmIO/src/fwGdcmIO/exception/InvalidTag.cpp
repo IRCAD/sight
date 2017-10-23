@@ -14,7 +14,7 @@ namespace exception
 //----------------------------------------------------------------------------
 
 InvalidTag::InvalidTag(const std::string& message) :
-        ::fwCore::Exception(message)
+    ::fwCore::Exception(message)
 {
 }
 

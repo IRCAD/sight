@@ -16,8 +16,6 @@
 #include <string>
 #include <vector>
 
-
-
 namespace fwGdcmIO
 {
 
@@ -47,9 +45,9 @@ typedef std::vector< ::gdcm::Tag > PrivateTagVecType;
  * @brief Load a set of private tags from given CSV file.
  * Each line of the file must be formatted this way : group,element,owner
  * Example :
-@verbatim
-0x00E1,0x1022,Philips
-@endverbatim
+ *  @verbatim
+ *  0x00E1,0x1022,Philips
+ *  @endverbatim
  *
  * @pre file must exist
  * @param tagsPath path to CSV file containing private tags

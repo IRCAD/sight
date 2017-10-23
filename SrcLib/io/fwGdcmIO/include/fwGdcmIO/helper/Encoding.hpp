@@ -44,10 +44,10 @@ public:
      * @throw ::boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
-    FWGDCMIO_API static std::string convertString(const std::string &source,
-                                                  const std::string &definedCharsetTerm,
+    FWGDCMIO_API static std::string convertString(const std::string& source,
+                                                  const std::string& definedCharsetTerm,
                                                   const SPTR(::fwLog::Logger)& logger = nullptr)
-        throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
+    throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
 
 private:
 
@@ -58,8 +58,8 @@ private:
      * @param[in] logger Logger used for conversion errors
      * @return converted charset
      */
-    static std::string convertStringWithoutCodeExtensions(const std::string &source,
-                                                          const std::string &definedTerm,
+    static std::string convertStringWithoutCodeExtensions(const std::string& source,
+                                                          const std::string& definedTerm,
                                                           const SPTR(::fwLog::Logger)& logger);
     /**
      * @brief Convert string sequence with a code extension.
@@ -70,11 +70,10 @@ private:
      * @throw ::boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format
      */
-    static std::string convertSequenceWithCodeExtensions(const std::string &sequence,
-                                                         const std::vector<std::string> &definedTermList,
+    static std::string convertSequenceWithCodeExtensions(const std::string& sequence,
+                                                         const std::vector<std::string>& definedTermList,
                                                          const SPTR(::fwLog::Logger)& logger)
-        throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
-
+    throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error);
 
     /**
      * @brief Map used to convert defined term to charset

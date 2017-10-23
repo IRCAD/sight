@@ -10,13 +10,14 @@
 #include "ioGdcm/config.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwGdcmIO/writer/Series.hpp>
 
-#include <io/IWriter.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Series.hpp>
+
+#include <io/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 

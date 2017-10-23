@@ -12,8 +12,8 @@
 
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <gdcmAnonymizer.h>
 #include <gdcmDicts.h>
@@ -89,12 +89,12 @@ public:
     FWGDCMIO_API void setReferenceDate(const ::boost::gregorian::date& referenceDate);
 
     /**
-    * @brief Add a date tag that must be shifted.
-    * The shift is made according to the interval between the date and the reference date.
-    * @param dateTag Date tag that must be shifted. (This tag shall be a date: VR shall be DA)
-    *
-    * @note The shift is done from Jan 1, 1900.
-    */
+     * @brief Add a date tag that must be shifted.
+     * The shift is made according to the interval between the date and the reference date.
+     * @param dateTag Date tag that must be shifted. (This tag shall be a date: VR shall be DA)
+     *
+     * @note The shift is done from Jan 1, 1900.
+     */
     FWGDCMIO_API void addShiftDateTag(const ::gdcm::Tag& tag);
 
     /**
@@ -160,10 +160,10 @@ private:
     void applyActionCodeU(const ::gdcm::Tag& tag);
 
     /**
-    * Shift date according to the interval between the date and the reference date.
-    *
-    * @note The shift is done from Jan 1, 1900.
-    */
+     * Shift date according to the interval between the date and the reference date.
+     *
+     * @note The shift is done from Jan 1, 1900.
+     */
     void applyActionShiftDate(const ::gdcm::Tag& tag);
 
     /// Generate a value consistent with the VR

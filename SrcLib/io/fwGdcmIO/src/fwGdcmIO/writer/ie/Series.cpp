@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 #include "fwGdcmIO/writer/ie/Series.hpp"
+
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
-#include <gdcmUIDGenerator.h>
-
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <gdcmUIDGenerator.h>
 
 #include <sstream>
 
@@ -95,13 +96,14 @@ void Series::writeGeneralSeriesModule()
         {
             physicians[count++] = ::gdcm::String<>(physician);
         }
-        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< >, 0x0008, 0x1050 >(physicians, count, dataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< >, 0x0008, 0x1050 >(physicians, count,
+                                                                                               dataset);
     }
 #endif
 
     // Laterality - Type 2C - FIXME: Fake Value - Should be absent for the abdomen or chest
     if(m_instance->getSOPClassUID() !=
-            ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
+       ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x0060 >("R", dataset);
     }
@@ -145,7 +147,7 @@ void Series::writeSRDocumentSeriesModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
 
     // Referenced Performed Procedure Step Sequence  - Type 2
-    ::fwGdcmIO::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0008,0x1111 >(dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0008, 0x1111 >(dataset);
 }
 
 //------------------------------------------------------------------------------

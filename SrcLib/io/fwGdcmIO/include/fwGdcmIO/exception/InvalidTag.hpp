@@ -36,6 +36,5 @@ public:
 } // namespace exception
 } // namespace fwGdcmIO
 
-
 #endif // __FWGDCMIO_EXCEPTION_INVALIDTAG_HPP__
 
