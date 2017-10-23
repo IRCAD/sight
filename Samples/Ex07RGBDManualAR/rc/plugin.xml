@@ -328,7 +328,6 @@
                 <scene width="640" height="480">
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="interactorStyleOffscreen" />
-                    <adaptor uid="registrationTransformOffscreen" />
                     <adaptor uid="meshAdptOffscreen" />
                     <adaptor uid="cameraAdptOffscreen" />
                 </scene>
@@ -338,18 +337,14 @@
                 <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
-            <service uid="registrationTransformOffscreen" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="inverseMat" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
-            </service>
 
             <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
                 <in key="mesh" uid="skinMesh" />
-                <config renderer="default" picker="default" autoresetcamera="no" color="#FFFFFF" transform="registrationMatrix" shadingMode="ambient" />
+                <config renderer="default" picker="default" autoresetcamera="no" color="#FFFFFF" transform="id" shadingMode="ambient" />
             </service>
 
             <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="inverseMat" />
                 <in key="camera" uid="cameraRGB" />
                 <config renderer="default" />
             </service>
@@ -483,7 +478,6 @@
             <start uid="foregroundAdpt" />
             <!-- VTK scene 'offscreenRender' -->
             <start uid="interactorStyleOffscreen" />
-            <start uid="registrationTransformOffscreen" />
             <start uid="meshAdptOffscreen" />
             <start uid="cameraAdptOffscreen" />
             <!-- Update -->
