@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,8 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwMath/VectorFunctions.hpp>
 
@@ -169,7 +169,6 @@ void SProbeMesh::updating()
 
     auto sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
-
 
 }
 

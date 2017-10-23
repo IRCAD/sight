@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/converter/MatrixConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
 #include <fwData/TransformationMatrix3D.hpp>
@@ -44,7 +45,7 @@ MatrixConverter::~MatrixConverter()
     {
         for (int j = 0; j < 4; ++j)
         {
-            dest[i][j] = srcMatrix->getCoefficient (i, j);
+            dest[i][j] = srcMatrix->getCoefficient(i, j);
         }
     }
     msg->SetMatrix(dest);
@@ -53,27 +54,22 @@ MatrixConverter::~MatrixConverter()
 
 //-----------------------------------------------------------------------------
 
-void MatrixConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                      ::fwData::Object::sptr& destObj) const
+::fwData::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a "
-                                                "::fwData::TransformationMatrix3D"),
-                          destObj->getClassname() != MatrixConverter::s_FWDATA_OBJECT_TYPE);
-
     ::igtl::Matrix4x4 matrix;
-    ::igtl::TransformMessage::Pointer srcTransform;
-    ::fwData::TransformationMatrix3D::sptr dest;
-
-    srcTransform = ::igtl::TransformMessage::Pointer(dynamic_cast< ::igtl::TransformMessage* >(src.GetPointer()));
-    dest         = ::fwData::TransformationMatrix3D::dynamicCast(destObj);
+    ::igtl::TransformMessage* msg                  = dynamic_cast< ::igtl::TransformMessage* >(src.GetPointer());
+    ::igtl::TransformMessage::Pointer srcTransform = ::igtl::TransformMessage::Pointer(msg);
+    ::fwData::TransformationMatrix3D::sptr dest    = ::fwData::TransformationMatrix3D::New();
     srcTransform->GetMatrix(matrix);
     for (int i = 0; i < 4; ++i)
     {
         for (int j = 0; j < 4; ++j)
         {
-            dest->setCoefficient (i, j, matrix[i][j]);
+            dest->setCoefficient(i, j, matrix[i][j]);
         }
     }
+
+    return dest;
 }
 
 //-----------------------------------------------------------------------------

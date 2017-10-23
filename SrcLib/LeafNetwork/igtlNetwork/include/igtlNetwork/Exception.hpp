@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,9 +15,10 @@ namespace igtlNetwork
 {
 
 /// Exception for igtlNetwork
-struct IGTLNETWORK_CLASS_API Exception : ::fwCore::Exception
+struct Exception : ::fwCore::Exception
 {
-    IGTLNETWORK_API Exception( const std::string& err ) : ::fwCore::Exception(err)
+    Exception( const std::string& err ) :
+        ::fwCore::Exception(err)
     {
     }
 };

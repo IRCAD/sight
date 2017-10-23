@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioIGTL/SOpenIGTLinkSender.hpp"
+#include "ioIGTL/SServerSender.hpp"
 
 #include "ioIGTL/helper/preferences.hpp"
 
@@ -18,47 +18,59 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SOpenIGTLinkSender);
+fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SServerSender);
 
 namespace ioIGTL
 {
 
+const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
+
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkSender::SOpenIGTLinkSender()
+SServerSender::SServerSender()
 {
     m_server = std::make_shared< ::igtlNetwork::Server>();
 }
 
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkSender::~SOpenIGTLinkSender()
+SServerSender::~SServerSender()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::configuring()
+void SServerSender::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_portConfig = config.get("port", "4242");
-    m_deviceName = config.get("deviceName", "");
+
+    const ConfigType configIn = config.get_child("in");
+
+    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+               configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+
+    const auto keyCfg = configIn.equal_range("key");
+    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
+    {
+        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName                   = attr.get("deviceName", "F4S");
+        m_deviceNames.push_back(deviceName);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::starting()
+void SServerSender::starting()
 {
-    ::ioNetwork::INetworkSender::starting();
-
     try
     {
-        std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
-        m_sigServerStarted->asyncEmit();
+        m_sigConnected->asyncEmit();
     }
     catch (::fwCore::Exception& e)
     {
@@ -73,10 +85,8 @@ void SOpenIGTLinkSender::starting()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::stopping()
+void SServerSender::stopping()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-
     try
     {
         if(m_server->isStarted())
@@ -84,26 +94,25 @@ void SOpenIGTLinkSender::stopping()
             m_server->stop();
         }
         m_serverFuture.wait();
-        m_sigServerStopped->asyncEmit();
+        m_sigDisconnected->asyncEmit();
     }
     catch (::fwCore::Exception& e)
     {
-        msgDialog.showMessageDialog("Error", e.what());
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", e.what());
     }
-    catch (std::future_error& e)
+    catch (std::future_error&)
     {
         // This happens when the server failed to start, so we just ignore it silently.
     }
-
-    ::ioNetwork::INetworkSender::stopping();
 }
 
 //-----------------------------------------------------------------------------
-void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj)
+
+void SServerSender::sendObject(const ::fwData::Object::csptr& obj, const size_t index)
 {
-    if(m_deviceName != "")
+    if (!m_deviceNames[index].empty())
     {
-        m_server->setMessageDeviceName(m_deviceName);
+        m_server->setMessageDeviceName(m_deviceNames[index]);
     }
     m_server->broadcast(obj);
 }

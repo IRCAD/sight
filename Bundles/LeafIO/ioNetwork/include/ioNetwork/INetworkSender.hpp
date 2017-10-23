@@ -9,28 +9,16 @@
 
 #include "ioNetwork/config.hpp"
 
-#include <fwCom/helper/SigSlotConnection.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwData/Object.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include <boost/type.hpp>
-
-#include <map>
 
 namespace ioNetwork
 {
 
 /**
- * @brief Abstract class for network senders(you need to inherit from this class if you want implement a new network
- * sender).
- *
- * @note The inherited service will automatically be connected to its object. This bypass the "autoConnect" because of
- * the OSLM_FATAL_IF when service receives a message.
+ * @brief Abstract class for network senders
+ * You need to inherit from this class if you want implement a new network sender
  */
 class IONETWORK_CLASS_API INetworkSender : public ::fwServices::IController
 {
@@ -40,40 +28,28 @@ public:
     fwCoreServiceClassDefinitionsMacro( (INetworkSender) (::fwServices::IController));
 
     /**
-     * @brief Send data slot can be used if you want to connect a custom signal to this slot
+     * @brief Service connected signal is emitted when the server is started
      */
-    IONETWORK_API static const ::fwCom::Slots::SlotKeyType s_SEND_DATA_SLOT;
+    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
 
     /**
-     * @typedef SendDataSlotType
+     * @typedef ConnectedSignalType
      *
-     * @brief SendDataSlotType slot type stored that you can connect in your plugin.xml
+     * @brief ConnectedSignalType is stored and emitted when the sender is started
      */
-    typedef ::fwCom::Slot<void (::fwData::Object::sptr) > SendDataSlotType;
+    typedef ::fwCom::Signal< void () > ConnectedSignalType;
 
     /**
-     * @brief Server started signal is emitted when the server is started
+     * @brief Service disconnected signal is emitted when the sender is stopped
      */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_SERVER_STARTED_SIGNAL;
+    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
 
     /**
-     * @typedef ServerStartedSignalType
+     * @typedef DisconnectSignalType
      *
-     * @brief ServerStartedSignalType is stored and emitted when the sender is started
+     * @brief DisconnectSignalType is stored and emitted when the sender is stopped
      */
-    typedef ::fwCom::Signal< void () > ServerStartedSignalType;
-
-    /**
-     * @brief Server stopped signal is emitted when the sender is stopped
-     */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_SERVER_STOPPED_SIGNAL;
-
-    /**
-     * @typedef ServerStoppedSignalType
-     *
-     * @brief ServerStoppedSignalType is stored and emitted when the sender is stopped
-     */
-    typedef ::fwCom::Signal< void () > ServerStoppedSignalType;
+    typedef ::fwCom::Signal< void () > DisconnectSignalType;
 
     /// Constructor
     IONETWORK_API INetworkSender();
@@ -83,15 +59,6 @@ public:
 
 protected:
 
-    /// Overrides
-    IONETWORK_API virtual void configuring() override;
-
-    /// Make connection like autoConnect enable message reception
-    IONETWORK_API virtual void starting() override;
-
-    /// Disconnect connection to bypass the OSLM_FATAL_IF when service receives a message
-    IONETWORK_API virtual void stopping() override;
-
     /// Sends the object
     IONETWORK_API virtual void updating() override;
 
@@ -99,30 +66,16 @@ protected:
     IONETWORK_API virtual void swapping() override;
 
     /**
-     * @brief SLOT: called to send obj
-     *
-     * @param[in] obj the obj to send
+     * @brief Sends the obj at index
+     * Usable if the configuration group exists.
      */
-    IONETWORK_API void sendData(::fwData::Object::sptr obj);
+    virtual void sendObject(const ::fwData::Object::csptr& obj, const size_t index) = 0;
 
-    /**
-     * @brief Sends the obj
-     */
-    virtual void sendObject(const ::fwData::Object::sptr& obj) = 0;
+    /// Signal emitted when service is connected
+    ConnectedSignalType::sptr m_sigConnected;
 
-    /// Signal when server started
-    ServerStartedSignalType::sptr m_sigServerStarted;
-
-    /// Signal when server stopped
-    ServerStoppedSignalType::sptr m_sigServerStopped;
-
-private:
-
-    /// Slot used to send data
-    SendDataSlotType::sptr m_sendDataSlot;
-
-    /// connection between obj signal and service slots
-    ::fwCom::helper::SigSlotConnection m_connections;
+    /// Signal emitted when service is disconnected
+    DisconnectSignalType::sptr m_sigDisconnected;
 };
 
 } // namespace ioNetwork

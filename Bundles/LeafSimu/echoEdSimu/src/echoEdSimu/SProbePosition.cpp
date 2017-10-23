@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,8 +63,8 @@ void SProbePosition::updating()
     const int s_maxJ = 259;
 
     ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D>();
-    int y = static_cast<int>( matrix->getCoefficient(1,3) );
-    int z = static_cast<int>( matrix->getCoefficient(2,3) );
+    int y = static_cast<int>( matrix->getCoefficient(1, 3) );
+    int z = static_cast<int>( matrix->getCoefficient(2, 3) );
 
     int i = z;
     int j = -y;

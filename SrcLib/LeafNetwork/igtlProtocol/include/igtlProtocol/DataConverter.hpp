@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,12 +59,12 @@ public:
      * @brief convert a ::fwData::Object to a ::igtl::MessageBase
      * @return a ::igtl::MessageBase smart pointer
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwObject(
-        ::fwData::Object::sptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwObject(::fwData::Object::csptr src) const;
+
     /**
      * @brief convert a ::igtl::MessageBase to a ::fwData::Object
      */
-    IGTLPROTOCOL_API void fromIgtlMessage(::igtl::MessageBase::Pointer const& src, ::fwData::Object::sptr& dest) const;
+    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
      * @brief get status message
@@ -77,7 +77,7 @@ public:
      */
     IGTLPROTOCOL_API ::igtl::MessageBase::Pointer getStatusMessage(int igtlCode,
                                                                    int igtlSubCode,
-                                                                   std::string const& errMsg) const;
+                                                                   const std::string& errMsg) const;
 
     /**
      * @brief get capability message

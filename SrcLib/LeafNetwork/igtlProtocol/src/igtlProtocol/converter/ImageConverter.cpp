@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "igtlProtocol/converter/ImageConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 #include "igtlProtocol/ImageTypeConverter.hpp"
-#include "igtlProtocol/converter/ImageConverter.hpp"
 
 #include <fwData/Image.hpp>
 
@@ -43,13 +44,11 @@ ImageConverter::~ImageConverter()
 ::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(::fwData::Object::csptr src) const
 {
     ::fwData::Image::csptr srcImg = ::fwData::Image::dynamicConstCast(src);
-    ::igtl::ImageMessage::Pointer dest;
     ::igtl::Matrix4x4 matrix;
-    int offset[] = {0, 0, 0};
     char* igtlImgBuffer;
     ::fwDataTools::helper::Array arrayHelper(srcImg->getDataArray());
 
-    dest = ::igtl::ImageMessage::New();
+    ::igtl::ImageMessage::Pointer dest = ::igtl::ImageMessage::New();
     ::igtl::IdentityMatrix(matrix);
     dest->SetMatrix(matrix);
     dest->SetScalarType(ImageTypeConverter::getIgtlType(srcImg->getType()));
@@ -68,16 +67,12 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-void ImageConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                     ::fwData::Object::sptr& dest) const
+::fwData::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination type must be a fwData::Image"),
-                          dest->getClassname() != ImageConverter::s_FWDATA_OBJECT_TYPE);
-
     ::igtl::ImageMessage::Pointer srcImg;
     char* imgBuffer;
     char* igtlImageBuffer;
-    ::fwData::Image::sptr destImg = ::fwData::Image::dynamicCast(dest);
+    ::fwData::Image::sptr destImg = ::fwData::Image::New();
     ::fwDataTools::helper::Image imgHelper(destImg);
     float igtlSpacing[3];
     float igtlOrigins[3];
@@ -104,6 +99,8 @@ void ImageConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
     imgBuffer       = reinterpret_cast<char*>(imgHelper.getBuffer());
     igtlImageBuffer = reinterpret_cast<char*>(srcImg->GetScalarPointer());
     std::copy(igtlImageBuffer, igtlImageBuffer + srcImg->GetImageSize(), imgBuffer);
+
+    return destImg;
 }
 
 //-----------------------------------------------------------------------------

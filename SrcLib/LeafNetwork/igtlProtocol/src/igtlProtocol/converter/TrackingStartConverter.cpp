@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/converter/TrackingStartConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
 #include <fwData/Boolean.hpp>
@@ -51,64 +52,33 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-void TrackingStartConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                             ::fwData::Object::sptr& destObj) const
+::fwData::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a "
-                                                "::fwData::Composite"),
-                          destObj->getClassname() != TrackingStartConverter::s_FWDATA_OBJECT_TYPE);
+    ::igtl::StartTrackingDataMessage* msg = dynamic_cast< ::igtl::StartTrackingDataMessage* >(src.GetPointer());
 
-    ::igtl::StartTrackingDataMessage::Pointer trackingMsg;
-    trackingMsg =
-        ::igtl::StartTrackingDataMessage::Pointer(dynamic_cast< ::igtl::StartTrackingDataMessage* >(src.GetPointer()));
+    ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
-
-    ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(destObj);
+    ::fwData::Composite::sptr composite = ::fwData::Composite::New();
     {
-        ::fwData::Boolean::sptr status;
-        ::fwData::Composite::iterator iter = composite->find(s_statusKey);
-        if( iter != composite->end())
-        {
-            status = ::fwData::Boolean::dynamicCast(iter->second);
-            SLM_ASSERT("Object '"+s_statusKey+"' already exist, but it's not a Boolean.", status);
-        }
-        else
-        {
-            status                    = ::fwData::Boolean::New();
-            (*composite)[s_statusKey] = status;
-        }
+        ::fwData::Boolean::sptr status = ::fwData::Boolean::New();
+        (*composite)[s_statusKey]      = status;
+
         status->setValue(true);
     }
     {
-        ::fwData::Integer::sptr resolution;
-        ::fwData::Composite::iterator iter = composite->find(s_resolutionKey);
-        if( iter != composite->end())
-        {
-            resolution = ::fwData::Integer::dynamicCast(iter->second);
-            SLM_ASSERT("Object '"+s_resolutionKey+"' already exist, but it's not an Integer.", resolution);
-        }
-        else
-        {
-            resolution                    = ::fwData::Integer::New();
-            (*composite)[s_resolutionKey] = resolution;
-        }
+        ::fwData::Integer::sptr resolution = ::fwData::Integer::New();
+        (*composite)[s_resolutionKey]      = resolution;
+
         resolution->setValue(trackingMsg->GetResolution());
     }
     {
-        ::fwData::String::sptr coordinateName;
-        ::fwData::Composite::iterator iter = composite->find(s_coordinateNameKey);
-        if( iter != composite->end())
-        {
-            coordinateName = ::fwData::String::dynamicCast(iter->second);
-            SLM_ASSERT("Object '"+s_coordinateNameKey+"' already exist, but it's not a String.", coordinateName);
-        }
-        else
-        {
-            coordinateName                    = ::fwData::String::New();
-            (*composite)[s_coordinateNameKey] = coordinateName;
-        }
+        ::fwData::String::sptr coordinateName = ::fwData::String::New();
+        (*composite)[s_coordinateNameKey]     = coordinateName;
+
         coordinateName->setValue(trackingMsg->GetCoordinateName());
     }
+
+    return composite;
 }
 
 //-----------------------------------------------------------------------------

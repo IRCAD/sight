@@ -34,9 +34,9 @@ public:
      * @brief Slot to update configuration
      */
     IOZMQ_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CONFIGURATION_SLOT;
-    typedef ::fwCom::Slot< void (::zmqNetwork::Socket::PatternMode const,
-                                 ::zmqNetwork::Socket::SocketMode const,
-                                 std::string const& host) >                 UpdateConfigurationSlotType;
+    typedef ::fwCom::Slot< void (const ::zmqNetwork::Socket::PatternMode,
+                                 const ::zmqNetwork::Socket::SocketMode,
+                                 const std::string& host) >                 UpdateConfigurationSlotType;
 
     /// Constructor
     IOZMQ_API SZeroMQListener();

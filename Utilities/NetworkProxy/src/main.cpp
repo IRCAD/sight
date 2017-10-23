@@ -176,7 +176,6 @@ int main (int argc, char** argv)
     std::string configFile(argv[2]);
 
     //Initialization of parameters
-    //std::map< std::string , igtlNetwork::Server::sptr > associationDeviceServer = initialize(configFile);
     std::map< std::string, configuration > associationDeviceServer = initialize(configFile);
 
     ::igtlNetwork::Server::sptr receiveServer = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
@@ -199,12 +198,12 @@ int main (int argc, char** argv)
     while (1)
     {
         // Create a message buffer to receive header
-        igtl::MessageHeader::Pointer headerMsg;
-        igtl::MessageBase::Pointer msg;
+        ::igtl::MessageHeader::Pointer headerMsg;
+        ::igtl::MessageBase::Pointer msg;
 
         std::vector< ::igtl::MessageBase::Pointer > headerMsgs;
         // Initialize receive buffer
-        headerMsgs = receiveServer->receiveHeader();
+        headerMsgs = receiveServer->receiveHeaders();
 
         for(unsigned int i = 0; i < headerMsgs.size(); ++i)
         {

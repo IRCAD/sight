@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioIGTL/SOpenIGTLinkListener.hpp"
+#include "ioIGTL/SClientListener.hpp"
 
 #include "ioIGTL/helper/preferences.hpp"
 
 #include <arData/FrameTL.hpp>
 #include <arData/MatrixTL.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
@@ -24,41 +23,53 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SOpenIGTLinkListener);
+fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::SClientListener);
+
+const ::fwServices::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 namespace ioIGTL
 {
 
-static const std::string s_TARGET_KEY = "target";
-
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkListener::SOpenIGTLinkListener() :
-    m_timelineType(NONE),
-    m_frameTLInitialized(false)
+SClientListener::SClientListener() :
+    m_tlInitialized(false)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkListener::~SOpenIGTLinkListener()
+SClientListener::~SClientListener()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::configuring()
+void SClientListener::configuring()
 {
-    SLM_ASSERT("Configuration not found", m_configuration != NULL);
-    if (m_configuration->findConfigurationElement("server"))
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+
+    const ConfigType configInOut = config.get_child("inout");
+
+    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+               configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+
+    const auto keyCfg = configInOut.equal_range("key");
+    for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
-        SLM_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
+        const ::fwServices::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName                   = attr.get("deviceName", "F4S");
+        m_deviceNames.push_back(deviceName);
+        m_client.addAuthorizedDevice(deviceName);
+    }
+    m_client.setFilteringByDeviceName(true);
+
+    const std::string serverInfo = config.get("server", "");
+    if(!serverInfo.empty())
+    {
         const std::string::size_type splitPosition = serverInfo.find(':');
         SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
@@ -69,34 +80,12 @@ void SOpenIGTLinkListener::configuring()
     {
         throw ::fwTools::Failed("Server element not found");
     }
-
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
-    if(!deviceNames.empty())
-    {
-        for(auto dn : deviceNames)
-        {
-            m_client.addAuthorizedDevice(dn->getValue());
-        }
-        m_client.setFilteringByDeviceName(true);
-    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::runClient()
+void SClientListener::runClient()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
-
-    if(m_timelineType == SOpenIGTLinkListener::MATRIX)
-    {
-        obj = ::fwData::TransformationMatrix3D::New();
-    }
-    else if(m_timelineType == SOpenIGTLinkListener::FRAME)
-    {
-        obj = ::fwData::Image::New();
-    }
-
     // 1. Connection
     try
     {
@@ -104,6 +93,7 @@ void SOpenIGTLinkListener::runClient()
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
+        m_sigConnected->asyncEmit();
     }
     catch (::fwCore::Exception& ex)
     {
@@ -112,7 +102,7 @@ void SOpenIGTLinkListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Connection error", ex.what());
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -123,22 +113,36 @@ void SOpenIGTLinkListener::runClient()
         return;
     }
 
-    m_sigClientConnected->asyncEmit();
-
     // 2. Receive messages
     try
     {
         while (m_client.isConnected())
         {
-            if (m_client.receiveObject(obj))
+            std::string deviceName;
+            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            if (receiveObject)
             {
-                if(m_timelineType != SOpenIGTLinkListener::NONE)
+                const auto& iter = std::find(m_deviceNames.begin(), m_deviceNames.end(), deviceName);
+
+                if(iter != m_deviceNames.end())
                 {
-                    this->manageTimeline(obj);
-                }
-                else
-                {
-                    this->notifyObjectUpdated();
+                    const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
+                    ::fwData::Object::sptr obj =
+                        this->getInOut< ::fwData::Object >(s_OBJECTS_GROUP, indexReceiveObject);
+
+                    const bool isATimeline = obj->isA("::arData::MatrixTL") || obj->isA("::arData::FrameTL");
+                    if(isATimeline)
+                    {
+                        this->manageTimeline(receiveObject, indexReceiveObject);
+                    }
+                    else
+                    {
+                        obj->shallowCopy(receiveObject);
+
+                        ::fwData::Object::ModifiedSignalType::sptr sig;
+                        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                        sig->asyncEmit();
+                    }
                 }
             }
         }
@@ -150,7 +154,7 @@ void SOpenIGTLinkListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog("Error", ex.what());
+            ::fwGui::dialog::MessageDialog::showMessageDialog("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -159,57 +163,53 @@ void SOpenIGTLinkListener::runClient()
             OSLM_ERROR(ex.what());
         }
     }
-    m_sigClientDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::starting()
+void SClientListener::starting()
 {
-    ::fwData::Object::sptr obj  = this->getInOut< ::fwData::Object>(s_TARGET_KEY);
-    ::arData::TimeLine::sptr tl = ::arData::TimeLine::dynamicCast(obj);
+    m_clientFuture = std::async(std::launch::async, std::bind(&SClientListener::runClient, this));
+}
 
-    if(tl)
+//-----------------------------------------------------------------------------
+
+void SClientListener::stopping()
+{
+    try
     {
-        if(obj->isA("::arData::MatrixTL"))
+        if(m_client.isConnected())
         {
-            m_timelineType                 = SOpenIGTLinkListener::MATRIX;
-            ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TARGET_KEY);
-            matTL->setMaximumSize(10);
-            matTL->initPoolSize(1);
-
+            m_client.disconnect();
         }
-        else if(obj->isA("::arData::FrameTL"))
-        {
-            m_timelineType = SOpenIGTLinkListener::FRAME;
-        }
-        else
-        {
-            SLM_WARN("This type of timeline is not managed !");
-        }
+        m_clientFuture.wait();
+        m_tlInitialized = false;
+        m_sigDisconnected->asyncEmit();
     }
-
-    m_clientFuture = std::async(std::launch::async, std::bind(&SOpenIGTLinkListener::runClient, this));
+    catch (::fwCore::Exception& ex)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Connection error", ex.what());
+        SLM_ERROR(ex.what());
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkListener::stopping()
-{
-    m_client.disconnect();
-    m_clientFuture.wait();
-    m_frameTLInitialized = false;
-}
-
-//-----------------------------------------------------------------------------
-
-void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
+void SClientListener::manageTimeline(::fwData::Object::sptr obj, size_t index)
 {
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    ::arData::MatrixTL::sptr matTL                 = this->getInOut< ::arData::MatrixTL>(s_OBJECTS_GROUP, index);
+    ::arData::FrameTL::sptr frameTL                = this->getInOut< ::arData::FrameTL>(s_OBJECTS_GROUP, index);
+
     //MatrixTL
-    if(m_timelineType == SOpenIGTLinkListener::MATRIX)
+    if(matTL)
     {
-        ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TARGET_KEY);
+        if(!m_tlInitialized)
+        {
+            matTL->setMaximumSize(10);
+            matTL->initPoolSize(1);
+            m_tlInitialized = true;
+        }
 
         SPTR(::arData::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
@@ -231,16 +231,15 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
         sig->asyncEmit(timestamp);
     }
     //FrameTL
-    else if(m_timelineType == SOpenIGTLinkListener::FRAME)
+    else if(frameTL)
     {
         ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
         ::fwDataTools::helper::Image helper(im);
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL>(s_TARGET_KEY);
-        if(!m_frameTLInitialized)
+        if(!m_tlInitialized)
         {
             frameTL->setMaximumSize(10);
             frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), im->getNumberOfComponents());
-            m_frameTLInitialized = true;
+            m_tlInitialized = true;
         }
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
@@ -257,10 +256,6 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
         sig = frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >
                   (::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
-    }
-    else
-    {
-        //TODO: otherTL
     }
 }
 

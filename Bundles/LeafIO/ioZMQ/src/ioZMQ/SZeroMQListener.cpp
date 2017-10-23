@@ -95,14 +95,23 @@ void SZeroMQListener::runReceiver()
     }
     m_socket->setReceiveTimeout(1000);
     obj = this->getObject();
-    m_sigClientConnected->asyncEmit();
+    m_sigConnected->asyncEmit();
     while (m_socket->isStarted())
     {
         try
         {
-            if (m_socket->receiveObject(obj))
+            std::string deviceName;
+            ::fwData::Object::sptr receiveObject = m_socket->receiveObject(deviceName);
+            if(receiveObject)
             {
-                this->notifyObjectUpdated();
+                obj->shallowCopy(receiveObject);
+
+                ::fwData::Object::ModifiedSignalType::sptr sig;
+                sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
+                }
             }
         }
         catch(std::exception& err)
@@ -111,7 +120,7 @@ void SZeroMQListener::runReceiver()
         }
     }
     m_socket->stop();
-    m_sigClientDisconnected->asyncEmit();
+    m_sigDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOIGTL_SOPENIGTLINKLISTENER_HPP__
-#define __IOIGTL_SOPENIGTLINKLISTENER_HPP__
+#ifndef __IOIGTL_SCLIENTLISTENER_HPP__
+#define __IOIGTL_SCLIENTLISTENER_HPP__
 
 #include "ioIGTL/config.hpp"
 
@@ -22,41 +22,41 @@ namespace ioIGTL
 {
 
 /**
- * @brief   Network client that uses OpenIGTLink protocol
+ * @brief   OpenIGTLink client that will listen objects to the connected server
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
- *      <inout key="target" uid="..." />
+ * <service uid="..." type="::ioIGTL::SClientListener" >
  *      <server>127.0.0.1:4242</server>
- *      <deviceName>...</deviceName>
- *      <deviceName>...</deviceName>
- *      ...
+ *      <inout group="objects">
+ *          <key uid="..." deviceName="device01" />
+ *          <key uid="..." deviceName="device02" />
+ *      </inout>
  * </service>
  * @endcode
  * @subsection In-Out In-Out:
  * - \b object [::fwData::Object]:
- *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL): received IGTL data are pushed in
- * timeline
+ *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL):
+ *   received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data
  * @subsection Configuration Configuration:
- * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
- * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
+ * - \b deviceName: filter by device Name in Message
+ * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
-class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListener
+class IOIGTL_CLASS_API SClientListener : public ::ioNetwork::INetworkListener
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SOpenIGTLinkListener)(::ioNetwork::INetworkListener) );
+    fwCoreServiceClassDefinitionsMacro( (SClientListener)(::ioNetwork::INetworkListener) );
 
     /// Constructor
-    IOIGTL_API SOpenIGTLinkListener();
+    IOIGTL_API SClientListener();
 
     /// Destructor
-    IOIGTL_API virtual ~SOpenIGTLinkListener();
+    IOIGTL_API virtual ~SClientListener();
 
 protected:
 
@@ -72,15 +72,16 @@ protected:
 private:
 
     /**
-     * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
-     *        this method run in a thread
+     * @brief method contain the receive loop
+     * this method run in a thread
      */
     void    runClient();
+
     /**
      * @brief method called when the current object is a timeline
      * @note Currently only arData::MatrixTL and arData::FrameTL are managed
      */
-    void manageTimeline(::fwData::Object::sptr obj);
+    void manageTimeline(::fwData::Object::sptr obj, size_t index);
 
     /// client socket
     ::igtlNetwork::Client m_client;
@@ -94,20 +95,13 @@ private:
     /// port config key
     std::string m_portConfig;
 
-    ///Type of timeline
-    typedef enum TimelineType
-    {
-        NONE = -1,
-        MATRIX,
-        FRAME
-    }TimelineType;
+    bool m_tlInitialized;
 
-    TimelineType m_timelineType;
-
-    bool m_frameTLInitialized;
+    /// Vector of device name used
+    std::vector<std::string> m_deviceNames;
 };
 
-} // namespace OpenIGTLinkIO
+} // namespace ioIGTL
 
-#endif /*__IOIGTL_SOPENIGTLINKLISTENER_HPP__*/
+#endif /*__IOIGTL_SCLIENTLISTENER_HPP__*/
 

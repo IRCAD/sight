@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,14 +33,14 @@ public:
      *
      * @return an object converted from atom
      */
-    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src, ::fwData::Object::sptr& dest) const;
+    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer const src) const;
 
     /**
      * @brief convert a fwData::Object to a RawMessage contain an atom serialized object
      *
      * @return an RawMessage contain the compressed atom serialized object
      */
-    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject (::fwData::Object::csptr src) const;
+    IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwDataObject(::fwData::Object::csptr src) const;
 
     /**
      * @brief create a new AtomConverter smart pointer

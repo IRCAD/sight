@@ -14,12 +14,11 @@
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <boost/type.hpp>
-
 #include <igtl/igtlServerSocket.h>
 
 #include <list>
 #include <string>
+#include <vector>
 
 namespace igtlNetwork
 {
@@ -71,7 +70,7 @@ public:
     /**
      * @brief method to broadcast to all client the obj
      */
-    IGTLNETWORK_API void broadcast(::fwData::Object::sptr obj);
+    IGTLNETWORK_API void broadcast(const ::fwData::Object::csptr& obj);
 
     /**
      * @brief method to broadcast to all client a msg
@@ -93,14 +92,14 @@ public:
     /**
      * @brief method to have the current number of clients
      */
-    IGTLNETWORK_API size_t getNumberOfClients();
+    IGTLNETWORK_API size_t getNumberOfClients() const;
+
     /**
-     * @brief methdo to receive all headers of all connected clients
+     * @brief method to receive all headers of all connected clients
      *
      * @return vector of igl::MessageHeader::Pointer
      */
-
-    IGTLNETWORK_API std::vector< ::igtl::MessageHeader::Pointer > receiveHeader();
+    IGTLNETWORK_API std::vector< ::igtl::MessageHeader::Pointer > receiveHeaders();
 
     /** @brief receive body pack of a specific connected client
      *
@@ -109,13 +108,20 @@ public:
      *
      *  @return Message
      */
-    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header,
-                                                              unsigned int client);
+    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer header,
+                                                             unsigned int client);
 
     /**
-     * @brief set the device name when a message is sended
+     * @brief method to retrieve vector of received object from all connected clients
+     *
+     * @return a vector of smart pointer of fwData object
      */
-    IGTLNETWORK_API void setMessageDeviceName(std::string deviceName);
+    IGTLNETWORK_API std::vector< ::fwData::Object::sptr > receiveObjects(std::vector<std::string>& deviceNames);
+
+    /**
+     * @brief set the device name when a message is sent
+     */
+    IGTLNETWORK_API void setMessageDeviceName(const std::string& deviceName);
 
 private:
 

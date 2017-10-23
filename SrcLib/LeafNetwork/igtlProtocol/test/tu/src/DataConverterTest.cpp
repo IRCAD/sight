@@ -66,16 +66,13 @@ void DataConverterTest::meshConverterTest()
     DataConverter::sptr converter = DataConverter::getInstance();
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
-    ::fwData::Object::sptr obj;
-
     ::fwTest::generator::Mesh::generateMesh(mesh);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
 
     CPPUNIT_ASSERT_MESSAGE("Message is null", msg);
 
-    obj = ::fwData::Mesh::New();
-    converter->fromIgtlMessage(msg, obj);
+    ::fwData::Object::sptr obj = converter->fromIgtlMessage(msg);
 
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
@@ -139,7 +136,7 @@ void DataConverterTest::imageConverterTest()
     DataConverter::sptr converter = DataConverter::getInstance();
     ::fwData::Image::sptr image  = ::fwData::Image::New();
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    ::fwData::Object::sptr obj;
+
     ::fwTools::Type type = ::fwTools::Type::create< std::int32_t >();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
@@ -147,8 +144,7 @@ void DataConverterTest::imageConverterTest()
 
     CPPUNIT_ASSERT_MESSAGE("Message is null", msg);
 
-    obj = ::fwData::Image::New();
-    converter->fromIgtlMessage(msg, obj);
+    ::fwData::Object::sptr obj = converter->fromIgtlMessage(msg);
 
     image2 = ::fwData::Image::dynamicCast(obj);
 
@@ -194,6 +190,7 @@ void DataConverterTest::matrixConverterTest()
             matrix->setCoefficient(i, j, i+j);
         }
     }
+
     convertedMatrix =
         ::igtl::TransformMessage::Pointer(dynamic_cast< ::igtl::TransformMessage*>(converter->fromFwObject(matrix).
                                                                                    GetPointer()));
@@ -204,11 +201,13 @@ void DataConverterTest::matrixConverterTest()
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
     }
-    ::fwData::Object::sptr destObj = matrix;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(convertedMatrix.GetPointer()), destObj);
+
+    ::fwData::Object::sptr destObj =
+        converter->fromIgtlMessage(::igtl::MessageBase::Pointer(convertedMatrix.GetPointer()));
+    ::fwData::TransformationMatrix3D::sptr matrix2 = ::fwData::TransformationMatrix3D::dynamicCast(destObj);
     for (int i = 0; i < 4; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix2->getCoefficients().begin() + i * 4));
     }
 }
 
@@ -243,12 +242,13 @@ void DataConverterTest::pointListConverterTest()
         igtlPointElement[i]->GetPosition(igtlPoints[i]);
         CPPUNIT_ASSERT(std::equal(points[i], points[i] + 3, igtlPoints[i]));
     }
-    ::fwData::Object::sptr destObj = pointList;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()), destObj);
+
+    ::fwData::Object::sptr destObj       = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
+    ::fwData::PointList::sptr pointList2 = ::fwData::PointList::dynamicCast(destObj);
     for (int i = 0; i < 2; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(pointList->getCRefPoints()[i]->getCRefCoord().begin(),
-                                  pointList->getCRefPoints()[i]->getCRefCoord().end(),
+        CPPUNIT_ASSERT(std::equal(pointList2->getCRefPoints()[i]->getCRefCoord().begin(),
+                                  pointList2->getCRefPoints()[i]->getCRefCoord().end(),
                                   points[i]));
     }
 }
@@ -268,9 +268,10 @@ void DataConverterTest::stringConverterTest()
         ::igtl::StringMessage::Pointer(dynamic_cast< ::igtl::StringMessage*>(converter->fromFwObject(
                                                                                  str).GetPointer()));
     CPPUNIT_ASSERT(std::string(strMsg->GetString()) == sample);
-    ::fwData::Object::sptr destObj = str;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(strMsg.GetPointer()), destObj);
-    CPPUNIT_ASSERT(str->getValue() == sample);
+
+    ::fwData::Object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(strMsg.GetPointer()));
+    ::fwData::String::sptr str2    = ::fwData::String::dynamicCast(destObj);
+    CPPUNIT_ASSERT(str2->getValue() == sample);
 }
 
 //------------------------------------------------------------------------------
@@ -299,13 +300,13 @@ void DataConverterTest::lineConverterTest()
                               line->getPosition()->getCRefCoord().end(), position));
     CPPUNIT_ASSERT(std::equal(line->getDirection()->getCRefCoord().begin(),
                               line->getDirection()->getCRefCoord().end(), direction));
-    ::fwData::Object::sptr destObj = line;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(lineMsg.GetPointer()), destObj);
-    CPPUNIT_ASSERT(std::equal(line->getPosition()->getCRefCoord().begin(),
-                              line->getPosition()->getCRefCoord().end(), position));
-    CPPUNIT_ASSERT(std::equal(line->getDirection()->getCRefCoord().begin(),
-                              line->getDirection()->getCRefCoord().end(), direction));
 
+    ::fwData::Object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(lineMsg.GetPointer()));
+    ::fwData::Line::sptr line2     = ::fwData::Line::dynamicCast(destObj);
+    CPPUNIT_ASSERT(std::equal(line2->getPosition()->getCRefCoord().begin(),
+                              line2->getPosition()->getCRefCoord().end(), position));
+    CPPUNIT_ASSERT(std::equal(line2->getDirection()->getCRefCoord().begin(),
+                              line2->getDirection()->getCRefCoord().end(), direction));
 }
 
 //------------------------------------------------------------------------------
@@ -322,9 +323,8 @@ void DataConverterTest::scalarConverterTest()
     msg = RawMessage::Pointer(dynamic_cast< RawMessage*>(converter->fromFwObject(dataInteger).GetPointer()));
     CPPUNIT_ASSERT(msg->getMessage().size() == sizeof(int));
 
-    ::fwData::Integer::sptr newDataInteger = ::fwData::Integer::New();
-    destObj                                = newDataInteger;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()), destObj);
+    destObj                                = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
+    ::fwData::Integer::sptr newDataInteger = ::fwData::Integer::dynamicCast(destObj);
     CPPUNIT_ASSERT(newDataInteger->getValue() == valueInt);
 
     const float valueFloat = 16.64f;
@@ -333,9 +333,8 @@ void DataConverterTest::scalarConverterTest()
     msg = RawMessage::Pointer(dynamic_cast< RawMessage*>(converter->fromFwObject(dataFloat).GetPointer()));
     CPPUNIT_ASSERT(msg->getMessage().size() == sizeof(float));
 
-    ::fwData::Float::sptr newDataFloat = ::fwData::Float::New(valueFloat);
-    destObj                            = newDataFloat;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()), destObj);
+    destObj                            = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
+    ::fwData::Float::sptr newDataFloat = ::fwData::Float::dynamicCast(destObj);
     CPPUNIT_ASSERT(newDataFloat->getValue() == valueFloat);
 }
 
@@ -347,7 +346,6 @@ void DataConverterTest::compositeConverterTest()
     ///and TrackingStopConverter). To avoid asserts CompositeConverter should be called explicitly.
     ::igtlProtocol::converter::CompositeConverter::sptr converter =
         ::igtlProtocol::converter::CompositeConverter::New();
-    //DataConverter::sptr converter = DataConverter::getInstance();
 
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
 
@@ -368,7 +366,7 @@ void DataConverterTest::compositeConverterTest()
                                                                                              composite).
                                                                                          GetPointer()));
     CPPUNIT_ASSERT(trackingMsg);
-    int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
+    const int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
     CPPUNIT_ASSERT_EQUAL(1, nbTrckingElement);
 
     ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
@@ -384,9 +382,9 @@ void DataConverterTest::compositeConverterTest()
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
     }
 
-    ::fwData::Composite::sptr destComposite = ::fwData::Composite::New();
-    ::fwData::Object::sptr destObject       = destComposite;
-    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(trackingMsg.GetPointer()), destObject);
+    ::fwData::Object::sptr destObject =
+        converter->fromIgtlMessage(::igtl::MessageBase::Pointer(trackingMsg.GetPointer()));
+    ::fwData::Composite::sptr destComposite = ::fwData::Composite::dynamicCast(destObject);
 
     ::fwData::Composite::iterator iter = destComposite->find("H_marker1_2_polaris");
     CPPUNIT_ASSERT(iter != destComposite->end());

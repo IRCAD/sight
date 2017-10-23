@@ -23,8 +23,6 @@ namespace igtlProtocol
 
 DataConverter::sptr DataConverter::getInstance()
 {
-    SLM_TRACE_FUNC();
-
     return ::fwCore::util::LazyInstantiator< DataConverter >::getInstance();
 }
 
@@ -32,8 +30,6 @@ DataConverter::sptr DataConverter::getInstance()
 
 void DataConverter::registerConverter(converter::IConverter::sptr c)
 {
-    SLM_TRACE_FUNC();
-
     (DataConverter::getInstance())->m_converters.push_back(c);
 }
 
@@ -41,8 +37,6 @@ void DataConverter::registerConverter(converter::IConverter::sptr c)
 
 DataConverter::DataConverter()
 {
-    SLM_TRACE_FUNC();
-
     m_defaultConverter = ::igtlProtocol::converter::AtomConverter::New();
 }
 
@@ -54,12 +48,10 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::sptr src) const
+::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::csptr src) const
 {
-    SLM_TRACE_FUNC();
-
-    std::string classname = src->getClassname();
-    for(converter::IConverter::sptr converter :  m_converters)
+    const std::string classname = src->getClassname();
+    for(const converter::IConverter::sptr& converter :  m_converters)
     {
         if (converter->getFwDataObjectType() == classname)
         {
@@ -72,39 +64,36 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-void DataConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const& src,
-                                    ::fwData::Object::sptr& dest) const
+::fwData::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    SLM_TRACE_FUNC();
-
-    std::string const deviceType = src->GetDeviceType();
+    ::fwData::Object::sptr obj;
+    const std::string deviceType = src->GetDeviceType();
 
     if (deviceType == "ATOMS")
     {
-        m_defaultConverter->fromIgtlMessage(src, dest);
-        return;
+        obj = m_defaultConverter->fromIgtlMessage(src);
+        return obj;
     }
 
-    for(converter::IConverter::sptr converter : m_converters)
+    for(const converter::IConverter::sptr& converter : m_converters)
     {
         if (converter->getIgtlType() == deviceType)
         {
-            ::fwCore::mt:: WriteLock lock(dest->getMutex());
-            converter->fromIgtlMessage(src, dest);
-            return;
+            obj = converter->fromIgtlMessage(src);
+            return obj;
         }
     }
-    FW_RAISE_EXCEPTION(exception::Conversion("Message type not supported : " + std::string(src->GetDeviceType())));
+
+    SLM_WARN("Message type not supported : " + std::string(src->GetDeviceType()));
+    return obj;
 }
 
 //-----------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer DataConverter::getStatusMessage(int igtlCode,
                                                              int igtlSubCode,
-                                                             std::string const& errMsg) const
+                                                             const std::string& errMsg) const
 {
-    SLM_TRACE_FUNC();
-
     ::igtl::StatusMessage::Pointer statusMsg;
 
     statusMsg = ::igtl::StatusMessage::New();
@@ -118,15 +107,11 @@ void DataConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const& src,
 
 ::igtl::MessageBase::Pointer DataConverter::getCapabilitiesMessage() const
 {
-    SLM_TRACE_FUNC();
-
-    ::igtl::CapabilityMessage::Pointer msg;
-
-    msg = ::igtl::CapabilityMessage::New();
+    ::igtl::CapabilityMessage::Pointer msg = ::igtl::CapabilityMessage::New();
     msg->SetNumberOfTypes(static_cast<int>(m_converters.size()));
-    for (unsigned int i = 0; i < m_converters.size(); ++i)
+    for(size_t i = 0; i < m_converters.size(); ++i)
     {
-        msg->SetType(i, m_converters[i]->getIgtlType().c_str());
+        msg->SetType(static_cast<int>(i), m_converters[i]->getIgtlType().c_str());
     }
     return ::igtl::MessageBase::Pointer(msg);
 }

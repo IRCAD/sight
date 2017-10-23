@@ -44,7 +44,7 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MessageFactory::create(std::string const& type)
+::igtl::MessageBase::Pointer MessageFactory::create(const std::string& type)
 {
     CreatorContainer::const_iterator it;
 

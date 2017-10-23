@@ -9,13 +9,11 @@
 
 #include "igtlNetwork/config.hpp"
 
-#include <igtlProtocol/DataConverter.hpp>
-
-#include <boost/type.hpp>
-
 #include <fwCore/Exception.hpp>
 
 #include <fwData/Object.hpp>
+
+#include <igtlProtocol/DataConverter.hpp>
 
 #include <igtl/igtlMessageHeader.h>
 #include <igtl/igtlSocket.h>
@@ -49,15 +47,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IGTLNETWORK_API bool receiveObject(::fwData::Object::sptr dest);
-
-    /**
-     * @brief generic method to receive message the type of the message is determined by response header
-     *
-     * @return a smart pointer of igtl::MessageHeader and a pointer on igtlMessageBase
-     */
-    IGTLNETWORK_API bool receiveMsg(::igtl::MessageHeader::Pointer headerMsg,
-                                    ::igtl::MessageBase::Pointer msg);
+    IGTLNETWORK_API ::fwData::Object::sptr receiveObject(std::string& deviceName);
 
     /**
      * @brief generic method to send a object the type of object is determined by classname
@@ -65,13 +55,13 @@ public:
      *        a sigpipe signal
      * @param[in] dest object to send
      */
-    IGTLNETWORK_API bool sendObject (::fwData::Object::sptr dest);
+    IGTLNETWORK_API bool sendObject(const ::fwData::Object::csptr& dest);
 
     /**
-     * @brief generic method to send a igtl Msg, this method is usefull for redirect message
+     * @brief generic method to send a igtl Msg, this method is useful for redirect message
      * @param[in] msg message to send
      */
-    IGTLNETWORK_API bool sendMsg (::igtl::MessageBase::Pointer msg);
+    IGTLNETWORK_API bool sendMsg(::igtl::MessageBase::Pointer msg);
 
     /**
      * @brief receive header
@@ -86,47 +76,47 @@ public:
      *
      *  @return Message
      */
-    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header);;
+    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header);
 
     /**
      * @brief get socket
      *
      * @return socket
      */
-    IGTLNETWORK_API ::igtl::Socket::Pointer getSocket();
+    IGTLNETWORK_API ::igtl::Socket::Pointer getSocket() const;
 
     /**
      * @brief add a new authorized device name
      * @param[in] std::string device name
      */
-    IGTLNETWORK_API void addAuthorizedDevice(std::string deviceName);
+    IGTLNETWORK_API void addAuthorizedDevice(const std::string& deviceName);
 
     /**
      * @brief get filteringByDeviceName (true if activated, false otherwise)
      *
      * @return boolean
      */
-    IGTLNETWORK_API bool getFilteringByDeviceName();
+    IGTLNETWORK_API bool getFilteringByDeviceName() const;
 
     /**
      * @brief activate/desactivate the filtering by device name
-     * note that if addAuthorizedDevice() is never called this option is automaticaly desactivate
+     * note that if addAuthorizedDevice() is never called this option is automatically disabled
      *
      * @param[in] boolean
      */
     IGTLNETWORK_API void setFilteringByDeviceName(bool filtering);
 
     /**
-     * @brief set the device name when a message is sended
+     * @brief set the device name when a message is sent
      */
-    IGTLNETWORK_API void setDeviceNameOut(std::string deviceName);
+    IGTLNETWORK_API void setDeviceNameOut(const std::string& deviceName);
 
     /**
-     * @brief get the device name when a message is sended
+     * @brief get the device name when a message is sent
      *
      * return std::string
      */
-    IGTLNETWORK_API std::string getDeviceNameOut();
+    IGTLNETWORK_API std::string getDeviceNameOut() const;
 
 protected:
     /// client socket
@@ -142,7 +132,7 @@ protected:
     /// Set of authorized device names
     std::set< std::string > m_deviceNamesIn;
 
-    /// device name in the sended message
+    /// device name in the sent message
     std::string m_deviceNameOut;
 };
 

@@ -35,9 +35,6 @@ public:
      * @brief Slot to update configuration
      */
     IOZMQ_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CONFIGURATION_SLOT;
-    typedef ::fwCom::Slot< void (::zmqNetwork::Socket::PatternMode const,
-                                 ::zmqNetwork::Socket::SocketMode const,
-                                 std::string const& host) > UpdateConfigurationSlotType;
 
     /// Constructor
     IOZMQ_API SZeroMQSender();
@@ -66,7 +63,7 @@ protected:
     /**
      * @brief change the port of the service work only in tcp mode
      */
-    IOZMQ_API void setPort(std::uint16_t const port);
+    IOZMQ_API void setPort(const std::uint16_t port);
 
     /**
      * @brief slot method to update configuration
@@ -75,9 +72,9 @@ protected:
      * @param[in] sockMode socket mode (client or server)
      * @param[in] host new host
      */
-    IOZMQ_API void updateConfiguration(::zmqNetwork::Socket::PatternMode const patternMode,
-                                       ::zmqNetwork::Socket::SocketMode const sockMode,
-                                       std::string const& host);
+    IOZMQ_API void updateConfiguration(const ::zmqNetwork::Socket::PatternMode patternMode,
+                                       const ::zmqNetwork::Socket::SocketMode sockMode,
+                                       const std::string& host);
 
 private:
 
@@ -86,7 +83,14 @@ private:
      *
      * @see INetworkSender
      */
-    void sendObject (const ::fwData::Object::sptr& obj);
+    void sendObject(const ::fwData::Object::csptr& obj);
+
+    /**
+     * @brief method to send data object
+     *
+     * @see INetworkSender
+     */
+    void sendObject(const ::fwData::Object::csptr& obj, const size_t index);
 
     /// Socket instance
     ::zmqNetwork::Socket::sptr m_socket;
@@ -96,9 +100,6 @@ private:
 
     /// Socket mode to use (Client, Server)
     ::zmqNetwork::Socket::SocketMode m_sockMode;
-
-    /// update configuration slot
-    UpdateConfigurationSlotType::sptr m_updateConfigurationSlot;
 
     /// host to connect or interface to bind
     std::string m_hostStr;

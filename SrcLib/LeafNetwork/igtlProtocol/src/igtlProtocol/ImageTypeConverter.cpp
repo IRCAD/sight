@@ -33,18 +33,13 @@ ImageTypeConverter::TypeConverterMap ImageTypeConverter::initTypeConverterMap()
 
 //-----------------------------------------------------------------------------
 
-::fwTools::Type const &
-ImageTypeConverter::getFwToolsType(std::uint8_t igtlType)
+const ::fwTools::Type& ImageTypeConverter::getFwToolsType(const std::uint8_t& igtlType)
 {
-    ImageTypeConverter::TypeConverterMap::const_iterator it;
-
-    for (it = ImageTypeConverter::s_typeConverterMap.begin();
-         it != ImageTypeConverter::s_typeConverterMap.end();
-         ++it)
+    for(const auto& typeConverter : ImageTypeConverter::s_typeConverterMap)
     {
-        if (it->second == igtlType)
+        if (typeConverter.second == igtlType)
         {
-            return it->first;
+            return typeConverter.first;
         }
     }
     throw ::igtlProtocol::exception::Conversion("Cannot found a fwTools type for igtl image type");
@@ -52,7 +47,7 @@ ImageTypeConverter::getFwToolsType(std::uint8_t igtlType)
 
 //-----------------------------------------------------------------------------
 
-std::uint8_t ImageTypeConverter::getIgtlType (::fwTools::Type const& type)
+std::uint8_t ImageTypeConverter::getIgtlType(const ::fwTools::Type& type)
 {
     ImageTypeConverter::TypeConverterMap::const_iterator it;
 

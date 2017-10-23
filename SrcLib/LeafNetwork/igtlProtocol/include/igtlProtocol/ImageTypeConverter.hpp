@@ -43,7 +43,7 @@ public:
      * @param[in] igtlType
      * @return a fwTools::Type
      */
-    static ::fwTools::Type const& getFwToolsType(std::uint8_t igtlType);
+    static const ::fwTools::Type& getFwToolsType(const std::uint8_t& igtlType);
 
     /**
      * @brief get igtlType from a fwTools::Type
@@ -51,7 +51,7 @@ public:
      * @param[in] type
      * @return uint8 value correspond to an type enum in igtl::ImageMessage2
      */
-    static std::uint8_t getIgtlType(::fwTools::Type const& type);
+    static std::uint8_t getIgtlType(const ::fwTools::Type& type);
 
 private:
 

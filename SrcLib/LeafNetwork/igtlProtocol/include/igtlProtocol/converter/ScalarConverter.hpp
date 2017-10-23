@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,17 @@
 #ifndef __IGTLPROTOCOL_CONVERTER_SCALARCONVERTER_HPP__
 #define __IGTLPROTOCOL_CONVERTER_SCALARCONVERTER_HPP__
 
-#include "igtlProtocol/RawMessage.hpp"
 #include "igtlProtocol/converter/IConverter.hpp"
-#include "igtlProtocol/helper/ScalarToBytes.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
+#include "igtlProtocol/helper/ScalarToBytes.hpp"
+#include "igtlProtocol/RawMessage.hpp"
 
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+
+#include <boost/lexical_cast.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <fwData/Integer.hpp>
-#include <fwData/Float.hpp>
 
 namespace igtlProtocol
 {
@@ -54,19 +54,15 @@ public:
      *
      * @return an fwData::Integer converted from an igtl::RawMessage
      */
-    void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                          ::fwData::Object::sptr& dest) const
+    ::fwData::Object::sptr fromIgtlMessage (const ::igtl::MessageBase::Pointer src) const
     {
-        RawMessage::Pointer msg;
-        typename FwDataObjectType::sptr obj;
+        typename FwDataObjectType::sptr obj = FwDataObjectType::New();
 
-        FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a scalar type"),
-                              dest->getClassname() != FwDataObjectType::classname());
-
-        obj = FwDataObjectType::dynamicCast(dest);
-        msg = RawMessage::Pointer(dynamic_cast< RawMessage*>(src.GetPointer()));
+        RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast< RawMessage*>(src.GetPointer()));
         const ScalarType scalar = helper::ScalarToBytes<ScalarType>::fromBytes(msg->getMessage().data());
         obj->setValue(scalar);
+
+        return obj;
     }
 
     /**
@@ -100,7 +96,7 @@ public:
      *
      * @return the igtlType supported for conversion
      */
-    std::string const& getIgtlType() const
+    const std::string& getIgtlType() const
     {
         return m_igtlType;
     }
@@ -110,7 +106,7 @@ public:
      *
      * @return the fwData Object type supported for conversion
      */
-    std::string const& getFwDataObjectType() const
+    const std::string& getFwDataObjectType() const
     {
         return FwDataObjectType::classname();
     }
@@ -127,7 +123,8 @@ class IGTLPROTOCOL_CLASS_API IntConverter : public ScalarConverter< int, ::fwDat
 public:
     typedef ScalarConverter< int, ::fwData::Integer>  Superclass;
     /// Constructor
-    IntConverter() : Superclass("INTEGER")
+    IntConverter() :
+        Superclass("INTEGER")
     {
     }
 
@@ -152,7 +149,8 @@ class IGTLPROTOCOL_CLASS_API FloatConverter : public ScalarConverter< float, ::f
 public:
     typedef ScalarConverter< float, ::fwData::Float>  Superclass;
     /// Constructor
-    FloatConverter() : Superclass("FLOAT")
+    FloatConverter() :
+        Superclass("FLOAT")
     {
     }
 
