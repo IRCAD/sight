@@ -40,7 +40,7 @@ const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
 const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
 const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
 const ::fwServices::IService::KeyType s_MATRIXTL_INPUT  = "matrixTL";
-const ::fwServices::IService::KeyType s_FRAMETL_INPUT   = "frameTL";
+const ::fwServices::IService::KeyType s_FRAMETL_INOUT   = "frameTL";
 
 //-----------------------------------------------------------------------------
 
@@ -208,8 +208,8 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
             if(m_display) //draw reprojected points
             {
-                auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INPUT);
-                SLM_ASSERT("The input "+ s_FRAMETL_INPUT +" is not valid.", frameTL);
+                auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
+                SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frameTL);
 
                 CSPTR(::arData::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
 

@@ -193,7 +193,7 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-                <inout key="target" uid="cameraSeries" />
+                <inout key="data" uid="cameraSeries" />
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -286,7 +286,6 @@
                     <renderer id="foreground" layer="2" background="0.0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
-                    <adaptor uid="registrationTransform" />
                     <adaptor uid="modelseriesAdpt" />
                     <adaptor uid="cameraAdpt" />
                     <adaptor uid="foregroundAdpt" />
@@ -294,6 +293,7 @@
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="camera" uid="cameraRGB" />
                 <in key="frame" uid="videoImage" />
                 <config renderer="video" interpolate="false" />
             </service>
@@ -307,18 +307,13 @@
                 <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
-            <service uid="registrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="inverseMat" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
-            </service>
-
             <service uid="modelseriesAdpt" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
                 <in key="model" uid="modelseries" />
-                <config renderer="default" picker="default" autoresetcamera="no" color="" transform="registrationMatrix" />
+                <config renderer="default" picker="default" autoresetcamera="no" color="" transform="id" />
             </service>
 
             <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="inverseMat" />
                 <in key="camera" uid="cameraRGB" />
                 <config renderer="default" />
             </service>
@@ -333,7 +328,6 @@
                 <scene width="640" height="480">
                     <renderer id="default" layer="0" background="0.0" />
                     <adaptor uid="interactorStyleOffscreen" />
-                    <adaptor uid="registrationTransformOffscreen" />
                     <adaptor uid="meshAdptOffscreen" />
                     <adaptor uid="cameraAdptOffscreen" />
                 </scene>
@@ -343,18 +337,14 @@
                 <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
-            <service uid="registrationTransformOffscreen" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="inverseMat" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
-            </service>
 
             <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
                 <in key="mesh" uid="skinMesh" />
-                <config renderer="default" picker="default" autoresetcamera="no" color="#FFFFFF" transform="registrationMatrix" shadingMode="ambient" />
+                <config renderer="default" picker="default" autoresetcamera="no" color="#FFFFFF" transform="id" shadingMode="ambient" />
             </service>
 
             <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="inverseMat" />
                 <in key="camera" uid="cameraRGB" />
                 <config renderer="default" />
             </service>
@@ -376,8 +366,8 @@
             <!-- Use the extrinsic matrix to get back in the RGB space -->
             <service uid="concatenate" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
-                    <key uid="extrinsic" autoConnect="yes" />
-                    <key uid="matrix" autoConnect="yes" />
+                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                    <key uid="extrinsic" autoConnect="yes" inverse="true" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
@@ -483,13 +473,11 @@
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
-            <start uid="registrationTransform" />
             <start uid="modelseriesAdpt" />
             <start uid="cameraAdpt" />
             <start uid="foregroundAdpt" />
             <!-- VTK scene 'offscreenRender' -->
             <start uid="interactorStyleOffscreen" />
-            <start uid="registrationTransformOffscreen" />
             <start uid="meshAdptOffscreen" />
             <start uid="cameraAdptOffscreen" />
             <!-- Update -->

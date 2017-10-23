@@ -119,7 +119,7 @@
         </service>
 
         <service uid="CalibrationWriter" type="::ioCalibration::SOpenCVWriter">
-            <in key="target" uid="${cameraSeries}" />
+            <in key="data" uid="${cameraSeries}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->

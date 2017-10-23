@@ -7,6 +7,7 @@
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
     <requirement id="preferences" />
+    <requirement id="visuVTKARAdaptor"/>
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExStereoARConfig</id>
         <config>
@@ -23,7 +24,7 @@
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
-            <object uid="identity" type="::fwData::TransformationMatrix3D" />
+            <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
             <object uid="rightMat" type="::fwData::TransformationMatrix3D" />
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
@@ -195,9 +196,17 @@
                 </slots>
             </service>
 
+            <!-- hide axis adaptor until a marker is found -->
+            <service uid="hideAxis" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>axisLeft/updateVisibility</slot>
+                    <slot>axisRight/updateVisibility</slot>
+                </slots>
+            </service>
+
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-                <inout key="target" uid="cameraSeries" />
+                <inout key="data" uid="cameraSeries" />
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
@@ -235,7 +244,6 @@
                     <renderer id="default" layer="1" background="0.0" />
                     <adaptor uid="videoLeft" />
                     <adaptor uid="interactorStyleLeft" />
-                    <adaptor uid="registrationTransformLeft" />
                     <adaptor uid="axisLeft" />
                     <adaptor uid="cameraLeft" />
                 </scene>
@@ -246,21 +254,16 @@
                 <config renderer="video" />
             </service>
 
-            <service uid="interactorStyleLeft" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
-            </service>
-
-            <service uid="registrationTransformLeft" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="matrix" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
-            </service>
-
             <service uid="axisLeft" type="::visuVTKAdaptor::SAxis">
-                <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50" />
+                <config renderer="default" transform="id" autoresetcamera="no" length="30" />
+            </service>
+
+            <service uid="interactorStyleLeft" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
             <service uid="cameraLeft" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="inverseMat" />
                 <in key="camera" uid="camera1" />
                 <config renderer="default" />
             </service>
@@ -276,7 +279,6 @@
                     <renderer id="default" layer="1" background="0.0" />
                     <adaptor uid="videoRight" />
                     <adaptor uid="interactorStyleRight" />
-                    <adaptor uid="registrationTransformRight" />
                     <adaptor uid="axisRight" />
                     <adaptor uid="cameraRight" />
                 </scene>
@@ -291,17 +293,12 @@
                 <config renderer="default" style="InteractorStyle2DForNegato" />
             </service>
 
-            <service uid="registrationTransformRight" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="rightMat" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
-            </service>
-
             <service uid="axisRight" type="::visuVTKAdaptor::SAxis">
-                <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50" />
+                <config renderer="default" transform="id" autoresetcamera="no" length="30" />
             </service>
 
             <service uid="cameraRight" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="rightMat" />
                 <in key="camera" uid="camera2" />
                 <config renderer="default" />
             </service>
@@ -459,10 +456,18 @@
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
+            <service uid="matrixReverser" type="::maths::SConcatenateMatrices">
+                <in group="matrix">
+                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="inverseMat" />
+            </service>
+
+            <!-- to multiply matrices -->
             <service uid="concatenate" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
-                    <key uid="extrinsic" />
-                    <key uid="matrix" autoConnect="yes" inverse="false" />
+                    <key uid="inverseMat" autoConnect="yes" inverse="false" />
+                    <key uid="extrinsic" inverse="true"/>
                 </in>
                 <inout key="output" uid="rightMat" />
             </service>
@@ -527,17 +532,17 @@
                 <slot>frameGrabber2/stopCamera</slot>
             </connect>
 
-            <!-- start services -->
             <connect>
                 <signal>tracker1/markerDetected</signal>
-                <slot>axis/updateVisibility</slot>
+                <slot>axisLeft/updateVisibility</slot>
             </connect>
 
             <connect>
                 <signal>tracker2/markerDetected</signal>
-                <slot>axis/updateVisibility</slot>
+                <slot>axisRight/updateVisibility</slot>
             </connect>
 
+            <!-- start services -->
             <start uid="mainFrame" />
             <start uid="frameGrabber1" />
             <start uid="frameGrabber2" />
@@ -552,22 +557,23 @@
             <start uid="errorLeft" />
             <start uid="errorRight" />
 
+            <start uid="matrixReverser" />
             <start uid="concatenate" />
             <start uid="genericSceneLeft" />
             <start uid="genericSceneRight" />
             <!-- VTK scene 'genericSceneLeft' -->
             <start uid="videoLeft" />
             <start uid="interactorStyleLeft" />
-            <start uid="registrationTransformLeft" />
             <start uid="axisLeft" />
             <start uid="cameraLeft" />
             <!-- VTK scene 'genericSceneRight' -->
             <start uid="videoRight" />
             <start uid="interactorStyleRight" />
-            <start uid="registrationTransformRight" />
             <start uid="axisRight" />
             <start uid="cameraRight" />
+
             <update uid="actionHide" />
+            <update uid="hideAxis" />
         </config>
     </extension>
 </plugin>

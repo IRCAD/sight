@@ -29,7 +29,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKARAdaptor
     visuVTKQt
-
     )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex04SimpleARCVConfig)
