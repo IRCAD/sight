@@ -139,10 +139,6 @@ private:
 
     /// Signal emitted when the cameraSeries has been configured
     ConfiguredCamerasSignalType::sptr m_sigConfiguredCameras;
-
-    using ConfigureDeviceSlotType = ::fwCom::Slot<void()>;
-    using ConfigureFileSlotType   = ::fwCom::Slot<void()>;
-    using ConfigureStreamSlotType = ::fwCom::Slot<void()>;
 };
 
 } // editor
