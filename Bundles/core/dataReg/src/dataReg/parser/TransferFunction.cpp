@@ -38,31 +38,43 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
 
     if(colorCfg)
     {
-        const ::fwRuntime::ConfigurationElementContainer stepsConfig = colorCfg->findAllConfigurationElement("step");
-        SLM_ASSERT("element 'step' is missing.", stepsConfig.size() != 0);
 
-        for(ConfigurationType stepConfig :  stepsConfig.getElements())
+        if (colorCfg->hasAttribute("default"))
         {
-            SLM_ASSERT("Missing attribute 'color'", stepConfig->hasAttribute("color"));
-            SLM_ASSERT("Missing attribute 'value'", stepConfig->hasAttribute("value"));
-
-            double value         = std::stod(stepConfig->getAttributeValue("value"));
-            std::string strColor = stepConfig->getAttributeValue("color");
-
-            ::fwData::Color::sptr newColor = ::fwData::Color::New();
-            newColor->setRGBA(strColor);
-
-            ::fwData::TransferFunction::TFColor color(newColor->red(), newColor->green(),
-                                                      newColor->blue(), newColor->alpha());
-            tf->addTFColor(value, color);
+            const std::string isDefault = colorCfg->getAttributeValue("default");
+            SLM_ASSERT("'isDefault' value must be 'yes' or 'no'.", isDefault == "yes" || isDefault == "false");
+            ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
+            tf->deepCopy(defaultTf);
         }
-        tf->setWLMinMax(tf->getMinMaxTFValues());
-
-        if (colorCfg->hasAttribute("isClamped"))
+        else
         {
-            const std::string isClamped = colorCfg->getAttributeValue("isClamped");
-            SLM_ASSERT("'isClamped' value must be 'yes' or 'no'.", isClamped == "yes" || isClamped == "false");
-            tf->setIsClamped(isClamped == "yes");
+            const ::fwRuntime::ConfigurationElementContainer stepsConfig =
+                colorCfg->findAllConfigurationElement("step");
+            SLM_ASSERT("element 'step' is missing.", stepsConfig.size() != 0);
+
+            for(ConfigurationType stepConfig :  stepsConfig.getElements())
+            {
+                SLM_ASSERT("Missing attribute 'color'", stepConfig->hasAttribute("color"));
+                SLM_ASSERT("Missing attribute 'value'", stepConfig->hasAttribute("value"));
+
+                double value         = std::stod(stepConfig->getAttributeValue("value"));
+                std::string strColor = stepConfig->getAttributeValue("color");
+
+                ::fwData::Color::sptr newColor = ::fwData::Color::New();
+                newColor->setRGBA(strColor);
+
+                ::fwData::TransferFunction::TFColor color(newColor->red(), newColor->green(),
+                                                          newColor->blue(), newColor->alpha());
+                tf->addTFColor(value, color);
+            }
+            tf->setWLMinMax(tf->getMinMaxTFValues());
+
+            if (colorCfg->hasAttribute("isClamped"))
+            {
+                const std::string isClamped = colorCfg->getAttributeValue("isClamped");
+                SLM_ASSERT("'isClamped' value must be 'yes' or 'no'.", isClamped == "yes" || isClamped == "false");
+                tf->setIsClamped(isClamped == "yes");
+            }
         }
     }
 }

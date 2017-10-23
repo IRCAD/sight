@@ -448,8 +448,6 @@ void TransferFunctionEditor::initTransferFunctions()
     if(!this->hasTransferFunctionName(defaultTFName))
     {
         ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
-        defaultTf->setWindow( 50. );
-        defaultTf->setLevel( 500. );
         compositeHelper.add(defaultTFName, defaultTf);
     }
 

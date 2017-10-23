@@ -1,23 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <fwData/TransferFunction.hpp>
-#include <fwData/TransferFunction.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Color.hpp>
-
 #include "TransferFunctionTest.hpp"
 
+#include <fwData/Color.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransferFunctionTest );
@@ -27,11 +26,15 @@ namespace fwData
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void TransferFunctionTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void TransferFunctionTest::tearDown()
 {
     // Clean up after the test run.
@@ -58,9 +61,8 @@ void TransferFunctionTest::constructorTest()
     CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
     CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
     CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->getIsClamped());
-    CPPUNIT_ASSERT(expectedBackgroundColor==tf->getBackgroundColor());
+    CPPUNIT_ASSERT(expectedBackgroundColor == tf->getBackgroundColor());
     CPPUNIT_ASSERT_EQUAL(expectedSize, tf->getTFData().size());
-
 
 }
 
@@ -79,13 +81,13 @@ void TransferFunctionTest::defaultTfTest()
 
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 500.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 50.0);
 
     CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
     CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
     CPPUNIT_ASSERT_EQUAL(expectedIsClamped, tf->getIsClamped());
-    CPPUNIT_ASSERT(expectedBackgroundColor==tf->getBackgroundColor());
+    CPPUNIT_ASSERT(expectedBackgroundColor == tf->getBackgroundColor());
     CPPUNIT_ASSERT_EQUAL(expectedSize, tf->getTFData().size());
 
 }
@@ -131,7 +133,7 @@ void TransferFunctionTest::classicGetSetTest()
     TransferFunction::TFColorVectorType colors = tf->getTFColors();
 
     CPPUNIT_ASSERT(expectedColor1 == colors[0]);
-    CPPUNIT_ASSERT(expectedColor2 ==  colors[1]);
+    CPPUNIT_ASSERT(expectedColor2 == colors[1]);
 
     // Test erase
     tf->eraseTFValue( 1.0 );
@@ -163,7 +165,6 @@ void TransferFunctionTest::usingTfTest()
     CPPUNIT_ASSERT_EQUAL( 150.0, tf->getNearestValue( 150 ) );
     CPPUNIT_ASSERT_EQUAL( 150.0, tf->getNearestValue( 1000 ) );
 
-
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +183,6 @@ void TransferFunctionTest::shallowAndDeepCopyTest()
     this->checkTFColor(shallowCopyTf);
 }
 
-
 //------------------------------------------------------------------------------
 
 ::fwData::TransferFunction::sptr TransferFunctionTest::createTFColor()
@@ -197,7 +197,8 @@ void TransferFunctionTest::shallowAndDeepCopyTest()
     tf->setWindow( -200.02 );
 
     tf->addTFColor( -40.33, ::fwData::TransferFunction::TFColor( 0.9, 0.2, 0.3, 0.4) );
-    tf->addTFColor( 3,      ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) ); // Invert point 3 <=> -0.2, for tests
+    tf->addTFColor( 3,      ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) ); // Invert point 3 <=> -0.2, for
+                                                                                        // tests
     tf->addTFColor( -0.2,   ::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) );
     tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) );
 
@@ -223,7 +224,7 @@ void TransferFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
     CPPUNIT_ASSERT_EQUAL( -40.33, tf->getMinMaxTFValues().first );
     CPPUNIT_ASSERT_EQUAL( 150.0, tf->getMinMaxTFValues().second );
 
-    const TransferFunction::TFValueVectorType & values = tf->getTFValues();
+    const TransferFunction::TFValueVectorType& values = tf->getTFValues();
     CPPUNIT_ASSERT_EQUAL( values[0], -40.33  );
     CPPUNIT_ASSERT_EQUAL( values[1], -0.2    );
     CPPUNIT_ASSERT_EQUAL( values[2], 3.0      );
@@ -233,8 +234,6 @@ void TransferFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
     CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.1, 0.9, 0.3, 0.4) == tf->getTFColor( -0.2   ) );
     CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getTFColor( 3      ) );
     CPPUNIT_ASSERT( ::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.3, 0.9) == tf->getTFColor( 150    ) );
-
-
 
     CPPUNIT_ASSERT_EQUAL( std::string("fieldStringValue"),
                           ::fwData::String::dynamicCast( tf->getField( "fieldStringKey" ) )->value() );
@@ -303,7 +302,6 @@ void TransferFunctionTest::linearColorTest()
     CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.9, 0.4) == tf->getLinearColor(3) );
     CPPUNIT_ASSERT(::fwData::TransferFunction::TFColor( 0.1, 0.2, 0.75, 0.525) == tf->getLinearColor(
                        ((150.0-3.0)/4.0)+3) );
-
 
 }
 
