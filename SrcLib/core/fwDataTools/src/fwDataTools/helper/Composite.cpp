@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 Composite::Composite( ::fwData::Composite::wptr _composite ) :
-    m_composite ( _composite )
+    m_composite( _composite )
 {
 }
 
@@ -87,7 +87,6 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
                    "object to be swapped.",
                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
-
     // Get old object
     ::fwData::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
 
@@ -111,12 +110,12 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
 
 void Composite::notify()
 {
-    if ( !m_addedObjects.empty() )
+    if ( !m_removedObjects.empty() )
     {
-        auto sig = m_composite.lock()->signal< ::fwData::Composite::AddedObjectsSignalType >(
-            ::fwData::Composite::s_ADDED_OBJECTS_SIG);
+        auto sig = m_composite.lock()->signal< ::fwData::Composite::RemovedObjectsSignalType >(
+            ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
 
-        sig->asyncEmit(m_addedObjects);
+        sig->asyncEmit(m_removedObjects);
     }
     if ( !m_newChangedObjects.empty() && !m_oldChangedObjects.empty() )
     {
@@ -125,12 +124,12 @@ void Composite::notify()
 
         sig->asyncEmit(m_newChangedObjects, m_oldChangedObjects);
     }
-    if ( !m_removedObjects.empty() )
+    if ( !m_addedObjects.empty() )
     {
-        auto sig = m_composite.lock()->signal< ::fwData::Composite::RemovedObjectsSignalType >(
-            ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+        auto sig = m_composite.lock()->signal< ::fwData::Composite::AddedObjectsSignalType >(
+            ::fwData::Composite::s_ADDED_OBJECTS_SIG);
 
-        sig->asyncEmit(m_removedObjects);
+        sig->asyncEmit(m_addedObjects);
     }
     OSLM_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
                  m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());

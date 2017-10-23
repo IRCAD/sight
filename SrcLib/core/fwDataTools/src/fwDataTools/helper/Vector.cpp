@@ -76,17 +76,17 @@ void Vector::clear()
 
 void Vector::notify()
 {
-    if ( !m_addedObjects.empty() )
-    {
-        auto sig = m_vector.lock()->signal< ::fwData::Vector::AddedObjectsSignalType >(
-            ::fwData::Vector::s_ADDED_OBJECTS_SIG);
-        sig->asyncEmit(m_addedObjects);
-    }
     if ( !m_removedObjects.empty() )
     {
         auto sig = m_vector.lock()->signal< ::fwData::Vector::RemovedObjectsSignalType >(
             ::fwData::Vector::s_REMOVED_OBJECTS_SIG);
         sig->asyncEmit(m_removedObjects);
+    }
+    if ( !m_addedObjects.empty() )
+    {
+        auto sig = m_vector.lock()->signal< ::fwData::Vector::AddedObjectsSignalType >(
+            ::fwData::Vector::s_ADDED_OBJECTS_SIG);
+        sig->asyncEmit(m_addedObjects);
     }
     OSLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
                  m_addedObjects.empty() && m_removedObjects.empty());

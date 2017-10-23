@@ -159,12 +159,12 @@ void Field::notify()
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
 
-    if ( !m_addedFields.empty() )
+    if ( !m_removedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::AddedFieldsSignalType >(
-            ::fwData::Object::s_ADDED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< ::fwData::Object::RemovedFieldsSignalType >(
+            ::fwData::Object::s_REMOVED_FIELDS_SIG);
 
-        sig->asyncEmit(m_addedFields);
+        sig->asyncEmit(m_removedFields);
     }
     if ( !m_newChangedFields.empty() && !m_oldChangedFields.empty() )
     {
@@ -173,12 +173,12 @@ void Field::notify()
 
         sig->asyncEmit(m_newChangedFields, m_oldChangedFields);
     }
-    if ( !m_removedFields.empty() )
+    if ( !m_addedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::RemovedFieldsSignalType >(
-            ::fwData::Object::s_REMOVED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< ::fwData::Object::AddedFieldsSignalType >(
+            ::fwData::Object::s_ADDED_FIELDS_SIG);
 
-        sig->asyncEmit(m_removedFields);
+        sig->asyncEmit(m_addedFields);
     }
     OSLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
                  + "', nothing to notify.",
