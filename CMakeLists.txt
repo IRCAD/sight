@@ -911,7 +911,7 @@ if(EXTERNAL_LIBRARIES)
 
     file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
-        message(STATUS "include : ${LIB_CONFIG}")
+        message(STATUS "include: ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
 
@@ -919,7 +919,7 @@ elseif(USE_SYSTEM_LIB)
 
     file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
-        message(STATUS "include : ${LIB_CONFIG}")
+        message(STATUS "include: ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
 
@@ -1068,7 +1068,7 @@ if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
         endif()
     endforeach()
 else()
-    message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to genereate CMake projects.")
+    message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to generate CMake projects.")
 endif()
 
 # Doxygen documentation
