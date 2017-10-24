@@ -1084,15 +1084,3 @@ if(ECLIPSE_PROJECT)
     include(${FWCMAKE_RESOURCE_PATH}eclipse/eclipse_generator.cmake)
     eclipseGenerator(${PROJECT_LIST})
 endif()
-
-# command new service
-add_custom_target(newService
-        COMMAND ${CMAKE_COMMAND} -DSOURCEDIR:VAR=${CMAKE_CURRENT_SOURCE_DIR}
-                                 -DADDITIONALDIR="${ADDITIONAL_PROJECTS}"
-                                 -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/cmake_newService.cmake)
-
-# command new bundle
-add_custom_target(newBundle
-        COMMAND ${CMAKE_COMMAND} -DSOURCEDIR:VAR=${CMAKE_CURRENT_SOURCE_DIR}
-                                 -DADDITIONALDIR="${ADDITIONAL_PROJECTS}"
-                                 -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/cmake_newBundle.cmake)
