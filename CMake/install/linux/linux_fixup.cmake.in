@@ -26,13 +26,16 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
     set(LIBS "")
     list(APPEND LIBS ${BUNDLES} ${PLUGINS})
 
-    #Look for all directories containing '.so*' files
-    findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
-    list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
-    list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
+    set(USE_SYSTEM_LIB @USE_SYSTEM_LIB@)
+    if(NOT USE_SYSTEM_LIB)
+        #Look for all directories containing '.so*' files
+        findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
+        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
+        list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
 
-    #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
-    fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+        #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
+        fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
+    endif()
 
     #Move all libraries in 'lib' folder
     #Not needed but much more elegant
