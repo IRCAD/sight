@@ -240,43 +240,43 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
         const auto pixType = tl->getType();
         OSLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
 
-        int height = static_cast<int>(tl->getHeight());
-        int width  = static_cast<int>(tl->getWidth());
+        const int height = static_cast<int>(tl->getHeight());
+        const int width  = static_cast<int>(tl->getWidth());
 
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
-        cv::Mat grayImg;
+        ::cv::Mat grayImg;
         if (tl->getNumberOfComponents() == 1)
         {
-            grayImg = cv::Mat(height, width, CV_8UC1, frameBuff);
+            grayImg = ::cv::Mat(height, width, CV_8UC1, frameBuff);
         }
         else if (tl->getNumberOfComponents() == 3)
         {
-            cv::Mat img(height, width, CV_8UC3, frameBuff);
-            cv::cvtColor(img, grayImg, CV_RGB2GRAY);
+            ::cv::Mat img(height, width, CV_8UC3, frameBuff);
+            ::cv::cvtColor(img, grayImg, CV_RGB2GRAY);
         }
         else
         {
-            cv::Mat img(height, width, CV_8UC4, frameBuff);
-            cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+            ::cv::Mat img(height, width, CV_8UC4, frameBuff);
+            ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
         }
 
-        cv::Size boardSize(static_cast<int>(xDim) - 1, static_cast<int>(yDim) - 1);
-        std::vector< cv::Point2f > corners;
+        ::cv::Size boardSize(static_cast<int>(xDim) - 1, static_cast<int>(yDim) - 1);
+        std::vector< ::cv::Point2f > corners;
 
-        int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS
-                    | CV_CALIB_CB_FAST_CHECK;
+        const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS
+                          | CV_CALIB_CB_FAST_CHECK;
 
-        if (cv::findChessboardCorners(grayImg, boardSize, corners, flags))
+        if (::cv::findChessboardCorners(grayImg, boardSize, corners, flags))
         {
-            cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
-            cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
+            ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
+            ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
 
             pointlist                                       = ::fwData::PointList::New();
             ::fwData::PointList::PointListContainer& points = pointlist->getRefPoints();
             points.reserve(corners.size());
 
-            for(cv::Point2f& p : corners)
+            for(::cv::Point2f& p : corners)
             {
                 ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
                 points.push_back(point);
