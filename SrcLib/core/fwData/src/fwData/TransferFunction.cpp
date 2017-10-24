@@ -6,17 +6,12 @@
 
 #include "fwData/TransferFunction.hpp"
 
-#include "fwData/Exception.hpp"
-#include "fwData/registry/macros.hpp"
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwCore/base.hpp>
-
 #include <fwTools/Type.hpp>
-
-#include <functional>
 
 fwDataRegisterMacro( ::fwData::TransferFunction );
 
@@ -32,7 +27,7 @@ const ::fwCom::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction(::fwData::Object::Key key)
+TransferFunction::TransferFunction(::fwData::Object::Key )
 {
     newSignal< PointsModifiedSignalType >(s_POINTS_MODIFIED_SIG);
     newSignal< WindowingModifiedSignalType >(s_WINDOWING_MODIFIED_SIG);
@@ -65,8 +60,8 @@ fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
     tf->addTFColor(0.0, TFColor());
     tf->addTFColor(1.0, TFColor(1.0, 1.0, 1.0, 1.0));
     tf->setIsClamped(false);
-    tf->setWindow( 50. );
-    tf->setLevel( 500. );
+    tf->setWindow( 500. );
+    tf->setLevel( 50. );
     return tf;
 }
 
@@ -126,7 +121,7 @@ TransferFunction::TFValuePairType
 TransferFunction::getWLMinMax() const
 {
     TFValuePairType minMax;
-    double halfWindow = m_window/2.f;
+    const double halfWindow = m_window/2.;
     minMax.first  = m_level - halfWindow;
     minMax.second = m_level + halfWindow;
     return minMax;
@@ -137,7 +132,7 @@ TransferFunction::getWLMinMax() const
 void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
 {
     m_window = minMax.second - minMax.first;
-    double halfWindow = m_window/2.f;
+    const double halfWindow = m_window/2.;
     m_level = halfWindow + minMax.first;
 }
 
@@ -146,9 +141,9 @@ void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
 TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-    std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
-    double previousValue             = minMax.first;
-    double nextValue                 = minMax.second;
+    const std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
+    double previousValue                   = minMax.first;
+    double nextValue                       = minMax.second;
 
     TFValueType val;
     for(const TFDataType::value_type& data : m_tfData)
@@ -234,13 +229,13 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
-    double min = std::numeric_limits<double>::min();
-    double max = std::numeric_limits<double>::max();
+    const double min = std::numeric_limits<double>::min();
+    const double max = std::numeric_limits<double>::max();
 
     double previousValue = min;
     double nextValue     = max;
 
-    TFColor blackColor(0.0, 0.0, 0.0, 0.0);
+    const TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
     TFColor previousColor = blackColor;
     TFColor nextColor     = blackColor;
@@ -302,12 +297,12 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
-    double min           = std::numeric_limits<double>::min();
-    double max           = std::numeric_limits<double>::max();
+    const double min     = std::numeric_limits<double>::min();
+    const double max     = std::numeric_limits<double>::max();
     double previousValue = min;
     double nextValue     = max;
 
-    TFColor blackColor(0.0, 0.0, 0.0, 0.0);
+    const TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
     TFColor previousColor = blackColor;
     TFColor nextColor     = blackColor;

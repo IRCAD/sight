@@ -9,8 +9,11 @@
 #include <fwData/Color.hpp>
 #include <fwData/TransferFunction.hpp>
 
+#include <fwRuntime/Convert.hpp>
+
 #include <fwServices/macros.hpp>
 
+#include <boost/property_tree/xml_parser.hpp>
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::dataReg::parser::TransferFunction, ::fwData::TransferFunction );
 
 namespace dataReg
@@ -32,48 +35,39 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast( _obj );
     SLM_ASSERT("TransferFunction not instanced", tf);
 
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    const ConfigurationType colorCfg = m_cfg->findConfigurationElement("colors");
-
-    if(colorCfg)
+    const ConfigType config = ::fwRuntime::Convert::toPropertyTree(m_cfg).get_child("object");
+    if(config.count("colors"))
     {
+        const ConfigType colorCfg = config.get_child("colors");
 
-        if (colorCfg->hasAttribute("default"))
+        const bool isDefault = colorCfg.get("<xmlattr>.default", false);
+        if(isDefault)
         {
-            const std::string isDefault = colorCfg->getAttributeValue("default");
-            SLM_ASSERT("'isDefault' value must be 'yes' or 'no'.", isDefault == "yes" || isDefault == "false");
             ::fwData::TransferFunction::sptr defaultTf = ::fwData::TransferFunction::createDefaultTF();
             tf->deepCopy(defaultTf);
         }
         else
         {
-            const ::fwRuntime::ConfigurationElementContainer stepsConfig =
-                colorCfg->findAllConfigurationElement("step");
-            SLM_ASSERT("element 'step' is missing.", stepsConfig.size() != 0);
+            const auto stepsConfig = colorCfg.equal_range("step");
 
-            for(ConfigurationType stepConfig :  stepsConfig.getElements())
+            for (auto itStepCfg = stepsConfig.first; itStepCfg != stepsConfig.second; ++itStepCfg)
             {
-                SLM_ASSERT("Missing attribute 'color'", stepConfig->hasAttribute("color"));
-                SLM_ASSERT("Missing attribute 'value'", stepConfig->hasAttribute("value"));
-
-                double value         = std::stod(stepConfig->getAttributeValue("value"));
-                std::string strColor = stepConfig->getAttributeValue("color");
+                const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
+                const std::string strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
 
                 ::fwData::Color::sptr newColor = ::fwData::Color::New();
                 newColor->setRGBA(strColor);
 
-                ::fwData::TransferFunction::TFColor color(newColor->red(), newColor->green(),
-                                                          newColor->blue(), newColor->alpha());
+                const ::fwData::TransferFunction::TFColor color(newColor->red(), newColor->green(),
+                                                                newColor->blue(), newColor->alpha());
                 tf->addTFColor(value, color);
             }
             tf->setWLMinMax(tf->getMinMaxTFValues());
 
-            if (colorCfg->hasAttribute("isClamped"))
+            if (colorCfg.count("<xmlattr>.isClamped"))
             {
-                const std::string isClamped = colorCfg->getAttributeValue("isClamped");
-                SLM_ASSERT("'isClamped' value must be 'yes' or 'no'.", isClamped == "yes" || isClamped == "false");
-                tf->setIsClamped(isClamped == "yes");
+                const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped");
+                tf->setIsClamped(isClamped);
             }
         }
     }

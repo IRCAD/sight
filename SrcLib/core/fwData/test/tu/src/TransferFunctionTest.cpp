@@ -10,14 +10,6 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <exception>
-#include <iostream>
-#include <map>
-#include <ostream>
-#include <vector>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::TransferFunctionTest );
 
@@ -45,15 +37,15 @@ void TransferFunctionTest::tearDown()
 void TransferFunctionTest::constructorTest()
 {
     // Expected value.
-    double expectedLevel                                          = 0.0;
-    double expectedWindow                                         = 100.0;
-    std::string expectedName                                      = "";
-    TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
-    bool expectedIsClamped                                        = true;
-    TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
-    size_t expectedSize                                           = 0;
+    const double expectedLevel                                          = 0.0;
+    const double expectedWindow                                         = 100.0;
+    const std::string expectedName                                      = "";
+    const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
+    const bool expectedIsClamped                                        = true;
+    const TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
+    const size_t expectedSize                                           = 0;
 
-    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
+    ::fwData::TransferFunction::csptr tf = ::fwData::TransferFunction::New();
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 0.0);
@@ -73,16 +65,16 @@ void TransferFunctionTest::defaultTfTest()
     double expectedLevel  = 0.0;
     double expectedWindow = 100.0;
 
-    std::string expectedName                                      = TransferFunction::s_DEFAULT_TF_NAME;
-    TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
-    bool expectedIsClamped                                        = false;
-    TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
-    size_t expectedSize                                           = 2;
+    const std::string expectedName                                      = TransferFunction::s_DEFAULT_TF_NAME;
+    const TransferFunction::InterpolationMode expectedInterpolationMode = TransferFunction::LINEAR;
+    const bool expectedIsClamped                                        = false;
+    const TransferFunction::TFColor expectedBackgroundColor             = TransferFunction::TFColor();
+    const size_t expectedSize                                           = 2;
 
-    ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
+    ::fwData::TransferFunction::csptr tf = ::fwData::TransferFunction::createDefaultTF();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 500.0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 50.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", expectedLevel, tf->getLevel(), 50.0);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", expectedWindow, tf->getWindow(), 500.0);
 
     CPPUNIT_ASSERT_EQUAL(expectedName, tf->getName());
     CPPUNIT_ASSERT_EQUAL(expectedInterpolationMode, tf->getInterpolationMode());
@@ -96,10 +88,10 @@ void TransferFunctionTest::defaultTfTest()
 
 void TransferFunctionTest::classicGetSetTest()
 {
-    TransferFunction::TFColor expectedColor1(0.0, 0.0, 0.0, 0.0);
-    TransferFunction::TFColor expectedColor2(1.0, 1.0, 1.0, 1.0);
-    TransferFunction::TFValueType expectedKey1(0.0);
-    TransferFunction::TFValueType expectedKey2(1.0);
+    const TransferFunction::TFColor expectedColor1(0.0, 0.0, 0.0, 0.0);
+    const TransferFunction::TFColor expectedColor2(1.0, 1.0, 1.0, 1.0);
+    const TransferFunction::TFValueType expectedKey1(0.0);
+    const TransferFunction::TFValueType expectedKey2(1.0);
 
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::createDefaultTF();
 
@@ -107,15 +99,15 @@ void TransferFunctionTest::classicGetSetTest()
     const TransferFunction::TFDataType& data = tf->getTFData();
 
     TransferFunction::TFDataType::const_iterator itr = data.begin();
-    TransferFunction::TFValueType key1               = itr->first;
-    TransferFunction::TFValueType key2               = (++itr)->first;
+    const TransferFunction::TFValueType key1         = itr->first;
+    const TransferFunction::TFValueType key2         = (++itr)->first;
 
     TransferFunction::TFDataType::const_iterator itrColor = data.begin();
-    TransferFunction::TFColor color1                      = itrColor->second;
-    TransferFunction::TFColor color2                      = (++itrColor)->second;
+    const TransferFunction::TFColor color1                = itrColor->second;
+    const TransferFunction::TFColor color2                = (++itrColor)->second;
 
-    CPPUNIT_ASSERT(expectedKey1 == key1);
-    CPPUNIT_ASSERT(expectedKey2 == key2);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedKey1, key1, 1e-10);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedKey2, key2, 1e-10);
 
     CPPUNIT_ASSERT(expectedColor1 == color1);
     CPPUNIT_ASSERT(expectedColor2 == color2);
@@ -124,13 +116,13 @@ void TransferFunctionTest::classicGetSetTest()
     CPPUNIT_ASSERT(expectedColor1 == tf->getTFColor(key1));
 
     // Test getTFValues()
-    TransferFunction::TFValueVectorType values = tf->getTFValues();
+    const TransferFunction::TFValueVectorType values = tf->getTFValues();
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey1, values[0], 0.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong key value", expectedKey2, values[1], 0.0);
 
     // Test getTFColors()
-    TransferFunction::TFColorVectorType colors = tf->getTFColors();
+    const TransferFunction::TFColorVectorType colors = tf->getTFColors();
 
     CPPUNIT_ASSERT(expectedColor1 == colors[0]);
     CPPUNIT_ASSERT(expectedColor2 == colors[1]);
@@ -142,7 +134,7 @@ void TransferFunctionTest::classicGetSetTest()
 
     // Test clear()
     tf->clear();
-    size_t expectedClearedSize = 0;
+    const size_t expectedClearedSize = 0;
     CPPUNIT_ASSERT_EQUAL(expectedClearedSize, tf->getTFData().size());
 
 }
@@ -151,7 +143,7 @@ void TransferFunctionTest::classicGetSetTest()
 
 void TransferFunctionTest::usingTfTest()
 {
-    ::fwData::TransferFunction::sptr tf = this->createTFColor();
+    ::fwData::TransferFunction::csptr tf = this->createTFColor();
 
     // -40.33 / -0.2 / 3 / 150
     CPPUNIT_ASSERT_EQUAL( -40.33, tf->getNearestValue( -140.33 ) );
@@ -171,14 +163,13 @@ void TransferFunctionTest::usingTfTest()
 
 void TransferFunctionTest::shallowAndDeepCopyTest()
 {
-    ::fwData::TransferFunction::sptr tf = this->createTFColor();
+    const ::fwData::TransferFunction::sptr tf = this->createTFColor();
     this->checkTFColor(tf);
 
-    ::fwData::TransferFunction::sptr deepCopyTf;
-    deepCopyTf = ::fwData::Object::copy( tf );
+    const ::fwData::TransferFunction::sptr deepCopyTf = ::fwData::Object::copy( tf );
     this->checkTFColor(deepCopyTf);
 
-    ::fwData::TransferFunction::sptr shallowCopyTf = ::fwData::TransferFunction::New();
+    const ::fwData::TransferFunction::sptr shallowCopyTf = ::fwData::TransferFunction::New();
     shallowCopyTf->shallowCopy( tf );
     this->checkTFColor(shallowCopyTf);
 }
@@ -220,7 +211,7 @@ void TransferFunctionTest::checkTFColor( ::fwData::TransferFunction::sptr tf )
     CPPUNIT_ASSERT_EQUAL( std::string("TFColor"), tf->getName() );
     CPPUNIT_ASSERT_EQUAL( -200.02, tf->getWindow() );
 
-    CPPUNIT_ASSERT_EQUAL( (size_t)4, tf->getTFData().size() );
+    CPPUNIT_ASSERT_EQUAL( static_cast<size_t>(4), tf->getTFData().size() );
     CPPUNIT_ASSERT_EQUAL( -40.33, tf->getMinMaxTFValues().first );
     CPPUNIT_ASSERT_EQUAL( 150.0, tf->getMinMaxTFValues().second );
 
