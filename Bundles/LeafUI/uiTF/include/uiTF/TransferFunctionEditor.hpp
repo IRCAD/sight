@@ -90,7 +90,7 @@ protected:
     UITF_API virtual void stopping() override;
 
     /// Selects the current transfer function
-    UITF_API void swapping(const KeyType& key);
+    UITF_API void swapping(const KeyType& key) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

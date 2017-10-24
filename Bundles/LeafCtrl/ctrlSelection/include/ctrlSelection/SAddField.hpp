@@ -16,7 +16,9 @@ namespace ctrlSelection
 
 /**
  * @brief   Add one or several fields to an object.
-
+ *
+ * @deprecated Use SManage instead
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}

@@ -69,7 +69,7 @@ protected:
     VISUVTKADAPTOR_API void stopping() override;
 
     /// Select the current tf
-    VISUVTKADAPTOR_API void swapping(const KeyType& key);
+    VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
