@@ -29,6 +29,14 @@ namespace editor
 /**
  * @brief   This editor allows to select the device to use. It updates the data camera identifier.
  *
+ * @section Signals Signals
+ * - \b configuredCameras(): emitted when the cameras have been successfully configured.
+ *
+ * @section Slots Slots
+ * - \b configureDevice(): configure the cameras as device sources.
+ * - \b configureFile(): configure the cameras as file sources.
+ * - \b configureStream(): configure the cameras as stream sources.
+ *
  * @section XML XML Configuration
  *
  * Configure this service either with a single camera data:
@@ -81,6 +89,13 @@ public:
 
     /// Key of the 'configuredCameras' signal
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG;
+
+    /// Key of the 'configureDevice' slot
+    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT;
+    /// Key of the 'configureFile' slot
+    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT;
+    /// Key of the 'configureStream' slot
+    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT;
 
 protected:
 
