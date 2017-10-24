@@ -16,9 +16,6 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
