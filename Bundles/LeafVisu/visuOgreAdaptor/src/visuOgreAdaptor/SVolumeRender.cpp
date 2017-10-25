@@ -12,6 +12,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
@@ -357,17 +358,15 @@ void SVolumeRender::starting()
         m_volumeSceneNode->setVisible(false, false);
     }
 
-    if (m_autoResetCamera )
+    if (m_autoResetCamera || image->getField("resetCamera"))
     {
-        if(image->getField("cameraTransform"))
-        {
-            this->getLayer()->computeCameraParameters();
-        }
-        else
-        {
-            this->getRenderService()->resetCameraCoordinates(m_layerID);
-        }
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
     }
+    else
+    {
+        this->getLayer()->computeCameraParameters();
+    }
+
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
 
     this->requestRender();
