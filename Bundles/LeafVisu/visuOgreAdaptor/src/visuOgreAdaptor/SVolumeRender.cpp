@@ -358,15 +358,6 @@ void SVolumeRender::starting()
         m_volumeSceneNode->setVisible(false, false);
     }
 
-    if (m_autoResetCamera || image->getField("resetCamera"))
-    {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
-    }
-    else
-    {
-        this->getLayer()->computeCameraParameters();
-    }
-
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
 
     this->requestRender();
@@ -474,6 +465,15 @@ void SVolumeRender::newImage()
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
 
     m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
+
+    if (m_autoResetCamera || image->getField("resetCamera"))
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
+    else
+    {
+        this->getLayer()->computeCameraParameters();
+    }
 
     this->requestRender();
 }
