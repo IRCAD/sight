@@ -1,20 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 #include "fwData/TransferFunction.hpp"
 
-#include <fwCom/Signal.hpp>
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
+
 #include <fwCom/Signal.hxx>
 
-#include <fwCore/base.hpp>
 #include <fwTools/Type.hpp>
-
-#include <functional>
 
 fwDataRegisterMacro( ::fwData::TransferFunction );
 
@@ -30,7 +27,7 @@ const ::fwCom::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction(::fwData::Object::Key key)
+TransferFunction::TransferFunction(::fwData::Object::Key )
 {
     newSignal< PointsModifiedSignalType >(s_POINTS_MODIFIED_SIG);
     newSignal< WindowingModifiedSignalType >(s_WINDOWING_MODIFIED_SIG);
@@ -61,8 +58,10 @@ fwData::TransferFunction::sptr TransferFunction::createDefaultTF()
 
     tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
     tf->addTFColor(0.0, TFColor());
-    tf->addTFColor(1.0, TFColor(1.0,1.0,1.0,1.0));
+    tf->addTFColor(1.0, TFColor(1.0, 1.0, 1.0, 1.0));
     tf->setIsClamped(false);
+    tf->setWindow( 500. );
+    tf->setLevel( 50. );
     return tf;
 }
 
@@ -95,7 +94,7 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
 
     const double scale = m_window / (minMax.second - minMax.first);
 
-    for(const TFDataType::value_type &data : m_tfData)
+    for(const TFDataType::value_type& data : m_tfData)
     {
         const double value = (data.first - minMax.first) * scale + windowMinMax.first;
         values.push_back(value);
@@ -109,7 +108,7 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
 TransferFunction::TFValuePairType
 TransferFunction::getMinMaxTFValues() const
 {
-    SLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
     TFValuePairType minMax;
     minMax.first  = m_tfData.begin()->first;
     minMax.second = (m_tfData.rbegin())->first;
@@ -122,7 +121,7 @@ TransferFunction::TFValuePairType
 TransferFunction::getWLMinMax() const
 {
     TFValuePairType minMax;
-    double halfWindow = m_window/2.f;
+    const double halfWindow = m_window/2.;
     minMax.first  = m_level - halfWindow;
     minMax.second = m_level + halfWindow;
     return minMax;
@@ -133,7 +132,7 @@ TransferFunction::getWLMinMax() const
 void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
 {
     m_window = minMax.second - minMax.first;
-    double halfWindow = m_window/2.f;
+    const double halfWindow = m_window/2.;
     m_level = halfWindow + minMax.first;
 }
 
@@ -141,13 +140,13 @@ void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
 
 TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType value ) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
-    std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
-    double previousValue             = minMax.first;
-    double nextValue                 = minMax.second;
+    OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    const std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
+    double previousValue                   = minMax.first;
+    double nextValue                       = minMax.second;
 
     TFValueType val;
-    for(const TFDataType::value_type &data : m_tfData)
+    for(const TFDataType::value_type& data : m_tfData)
     {
         if(value < data.first )
         {
@@ -190,14 +189,14 @@ const TransferFunction::TFDataType& TransferFunction::getTFData() const
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::setTFData( const TFDataType & tfData )
+void TransferFunction::setTFData( const TFDataType& tfData )
 {
     m_tfData = tfData;
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::addTFColor( TFValueType value, const TFColor & color )
+void TransferFunction::addTFColor( TFValueType value, const TFColor& color )
 {
     m_tfData[value] = color;
 }
@@ -228,20 +227,20 @@ TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 
 TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value ) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
-    double min = std::numeric_limits<double>::min();
-    double max = std::numeric_limits<double>::max();
+    const double min = std::numeric_limits<double>::min();
+    const double max = std::numeric_limits<double>::max();
 
     double previousValue = min;
     double nextValue     = max;
 
-    TFColor blackColor(0.0, 0.0, 0.0, 0.0);
+    const TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
     TFColor previousColor = blackColor;
     TFColor nextColor     = blackColor;
 
-    for(const TFDataType::value_type &data : m_tfData)
+    for(const TFDataType::value_type& data : m_tfData)
     {
         if(value < data.first )
         {
@@ -296,19 +295,19 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
 
 TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    OSLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
-    double min           = std::numeric_limits<double>::min();
-    double max           = std::numeric_limits<double>::max();
+    const double min     = std::numeric_limits<double>::min();
+    const double max     = std::numeric_limits<double>::max();
     double previousValue = min;
     double nextValue     = max;
 
-    TFColor blackColor(0.0, 0.0, 0.0, 0.0);
+    const TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
     TFColor previousColor = blackColor;
     TFColor nextColor     = blackColor;
 
-    for(const TFDataType::value_type &data : m_tfData)
+    for(const TFDataType::value_type& data : m_tfData)
     {
         if(value < data.first )
         {
@@ -371,7 +370,7 @@ const TransferFunction::TFColor& TransferFunction::getTFColor( TFValueType value
 }
 //------------------------------------------------------------------------------
 
-void TransferFunction::shallowCopy(const Object::csptr &_source )
+void TransferFunction::shallowCopy(const Object::csptr& _source )
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -389,7 +388,7 @@ void TransferFunction::shallowCopy(const Object::csptr &_source )
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(

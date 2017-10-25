@@ -8,15 +8,7 @@
 #define __FWDATA_TRANSFERFUNCTION_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-
-#include <limits>
-#include <map>
-#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 
@@ -34,11 +26,11 @@ class FWDATA_CLASS_API TransferFunction : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()),
-                                            ::fwData::factory::New< TransferFunction >);
+                                            ::fwData::factory::New< TransferFunction >)
 
     /// Macro for deep and shallow copies
 
-    fwCampMakeFriendDataMacro((fwData)(TransferFunction));
+    fwCampMakeFriendDataMacro((fwData)(TransferFunction))
 
     /// Defines color structure for TF
     struct TFColor
@@ -236,7 +228,7 @@ private:
      **/
     bool m_isClamped;
 
-}; // class TransferFunction
+};
 
 //-----------------------------------------------------------------------------
 
