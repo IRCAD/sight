@@ -157,6 +157,14 @@ bool isRegistered(const ::fwServices::IService::KeyType& objKey,
 
 //------------------------------------------------------------------------------
 
+::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                      ::fwServices::IService::AccessType access, IService::sptr service)
+{
+    return ::fwServices::OSR::get()->getRegistered(objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace OSR
 
 //------------------------------------------------------------------------------
@@ -364,7 +372,7 @@ void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyTy
 //------------------------------------------------------------------------------
 
 bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
-                                 ::fwServices::IService::AccessType access, IService::sptr service)
+                                 ::fwServices::IService::AccessType access, IService::sptr service) const
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
 
@@ -380,6 +388,41 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
     {
         return service->m_outputsMap.find(objKey) != service->m_outputsMap.end();
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Object::csptr ObjectService::getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                                     ::fwServices::IService::AccessType access,
+                                                     IService::sptr service) const
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+
+    if(access == ::fwServices::IService::AccessType::INPUT)
+    {
+        auto it = service->m_inputsMap.find(objKey);
+        if(it != service->m_inputsMap.end())
+        {
+            return it->second.lock();
+        }
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        auto it = service->m_inOutsMap.find(objKey);
+        if(it != service->m_inOutsMap.end())
+        {
+            return it->second.lock();
+        }
+    }
+    else
+    {
+        auto it = service->m_outputsMap.find(objKey);
+        if(it != service->m_outputsMap.end())
+        {
+            return it->second.lock();
+        }
+    }
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------

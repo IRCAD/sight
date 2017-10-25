@@ -19,6 +19,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Convert.hpp>
 #include <fwRuntime/Runtime.hpp>
 
 #include <fwTest/helper/Thread.hpp>
@@ -862,102 +863,134 @@ void AppConfigTest::optionalKeyTest()
     // Create data 5
     ::fwData::Boolean::sptr data5 = ::fwData::Boolean::New();
     {
-        fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
-        CPPUNIT_ASSERT(gnsrv5 == nullptr);
+        fwTools::Object::sptr gnsrv2 = ::fwTools::fwID::getObject("TestService2Uid");
+        CPPUNIT_ASSERT(gnsrv2 == nullptr);
 
         ::fwServices::OSR::registerServiceOutput(data5, "out5", genDataSrv);
-        WAIT_SERVICE_STARTED("TestService5Uid");
+        WAIT_SERVICE_STARTED("testService2Uid");
 
-        gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
-        auto srv5 = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv5);
-        CPPUNIT_ASSERT(srv5 != nullptr);
-        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv5->getStatus());
-        CPPUNIT_ASSERT(!srv5->getIsUpdated());
+        gnsrv2 = ::fwTools::fwID::getObject("TestService2Uid");
+        CPPUNIT_ASSERT(gnsrv2 != nullptr);
+        auto srv2 = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv2);
+        CPPUNIT_ASSERT(srv2 != nullptr);
+        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
+        CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv5->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(data4 == srv5->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
+        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
+        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("data4") );
 
         // Check connection with data 4
-        srv5->resetIsUpdated();
+        srv2->resetIsUpdated();
         auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig4->asyncEmit();
-        WAIT(srv5->getIsUpdated());
+        WAIT(srv2->getIsUpdated());
 
         // Remove data 3 and 4
         ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
         ::fwServices::OSR::unregisterServiceOutput("out4", genDataSrv);
 
-        WAIT(nullptr == srv5->getInput< ::fwData::Object>("data3") &&
-             nullptr == srv5->getInput< ::fwData::Object>("data4"));
+        WAIT(nullptr == srv2->getInput< ::fwData::Object>("data3") &&
+             nullptr == srv2->getInput< ::fwData::Object>("data4"));
 
-        CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data3") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
 
         // Create data 3
         ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
-        WAIT(nullptr != srv5->getInput< ::fwData::Object>("data3"));
+        WAIT(nullptr != srv2->getInput< ::fwData::Object>("data3"));
 
-        CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv5->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
+        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
     }
 
     // Remove data 5
     {
         ::fwServices::OSR::unregisterServiceOutput("out5", genDataSrv);
 
-        WAIT(nullptr == ::fwTools::fwID::getObject("TestService5Uid"));
+        WAIT(nullptr == ::fwTools::fwID::getObject("TestService2Uid"));
 
-        fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
+        fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService2Uid");
         CPPUNIT_ASSERT(gnsrv5 == nullptr);
     }
 
-    // Create data 5
     {
+        // Create data 5
         ::fwServices::OSR::registerServiceOutput(data5, "out5", genDataSrv);
-        WAIT_SERVICE_STARTED("TestService5Uid");
+        WAIT_SERVICE_STARTED("TestService2Uid");
 
-        auto gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
-        auto srv5   = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv5);
-        CPPUNIT_ASSERT(srv5 != nullptr);
-        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv5->getStatus());
-        CPPUNIT_ASSERT(!srv5->getIsUpdated());
+        auto gnsrv2 = ::fwTools::fwID::getObject("TestService2Uid");
+        auto srv2   = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv2);
+        CPPUNIT_ASSERT(srv2 != nullptr);
+        CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
+        CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv5->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data2") );
+        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
 
         // Check connection with data 3
-        srv5->resetIsUpdated();
+        srv2->resetIsUpdated();
         auto sig3 = data3->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig3->asyncEmit();
-        WAIT(srv5->getIsUpdated());
-        CPPUNIT_ASSERT(srv5->getIsUpdated());
+        WAIT(srv2->getIsUpdated());
+        CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Create data 2
         ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 
         ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
-        WAIT(data2 == srv5->getInput< ::fwData::Object>("data2"));
+        WAIT(data2 == srv2->getInput< ::fwData::Object>("data2"));
 
-        CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
-        CPPUNIT_ASSERT(data2 == srv5->getInput< ::fwData::Object>("data2") );
-        CPPUNIT_ASSERT(data3 == srv5->getInput< ::fwData::Object>("data3") );
-        CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data4") );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("data5") );
+        CPPUNIT_ASSERT(data2 == srv2->getInput< ::fwData::Object>("data2") );
+        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("data3") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("data4") );
 
         // Check no connection with data 2
-        srv5->resetIsUpdated();
-        CPPUNIT_ASSERT(!srv5->getIsUpdated());
+        srv2->resetIsUpdated();
+        CPPUNIT_ASSERT(!srv2->getIsUpdated());
         auto sig2 = data2->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig2->asyncEmit();
-        WAIT(!srv5->getIsUpdated());
-        CPPUNIT_ASSERT(!srv5->getIsUpdated());
+        WAIT(!srv2->getIsUpdated());
+        CPPUNIT_ASSERT(!srv2->getIsUpdated());
+
+        // Overwrite data 2 with a new data generated by an another service
+        ::fwData::Boolean::sptr data2bis = ::fwData::Boolean::New();
+
+        auto genDataSrv2 = ::fwServices::ut::TestService::dynamicCast(::fwTools::fwID::getObject("SGenerateData2"));
+        CPPUNIT_ASSERT(genDataSrv2 != nullptr);
+
+        ::fwServices::OSR::registerServiceOutput(data2bis, "out", genDataSrv2);
+        WAIT(data2bis == srv2->getInput< ::fwData::Object>("data2"));
+
+        CPPUNIT_ASSERT(data2bis == srv2->getInput< ::fwData::Object>("data2"));
+        CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
+        CPPUNIT_ASSERT(data2bis == srv2->getSwappedObject() );
+
+        // Check that the output of SGenerateData changed as well
+        CPPUNIT_ASSERT( data2bis ==
+                        ::fwServices::OSR::getRegistered("out2", ::fwServices::IService::AccessType::OUTPUT,
+                                                         genDataSrv));
+
+        // Revert that
+        ::fwServices::OSR::registerServiceOutput(data2, "out", genDataSrv2);
+        WAIT(data2 == srv2->getInput< ::fwData::Object>("data2"));
+
+        CPPUNIT_ASSERT(data2 == srv2->getInput< ::fwData::Object>("data2"));
+        CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey() );
+        CPPUNIT_ASSERT(data2 == srv2->getSwappedObject() );
+
+        // Check that the output of SGenerateData changed as well
+        CPPUNIT_ASSERT( data2 ==
+                        ::fwServices::OSR::getRegistered("out2", ::fwServices::IService::AccessType::OUTPUT,
+                                                         genDataSrv));
     }
 }
 
@@ -1549,115 +1582,177 @@ fwRuntime::ConfigurationElement::sptr AppConfigTest::buildConnectionConfig()
 
 fwRuntime::ConfigurationElement::sptr AppConfigTest::buildOptionalKeyConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
+    ::fwServices::IService::ConfigType config;
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data1Id");
-    objCfg->setAttributeValue( "type", "::fwData::Image");
+    ::fwServices::IService::ConfigType objCfg;
+    objCfg.add("<xmlattr>.uid", "data1Id");
+    objCfg.add("<xmlattr>.type", "::fwData::Image");
+    config.add_child("object", objCfg);
 
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data2Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
-    objCfg->setAttributeValue( "src", "deferred");
+    ::fwServices::IService::ConfigType objCfg2;
+    objCfg2.add("<xmlattr>.uid", "data2Id");
+    objCfg2.add("<xmlattr>.type", "::fwData::Boolean");
+    objCfg2.add("<xmlattr>.src", "deferred");
+    config.add_child("object", objCfg2);
 
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
-    objCfg->setAttributeValue( "src", "deferred");
+    ::fwServices::IService::ConfigType objCfg3;
+    objCfg3.add("<xmlattr>.uid", "data3Id");
+    objCfg3.add("<xmlattr>.type", "::fwData::Boolean");
+    objCfg3.add("<xmlattr>.src", "deferred");
+    config.add_child("object", objCfg3);
 
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data4Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
-    objCfg->setAttributeValue( "src", "deferred");
+    ::fwServices::IService::ConfigType objCfg4;
+    objCfg4.add("<xmlattr>.uid", "data4Id");
+    objCfg4.add("<xmlattr>.type", "::fwData::Boolean");
+    objCfg4.add("<xmlattr>.src", "deferred");
+    config.add_child("object", objCfg4);
 
-    objCfg = cfg->addConfigurationElement("object");
-    objCfg->setAttributeValue( "uid", "data5Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
-    objCfg->setAttributeValue( "src", "deferred");
+    ::fwServices::IService::ConfigType objCfg5;
+    objCfg5.add("<xmlattr>.uid", "data5Id");
+    objCfg5.add("<xmlattr>.type", "::fwData::Boolean");
+    objCfg5.add("<xmlattr>.src", "deferred");
+    config.add_child("object", objCfg5);
 
     // Service used to generate data
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataSrv = cfg->addConfigurationElement("service");
-    genDataSrv->setAttributeValue( "uid", "SGenerateData" );
-    genDataSrv->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+    {
+        ::fwServices::IService::ConfigType genDataSrv;
+        genDataSrv.add("<xmlattr>.uid", "SGenerateData");
+        genDataSrv.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService2 = genDataSrv->addConfigurationElement("out");
-    genDataService2->setAttributeValue( "key", "out2" );
-    genDataService2->setAttributeValue( "uid", "data2Id" );
+        ::fwServices::IService::ConfigType genDataService2;
+        genDataService2.add("<xmlattr>.key", "out2");
+        genDataService2.add("<xmlattr>.uid", "data2Id");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService3 = genDataSrv->addConfigurationElement("out");
-    genDataService3->setAttributeValue( "key", "out3" );
-    genDataService3->setAttributeValue( "uid", "data3Id" );
+        ::fwServices::IService::ConfigType genDataService3;
+        genDataService3.add("<xmlattr>.key", "out3");
+        genDataService3.add("<xmlattr>.uid", "data3Id");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService4 = genDataSrv->addConfigurationElement("out");
-    genDataService4->setAttributeValue( "key", "out4" );
-    genDataService4->setAttributeValue( "uid", "data4Id" );
+        ::fwServices::IService::ConfigType genDataService4;
+        genDataService4.add("<xmlattr>.key", "out4");
+        genDataService4.add("<xmlattr>.uid", "data4Id");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataService5 = genDataSrv->addConfigurationElement("out");
-    genDataService5->setAttributeValue( "key", "out5" );
-    genDataService5->setAttributeValue( "uid", "data5Id" );
+        ::fwServices::IService::ConfigType genDataService5;
+        genDataService5.add("<xmlattr>.key", "out5");
+        genDataService5.add("<xmlattr>.uid", "data5Id");
+
+        genDataSrv.add_child("out", genDataService2);
+        genDataSrv.add_child("out", genDataService3);
+        genDataSrv.add_child("out", genDataService4);
+        genDataSrv.add_child("out", genDataService5);
+        config.add_child("service", genDataSrv);
+    }
+
+    // Second service used to generate data
+    {
+        ::fwServices::IService::ConfigType genDataSrv;
+        genDataSrv.add("<xmlattr>.uid", "SGenerateData2");
+        genDataSrv.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
+
+        ::fwServices::IService::ConfigType genDataService;
+        genDataService.add("<xmlattr>.key", "out");
+        genDataService.add("<xmlattr>.uid", "data2Id");
+
+        genDataSrv.add_child("out", genDataService);
+        config.add_child("service", genDataSrv);
+    }
 
     // Service #1
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service1 = cfg->addConfigurationElement("service");
-    service1->setAttributeValue( "uid", "TestService1Uid" );
-    service1->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+    {
+        ::fwServices::IService::ConfigType service1;
+        service1.add("<xmlattr>.uid", "TestService1Uid");
+        service1.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_1 = service1->addConfigurationElement("in");
-    dataService1_1->setAttributeValue( "key", "data1" );
-    dataService1_1->setAttributeValue( "uid", "data1Id" );
-    dataService1_1->setAttributeValue( "autoConnect", "yes" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_2 = service1->addConfigurationElement("in");
-    dataService1_2->setAttributeValue( "key", "data2" );
-    dataService1_2->setAttributeValue( "uid", "data2Id" );
-    dataService1_2->setAttributeValue( "autoConnect", "no" );
-    dataService1_2->setAttributeValue( "optional", "yes");
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_3 = service1->addConfigurationElement("in");
-    dataService1_3->setAttributeValue( "key", "data3" );
-    dataService1_3->setAttributeValue( "uid", "data3Id" );
-    dataService1_3->setAttributeValue( "autoConnect", "no" );
-    dataService1_3->setAttributeValue( "optional", "yes");
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService1_4 = service1->addConfigurationElement("in");
-    dataService1_4->setAttributeValue( "key", "data4" );
-    dataService1_4->setAttributeValue( "uid", "data4Id" );
-    dataService1_4->setAttributeValue( "autoConnect", "yes" );
-    dataService1_4->setAttributeValue( "optional", "yes");
+        ::fwServices::IService::ConfigType dataService1;
+        dataService1.add("<xmlattr>.key", "data1");
+        dataService1.add("<xmlattr>.uid", "data1Id");
+        dataService1.add("<xmlattr>.autoConnect", "yes");
+
+        ::fwServices::IService::ConfigType dataService2;
+        dataService2.add("<xmlattr>.key", "data2");
+        dataService2.add("<xmlattr>.uid", "data2Id");
+        dataService2.add("<xmlattr>.autoConnect", "no");
+        dataService2.add("<xmlattr>.optional", "yes");
+
+        ::fwServices::IService::ConfigType dataService3;
+        dataService3.add("<xmlattr>.key", "data3");
+        dataService3.add("<xmlattr>.uid", "data3Id");
+        dataService3.add("<xmlattr>.autoConnect", "no");
+        dataService3.add("<xmlattr>.optional", "yes");
+
+        ::fwServices::IService::ConfigType dataService4;
+        dataService4.add("<xmlattr>.key", "data4");
+        dataService4.add("<xmlattr>.uid", "data4Id");
+        dataService4.add("<xmlattr>.autoConnect", "yes");
+        dataService4.add("<xmlattr>.optional", "yes");
+
+        service1.add_child("in", dataService1);
+        service1.add_child("in", dataService2);
+        service1.add_child("in", dataService3);
+        service1.add_child("in", dataService4);
+        config.add_child("service", service1);
+    }
 
     // Service #2
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > service5 = cfg->addConfigurationElement("service");
-    service5->setAttributeValue( "uid", "TestService5Uid" );
-    service5->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+    {
+        ::fwServices::IService::ConfigType service2;
+        service2.add("<xmlattr>.uid", "TestService2Uid");
+        service2.add("<xmlattr>.type", "::fwServices::ut::TestServiceImplementation");
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_1 = service5->addConfigurationElement("in");
-    dataService5_1->setAttributeValue( "key", "data5" );
-    dataService5_1->setAttributeValue( "uid", "data5Id" );
-    dataService5_1->setAttributeValue( "autoConnect", "yes" );
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_2 = service5->addConfigurationElement("in");
-    dataService5_2->setAttributeValue( "key", "data2" );
-    dataService5_2->setAttributeValue( "uid", "data2Id" );
-    dataService5_2->setAttributeValue( "autoConnect", "no" );
-    dataService5_2->setAttributeValue( "optional", "yes");
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_3 = service5->addConfigurationElement("in");
-    dataService5_3->setAttributeValue( "key", "data3" );
-    dataService5_3->setAttributeValue( "uid", "data3Id" );
-    dataService5_3->setAttributeValue( "autoConnect", "no" );
-    dataService5_3->setAttributeValue( "optional", "yes");
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService5_4 = service5->addConfigurationElement("in");
-    dataService5_4->setAttributeValue( "key", "data4" );
-    dataService5_4->setAttributeValue( "uid", "data4Id" );
-    dataService5_4->setAttributeValue( "autoConnect", "yes" );
-    dataService5_4->setAttributeValue( "optional", "yes");
+        ::fwServices::IService::ConfigType dataService1;
+        dataService1.add("<xmlattr>.key", "data5");
+        dataService1.add("<xmlattr>.uid", "data5Id");
+        dataService1.add("<xmlattr>.autoConnect", "yes");
+
+        ::fwServices::IService::ConfigType dataService2;
+        dataService2.add("<xmlattr>.key", "data2");
+        dataService2.add("<xmlattr>.uid", "data2Id");
+        dataService2.add("<xmlattr>.autoConnect", "no");
+        dataService2.add("<xmlattr>.optional", "yes");
+
+        ::fwServices::IService::ConfigType dataService3;
+        dataService3.add("<xmlattr>.key", "data3");
+        dataService3.add("<xmlattr>.uid", "data3Id");
+        dataService3.add("<xmlattr>.autoConnect", "no");
+        dataService3.add("<xmlattr>.optional", "yes");
+
+        ::fwServices::IService::ConfigType dataService4;
+        dataService4.add("<xmlattr>.key", "data4");
+        dataService4.add("<xmlattr>.uid", "data4Id");
+        dataService4.add("<xmlattr>.autoConnect", "yes");
+        dataService4.add("<xmlattr>.optional", "yes");
+
+        service2.add_child("in", dataService1);
+        service2.add_child("in", dataService2);
+        service2.add_child("in", dataService3);
+        service2.add_child("in", dataService4);
+        config.add_child("service", service2);
+    }
 
     // Connections
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
-    connect1->addConfigurationElement("signal")->setValue( "data3Id/modified" );
-    connect1->addConfigurationElement("slot")->setValue( "TestService1Uid/update" );
-    connect1->addConfigurationElement("slot")->setValue( "TestService5Uid/update" );
+    ::fwServices::IService::ConfigType connect;
+    connect.add("signal", "data3Id/modified");
+    connect.add("slot", "TestService1Uid/update");
+    connect.add("slot", "TestService2Uid/update");
+    config.add_child("connect", connect);
 
     // Start method from object's services
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
-    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService5Uid" );
+    ::fwServices::IService::ConfigType startGen;
+    startGen.add("<xmlattr>.uid", "SGenerateData");
+    config.add_child("start", startGen);
+    ::fwServices::IService::ConfigType startGen2;
+    startGen2.add("<xmlattr>.uid", "SGenerateData2");
+    config.add_child("start", startGen2);
+    ::fwServices::IService::ConfigType start1;
+    start1.add("<xmlattr>.uid", "TestService1Uid");
+    config.add_child("start", start1);
+    ::fwServices::IService::ConfigType start2;
+    start2.add("<xmlattr>.uid", "TestService2Uid");
+    config.add_child("start", start2);
 
-    return cfg;
+    ::fwServices::IService::ConfigType serviceCfg;
+    serviceCfg.add_child("config", config);
+
+    return ::fwRuntime::Convert::fromPropertyTree(serviceCfg);
 }
 
 //------------------------------------------------------------------------------

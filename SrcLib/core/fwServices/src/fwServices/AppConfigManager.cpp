@@ -880,13 +880,27 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                     SLM_ASSERT(this->msgHead() + "No service registered with UID \"" + uid + "\".", srv);
 
                     // We have an optional object
-                    if( objCfg.m_optional && !::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
+                    if( objCfg.m_optional)
                     {
-                        // Register the key on the service
-                        ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
+                        // Check if we already registered an object at this key
+                        auto registeredObj = ::fwServices::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
+                        if(registeredObj != nullptr)
+                        {
+                            // If this is not the object we have to swap, then unregister it
+                            if(registeredObj != object)
+                            {
+                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                            }
+                        }
 
-                        // Call the swapping callback of the service and wait for it
-                        srv->swapKey(objCfg.m_key, nullptr).wait();
+                        if(registeredObj != object)
+                        {
+                            // Register the key on the service
+                            ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
+
+                            // Call the swapping callback of the service and wait for it
+                            srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
+                        }
                     }
 
                     createService = false;
