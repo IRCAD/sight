@@ -5,6 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
         fwCore
         fwData
+        fwDataIO
         fwRuntime
         fwServices
         fwTools
@@ -15,6 +16,7 @@ set( DEPENDENCIES
         fwMedData
 
         gui
+        io
 )
 set( REQUIREMENTS  )
 

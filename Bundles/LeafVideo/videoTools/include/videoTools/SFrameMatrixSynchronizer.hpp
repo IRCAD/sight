@@ -111,7 +111,6 @@ public:
 
     typedef ::fwCom::Signal< void (bool) > AllMatricesFoundSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
-
     /** @} */
 
     /**
@@ -137,6 +136,14 @@ public:
     typedef std::vector<MatrixKeyVectorTypePair> MatrixKeyVectorType;
     typedef std::map<std::string, MatrixKeyVectorType> MatrixKeyType;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connections
+     *
+     * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
+     */
+    VIDEOTOOLS_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
 protected:
     /**
      * @brief This method is used to configure the service.
@@ -157,9 +164,14 @@ protected:
 
 private:
 
-    ::fwCore::HiResClock::HiResClockType m_tolerance; ///< Tolerance to take into account matrix
+    /// Reset the last timestamp when the timeline is cleared
+    VIDEOTOOLS_API void resetTimeline();
 
-    bool m_imagesInitialized; ///< Check if output images are initialized
+    /// Tolerance to take into account matrix
+    ::fwCore::HiResClock::HiResClockType m_tolerance;
+
+    /// Check if output images are initialized
+    bool m_imagesInitialized;
 
     /// registers FrameTL keys to synchronize and the associated fwData::Image keys
     FrameKeysType m_frameKeys;

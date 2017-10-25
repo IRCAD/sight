@@ -5,7 +5,6 @@
         <param name="SERIESDB" />
         <param name="AS_UID" />
         <param name="cameraSeries" />
-        <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
         <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
         <param name="enabledNextChannel" default="enabledNextChannel" />
         <param name="previousActivityChannel" default="previousActivityChannel" />
@@ -70,14 +69,12 @@
                     <appConfig id="calIntrinsicView" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
                     <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
-                    <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                 </intrinsic>
                 <extrinsic>
                     <appConfig id="calExtrinsicView" />
                     <inout key="cameraSeries" uid="${cameraSeries}" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
                     <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
-                    <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                 </extrinsic>
             </config>
         </service>

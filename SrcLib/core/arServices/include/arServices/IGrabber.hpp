@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -74,6 +74,13 @@ public:
     /** @} */
 
     /**
+     * @name Data API
+     * @{
+     */
+    ARSERVICES_API static const ::fwServices::IService::KeyType s_CAMERA_KEY;
+    ARSERVICES_API static const ::fwServices::IService::KeyType s_FRAMETL_KEY;
+    /** @} */
+    /**
      * @brief Constructor.
      */
     ARSERVICES_API IGrabber() noexcept;
@@ -83,7 +90,6 @@ public:
      */
     ARSERVICES_API virtual ~IGrabber() noexcept;
 
-protected:
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */

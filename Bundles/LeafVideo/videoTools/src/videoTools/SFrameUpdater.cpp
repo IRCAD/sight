@@ -27,21 +27,24 @@ namespace videoTools
 {
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SFrameUpdater::s_UPDATE_FRAME_SLOT        = "updateFrame";
+//  Public slot
+const ::fwCom::Slots::SlotKeyType SFrameUpdater::s_UPDATE_FRAME_SLOT = "updateFrame";
+
+// Private slot
+const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
+
 const ::fwCom::Signals::SignalKeyType SFrameUpdater::s_RENDER_REQUESTED_SIG = "renderRequested";
+
+//-----------------------------------------------------------------------------
 
 SFrameUpdater::SFrameUpdater() noexcept :
     m_lastTimestamp(0),
-    m_lastMatrixUpdatedKey(""),
     m_imageInitialized(false)
 {
-    m_slotUpdateFrame = ::fwCom::newSlot(&SFrameUpdater::updateFrame, this);
-    ::fwCom::HasSlots::m_slots(s_UPDATE_FRAME_SLOT, m_slotUpdateFrame);
+    newSignal<RenderRequestedSignalType>(s_RENDER_REQUESTED_SIG);
 
-    m_sigRenderRequested = RenderRequestedSignalType::New();
-    m_signals( s_RENDER_REQUESTED_SIG,  m_sigRenderRequested);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot(s_UPDATE_FRAME_SLOT, &SFrameUpdater::updateFrame, this);
+    newSlot(s_RESET_TIMELINE_SLOT, &SFrameUpdater::resetTimeline, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,6 +61,7 @@ SFrameUpdater::~SFrameUpdater() noexcept
 
     connections.push( "frameTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG,
                       ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT );
+    connections.push( "frameTL", ::arData::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
 
     return connections;
 }
@@ -82,7 +86,6 @@ void SFrameUpdater::configuring()
 
 void SFrameUpdater::stopping()
 {
-    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +177,18 @@ void SFrameUpdater::updateImage()
 
 void SFrameUpdater::requestRender()
 {
-    m_sigRenderRequested->asyncEmit();
+    auto sig = this->signal<RenderRequestedSignalType>(s_RENDER_REQUESTED_SIG);
+    sig->asyncEmit();
 }
+
+//-----------------------------------------------------------------------------
+
+void SFrameUpdater::resetTimeline()
+{
+    // Reset the last timestamp in case the grabber uses a different time scale
+    m_lastTimestamp = std::numeric_limits<double>::lowest();
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace videoTools

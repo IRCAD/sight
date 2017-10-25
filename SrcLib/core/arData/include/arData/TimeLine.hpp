@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,10 @@
 #ifndef __ARDATA_TIMELINE_HPP__
 #define __ARDATA_TIMELINE_HPP__
 
-#include <fwData/Object.hpp>
-
-#include "arData/timeline/Object.hpp"
 #include "arData/config.hpp"
+#include "arData/timeline/Object.hpp"
 
+#include <fwData/Object.hpp>
 
 namespace arData
 {
@@ -35,11 +34,11 @@ public:
 
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
+    typedef ::fwCom::Signal< void () > ObjectClearedSignalType;
 
-    /// Key in m_signals map of signal m_sigObjectPushed
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_PUSHED_SIG;
-    /// Key in m_signals map of signal m_sigObjectRemoved
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_REMOVED_SIG;
+    ARDATA_API static const ::fwCom::Signals::SignalKeyType s_CLEARED_SIG;
 
     /**
      * @brief Constructor
@@ -94,6 +93,5 @@ protected:
 }; // class TimeLine
 
 } // namespace arData
-
 
 #endif // __ARDATA_TIMELINE_HPP__

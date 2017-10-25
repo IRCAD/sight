@@ -4,7 +4,6 @@
         <param name="WID_PARENT" />
         <param name="camera" />
         <param name="timeLine" />
-        <param name="videoGrabberImpl" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -96,7 +95,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="VideoGrabber" type="${videoGrabberImpl}">
+        <service uid="VideoGrabber" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${timeLine}" />
         </service>
@@ -130,6 +129,11 @@
         <connect>
             <signal>VideoGrabber/durationModified</signal>
             <slot>VideoSlider/setDurationSlider</slot>
+        </connect>
+
+        <connect>
+            <signal>CameraSelector/configuredCameras</signal>
+            <slot>VideoGrabber/reconfigure</slot>
         </connect>
 
         <start uid="cameraView" />

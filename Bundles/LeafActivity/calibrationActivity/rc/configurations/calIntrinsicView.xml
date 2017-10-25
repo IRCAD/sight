@@ -5,7 +5,6 @@
         <param name="camera" />
         <param name="calibrationInfo" />
         <param name="preferencesModifiedProxy" />
-        <param name="videoGrabberImpl" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -111,7 +110,6 @@
             <inout key="camera" uid="${camera}" />
             <inout key="timeLine" uid="FrameTL" />
             <parameter replace="WID_PARENT" uid="cameraView" />
-            <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
 
         <service uid="Status" type="::uiTools::editor::SStatus">
