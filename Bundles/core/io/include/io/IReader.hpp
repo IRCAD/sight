@@ -138,30 +138,48 @@ protected:
      *
      * Sample configuration for a file:
      * @code{.xml}
-       <service ... >
-        <file>/home/user/myFile.jpg</file>
-       </service>
-       @endcode
+     *  <service ... >
+     *      <file>/home/user/myFile.jpg</file>
+     *  </service>
+     * @endcode
      * Sample configuration for many files:
      * @code{.xml}
-       <service ... >
-        <file>/home/user/myFile01.jpg</file>
-        <file>/home/user/myFile02.jpg</file>
-        <file>/home/user/myFile03.jpg</file>
-       </service>
-       @endcode
+     *  <service ... >
+     *      <file>/home/user/myFile01.jpg</file>
+     *      <file>/home/user/myFile02.jpg</file>
+     *      <file>/home/user/myFile03.jpg</file>
+     *  </service>
+     * @endcode
      * Sample configuration for a folder:
      * @code{.xml}
-       <service ... >
-        <folder>/home/user/myFolder</folder>
-       </service>
-       @endcode
+     *  <service ... >
+     *      <folder>/home/user/myFolder</folder>
+     *  </service>
+     * @endcode
+     * Sample configuration for a resource (file stored in a bundle or a library):
+     * @code{.xml}
+     *  <service ... >
+     *      <resource>bundle-0.1/myFile.jpg</resource>
+     *  </service>
+     * Sample configuration for many resources (files stored in a bundle or a library):
+     * @code{.xml}
+     *  <service ... >
+     *      <resource>bundle-0.1/myFile01.jpg</resource>
+     *      <resource>bundle-0.1/myFile02.jpg</resource>
+     *      <resource>library-0.1/myFile03.jpg</resource>
+     *  </service>
+     * Sample configuration for a resource folder (bundle or library path):
+     * @code{.xml}
+     *  <service ... >
+     *      <resource>bundle</resource>
+     *  </service>
+     *
      * You may specify the title of the modal file selection window with the `windowTitle` config attribute as such:
      * @code{.xml}
-       <service ... >
-        <windowTitle>Example window title</windowTitle>
-       </service>
-       @endcode
+     *  <service ... >
+     *      <windowTitle>Example window title</windowTitle>
+     *  </service>
+     * @endcode
      */
     IO_API virtual void configuring() override;
 
