@@ -176,7 +176,7 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
 
     m_fragmentShaderAttachements.push_back("ColorFormats_FP");
 
-    this->createRayTracingMaterial();
+    this->createIDVRTechnique();
 }
 
 //-----------------------------------------------------------------------------
@@ -203,7 +203,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string method)
     SLM_ASSERT("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", isSupported);
     m_idvrMethod = method;
 
-    this->createRayTracingMaterial();
+    this->createMaterialAndIDVRTechnique();
 }
 
 //-----------------------------------------------------------------------------
@@ -356,7 +356,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 
     if(this->m_idvrMethod == s_MIMP)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -393,7 +393,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGBorder(bool border)
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -405,7 +405,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -445,7 +445,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -457,7 +457,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulation
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -482,7 +482,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDe
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -507,7 +507,7 @@ void ImportanceDrivenVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
-        this->createRayTracingMaterial();
+        this->createMaterialAndIDVRTechnique();
     }
 }
 
@@ -686,9 +686,8 @@ void ImportanceDrivenVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* _
 
 //-----------------------------------------------------------------------------
 
-void ImportanceDrivenVolumeRenderer::createRayTracingMaterial()
+void ImportanceDrivenVolumeRenderer::createIDVRTechnique()
 {
-    this->RayTracingVolumeRenderer::createRayTracingMaterial();
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
@@ -748,6 +747,14 @@ void ImportanceDrivenVolumeRenderer::createRayTracingMaterial()
     }
 
     this->initCompositors();
+}
+
+//-----------------------------------------------------------------------------
+
+void ImportanceDrivenVolumeRenderer::createMaterialAndIDVRTechnique()
+{
+    this->createRayTracingMaterial();
+    this->createIDVRTechnique();
 }
 
 //-----------------------------------------------------------------------------

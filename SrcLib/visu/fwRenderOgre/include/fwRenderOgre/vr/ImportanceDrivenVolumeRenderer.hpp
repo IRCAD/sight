@@ -112,10 +112,13 @@ protected:
     FWRENDEROGRE_API virtual void setRayCastingPassTextureUnits(::Ogre::Pass* _rayCastingPass,
                                                                 const std::string& _fpPPDefines) const override;
 
-    /// When using AutoStereo compositor, initialize the raytracing material.
-    FWRENDEROGRE_API virtual void createRayTracingMaterial() override;
-
 private:
+
+    /// Adds the IDVR technique to the volume ray tracing material.
+    void createIDVRTechnique();
+
+    /// Generates the material with the IDVR technique.
+    void createMaterialAndIDVRTechnique();
 
     /// Initializes the compositors used after the step computing the ray entry points
     void initCompositors();

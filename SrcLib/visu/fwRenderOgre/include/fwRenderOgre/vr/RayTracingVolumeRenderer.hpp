@@ -128,7 +128,7 @@ protected:
                                                                 const std::string& _fpPPDefines) const;
 
     /// When using AutoStereo compositor, initialize the raytracing material.
-    FWRENDEROGRE_API virtual void createRayTracingMaterial();
+    FWRENDEROGRE_API void createRayTracingMaterial();
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
