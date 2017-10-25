@@ -270,7 +270,9 @@ void VRWidget::initWidgets()
 
         sphereSceneNode->setPosition(faceCenter);
         sphereSceneNode->setInheritScale(false);
-        sphereSceneNode->setScale(0.0002f, 0.0002f, 0.0002f);
+
+        const ::Ogre::Vector3 volumeScale = m_volumeSceneNode->getScale();
+        sphereSceneNode->setScale(volumeScale * 0.2f);
 
         sphereSceneNode->attachObject(newWidget);
     }
