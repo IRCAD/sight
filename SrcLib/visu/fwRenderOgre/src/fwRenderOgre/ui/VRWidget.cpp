@@ -493,8 +493,8 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 
 void VRWidget::scaleClippingBox(int x, int y, int dy)
 {
-    int width  = m_camera->getViewport()->getActualWidth();
-    int height = m_camera->getViewport()->getActualHeight();
+    const int width  = m_camera->getViewport()->getActualWidth();
+    const int height = m_camera->getViewport()->getActualHeight();
 
     ::Ogre::Vector2 cursor(
         static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
@@ -529,21 +529,22 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
         }
     }
 
-    const float speed = m_volumeSceneNode->getScale().z / static_cast<float>(height) * 10.f;
+    const auto scale  = m_volumeSceneNode->getScale();
+    const float speed = scale.z / scale.length() / static_cast<float>(height);
 
     if(m_selectionMode == CAMERA)
     {
         const float dz = static_cast<float>(dy) * speed;
 
-        ::Ogre::Vector3 transVec(0.f, 0.f, dz);
+        const ::Ogre::Vector3 transVec(0.f, 0.f, dz);
 
         m_camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
     }
     else if(m_selectionMode == BOX)
     {
-        const float scale = 1.0f + static_cast<float>(dy) * speed;
+        const float scale = 1.0f + static_cast<float>(dy) * speed * 10;
 
-        ::Ogre::Vector3 ccCenter = (m_clippingCube[1] + m_clippingCube[0]) / 2.f;
+        const ::Ogre::Vector3 ccCenter = (m_clippingCube[1] + m_clippingCube[0]) / 2.f;
 
         // Scale clipping cube along it's center.
         ::Ogre::Vector3 cc[2] = {
