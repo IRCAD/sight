@@ -1,8 +1,0 @@
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::@SUPERCLASS_NAMESPACE@::@SERVICE_SUBDIRECTORY_CPP@@SUPERCLASS@</type>
-        <service>::@BUNDLE_NAME@::@SERVICE_NAME@</service>
-        <object>::@OBJECT_NAMESPACE@::@OBJECT@</object>
-        <desc>service description</desc>
-    </extension>
-
-</plugin>
