@@ -38,7 +38,7 @@ void DicomSRCodeNode::write(::gdcm::DataSet& dataset) const
 
     // Concept Code Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-        this->createConceptNameCodeSequence(dataset, m_codedEntry);
+        this->createConceptNameCodeSequence(m_codedEntry);
     ::fwGdcmIO::helper::DicomDataWriter::setAndMergeSequenceTagValue< 0x0040, 0xa168 >(codeSequence, dataset);
 }
 

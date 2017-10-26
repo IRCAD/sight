@@ -55,7 +55,7 @@ public:
      */
     FWGDCMIO_API static void retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
                                                  std::vector< SPTR(::fwMedData::DicomSeries) >& seriesDB,
-                                                 const SPTR(::fwLog::Logger)logger,
+                                                 const SPTR(::fwLog::Logger)& logger,
                                                  std::function< void(std::uint64_t) > progress = nullptr,
                                                  std::function< bool() > cancel = nullptr);
 

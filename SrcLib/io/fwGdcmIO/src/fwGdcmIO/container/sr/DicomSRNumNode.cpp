@@ -57,7 +57,7 @@ void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet& dataset) const
 
     // Add measured units code sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-        this->createConceptNameCodeSequence(itemDataset, m_measurementUnits);
+        this->createConceptNameCodeSequence(m_measurementUnits);
     ::fwGdcmIO::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(codeSequence, itemDataset);
 
     sequence->AddItem(item);

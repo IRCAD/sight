@@ -56,7 +56,7 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
     if(!m_codedAttribute.getCodeValue().empty() && !m_codedAttribute.getCodingSchemeDesignator().empty())
     {
         ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-            this->createConceptNameCodeSequence(dataset, m_codedAttribute);
+            this->createConceptNameCodeSequence(m_codedAttribute);
         ::fwGdcmIO::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0xa043>(codeSequence, dataset);
 
     }
@@ -71,7 +71,7 @@ void DicomSRNode::write(::gdcm::DataSet& dataset) const
 //------------------------------------------------------------------------------
 
 ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > DicomSRNode::createConceptNameCodeSequence(
-    ::gdcm::DataSet& dataset, const DicomCodedAttribute& codedAttribute) const
+    const DicomCodedAttribute& codedAttribute) const
 {
     // Write code sequence
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence = new ::gdcm::SequenceOfItems();

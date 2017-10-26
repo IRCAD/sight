@@ -201,7 +201,7 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
 
 void DicomDir::retrieveDicomSeries(const ::boost::filesystem::path& dicomdir,
                                    std::vector< SPTR(::fwMedData::DicomSeries) >& seriesDB,
-                                   const ::fwLog::Logger::sptr logger,
+                                   const ::fwLog::Logger::sptr& logger,
                                    std::function< void(std::uint64_t) > progress,
                                    std::function< bool() > cancel)
 {

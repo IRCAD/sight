@@ -115,7 +115,7 @@ protected:
      * @param[in] codedAttribute Coded attribute to write
      */
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createConceptNameCodeSequence(
-        ::gdcm::DataSet& dataset, const DicomCodedAttribute& codedAttribute) const;
+        const DicomCodedAttribute& codedAttribute) const;
 
     /**
      * @brief Write a content sequence
