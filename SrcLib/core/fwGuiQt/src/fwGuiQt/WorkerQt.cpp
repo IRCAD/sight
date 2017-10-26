@@ -185,6 +185,16 @@ void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
 {
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
+#ifdef WIN32
+    QDir pluginDir("./bin/qt5/plugins");
+#else
+    QDir pluginDir("./lib/qt5/plugins");
+#endif
+    if (pluginDir.exists())
+    {
+        QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
+    }
+
     m_argc = argc;
     m_app  = QSharedPointer< QApplication > ( new ::fwGuiQt::App( m_argc, argv, guiEnabled ) );
 
