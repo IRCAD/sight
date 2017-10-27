@@ -27,7 +27,7 @@ void FileWriter::write(const ::boost::filesystem::path& filename,
     metaInformation.SetDataSetTransferSyntax(::gdcm::TransferSyntax::ExplicitVRLittleEndian);
 
     // Initialize the file
-    writer->SetFileName(filename.c_str()); // NOTE: Must be called when file is ready to be written
+    writer->SetFileName(filename.string().c_str()); // NOTE: Must be called when file is ready to be written
 
     // Write data
     if (!writer->Write())

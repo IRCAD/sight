@@ -57,7 +57,7 @@ const ::gdcm::PhotometricInterpretation
 DicomDataTools::getPhotometricInterpretation(const ::fwData::Image::csptr& image)
 {
     ::gdcm::PhotometricInterpretation pi;
-    size_t components = image->getNumberOfComponents();
+    const size_t components = image->getNumberOfComponents();
 
     // Attempt a guess (VTK do the same choice)
     switch (components)
@@ -131,16 +131,16 @@ std::size_t DicomDataTools::convertPointToFrameNumber(const ::fwData::Image::csp
 throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
-    double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
-    double zCoordinate = static_cast<double>(point->getCoord()[2]);
+    const double zCoordinate = static_cast<double>(point->getCoord()[2]);
 
     // Compute frame number
-    std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
+    const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
                           frameNumber < 1 || frameNumber > image->getSize()[2]);
 
@@ -150,20 +150,20 @@ throw(::fwGdcmIO::exception::Failed)
 //------------------------------------------------------------------------------
 
 double DicomDataTools::convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image,
-                                                       std::size_t frameNumber)
+                                                       const std::size_t frameNumber)
 throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve Z spacing
-    double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
+    const double zSpacing = (image->getNumberOfDimensions() > 2) ? (image->getSpacing()[2]) : 1;
 
     // Retrieve Z coordinate of image origin
-    double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
+    const double zOrigin = (image->getNumberOfDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Compute coordinate
-    std::size_t frameIndex = (frameNumber-1);
+    const std::size_t frameIndex = (frameNumber-1);
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Coordinates out of image bounds."),
                           frameIndex >= image->getSize()[2]);
-    double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
+    const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 
     return zCoordinate;
 }

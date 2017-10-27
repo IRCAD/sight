@@ -116,7 +116,7 @@ public:
         m_studyInstanceUID = studyInstanceUID;
     }
 
-/// Get Study Instance UID
+    /// Get Study Instance UID
     const std::string& getFrameOfReferenceUID() const
     {
         return m_frameOfReferenceUID;

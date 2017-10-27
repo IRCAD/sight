@@ -29,7 +29,7 @@ public:
     FWGDCMIO_API InvalidTag(const std::string& message);
 
     /// Destructor
-    FWGDCMIO_API virtual ~InvalidTag() throw ();
+    FWGDCMIO_API virtual ~InvalidTag() noexcept;
 
 };
 

@@ -120,40 +120,43 @@ void SSurfaceSegmentationWriter::updating()
 
         if(vector->getContainer().size() > 2)
         {
-            SLM_FATAL("Writing with more than one DICOM Series is not supported as of now.");
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning", "Writing with more than one DICOM Series is not supported as of now.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
+            return;
         }
 
         ::fwMedData::DicomSeries::sptr dicom = nullptr;
         ::fwMedData::ModelSeries::sptr model = nullptr;
 
         /* Look for a DicomSeries and a ModelSeries in the input vector */
-        for(size_t i = 0; i < vector->getContainer().size(); i++)
+        for(const auto& data : vector->getContainer())
         {
-            if(!dicom && vector->getContainer().at(i)->getClassname() == "::fwMedData::DicomSeries")
+            if(!dicom && data->getClassname() == "::fwMedData::DicomSeries")
             {
-                dicom = ::fwMedData::DicomSeries::dynamicCast(vector->getContainer().at(i));
+                dicom = ::fwMedData::DicomSeries::dynamicCast(data);
             }
 
-            if(!model && vector->getContainer().at(i)->getClassname() == "::fwMedData::ModelSeries")
+            if(!model && data->getClassname() == "::fwMedData::ModelSeries")
             {
-                model = ::fwMedData::ModelSeries::dynamicCast(vector->getContainer().at(i));
+                model = ::fwMedData::ModelSeries::dynamicCast(data);
             }
         }
 
         if(!model || !dicom)
         {
-            SLM_ERROR("Input data must be DicomSeries and ModelSeries");
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning", "Input data must be DicomSeries and ModelSeries.", ::fwGui::dialog::IMessageDialog::WARNING);
             return;
         }
 
         /* Build up the filename */
-        std::ostringstream oss;
-        oss << this->getFolder().string() << "/imSeg";
+        ::boost::filesystem::path outputPath = this->getFolder() / "imSeg";
 
         /* Write the data */
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveSurfaceSegmentation( oss.str(), dicom, model );
+        saveSurfaceSegmentation( outputPath, dicom, model );
         cursor.setDefaultCursor();
     }
 }
@@ -161,8 +164,8 @@ void SSurfaceSegmentationWriter::updating()
 //------------------------------------------------------------------------------
 
 void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesystem::path filename,
-                                                          ::fwMedData::DicomSeries::sptr dicom,
-                                                          ::fwMedData::ModelSeries::sptr model)
+                                                          const ::fwMedData::DicomSeries::sptr& dicom,
+                                                          const ::fwMedData::ModelSeries::sptr& model)
 {
     ::fwGdcmIO::writer::SurfaceSegmentation::sptr writer = ::fwGdcmIO::writer::SurfaceSegmentation::New();
     writer->setObject(model);

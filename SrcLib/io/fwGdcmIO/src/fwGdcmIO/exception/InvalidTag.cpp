@@ -20,7 +20,7 @@ InvalidTag::InvalidTag(const std::string& message) :
 
 //----------------------------------------------------------------------------
 
-InvalidTag::~InvalidTag() throw()
+InvalidTag::~InvalidTag() noexcept
 {
 }
 

@@ -200,7 +200,7 @@ throw(::fwCore::Exception, ::boost::locale::conv::invalid_charset_error)
         std::vector<std::string> sequenceList;
         ::boost::split(sequenceList, source, ::boost::is_any_of("\033"));
 
-        std::string result = "";
+        std::string result;
 
         // Add the first part
         if(source[0] != '\033')
@@ -229,7 +229,7 @@ std::string Encoding::convertStringWithoutCodeExtensions(const std::string& sour
                                                          const std::string& definedTerm,
                                                          const ::fwLog::Logger::sptr& logger)
 {
-    std::string charset = "";
+    std::string charset;
 
     if (definedTerm.empty())                    // assuming ASCII (according to DICOM PS 3.5)
     {

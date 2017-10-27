@@ -45,7 +45,7 @@ public:
     FWGDCMIO_API virtual ~SpatialFiducialsIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series);
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series) override;
 
 };
 

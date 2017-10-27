@@ -87,26 +87,26 @@ double getInstanceZPosition(const ::boost::filesystem::path& path)
     // Retrieve image position
     const ::gdcm::Image& gdcmImage = reader->GetImage();
     const double* gdcmOrigin       = gdcmImage.GetOrigin();
-    fwVec3d imagePosition          = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
+    const fwVec3d imagePosition    = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
 
     // Retrieve image orientation
-    const double* directionCosines = gdcmImage.GetDirectionCosines();
-    fwVec3d imageOrientationU      = {{
-                                          std::round(directionCosines[0]),
-                                          std::round(directionCosines[1]),
-                                          std::round(directionCosines[2])
-                                      }};
-    fwVec3d imageOrientationV = {{
-                                     std::round(directionCosines[3]),
-                                     std::round(directionCosines[4]),
-                                     std::round(directionCosines[5])
-                                 }};
+    const double* directionCosines  = gdcmImage.GetDirectionCosines();
+    const fwVec3d imageOrientationU = {{
+                                           std::round(directionCosines[0]),
+                                           std::round(directionCosines[1]),
+                                           std::round(directionCosines[2])
+                                       }};
+    const fwVec3d imageOrientationV = {{
+                                           std::round(directionCosines[3]),
+                                           std::round(directionCosines[4]),
+                                           std::round(directionCosines[5])
+                                       }};
 
     //Compute Z direction (cross product)
-    fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
 
     //Compute dot product to get the index
-    double index = ::fwMath::dot(imagePosition, zVector);
+    const double index = ::fwMath::dot(imagePosition, zVector);
 
     return index;
 }

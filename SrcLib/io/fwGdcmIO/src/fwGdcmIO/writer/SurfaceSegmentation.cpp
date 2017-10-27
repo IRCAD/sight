@@ -49,7 +49,7 @@ SurfaceSegmentation::~SurfaceSegmentation()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentation::write() throw (::fwGdcmIO::exception::Failed)
+void SurfaceSegmentation::write()
 {
 
     const ::fwMedData::ModelSeries::csptr srcModelSeries = this->getConcreteObject();

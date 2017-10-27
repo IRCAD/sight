@@ -47,7 +47,7 @@ public:
     FWGDCMIO_API virtual ~SurfaceSegmentationIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series);
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series) override;
 
 protected:
     /// Image instance

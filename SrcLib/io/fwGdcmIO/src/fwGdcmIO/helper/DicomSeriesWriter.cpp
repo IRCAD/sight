@@ -179,7 +179,7 @@ void DicomSeriesWriter::processWrite()
     // Write binary files
     if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
     {
-        for(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value : dicomSeries->getDicomBinaries())
+        for(const auto& value : dicomSeries->getDicomBinaries())
         {
             if(m_job->cancelRequested())
             {

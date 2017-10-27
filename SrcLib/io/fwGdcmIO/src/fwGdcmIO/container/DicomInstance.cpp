@@ -165,9 +165,9 @@ void DicomInstance::generateSOPInstanceUIDs(const ::fwMedData::Series::csptr& se
 void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr& dicomSeries)
 {
     ::gdcm::Scanner scanner;
-    ::gdcm::Tag SOPInstanceUIDTag = ::gdcm::Tag(0x0008, 0x0018);    // SOP Instance UID
+    const ::gdcm::Tag SOPInstanceUIDTag = ::gdcm::Tag(0x0008, 0x0018);    // SOP Instance UID
     scanner.AddTag(SOPInstanceUIDTag);
-    ::gdcm::Tag frameOfReferenceUIDTag = ::gdcm::Tag(0x0020, 0x0052);    // Frame of Reference UID
+    const ::gdcm::Tag frameOfReferenceUIDTag = ::gdcm::Tag(0x0020, 0x0052);    // Frame of Reference UID
     scanner.AddTag(frameOfReferenceUIDTag);
 
     std::vector< std::string > filenames;
@@ -182,10 +182,8 @@ void DicomInstance::readUIDFromDicomSeries(const ::fwMedData::DicomSeries::csptr
 
     const ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
     ::gdcm::Directory::FilenamesType::const_iterator it;
-    for(it = keys.begin(); it != keys.end(); ++it)
+    for(const std::string& filename : keys)
     {
-        const std::string filename = *it;
-
         // SOP Instance UID
         const std::string SOPInstanceUID = scanner.GetValue( filename.c_str(), SOPInstanceUIDTag );
         m_SOPInstanceUIDContainer.push_back(SOPInstanceUID);

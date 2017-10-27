@@ -124,40 +124,6 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::fwGd
     // And Surface Mesh Module - PS 3.3 C.27.1
     surfaceIE.readSurfaceSegmentationAndSurfaceMeshModules();
 
-#if 0
-// Skipped segmentation count
-    unsigned int skippedSegmentationCount = 0;
-
-    // Read each surface segmentation
-    const ::gdcm::SegmentReader::SegmentVector& segmentContainer = reader->GetSegments();
-    for(::gdcm::SmartPointer< ::gdcm::Segment > segment: segmentContainer)
-    {
-        try
-        {
-            // Read Surface Segmentation & Surface Mesh Module - PS 3.3 C.8.23.1 & C.27.1
-            surfaceIE.readSurfaceSegmentationModule(segment);
-        }
-        catch (::fwGdcmIO::exception::Failed& e)
-        {
-            ++skippedSegmentationCount;
-            m_logger->warning("Surface mesh reading error : " + std::string(e.what()));
-        }
-    }
-
-    if (skippedSegmentationCount == modelSeries->getReconstructionDB().size())
-    {
-        m_logger->critical("All 3D reconstructions have been rejected.");
-    }
-    else if (skippedSegmentationCount > 0)
-    {
-        std::stringstream ss;
-        ss << skippedSegmentationCount << " 3D reconstruction(s) have been rejected.";
-        m_logger->critical(ss.str());
-    }
-
-    OSLM_TRACE("Number of reconstructions : " << modelSeries->getReconstructionDB().size());
-#endif
-
     // Display reconstructions
     series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
 

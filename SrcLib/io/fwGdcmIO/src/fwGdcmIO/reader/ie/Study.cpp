@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/Study.hpp"
+
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Study.hpp>
@@ -26,7 +27,8 @@ Study::Study(const ::fwMedData::DicomSeries::sptr& dicomSeries,
              const ::fwLog::Logger::sptr& logger,
              ProgressCallback progress,
              CancelRequestedCallback cancel) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Study >(dicomSeries, reader, instance, study, logger, progress, cancel)
+    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Study >(dicomSeries, reader, instance, study, logger,
+                                                                    progress, cancel)
 {
 }
 
@@ -41,7 +43,7 @@ Study::~Study()
 void Study::readGeneralStudyModule()
 {
     // Retrieve dataset
-    ::gdcm::DataSet &dataset = m_reader->GetFile().GetDataSet();
+    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Study's date - Type 2
     const std::string& studyDate = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0020 >(dataset);
@@ -61,7 +63,7 @@ void Study::readGeneralStudyModule()
 
     // Study's UID - Type 1
     const std::string& instanceUID =
-::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000d >(dataset);
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000d >(dataset);
     m_object->setInstanceUID(instanceUID);
 
     // Study's ID - Type 2
@@ -69,7 +71,7 @@ void Study::readGeneralStudyModule()
 
     // Study's referring physician name
     const std::string& referringPhysicianName =
-::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0090 >(dataset);
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0090 >(dataset);
     m_object->setReferringPhysicianName(referringPhysicianName);
 }
 
@@ -82,7 +84,7 @@ void Study::readPatientStudyModule()
 
     // PatientAge - Type 3
     const std::string& patientAge =
-::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0010, 0x1010 >(dataset);
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0010, 0x1010 >(dataset);
     m_object->setPatientAge(patientAge);
 }
 

@@ -340,13 +340,6 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
     seriesReader->setBufferRotationEnabled(m_enableBufferRotation);
     seriesReader->setLogger(m_logger);
 
-    // needed for seriesReader
-    /*
-       seriesReader->addCallback([&](std::uint64_t progress)
-            {
-            });
-     */
-
     m_converterJob->setTotalWorkUnits(m_dicomSeriesContainer.size());
 
     // Compute total work units
@@ -426,13 +419,13 @@ void SeriesDB::convertDicomSeries(const ::fwServices::IService::sptr& notifier)
 bool SeriesDB::dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
                                      const SPTR(::fwMedData::DicomSeries)& b)
 {
-    ::fwMedData::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
-    std::string aSOPClassUID = *(aSOPClassUIDContainer.begin());
-    ::fwMedData::DicomSeries::SOPClassUIDContainerType bSOPClassUIDContainer = b->getSOPClassUIDs();
-    std::string bSOPClassUID = *(bSOPClassUIDContainer.begin());
+    const ::fwMedData::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
+    const std::string aSOPClassUID                                                 = *(aSOPClassUIDContainer.begin());
+    const ::fwMedData::DicomSeries::SOPClassUIDContainerType bSOPClassUIDContainer = b->getSOPClassUIDs();
+    const std::string bSOPClassUID                                                 = *(bSOPClassUIDContainer.begin());
 
     // a > b if a contains a SR and not b
-    bool aIsAnImage =
+    const bool aIsAnImage =
         (::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
          aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by
@@ -441,7 +434,7 @@ bool SeriesDB::dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
          ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage);
 
-    bool bIsAnImage =
+    const bool bIsAnImage =
         (::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
          ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
          bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" || // FIXME Replace hard coded string by

@@ -57,10 +57,10 @@ public:
     FWGDCMIO_API ~SurfaceSegmentation();
 
     /// Load and start appropriate writing tools.
-    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed);
+    FWGDCMIO_API void write() override;
 
     /// Does nothing
-    FWGDCMIO_API std::string extension();
+    FWGDCMIO_API std::string extension() override;
 
     /**
      * @brief Set associated DICOM series (Associated image instances)
@@ -72,7 +72,7 @@ public:
     FWGDCMIO_API SPTR(::fwLog::Logger) getLogger() const;
 
     /// Getter for writer's job
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 

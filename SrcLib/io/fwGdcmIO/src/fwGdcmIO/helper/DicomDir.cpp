@@ -121,7 +121,7 @@ void processDirInformation(const ::boost::filesystem::path& dicomdir,
                 ::gdcm::Item& item = sequence->GetItem(index);
 
                 // Directory Record Type
-                const std::string& recordType =
+                const std::string recordType =
                     ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0004, 0x1430 >(item.GetNestedDataSet());
 
                 // Check Referenced File ID

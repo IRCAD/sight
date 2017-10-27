@@ -209,7 +209,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     seriesScanner.AddTag(s_SOPClassUIDTag);
     seriesScanner.AddTag(s_MediaStorageSOPClassUID);
 
-    //readerObserver->setTotalWorkUnits(filenames.size());
+    readerObserver->setTotalWorkUnits(filenames.size());
     readerObserver->doneWork(0);
 
     std::vector< std::string > fileVec;
@@ -252,7 +252,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
             break;
         }
 
-        readerObserver->doneWork(static_cast<unsigned int>(++progress * 100 / keys.size()));
+        readerObserver->doneWork(static_cast< std::uint64_t >(++progress * 100 / keys.size()));
     }
 
     return seriesDB;
@@ -282,14 +282,14 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
     attributeScanner.AddTag(s_InstitutionNameTag);
     attributeScanner.AddTag(s_SeriesInstanceUIDTag);
 
-    unsigned int progress = 0;
+    std::uint64_t progress = 0;
 
     // Fill series
     for(::fwMedData::DicomSeries::sptr series : seriesDB)
     {
         // Compute number of instances
-        auto size = series->getLocalDicomPaths().size();
-        series->setNumberOfInstances(static_cast< unsigned int >(size));
+        size_t size = series->getLocalDicomPaths().size();
+        series->setNumberOfInstances(size);
 
         if(!size)
         {

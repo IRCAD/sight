@@ -34,8 +34,8 @@ namespace helper
 
     try
     {
-        unsigned long groupL   = std::stoul(group, nullptr, 16);
-        unsigned long elementL = std::stoul(element, nullptr, 16);
+        const unsigned long groupL   = std::stoul(group, nullptr, 16);
+        const unsigned long elementL = std::stoul(element, nullptr, 16);
 
         groupDest   = ::boost::numeric_cast< DestType >(groupL);
         elementDest = ::boost::numeric_cast< DestType >(elementL);

@@ -98,9 +98,9 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
                         {
                             const ::fwData::Point::sptr point1 = *pointList->getCRefPoints().begin();
                             const ::fwData::Point::sptr point2 = *(++pointList->getCRefPoints().begin());
-                            const int frameNumber1             =
+                            const size_t frameNumber1          =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
-                            const int frameNumber2 =
+                            const size_t frameNumber2 =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point2);
                             if(frameNumber1 != frameNumber2)
                             {

@@ -327,32 +327,32 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     }
 
     // Shift dates
-    for(auto dateTag : m_actionShiftDateTags)
+    for(const auto& dateTag : m_actionShiftDateTags)
     {
         this->applyActionShiftDate(dateTag);
     }
 
-    for(auto tag : m_actionCodeDTags)
+    for(const auto& tag : m_actionCodeDTags)
     {
         this->applyActionCodeD(tag);
     }
-    for(auto tag : m_actionCodeZTags)
+    for(const auto& tag : m_actionCodeZTags)
     {
         this->applyActionCodeZ(tag);
     }
-    for(auto tag : m_actionCodeXTags)
+    for(const auto& tag : m_actionCodeXTags)
     {
         this->applyActionCodeX(tag);
     }
-    for(auto tag : m_actionCodeKTags)
+    for(const auto& tag : m_actionCodeKTags)
     {
         this->applyActionCodeK(tag);
     }
-    for(auto tag : m_actionCodeCTags)
+    for(const auto& tag : m_actionCodeCTags)
     {
         this->applyActionCodeC(tag);
     }
-    for(auto tag : m_actionCodeUTags)
+    for(const auto& tag : m_actionCodeUTags)
     {
         this->applyActionCodeU(tag);
     }
@@ -528,9 +528,9 @@ void DicomAnonymizer::applyActionShiftDate(const ::gdcm::Tag& tag)
     auto shift = date - m_referenceDate;
 
     //Minimum date
-    ::boost::gregorian::date min_date = ::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING);
+    const ::boost::gregorian::date min_date = ::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING);
 
-    auto shiftedDate = min_date + shift;
+    const auto shiftedDate = min_date + shift;
 
     m_anonymizer.Replace(tag, ::boost::gregorian::to_iso_string(shiftedDate).c_str());
 }

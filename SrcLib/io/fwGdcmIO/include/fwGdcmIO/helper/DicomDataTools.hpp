@@ -80,7 +80,7 @@ public:
      * @param[in] frameNumber Frame number
      */
     FWGDCMIO_API static double convertFrameNumberToZCoordinate(const ::fwData::Image::csptr& image,
-                                                               std::size_t frameNumber)
+                                                               const std::size_t frameNumber)
     throw(::fwGdcmIO::exception::Failed);
 
 };

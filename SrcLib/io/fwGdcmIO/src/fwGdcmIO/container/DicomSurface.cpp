@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwDataTools/Mesh.hpp>
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 namespace fwGdcmIO
 {
@@ -21,10 +21,12 @@ namespace container
 struct CellDataOffsetGenerator
 {
     ::fwData::Mesh::CellDataOffsetType current;
-    CellDataOffsetGenerator()
+    CellDataOffsetGenerator() :
+        current(0)
     {
-        current = 0;
     }
+
+    //------------------------------------------------------------------------------
 
     ::fwData::Mesh::CellDataOffsetType operator()()
     {
@@ -40,7 +42,7 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
     // Get mesh
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Can't save this mesh. It must contain only triangles !"),
-            !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     // Coordinates
     {
@@ -83,7 +85,7 @@ DicomSurface::DicomSurface(const ::fwData::Reconstruction::csptr& reconstruction
 
 DicomSurface::DicomSurface(const ::fwData::Mesh::PointValueType* pointBuffer,
                            const ::fwData::Mesh::Id pointBufferSize,
-                           const DicomCellValueType *cellBuffer,
+                           const DicomCellValueType* cellBuffer,
                            const ::fwData::Mesh::Id cellBufferSize,
                            const ::fwData::Mesh::NormalValueType* normalBuffer)
 {
@@ -160,7 +162,6 @@ DicomSurface::~DicomSurface()
               cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
               static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
 
-
     // Cell data offset
     ::fwDataTools::helper::Array cellDataOffsetsHelper(mesh->getCellDataOffsetsArray());
     CellDataOffsetGenerator cellDataOffsetGenerator;
@@ -174,21 +175,21 @@ DicomSurface::~DicomSurface()
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::DicomPointBufferType &DicomSurface::getPointBuffer() const
+const DicomSurface::DicomPointBufferType& DicomSurface::getPointBuffer() const
 {
     return m_pointBuffer;
 }
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::DicomCellBufferType &DicomSurface::getCellBuffer() const
+const DicomSurface::DicomCellBufferType& DicomSurface::getCellBuffer() const
 {
     return m_cellBuffer;
 }
 
 //------------------------------------------------------------------------------
 
-const DicomSurface::DicomNormalBufferType &DicomSurface::getNormalBuffer() const
+const DicomSurface::DicomNormalBufferType& DicomSurface::getNormalBuffer() const
 {
     return m_normalBuffer;
 }

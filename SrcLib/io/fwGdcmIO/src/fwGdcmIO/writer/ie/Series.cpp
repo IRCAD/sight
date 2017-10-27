@@ -62,7 +62,7 @@ void Series::writeGeneralSeriesModule()
 
     ::boost::posix_time::ptime ptime = ::boost::posix_time::second_clock::local_time();
 
-    std::string fulldate = ::boost::posix_time::to_iso_string(ptime);
+    const std::string fulldate = ::boost::posix_time::to_iso_string(ptime);
 
     // Split iso time in YYYYMMDDTHHMMSS
     ::boost::char_separator<char> sep("T");
@@ -86,7 +86,6 @@ void Series::writeGeneralSeriesModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
 
     // Performing physicians name - Type 3
-#if 0
     ::fwMedData::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
     if (!performingPhysicians.empty())
     {
@@ -99,7 +98,6 @@ void Series::writeGeneralSeriesModule()
         ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< >, 0x0008, 0x1050 >(physicians, count,
                                                                                                dataset);
     }
-#endif
 
     // Laterality - Type 2C - FIXME: Fake Value - Should be absent for the abdomen or chest
     if(m_instance->getSOPClassUID() !=
