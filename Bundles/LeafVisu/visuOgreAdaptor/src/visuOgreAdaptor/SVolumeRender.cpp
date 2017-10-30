@@ -428,7 +428,7 @@ void SVolumeRender::swapping(const KeyType& key)
 
 void SVolumeRender::newImage()
 {
-    FW_PROFILE_AVG("SVolumeRender::newImage()",10)
+    FW_PROFILE_AVG("SVolumeRender::newImage()", 10)
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
