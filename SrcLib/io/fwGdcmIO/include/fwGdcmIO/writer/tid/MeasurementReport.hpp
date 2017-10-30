@@ -33,9 +33,9 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      */
-    FWGDCMIO_API MeasurementReport(SPTR(::gdcm::Writer)writer,
-                                   SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                   ::fwData::Image::sptr image);
+    FWGDCMIO_API MeasurementReport(const SPTR(::gdcm::Writer)& writer,
+                                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                   const ::fwData::Image::sptr& image);
 
     /// Destructor
     FWGDCMIO_API virtual ~MeasurementReport();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,10 +11,9 @@
 
 #include <fwCore/macros.hpp>
 
-#include <gdcmMediaStorage.h>
+#include <fwLog/Logger.hpp>
 
-#include <string>
-#include <vector>
+#include <gdcmMediaStorage.h>
 
 namespace fwMedData
 {
@@ -39,6 +38,7 @@ class FWGDCMIO_CLASS_API DicomInstance
 {
 public:
 
+    /// SOP Instance Container Type
     typedef std::vector< std::string > SOPInstanceUIDContainerType;
 
     /// Constructor
@@ -48,14 +48,19 @@ public:
      * @brief Constructor
      * @param[in] series Series from which the instance is created
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
+     * @param[in] logger Logger
      */
-    FWGDCMIO_API DicomInstance(SPTR(::fwMedData::Series)series, bool isMultiFiles);
+    FWGDCMIO_API DicomInstance(const SPTR(::fwMedData::Series)& series,
+                               const SPTR(::fwLog::Logger)& logger = nullptr,
+                               bool isMultiFiles = true);
 
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries from which the instance is created
+     * @param[in] logger Logger
      */
-    FWGDCMIO_API DicomInstance(SPTR(::fwMedData::DicomSeries)dicomSeries);
+    FWGDCMIO_API DicomInstance(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                               const SPTR(::fwLog::Logger)& logger = nullptr);
 
     /// Copy constructor
     FWGDCMIO_API DicomInstance(const DicomInstance& dicomInstance);
@@ -111,6 +116,18 @@ public:
         m_studyInstanceUID = studyInstanceUID;
     }
 
+    /// Get Study Instance UID
+    const std::string& getFrameOfReferenceUID() const
+    {
+        return m_frameOfReferenceUID;
+    }
+
+    /// Set Study Instance UID
+    void setFrameOfReferenceUID(const std::string& frameOfReferenceUID)
+    {
+        m_frameOfReferenceUID = frameOfReferenceUID;
+    }
+
     /// Get SOP Instance UID container
     const SOPInstanceUIDContainerType& getSOPInstanceUIDContainer() const
     {
@@ -134,13 +151,19 @@ protected:
      * @brief Compute SOPClassUID
      * @param[in] series Series
      */
-    void computeSOPClassUID(SPTR(::fwMedData::Series) series);
+    void computeSOPClassUID(const CSPTR(::fwMedData::Series)& series);
 
     /**
      * @brief Generate SOPInstanceUIDs according to series type and dimension
      * @param[in] series Series
      */
-    void generateSOPInstanceUIDs(SPTR(::fwMedData::Series) series);
+    void generateSOPInstanceUIDs(const CSPTR(::fwMedData::Series)& series);
+
+    /**
+     * @brief Extract 'SOP Instance UIDs' and 'Frame of Reference UID' from a DICOM series
+     * @param[in] dicomSeries DICOM Series from which the UIDs are extracted
+     */
+    void readUIDFromDicomSeries(const CSPTR(::fwMedData::DicomSeries)& dicomSeries);
 
 private:
 
@@ -156,13 +179,17 @@ private:
     /// Series Instance UID
     std::string m_seriesInstanceUID;
 
+    /// Frame Of Reference UID
+    std::string m_frameOfReferenceUID;
+
     /// SOP Instance UID container
     SOPInstanceUIDContainerType m_SOPInstanceUIDContainer;
 
+    /// Logger
+    SPTR(::fwLog::Logger) m_logger;
 };
 
-}
-//namespace container
-}//namespace fwGdcmIO
+} //namespace container
+} //namespace fwGdcmIO
 
 #endif /* __FWGDCMIO_CONTAINER_DICOMINSTANCE_HPP__ */

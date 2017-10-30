@@ -8,9 +8,11 @@
 #define __FWGDCMIO_HELPER_DICOMANONYMIZER_HPP__
 
 #include "fwGdcmIO/config.hpp"
+#include "fwGdcmIO/helper/tags.hpp"
 
 #include <fwZip/WriteZipArchive.hpp>
 
+#include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <gdcmAnonymizer.h>
@@ -34,8 +36,8 @@ namespace helper
 {
 
 /**
- * @brief   This class contains helpers to anonymize dicom files on filesystem.
- *          Anonymization is performed according to the DICOM standard - Part 15 - Annex E - Basic Profile
+ * @brief This class contains helpers to anonymize dicom files on filesystem.
+ *        Anonymization is performed according to the DICOM standard - Part 15 - Annex E - Basic Profile
  */
 class FWGDCMIO_CLASS_API DicomAnonymizer
 {
@@ -68,7 +70,8 @@ public:
      * @param input Input file
      * @param output Output file
      */
-    FWGDCMIO_API static void copyDirectory(::boost::filesystem::path input, ::boost::filesystem::path output);
+    FWGDCMIO_API static void copyDirectory(const ::boost::filesystem::path& input,
+                                           const ::boost::filesystem::path& output);
 
     /// Get job observer
     FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
@@ -79,50 +82,89 @@ public:
     /// Reset file index to 0
     FWGDCMIO_API void resetIndex();
 
-    /// The removed tag will not be process by anonimization tag
+    /// The removed tag will not be process by anonymization tag
     FWGDCMIO_API void removeAnonymizeTag(const ::gdcm::Tag& tag);
+
+    /// Set Reference date for shifting
+    FWGDCMIO_API void setReferenceDate(const ::boost::gregorian::date& referenceDate);
+
+    /**
+     * @brief Add a date tag that must be shifted.
+     * The shift is made according to the interval between the date and the reference date.
+     * @param dateTag Date tag that must be shifted. (This tag shall be a date: VR shall be DA)
+     *
+     * @note The shift is done from Jan 1, 1900.
+     */
+    FWGDCMIO_API void addShiftDateTag(const ::gdcm::Tag& tag);
+
+    /**
+     * @brief Tells the anonymizer to do not anonymize the given private tag.
+     *
+     * @param tag private tag to be preserved from anonymisation
+     */
+    FWGDCMIO_API void preservePrivateTag(const ::gdcm::Tag& tag);
+
+    /**
+     * @name Access tags according to their associated action code
+     * @{ */
+    typedef std::set< ::gdcm::Tag > TagContainerType;
+    FWGDCMIO_API const TagContainerType& getActionCodeDTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeZTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeXTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeKTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeCTags();
+    FWGDCMIO_API const TagContainerType& getActionCodeUTags();
+    /**  @} */
 
 private:
 
     void anonymizationProcess(const ::boost::filesystem::path& dirPath);
 
-    ///D : replace with a non-zero length value that may be a dummy value and consistent with the VR
+    ///D: replace with a non-zero length value that may be a dummy value and consistent with the VR
     void applyActionCodeD(const ::gdcm::Tag& tag);
 
     /**
-     * Z : replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
+     * Z: replace with a zero length value, or a non-zero length value that may be a dummy value and consistent with
      * the VR
      *
-     * Z/D : Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
+     * Z/D: Z unless D is required to maintain IOD conformance (Type 2 versus Type 1)
      *
      * @note This method applies action code D only.
      */
     void applyActionCodeZ(const ::gdcm::Tag& tag);
 
     /**
-     * X : remove tag
-     * X/Z : X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)
-     * X/D : X unless D is required to maintain IOD conformance (Type 3 versus Type 1)
-     * X/Z/D : X unless Z or D is required to maintain IOD conformance (Type 3 versus Type 2 versus Type 1)
+     * X: remove tag
+     * X/Z: X unless Z is required to maintain IOD conformance (Type 3 versus Type 2)
+     * X/D: X unless D is required to maintain IOD conformance (Type 3 versus Type 1)
+     * X/Z/D: X unless Z or D is required to maintain IOD conformance (Type 3 versus Type 2 versus Type 1)
      *
-     * X/Z/U* : X unless Z or replacement of contained instance UIDs (U) is required to maintain IOD conformance
+     * X/Z/U*: X unless Z or replacement of contained instance UIDs (U) is required to maintain IOD conformance
      * (Type 3 versus Type 2 versus Type 1 sequences containing UID references)
      *
      * @note This method applies action code X only.
      */
     void applyActionCodeX(const ::gdcm::Tag& tag);
 
-    /// K : keep (unchanged for non-sequence attributes, cleaned for sequences)
+    /// K: keep (unchanged for non-sequence attributes, cleaned for sequences)
     void applyActionCodeK(const ::gdcm::Tag& tag);
 
     /**
-     * C : clean, that is replace with values of similar meaning known not to contain identifying information and
+     * C: clean, that is replace with values of similar meaning known not to contain identifying information and
      * consistent with the VR
      */
     void applyActionCodeC(const ::gdcm::Tag& tag);
 
-    /// U : replace with a non-zero length UID that is internally consistent within a set of Instances
+    /// U: if UID is not empty, replace with a non-zero length UID
+    /// that is internally consistent within a set of Instances
     void applyActionCodeU(const ::gdcm::Tag& tag);
+
+    /**
+     * Shift date according to the interval between the date and the reference date.
+     *
+     * @note The shift is done from Jan 1, 1900.
+     */
+    void applyActionShiftDate(const ::gdcm::Tag& tag);
 
     /// Generate a value consistent with the VR
     void generateDummyValue(const ::gdcm::Tag& tag);
@@ -154,18 +196,8 @@ private:
     /// Index of anonymizer
     unsigned int m_fileIndex;
 
-    /**
-     * @name Default tags to be processed with associated action code.
-     * @{ */
-    typedef std::set< ::gdcm::Tag > TagContainerType;
-
-    static const TagContainerType s_ACTION_CODE_D_TAGS;
-    static const TagContainerType s_ACTION_CODE_Z_TAGS;
-    static const TagContainerType s_ACTION_CODE_X_TAGS;
-    static const TagContainerType s_ACTION_CODE_K_TAGS;
-    static const TagContainerType s_ACTION_CODE_C_TAGS;
-    static const TagContainerType s_ACTION_CODE_U_TAGS;
-    /**  @} */
+    /// Reference date for shifting
+    ::boost::gregorian::date m_referenceDate;
 
     /**
      * @name Tags to be processed with associated action code.
@@ -179,6 +211,12 @@ private:
     TagContainerType m_actionCodeCTags;
     TagContainerType m_actionCodeUTags;
     /**  @} */
+
+    /// List of date tags that must be shifted
+    TagContainerType m_actionShiftDateTags;
+
+    /// List of private tags to be preserved from anonymisation
+    ::fwGdcmIO::helper::PrivateTagVecType m_privateTags;
 };
 
 } // namespace helper

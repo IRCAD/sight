@@ -50,7 +50,7 @@ class FWGDCMIO_CLASS_API DicomSeries
 {
 public:
 
-    typedef std::vector< std::string > FilenameContainerType;
+    typedef std::vector< ::boost::filesystem::path > FilenameContainerType;
     typedef std::vector< SPTR(::fwMedData::DicomSeries) > DicomSeriesContainerType;
 
     /// Constructor
@@ -67,8 +67,8 @@ public:
      * @return container containing DicomSeries
      */
     FWGDCMIO_API DicomSeriesContainerType read(FilenameContainerType& filenames,
-                                               const SPTR(::fwJobs::Observer)& readerObserver,
-                                               const SPTR(::fwJobs::Observer)& completeSeriesObserver);
+                                               const SPTR(::fwJobs::Observer)& readerObserver = nullptr,
+                                               const SPTR(::fwJobs::Observer)& completeSeriesObserver = nullptr);
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
      * @param[in,out] seriesDB List of DicomSeries that must be completed with information
@@ -108,28 +108,33 @@ protected:
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
-    void createSeries(DicomSeriesContainerType& seriesDB, const ::gdcm::Scanner& scanner, const std::string& filename);
+    void createSeries(DicomSeriesContainerType& seriesDB,
+                      const ::gdcm::Scanner& scanner,
+                      const ::boost::filesystem::path& filename);
 
     /**
      * @brief Create a patient from the dataset and store it in the patient map
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
-    SPTR(::fwMedData::Patient) createPatient(const ::gdcm::Scanner& scanner, const std::string& filename);
+    SPTR(::fwMedData::Patient) createPatient(const ::gdcm::Scanner& scanner,
+                                             const std::string& filename);
 
     /**
      * @brief Create a study from the dataset and store it in the study map
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
-    SPTR(::fwMedData::Study) createStudy(const ::gdcm::Scanner& scanner, const std::string& filename);
+    SPTR(::fwMedData::Study) createStudy(const ::gdcm::Scanner& scanner,
+                                         const std::string& filename);
 
     /**
      * @brief Create an equipment from the dataset and store it in the equipment map
      * @param[in] scanner GDCM Scanner used to read information
      * @param[in] filename Filename from which the information must be read
      */
-    SPTR(::fwMedData::Equipment) createEquipment(const ::gdcm::Scanner& scanner, const std::string& filename);
+    SPTR(::fwMedData::Equipment) createEquipment(const ::gdcm::Scanner& scanner,
+                                                 const std::string& filename);
 
     typedef std::map< std::string, SPTR(::fwMedData::Patient) > PatientMapType;
     typedef std::map< std::string, SPTR(::fwMedData::Study) > StudyMapType;

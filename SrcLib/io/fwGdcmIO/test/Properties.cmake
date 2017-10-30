@@ -8,6 +8,7 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwMedData
+    fwMedDataCamp
     fwTest
     fwDataTools
     fwMemory

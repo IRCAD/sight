@@ -1,19 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
-
-//To include first because of Windows compilation
-#include <gdcmSurfaceHelper.h>
-#include <gdcmUIDGenerator.h>
-
 #include "fwGdcmIO/container/DicomSurface.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/ie/Surface.hpp"
 
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <fwData/Color.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -23,16 +18,16 @@
 #include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/types.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
-
-#include <fwTools/dateAndTime.hpp>
 
 #include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <gdcmSurfaceHelper.h>
+
+#include <sstream>
 
 namespace fwGdcmIO
 {
@@ -43,15 +38,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(::fwMedData::DicomSeries::sptr dicomSeries,
-                 SPTR(::gdcm::Reader)reader,
-                 SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                 ::fwMedData::ModelSeries::sptr series,
-                 ::fwLog::Logger::sptr logger,
-                 const ProgressCallback& callback,
-                 const bool& cancelled) :
+Surface::Surface(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                 const SPTR(::gdcm::Reader)& reader,
+                 const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                 const ::fwMedData::ModelSeries::sptr& series,
+                 const ::fwLog::Logger::sptr& logger,
+                 ProgressCallback progress,
+                 CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::ModelSeries >(dicomSeries, reader, instance, series,
-                                                                          logger, callback, cancelled)
+                                                                          logger, progress, cancel)
 {
 }
 
@@ -63,67 +58,216 @@ Surface::~Surface()
 
 //------------------------------------------------------------------------------
 
-void Surface::readSurfaceSegmentationModule(::gdcm::SmartPointer< ::gdcm::Segment > segment)
+bool Surface::loadSegmentedPropertyRegistry(const ::boost::filesystem::path& filepath)
 {
-    ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+    return m_segmentedPropertyRegistry.readSegmentedPropertyRegistryFile(filepath, true, m_logger);
+}
 
-    // We only handle segment containing one surface
-    if (segment->GetSurfaceCount() != 1)
+//------------------------------------------------------------------------------
+
+void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
+{
+    // Retrieve Surface Reader
+    SPTR(::gdcm::SurfaceReader) surfaceReader = std::static_pointer_cast< ::gdcm::SurfaceReader >(m_reader);
+
+    // Retrieve dataset
+    const ::gdcm::DataSet& dataset = surfaceReader->GetFile().GetDataSet();
+
+    // Segment Sequence (0x0062,0x0002) - Type 1
+    const ::gdcm::DataElement& sequenceDataElement = dataset.GetDataElement(::gdcm::Tag(0x0062, 0x0002));
+    const auto segmentSequence                     = sequenceDataElement.GetValueAsSQ();
+
+    // Segment container
+    const auto& segmentContainer = surfaceReader->GetSegments();
+
+    // Retrieve reconstruction DB
+    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
+
+    // Lambda used to display reading errors
+    auto displayError = [&](const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
+                            const std::string& error)
+                        {
+                            std::string segmentLabel = segment->GetSegmentLabel();
+                            segmentLabel = ::gdcm::LOComp::Trim(segmentLabel.c_str());
+                            const std::string msg = "Error while reading the '" + segmentLabel + "' segment: " + error;
+
+                            SLM_WARN_IF(msg, !m_logger);
+                            if(m_logger)
+                            {
+                                m_logger->critical(msg);
+                            }
+                        };
+
+    //===================
+    // Read segmentations
+    //===================
+    std::size_t itemIndex = 1;
+    for(const auto& segment : segmentContainer)
     {
-        throw ::fwGdcmIO::exception::Failed("Inappropriate surface count for a segment.");
+        // We only handle segment containing one surface
+        if (segment->GetSurfaceCount() != 1 || segment->GetSurfaces().size() != 1)
+        {
+            displayError(segment, "Unsupported surface count.");
+            continue;
+        }
+
+        // Create the reconstruction
+        ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
+
+        // Retrieve the Segment Sequence Item
+        const ::gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
+
+        // Get the associated surface of the current segmentation
+        const auto& surfaceContainer                           = segment->GetSurfaces();
+        const ::gdcm::SmartPointer< ::gdcm::Surface >& surface = surfaceContainer[0];
+
+        try
+        {
+            // Read the Surface Segmentation Module - PS 3.3 C.8.23.1
+            readSurfaceSegmentationModule(reconstruction, segment, segmentItem);
+
+            // Read the Surface Mesh Module - PS 3.3 C.27.1
+            readSurfaceMeshModule(reconstruction, surface);
+        }
+        catch(const ::fwGdcmIO::exception::Failed& exception)
+        {
+            displayError(segment, exception.what());
+            continue;
+        }
+
+        // Add the reconstruction into the ModelSeries
+        reconstructionDB.push_back(reconstruction);
     }
 
-    // Organ Name - TODO : if empty, try to get label with DictionarySegment
-    std::string organName = segment->GetSegmentDescription();
-    ::boost::algorithm::trim(organName);
-    reconstruction->setOrganName(organName);
-    SLM_TRACE("Organ Name : " + reconstruction->getOrganName());
+    if(reconstructionDB.empty())
+    {
+        throw ::fwGdcmIO::exception::Failed("Unable to read the Surface Segmentation: no segments have been found.");
+    }
 
-    // Structure Type
-    std::string structureType = segment->GetSegmentLabel();
-    ::boost::algorithm::trim(structureType);
-    reconstruction->setStructureType(structureType);
-    SLM_TRACE("Structure type : " + reconstruction->getStructureType());
-
-    // Get the associated surface of the current segmentation
-    ::gdcm::SmartPointer< ::gdcm::Surface > surface = segment->GetSurface(0);
-
-    this->readSurfaceMeshModule(surface, reconstruction);
-
-    // Add the Reconstruction in the ModelSeries
-    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
-    reconstructionDB.push_back(reconstruction);
+    // Update the reconstruction DB
     m_object->setReconstructionDB(reconstructionDB);
 
 }
 
 //------------------------------------------------------------------------------
 
-void Surface::readSurfaceMeshModule(::gdcm::SmartPointer< ::gdcm::Surface > surface,
-                                    ::fwData::Reconstruction::sptr reconstruction)
+std::string getStructureTypeFromSegmentIdentification(const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
+                                                      const ::fwGdcmIO::helper::SegmentedPropertyRegistry& registry)
+{
+    // Lambda used to format single entry
+    const auto format = [&](const ::gdcm::SegmentHelper::BasicCodedEntry& entry) -> std::string
+                        {
+                            if(!entry.IsEmpty())
+                            {
+                                return "(" + ::gdcm::LOComp::Trim(entry.CV.c_str()) +
+                                       ";" + ::gdcm::LOComp::Trim(entry.CSD.c_str()) +
+                                       ";" + ::gdcm::LOComp::Trim(entry.CM.c_str()) + ")";
+                            }
+
+                            return "";
+                        };
+
+    // Lambda used to format multiple entries
+    const auto formatVector = [&](const std::vector< ::gdcm::SegmentHelper::BasicCodedEntry >& entries) -> std::string
+                              {
+                                  std::string result;
+
+                                  for(const auto& entry : entries)
+                                  {
+                                      result += format(entry);
+                                  }
+
+                                  return result;
+                              };
+
+    // Retrieve Structure Type from segment identification
+    return registry.getStructureType(format(segment->GetPropertyType()),
+                                     format(segment->GetPropertyCategory()),
+                                     formatVector(segment->GetPropertyTypeModifiers()),
+                                     format(segment->GetAnatomicRegion()),
+                                     formatVector(segment->GetAnatomicRegionModifiers()));
+
+}
+
+//------------------------------------------------------------------------------
+
+void Surface::readSurfaceSegmentationModule(const ::fwData::Reconstruction::sptr& reconstruction,
+                                            const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
+                                            const ::gdcm::Item& segmentItem)
+{
+    // Retrieve segment's dataset
+    const ::gdcm::DataSet& segmentDataset = segmentItem.GetNestedDataSet();
+
+    // Organ Name - Segment Label (0x0062,0x0005) - Type 1
+    std::string organName = segment->GetSegmentLabel();
+    organName = ::gdcm::LOComp::Trim(organName.c_str());
+    reconstruction->setOrganName(organName);
+
+    // Structure Type from Private Tag (0x5649,0x1000)
+    const ::gdcm::Tag structureTypeTag(0x5649, 0x1000);
+    auto privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(structureTypeTag).c_str());
+    if(segmentDataset.FindDataElement(structureTypeTag))
+    {
+        const auto structureType = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x5649, 0x1000 >(segmentDataset);
+        reconstruction->setStructureType(structureType);
+    }
+    // Structure Type from Segment Identification
+    else
+    {
+        const auto structureType = getStructureTypeFromSegmentIdentification(segment, m_segmentedPropertyRegistry);
+        if(structureType.empty())
+        {
+            const std::string msg = "Unable to retrieve structure type from segment identification "
+                                    "for segment '" + organName + "'.";
+
+            SLM_WARN_IF(msg, !m_logger);
+            if(m_logger)
+            {
+                m_logger->warning(msg);
+            }
+        }
+    }
+
+    // Computed Mask Volume (0x5649, 0x1001)
+    const ::gdcm::Tag computedMaskVolumeTag(0x5649, 0x1001);
+    privateCreator = ::gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
+    if(segmentDataset.FindDataElement(computedMaskVolumeTag))
+    {
+        ::gdcm::Attribute< 0x5649, 0x1001, ::gdcm::VR::OD, ::gdcm::VM::VM1 > attribute;
+        attribute.SetFromDataSet(segmentDataset);
+        const double volume = attribute.GetValue();
+        reconstruction->setComputedMaskVolume(volume);
+    }
+    else
+    {
+        reconstruction->setComputedMaskVolume(::fwData::Reconstruction::s_NO_COMPUTED_MASK_VOLUME);
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
+void Surface::readSurfaceMeshModule(const ::fwData::Reconstruction::sptr& reconstruction,
+                                    const ::gdcm::SmartPointer< ::gdcm::Surface >& surface)
 {
     // Create material
     ::fwData::Material::sptr material = fwData::Material::New();
 
     // Convert CIE Lab to RGBA
     const unsigned short* lab = surface->GetRecommendedDisplayCIELabValue();
-    ::gdcm::SurfaceHelper::ColorArray CIELab(3);
-    CIELab[0] = lab[0];
-    CIELab[1] = lab[1];
-    CIELab[2] = lab[2];
-    const std::vector<float> RGB = ::gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1.);
+    ::gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + sizeof(lab) / sizeof(unsigned short));
+    std::vector<float> colorVector = ::gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1);
+
+    // Recommended Presentation Opacity
+    colorVector.push_back(surface->GetRecommendedPresentationOpacity());
 
     // Adapt color to material
     ::fwData::Color::ColorArray rgba;
-    ::boost::algorithm::clamp_range(RGB.begin(), RGB.end(), rgba.begin(), 0.f, 1.f);
-
-    // Recommended Presentation Opacity
-    const float opacity = ::boost::algorithm::clamp(surface->GetRecommendedPresentationOpacity(), 0.f, 1.f);
-    rgba[3] = opacity; // set alpha component
+    ::boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.f, 1.f);
 
     // Set reconstruction's visibility
-    reconstruction->setIsVisible(opacity > 1e-3);
-    OSLM_TRACE("Reconstruction is visible : " << reconstruction->getIsVisible());
+    const double epsilon = 1e-3;
+    reconstruction->setIsVisible(rgba[3] > epsilon);
 
     // Set reconstruction's color
     ::fwData::Color::sptr color = ::fwData::Color::New();
@@ -132,105 +276,78 @@ void Surface::readSurfaceMeshModule(::gdcm::SmartPointer< ::gdcm::Surface > surf
     OSLM_TRACE("RGBA color : " << rgba[0]<<" "<< rgba[1]<<" "<< rgba[2]<<" "<< rgba[3]);
 
     // Recommended Presentation Type
-    material->setRepresentationMode(
-        ::fwGdcmIO::helper::DicomData::convertToRepresentationMode( surface->GetRecommendedPresentationType() ) );
-    OSLM_TRACE("Reconstruction's structure type : " <<
-               ::gdcm::Surface::GetVIEWTypeString( surface->GetRecommendedPresentationType() ) );
+    const auto representationMode =
+        ::fwGdcmIO::helper::DicomDataTools::convertToRepresentationMode(surface->GetRecommendedPresentationType());
+    material->setRepresentationMode(representationMode);
 
     // Manifold
     if (surface->GetManifold() == ::gdcm::Surface::YES)
     {
-        throw ::fwGdcmIO::exception::Failed("Manifold not handled");
-    }
-
-    // Point Coordinates Data
-    const ::gdcm::DataElement& gdcmPointCoords = surface->GetPointCoordinatesData();
-    const ::gdcm::ByteValue* gdcmPointCoordsBV = gdcmPointCoords.GetByteValue();
-    const char* coordBuffer                    = gdcmPointCoordsBV->GetPointer();
-
-    // Check that the surface contains point coordinates
-    if(gdcmPointCoordsBV == 0 || gdcmPointCoordsBV->GetPointer() == 0)
-    {
-        throw ::fwGdcmIO::exception::Failed("No point coordinates data");
-    }
-
-    // Get size of buffer (bytes)
-    const unsigned long coordBufferSize = gdcmPointCoordsBV->GetLength();
-
-    // Compute number of coordinates
-    const unsigned long coordSize = coordBufferSize / sizeof(float);
-
-    // Check that the buffer has the correct size according to the number of points
-    if ( (coordSize / 3) != surface->GetNumberOfSurfacePoints())
-    {
-        throw ::fwGdcmIO::exception::Failed("Corrupted point coordinates data");
+        throw ::fwGdcmIO::exception::Failed("Manifold meshes are not supported by the selected reader.");
     }
 
     // Mesh Primitive
-    ::gdcm::SmartPointer< ::gdcm::MeshPrimitive > gdcmMeshPrimitive = surface->GetMeshPrimitive();
-    if (gdcmMeshPrimitive->GetPrimitiveType() != ::gdcm::MeshPrimitive::TRIANGLE)
+    ::gdcm::SmartPointer< ::gdcm::MeshPrimitive > meshPrimitive = surface->GetMeshPrimitive();
+    if (meshPrimitive->GetPrimitiveType() != ::gdcm::MeshPrimitive::TRIANGLE)
     {
-        throw ::fwGdcmIO::exception::Failed("Primitive type not handled");
+        throw ::fwGdcmIO::exception::Failed("The primitive type is not supported by the selected reader.");
+    }
+
+    // Point Coordinates Data
+    const ::gdcm::ByteValue* pointCoordinates = surface->GetPointCoordinatesData().GetByteValue();
+    if(!pointCoordinates || !pointCoordinates->GetPointer())
+    {
+        throw ::fwGdcmIO::exception::Failed("No point coordinates data found.");
+    }
+
+    // Compute number of coordinates
+    const auto pointCoordinatesSize = pointCoordinates->GetLength() / sizeof(float);
+    if((pointCoordinatesSize / 3) != surface->GetNumberOfSurfacePoints())
+    {
+        throw ::fwGdcmIO::exception::Failed("Point coordinates data are corrupted.");
     }
 
     // Surface Points Normals
-    const char* normalBuffer = NULL;
+    const ::gdcm::ByteValue* normalCoordinates = surface->GetVectorCoordinateData().GetByteValue();
+    const char* normalCoordinatesPointer       = nullptr;
     if (!surface->GetVectorCoordinateData().IsEmpty())
     {
-        const ::gdcm::DataElement& gdcmNormalCoords = surface->GetVectorCoordinateData();
-        const ::gdcm::ByteValue* gdcmNormalCoordsBV = gdcmNormalCoords.GetByteValue();
-
         // Check that the surface contains normals
-        if(gdcmNormalCoordsBV == 0 || gdcmNormalCoordsBV->GetPointer() == 0)
+        if(!normalCoordinates || !normalCoordinates->GetPointer())
         {
-            throw ::fwGdcmIO::exception::Failed("No normal coordinates data");
+            throw ::fwGdcmIO::exception::Failed("No normal coordinates data found.");
         }
 
-        // Set normal buffer
-        normalBuffer = gdcmNormalCoordsBV->GetPointer();
+        normalCoordinatesPointer = normalCoordinates->GetPointer();
 
-        // Get size of buffer (bytes)
-        const unsigned long normalCoordBufferSize = gdcmNormalCoordsBV->GetLength();
-
-        // Compute number of coordinates
-        const unsigned long normalCoordSize = normalCoordBufferSize / sizeof(float);
-
-        // Check that the buffer has the correct size according to the number of normals
-        if ( (normalCoordSize / 3) != surface->GetNumberOfVectors() && normalCoordSize != coordSize)
+        // Compute number of normal coordinates
+        const unsigned long normalCoordinateSize = normalCoordinates->GetLength() / sizeof(float);
+        if ((normalCoordinateSize / 3) != surface->GetNumberOfVectors() || normalCoordinateSize != pointCoordinatesSize)
         {
-            throw ::fwGdcmIO::exception::Failed("Corrupted normal coordinates data");
+            throw ::fwGdcmIO::exception::Failed("Normal coordinates data are corrupted.");
         }
     }
 
     // Triangle Point Index List
-    const ::gdcm::DataElement& gdcmPointIndex   = gdcmMeshPrimitive->GetPrimitiveData();
-    const ::gdcm::ByteValue*   gdcmPointIndexBV = gdcmPointIndex.GetByteValue();
-    const char* indexBuffer                     = gdcmPointIndexBV->GetPointer();
-
-    // Check that the surface contains triangle point list
-    if (indexBuffer == 0)
+    const ::gdcm::ByteValue* pointIndices = meshPrimitive->GetPrimitiveData().GetByteValue();
+    if (!pointIndices || !pointIndices->GetPointer())
     {
-        throw ::fwGdcmIO::exception::Failed("No triangle point index list");
+        throw ::fwGdcmIO::exception::Failed("No triangle point index list found.");
     }
 
-    // Get size of buffer (bytes)
-    const unsigned long indexBufferSize = gdcmPointIndexBV->GetLength();
-
     // Get number of primitives
-    const unsigned long indexSize = indexBufferSize / sizeof (uint32_t);
-
-    OSLM_TRACE("Reconstruction's number of points : " << coordSize / 3 );
-    OSLM_TRACE("Reconstruction's number of cells : " << indexSize / 3 );
+    const unsigned long indexSize = pointIndices->GetLength() / sizeof(uint32_t);
 
     // Create a new Mesh
-    ::fwGdcmIO::container::DicomSurface surfaceContainer;
-    ::fwData::Mesh::sptr mesh = surfaceContainer.convertToData(reinterpret_cast<const float*>(coordBuffer), coordSize,
-                                                               reinterpret_cast<const uint32_t*>(indexBuffer),
-                                                               indexSize, reinterpret_cast<const float*>(normalBuffer));
+    ::fwGdcmIO::container::DicomSurface surfaceContainer(reinterpret_cast<const float*>(pointCoordinates->GetPointer()),
+                                                         pointCoordinatesSize,
+                                                         reinterpret_cast<const uint32_t*>(pointIndices->GetPointer()),
+                                                         indexSize,
+                                                         reinterpret_cast<const float*>(normalCoordinatesPointer));
 
     // Set the reconstruction
     reconstruction->setMaterial( material );
-    reconstruction->setMesh( mesh );
+    reconstruction->setMesh( surfaceContainer.convertToData() );
 
 }
 

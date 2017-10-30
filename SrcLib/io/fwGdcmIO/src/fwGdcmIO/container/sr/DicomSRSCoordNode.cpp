@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <gdcmSequenceOfItems.h>
+#include <fwServices/macros.hpp>
 
 namespace fwGdcmIO
 {
@@ -20,10 +19,13 @@ namespace sr
 
 //------------------------------------------------------------------------------
 
-DicomSRSCoordNode::DicomSRSCoordNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-                                     const std::string& graphicType, GraphicDataContainerType graphicDataContainer) :
+DicomSRSCoordNode::DicomSRSCoordNode(const DicomCodedAttribute& codedAttribute,
+                                     const std::string& relationship,
+                                     const std::string& graphicType,
+                                     GraphicDataContainerType graphicDataContainer) :
     ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "SCOORD", relationship),
-    m_graphicType(graphicType), m_graphicDataContainer(graphicDataContainer)
+    m_graphicType(graphicType),
+    m_graphicDataContainer(graphicDataContainer)
 {
     SLM_ASSERT("Only POINT and POLYLINE are supported by SCoord node for now.",
                graphicType == "POINT" || graphicType == "POLYLINE");
@@ -49,11 +51,11 @@ void DicomSRSCoordNode::write(::gdcm::DataSet& dataset) const
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
     // Graphic Data - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValues< float, 0x0070, 0x0022 >(
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(
         &m_graphicDataContainer[0], m_graphicDataContainer.size(), dataset);
 
     // Graphic Type - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0070, 0x0023 >(m_graphicType, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x0023 >(m_graphicType, dataset);
 }
 
 //------------------------------------------------------------------------------

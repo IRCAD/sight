@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwGdcmIO/helper/DicomAnonymizer.hpp>
 
-#include <boost/program_options.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/program_options.hpp>
 
 #include <stdlib.h>
-#include <string>
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
+#include <string>
 
 /** \file DicomAnonymizer/src/main
  *
@@ -45,22 +46,24 @@ int main(int argc, char** argv)
 
     if (vm.count("help"))
     {
-        std::cout << desc << "\n";
+        std::cout << desc << std::endl;
         return EXIT_SUCCESS;
     }
     else if(!vm.count("input"))
     {
-        std::cout << "You must specify an input file." << "\n";
+        std::cout << "You must specify an input file." << std::endl << std::endl;
+        std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
     else if(!vm.count("output"))
     {
-        std::cout << "You must specify an output file." << "\n";
+        std::cout << "You must specify an output file." << std::endl << std::endl;
+        std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
     else if(vm["input"].as< std::string >() == vm["output"].as< std::string >())
     {
-        std::cout << "The output folder can not be the input folder." << "\n";
+        std::cout << "The output folder can not be the input folder." << std::endl;
         return EXIT_FAILURE;
     }
 

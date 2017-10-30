@@ -31,7 +31,7 @@ class SeriesDB;
 namespace ioGdcm
 {
 /**
- * @brief Read  ImageSeries from DICOM with gdcm reader
+ * @brief Read DICOM (ImageSeries/ModelSeries) with gdcm reader
  **/
 class IOGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 {

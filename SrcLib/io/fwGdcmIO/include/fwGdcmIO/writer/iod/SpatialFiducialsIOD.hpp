@@ -30,15 +30,22 @@ public:
     /**
      * @brief Constructor
      * @param[in] instance DICOM instance used to share information between modules
+     * @param[in] destinationPath Destination path
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API SpatialFiducialsIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                     ::boost::filesystem::path folderPath);
+    FWGDCMIO_API SpatialFiducialsIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                     const ::boost::filesystem::path& destinationPath,
+                                     const ::fwLog::Logger::sptr& logger = nullptr,
+                                     ProgressCallback progress = nullptr,
+                                     CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SpatialFiducialsIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(::fwMedData::Series::sptr series);
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series) override;
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,6 @@
 #include "fwGdcmIO/reader/iod/InformationObjectDefinition.hpp"
 
 #include <fwLog/Logger.hpp>
-
-#include <functional>
 
 namespace fwGdcmIO
 {
@@ -27,7 +25,8 @@ public:
 
     typedef std::map< SPTR(::fwGdcmIO::container::DicomInstance), ::fwMedData::Series::sptr > SeriesContainerMapType;
 
-    typedef std::function< void (unsigned int&) > ProgressCallback;
+    typedef std::function< void (std::uint64_t) > ProgressCallback;
+    typedef std::function< bool () > CancelRequestedCallback;
 
     /// Constructor
     FWGDCMIO_API Series();
@@ -35,8 +34,12 @@ public:
     /// Destructor
     FWGDCMIO_API ~Series();
 
-    //// Read DICOM file
-    FWGDCMIO_API ::fwMedData::Series::sptr read(::fwMedData::DicomSeries::sptr dicomSeries);
+    /**
+     * @brief Read DICOM series
+     * @param[in] dicomSeries DICOM series that shall be read
+     */
+    FWGDCMIO_API ::fwMedData::Series::sptr read(const ::fwMedData::DicomSeries::sptr& dicomSeries)
+    throw(::fwGdcmIO::exception::Failed);
 
     /// Get Logger
     const ::fwLog::Logger::sptr& getLogger() const
@@ -50,13 +53,21 @@ public:
         m_logger = logger;
     }
 
-    void addCallback(std::function< void(unsigned int&) > c)
+    /**
+     * @brief Set progress callback
+     * @param[in] callback Progress callback
+     */
+    void setProgressCallback(ProgressCallback callback)
     {
-        m_callback = c;
+        m_progressCallback = callback;
     }
-    void cancel()
+    /**
+     * @brief Set cancel callback
+     * @param[in] callback Cancel callback
+     */
+    void setCancelRequestedCallback(CancelRequestedCallback callback)
     {
-        m_cancelled = true;
+        m_cancelRequestedCallback = callback;
     }
 
     /// Enable buffer rotation
@@ -69,23 +80,23 @@ protected:
 
     /// Get referenced series when dealing with Spatial Fiducials
     SPTR(::fwGdcmIO::container::DicomInstance) getSpatialFiducialsReferencedSeriesInstance(
-        ::fwMedData::DicomSeries::sptr dicomSeries);
+        const ::fwMedData::DicomSeries::sptr& dicomSeries);
 
     /// Get referenced series when dealing with Structured Report
     SPTR(::fwGdcmIO::container::DicomInstance) getStructuredReportReferencedSeriesInstance(
-        ::fwMedData::DicomSeries::sptr dicomSeries);
+        const ::fwMedData::DicomSeries::sptr& dicomSeries);
 
     /// Series Container Map
     SeriesContainerMapType m_seriesContainerMap;
 
-    ///Logger
+    /// Logger
     ::fwLog::Logger::sptr m_logger;
 
     /// Progress callback for jobs
-    ProgressCallback m_callback;
+    ProgressCallback m_progressCallback;
 
     /// Cancel information for jobs
-    bool m_cancelled;
+    CancelRequestedCallback m_cancelRequestedCallback;
 
     /// Enable buffer rotation
     bool m_enableBufferRotation;

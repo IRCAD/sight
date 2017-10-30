@@ -1,14 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/writer/ie/Series.hpp"
+
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <gdcmUIDGenerator.h>
 
@@ -23,10 +26,14 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Series::Series(SPTR(::gdcm::Writer)writer,
-               SPTR(::fwGdcmIO::container::DicomInstance)instance,
-               ::fwMedData::Series::sptr series) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Series >(writer, instance, series)
+Series::Series(const SPTR(::gdcm::Writer)& writer,
+               const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+               const ::fwMedData::Series::sptr& series,
+               const ::fwLog::Logger::sptr& logger,
+               ProgressCallback progress,
+               CancelRequestedCallback cancel) :
+    ::fwGdcmIO::writer::ie::InformationEntity< ::fwMedData::Series >(writer, instance, series,
+                                                                     logger, progress, cancel)
 {
 }
 
@@ -44,22 +51,39 @@ void Series::writeGeneralSeriesModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Serie's instance UID - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000e >(m_object->getInstanceUID(), dataset);
+    // As the data may have been updated between two export, we regenerate an UID
+    ::gdcm::UIDGenerator uidGenerator;
+    const std::string instanceUID = uidGenerator.Generate();
+
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000e >(instanceUID, dataset);
 
     // Series's modality - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0060 >(m_object->getModality(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >(m_object->getModality(), dataset);
+
+    ::boost::posix_time::ptime ptime = ::boost::posix_time::second_clock::local_time();
+
+    const std::string fulldate = ::boost::posix_time::to_iso_string(ptime);
+
+    // Split iso time in YYYYMMDDTHHMMSS
+    ::boost::char_separator<char> sep("T");
+    ::boost::tokenizer< ::boost::char_separator<char> > tokens(fulldate, sep);
+
+    ::boost::tokenizer< ::boost::char_separator<char> >::iterator tok_iter = tokens.begin();
+    const std::string date = *tok_iter;
+    tok_iter++;
+    const std::string time = *tok_iter;
 
     // Serie's date - Type 3
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0021 >(m_object->getDate(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0021 >(date, dataset);
 
     // Serie's time - Type 3
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0031 >(m_object->getTime(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0031 >(time, dataset);
 
     // Serie's description
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x103e >(m_object->getDescription(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x103e >(m_object->getDescription(), dataset);
 
     // Serie's number - Type 2
-    ::fwGdcmIO::helper::DicomData::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
 
     // Performing physicians name - Type 3
     ::fwMedData::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
@@ -71,14 +95,15 @@ void Series::writeGeneralSeriesModule()
         {
             physicians[count++] = ::gdcm::String<>(physician);
         }
-        ::fwGdcmIO::helper::DicomData::setTagValues< ::gdcm::String< >, 0x0008, 0x1050 >(physicians, count, dataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< >, 0x0008, 0x1050 >(physicians, count,
+                                                                                               dataset);
     }
 
     // Laterality - Type 2C - FIXME: Fake Value - Should be absent for the abdomen or chest
     if(m_instance->getSOPClassUID() !=
        ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
-        ::fwGdcmIO::helper::DicomData::setTagValue< 0x0020, 0x0060 >("R", dataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x0060 >("R", dataset);
     }
 
     // Patient Position - Type 2C
@@ -95,7 +120,7 @@ void Series::writeSegmentationSeriesModule()
 
     // Series's modality - Type 1
     dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0060 >("SEG", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >("SEG", dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -110,19 +135,17 @@ void Series::writeSRDocumentSeriesModule()
 
     // Series's modality - Type 1
     dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0060 >("SR", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >("SR", dataset);
 
     // Serie's instance UID - Type 1
     dataset.Remove(::gdcm::Tag(0x0020, 0x000e));
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000e >(uidGenerator.Generate(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000e >(uidGenerator.Generate(), dataset);
 
     // Serie's number - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0011 >(0, dataset);
 
     // Referenced Performed Procedure Step Sequence  - Type 2
-    ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
-    sequence->SetLengthToUndefined();
-    ::fwGdcmIO::helper::DicomData::setSQ< 0x0008,0x1111 >(sequence, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::createAndSetSequenceTagValue< 0x0008, 0x1111 >(dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -137,13 +160,15 @@ void Series::writeSpatialFiducialsSeriesModule()
 
     // Serie's instance UID - Type 1
     dataset.Remove(::gdcm::Tag(0x0020, 0x000e));
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000e >(uidGenerator.Generate(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0020, 0x000e >(uidGenerator.Generate(), dataset);
 
     // Series's modality - Type 1
     dataset.Remove(::gdcm::Tag(0x0008, 0x0060));
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0060 >("FID", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0060 >("FID", dataset);
 
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ie
 } // namespace writer

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,27 +10,18 @@
 
 #include <fwJobs/Observer.hpp>
 
-#include <fwTools/System.hpp>
-
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/assign/list_of.hpp>
-#include <boost/regex.hpp>
-
-#include <fstream>
-#include <set>
-#include <string>
 
 namespace fwGdcmIO
 {
 namespace helper
 {
 
-bool isDICOM(const std::string& filepath)
+//------------------------------------------------------------------------------
+
+bool isDICOM(const ::boost::filesystem::path& filepath)
 {
-    std::ifstream ifs( filepath, std::ios::binary );
+    ::boost::filesystem::ifstream ifs( filepath, std::ios::binary );
     ifs.seekg(128);
     char DICM[5] = {0};
     ifs.read(DICM, 4);
@@ -41,27 +32,28 @@ bool isDICOM(const std::string& filepath)
 //------------------------------------------------------------------------------
 
 void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath,
-                                    std::vector<std::string>& dicomFiles, bool checkIsDicom,
-                                    const ::fwJobs::Observer::sptr& fileLookupObserver)
+                                    std::vector< ::boost::filesystem::path >& dicomFiles,
+                                    bool checkIsDicom,
+                                    const ::fwJobs::Observer::sptr& readerObserver)
 {
-    std::vector<std::string> fileVect;
-    checkFilenameExtension(dirPath, fileVect, fileLookupObserver);
+    std::vector< ::boost::filesystem::path > fileVect;
+    checkFilenameExtension(dirPath, fileVect, readerObserver);
 
     if(checkIsDicom)
     {
-        if(fileLookupObserver)
+        if(readerObserver)
         {
-            fileLookupObserver->setTotalWorkUnits(fileVect.size());
+            readerObserver->setTotalWorkUnits(fileVect.size());
         }
 
         std::uint64_t progress = 0;
-        for(auto file: fileVect)
+        for(auto file : fileVect)
         {
-            if(fileLookupObserver)
+            if(readerObserver)
             {
-                fileLookupObserver->doneWork(++progress);
+                readerObserver->doneWork(++progress);
 
-                if(fileLookupObserver->cancelRequested())
+                if(readerObserver->cancelRequested())
                 {
                     dicomFiles.clear();
                     break;
@@ -85,7 +77,7 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath,
 //------------------------------------------------------------------------------
 
 void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPath,
-                                         std::vector<std::string>& dicomFiles,
+                                         std::vector< ::boost::filesystem::path >& dicomFiles,
                                          const ::fwJobs::Observer::sptr& fileLookupObserver)
 {
     dicomFiles.clear();
@@ -128,5 +120,4 @@ void DicomSearch::checkFilenameExtension(const ::boost::filesystem::path& dirPat
 
 } //namespace helper
 } //namespace fwGdcmIO
-
 

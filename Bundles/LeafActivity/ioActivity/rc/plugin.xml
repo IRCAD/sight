@@ -40,6 +40,25 @@
         </appConfig>
     </extension>
 
+    <!-- Activity used to export a model series. -->
+    <extension implements="::fwActivities::registry::Activities">
+        <id>DicomSeriesExport</id>
+        <title>DicomSeries Export</title>
+        <desc>Activity to export a DicomSeries as a DICOM file, and optionally a ModelSeries.</desc>
+        <icon>media-0.1/icons/Export.svg</icon>
+        <requirements>
+            <requirement name="dicomSeries" type="::fwMedData::DicomSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportDicomSelection">
+            <parameters>
+                <parameter replace="dicom" by="@values.dicomSeries" />
+                <parameter replace="model" by="@values.modelSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
     <!-- App config used to export the selected series. -->
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
@@ -48,6 +67,7 @@
         </parameters>
         <config>
             <object uid="${selection}" src="ref" />
+
             <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
                 <in key="selection" uid="${selection}" />
                 <type mode="writer" />
@@ -56,6 +76,54 @@
             </service>
             <start uid="export_selection" />
             <update uid="export_selection" />
+        </config>
+    </extension>
+
+    <!-- App config used to export a dicom selected series. -->
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExportDicomSelection</id>
+        <parameters>
+            <param name="dicom" />
+            <param name="model" />
+        </parameters>
+        <config>
+            <object uid="${dicom}" type="::fwMedData::DicomSeries" src="ref" />
+            <object uid="${model}" type="::fwMedData::ModelSeries" src="ref" />
+
+            <!-- We build a vector with the image and model series. -->
+            <object uid="vectorToSave" type="::fwData::Vector" />
+
+            <service uid="addDicom" type="::ctrlSelection::SManage">
+               <inout key="object" uid="${dicom}" />
+               <inout key="vector" uid="vectorToSave" />
+            </service>
+
+            <service uid="addModel" type="::ctrlSelection::SManage">
+               <inout key="object" uid="${model}" />
+               <inout key="vector" uid="vectorToSave" />
+            </service>
+
+            <service uid="exportSelection" type="::uiIO::editor::SIOSelector">
+                <in key="selection" uid="vectorToSave" />
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioGdcm::SSurfaceSegmentationWriter" />
+            </service>
+
+            <connect>
+                <signal>addDicom/started</signal>
+                <slot>addDicom/add</slot>
+            </connect>
+            <connect>
+                <signal>addModel/started</signal>
+                <slot>addModel/add</slot>
+            </connect>
+
+            <start uid="addDicom" />
+            <start uid="addModel" />
+            <start uid="exportSelection" />
+
+            <update uid="exportSelection" />
         </config>
     </extension>
 

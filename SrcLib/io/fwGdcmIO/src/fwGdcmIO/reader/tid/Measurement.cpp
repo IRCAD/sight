@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,9 @@
 #include "fwGdcmIO/container/sr/DicomSRSCoord3DNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
@@ -29,11 +28,11 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Measurement::Measurement(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                         SPTR(::gdcm::Reader)reader,
-                         SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                         ::fwData::Image::sptr image,
-                         ::fwLog::Logger::sptr logger) :
+Measurement::Measurement(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                         const SPTR(::gdcm::Reader)& reader,
+                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                         const ::fwData::Image::sptr& image,
+                         const ::fwLog::Logger::sptr& logger) :
     ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)
 {
 }
@@ -46,12 +45,12 @@ Measurement::~Measurement()
 
 //------------------------------------------------------------------------------
 
-void Measurement::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
+void Measurement::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node)
 {
     if(node->getCodedAttribute() == ::fwGdcmIO::container::DicomCodedAttribute("121206", "DCM", "Distance") &&
        !node->getSubNodeContainer().empty())
     {
-        for(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& subNode: node->getSubNodeContainer())
+        for(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
         {
             if(subNode->getType() == "SCOORD")
             {
@@ -71,7 +70,7 @@ void Measurement::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
                         if(imageNode)
                         {
                             const int frameNumber = imageNode->getFrameNumber();
-                            double zCoordinate    = ::fwGdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(
+                            double zCoordinate    = ::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object, frameNumber);
 
                             auto origin = ::fwData::Point::New(static_cast<double>(coordinates[0]),
@@ -103,7 +102,8 @@ void Measurement::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
 
 //------------------------------------------------------------------------------
 
-void Measurement::addDistance(SPTR(::fwData::Point)point1, SPTR(::fwData::Point)point2)
+void Measurement::addDistance(const SPTR(::fwData::Point)& point1,
+                              const SPTR(::fwData::Point)& point2)
 {
     ::fwData::Vector::sptr distanceVector =
         m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);

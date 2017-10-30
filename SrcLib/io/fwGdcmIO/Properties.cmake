@@ -12,6 +12,7 @@ set( DEPENDENCIES
     fwTools
     fwRuntime
     fwDicomIOFilter
+    fwMedDataTools
     fwLog
     fwJobs
     fwCom

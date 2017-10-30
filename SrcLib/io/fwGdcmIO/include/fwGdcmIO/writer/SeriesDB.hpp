@@ -74,7 +74,8 @@ protected:
      * @param[in] a First Series
      * @param[in] b Second Series
      */
-    static bool seriesComparator(SPTR(::fwMedData::Series) a, SPTR(::fwMedData::Series) b);
+    static bool seriesComparator(const SPTR(::fwMedData::Series)& a,
+                                 const SPTR(::fwMedData::Series)& b);
 
     /// Fiducials Export Mode
     ::fwGdcmIO::writer::Series::FiducialsExportMode m_fiducialsExportMode;

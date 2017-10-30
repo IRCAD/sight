@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,17 +21,7 @@
 
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <stdio.h>
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
-
-#include <algorithm>
-#include <cstdint>
-#include <fstream>
-#include <utility>
 
 fwDataIOWriterRegisterMacro( ::fwGdcmIO::helper::DicomSeriesWriter );
 
@@ -59,7 +49,7 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
         longestPrefix = paths.begin()->second;
     }
 
-    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value: paths)
+    for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value : paths)
     {
         std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
             = std::mismatch(longestPrefix.begin(), longestPrefix.end(), value.second.begin());
@@ -189,8 +179,7 @@ void DicomSeriesWriter::processWrite()
     // Write binary files
     if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
     {
-        BOOST_FOREACH(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value,
-                      dicomSeries->getDicomBinaries())
+        for(const auto& value : dicomSeries->getDicomBinaries())
         {
             if(m_job->cancelRequested())
             {
@@ -215,7 +204,7 @@ void DicomSeriesWriter::processWrite()
                 ::boost::filesystem::create_directories(dest_dir);
             }
 
-            const ::boost::filesystem::path& dest_file = dest_dir/filename;
+            const ::boost::filesystem::path& dest_file = dest_dir / filename;
 
             ::boost::filesystem::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
             FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
@@ -231,8 +220,8 @@ void DicomSeriesWriter::processWrite()
         ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
         SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        BOOST_FOREACH(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type &value,
-                      dicomSeries->getLocalDicomPaths())
+        for(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type& value :
+            dicomSeries->getLocalDicomPaths())
         {
             if(m_job->cancelRequested())
             {
@@ -271,6 +260,8 @@ void DicomSeriesWriter::processWrite()
     m_writeCount++;
 }
 
+//------------------------------------------------------------------------------
+
 void DicomSeriesWriter::processWriteArchive()
 {
     SLM_ASSERT("Output archive shall be set", m_archive);
@@ -280,14 +271,13 @@ void DicomSeriesWriter::processWriteArchive()
     FW_RAISE_IF("Dicom series should contain binaries.",
                 dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::NONE);
 
-    const unsigned int nbInstances = dicomSeries->getNumberOfInstances();
-    unsigned int count             = 0;
+    const size_t nbInstances = dicomSeries->getNumberOfInstances();
+    unsigned int count       = 0;
 
     m_job->setTotalWorkUnits(nbInstances);
     if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
     {
-        BOOST_FOREACH(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value,
-                      dicomSeries->getDicomBinaries())
+        for(::fwMedData::DicomSeries::DicomBinaryContainerType::value_type value : dicomSeries->getDicomBinaries())
         {
             if(m_job->cancelRequested())
             {
@@ -304,12 +294,10 @@ void DicomSeriesWriter::processWriteArchive()
             std::ifstream stream;
             stream.rdbuf()->pubsetbuf(buffer, size);
 
-
             const ::boost::filesystem::path& dest_dir =
                 m_anonymizer ? m_subPath : "";
 
-
-            const ::boost::filesystem::path& dest_file = dest_dir/filename;
+            const ::boost::filesystem::path& dest_file = dest_dir / filename;
             SPTR(std::ostream) fs = m_archive->createFile(dest_file);
             FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
@@ -324,8 +312,7 @@ void DicomSeriesWriter::processWriteArchive()
         ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
         SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        BOOST_FOREACH(const ::fwMedData::DicomSeries::DicomPathContainerType::value_type &value,
-                      dicomSeries->getLocalDicomPaths())
+        for(const auto& value : dicomSeries->getLocalDicomPaths())
         {
             if(m_job->cancelRequested())
             {
@@ -342,7 +329,7 @@ void DicomSeriesWriter::processWriteArchive()
             ::boost::filesystem::ifstream stream(src, std::ios::binary);
             FW_RAISE_IF("Can't open '" << src.string() << "' for read.", !stream.good());
 
-            const ::boost::filesystem::path& dest_file = dest_dir/filename;
+            const ::boost::filesystem::path& dest_file = dest_dir / filename;
             SPTR(std::ostream) fs = m_archive->createFile(dest_file);
             FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
@@ -372,6 +359,8 @@ SPTR(::fwJobs::IJob) DicomSeriesWriter::getJob() const
 {
     return m_job;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace helper
 } // namespace fwGdcmIO

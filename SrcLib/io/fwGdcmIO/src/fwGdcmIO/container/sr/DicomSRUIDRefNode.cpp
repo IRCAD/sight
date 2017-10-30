@@ -1,15 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-#include <gdcmSequenceOfItems.h>
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 namespace fwGdcmIO
 {
@@ -21,8 +18,10 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRUIDRefNode::DicomSRUIDRefNode(const DicomCodedAttribute& codedAttribute,
-                                     const std::string& relationship, const std::string uidValue) :
-    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "UIDREF", relationship), m_uidValue(uidValue)
+                                     const std::string& relationship,
+                                     const std::string uidValue) :
+    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "UIDREF", relationship),
+    m_uidValue(uidValue)
 {
 }
 
@@ -39,7 +38,7 @@ void DicomSRUIDRefNode::write(::gdcm::DataSet& dataset) const
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
     // UID Value - Type 1C
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0040, 0xa124 >(m_uidValue, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0040, 0xa124 >(m_uidValue, dataset);
 }
 
 //------------------------------------------------------------------------------

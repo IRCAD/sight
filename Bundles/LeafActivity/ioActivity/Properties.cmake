@@ -4,6 +4,8 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
         activities
+        ctrlSelection
+        gui
         io
         uiIO
         media

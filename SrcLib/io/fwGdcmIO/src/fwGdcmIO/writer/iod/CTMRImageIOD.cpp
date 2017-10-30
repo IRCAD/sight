@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
 #include "fwGdcmIO/writer/ie/Equipment.hpp"
 #include "fwGdcmIO/writer/ie/FrameOfReference.hpp"
@@ -34,8 +33,13 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-CTMRImageIOD::CTMRImageIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance, ::boost::filesystem::path folderPath) :
-    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, folderPath)
+CTMRImageIOD::CTMRImageIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                           const ::boost::filesystem::path& destinationPath,
+                           const ::fwLog::Logger::sptr& logger,
+                           ProgressCallback progress,
+                           CancelRequestedCallback cancel) :
+        ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, destinationPath, logger,
+                                                             progress, cancel)
 {
 }
 
@@ -47,7 +51,7 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::write(::fwMedData::Series::sptr series)
+void CTMRImageIOD::write(const ::fwMedData::Series::sptr& series)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
@@ -138,13 +142,13 @@ void CTMRImageIOD::write(::fwMedData::Series::sptr series)
 
         // Write file
         std::stringstream ss;
-        ss << m_folderPath.string() << "/im" << std::setfill('0') << std::setw(5) << i;
-        ::fwGdcmIO::helper::FileWriter::write(ss.str(), writer);
-
+        ss << std::setfill('0') << std::setw(5) << i;
+        auto framePath = m_destinationPath;
+        framePath += ss.str();
+        ::fwGdcmIO::helper::FileWriter::write(framePath, writer);
     }
-
-
 }
+//------------------------------------------------------------------------------
 
 } // namespace iod
 } // namespace writer

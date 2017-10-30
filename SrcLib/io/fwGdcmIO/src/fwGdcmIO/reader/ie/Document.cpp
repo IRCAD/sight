@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/reader/ie/Document.hpp"
+
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/container/sr/DicomSRContainerNode.hpp"
 #include "fwGdcmIO/helper/StructuredReport.hpp"
-#include "fwGdcmIO/reader/ie/Document.hpp"
 #include "fwGdcmIO/reader/tid/MeasurementReport.hpp"
-
-#include <fwMedData/DicomSeries.hpp>
 
 namespace fwGdcmIO
 {
@@ -21,15 +20,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Document::Document(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                   SPTR(::gdcm::Reader)reader,
-                   SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                   ::fwData::Image::sptr image,
-                   ::fwLog::Logger::sptr logger,
-                   const ProgressCallback& callback,
-                   const bool& cancelled) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image, logger,
-                                                                 callback, cancelled)
+Document::Document(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                   const SPTR(::gdcm::Reader)& reader,
+                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                   const ::fwData::Image::sptr& image,
+                   const ::fwLog::Logger::sptr& logger,
+                   ProgressCallback progress,
+                   CancelRequestedCallback cancel) :
+    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image,
+                                                                 logger, progress, cancel)
 {
 }
 
@@ -41,7 +40,7 @@ Document::~Document()
 
 //------------------------------------------------------------------------------
 
-void Document::readSR()
+void Document::readSR() throw (::fwGdcmIO::exception::Failed)
 {
     // Retrieve dataset
     const ::gdcm::DataSet& datasetRoot = m_reader->GetFile().GetDataSet();
@@ -60,7 +59,6 @@ void Document::readSR()
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace ie
 } // namespace reader

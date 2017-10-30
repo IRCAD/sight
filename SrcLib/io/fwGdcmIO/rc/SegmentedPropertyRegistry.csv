@@ -1,0 +1,221 @@
+NOM|Property Type|Property Category|Property Type Modifier|Anatomic Region|Anatomic Region Modifier|Comments
+Aorta|(T-42000;SRT;Aorta)|(T-D000A;SRT;Anatomical Structure)||||
+Arteries|(T-41066;SRT;Artery)|(T-D0050;SRT;Tissue)||||
+Bladder|(T-74000;SRT;Bladder)|(T-D000A;SRT;Anatomical Structure)||||
+Bladder_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-74000;SRT;Bladder)||
+Bones|(T-D016E;SRT;Bone)|(T-D0050;SRT;Tissue)||||
+Brain|(T-A0100;SRT;Brain)|(T-D000A;SRT;Anatomical Structure)||||
+Bronchus|(T-26000;SRT;Bronchus)|(T-D000A;SRT;Anatomical Structure)||||Bronchi sur Slicer ?!
+Carotid|(T-45010;SRT;Carotid Artery)|(T-D000A;SRT;Anatomical Structure)||||
+Cartilage|(T-D021B;SRT;Cartilage)|(T-D0050;SRT;Tissue)||||
+Catheter|(A-26800;SRT;Catheter)|(A-00004;SRT;Physical Object)||||
+Clip|(A-12062;SRT;Clip)|(A-00004;SRT;Physical Object)||||
+Clothes|(A-00916;SRT;Clothing)|(A-00004;SRT;Physical Object)||||
+Colon|(T-59300;SRT;Colon)|(T-D000A;SRT;Anatomical Structure)||||
+Diaphragm|(T-D3400;SRT;Diaphragm)|(T-D000A;SRT;Anatomical Structure)||||Not sure
+Duodenum|(T-58200;SRT;Duodenum)|(T-D000A;SRT;Anatomical Structure)||||
+Esophagus|(T-56000;SRT;Esophagus)|(T-D000A;SRT;Anatomical Structure)||||
+Fat|(F-03D38;SRT;Body fat)|(T-D0050;SRT;Tissue)||||
+Femur|(T-12710;SRT;Femur)|(T-D000A;SRT;Anatomical Structure)||||
+Gallbladder|(T-63000;SRT;Gallbladder)|(T-D000A;SRT;Anatomical Structure)||||
+Heart|(T-32000;SRT;Heart)|(T-D000A;SRT;Anatomical Structure)||||
+Hepatic_Veins|(T-48720;SRT;Hepatic vein)|(T-D000A;SRT;Anatomical Structure)||||
+Humerus|(T-12410;SRT;Humerus)|(T-D000A;SRT;Anatomical Structure)||||
+Ileum|(T-58600;SRT;Ileum)|(T-D000A;SRT;Anatomical Structure)||||
+Inferior_Mesenteric_Artery|(T-46520;SRT;Inferior Mesenteric Artery)|(T-D000A;SRT;Anatomical Structure)||||
+Inferior_Vena_Cava|(T-48710;SRT;Inferior vena cava)|(T-D000A;SRT;Anatomical Structure)||||
+Left_Atrium|(T-32100;SRT;Atrium)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Colon|(T-59300;SRT;Colon)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Cortex|(T-A2020;SRT;Cerebral cortex)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||Ou bien (T-A2594;SRT;Entorhinal Cortex) ?
+Left_Femoral_Artery|(T-47400;SRT;Femoral artery)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Kidney|(T-71000;SRT;Kidney)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Kidney_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-71000;SRT;Kidney)|(G-A101;SRT;Left)|
+Left_Kidney_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-71000;SRT;Kidney)|(G-A101;SRT;Left)|
+Left_Lung|(T-28000;SRT;Lung)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Lung_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-28000;SRT;Lung)|(G-A101;SRT;Left)|
+Left_Lung_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-28000;SRT;Lung)|(G-A101;SRT;Left)|
+Left_Ovary|(T-87000;SRT;Ovary)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Renal_Artery|(T-46600;SRT;Renal artery)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Renal_Vein|(T-48740;SRT;Renal vein)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Ureter|(T-73000;SRT;Ureter)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Left_Ventricle|(T-32400;SRT;Ventricle)|(T-D000A;SRT;Anatomical Structure)|(G-A101;SRT;Left)|||
+Ligament|(T-18010;SRT;Ligament)|(T-D000A;SRT;Anatomical Structure)||||
+Liver|(T-62000;SRT;Liver)|(T-D000A;SRT;Anatomical Structure)||||
+Liver_Cysts|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-62000;SRT;Liver)||
+Liver_Tumors|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-62000;SRT;Liver)||
+Lymph_Node|(T-C4000;SRT;Lymph node)|(T-D000A;SRT;Anatomical Structure)||||
+Mandible|(T-11180;SRT;Mandible)|(T-D000A;SRT;Anatomical Structure)||||
+Meniscus|(T-15009;SRT;Meniscus)|(T-D000A;SRT;Anatomical Structure)||||
+Mesenteric_Vein|(T-4884A;SRT;Mesenteric vein)|(T-D000A;SRT;Anatomical Structure)||||
+Muscles|(T-13001;SRT;Muscle)|(T-D0050;SRT;Tissue)||||
+Needle|(A-30360;SRT;Needle)|(A-00004;SRT;Physical Object)||||
+Nerves|(T-D0598;SRT;Nerve)|(T-D0050;SRT;Tissue)||||
+Pancreas|(T-65000;SRT;Pancreas)|(T-D000A;SRT;Anatomical Structure)||||
+Pancreas_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-65000;SRT;Pancreas)||
+Pancreas_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-65000;SRT;Pancreas)||
+Patella|(T-12730;SRT;Patella)|(T-D000A;SRT;Anatomical Structure)||||
+Portal_Vein|(T-48810;SRT;Portal vein)|(T-D000A;SRT;Anatomical Structure)||||
+Prostate|(T-9200B;SRT;Prostate)|(T-D000A;SRT;Anatomical Structure)||||May be (T-92000;SRT;Prostate) but not in anatomic regions
+Prostate_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-9200B;SRT;Prostate)||
+Prothesis|(A-04000;SRT;Prosthesis)|(A-00004;SRT;Physical Object)||||
+Pulmonary_Artery|(T-44000;SRT;Pulmonary artery)|(T-D000A;SRT;Anatomical Structure)||||
+Pulmonary_Vein|(T-48581;SRT;Pulmonary vein)|(T-D000A;SRT;Anatomical Structure)||||
+Rectum|(T-59600;SRT;Rectum)|(T-D000A;SRT;Anatomical Structure)||||
+Right_Atrium|(T-32100;SRT;Atrium)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Colon|(T-59300;SRT;Colon)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Femoral_Artery|(T-47400;SRT;Femoral artery)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Kidney|(T-71000;SRT;Kidney)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Kidney_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-71000;SRT;Kidney)|(G-A100;SRT;Right)|
+Right_Kidney_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-71000;SRT;Kidney)|(G-A100;SRT;Right)|
+Right_Lung|(T-28000;SRT;Lung)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Lung_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-28000;SRT;Lung)|(G-A100;SRT;Right)|
+Right_Lung_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-28000;SRT;Lung)|(G-A100;SRT;Right)|
+Right_Ovary|(T-87000;SRT;Ovary)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Renal_Artery|(T-46600;SRT;Renal artery)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Renal_Vein|(T-48740;SRT;Renal vein)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Ureter|(T-73000;SRT;Ureter)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Right_Ventricle|(T-32400;SRT;Ventricle)|(T-D000A;SRT;Anatomical Structure)|(G-A100;SRT;Right)|||
+Seminal_Vesicles|(T-93000;SRT;Seminal Vesicle)|(T-D000A;SRT;Anatomical Structure)||||
+Skin|(T-01000;SRT;Skin)|(T-D0050;SRT;Tissue)||||
+Spleen|(T-C3000;SRT;Spleen)|(T-D000A;SRT;Anatomical Structure)||||
+Spleen_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-C3000;SRT;Spleen)||
+Spleen_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-C3000;SRT;Spleen)||
+Stent|(A-25500;SRT;Stent)|(A-00004;SRT;Physical Object)||||
+Stomach|(T-57000;SRT;Stomach)|(T-D000A;SRT;Anatomical Structure)||||
+Superior_Mesenteric_Artery|(T-46510;SRT;Superior Mesenteric Artery)|(T-D000A;SRT;Anatomical Structure)||||
+Superior_Vena_Cava|(T-48610;SRT;Superior vena cava)|(T-D000A;SRT;Anatomical Structure)||||
+Table|(A-17350;SRT;Table)|(A-00004;SRT;Physical Object)||||
+Tendon|(T-17010;SRT;Tendon)|(T-D000A;SRT;Anatomical Structure)||||
+Thymus|(T-C8000;SRT;Thymus)|(T-D000A;SRT;Anatomical Structure)||||
+Thyroid|(T-B6000;SRT;Thyroid)|(T-D000A;SRT;Anatomical Structure)||||
+Thyroid_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-B6000;SRT;Thyroid)||
+Thyroid_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-B6000;SRT;Thyroid)||
+Trachea|(T-25000;SRT;Trachea)|(T-D000A;SRT;Anatomical Structure)||||
+Urethra|(T-75000;SRT;Urethra)|(T-D000A;SRT;Anatomical Structure)||||
+Uterus|(T-83000;SRT;Uterus)|(T-D000A;SRT;Anatomical Structure)||||
+Uterus_Cyst|(M-3340A;SRT;Cyst)|(M-01000;SRT;Morphologically Altered Structure)||(T-83000;SRT;Uterus)||
+Uterus_Tumor|(M-8FFFF;SRT;Neoplasm)|(M-01000;SRT;Morphologically Altered Structure)||(T-83000;SRT;Uterus)||
+Vagina|(T-82000;SRT;Vagina)|(T-D000A;SRT;Anatomical Structure)||||
+Veins|(T-4806E;SRT;Vein)|(T-D0050;SRT;Tissue)||||
+
+-------------------------------------------------------------------------------
+UNSUPPORTED STRUCTURE TYPES
+-------------------------------------------------------------------------------
+
+Anterior_Cruciate_Ligament||||||
+Area||||||
+Atheroma||||||
+Biliary_Tract||||||
+Bowel||||||
+Caecum||||||
+Calcification||||||
+Canulla||||||
+Capitale||||||
+Cranium||||||
+Cyst||||||
+Digestive_Tract||||||
+Drain||||||
+Eyes||||||
+Fibula||||||
+Gastric_Ring||||||
+Hamate||||||
+Jejunum||||||
+Jugular_Veins||||||
+Landmark||||||
+Lateral_Meniscus||||||
+Left_Adrenal||||||
+Left_Adrenal_Tumor||||||
+Left_Calyx||||||
+Left_Lobe||||||
+Left_Medulla||||||
+Left_Papilla||||||
+Left_Renal_Pelvis||||||
+Liver_part_1||||||
+Liver_part_2||||||
+LL_Lobe||||||
+LLL_Segment||||||
+LU_Lobe||||||
+LUL_Segment||||||
+Lunate||||||
+Mass||||||
+Medial_Meniscus||||||
+Metacarpal_1||||||
+Metacarpal_2||||||
+Metacarpal_3||||||
+Metacarpal_4||||||
+Metacarpal_5||||||
+Parathyroid_P1||||||
+Parathyroid_P2||||||
+Parathyroid_P3||||||
+Parathyroid_P4||||||
+Peritoneum||||||
+Pisiform||||||
+Plate||||||
+Portal_Vein_Thrombosis||||||
+Posterior_Cruciate_Ligament||||||
+Radius||||||
+Right_Adrenal||||||
+Right_Adrenal_Tumor||||||
+Right_Calyx||||||
+Right_Cortex||||||
+Right_Lobe||||||
+Right_Medulla||||||
+Right_Papilla||||||
+Right_Renal_Pelvis||||||
+RL_Lobe||||||
+RLL_Segment||||||
+RM_Lobe||||||
+RML_Segment||||||
+RU_Lobe||||||
+RUL_Segment||||||
+Scaphoid||||||
+Segment_1||||||
+Segment_2||||||
+Segment_3||||||
+Segment_4||||||
+Segment_4a||||||
+Segment_4b||||||
+Segment_4c||||||
+Segment_4d||||||
+Segment_5||||||
+Segment_5a||||||
+Segment_5b||||||
+Segment_5c||||||
+Segment_5d||||||
+Segment_6||||||
+Segment_7||||||
+Segment_8||||||
+Segment_8a||||||
+Segment_8b||||||
+Segment_8c||||||
+Segment_8d||||||
+Segment_9||||||
+Segment_AS||||||
+Segment_C||||||
+Segment_L||||||
+Segment_LL||||||
+Segment_LP||||||
+Segment_LS||||||
+Segment_M||||||
+Segment_MS||||||
+Segment_PS||||||
+Segment_R||||||
+Segment_RL||||||
+Segment_RP||||||
+Sigmoid||||||
+Stone||||||
+synovia||||||
+Tibia||||||
+Tool||||||
+Transverse_Colon||||||
+Trapezium||||||
+Trapezoid||||||
+Triquetrum||||||
+Tumor||||||
+Ulna||||||
+Wirsung||||||
+World||||||
+Z_Left_Lung_Tumor_Xmm_safety_margin||||||
+Z_Liver_Tumors_Xmm_safety_margin||||||
+Z_Right_Lung_Tumor_Xmm_safety_margin||||||
+Z_Tumor_Xmm_safety_margin||||||

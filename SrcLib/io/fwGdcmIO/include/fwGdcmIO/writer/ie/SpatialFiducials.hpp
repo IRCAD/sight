@@ -31,10 +31,16 @@ public:
      * @param[in] writer GDCM writer that must be enriched
      * @param[in] instance DICOM instance used to share information between modules
      * @param[in] series Series data
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API SpatialFiducials(SPTR(::gdcm::Writer)writer,
-                                  SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                  ::fwData::Image::sptr series);
+    FWGDCMIO_API SpatialFiducials(const SPTR(::gdcm::Writer)& writer,
+                                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                  const ::fwData::Image::sptr& series,
+                                  const ::fwLog::Logger::sptr& logger = nullptr,
+                                  ProgressCallback progress = nullptr,
+                                  CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SpatialFiducials();
@@ -62,7 +68,7 @@ protected:
     /**
      * @brief Write image landmarks into sequence
      */
-    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence);
+    void writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence) throw(::fwGdcmIO::exception::Failed);
 
     /**
      * @brief Write image distances into sequence
@@ -74,7 +80,7 @@ protected:
      * @param[in] frameNumber Frame Number
      * @param[in] referencedImageSequence Destination sequence
      */
-    void addReferencedImage(int frameNumber, ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence);
+    void addReferencedImage(int frameNumber, ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::fwGdcmIO::exception::Failed);
 };
 
 } // namespace ie

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 
 #include <fwCore/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
 
 #include <string>
@@ -42,7 +41,8 @@ public:
      * @param[in] fileLookupObserver lookup observer
      */
     FWGDCMIO_API static void searchRecursively(const ::boost::filesystem::path& dirPath,
-                                               std::vector<std::string>& dicomFiles, bool checkIsDicom,
+                                               std::vector< ::boost::filesystem::path >& dicomFiles,
+                                               bool checkIsDicom,
                                                const SPTR(::fwJobs::Observer)& fileLookupObserver = nullptr);
 
 protected:
@@ -53,7 +53,7 @@ protected:
      * @param[in] fileLookupObserver lookup observer
      */
     static void checkFilenameExtension(const ::boost::filesystem::path& dirPath,
-                                       std::vector<std::string>& dicomFiles,
+                                       std::vector< ::boost::filesystem::path >& dicomFiles,
                                        const SPTR(::fwJobs::Observer)& fileLookupObserver = nullptr);
 };
 

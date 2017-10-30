@@ -8,11 +8,13 @@
 #define __FWGDCMIO_READER_IE_SURFACE_HPP__
 
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
+#include "fwGdcmIO/helper/SegmentedPropertyRegistry.hpp"
 
-#include <fwData/StructureTraitsDictionary.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
 #include <gdcmSurfaceReader.h>
+
+#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
@@ -40,36 +42,56 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] series Series data
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Surface(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                         SPTR(::gdcm::Reader)reader,
-                         SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                         ::fwMedData::ModelSeries::sptr series,
-                         ::fwLog::Logger::sptr logger,
-                         const ProgressCallback& callback,
-                         const bool& cancelled);
+    FWGDCMIO_API Surface(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                         const SPTR(::gdcm::Reader)& reader,
+                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                         const ::fwMedData::ModelSeries::sptr& series,
+                         const ::fwLog::Logger::sptr& logger = nullptr,
+                         ProgressCallback progress = nullptr,
+                         CancelRequestedCallback cancel = nullptr);
+
+    /**
+     * @brief Load Segmented Property Registry
+     * @param[in] filepath Path to the registry CSV file
+     * @return True on success
+     */
+    FWGDCMIO_API bool loadSegmentedPropertyRegistry(const ::boost::filesystem::path& filepath);
 
     /// Destructor
     FWGDCMIO_API virtual ~Surface();
 
+
     /**
-     * @brief Read Surface Segmentation Module tags
-     * @param[in] segment GDCM segment
-     * @see PS 3.3 C.8.23.1
+     * @brief Read Surface Segmentation and Surface Mesh Modules
+     * @see PS 3.3 C.8.23.1 and PS 3.3 C.27.1
      */
-    FWGDCMIO_API virtual void readSurfaceSegmentationModule(::gdcm::SmartPointer< ::gdcm::Segment > segment);
+    FWGDCMIO_API virtual void readSurfaceSegmentationAndSurfaceMeshModules();
 
 protected:
+
+    /**
+     * @brief Read Surface Segmentation Module tags
+     * @param[in,out] reconstruction Reconstruction data
+     * @param[in] segment GDCM segment
+     * @param[in] segmentItem GDCM segment item
+     * @see PS 3.3 C.8.23.1
+     */
+    virtual void readSurfaceSegmentationModule(const SPTR(::fwData::Reconstruction)& reconstruction,
+                                               const ::gdcm::SmartPointer< ::gdcm::Segment >& segment,
+                                               const ::gdcm::Item& segmentItem);
     /**
      * @brief Read Surface Mesh Module tags
-     * @param[in] segment GDCM surface
-     * @param[in] reconstruction Reconstruction data
+     * @param[in,out] reconstruction Reconstruction data
+     * @param[in] surface GDCM surface
      * @see PS 3.3 C.27.1
      */
-    FWGDCMIO_API virtual void readSurfaceMeshModule(::gdcm::SmartPointer< ::gdcm::Surface > surface,
-                                                    SPTR(::fwData::Reconstruction) reconstruction);
+    FWGDCMIO_API virtual void readSurfaceMeshModule(const SPTR(::fwData::Reconstruction)& reconstruction, const ::gdcm::SmartPointer< ::gdcm::Surface >& surface
+                                                    );
+    /// Segment Property Registry
+    ::fwGdcmIO::helper::SegmentedPropertyRegistry m_segmentedPropertyRegistry;
 
 };
 

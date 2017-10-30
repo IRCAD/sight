@@ -40,7 +40,7 @@ public:
 
 private:
     void testDICOMFolder(const ::boost::filesystem::path& srcPath);
-    void testAnonymizedFile(const std::string& filename);
+    void testAnonymizedFile(const ::boost::filesystem::path& filename);
 
     std::set< std::string > m_uidContainer;
 

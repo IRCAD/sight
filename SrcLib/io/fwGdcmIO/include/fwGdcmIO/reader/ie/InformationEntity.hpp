@@ -15,6 +15,8 @@
 
 #include <gdcmReader.h>
 
+#include <cstdint>
+
 namespace fwMedData
 {
 class DicomSeries;
@@ -36,7 +38,8 @@ class FWGDCMIO_CLASS_API InformationEntity
 
 public:
 
-    typedef std::function< void (unsigned int&) > ProgressCallback;
+    typedef std::function< void(std::uint64_t) > ProgressCallback;
+    typedef std::function< bool() > CancelRequestedCallback;
 
     /**
      * @brief Constructor
@@ -45,17 +48,16 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] object FW4SPL data object
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API InformationEntity(
-        SPTR(::fwMedData::DicomSeries)dicomSeries,
-        SPTR(::gdcm::Reader)reader,
-        SPTR(::fwGdcmIO::container::DicomInstance)instance,
-        SPTR(DATATYPE)object,
-        ::fwLog::Logger::sptr logger,
-        const ProgressCallback& callback,
-        const bool& cancelled);
+    FWGDCMIO_API InformationEntity(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                                   const SPTR(::gdcm::Reader)& reader,
+                                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                   const SPTR(DATATYPE)& object,
+                                   const ::fwLog::Logger::sptr& logger = nullptr,
+                                   const ProgressCallback progress = nullptr,
+                                   CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationEntity();
@@ -78,22 +80,29 @@ protected:
     ::fwLog::Logger::sptr m_logger;
 
     /// Progress callback for jobs
-    const ProgressCallback& m_progressCallback;
+    ProgressCallback m_progressCallback;
 
     /// Cancel information for jobs
-    const bool& m_cancelled;
+    CancelRequestedCallback m_cancelRequestedCallback;
 };
 
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-InformationEntity<DATATYPE>::InformationEntity(
-    SPTR(::fwMedData::DicomSeries)dicomSeries,
-    SPTR(::gdcm::Reader)reader,
-    SPTR(::fwGdcmIO::container::DicomInstance)instance, SPTR(DATATYPE)object, ::fwLog::Logger::sptr logger,
-    const ProgressCallback& callback, const bool& cancelled) :
-    m_dicomSeries(dicomSeries), m_reader(reader), m_instance(instance), m_object(object), m_logger(logger),
-    m_progressCallback(callback), m_cancelled(cancelled)
+InformationEntity<DATATYPE>::InformationEntity(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                                               const SPTR(::gdcm::Reader)& reader,
+                                               const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                               const SPTR(DATATYPE)& object,
+                                               const ::fwLog::Logger::sptr& logger,
+                                               ProgressCallback progress,
+                                               CancelRequestedCallback cancel):
+    m_dicomSeries(dicomSeries),
+    m_reader(reader),
+    m_instance(instance),
+    m_object(object),
+    m_logger(logger),
+    m_progressCallback(progress),
+    m_cancelRequestedCallback(cancel)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Reader should not be null.", reader);

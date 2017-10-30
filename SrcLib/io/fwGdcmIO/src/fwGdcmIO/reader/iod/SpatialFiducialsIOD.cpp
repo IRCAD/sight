@@ -1,21 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/SpatialFiducials.hpp"
 
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -30,11 +27,12 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-SpatialFiducialsIOD::SpatialFiducialsIOD(::fwMedData::DicomSeries::sptr dicomSeries,
-                                         SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                         ::fwLog::Logger::sptr logger,
-                                         ProgressCallback& callback, bool& cancelled) :
-    ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, callback, cancelled)
+SpatialFiducialsIOD::SpatialFiducialsIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                         const ::fwLog::Logger::sptr& logger,
+                                         ProgressCallback progress,
+                                         CancelRequestedCallback cancel) :
+    ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
 
@@ -47,7 +45,7 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
+void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series) throw (::fwGdcmIO::exception::Failed)
 {
     // Retrieve images
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
@@ -61,9 +59,10 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
     // Read the first file
     ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
 
-    if(pathContainer.size() >1)
+    if(pathContainer.size() > 1)
     {
-        m_logger->warning("More than one Spatial Fiducials file was found in series. Only the first one will be read.");
+        m_logger->warning("More than one Spatial Fiducials files have been found in the series. "
+                          "Only the first one will be read.");
     }
 
     const std::string filename = pathContainer.begin()->second.string();
@@ -74,7 +73,8 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::SpatialFiducials spatialFiducialsIE(
-        m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger, m_progressCallback, m_cancelled);
+        m_dicomSeries, reader, m_instance, imageSeries->getImage(),
+        m_logger, m_progressCallback, m_cancelRequestedCallback);
 
     // Retrieve dataset
     const ::gdcm::DataSet& datasetRoot = reader->GetFile().GetDataSet();
@@ -100,7 +100,7 @@ void SpatialFiducialsIOD::read(::fwMedData::Series::sptr series)
             ::gdcm::Item fiducialItem = fiducialSequence->GetItem(j);
             const ::gdcm::DataSet& fiducialDataset = fiducialItem.GetNestedDataSet();
             const std::string shapeType            =
-                ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0070,0x0306>(fiducialDataset);
+                ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0070, 0x0306>(fiducialDataset);
 
             if(shapeType == "POINT")
             {

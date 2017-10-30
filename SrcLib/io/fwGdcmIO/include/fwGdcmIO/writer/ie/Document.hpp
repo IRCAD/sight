@@ -31,11 +31,17 @@ public:
      * @param[in] writer GDCM writer that must be enriched
      * @param[in] instance DICOM instance used to share information between modules
      * @param[in] image Image data
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API Document(SPTR(::gdcm::Writer)writer,
-                          SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                          ::fwData::Image::sptr image,
-                          bool use3DSR = false);
+    FWGDCMIO_API Document(const SPTR(::gdcm::Writer)& writer,
+                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                          const ::fwData::Image::sptr& image,
+                          bool use3DSR = false,
+                          const ::fwLog::Logger::sptr& logger = nullptr,
+                          ProgressCallback progress = nullptr,
+                          CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Document();

@@ -35,11 +35,11 @@ public:
      * @param[in] image FW4SPL data object
      * @param[in] logger Logger
      */
-    FWGDCMIO_API Fiducial(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                          SPTR(::gdcm::Reader)reader,
-                          SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                          ::fwData::Image::sptr image,
-                          ::fwLog::Logger::sptr logger);
+    FWGDCMIO_API Fiducial(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                          const SPTR(::gdcm::Reader)& reader,
+                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                          const ::fwData::Image::sptr& image,
+                          const ::fwLog::Logger::sptr& logger);
 
     /// Destructor
     FWGDCMIO_API virtual ~Fiducial();
@@ -48,7 +48,7 @@ public:
      * @brief Read a fiducial node
      * @param[in] node Node that must be read
      */
-    FWGDCMIO_API virtual void readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode) node);
+    FWGDCMIO_API virtual void readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node);
 
 protected:
 

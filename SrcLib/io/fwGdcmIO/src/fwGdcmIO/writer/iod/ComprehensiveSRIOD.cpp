@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
 #include "fwGdcmIO/writer/ie/Document.hpp"
 #include "fwGdcmIO/writer/ie/Equipment.hpp"
@@ -34,9 +33,14 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-ComprehensiveSRIOD::ComprehensiveSRIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                       ::boost::filesystem::path folderPath, bool use3DSR) :
-    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, folderPath), m_use3DSR(use3DSR)
+ComprehensiveSRIOD::ComprehensiveSRIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                       const ::boost::filesystem::path& destinationPath,
+                                       bool use3DSR,
+                                       const ::fwLog::Logger::sptr& logger,
+                                       ProgressCallback progress,
+                                       CancelRequestedCallback cancel) :
+    ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),
+    m_use3DSR(use3DSR)
 {
 }
 
@@ -48,7 +52,7 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::write(::fwMedData::Series::sptr series)
+void ComprehensiveSRIOD::write(const ::fwMedData::Series::sptr& series)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
@@ -92,10 +96,10 @@ void ComprehensiveSRIOD::write(::fwMedData::Series::sptr series)
     documentIE.writeSOPCommonModule();
 
     // Write document
-    ::fwGdcmIO::helper::FileWriter::write(m_folderPath.string() + "/imSR", writer);
-
+    ::fwGdcmIO::helper::FileWriter::write(m_destinationPath, writer);
 }
 
+//------------------------------------------------------------------------------
 } // namespace iod
 } // namespace writer
 } // namespace fwGdcmIO

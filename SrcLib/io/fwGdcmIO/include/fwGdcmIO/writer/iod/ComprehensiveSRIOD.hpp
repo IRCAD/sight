@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,15 +28,24 @@ public:
     /**
      * @brief Constructor
      * @param[in] instance DICOM instance used to share informations between modules
+     * @param[in] destinationPath Destination path
+     * @param[in] use3DSR Use 3D Structural Report IOD
+     * @param[in] logger Logger
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API ComprehensiveSRIOD(SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                                    ::boost::filesystem::path folderPath, bool use3DSR = false);
+    FWGDCMIO_API ComprehensiveSRIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                    const ::boost::filesystem::path& destinationPath,
+                                    bool use3DSR = false,
+                                    const ::fwLog::Logger::sptr& logger = nullptr,
+                                    ProgressCallback progress = nullptr,
+                                    CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~ComprehensiveSRIOD();
 
     /// Write DICOM file
-    FWGDCMIO_API virtual void write(::fwMedData::Series::sptr series);
+    FWGDCMIO_API virtual void write(const ::fwMedData::Series::sptr& series) override;
 
 protected:
     /// True if we must use 3DSR
