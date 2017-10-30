@@ -35,7 +35,7 @@ else()
     file(INSTALL ${OGRE_PLUGINS} DESTINATION ${FRAMEWORKS_DIR})
 
     # This copies the plugins into the install directory
-    install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "/bin/Contents/Plugins/")
+    install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "bin/Contents")
 endif()
 
 fwForwardInclude(
