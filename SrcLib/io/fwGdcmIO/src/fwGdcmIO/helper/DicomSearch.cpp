@@ -65,7 +65,7 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path& dirPath,
             {
                 dicomFiles.push_back( file );
             }
-            SLM_WARN_IF("Failed to read: " + file, !isDicom);
+            SLM_WARN_IF("Failed to read: " + file.string(), !isDicom);
         }
     }
     else
