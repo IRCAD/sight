@@ -522,10 +522,10 @@ void DicomAnonymizer::addShiftDateTag(const ::gdcm::Tag& tag)
 
 void DicomAnonymizer::applyActionShiftDate(const ::gdcm::Tag& tag)
 {
-    const std::string oldDate = m_stringFilter.ToString(tag);
-    ::boost::gregorian::date date = ::boost::gregorian::from_undelimited_string(oldDate);
+    const std::string oldDate           = m_stringFilter.ToString(tag);
+    const ::boost::gregorian::date date = ::boost::gregorian::from_undelimited_string(oldDate);
 
-    auto shift = date - m_referenceDate;
+    const auto shift = date - m_referenceDate;
 
     //Minimum date
     const ::boost::gregorian::date min_date = ::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING);

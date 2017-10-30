@@ -321,7 +321,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
         if(completeSeriesObserver)
         {
-            completeSeriesObserver->doneWork(static_cast<unsigned int>(++progress*100/seriesDB.size() ));
+            completeSeriesObserver->doneWork(static_cast<std::uint64_t>(++progress*100/seriesDB.size() ));
 
             if(completeSeriesObserver->cancelRequested())
             {

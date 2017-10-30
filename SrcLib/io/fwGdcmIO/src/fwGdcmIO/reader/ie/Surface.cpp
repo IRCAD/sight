@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// Shall be included first because of the 'RGB' variable
-// definition conflict on Windows.
-// see ::gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB
 #include "fwGdcmIO/container/DicomSurface.hpp"
 #include "fwGdcmIO/reader/ie/Surface.hpp"
 
@@ -260,15 +257,13 @@ void Surface::readSurfaceMeshModule(const ::fwData::Reconstruction::sptr& recons
     const unsigned short* lab = surface->GetRecommendedDisplayCIELabValue();
     ::gdcm::SurfaceHelper::ColorArray CIELab(lab, lab + sizeof(lab) / sizeof(unsigned short));
     std::vector<float> colorVector = ::gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1);
+
+    // Recommended Presentation Opacity
     colorVector.push_back(surface->GetRecommendedPresentationOpacity());
 
     // Adapt color to material
     ::fwData::Color::ColorArray rgba;
     ::boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.f, 1.f);
-
-    // Recommended Presentation Opacity
-    //const float opacity = ::boost::algorithm::clamp(surface->GetRecommendedPresentationOpacity(), 0.f, 1.f);
-    //rgba[3] = opacity; // set alpha component
 
     // Set reconstruction's visibility
     const double epsilon = 1e-3;
