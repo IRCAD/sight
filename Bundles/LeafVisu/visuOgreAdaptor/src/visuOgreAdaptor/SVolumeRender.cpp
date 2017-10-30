@@ -9,7 +9,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-//#define FW_PROFILING_DISABLED
+#define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
 
 #include <fwData/Image.hpp>
