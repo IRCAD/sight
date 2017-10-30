@@ -48,15 +48,13 @@
         <icon>media-0.1/icons/Export.svg</icon>
         <requirements>
             <requirement name="dicomSeries" type="::fwMedData::DicomSeries" minOccurs="1" maxOccurs="1" />
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
-                <key>optionalModelKey</key>
-            </requirement>
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
         <appConfig id="ExportDicomSelection">
             <parameters>
                 <parameter replace="dicom" by="@values.dicomSeries" />
-                <parameter replace="optionalModel" by="@values.modelSeries" />
+                <parameter replace="model" by="@values.modelSeries" />
             </parameters>
         </appConfig>
     </extension>
@@ -86,22 +84,14 @@
         <id>ExportDicomSelection</id>
         <parameters>
             <param name="dicom" />
-            <param name="optionalModel" />
+            <param name="model" />
         </parameters>
         <config>
             <object uid="${dicom}" type="::fwMedData::DicomSeries" src="ref" />
-            <object uid="${optionalModel}" type="::fwData::Composite" src="ref" />
-            <object uid="model" type="::fwMedData::ModelSeries" src="deferred" />
+            <object uid="${model}" type="::fwMedData::ModelSeries" src="ref" />
 
             <!-- We build a vector with the image and model series. -->
             <object uid="vectorToSave" type="::fwData::Vector" />
-
-            <!-- This service extracts the model if it exists from the optional model parameter. -->
-            <service uid="extractDicom" type="::gui::action::SPushObject" >
-                <inout key="source" uid="${optionalModel}" />
-                <out key="destination" uid="model" />
-                <push srcKey="optionalModelKey" />
-            </service>
 
             <service uid="addDicom" type="::ctrlSelection::SManage">
                <inout key="object" uid="${dicom}" />
@@ -109,7 +99,7 @@
             </service>
 
             <service uid="addModel" type="::ctrlSelection::SManage">
-               <inout key="object" uid="model" />
+               <inout key="object" uid="${model}" />
                <inout key="vector" uid="vectorToSave" />
             </service>
 
@@ -129,12 +119,10 @@
                 <slot>addModel/add</slot>
             </connect>
 
-            <start uid="extractDicom" />
             <start uid="addDicom" />
             <start uid="addModel" />
             <start uid="exportSelection" />
 
-            <update uid="extractDicom" />
             <update uid="exportSelection" />
         </config>
     </extension>
