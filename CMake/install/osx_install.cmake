@@ -16,12 +16,14 @@ function(osx_install PRJ_NAME)
         target_compile_definitions(${EXECUTABLE_NAME} PRIVATE ${LAUNCHER_DEFINITIONS})
         get_target_property(LINK_PROPERTIES fwlauncher LINK_LIBRARIES)
         target_link_libraries(${EXECUTABLE_NAME} ${LINK_PROPERTIES})
+        set_target_properties(${EXECUTABLE_NAME} PROPERTIES LINKER_LANGUAGE CXX)
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
         add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${${PRJ_NAME}_HEADERS} ${${PRJ_NAME}_SOURCES} rc/${ICON_FILENAME})
         get_target_property(LAUNCHER_DEFINITIONS ${PRJ_NAME} COMPILE_DEFINITIONS)
         target_compile_definitions(${EXECUTABLE_NAME} PRIVATE ${LAUNCHER_DEFINITIONS})
         get_target_property(LINK_PROPERTIES ${PRJ_NAME} LINK_LIBRARIES)
         target_link_libraries(${EXECUTABLE_NAME} ${LINK_PROPERTIES})
+        set_target_properties(${EXECUTABLE_NAME} PROPERTIES LINKER_LANGUAGE CXX)
     else()
         message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
     endif()
@@ -50,11 +52,17 @@ function(osx_install PRJ_NAME)
         if (EXISTS \"${CMAKE_INSTALL_PREFIX}/${BUNDLE_RC_PREFIX}\")
             file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${BUNDLE_RC_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
         endif()
+        
         if (EXISTS ${CMAKE_INSTALL_PREFIX}/${BUNDLE_LIB_PREFIX})
             file(INSTALL \"${CMAKE_INSTALL_PREFIX}/${BUNDLE_LIB_PREFIX}\" DESTINATION \"${APP_INSTALL_PATH}/Contents\")
         endif()
+        
         if (EXISTS ${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins)
             file(INSTALL \"${CMAKE_INSTALL_PREFIX}/lib/qt5/plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents/lib/qt5\")
+        endif()
+        
+        if (EXISTS ${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins)
+            file(INSTALL \"${CMAKE_INSTALL_PREFIX}/bin/Contents/Plugins\" DESTINATION \"${APP_INSTALL_PATH}/Contents/\")
         endif()
 
         # copy the other installed files or directories (not .app, lib, bin, share)
@@ -73,6 +81,7 @@ function(osx_install PRJ_NAME)
     " COMPONENT ApplicationBundle)
 
     install(CODE "
+        file(GLOB_RECURSE OGREPLUGINS \"${APP_INSTALL_PATH}/Contents/Plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")            
         file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/lib/qt5/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
         file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/${BUNDLE_LIB_PREFIX}/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
 
@@ -97,7 +106,7 @@ function(osx_install PRJ_NAME)
         set(BU_CHMOD_BUNDLE_ITEMS ON)
 
         include(BundleUtilities)
-        fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES_TO_FIX};\${QTPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};${EXTERNAL_LIBRARIES}/lib;\${BUNDLES_FOLDERS}\")
+        fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES_TO_FIX};\${QTPLUGINS};\${OGREPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};${EXTERNAL_LIBRARIES}/lib;\${BUNDLES_FOLDERS}\")
 
         execute_process(
             COMMAND sh -c \"find . -type f -name '*.dylib'|sed 's/\\\\.[0-9].*//g'|sort|uniq -d|xargs -I{} -n1 find . -path '{}.*' | paste -d ' ' - -| sed 's/^/ln -s -f /' | sh \"
