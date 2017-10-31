@@ -138,7 +138,7 @@ void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPa
     {
         // Try to open the file
         ::gdcm::Reader reader;
-        reader.SetFileName( filename.c_str() );
+        reader.SetFileName( filename.string().c_str() );
         CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \"" + filename.string() + "\"", reader.Read());
         ::gdcm::File& gdcmFile   = reader.GetFile();
         ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
@@ -456,7 +456,7 @@ void DicomAnonymizerTest::testAnonymizedFile(const ::boost::filesystem::path& fi
 {
     // Try to open the file
     ::gdcm::Reader reader;
-    reader.SetFileName( filename.c_str() );
+    reader.SetFileName( filename.string().c_str() );
     CPPUNIT_ASSERT_MESSAGE("Unable to read the file: \"" + filename.string() + "\"", reader.Read());
     ::gdcm::File& gdcmFile   = reader.GetFile();
     ::gdcm::DataSet& dataset = gdcmFile.GetDataSet();
