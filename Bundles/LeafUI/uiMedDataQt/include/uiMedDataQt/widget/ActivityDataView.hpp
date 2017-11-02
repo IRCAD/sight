@@ -97,7 +97,7 @@ public:
 protected:
 
     /// Catch KeyEvent and DropEvent from tree widgets
-    bool eventFilter(QObject* obj, QEvent* event);
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
 

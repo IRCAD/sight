@@ -215,23 +215,19 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
     if(dim == 2)
     {
-        dim = 3;
-        int size[3];
+        int size[2];
         size[0] = source->GetDimensions()[0];
         size[1] = source->GetDimensions()[1];
-        size[2] = 1;
         destination->setSize( ::fwData::Image::SizeType(size, size+dim) );
 
-        double spacing[3];
+        double spacing[2];
         spacing[0] = source->GetSpacing()[0];
         spacing[1] = source->GetSpacing()[1];
-        spacing[2] = 0;
         destination->setSpacing( ::fwData::Image::SpacingType(spacing, spacing+dim) );
 
-        double origin[3];
+        double origin[2];
         origin[0] = source->GetOrigin()[0];
         origin[1] = source->GetOrigin()[1];
-        origin[2] = 0;
         destination->setOrigin( ::fwData::Image::OriginType(origin, origin+dim) );
     }
     else
@@ -273,20 +269,40 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::
 {
     ::fwDataTools::helper::ImageGetter imageHelper(_pDataImage);
 
-    _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
-                                    _pDataImage->getSpacing().at(1),
-                                    _pDataImage->getSpacing().at(2)
-                                    );
+    if(_pDataImage->getSize().size() == 2)
+    {
+        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
+                                        _pDataImage->getSpacing().at(1),
+                                        0
+                                        );
 
-    _pImageImport->SetDataOrigin(   _pDataImage->getOrigin().at(0),
-                                    _pDataImage->getOrigin().at(1),
-                                    _pDataImage->getOrigin().at(2)
-                                    );
+        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin().at(0),
+                                        _pDataImage->getOrigin().at(1),
+                                        0
+                                        );
 
-    _pImageImport->SetWholeExtent(  0, _pDataImage->getSize().at(0) - 1,
-                                    0, _pDataImage->getSize().at(1) - 1,
-                                    0, _pDataImage->getSize().at(2) - 1
-                                    );
+        _pImageImport->SetWholeExtent(  0, _pDataImage->getSize().at(0) - 1,
+                                        0, _pDataImage->getSize().at(1) - 1,
+                                        0, 0
+                                        );
+    }
+    else
+    {
+        _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
+                                        _pDataImage->getSpacing().at(1),
+                                        _pDataImage->getSpacing().at(2)
+                                        );
+
+        _pImageImport->SetDataOrigin(   _pDataImage->getOrigin().at(0),
+                                        _pDataImage->getOrigin().at(1),
+                                        _pDataImage->getOrigin().at(2)
+                                        );
+
+        _pImageImport->SetWholeExtent(  0, _pDataImage->getSize().at(0) - 1,
+                                        0, _pDataImage->getSize().at(1) - 1,
+                                        0, _pDataImage->getSize().at(2) - 1
+                                        );
+    }
 
     _pImageImport->SetNumberOfScalarComponents(static_cast<int>( _pDataImage->getNumberOfComponents() ));
 
@@ -300,12 +316,12 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::
 
 // -----------------------------------------------------------------------------
 
-vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
+vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( ::fwData::TransformationMatrix3D::csptr _transfoMatrix )
 {
-    vtkMatrix4x4* matrix = vtkMatrix4x4 ::New();
-    for(int l = 0; l < 4; l++)
+    auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+    for(std::uint8_t l = 0; l < 4; l++)
     {
-        for(int c = 0; c < 4; c++)
+        for(std::uint8_t c = 0; c < 4; c++)
         {
             matrix->SetElement(l, c, _transfoMatrix->getCoefficient(l, c));
         }
@@ -317,11 +333,10 @@ vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatri
 
 bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::sptr _transfoMatrix)
 {
-    SLM_TRACE_FUNC();
     bool res = true;
-    for(int l = 0; l < 4; l++)
+    for(std::uint8_t l = 0; l < 4; l++)
     {
-        for(int c = 0; c < 4; c++)
+        for(std::uint8_t c = 0; c < 4; c++)
         {
             _transfoMatrix->setCoefficient(l, c, _matrix->GetElement(l, c));
         }

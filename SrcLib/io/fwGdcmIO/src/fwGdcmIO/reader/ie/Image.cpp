@@ -6,12 +6,13 @@
 
 #include "fwGdcmIO/reader/ie/Image.hpp"
 
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/exception/Failed.hpp"
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
-#include <fwDataTools/helper/Image.hpp>
 
 #include <fwDicomTools/Image.hpp>
 
@@ -19,20 +20,19 @@
 
 #include <fwMedData/DicomSeries.hpp>
 
-#include <gdcmIPPSorter.h>
-#include <gdcmImageApplyLookupTable.h>
-#include <gdcmImageHelper.h>
-#include <gdcmImageReader.h>
-#include <gdcmPixelFormat.h>
-#include <gdcmRescaler.h>
-#include <gdcmUIDGenerator.h>
-
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/assign.hpp>
-#include <boost/math/special_functions/round.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
+
+#include <gdcmImageApplyLookupTable.h>
+#include <gdcmImageHelper.h>
+#include <gdcmImageReader.h>
+#include <gdcmIPPSorter.h>
+#include <gdcmPixelFormat.h>
+#include <gdcmRescaler.h>
+#include <gdcmUIDGenerator.h>
 
 namespace fwGdcmIO
 {
@@ -43,15 +43,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Image::Image(SPTR(::fwMedData::DicomSeries)dicomSeries,
-             SPTR(::gdcm::Reader)reader,
-             SPTR(::fwGdcmIO::container::DicomInstance)instance,
-             ::fwData::Image::sptr image,
-             ::fwLog::Logger::sptr logger,
-             const ProgressCallback& callback,
-             const bool& cancelled) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image, logger,
-                                                                 callback, cancelled),
+Image::Image(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+             const SPTR(::gdcm::Reader)& reader,
+             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+             const ::fwData::Image::sptr& image,
+             const ::fwLog::Logger::sptr& logger,
+             ProgressCallback progress,
+             CancelRequestedCallback cancel) :
+    ::fwGdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image,
+                                                                 logger, progress, cancel),
     m_enableBufferRotation(true)
 {
 }
@@ -64,14 +64,60 @@ Image::~Image()
 
 //------------------------------------------------------------------------------
 
+double getInstanceZPosition(const ::boost::filesystem::path& path)
+{
+    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
+    reader->SetFileName( path.string().c_str() );
+
+    if (!reader->Read())
+    {
+        return 0;
+    }
+
+    // Retrieve dataset
+    const ::gdcm::DataSet& dataset = reader->GetFile().GetDataSet();
+
+    // Check tags availability
+    if(!dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0032)) || !dataset.FindDataElement(::gdcm::Tag(0x0020, 0x0037)))
+    {
+        const std::string msg = "Unable to compute the spacing between slices of the series.";
+        throw ::fwGdcmIO::exception::Failed(msg);
+    }
+
+    // Retrieve image position
+    const ::gdcm::Image& gdcmImage = reader->GetImage();
+    const double* gdcmOrigin       = gdcmImage.GetOrigin();
+    const fwVec3d imagePosition    = {{ gdcmOrigin[0], gdcmOrigin[1], gdcmOrigin[2] }};
+
+    // Retrieve image orientation
+    const double* directionCosines  = gdcmImage.GetDirectionCosines();
+    const fwVec3d imageOrientationU = {{
+                                           std::round(directionCosines[0]),
+                                           std::round(directionCosines[1]),
+                                           std::round(directionCosines[2])
+                                       }};
+    const fwVec3d imageOrientationV = {{
+                                           std::round(directionCosines[3]),
+                                           std::round(directionCosines[4]),
+                                           std::round(directionCosines[5])
+                                       }};
+
+    //Compute Z direction (cross product)
+    const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+
+    //Compute dot product to get the index
+    const double index = ::fwMath::dot(imagePosition, zVector);
+
+    return index;
+}
+
+//------------------------------------------------------------------------------
+
 void Image::readImagePlaneModule()
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
     const ::gdcm::Image& gdcmImage = imageReader->GetImage();
-
-    // Retrieve dataset
-    const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Image Position (Patient) - Type 1
     const double* gdcmOrigin = gdcmImage.GetOrigin();
@@ -95,33 +141,30 @@ void Image::readImagePlaneModule()
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
     }
 
-    // Compute Z image spacing when extra information is required
-    std::string sliceThickness       = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0018, 0x0050>(dataset);
-    std::string spacingBetweenSlices = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0018, 0x0088>(dataset);
+    // Compute Z image spacing
+    ::fwMedData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
+    if(pathContainer.size() > 1)
+    {
+        ::fwMedData::DicomSeries::DicomPathContainerType::iterator it = pathContainer.begin();
+        const ::fwMedData::DicomSeries::DicomPathContainerType::reverse_iterator rit = pathContainer.rbegin();
 
-    if(m_dicomSeries->hasComputedValues("SliceThickness"))
-    {
-        spacing[2] = ::boost::lexical_cast< double >(m_dicomSeries->getComputedTagValues().at("SliceThickness"));
-        std::stringstream ss;
-        ss << "Voxel depth has been computed using the image slice positions. The computed value is " << spacing[2] <<
-            " instead of " << sliceThickness << " for the SliceThickness tag.";
-        m_logger->warning(ss.str());
-    }
-    else if(!sliceThickness.empty())
-    {
-        spacing[2] = ::boost::lexical_cast< double >(sliceThickness);
-        std::stringstream ss;
-        ss << "Voxel depth has been retrieved using the SliceThickness tag value. The retrieved value is " <<
-            spacing[2] << ".";
-        m_logger->information(ss.str());
-    }
-    else if(!spacingBetweenSlices.empty())
-    {
-        spacing[2] = ::boost::lexical_cast< double >(spacingBetweenSlices);
-        std::stringstream ss;
-        ss << "Voxel depth has been retrieved using the SpacingBetweenSlices tag value. The retrieved value is " <<
-            spacing[2] << ".";
-        m_logger->information(ss.str());
+        // Compute the spacing between slices of the 2 first slices.
+        const double firstIndex  = getInstanceZPosition(it->second);
+        const double secondIndex = getInstanceZPosition((++it)->second);
+        const double lastIndex   = getInstanceZPosition(rit->second);
+        spacing[2] = std::abs(secondIndex - firstIndex);
+
+        // Check that the same spacing is used for all the instances
+        const double epsilon       = 1e-2;
+        const double totalZSpacing = std::abs(lastIndex - firstIndex);
+        const double errorGap      = std::abs( spacing[2] * static_cast<double>(pathContainer.size() - 1 ) ) -
+                                     totalZSpacing;
+        if(errorGap > epsilon)
+        {
+            std::stringstream ss;
+            ss << "Computed spacing between slices may not be correct. (Error gap : " << errorGap << ")";
+            m_logger->warning(ss.str());
+        }
     }
 
     OSLM_TRACE("Image's spacing : "<<spacing[0]<<"x"<<spacing[1]<<"x"<<spacing[2]);
@@ -137,7 +180,7 @@ void Image::readVOILUTModule()
     const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     //Image's window center (double)
-    std::string windowCenter = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028, 0x1050>(dataset);
+    std::string windowCenter = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1050>(dataset);
     std::vector<std::string> splitedWindowCenters;
     if ( !windowCenter.empty() )
     {
@@ -148,7 +191,7 @@ void Image::readVOILUTModule()
     OSLM_TRACE("Image's window center : " << m_object->getWindowCenter());
 
     //Image's window width (double)
-    std::string windowWidth = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028, 0x1051>(dataset);
+    std::string windowWidth = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1051>(dataset);
     std::vector<std::string> splitedWindowWidth;
     if ( !windowWidth.empty() )
     {
@@ -173,8 +216,8 @@ std::vector<double> getRescaleInterceptSlopeValue(::gdcm::ImageReader* imageRead
     // Correct Rescale Intercept and Rescale Slope as GDCM may fail to retrieve them.
     if(dataset.FindDataElement(::gdcm::Tag(0x0028, 0x1052)) && dataset.FindDataElement(::gdcm::Tag(0x0028, 0x1053)))
     {
-        rescale[0] = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028, 0x1052, double>(dataset);
-        rescale[1] = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028, 0x1053, double>(dataset);
+        rescale[0] = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1052, double>(dataset);
+        rescale[1] = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x1053, double>(dataset);
     }
 
     return rescale;
@@ -199,22 +242,29 @@ void Image::readImagePixelModule()
     double rescaleIntercept     = rescale[0];
     double rescaleSlope         = rescale[1];
 
-    unsigned short samplesPerPixel     = pixelFormat.GetSamplesPerPixel();
-    unsigned short bitsAllocated       = pixelFormat.GetBitsAllocated();
-    unsigned short bitsStored          = pixelFormat.GetBitsStored();
-    unsigned short highBit             = pixelFormat.GetHighBit();
-    unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
+    const unsigned short samplesPerPixel     = pixelFormat.GetSamplesPerPixel();
+    const unsigned short bitsAllocated       = pixelFormat.GetBitsAllocated();
+    const unsigned short bitsStored          = pixelFormat.GetBitsStored();
+    const unsigned short highBit             = pixelFormat.GetHighBit();
+    const unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
 
     // Compute final image type
     ::fwDicomTools::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
     m_object->setType(imageType);
-    ::gdcm::PixelFormat targetPixelFormat = ::fwGdcmIO::helper::DicomData::getPixelType(m_object);
+    ::gdcm::PixelFormat targetPixelFormat = ::fwGdcmIO::helper::DicomDataTools::getPixelType(m_object);
+
+    if(targetPixelFormat == ::gdcm::PixelFormat::UNKNOWN)
+    {
+        throw ::fwGdcmIO::exception::Failed("Unsupported image pixel format.");
+    }
 
     // Compute number of components
-    std::string photometricInterpretation = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028, 0x0004>(dataset);
-    std::string pixelPresentation         = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0008, 0x9205>(dataset);
+    const std::string photometricInterpretation =
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0028, 0x0004>(dataset);
+    const std::string pixelPresentation =
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x9205>(dataset);
 
     if(photometricInterpretation == "MONOCHROME2")
     {
@@ -234,9 +284,9 @@ void Image::readImagePixelModule()
     }
     else
     {
-        std::stringstream ss;
-        ss << "The photometric interpretation \"" + photometricInterpretation + "\" is not supported.";
-        throw ::fwGdcmIO::exception::Failed(ss.str());
+        const std::string msg = "The photometric interpretation \"" + photometricInterpretation
+                                + "\" is not supported.";
+        throw ::fwGdcmIO::exception::Failed(msg);
     }
 
     // Retrieve image dimensions
@@ -251,9 +301,10 @@ void Image::readImagePixelModule()
 
     OSLM_TRACE("Image dimensions : [" << dimensions[0] << "," <<dimensions[1] << "," << dimensions[2] << "]");
 
-    const unsigned long imageBufferSize    = dimensions[0] * dimensions[1] * dimensions[2] * (bitsAllocated/8);
-    const unsigned long newImageBufferSize = dimensions[0] * dimensions[1] * dimensions[2] *
-                                             (targetPixelFormat.GetBitsAllocated()/8);
+    const unsigned long imageBufferSize =
+        dimensions[0] * dimensions[1] * dimensions[2] * (bitsAllocated/8);
+    const unsigned long newImageBufferSize =
+        dimensions[0] * dimensions[1] * dimensions[2] * (targetPixelFormat.GetBitsAllocated()/8);
 
     OSLM_TRACE("Image buffer size : " << imageBufferSize);
     OSLM_TRACE("New image buffer size : " << newImageBufferSize);
@@ -264,14 +315,15 @@ void Image::readImagePixelModule()
                                                 performRescale);
 
     // Correct image buffer according to the image orientation
-    if(!m_cancelled && m_enableBufferRotation)
+    if(!(m_cancelRequestedCallback && m_cancelRequestedCallback()) && m_enableBufferRotation)
     {
         imageBuffer = this->correctImageOrientation(imageBuffer, dimensions,
                                                     (performRescale) ? targetPixelFormat.GetBitsAllocated() : bitsAllocated);
     }
 
     // Apply lookup table if required
-    if(!m_cancelled && (photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR"))
+    if(!(m_cancelRequestedCallback && m_cancelRequestedCallback()) &&
+       (photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR"))
     {
         try
         {
@@ -301,8 +353,10 @@ void Image::readImagePixelModule()
 
 //------------------------------------------------------------------------------
 
-char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsigned short bitsAllocated,
-                             unsigned short newBitsAllocated, bool performRescale)
+char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions,
+                             const unsigned short bitsAllocated,
+                             const unsigned short newBitsAllocated,
+                             const bool performRescale) throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
@@ -332,7 +386,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
 
     // Read every frames
     unsigned int frameNumber = 0;
-    for(::fwMedData::DicomSeries::DicomPathContainerType::value_type v: pathContainer)
+    for(::fwMedData::DicomSeries::DicomPathContainerType::value_type v : pathContainer)
     {
         // Get filename
         const std::string& filename = v.second.string();
@@ -375,7 +429,12 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
             ::gdcm::PixelFormat pixelFormat =
                 ::gdcm::ImageHelper::GetPixelFormatValue(frameReader.GetFile());
             ::gdcm::PixelFormat::ScalarType scalarType = pixelFormat.GetScalarType();
-            ::gdcm::PixelFormat targetPixelFormat      = ::fwGdcmIO::helper::DicomData::getPixelType(m_object);
+            ::gdcm::PixelFormat targetPixelFormat      = ::fwGdcmIO::helper::DicomDataTools::getPixelType(m_object);
+
+            if(targetPixelFormat == ::gdcm::PixelFormat::UNKNOWN)
+            {
+                throw ::fwGdcmIO::exception::Failed("Unsupported image pixel format.");
+            }
 
             // Create rescaler
             ::gdcm::Rescaler rescaler;
@@ -396,7 +455,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
 
         // Reference SOP Instance UID in dicomInstance for SR reading
         const ::gdcm::DataSet& gdcmDatasetRoot = frameReader.GetFile().GetDataSet();
-        const std::string sopInstanceUID       = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0008, 0x0018>(
+        const std::string sopInstanceUID       = ::fwGdcmIO::helper::DicomDataReader::getTagValue<0x0008, 0x0018>(
             gdcmDatasetRoot);
         if(!sopInstanceUID.empty())
         {
@@ -414,7 +473,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
             static_cast<unsigned int>(18 + (frameNumber*100/static_cast<double>(pathContainer.size())) * 0.6);
         m_progressCallback(progress);
 
-        if(m_cancelled)
+        if(m_cancelRequestedCallback && m_cancelRequestedCallback())
         {
             break;
         }
@@ -428,7 +487,8 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
 
 //------------------------------------------------------------------------------
 
-char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned int>& dimensions,
+char* Image::correctImageOrientation(char* buffer,
+                                     const std::vector<unsigned int>& dimensions,
                                      unsigned short bitsAllocated)
 {
     char* result = buffer;
@@ -441,55 +501,59 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
     const double* directionCosines = gdcmImage.GetDirectionCosines();
 
     // Compute U vector
-    fwVec3d imageOrientationU =
-    {::boost::math::round(directionCosines[0]), ::boost::math::round(directionCosines[1]),
-     ::boost::math::round(directionCosines[2])};
+    fwVec3d imageOrientationU = {{
+                                     std::round(directionCosines[0]),
+                                     std::round(directionCosines[1]),
+                                     std::round(directionCosines[2])
+                                 }};
     // Try to find the closest axe
-    if((fabs(imageOrientationU[0]) + fabs(imageOrientationU[1]) + fabs(imageOrientationU[2])) > 1)
+    if((std::fabs(imageOrientationU[0]) + std::fabs(imageOrientationU[1]) + std::fabs(imageOrientationU[2])) > 1)
     {
-        if(fabs(directionCosines[0]) < fabs(directionCosines[1]) ||
-           fabs(directionCosines[0]) < fabs(directionCosines[2]))
+        if(std::fabs(directionCosines[0]) < std::fabs(directionCosines[1]) ||
+           std::fabs(directionCosines[0]) < std::fabs(directionCosines[2]))
         {
             imageOrientationU[0] = 0;
         }
-        if(fabs(directionCosines[1]) < fabs(directionCosines[0]) ||
-           fabs(directionCosines[1]) < fabs(directionCosines[2]))
+        if(std::fabs(directionCosines[1]) < std::fabs(directionCosines[0]) ||
+           std::fabs(directionCosines[1]) < std::fabs(directionCosines[2]))
         {
             imageOrientationU[1] = 0;
         }
-        if(fabs(directionCosines[2]) < fabs(directionCosines[0]) ||
-           fabs(directionCosines[2]) < fabs(directionCosines[1]))
+        if(std::fabs(directionCosines[2]) < std::fabs(directionCosines[0]) ||
+           std::fabs(directionCosines[2]) < std::fabs(directionCosines[1]))
         {
             imageOrientationU[2] = 0;
         }
-        m_logger->warning(
-            "Unable to determine clearly the orientation of the image. The software may display the image in the wrong direction.");
+        m_logger->warning("Unable to determine clearly the orientation of the image. "
+                          "The software may display the image in the wrong direction.");
     }
 
     // Compute V vector
-    fwVec3d imageOrientationV =
-    {::boost::math::round(directionCosines[3]), ::boost::math::round(directionCosines[4]),
-     ::boost::math::round(directionCosines[5])};
+    fwVec3d imageOrientationV = {{
+                                     std::round(directionCosines[3]),
+                                     std::round(directionCosines[4]),
+                                     std::round(directionCosines[5])
+                                 }};
     // Try to find the closest axe
-    if((fabs(imageOrientationV[0]) + fabs(imageOrientationV[1]) + fabs(imageOrientationV[2])) > 1)
+    if((std::fabs(imageOrientationV[0]) + std::fabs(imageOrientationV[1]) + std::fabs(imageOrientationV[2])) > 1)
     {
-        if(fabs(directionCosines[3]) < fabs(directionCosines[4]) ||
-           fabs(directionCosines[3]) < fabs(directionCosines[5]))
+        if(std::fabs(directionCosines[3]) < std::fabs(directionCosines[4]) ||
+           std::fabs(directionCosines[3]) < std::fabs(directionCosines[5]))
         {
             imageOrientationV[0] = 0;
         }
-        if(fabs(directionCosines[4]) < fabs(directionCosines[3]) ||
-           fabs(directionCosines[4]) < fabs(directionCosines[5]))
+        if(std::fabs(directionCosines[4]) < std::fabs(directionCosines[3]) ||
+           std::fabs(directionCosines[4]) < std::fabs(directionCosines[5]))
         {
             imageOrientationV[1] = 0;
         }
-        if(fabs(directionCosines[5]) < fabs(directionCosines[3]) ||
-           fabs(directionCosines[5]) < fabs(directionCosines[4]))
+        if(std::fabs(directionCosines[5]) < std::fabs(directionCosines[3]) ||
+           std::fabs(directionCosines[5]) < std::fabs(directionCosines[4]))
         {
             imageOrientationV[2] = 0;
         }
-        m_logger->warning(
-            "Unable to determine clearly the orientation of the image. The software may display the image in the wrong direction.");
+        m_logger->warning("Unable to determine clearly the orientation of the image. "
+                          "The software may display the image in the wrong direction.");
     }
 
     // Compute W vector
@@ -526,10 +590,10 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
         sizeVector(0) = dimensions.at(0);
         sizeVector(1) = dimensions.at(1);
         sizeVector(2) = dimensions.at(2);
-        VectorType newSizeVector = ::boost::numeric::ublas::prod(sizeVector, inverseMatrix);
-        unsigned short newSizeX  = static_cast<unsigned short>(fabs(newSizeVector[0]));
-        unsigned short newSizeY  = static_cast<unsigned short>(fabs(newSizeVector[1]));
-        unsigned short newSizeZ  = static_cast<unsigned short>(fabs(newSizeVector[2]));
+        VectorType newSizeVector      = ::boost::numeric::ublas::prod(sizeVector, inverseMatrix);
+        const unsigned short newSizeX = static_cast<unsigned short>(std::fabs(newSizeVector[0]));
+        const unsigned short newSizeY = static_cast<unsigned short>(std::fabs(newSizeVector[1]));
+        const unsigned short newSizeZ = static_cast<unsigned short>(std::fabs(newSizeVector[2]));
         newSizeVector(0) = newSizeX;
         newSizeVector(1) = newSizeY;
         newSizeVector(2) = newSizeZ;
@@ -543,7 +607,7 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
 
         // Rotate image
         unsigned short x, y, z, oldx, oldy, oldz;
-        for(z = 0; z < newSizeZ && !m_cancelled; ++z)
+        for(z = 0; z < newSizeZ && !(m_cancelRequestedCallback && m_cancelRequestedCallback()); ++z)
         {
             for(y = 0; y < newSizeY; ++y)
             {
@@ -557,24 +621,12 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
 
                     // Compute old position
                     VectorType oldPosition = ::boost::numeric::ublas::prod(newPosition, matrix);
-                    oldx =
-                        (oldSizeVector[0] >
-                         0) ? static_cast<unsigned short>(oldPosition[0]) : static_cast<unsigned short>((
-                                                                                                            dimensions.
-                                                                                                            at(0)-1)+
-                                                                                                        oldPosition[0]);
-                    oldy =
-                        (oldSizeVector[1] >
-                         0) ? static_cast<unsigned short>(oldPosition[1]) : static_cast<unsigned short>((
-                                                                                                            dimensions.
-                                                                                                            at(1)-1)+
-                                                                                                        oldPosition[1]);
-                    oldz =
-                        (oldSizeVector[2] >
-                         0) ? static_cast<unsigned short>(oldPosition[2]) : static_cast<unsigned short>((
-                                                                                                            dimensions.
-                                                                                                            at(2)-1)+
-                                                                                                        oldPosition[2]);
+                    oldx = (oldSizeVector[0] > 0) ? static_cast<unsigned short>(oldPosition[0])
+                           : static_cast<unsigned short>((dimensions.at(0)-1) + oldPosition[0]);
+                    oldy = (oldSizeVector[1] > 0) ? static_cast<unsigned short>(oldPosition[1])
+                           : static_cast<unsigned short>((dimensions.at(1)-1)+ oldPosition[1]);
+                    oldz = (oldSizeVector[2] > 0) ? static_cast<unsigned short>(oldPosition[2])
+                           : static_cast<unsigned short>((dimensions.at(2)-1)+ oldPosition[2]);
 
                     // Compute indices
                     unsigned int positionIndex    = (x + (y*newSizeX) + z*(newSizeX*newSizeY)) * (bitsAllocated/8);
@@ -604,9 +656,9 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
         spacingVector(2) = spacing[2];
         VectorType newSpacingVector = ::boost::numeric::ublas::prod(spacingVector, inverseMatrix);
         ::fwData::Image::SpacingType newSpacing(3, 1);
-        newSpacing[0] = fabs(newSpacingVector[0]);
-        newSpacing[1] = fabs(newSpacingVector[1]);
-        newSpacing[2] = fabs(newSpacingVector[2]);
+        newSpacing[0] = std::fabs(newSpacingVector[0]);
+        newSpacing[1] = std::fabs(newSpacingVector[1]);
+        newSpacing[2] = std::fabs(newSpacingVector[2]);
         m_object->setSpacing( newSpacing );
 
         // Update image origin
@@ -622,8 +674,8 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
         newOrigin[2] = newOriginVector[2];
         m_object->setOrigin( newOrigin );
 
-        m_logger->warning(
-            "Image buffer has been rotated in order to match patient orientation : image orgin could be wrong.");
+        m_logger->warning("Image buffer has been rotated in order to match patient orientation: "
+                          "image origin could be wrong.");
     }
 
     return result;

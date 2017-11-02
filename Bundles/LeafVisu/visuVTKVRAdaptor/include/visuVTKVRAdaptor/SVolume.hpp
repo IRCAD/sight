@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKVRADAPTOR_VOLUME_HPP__
-#define __VISUVTKVRADAPTOR_VOLUME_HPP__
+#ifndef __VISUVTKVRADAPTOR_SVOLUME_HPP__
+#define __VISUVTKVRADAPTOR_SVOLUME_HPP__
 
 #include "visuVTKVRAdaptor/config.hpp"
 
@@ -35,19 +35,25 @@ namespace visuVTKVRAdaptor
  * - \b resetBoxWidget() : reset the clipping box widget around the volume.
  * - \b activateBoxClipping(bool) : show/hide clipping box.
  * - \b show(bool) : show/hide the volume.
+ * - \b updateTFPoints() : updates the volume transfer function according to the new points
+ * - \b updateTFWindowing(double window, double level) : updates the volume transfer function according to the new
+ *      window and level
  *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="::visuVTKVRAdaptor::SVolume">
             <inout key="image" uid="..." />
-            <inout key="tfSelection" uid="..." />
+            <inout key="tf" uid="..." optional="yes" />
             <config renderer="default"  clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"
-                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" selectedTFKey="TFKey" />
+                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" />
        </service
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the current transfer function.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
+ *
  * @subsection Configuration Configuration
  * - \b renderer : ID of renderer the adaptor must use
  * - \b clippingplanes (optional) : id of VTK object for clipping planes
@@ -56,7 +62,6 @@ namespace visuVTKVRAdaptor
  * - \b reductionFactor (optional, [0-1]) : factor to resample the original image.
  * - \b cropBoxTransform (optional) : vtkTransform applied to the cropping box.
  * - \b transform (optional) : vtkTransform applied to the volume.
- * - \b selectedTFKey (optional) : key of the transfer funtion in the tf composite.
  */
 class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::fwRenderVTK::IAdaptor
@@ -71,7 +76,7 @@ public:
     VISUVTKVRADAPTOR_API virtual ~SVolume() noexcept;
 
     static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
-    static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT;
+    static const ::fwServices::IService::KeyType s_TF_INOUT;
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
@@ -84,7 +89,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKVRADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Apply the cropping on volume rendering
     VISUVTKVRADAPTOR_API void crop();
@@ -97,17 +102,17 @@ public:
 
 protected:
 
-    VISUVTKVRADAPTOR_API void configuring();
-    VISUVTKVRADAPTOR_API void starting();
-    VISUVTKVRADAPTOR_API void stopping();
-    VISUVTKVRADAPTOR_API void updating();
-    VISUVTKVRADAPTOR_API void swapping();
+    VISUVTKVRADAPTOR_API void configuring() override;
+    VISUVTKVRADAPTOR_API void starting() override;
+    VISUVTKVRADAPTOR_API void stopping() override;
+    VISUVTKVRADAPTOR_API void updating() override;
+    VISUVTKVRADAPTOR_API void swapping(const KeyType& key) override;
 
-    /// Called when transfer function points are modified.
-    VISUVTKVRADAPTOR_API virtual void updatingTFPoints();
+    /// Slot: updates the volume transfer function
+    VISUVTKVRADAPTOR_API virtual void updateTFPoints() override;
 
-    /// Called when transfer function windowing is modified.
-    VISUVTKVRADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+    /// Slot: updates the volume transfer function
+    VISUVTKVRADAPTOR_API virtual void updateTFWindowing(double window, double level) override;
 
     /// Slot: reset the clipping box widget around the volume
     void resetBoxWidget();
@@ -159,4 +164,4 @@ private:
 
 } //namespace visuVTKVRAdaptor
 
-#endif // __VISUVTKVRADAPTOR_VOLUME_HPP__
+#endif // __VISUVTKVRADAPTOR_SVOLUME_HPP__

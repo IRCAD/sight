@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,6 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), (()), ::fwData::factory::New< SeriesDB >);
 
     fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
-
 
     typedef std::vector< SPTR(Series) > ContainerType;
 
@@ -80,7 +79,6 @@ public:
     ConstReferenceType at ( SizeType n ) const;
     /// @}
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -91,11 +89,10 @@ public:
     FWMEDDATA_API virtual ~SeriesDB();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache );
-
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
      * @name Getters / Setters
@@ -104,9 +101,9 @@ public:
     /**
      * @brief Series container
      * @{ */
-    ContainerType &getContainer();
-    const ContainerType &getContainer () const;
-    void setContainer (const ContainerType &val);
+    ContainerType& getContainer();
+    const ContainerType& getContainer () const;
+    void setContainer (const ContainerType& val);
     /**  @} */
 
     /**  @} */
@@ -203,7 +200,6 @@ inline SeriesDB::SizeType SeriesDB::size() const
     return m_container.size();
 }
 
-
 //-----------------------------------------------------------------------------
 
 inline SeriesDB::ValueType SeriesDB::front()
@@ -248,21 +244,21 @@ inline SeriesDB::ConstReferenceType SeriesDB::at(SeriesDB::SizeType n) const
 
 //-----------------------------------------------------------------------------
 
-inline SeriesDB::ContainerType &SeriesDB::getContainer()
+inline SeriesDB::ContainerType& SeriesDB::getContainer()
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const SeriesDB::ContainerType &SeriesDB::getContainer () const
+inline const SeriesDB::ContainerType& SeriesDB::getContainer () const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void SeriesDB::setContainer (const SeriesDB::ContainerType &val)
+inline void SeriesDB::setContainer (const SeriesDB::ContainerType& val)
 {
     m_container = val;
 }
@@ -272,5 +268,4 @@ inline void SeriesDB::setContainer (const SeriesDB::ContainerType &val)
 }   //end namespace fwMedData
 
 #endif // __FWMEDDATA_SERIESDB_HPP__
-
 

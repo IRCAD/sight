@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,9 @@
 #include "ioDicom/config.hpp"
 
 #include <fwDicomIOFilter/IFilter.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
@@ -49,7 +51,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFilterSelectionEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SFilterSelectionEditor)( ::gui::editor::IEditor ) );
 
     typedef std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > FilterMapType;
 
@@ -93,19 +95,19 @@ private Q_SLOTS:
 protected:
 
     /// Do nothing.
-    IODICOM_API virtual void configuring();
+    IODICOM_API virtual void configuring() override;
 
     /// Override
-    IODICOM_API virtual void starting();
+    IODICOM_API virtual void starting() override;
 
     /// Override
-    IODICOM_API virtual void stopping();
+    IODICOM_API virtual void stopping() override;
 
     /// Override
-    IODICOM_API void updating();
+    IODICOM_API void updating() override;
 
     /// Override
-    IODICOM_API void info(std::ostream& _sstream );
+    IODICOM_API void info(std::ostream& _sstream ) override;
 
     /// Fill the combobox with the list of available filters
     IODICOM_API void fillAvailableFilters();

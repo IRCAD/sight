@@ -7,8 +7,8 @@
 #ifndef __FWMEDDATA_MODELSERIES_HPP__
 #define __FWMEDDATA_MODELSERIES_HPP__
 
-#include "fwMedData/Series.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -52,10 +52,10 @@ public:
     FWMEDDATA_API virtual ~ModelSeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
      * @name Getters / Setters

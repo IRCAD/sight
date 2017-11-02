@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,9 +12,6 @@
 #include "fwGdcmIO/container/sr/DicomSRNode.hpp"
 
 #include <gdcmDataSet.h>
-
-#include <string>
-#include <vector>
 
 namespace fwGdcmIO
 {
@@ -32,7 +29,8 @@ public:
 
     /// Constructor
     FWGDCMIO_API DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
-                                const std::string& relationship, double numValue,
+                                const std::string& relationship,
+                                const double numValue,
                                 const DicomCodedAttribute& measurementUnits);
 
     /// Destructor
@@ -68,7 +66,6 @@ public:
         m_measurementUnits = measurementUnits;
     }
 
-
 protected:
 
     /// Dump function
@@ -86,8 +83,6 @@ protected:
 
     /// Measurement Units
     DicomCodedAttribute m_measurementUnits;
-
-
 
 };
 

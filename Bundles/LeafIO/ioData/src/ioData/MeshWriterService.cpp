@@ -38,15 +38,6 @@ void MeshWriterService::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > MeshWriterService::getSupportedExtensions()
-{
-    std::vector< std::string > extensions;
-    extensions.push_back(".trian");
-    return extensions;
-}
-
-//-----------------------------------------------------------------------------
-
 MeshWriterService::~MeshWriterService() noexcept
 {
 }

@@ -3,7 +3,7 @@
     To use this application, you should open a 3D image mask of an organ. An used the mesher actions to creates a
     reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
  -->
-<plugin id="Tuto09MesherWithGenericScene" version="@DASH_VERSION@">
+<plugin id="Tuto09MesherWithGenericScene" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -21,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>Tuto09MesherWithGenericScene</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
+                        <icon>Tuto09MesherWithGenericScene-0.1/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>
@@ -142,8 +142,8 @@
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

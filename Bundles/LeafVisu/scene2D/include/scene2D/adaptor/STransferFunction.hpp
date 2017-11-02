@@ -27,16 +27,14 @@ namespace adaptor
  *
  * @code{.xml}
    <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
-    <inout key="image" uid="..." />
-    <inout key="tfSelection" uid="..." />
+    <inout key="tf" uid="..." />
     <inout key="viewport" uid="..." />
-    <config lineColor="lightGray" circleColor="gray" xAxis="xAxis" yAxis="yAxis" zValue="4" selectedTFKey="tfKey" />
+    <config lineColor="lightGray" circleColor="gray" xAxis="xAxis" yAxis="yAxis" zValue="4" />
    </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite]: composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction]: the current TransferFunction.
  * - \b viewport [::fwRenderQt::data::Viewport]: object listened to update the adaptor.
  *
  * @subsection Configuration Configuration:
@@ -47,10 +45,8 @@ namespace adaptor
  *    - \b lineColor (optional, default black): Set the color of the lines between the TF points.
  *    - \b circleColor (optional, default black): Set the outline color of the circles representing the TF points.
  *    - \b pointSize (optional, default 10): specify point size.
- *    - \b selectedTFKey: key of the transfer function used.
  */
-class SCENE2D_CLASS_API STransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
-                                            public ::fwRenderQt::IAdaptor
+class SCENE2D_CLASS_API STransferFunction : public ::fwRenderQt::IAdaptor
 {
 
 public:
@@ -69,33 +65,27 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    SCENE2D_API void configuring();
+    SCENE2D_API void configuring() override;
 
     /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport
     ///  dimensions, and call DoUpdate().
-    SCENE2D_API void starting();
+    SCENE2D_API void starting() override;
 
     /// Call buildTFPoints(), buildCircles(), buildLinesAndPolygons() and buildLayer() to build the tf points map,
     ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
-    SCENE2D_API void updating();
+    SCENE2D_API void updating() override;
 
     /// Clear the m_circles and m_linesAndPolygons vectors and remove the layer (and therefore all it's related
     ///  items) from the scene.
-    SCENE2D_API void stopping();
+    SCENE2D_API void stopping() override;
 
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
-
-    /// Called when transfer function points are modified.
-    SCENE2D_API virtual void updatingTFPoints();
-
-    /// Called when transfer function windowing is modified.
-    SCENE2D_API virtual void updatingTFWindowing(double window, double level);
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
 private:
 

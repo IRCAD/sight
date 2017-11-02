@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,8 @@ namespace dataReg
 namespace parser
 {
 /**
- * @brief   Specific service for the construction of a GenericField and its associated services from an XML-based description.
+ * @brief   Specific service for the construction of a GenericField and its associated services from an XML-based
+ * description.
  * @see     ::fwServices::IXMLParser
  */
 class DATAREG_CLASS_API GenericField  : public ::fwServices::IXMLParser
@@ -29,7 +30,7 @@ class DATAREG_CLASS_API GenericField  : public ::fwServices::IXMLParser
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (GenericField)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (GenericField)(::fwServices::IXMLParser) );
 
     /// Constructor : does nothing.
     GenericField()
@@ -41,7 +42,7 @@ public:
     {
     }
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj );
+    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 protected:
 
     /**
@@ -50,7 +51,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    DATAREG_API virtual void updating( );
+    DATAREG_API virtual void updating( ) override;
 
 };
 
@@ -60,9 +61,8 @@ protected:
 class BooleanParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (BooleanParser)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (BooleanParser)(::fwServices::IXMLParser) );
 };
-
 
 /**
  * @brief Specialisation of GenericField parser for integer
@@ -70,9 +70,8 @@ public:
 class IntegerParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IntegerParser)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (IntegerParser)(::fwServices::IXMLParser) );
 };
-
 
 /**
  * @brief Specialisation of GenericField parser for float
@@ -80,9 +79,8 @@ public:
 class FloatParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (FloatParser)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (FloatParser)(::fwServices::IXMLParser) );
 };
-
 
 /**
  * @brief Specialisation of GenericField parser for string
@@ -90,7 +88,7 @@ public:
 class StringParser : public GenericField
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (StringParser)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (StringParser)(::fwServices::IXMLParser) );
 };
 
 } //namespace parser

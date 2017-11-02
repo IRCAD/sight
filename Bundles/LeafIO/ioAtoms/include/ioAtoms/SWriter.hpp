@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,15 @@
 
 #include "ioAtoms/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwCom/Signal.hpp>
 
+#include <fwGui/dialog/LocationDialog.hpp>
+
 #include <fwJobs/IJob.hpp>
 
-#include <fwAtomsBoostIO/Writer.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
+#include <io/IWriter.hpp>
 
 #include <set>
 
@@ -25,8 +26,6 @@ namespace ioAtoms
 
 /**
  * @brief Atoms writer. Service to write an fwData medical data converted in fwAtoms.
- * @class SWriter
- * @date 2013
  */
 class IOATOMS_CLASS_API SWriter : public ::io::IWriter
 {
@@ -47,7 +46,7 @@ public:
     }
 
     /// Propose to create a medical data file
-    IOATOMS_API void configureWithIHM();
+    IOATOMS_API void configureWithIHM() override;
 
 protected:
 
@@ -93,22 +92,22 @@ protected:
      * @see ::io::IWriter
      * @throw ::fwTools::Failed
      */
-    IOATOMS_API void configuring();
+    IOATOMS_API void configuring() override;
 
     /// Does nothing
-    IOATOMS_API void starting();
+    IOATOMS_API void starting() override;
 
     /// Does nothing
-    IOATOMS_API void stopping();
+    IOATOMS_API void stopping() override;
 
     /**
      * @brief Convert fwData to fwAtoms, and apply the writer chosen from file extension
      * @note Data is locked (mutex) recursively during writing
      */
-    IOATOMS_API void updating();
+    IOATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    IOATOMS_API ::io::IOPathType getIOPathType() const;
+    IOATOMS_API ::io::IOPathType getIOPathType() const override;
 
     /// To activate atom patcher
     bool m_useAtomsPatcher;

@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <set>
+#include "RuntimeTest.hpp"
 
-#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/ExtensionPoint.hpp>
+#include <fwRuntime/operations.hpp>
+#include <fwRuntime/Runtime.hpp>
 
-#include "RuntimeTest.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRuntime::ut::RuntimeTest );
@@ -24,29 +23,33 @@ namespace fwRuntime
 namespace ut
 {
 
-void RuntimeTest::setUp()
+//------------------------------------------------------------------------------
+
+RuntimeTest::RuntimeTest()
 {
     // Set up context before running a test.
+    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
+    runtime->addDefaultBundles();
 }
+
+//------------------------------------------------------------------------------
+
+void RuntimeTest::setUp()
+{
+}
+
+//------------------------------------------------------------------------------
 
 void RuntimeTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
+
 void RuntimeTest::testRuntime()
 {
-    // Bundles location
-    ::boost::filesystem::path location = ::boost::filesystem::current_path() /std::string( std::string(
-                                                                                               BUNDLE_PREFIX) + "/");
-
-    CPPUNIT_ASSERT(::boost::filesystem::exists(location));
-
-    ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
-
-    // Read bundles
-    runtime->addBundles(location);
-    CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
+    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
 
     // Test bundle dataReg
     CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
@@ -65,6 +68,48 @@ void RuntimeTest::testRuntime()
     CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::ServiceConfig"));
     CPPUNIT_ASSERT(runtime->findExtensionPoint("::fwServices::registry::AppConfig"));
 }
+
+//------------------------------------------------------------------------------
+
+void RuntimeTest::testOperations()
+{
+    const auto location = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX;
+
+    // Bundle location prototype
+    auto path = ::fwRuntime::getBundleResourcePath(std::string("servicesReg"));
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1", path);
+
+    path = ::fwRuntime::getBundleResourcePath("notExistingBundle");
+    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+
+    // Full path prototype
+    path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
+
+    path = ::fwRuntime::getBundleResourceFilePath("servicesReg-0.1/not_existing.file");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
+
+    path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+
+    path = ::fwRuntime::getBundleResourceFilePath("wrong_version_format-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+
+    path = ::fwRuntime::getLibraryResourceFilePath("fwLibrary-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
+
+    // (Bundle, path) prototype
+    path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
+
+    path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "not_existing.file");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
+
+    path = ::fwRuntime::getBundleResourceFilePath("notExistingBundle", "plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(::boost::filesystem::path(), path);
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwTools

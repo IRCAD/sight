@@ -17,7 +17,6 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/Type.hpp>
 
-#include <boost/cstdint.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_array.hpp>
 
@@ -60,7 +59,7 @@ public:
 
     typedef SizeType::value_type IndexType;
     typedef size_t BufferIndexType;
-    typedef ::boost::uint8_t BufferType;
+    typedef std::uint8_t BufferType;
     typedef ::boost::shared_array< BufferType > SharedArray;
 
     /**
@@ -75,10 +74,10 @@ public:
     FWDATA_API virtual ~Image() noexcept;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     FWDATA_API void copyInformation( Image::csptr _source );

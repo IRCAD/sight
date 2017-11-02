@@ -1,21 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDicomIOFilter/helper/Filter.hpp>
-#include <fwMedData/SeriesDB.hpp>
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
-#include <boost/program_options.hpp>
-#include <boost/filesystem/path.hpp>
+#include <fwDicomIOFilter/helper/Filter.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/program_options.hpp>
 
 #include <stdlib.h>
-#include <string>
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
+#include <string>
 
 /** DicomMetadataJsonGenerator/src/main.cpp
  *
@@ -101,7 +104,7 @@ int main(int argc, char** argv)
         std::vector< ::fwMedData::DicomSeries::sptr > dicomSeriesContainer = myLoader->getDicomSeries();
         ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(
             "::fwDicomIOFilter::custom::DefaultDicomFilter");
-        ::fwDicomIOFilter::helper::Filter::applyFilter(dicomSeriesContainer,filter, true);
+        ::fwDicomIOFilter::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
         std::ofstream outputFile;
         outputFile.open(output.c_str(), std::ios::out | std::ios::app);
@@ -117,7 +120,7 @@ int main(int argc, char** argv)
     }
 
     // Execute shellscript to create json files
-    const std::string script = "share/fwDcmtkIO_0-1/test/DicomMetadataJsonGenerator.sh " + input.string();
+    const std::string script = "share/fwDcmtkIO-0.1/test/DicomMetadataJsonGenerator.sh " + input.string();
     system(script.c_str());
 
     return EXIT_SUCCESS;

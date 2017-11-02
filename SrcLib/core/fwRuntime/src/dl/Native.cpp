@@ -1,16 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/dl/Native.hpp"
+
+#include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/Runtime.hpp"
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+
 #include <limits.h>
+
 #include <string>
 
 namespace fwRuntime
@@ -21,7 +24,7 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Native::Native( const ::boost::filesystem::path & modulePath ) noexcept :
+Native::Native( const ::boost::filesystem::path& modulePath ) noexcept :
     m_modulePath( modulePath ),
     m_bundle( 0 )
 {
@@ -40,7 +43,7 @@ const ::boost::filesystem::path Native::getBundleLocation() const
 #ifdef ANDROID
     return ::fwRuntime::Runtime::getDefault()->getWorkingPath() / "lib";
 #else
-    return m_bundle->getLocation();
+    return m_bundle->getLibraryLocation();
 #endif
 }
 
@@ -80,13 +83,15 @@ const ::boost::regex Native::getNativeName() const
 
 #if defined(linux) || defined(__linux)
     nativeName = ::boost::regex(
-        "lib" + fullModulePath.filename().string() + "_" + m_bundle->getVersion().string()  + "\\.so" +
+        "lib" + fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string()  + "\\.so" +
         "[0-9\\.]*" );
 #elif defined(WIN32)
-    nativeName = ::boost::regex(fullModulePath.filename().string() + "_" + m_bundle->getVersion().string() + "\\.dll");
+    nativeName = ::boost::regex(
+        fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string() +
+        "\\.dll");
 #elif defined (__MACOSX__)
     nativeName = ::boost::regex(
-        "lib" + fullModulePath.filename().string() + "_" + m_bundle->getVersion().string() + "[0-9\\.]*" +
+        "lib" + fullModulePath.filename().string() + Bundle::s_VERSION_DELIMITER + m_bundle->getVersion().string() + "[0-9\\.]*" +
         "\\.dylib" );
 #endif
 
@@ -123,7 +128,7 @@ const ::boost::filesystem::path Native::getPath() const
 
 //------------------------------------------------------------------------------
 
-void Native::setBundle( const Bundle * bundle ) noexcept
+void Native::setBundle( const Bundle* bundle ) noexcept
 {
     // Pre-condition
     SLM_ASSERT("bundle already initialized", m_bundle == 0 );
@@ -141,6 +146,5 @@ void Native::operator=(const Native&) noexcept
 //------------------------------------------------------------------------------
 
 } // namespace dl
-
 
 } // namespace fwRuntime

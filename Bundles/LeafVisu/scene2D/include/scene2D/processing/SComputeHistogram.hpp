@@ -62,23 +62,23 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API virtual KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
-    SCENE2D_API void configuring();
+    SCENE2D_API void configuring() override;
 
     /// Starts the service. Calls updating().
-    SCENE2D_API void starting();
+    SCENE2D_API void starting() override;
 
     /// Computes the histogram and notifies Histogram::s_MODIFIED_SIG.
-    SCENE2D_API void updating();
+    SCENE2D_API void updating() override;
 
     /// Swaps the service. Calls updating().
-    SCENE2D_API void swapping();
+    SCENE2D_API void swapping() override;
 
     /// Stops the service. Does nothing.
-    SCENE2D_API void stopping();
+    SCENE2D_API void stopping() override;
 
 private:
 

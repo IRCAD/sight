@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRSCoord3DNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 
-#include <fwCore/spyLog.hpp>
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
-#include <gdcmSequenceOfItems.h>
+#include <fwServices/macros.hpp>
 
 namespace fwGdcmIO
 {
@@ -20,8 +19,10 @@ namespace sr
 
 //------------------------------------------------------------------------------
 
-DicomSRSCoord3DNode::DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-                                         const std::string& graphicType, GraphicDataContainerType graphicDataContainer,
+DicomSRSCoord3DNode::DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribute,
+                                         const std::string& relationship,
+                                         const std::string& graphicType,
+                                         const GraphicDataContainerType graphicDataContainer,
                                          const std::string& frameOfReferenceUID) :
     ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "SCOORD3D", relationship),
     m_frameOfReferenceUID(frameOfReferenceUID),
@@ -52,14 +53,14 @@ void DicomSRSCoord3DNode::write(::gdcm::DataSet& dataset) const
     ::fwGdcmIO::container::sr::DicomSRNode::write(dataset);
 
     // Referenced Frame of Reference UID - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x3006, 0x0024 >(m_frameOfReferenceUID, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x3006, 0x0024 >(m_frameOfReferenceUID, dataset);
 
     // Graphic Data - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValues< float, 0x0070, 0x0022 >(
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< float, 0x0070, 0x0022 >(
         &m_graphicDataContainer[0], static_cast<unsigned int>(m_graphicDataContainer.size()), dataset);
 
     // Graphic Type - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0070, 0x0023 >(m_graphicType, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0070, 0x0023 >(m_graphicType, dataset);
 }
 
 //------------------------------------------------------------------------------

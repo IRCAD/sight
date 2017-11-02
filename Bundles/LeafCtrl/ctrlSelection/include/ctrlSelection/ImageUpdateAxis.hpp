@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,6 @@
 namespace ctrlSelection
 {
 
-
 /**
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
  */
@@ -26,7 +25,7 @@ class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (ImageUpdateAxis)(::fwServices::IController) );
 
     CTRLSELECTION_API ImageUpdateAxis() noexcept;
 
@@ -38,18 +37,18 @@ public:
      *
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      */
-    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     /// Calls updating().
-    CTRLSELECTION_API virtual void starting();
+    CTRLSELECTION_API virtual void starting() override;
 
     /// Does nothing.
-    CTRLSELECTION_API virtual void stopping();
+    CTRLSELECTION_API virtual void stopping() override;
 
     /// Does nothing.
-    CTRLSELECTION_API virtual void swapping();
+    CTRLSELECTION_API virtual void swapping() override;
 
     /**
      * @brief Configures the service.
@@ -62,16 +61,16 @@ protected:
      * - \b uid : fwID of the ::fwData::Float to update
      * - \b orientation : image orientation (axial, frontal or sagittal)
      */
-    CTRLSELECTION_API virtual void configuring();
+    CTRLSELECTION_API virtual void configuring() override;
 
     /// Does nothing.
-    CTRLSELECTION_API virtual void reconfiguring();
+    CTRLSELECTION_API virtual void reconfiguring() override;
 
     /// Updates the float from the image axis orientation.
-    CTRLSELECTION_API virtual void updating();
+    CTRLSELECTION_API virtual void updating() override;
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream ) override;
 
 private:
 

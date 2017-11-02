@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define __FWDATA_EDGE_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <utility>
 
@@ -39,26 +39,25 @@ public:
     /// Destructor
     FWDATA_API virtual ~Edge();
 
-
     /// @brief do a shallow copy of edge
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// @brief do a deep copy of edge
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)
      * @param[in] _fromPortIndentifier identifier of port "from"
      * @param[in] _toPortIndentifier identifier of port "to"
      */
-    FWDATA_API void setIdentifiers(const std::string & _fromPortIndentifier, const std::string & _toPortIndentifier);
+    FWDATA_API void setIdentifiers(const std::string& _fromPortIndentifier, const std::string& _toPortIndentifier);
 
     /**
      * @brief Get the edge identifier
      *
      * @return std::pair <from,to>
      */
-    FWDATA_API std::pair<std::string,std::string> getIdentifiers() const;
+    FWDATA_API std::pair<std::string, std::string> getIdentifiers() const;
 
     /// @brief return "from" identifier
     FWDATA_API std::string getFromPortID() const;
@@ -73,7 +72,7 @@ public:
     FWDATA_API void setNature(std::string nature);
 
     /// @brief Get edge nature ("FLOW" , "FWDATA")
-    FWDATA_API const std::string &getNature() const;
+    FWDATA_API const std::string& getNature() const;
 
 protected:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,11 +10,13 @@
 #include "ioGdcm/config.hpp"
 
 #include <fwCom/Signal.hpp>
+
 #include <io/IReader.hpp>
-#include <string>
-#include <vector>
 
 #include <boost/filesystem/path.hpp>
+
+#include <string>
+#include <vector>
 
 namespace fwJobs
 {
@@ -29,13 +31,13 @@ class SeriesDB;
 namespace ioGdcm
 {
 /**
- * @brief Read  ImageSeries from DICOM with gdcm reader
+ * @brief Read DICOM (ImageSeries/ModelSeries) with gdcm reader
  **/
 class IOGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::io::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
@@ -89,28 +91,28 @@ protected:
         </extension>
        @endcode
      */
-    IOGDCM_API virtual void configuring();
+    IOGDCM_API virtual void configuring() override;
 
     /// Override
-    IOGDCM_API virtual void starting();
+    IOGDCM_API virtual void starting() override;
 
     /// Override
-    IOGDCM_API virtual void stopping();
+    IOGDCM_API virtual void stopping() override;
 
     /// Override
-    IOGDCM_API void updating();
+    IOGDCM_API void updating() override;
 
     /// Override
-    IOGDCM_API void info(std::ostream& _sstream );
+    IOGDCM_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IOGDCM_API virtual std::string getSelectorDialogTitle();
+    IOGDCM_API virtual std::string getSelectorDialogTitle() override;
 
     /// Override
-    IOGDCM_API virtual void configureWithIHM();
+    IOGDCM_API virtual void configureWithIHM() override;
 
     /// Return managed file type, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const;
+    IOGDCM_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

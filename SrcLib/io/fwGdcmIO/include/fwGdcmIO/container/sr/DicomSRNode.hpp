@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,6 @@
 #include <fwCore/macros.hpp>
 
 #include <gdcmDataSet.h>
-
-#include <string>
-#include <vector>
-
 
 namespace fwGdcmIO
 {
@@ -101,7 +97,6 @@ public:
         m_relationship = relationship;
     }
 
-
 protected:
 
     /// Constructor
@@ -120,7 +115,7 @@ protected:
      * @param[in] codedAttribute Coded attribute to write
      */
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createConceptNameCodeSequence(
-        ::gdcm::DataSet& dataset, const DicomCodedAttribute& codedAttribute) const;
+        const DicomCodedAttribute& codedAttribute) const;
 
     /**
      * @brief Write a content sequence

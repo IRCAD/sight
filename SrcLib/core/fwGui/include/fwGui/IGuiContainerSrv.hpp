@@ -141,7 +141,7 @@ protected:
     FWGUI_API void destroy();
 
     /**
-     * @name Slots Keys
+     * @name Slots
      * @{
      */
     /// Slot to enable/disable the action
@@ -161,6 +161,20 @@ protected:
 
     /// Slot to hide the container
     FWGUI_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+
+    /// SLOT: enable/disable the container
+    FWGUI_API void setEnabled(bool isEnabled);
+    /// SLOT: enable the container
+    FWGUI_API void enable();
+    /// SLOT: disable the container
+    FWGUI_API void disable();
+    /// SLOT: show/hide the container
+    FWGUI_API void setVisible(bool isVisible);
+    /// SLOT: show the container
+    FWGUI_API void show();
+    /// SLOT: hide the container
+    FWGUI_API void hide();
+
     /**
      * @}
      */
@@ -168,19 +182,6 @@ protected:
 private:
 
     typedef std::vector< SPTR(::fwGui::builder::ISlideViewBuilder) > SlideViewContainerType;
-
-    /// SLOT: enable/disable the container
-    void setEnabled(bool isEnabled);
-    /// SLOT: enable the container
-    void enable();
-    /// SLOT: disable the container
-    void disable();
-    /// SLOT: show/hide the container
-    void setVisible(bool isVisible);
-    /// SLOT: show the container
-    void show();
-    /// SLOT: hide the container
-    void hide();
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
     void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
@@ -205,4 +206,3 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_IGUICONTAINERSRV_HPP__*/
-

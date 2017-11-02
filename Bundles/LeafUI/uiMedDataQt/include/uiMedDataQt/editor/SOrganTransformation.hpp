@@ -59,12 +59,12 @@ public:
 
 protected:
 
-    UIMEDDATAQT_API virtual void configuring();
-    UIMEDDATAQT_API virtual void starting();
-    UIMEDDATAQT_API virtual void stopping();
-    UIMEDDATAQT_API virtual void swapping();
-    UIMEDDATAQT_API virtual void updating();
-    UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
+    UIMEDDATAQT_API virtual void configuring() override;
+    UIMEDDATAQT_API virtual void starting() override;
+    UIMEDDATAQT_API virtual void stopping() override;
+    UIMEDDATAQT_API virtual void swapping() override;
+    UIMEDDATAQT_API virtual void updating() override;
+    UIMEDDATAQT_API virtual void info( ::std::ostream& stream ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -78,7 +78,7 @@ protected:
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
     void onReconstructionCheck(QListWidgetItem* currentItem);

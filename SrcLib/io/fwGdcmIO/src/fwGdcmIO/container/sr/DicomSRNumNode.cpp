@@ -1,15 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/sr/DicomSRNumNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-#include <gdcmSequenceOfItems.h>
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 namespace fwGdcmIO
 {
@@ -21,9 +18,11 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRNumNode::DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
-                               const std::string& relationship, double numValue,
+                               const std::string& relationship,
+                               const double numValue,
                                const DicomCodedAttribute& measurementUnits) :
-    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "NUM", relationship), m_numValue(numValue),
+    ::fwGdcmIO::container::sr::DicomSRNode(codedAttribute, "NUM", relationship),
+    m_numValue(numValue),
     m_measurementUnits(measurementUnits)
 {
 }
@@ -54,15 +53,15 @@ void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet& dataset) const
     ::gdcm::DataSet& itemDataset = item.GetNestedDataSet();
 
     // Add numerical value - Type 1
-    ::fwGdcmIO::helper::DicomData::setTagValues< double, 0x0040, 0xa30a >(&m_numValue, 1, itemDataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< double, 0x0040, 0xa30a >(&m_numValue, 1, itemDataset);
 
     // Add measured units code sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-        this->createConceptNameCodeSequence(itemDataset, m_measurementUnits);
-    ::fwGdcmIO::helper::DicomData::insertSQ<0x0040, 0x08ea>(codeSequence, itemDataset);
+        this->createConceptNameCodeSequence(m_measurementUnits);
+    ::fwGdcmIO::helper::DicomDataWriter::setAndMergeSequenceTagValue<0x0040, 0x08ea>(codeSequence, itemDataset);
 
     sequence->AddItem(item);
-    ::fwGdcmIO::helper::DicomData::setSQ< 0x0040, 0xa300 >(sequence, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setSequenceTagValue< 0x0040, 0xa300 >(sequence, dataset);
 }
 
 //------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-<plugin id="dicomAppConfig" version="@DASH_VERSION@" >
+<plugin id="dicomAppConfig" version="@PROJECT_VERSION@" >
 
     <requirement id="ctrlMemory" />
     <requirement id="ctrlSelection" />

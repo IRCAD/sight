@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,9 +25,7 @@ namespace dialog
 
 /**
  * @brief   LoggerDialog allowing the choice of an element among severals (_selections)
- *
  */
-
 class FWGUIQT_CLASS_API LoggerDialog : public QDialog,
                                        public ::fwGui::dialog::ILoggerDialog
 {
@@ -49,24 +47,24 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    FWGUIQT_API virtual void setTitle(const std::string& title);
+    FWGUIQT_API virtual void setTitle(const std::string& title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    FWGUIQT_API virtual void setMessage(const std::string& message);
+    FWGUIQT_API virtual void setMessage(const std::string& message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    FWGUIQT_API virtual void setLogger(const ::fwLog::Logger::sptr& logger);
+    FWGUIQT_API virtual void setLogger(const ::fwLog::Logger::sptr& logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
      */
-    FWGUIQT_API virtual bool show();
+    FWGUIQT_API virtual bool show() override;
 
 protected Q_SLOTS:
 
@@ -75,7 +73,6 @@ protected Q_SLOTS:
      * @param[in] state Checkbox state
      */
     void displayLogs(int state);
-
 
 private:
     /// Dialog title

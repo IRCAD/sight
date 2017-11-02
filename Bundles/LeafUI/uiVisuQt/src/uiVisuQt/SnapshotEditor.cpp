@@ -20,6 +20,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/filesystem.hpp>
@@ -62,8 +64,7 @@ void SnapshotEditor::starting()
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    ::boost::filesystem::path path(std::string(BUNDLE_PREFIX) + "/uiVisuQt_" + std::string(
-                                       UIVISUQT_VER) + "/camera-photo.png");
+    ::boost::filesystem::path path = ::fwRuntime::getBundleResourceFilePath("uiVisuQt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));

@@ -1,4 +1,4 @@
-<plugin id="Ex02ImageMix" version="@DASH_VERSION@">
+<plugin id="Ex02ImageMix" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -9,12 +9,11 @@
             <object uid="backgroundImage" type="::fwData::Image" />
             <!-- frontImage description -->
             <object uid="frontImage" type="::fwData::Image" />
-            <object uid="TFSelections" type="::fwData::Composite" />
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Ex02ImageMix</name>
-                        <icon>@BUNDLE_PREFIX@/Ex02ImageMix_0-1/tuto.ico</icon>
+                        <icon>Ex02ImageMix-0.1/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar/>
@@ -173,10 +172,8 @@
                 <inout key="image" uid="backgroundImage" autoConnect="yes" />
             </service>
 
-            <service uid="windowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <service uid="windowLevel" type="::uiImageQt::WindowLevel">
                 <inout key="image" uid="backgroundImage" autoConnect="yes" />
-                <inout key="TFSelections" uid="TFSelections" />
-                <config selectedTFKey="BgSelectedTF" />
             </service>
 
             <service uid="frontImgEditorsView" type="::gui::view::SDefaultView">
@@ -210,10 +207,8 @@
                 <shortcut value="V" />
             </service>
 
-            <service uid="windowLevel2" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <service uid="windowLevel2" type="::uiImageQt::WindowLevel">
                 <inout key="image" uid="frontImage" autoConnect="yes" />
-                <inout key="TFSelections" uid="TFSelections" />
-                <config selectedTFKey="FrontSelectedTF" />
             </service>
 
             <!-- Service to forward signal from backgroundImage to front image -->
@@ -271,10 +266,6 @@
                     <key uid="backgroundImage" opacity="1.0" tfalpha="no" />
                     <key uid="frontImage" opacity="1.0" tfalpha="yes" />
                 </inout>
-                <inout group="tfSelection">
-                    <key uid="TFSelections" selectedTFKey="BgSelectedTF" />
-                    <key uid="TFSelections" selectedTFKey="FrontSelectedTF" />
-                </inout>
                 <config renderer="default" vtkimageregister="imageBlend" />
             </service>
 
@@ -304,8 +295,7 @@
 
             <service uid="bgMPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
                 <inout key="image" uid="backgroundImage" />
-                <inout key="tfSelection" uid="TFSelections" />
-                <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" selectedTFKey="BgSelectedTF" />
+                <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
             </service>
 
             <service uid="bgInteractor" type="::visuVTKAdaptor::SInteractorStyle">
@@ -334,8 +324,7 @@
 
             <service uid="fgMPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
                 <inout key="image" uid="frontImage" />
-                <inout key="tfSelection" uid="TFSelections" />
-                <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" selectedTFKey="FrontSelectedTF" />
+                <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
             </service>
 
             <service uid="fgInteractor" type="::visuVTKAdaptor::SInteractorStyle">

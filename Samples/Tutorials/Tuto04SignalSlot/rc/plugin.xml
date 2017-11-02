@@ -1,4 +1,4 @@
-<plugin id="Tuto04SignalSlot" version="@DASH_VERSION@">
+<plugin id="Tuto04SignalSlot" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -15,7 +15,7 @@
                 <gui>
                     <frame>
                         <name>tutoSignalSlot</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto04SignalSlot_0-1/tuto.ico</icon>
+                        <icon>Tuto04SignalSlot-0.1/tuto.ico</icon>
                         <minSize width="720" height="600" />
                     </frame>
                     <menuBar />

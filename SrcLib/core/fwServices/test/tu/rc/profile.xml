@@ -1,7 +1,7 @@
 <profile name="fwServicesTest" version="0.1">
 
-    <activate id="dataReg" version="0-1" />
-    <activate id="servicesReg" version="0-1" />
+    <activate id="dataReg" version="0.1" />
+    <activate id="servicesReg" version="0.1" />
 
     <start id="dataReg" />
 

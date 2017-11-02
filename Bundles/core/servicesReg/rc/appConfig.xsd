@@ -137,6 +137,8 @@
         <xs:sequence>
             <xs:element name="step" type="StepType" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
+        <xs:attribute name="isClamped" type="xs:string" />
+        <xs:attribute name="default" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="StepType">

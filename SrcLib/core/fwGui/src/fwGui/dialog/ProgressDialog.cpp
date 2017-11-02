@@ -8,7 +8,7 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/function.hpp>
+#include <functional>
 
 namespace fwGui
 {

@@ -1,4 +1,4 @@
-<plugin id="ioITK" class="ioITK::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioITK" class="ioITK::Plugin" version="@PROJECT_VERSION@" >
     <library name="ioITK" />
 
     <requirement id="io" />

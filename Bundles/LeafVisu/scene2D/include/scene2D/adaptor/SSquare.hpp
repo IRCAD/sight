@@ -50,12 +50,12 @@ public:
 
 protected:
 
-    SCENE2D_API void configuring();
-    SCENE2D_API void starting();
-    SCENE2D_API void updating();
-    SCENE2D_API void stopping();
+    SCENE2D_API void configuring() override;
+    SCENE2D_API void starting() override;
+    SCENE2D_API void updating() override;
+    SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
     SCENE2D_API void setColor(const std::string& _color );
     SCENE2D_API bool coordViewIsInItem( const ::fwRenderQt::data::Coord& coord, QGraphicsItem* item );

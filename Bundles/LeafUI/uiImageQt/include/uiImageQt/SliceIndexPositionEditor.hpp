@@ -64,7 +64,7 @@ public:
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
@@ -74,18 +74,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Update editor information from the image
-    virtual void updating();
+    virtual void updating() override;
 
     /// Swap of image
-    virtual void swapping();
+    virtual void swapping() override;
 
     /**
      * @brief Configure the editor.
@@ -99,10 +99,10 @@ protected:
        @endcode
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream& _sstream );
+    UIIMAGEQT_API virtual void info( std::ostream& _sstream ) override;
 
     /// Update the editor slider from the image slice index.
     UIIMAGEQT_API void updateSliceIndexFromImg();

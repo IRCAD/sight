@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ class GUI_CLASS_API SDoNothing : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDoNothing)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SDoNothing)(::fwGui::IActionSrv) );
 
     /**
      * @brief Constructor. Do nothing.
@@ -47,29 +47,27 @@ protected:
     /**
      * @brief This method is used to configure the action.
      */
-    GUI_API virtual void configuring();
+    GUI_API virtual void configuring() override;
 
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     /**
      * @brief Process the action. Do nothing.
      */
-    GUI_API virtual void updating();
+    GUI_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
 
 };
 
-
 } // namespace action
 } // namespace gui
-
 
 #endif /*__GUI_ACTION_SDONOTHING_HPP__*/

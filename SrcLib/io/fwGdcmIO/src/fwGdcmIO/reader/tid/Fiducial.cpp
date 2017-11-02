@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,9 @@
 #include "fwGdcmIO/container/sr/DicomSRSCoord3DNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
 
 #include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 
@@ -28,11 +27,11 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Fiducial::Fiducial(SPTR(::fwMedData::DicomSeries)dicomSeries,
-                   SPTR(::gdcm::Reader)reader,
-                   SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                   ::fwData::Image::sptr image,
-                   ::fwLog::Logger::sptr logger) :
+Fiducial::Fiducial(const SPTR(::fwMedData::DicomSeries)& dicomSeries,
+                   const SPTR(::gdcm::Reader)& reader,
+                   const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                   const ::fwData::Image::sptr& image,
+                   const ::fwLog::Logger::sptr& logger) :
     ::fwGdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image, logger)
 {
 }
@@ -45,7 +44,7 @@ Fiducial::~Fiducial()
 
 //------------------------------------------------------------------------------
 
-void Fiducial::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
+void Fiducial::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node)
 {
     if(node->getCodedAttribute() == ::fwGdcmIO::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature") &&
        !node->getSubNodeContainer().empty())
@@ -53,7 +52,7 @@ void Fiducial::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
         std::string label = "";
         double x, y, z;
         bool foundLandmark = false;
-        for(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& subNode: node->getSubNodeContainer())
+        for(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
         {
             // Read label
             if(subNode->getCodedAttribute() ==
@@ -88,8 +87,8 @@ void Fiducial::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
                         if(imageNode)
                         {
                             const int frameNumber = imageNode->getFrameNumber();
-                            z = ::fwGdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(m_object,
-                                                                                               frameNumber);
+                            z = ::fwGdcmIO::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object,
+                                                                                                    frameNumber);
                             foundLandmark = true;
                         }
                     }
@@ -126,7 +125,7 @@ void Fiducial::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
 
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
-    ::fwData::Point::sptr point = ::fwData::Point::New(x,y,z);
+    ::fwData::Point::sptr point = ::fwData::Point::New(x, y, z);
     point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
 
     ::fwData::PointList::sptr pointList =

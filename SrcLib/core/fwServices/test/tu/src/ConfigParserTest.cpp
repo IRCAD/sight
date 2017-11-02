@@ -68,20 +68,20 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
     // Test start services
     configManager->start();
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID1)->isStarted() );
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID2)->isStarted() );
+    const auto& srv1 = ::fwServices::get(serviceUUID1);
+    const auto& srv2 = ::fwServices::get(serviceUUID2);
+    CPPUNIT_ASSERT( srv1->isStarted() );
+    CPPUNIT_ASSERT( srv2->isStarted() );
 
     // Test update services
     configManager->update();
-    CPPUNIT_ASSERT( ::fwServices::ut::TestConfigService::dynamicCast( ::fwServices::get(serviceUUID1) )->getIsUpdated() );
-    CPPUNIT_ASSERT( ::fwServices::ut::TestConfigService::dynamicCast( ::fwServices::get(
-                                                                          serviceUUID2) )->getIsUpdated() ==
-                    false );
+    CPPUNIT_ASSERT( ::fwServices::ut::TestConfigService::dynamicCast( srv1 )->getIsUpdated() );
+    CPPUNIT_ASSERT( ::fwServices::ut::TestConfigService::dynamicCast( srv2 )->getIsUpdated() == false );
 
     // Test stop services
     configManager->stop();
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID1)->isStopped() );
-    CPPUNIT_ASSERT( ::fwServices::get(serviceUUID2)->isStopped() );
+    CPPUNIT_ASSERT( srv1->isStopped() );
+    CPPUNIT_ASSERT( srv2->isStopped() );
 
     configManager->destroy();
 }

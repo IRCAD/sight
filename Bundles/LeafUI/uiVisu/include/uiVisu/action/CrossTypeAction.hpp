@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,14 +26,13 @@ namespace action
 
 /**
  * @brief   This action allows change the cross type
- * @class   CrossTypeAction
  */
 class UIVISU_CLASS_API CrossTypeAction : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (CrossTypeAction)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (CrossTypeAction)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     UIVISU_API CrossTypeAction() noexcept;
@@ -46,16 +45,16 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Starts action
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops action
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Notifies message to change cross type
-    void updating();
+    void updating() override;
 
     /// Does nothing
-    void swapping();
+    void swapping() override;
 
     /**
      * @brief Configure action.
@@ -66,9 +65,9 @@ protected:
        @endcode
      * - \b crossType : must be full, half or hide
      */
-    void configuring();
+    void configuring() override;
 
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 
@@ -83,5 +82,4 @@ private:
 } // uiVisu
 
 #endif /*__UIVISU_ACTION_CROSSTYPEACTION_HPP__*/
-
 

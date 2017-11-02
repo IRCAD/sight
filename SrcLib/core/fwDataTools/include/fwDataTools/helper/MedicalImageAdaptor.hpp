@@ -7,8 +7,8 @@
 #ifndef __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
 #define __FWDATATOOLS_HELPER_MEDICALIMAGEADAPTOR_HPP__
 
-#include "fwDataTools/helper/ImageGetter.hpp"
 #include "fwDataTools/config.hpp"
+#include "fwDataTools/helper/ImageGetter.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
@@ -18,9 +18,6 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
-
-// We could skip this dependency to runtime by using a pTree
-#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <vector>
 
@@ -32,12 +29,18 @@ namespace helper
 
 /**
  * @brief   Helpers for medical image.
+ *
+ * @section Slots Slots
+ *
+ * The two slots must be reimplemented by the services managing transfer function
+ * - \b updateTFPoints(): called when the transfer function points are modified
+ * - \b updateTFWindowing(double window, double level): called when the transfer function windowing is modified
  */
 class FWDATATOOLS_CLASS_API MedicalImageAdaptor
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (MedicalImageAdaptor) );
+    fwCoreBaseClassDefinitionsMacro( (MedicalImageAdaptor) );
 
     /// Image orientation
     typedef enum
@@ -59,32 +62,8 @@ public:
         return m_orientation;
     }
 
-    /// Set TF Selection fwID
-    FWDATATOOLS_API void setTransferFunctionSelection( ::fwData::Composite::wptr selection );
-
-    /// Set selected TF Key
-    FWDATATOOLS_API void setSelectedTFKey( const std::string& key );
-
-    /// Get selected TF Key
-    FWDATATOOLS_API const std::string& getSelectedTFKey() const;
-
-    /// Set selected TF Key and TF Selection fwID from config
-    FWDATATOOLS_API void parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration );
-
-    /// Get the window of the selected tf
-    FWDATATOOLS_API double getWindow() const;
-
-    /// Set the window of the selected tf
-    FWDATATOOLS_API void setWindow( double window );
-
-    /// Set the window level of the selected tf from window min/max
-    FWDATATOOLS_API void setWindowLevel( double windowMin, double windowMax );
-
-    /// Get the level of the selected tf
-    FWDATATOOLS_API double getLevel() const;
-
-    /// Set the level of the selected tf
-    FWDATATOOLS_API void setLevel( double level );
+    /// Set the current TransferFunction
+    FWDATATOOLS_API void setTransferFunction( const ::fwData::TransferFunction::sptr& tf );
 
 protected:
 
@@ -127,9 +106,6 @@ protected:
      */
     FWDATATOOLS_API void getCurrentSliceCenter(double center[3]);
 
-    // Retrieve the grey level from an image from physical world
-    //float getPixelvalue( double worldPosition[3]);
-
     /**
      * @brief Convert world coordinates to slice index coordinates
      * @param[in] world : coordinate in the world
@@ -150,6 +126,9 @@ protected:
      * @param[out] world : coordinate in the world
      */
     FWDATATOOLS_API void sliceIndexToWorld(const int index[3], double world[3] );
+
+    /// Return the image
+    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
 
     /**
      * @brief Get the image spacing.
@@ -195,33 +174,27 @@ protected:
     /// Get the slice index
     FWDATATOOLS_API void getSliceIndex(::fwData::Integer::sptr index[3]);
 
-    /// Get the current transfer function
-    FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
-
-    /// Get the current transfer function selection
-    FWDATATOOLS_API ::fwData::Composite::sptr getTransferFunctionSelection() const;
-
     /// Update the image information (slice index, min/max,...)
     FWDATATOOLS_API void updateImageInfos( ::fwData::Image::sptr image  );
 
-    /// Update the transfer function information
-    FWDATATOOLS_API void updateTransferFunction( ::fwData::Image::sptr image );
+    /**
+     * @brief Create and set the default transfer function.
+     *
+     * Create the image's transfer function pool if if does not exist and then create the defaut transfer function.
+     * Set the current transfer function to the default grey-level if no transfer function was set (using
+     * setTransferFunction() ).
+     */
+    FWDATATOOLS_API void createTransferFunction( ::fwData::Image::sptr image );
 
-    /// Return the image
-    FWDATATOOLS_API ::fwData::Image::sptr getImage() const;
+    /**
+     * @brief Sets the transfer function, creates one if _tf is null (@see createTransferFunction).
+     *
+     * Connects the TF's signals to the updateTFPoints and updateTFWindowing slots.
+     */
+    FWDATATOOLS_API void setOrCreateTF(const ::fwData::TransferFunction::sptr& _tf, const fwData::Image::sptr& _image);
 
-    /// Image orientation
-    Orientation m_orientation;
-
-    /// Current image
-    ::fwData::Image::wptr m_weakImage;
-
-    /// Axial slice index
-    ::fwData::Integer::sptr m_axialIndex;
-    /// Frontal slice index
-    ::fwData::Integer::sptr m_frontalIndex;
-    /// Sagittal slice index
-    ::fwData::Integer::sptr m_sagittalIndex;
+    /// Get the current transfer function
+    FWDATATOOLS_API ::fwData::TransferFunction::sptr getTransferFunction() const;
 
     /**
      * @name Connections to transfer function
@@ -235,20 +208,6 @@ protected:
     FWDATATOOLS_API void removeTFConnections();
 
     /**
-     *  @brief Called when transfer function points are modified.
-     *
-     *  It must be reimplemented to upadte TF.
-     */
-    FWDATATOOLS_API virtual void updatingTFPoints();
-
-    /**
-     *  @brief Called when transfer function windowing is modified.
-     *
-     *  It must be reimplemented to upadte TF.
-     */
-    FWDATATOOLS_API virtual void updatingTFWindowing(double window, double level);
-
-    /**
      * @brief Install the slots to managed TF modifications.
      *
      * Creates slots to listen TF selection Composite and TransferFunction signals.
@@ -257,36 +216,14 @@ protected:
      */
     FWDATATOOLS_API void installTFSlots(::fwCom::HasSlots* hasslots);
 
-    /// Slot: add objects
-    void addObjects(::fwData::Composite::ContainerType objects);
-
-    /// Slot: change objects
-    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
-
-    /// Slot: remove objects
-    void removeObjects(::fwData::Composite::ContainerType objects);
-
     /// Slot: called when transfer function points are modified
-    void updateTFPoints();
+    FWDATATOOLS_API virtual void updateTFPoints();
 
     /// Slot: called when transfer function windowing is modified
-    void updateTFWindowing(double window, double level);
+    FWDATATOOLS_API virtual void updateTFWindowing(double window, double level);
 
-    typedef ::fwCom::Slot<void (::fwData::Composite::ContainerType)> AddedObjectsSlotType;
-    typedef ::fwCom::Slot<void (::fwData::Composite::ContainerType,
-                                ::fwData::Composite::ContainerType)> ChangedObjectsSlotType;
-    typedef ::fwCom::Slot<void (::fwData::Composite::ContainerType)> RemovedObjectsSlotType;
     typedef ::fwCom::Slot<void ()> UpdateTFPointsSlotType;
     typedef ::fwCom::Slot<void (double, double)> UpdateTFWindowingSlotType;
-
-    /// Slot called when objects are added into the composite
-    AddedObjectsSlotType::sptr m_slotAddedObjects;
-
-    /// Slot called when objects are changed into the composite
-    ChangedObjectsSlotType::sptr m_slotChangedObjects;
-
-    /// Slot called when objects are removed from the composite
-    RemovedObjectsSlotType::sptr m_slotRemovedObjects;
 
     /// Slot called when transfer function points are modified
     UpdateTFPointsSlotType::sptr m_slotUpdateTFPoints;
@@ -297,28 +234,27 @@ protected:
      * @}
      */
 
+    /// Image orientation
+    Orientation m_orientation;
+
+    /// Axial slice index
+    ::fwData::Integer::sptr m_axialIndex;
+    /// Frontal slice index
+    ::fwData::Integer::sptr m_frontalIndex;
+    /// Sagittal slice index
+    ::fwData::Integer::sptr m_sagittalIndex;
+
 private:
 
-    ::fwCom::helper::SigSlotConnection m_tfSelectionConnections;
-    ::fwCom::helper::SigSlotConnection m_tfConnections;
+    /// Current image
+    ::fwData::Image::wptr m_weakImage;
 
     /// Transfer function selection
-    ::fwData::Composite::wptr m_tfSelection;
+    ::fwData::TransferFunction::wptr m_transferFunction;
 
-    /// Identifier of the key containing the current selection of TransferFunction in TFSelection
-    std::string m_selectedTFKey;
+    /// Connections to the transfer function
+    ::fwCom::helper::SigSlotConnection m_tfConnections;
 };
-
-struct Image0 {};
-struct Image1 {};
-
-template < typename IMAGEID >
-class FWDATATOOLS_CLASS_API MedicalImageAdaptorTpl : public MedicalImageAdaptor
-{
-};
-
-typedef MedicalImageAdaptorTpl<Image0> MedicalImageAdaptorImg0;
-typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
 
 //------------------------------------------------------------------------------
 template< typename FLOAT_ARRAY_3 >

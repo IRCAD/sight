@@ -1,26 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/LineLayoutManagerBase.hpp
- * @brief This file defines the interface of the class for managing a line layout geometry.
- *
- *
- * @date 2009-2010
- */
-
 #ifndef __FWGUI_LAYOUTMANAGER_LINELAYOUTMANAGERBASE_HPP__
 #define __FWGUI_LAYOUTMANAGER_LINELAYOUTMANAGERBASE_HPP__
 
-#include <list>
+#include "fwGui/config.hpp"
+#include "fwGui/layoutManager/IViewLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwGui/layoutManager/IViewLayoutManager.hpp"
-#include "fwGui/config.hpp"
+#include <list>
 
 namespace fwGui
 {
@@ -29,10 +21,6 @@ namespace layoutManager
 
 /**
  * @brief   Defines the base for line layout manager.
- * @class   LineLayoutManagerBase
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API LineLayoutManagerBase : public IViewLayoutManager
 {
@@ -55,11 +43,11 @@ public:
     public:
 
         ViewInfo() :
-            m_proportion (1),
+            m_proportion(1),
             m_border(0),
-            m_minSize (std::make_pair(-1,-1)),
-            m_caption (std::make_pair(false,"")),
-            m_visible (true),
+            m_minSize(std::make_pair(-1, -1)),
+            m_caption(std::make_pair(false, "")),
+            m_visible(true),
             m_isSpacer(false),
             m_useScrollBar(false)
         {
@@ -102,7 +90,8 @@ public:
      *  - \<layout type="::fwGui::LineLayoutManager" \> : define a line layout.
      *  - \<view proportion="0" minWidth="30" /\> : define a new view which can have the following attributes
      *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizontal.
-     *   - \b proportion : define if the space allocate in proportion of the proportion factor (bigger it is, more space are used).
+     *   - \b proportion : define if the space allocate in proportion of the proportion factor (bigger it is, more space
+     * are used).
      *   - \b border : define the size of the border in the layout
      *   - \b caption : define the title to display.
      *   - \b minWidth  : minimal width of the view.
@@ -110,9 +99,11 @@ public:
      *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
      */
 
-    FWGUI_API virtual void initialize( ConfigurationType configuration);
+    FWGUI_API virtual void initialize( ConfigurationType configuration) override;
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
+
+    //------------------------------------------------------------------------------
 
     Orientation getOrientation()
     {
@@ -120,6 +111,8 @@ public:
     }
 
 protected:
+
+    //------------------------------------------------------------------------------
 
     std::list< ViewInfo> getViewsInfo()
     {
@@ -138,5 +131,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_LAYOUTMANAGER_LINELAYOUTMANAGERBASE_HPP__*/
-
 

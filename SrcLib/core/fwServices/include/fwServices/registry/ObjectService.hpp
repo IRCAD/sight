@@ -90,6 +90,8 @@ public:
 
     /**
      * @brief Register the service alone
+     *
+     * @param service Service to add to the OSR
      */
     FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
 
@@ -97,15 +99,23 @@ public:
      * @brief Register the service (service) for the object (obj)
      * It also updates IService::m_associatedObject of service to point to obj
      * removal at obj destruction.
+     *
+     * @param object Object to register
+     * @param service Service whose key should be added
      */
-    FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
+    FWSERVICES_API void registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service );
 
     /**
      * @brief Register the service (service) for the object (obj) at the given service key.
      * It also updates IService::m_associatedObject of service to point to obj
      * removal at obj destruction.
+     *
+     * @param object Object to register
+     * @param objKey Key of the object
+     * @param access Access (INPUT, INOUT, OUTPUT) of this key
+     * @param service Service whose key should be added
      */
-    FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+    FWSERVICES_API void registerService(::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
                                         ::fwServices::IService::AccessType access,
                                         ::fwServices::IService::sptr service);
 
@@ -113,13 +123,21 @@ public:
      * @brief Register the service (service) for the input object (obj) at the given service key.
      * It also updates IService::m_associatedObject of service to point to obj
      * removal at obj destruction.
+     *
+     * @param object Object to register
+     * @param objKey Key of the object
+     * @param service Service whose key should be added
      */
-    FWSERVICES_API void registerServiceInput(const ::fwData::Object::csptr& obj,
+    FWSERVICES_API void registerServiceInput(const ::fwData::Object::csptr& object,
                                              const ::fwServices::IService::KeyType& objKey,
                                              const ::fwServices::IService::sptr& service);
 
     /**
      * @brief Emit the signal 'registered'
+     *
+     * @param object Object to register
+     * @param objKey Key of the object
+     * @param service Service whose key should be added
      */
     FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr object,
                                               const ::fwServices::IService::KeyType& objKey,
@@ -134,11 +152,17 @@ public:
 
     /**
      * @brief Remove the service (service) from the m_container
+     *
+     * @param service Service whose key should be removed
      */
     FWSERVICES_API void unregisterService(  ::fwServices::IService::sptr service );
 
     /**
      * @brief Remove an object key from a service
+     *
+     * @param objKey Key of the object
+     * @param access Access (INPUT, INOUT, OUTPUT) of this key
+     * @param service Service whose key should be removed
      */
     FWSERVICES_API void unregisterService( const ::fwServices::IService::KeyType& objKey,
                                            ::fwServices::IService::AccessType access,
@@ -146,17 +170,33 @@ public:
 
     /**
      * @brief Emit the signal 'unregistered'
+     *
+     * @param objKey Key of the object
+     * @param service Service whose key should be removed
      */
     FWSERVICES_API void unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
                                                  ::fwServices::IService::sptr service );
 
     /**
-     * @brief Remove the service (service) from the m_container
+     * @brief Return true if a key is registered for a given service
+     *
+     * @param objKey Key of the object
+     * @param access Access (INPUT, INOUT, OUTPUT) of this key
+     * @param service Service where to look for the key
      */
     FWSERVICES_API bool isRegistered( const ::fwServices::IService::KeyType& objKey,
                                       ::fwServices::IService::AccessType access,
-                                      ::fwServices::IService::sptr service );
+                                      ::fwServices::IService::sptr service) const;
 
+    /**
+     * @brief Return the object pointer of a key of a given service
+     *
+     * @param objKey Key of the object
+     * @param access Access (INPUT, INOUT, OUTPUT) of this key
+     * @param service Service where to look for the key
+     */
+    ::fwData::Object::csptr getRegistered(const ::fwServices::IService::KeyType& objKey,
+                                          ::fwServices::IService::AccessType access, IService::sptr service) const;
     //@}
 
     /**
@@ -217,8 +257,10 @@ public:
 
     //@{
     /**
-     * @brief return true is obj has at least one service of type srvType
+     * @brief return true if the object has at least one service of type srvType
      *
+     * @param obj Object to add to the OSR
+     * @param srvType Type of the service
      */
     FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType) const;
 
@@ -330,34 +372,61 @@ FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServi
 FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj );
 
 /**
- * @brief Wraps ObjectService::has
+ * @brief return true if the object has at least one service of type srvType
+ *
+ * @param obj Object to add to the OSR
+ * @param srvType Type of the service
  */
 FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType);
 
 /**
- * @brief Wraps ObjectService::registerService
+ * @brief Register the service alone
+ *
+ * @param service Service to add to the OSR
  */
 FWSERVICES_API void registerService( ::fwServices::IService::sptr service );
 
 /**
- * @brief Wraps ObjectService::registerService
+ * @brief Register the service (service) for the object (obj)
+ * It also updates IService::m_associatedObject of service to point to obj
+ * removal at obj destruction.
+ *
+ * @param object Object to register
+ * @param service Service whose key should be added
  */
 FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
 
 /**
- * @brief Wraps ObjectService::registerService
+ * @brief Register the service (service) for the object (obj) at the given service key.
+ * It also updates IService::m_associatedObject of service to point to obj
+ * removal at obj destruction.
+ *
+ * @param object Object to register
+ * @param objKey Key of the object
+ * @param access Access (INPUT, INOUT, OUTPUT) of this key
+ * @param service Service whose key should be added
  */
 FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                                     ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service);
 
 /**
- * @brief Wraps ObjectService::registerServiceInput
+ * @brief Register the service (service) for the input object (obj) at the given service key.
+ * It also updates IService::m_associatedObject of service to point to obj
+ * removal at obj destruction.
+ *
+ * @param object Object to register
+ * @param objKey Key of the object
+ * @param service Service whose key should be added
  */
 FWSERVICES_API void registerServiceInput(::fwData::Object::csptr obj, const ::fwServices::IService::KeyType& objKey,
                                          ::fwServices::IService::sptr service);
 
 /**
- * @brief Wraps ObjectService::registerServiceOutput
+ * @brief Emit the signal 'registered'
+ *
+ * @param object Object to register
+ * @param objKey Key of the object
+ * @param service Service whose key should be added
  */
 FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
                                           ::fwServices::IService::sptr service);
@@ -368,29 +437,53 @@ FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr obj, const ::fw
 FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 
 /**
- * @brief Wraps ObjectService::unregisterService
+ * @brief Remove the service (service) from the m_container
+ *
+ * @param service Service whose key should be removed
  */
 FWSERVICES_API void unregisterService( ::fwServices::IService::sptr service );
 
 /**
- * @brief Wraps ObjectService::unregisterService
+ * @brief Remove an object key from a service
+ *
+ * @param objKey Key of the object
+ * @param access Access (INPUT, INOUT, OUTPUT) of this key
+ * @param service Service whose key should be removed
  */
 FWSERVICES_API void unregisterService( const ::fwServices::IService::KeyType& objKey,
                                        ::fwServices::IService::AccessType access,
                                        ::fwServices::IService::sptr service );
 
 /**
- * @brief Wraps ObjectService::unregisterServiceOutput
+ * @brief Emit the signal 'unregistered'
+ *
+ * @param objKey Key of the object
+ * @param service Service whose key should be removed
  */
 FWSERVICES_API void unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
                                              ::fwServices::IService::sptr service );
 
 /**
- * @brief Wraps ObjectService::isRegistered
+ * @brief Return true if a key is registered for a given service
+ *
+ * @param objKey Key of the object
+ * @param access Access (INPUT, INOUT, OUTPUT) of this key
+ * @param service Service where to look for the key
  */
-FWSERVICES_API bool isRegistered( const ::fwServices::IService::KeyType& objKey,
-                                  ::fwServices::IService::AccessType access,
-                                  ::fwServices::IService::sptr service );
+FWSERVICES_API bool isRegistered(const ::fwServices::IService::KeyType& objKey,
+                                 ::fwServices::IService::AccessType access,
+                                 ::fwServices::IService::sptr service);
+
+/**
+ * @brief Return the object pointer of a key of a given service
+ *
+ * @param objKey Key of the object
+ * @param access Access (INPUT, INOUT, OUTPUT) of this key
+ * @param service Service where to look for the key
+ */
+FWSERVICES_API ::fwData::Object::csptr getRegistered( const ::fwServices::IService::KeyType& objKey,
+                                                      ::fwServices::IService::AccessType access,
+                                                      ::fwServices::IService::sptr service );
 
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getRegisterSignal();
 FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getUnregisterSignal();

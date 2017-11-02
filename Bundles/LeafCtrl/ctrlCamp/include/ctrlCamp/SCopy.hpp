@@ -65,16 +65,16 @@ protected:
     };
 
     /// Does nothing
-    CTRLCAMP_API virtual void starting();
+    CTRLCAMP_API virtual void starting() override;
 
     //// Configure the service
-    CTRLCAMP_API virtual void configuring();
+    CTRLCAMP_API virtual void configuring() override;
 
     /// Does nothing
-    CTRLCAMP_API virtual void stopping();
+    CTRLCAMP_API virtual void stopping() override;
 
     /// Does nothing
-    CTRLCAMP_API virtual void updating();
+    CTRLCAMP_API virtual void updating() override;
 
 private:
 

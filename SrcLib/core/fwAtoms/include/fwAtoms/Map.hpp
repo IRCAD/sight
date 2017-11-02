@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __FWATOMS_MAP_HPP__
 #define __FWATOMS_MAP_HPP__
 
+#include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
+#include "fwAtoms/factory/new.hpp"
+#include "fwAtoms/Object.hpp"
 
 #include <map>
 #include <string>
-
-#include "fwAtoms/config.hpp"
-#include "fwAtoms/Base.hpp"
-#include "fwAtoms/Object.hpp"
-#include "fwAtoms/factory/new.hpp"
 
 namespace fwAtoms
 {
@@ -44,7 +43,6 @@ public:
     typedef MapType::reverse_iterator ReverseIteratorType;
     typedef MapType::const_reverse_iterator ConstReverseIteratorType;
     typedef MapType::size_type SizeType;
-
 
     /// boost_foreach/stl compatibility
     /// @{
@@ -78,7 +76,7 @@ public:
      * @param key the key, if exist the oldest value is erased.
      * @param value the new value
      */
-    std::pair<IteratorType, bool> insert(const std::string &key, const Base::sptr &value)
+    std::pair<IteratorType, bool> insert(const std::string& key, const Base::sptr& value)
     {
         return m_value.insert( ValueType(key, value) );
     }
@@ -149,18 +147,16 @@ public:
         return m_value;
     }
 
-
     /**
      * @brief find an element in the map
      * @param key the key
      * @return an iterator on value pointed by key if exist, else return
      * Map.end()
      */
-    MapType::const_iterator find(const std::string &key) const
+    MapType::const_iterator find(const std::string& key) const
     {
         return m_value.find(key);
     }
-
 
     /**
      * @brief Access to a member with []
@@ -168,7 +164,7 @@ public:
      * @return the value associated with the key or an empty base if the key
      *         is not in the map.
      */
-    Base::sptr operator[](const std::string &key)
+    Base::sptr operator[](const std::string& key)
     {
         return m_value[key];
     }
@@ -176,23 +172,21 @@ public:
     /**
      * @brief Returns a clone object
      */
-    FWATOMS_API virtual Base::sptr clone() const;
+    FWATOMS_API virtual Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const
+    ::fwAtoms::Base::AtomType type() const override
     {
         return ::fwAtoms::Base::MAP;
     }
-
 
 protected:
     MapType m_value;
 };
 
 }
-
 
 #endif /* __FWATOMS_MAP_HPP__ */
 

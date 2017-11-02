@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,9 @@
 
 #include "fwVtkIO/config.hpp"
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/Folder.hpp>
+
+#include <fwDataIO/writer/GenericObjectWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -31,13 +32,11 @@ namespace fwJobs
 class Observer;
 }
 
-
 namespace fwVtkIO
 {
 
 /**
  * @brief   Write a ::fwData::Reconstruction.
- * @class   ModelSeriesObjWriter
  *
  * Write a ::fwData::Reconstruction as .obj file using the VTK lib and the obj format.
  */
@@ -62,15 +61,15 @@ public:
     FWVTKIO_API ~ModelSeriesObjWriter();
 
     //! Writing operator.
-    FWVTKIO_API void write();
+    FWVTKIO_API void write() override;
 
     /**
      * @return ".obj"
      */
-    FWVTKIO_API std::string extension();
+    FWVTKIO_API std::string extension() override;
 
     /// @return internal job
-    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
 private:
 

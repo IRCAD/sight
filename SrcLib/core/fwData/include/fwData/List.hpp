@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWDATA_LIST_HPP__
 #define __FWDATA_LIST_HPP__
 
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+#include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <list>
 
@@ -29,7 +29,6 @@ class FWDATA_CLASS_API List : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >);
-
 
     fwCampMakeFriendDataMacro((fwData)(List));
 
@@ -85,17 +84,16 @@ public:
 
     /// @brief get/set the list of ::fwData::Object
     /// @{
-    ContainerType &getContainer();
-    const ContainerType &getContainer () const;
-    void setContainer (const ContainerType &val);
+    ContainerType& getContainer();
+    const ContainerType& getContainer () const;
+    void setContainer (const ContainerType& val);
     /// @}
 
-
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 protected:
 
@@ -202,21 +200,21 @@ inline List::ConstReferenceType List::back() const
 
 //-----------------------------------------------------------------------------
 
-inline List::ContainerType &List::getContainer()
+inline List::ContainerType& List::getContainer()
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const List::ContainerType &List::getContainer () const
+inline const List::ContainerType& List::getContainer () const
 {
     return m_container;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void List::setContainer (const List::ContainerType &val)
+inline void List::setContainer (const List::ContainerType& val)
 {                                                                                                                                                                                         \
     m_container = val;
 }

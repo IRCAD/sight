@@ -60,7 +60,7 @@ public:
 protected:
     /// Handle Incoming Command (Override)
     virtual OFCondition handleIncomingCommand(T_DIMSE_Message* incomingMsg,
-                                              const DcmPresentationContextInfo& presContextInfo);
+                                              const DcmPresentationContextInfo& presContextInfo) override;
 
     /**
      * @brief Handle C-STORE Request

@@ -47,7 +47,7 @@ void SIncrementArray::starting()
 {
     m_timer = m_associatedWorker->createTimer();
     m_timer->setFunction( std::bind(&SIncrementArray::updating, this) );
-    m_timer->setDuration( ::boost::chrono::milliseconds(m_periodInMillisec) );
+    m_timer->setDuration( std::chrono::milliseconds(m_periodInMillisec) );
 }
 
 //------------------------------------------------------------------------------

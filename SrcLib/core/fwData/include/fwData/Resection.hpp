@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,18 +45,18 @@ public:
     FWDATA_API virtual ~Resection();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @{
      * @brief Get/Set value of the planeList.
      */
     const ::fwData::PlaneList::sptr  getPlaneList () const;
-    ::fwData::PlaneList::sptr & getRefPlaneList ();
-    const ::fwData::PlaneList::sptr & getCRefPlaneList () const;
+    ::fwData::PlaneList::sptr & getRefPlaneList();
+    const ::fwData::PlaneList::sptr& getCRefPlaneList() const;
     void setPlaneList (const ::fwData::PlaneList::sptr& _planeList);
     /// @}
 
@@ -65,10 +65,10 @@ public:
      * @brief Get/Set value of the inputs.
      */
     const ResectionInputs  getInputs () const;
-    ResectionInputs & getRefInputs ();
-    const ResectionInputs & getCRefInputs () const;
+    ResectionInputs& getRefInputs ();
+    const ResectionInputs& getCRefInputs () const;
     void setInputs (const ResectionInputs _vInputs);
-    void setCRefInputs (const ResectionInputs & _vInputs);
+    void setCRefInputs (const ResectionInputs& _vInputs);
     /// @}
 
     /**
@@ -76,10 +76,10 @@ public:
      * @brief Get/Set value of the outputs.
      */
     const ResectionOutputs  getOutputs () const;
-    ResectionOutputs & getRefOutputs ();
-    const ResectionOutputs & getCRefOutputs () const;
+    ResectionOutputs& getRefOutputs ();
+    const ResectionOutputs& getCRefOutputs () const;
     void setOutputs (const ResectionOutputs _vOutputs);
-    void setCRefOutputs (const ResectionOutputs & _vOutputs);
+    void setCRefOutputs (const ResectionOutputs& _vOutputs);
     /// @}
 
     /**
@@ -95,10 +95,10 @@ public:
      * @brief Get/Set value of the name.
      */
     const std::string  getName () const;
-    std::string & getRefName ();
-    const std::string & getCRefName () const;
+    std::string& getRefName ();
+    const std::string& getCRefName () const;
     void setName (const std::string _name);
-    void setCRefName (const std::string & _name);
+    void setCRefName (const std::string& _name);
 
     /// @}
 
@@ -190,14 +190,14 @@ inline const ::fwData::PlaneList::sptr Resection::getPlaneList () const
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::PlaneList::sptr & Resection::getRefPlaneList ()
+inline ::fwData::PlaneList::sptr& Resection::getRefPlaneList()
 {
     return m_planeList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::PlaneList::sptr & Resection::getCRefPlaneList () const
+inline const ::fwData::PlaneList::sptr& Resection::getCRefPlaneList() const
 {
     return m_planeList;
 }
@@ -218,14 +218,14 @@ inline const Resection::ResectionInputs Resection::getInputs () const
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionInputs & Resection::getRefInputs ()
+inline Resection::ResectionInputs& Resection::getRefInputs ()
 {
     return m_vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionInputs & Resection::getCRefInputs () const
+inline const Resection::ResectionInputs& Resection::getCRefInputs () const
 {
     return m_vInputs;
 }
@@ -239,7 +239,7 @@ inline void Resection::setInputs (const Resection::ResectionInputs _vInputs)
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setCRefInputs (const Resection::ResectionInputs & _vInputs)
+inline void Resection::setCRefInputs (const Resection::ResectionInputs& _vInputs)
 {
     m_vInputs = _vInputs;
 }
@@ -253,14 +253,14 @@ inline const Resection::ResectionOutputs Resection::getOutputs () const
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionOutputs & Resection::getRefOutputs ()
+inline Resection::ResectionOutputs& Resection::getRefOutputs ()
 {
     return m_vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionOutputs & Resection::getCRefOutputs () const
+inline const Resection::ResectionOutputs& Resection::getCRefOutputs () const
 {
     return m_vOutputs;
 }
@@ -274,7 +274,7 @@ inline void Resection::setOutputs (const Resection::ResectionOutputs _vOutputs)
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setCRefOutputs (const Resection::ResectionOutputs & _vOutputs)
+inline void Resection::setCRefOutputs (const Resection::ResectionOutputs& _vOutputs)
 {
     m_vOutputs = _vOutputs;
 }
@@ -302,14 +302,14 @@ inline const std::string Resection::getName () const
 
 //-----------------------------------------------------------------------------
 
-inline std::string & Resection::getRefName ()
+inline std::string& Resection::getRefName ()
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string & Resection::getCRefName () const
+inline const std::string& Resection::getCRefName () const
 {
     return m_name;
 }
@@ -323,7 +323,7 @@ inline void Resection::setName (const std::string _name)
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setCRefName (const std::string & _name)
+inline void Resection::setCRefName (const std::string& _name)
 {
     m_name = _name;
 }

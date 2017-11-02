@@ -171,12 +171,12 @@ protected:
 
     /// Handle MOVE Response (Override)
     FWPACSIO_API virtual OFCondition handleMOVEResponse(
-        const T_ASC_PresentationContextID presID, RetrieveResponse* response, OFBool& waitForNextResponse);
+        const T_ASC_PresentationContextID presID, RetrieveResponse* response, OFBool& waitForNextResponse) override;
 
     /// Handle STORE Request (Override)
     FWPACSIO_API virtual OFCondition handleSTORERequest (
         const T_ASC_PresentationContextID presID, DcmDataset* incomingObject,
-        OFBool& continueCGETSession, Uint16& cStoreReturnStatus);
+        OFBool& continueCGETSession, Uint16& cStoreReturnStatus) override;
 
     /**
      * @brief Find uncompressed presentation context

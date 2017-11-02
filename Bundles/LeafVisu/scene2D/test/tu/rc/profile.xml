@@ -1,8 +1,8 @@
 <profile name="ProcessingTest" version="0.1">
 
-    <activate id="dataReg" version="0-1" />
-    <activate id="servicesReg" version="0-1" />
-    <activate id="scene2D" version="0-1" />
+    <activate id="dataReg" version="0.1" />
+    <activate id="servicesReg" version="0.1" />
+    <activate id="scene2D" version="0.1" />
 
     <start id="scene2D" />
     

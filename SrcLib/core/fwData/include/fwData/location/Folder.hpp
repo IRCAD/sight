@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,10 @@
 #define __FWDATA_LOCATION_FOLDER_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/location/ILocation.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/location/ILocation.hpp"
 
 #include <boost/filesystem.hpp>
-
 
 fwCampAutoDeclareDataMacro((fwData)(location)(Folder), FWDATA_API);
 
@@ -29,8 +28,8 @@ public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro(
         (Folder)(ILocation),
-        ((::fwData::factory::New< Folder >,() ))
-            ((FolderFactory,((::boost::filesystem::path))((bool)(false)) ))
+        ((::fwData::factory::New< Folder >, () ))
+            ((FolderFactory, ((::boost::filesystem::path))((bool)(false)) ))
         );
 
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
@@ -42,10 +41,10 @@ public:
     FWDATA_API virtual ~Folder();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief Set folder filesystem path
     FWDATA_API void setFolder( PathType folder);
@@ -84,7 +83,8 @@ struct enableFolder
      * @brief constructor
      * @param[in] rw reader or writer
      */
-    enableFolder(RW *rw) : m_rw(rw)
+    enableFolder(RW* rw) :
+        m_rw(rw)
     {
         SLM_ASSERT("m_rw not instanced", m_rw);
     }
@@ -118,7 +118,7 @@ struct enableFolder
         enableFolder();
 
         /// Reader or writer
-        RW *m_rw;
+        RW* m_rw;
 
 };
 

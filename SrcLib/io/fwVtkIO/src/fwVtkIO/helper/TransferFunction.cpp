@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkLookupTable.h>
-
 #include "fwVtkIO/helper/TransferFunction.hpp"
+
+#include <vtkLookupTable.h>
 
 namespace fwVtkIO
 {
@@ -16,7 +16,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 void TransferFunction::toVtkLookupTable(
-    ::fwData::TransferFunction::sptr tf,
+    ::fwData::TransferFunction::csptr tf,
     vtkSmartPointer<vtkLookupTable> lt,
     bool allowTransparency,
     unsigned int size )
@@ -28,7 +28,6 @@ void TransferFunction::toVtkLookupTable(
     lt->SetNumberOfTableValues( size );
     lt->SetScaleToLinear();
 
-
     ::fwData::TransferFunction::TFValuePairType minMax = tf->getMinMaxTFValues();
 
     lt->SetTableRange( minMax.first, minMax.second );
@@ -38,7 +37,7 @@ void TransferFunction::toVtkLookupTable(
 
     if ( allowTransparency )
     {
-        for( unsigned int k = 0; k<size; ++k )
+        for( unsigned int k = 0; k < size; ++k )
         {
             interpolatedColor = tf->getInterpolatedColor( k*delta + minMax.first );
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
@@ -46,7 +45,7 @@ void TransferFunction::toVtkLookupTable(
     }
     else
     {
-        for( unsigned int k = 0; k<size; ++k )
+        for( unsigned int k = 0; k < size; ++k )
         {
             interpolatedColor = tf->getInterpolatedColor( k*delta + minMax.first );
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, 1.0);

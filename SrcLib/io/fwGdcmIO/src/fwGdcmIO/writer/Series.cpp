@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/writer/Series.hpp"
 
-#include "fwGdcmIO/writer/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/writer/iod/ComprehensiveSRIOD.hpp"
+#include "fwGdcmIO/writer/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
@@ -48,7 +48,7 @@ Series::~Series()
 
 //------------------------------------------------------------------------------
 
-void Series::write()
+void Series::write() throw (::fwGdcmIO::exception::Failed)
 {
     ::fwMedData::Series::sptr series = this->getConcreteObject();
     SLM_ASSERT("::fwMedData::Series not instanced", series);
@@ -58,7 +58,7 @@ void Series::write()
 
     // Initialization shared object
     SPTR(::fwGdcmIO::container::DicomInstance) instance =
-        std::make_shared< ::fwGdcmIO::container::DicomInstance >(series, multiFiles);
+        std::make_shared< ::fwGdcmIO::container::DicomInstance >(series, nullptr, multiFiles);
 
     // Retrieve series SOPClassUID
     const std::string& sopClassUID = instance->getSOPClassUID();
@@ -72,24 +72,24 @@ void Series::write()
         SLM_ASSERT("::fwData::Image not instanced", image);
 
         // Write image
-        ::fwGdcmIO::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder());
+        ::fwGdcmIO::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");
         imageIOD.write(series);
 
         ::fwData::PointList::sptr landmarks =
             image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
         ::fwData::Vector::sptr distances =
             image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
-        if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
+        if((landmarks && !landmarks->getCRefPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
             if(m_fiducialsExportMode == SPATIAL_FIDUCIALS)
             {
-                ::fwGdcmIO::writer::iod::SpatialFiducialsIOD spatialFiducialsIOD(instance, this->getFolder());
+                ::fwGdcmIO::writer::iod::SpatialFiducialsIOD spatialFiducialsIOD(instance, this->getFolder() / "imSF");
                 spatialFiducialsIOD.write(series);
             }
             else
             {
-                ::fwGdcmIO::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->getFolder(),
+                ::fwGdcmIO::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->getFolder() / "imSR",
                                                                         m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
                 documentIOD.write(series);
             }
@@ -98,7 +98,7 @@ void Series::write()
     else if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         SPTR(::fwGdcmIO::container::DicomInstance) imageInstance = this->getImageInstance();
-        ::fwGdcmIO::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->getFolder());
+        ::fwGdcmIO::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->getFolder() / "imSeg");
         iod.write(series);
     }
     else
@@ -113,7 +113,7 @@ void Series::write()
 
 //------------------------------------------------------------------------------
 
-bool Series::hasDocumentSR(::fwMedData::ImageSeries::csptr imageSeries) const
+bool Series::hasDocumentSR(const ::fwMedData::ImageSeries::csptr& imageSeries) const
 {
     ::fwData::Image::csptr image = imageSeries->getImage();
     SLM_ASSERT("Image not instanced", image);
@@ -143,5 +143,4 @@ std::string Series::extension()
 //------------------------------------------------------------------------------
 
 }// namespace writer
-
 } // namespace fwGdcmIO

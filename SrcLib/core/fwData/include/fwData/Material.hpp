@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWDATA_MATERIAL_HPP__
 #define __FWDATA_MATERIAL_HPP__
 
-#include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
-#include "fwData/Image.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Image.hpp"
+#include "fwData/Object.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(Material), FWDATA_API);
 
@@ -29,7 +29,6 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >);
     fwCampMakeFriendDataMacro((fwData)(Material));
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -40,10 +39,10 @@ public:
     FWDATA_API virtual ~Material();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief returns editable ambient color
@@ -113,7 +112,6 @@ public:
         EDGE      = 5, //SURFACE|WIREFRAME -> 101
     } RepresentationType;
 
-
     /**
      * @brief Texture filtering types
      */
@@ -137,7 +135,7 @@ public:
      */
     const ShadingType getShadingMode() const;
     ShadingType& getRefShadingMode();
-    const ShadingType & getCRefShadingMode() const;
+    const ShadingType& getCRefShadingMode() const;
     void setShadingMode(ShadingType _shadingMode);
     /// @}
 
@@ -172,8 +170,8 @@ public:
      *  @brief get/set the texture wrapping
      */
     const WrappingType  getDiffuseTextureWrapping () const;
-    WrappingType & getRefDiffuseTextureWrapping ();
-    const WrappingType & getCRefDiffuseTextureWrapping () const;
+    WrappingType& getRefDiffuseTextureWrapping ();
+    const WrappingType& getCRefDiffuseTextureWrapping () const;
     void setDiffuseTextureWrapping (WrappingType _diffuseTextureWrapping);
     /// @}
 
@@ -235,7 +233,7 @@ inline Material::ShadingType& Material::getRefShadingMode()
 
 //-----------------------------------------------------------------------------
 
-inline const Material::ShadingType & Material::getCRefShadingMode() const
+inline const Material::ShadingType& Material::getCRefShadingMode() const
 {
     return this->m_shadingMode;
 }
@@ -340,14 +338,14 @@ inline const Material::WrappingType Material::getDiffuseTextureWrapping () const
 
 //-----------------------------------------------------------------------------
 
-inline Material::WrappingType & Material::getRefDiffuseTextureWrapping ()
+inline Material::WrappingType& Material::getRefDiffuseTextureWrapping ()
 {
     return this->m_diffuseTextureWrapping;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Material::WrappingType & Material::getCRefDiffuseTextureWrapping () const
+inline const Material::WrappingType& Material::getCRefDiffuseTextureWrapping () const
 {
     return this->m_diffuseTextureWrapping;
 }

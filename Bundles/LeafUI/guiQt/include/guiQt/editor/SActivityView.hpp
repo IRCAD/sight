@@ -45,7 +45,7 @@ namespace editor
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
      </parameters>
    </service>
    @endcode
@@ -85,13 +85,13 @@ public:
 protected:
 
     /// Install the container.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroy the container.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Do nothing
-    virtual void updating();
+    virtual void updating() override;
 
 private:
 

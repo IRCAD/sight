@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
    <service type="::visuVTKAdaptor::SPickerInteractor">
-        <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" />
+        <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" abortOnPick="false" />
    </service>
    @endcode
  * @subsection Configuration Configuration
@@ -50,6 +50,7 @@ namespace visuVTKAdaptor
  *   - MOUSE_MIDDLE_DOWN
  *   - MOUSE_WHEELBACKWARD
  *   - MOUSE_MOVE
+ * - \b abortOnPick (optional, default=false): if set, cancel all following commands after a successful pick.
  */
 class VISUVTKADAPTOR_CLASS_API SPickerInteractor : public ::fwRenderVTK::IAdaptor
 {
@@ -89,16 +90,18 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
 
     typedef std::map< std::string, EventID > MapEventIdType; ///< typedef for the map (seen below).
     static MapEventIdType m_eventIdConversion; ///< map containing the association between 'event text' and 'event ID'.
 
     vtkCommand* m_interactionCommand; ///< the vtk mouse events observer
     SetEventIdType m_eventId; ///< event ID treated for picking
+
+    bool m_abortOnPick; ///< Disables all following commands if picking was successful.
 };
 
 } //namespace visuVTKAdaptor

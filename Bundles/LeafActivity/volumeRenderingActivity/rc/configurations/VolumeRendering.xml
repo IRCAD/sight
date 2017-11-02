@@ -22,7 +22,7 @@
         <object uid="${image}" type="::fwData::Image" src="ref" />
 
         <!-- Transfer function -->
-        <object uid="TFSelections" type="::fwData::Composite" />
+        <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
 
         <!-- optional model series -->
         <object uid="${optionalModelSeriesComposite}" type="::fwData::Composite" src="ref" />
@@ -50,16 +50,16 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Show 3d slice cursor" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-landmark.png" style="check" />
-                    <menuItem name="Show mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" style="check" />
-                    <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
+                    <menuItem name="Show 3d slice cursor" icon="media-0.1/icons/icon-landmark.png" style="check" />
+                    <menuItem name="Show mesh" icon="media-0.1/icons/icon-3D.png" style="check" />
+                    <menuItem name="Manage organs color" icon="media-0.1/icons/ManageOrgan.png" style="check" />
                     <separator/>
-                    <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
-                    <menuItem name="Reset box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box-reset.png" />
+                    <menuItem name="Show/hide box cropping" icon="media-0.1/icons/icon-box.png" style="check" />
+                    <menuItem name="Reset box cropping" icon="media-0.1/icons/icon-box-reset.png" />
                     <separator/>
-                    <menuItem name="Snapshot VR" icon="@BUNDLE_PREFIX@/media_0-1/icons/camera-photo.png" />
+                    <menuItem name="Snapshot VR" icon="media-0.1/icons/camera-photo.png" />
                     <separator/>
-                    <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Export Activity" icon="media-0.1/icons/Export.svg" />
                 </layout>
             </gui>
             <registry>
@@ -145,8 +145,8 @@
 
         <service uid="VolumeScene3DA" type="::visuVTKVRAdaptor::SVolume" autoConnect="yes">
             <inout key="image" uid="${image}" />
-            <inout key="tfSelection" uid="TFSelections" />
-            <config renderer="default" selectedTFKey="SelectedTF" />
+            <inout key="tf" uid="transferFunction" optional="yes" />
+            <config renderer="default" />
         </service>
 
         <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
@@ -205,9 +205,8 @@
             <inout key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <inout key="landmarks" uid="landmarks" />
-            <inout key="TFSelections" uid="TFSelections" />
+            <inout key="transferFunctionOutput" uid="transferFunction" optional="yes" />
             <parameter replace="WID_PARENT" by="tfEditor" />
-            <parameter replace="SelectedTFKey" by="SelectedTF" />
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
@@ -224,7 +223,8 @@
             <inout key="target" uid="landmarks" />
         </service>
 
-        <!-- START AND STOP SERVICES -->
+        <!-- ************************************* Connections ************************************ -->
+
         <connect>
             <signal>ActionSnapshotVR/snapped</signal>
             <slot>snapshot1/snap</slot>
@@ -238,6 +238,7 @@
             <slot>modelSeriesAdaptor/showReconstructions</slot>
         </connect>
 
+        <!-- START AND STOP SERVICES -->
         <start uid="computeHistogram" />
         <start uid="LockImageSrv" />
         <start uid="MedicalImageSrv" />
@@ -257,5 +258,6 @@
         <start uid="image3DCursorAdaptor" />
 
         <update uid="extractLandmarks" />
+
     </config>
 </extension>

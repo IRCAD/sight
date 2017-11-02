@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,26 +9,25 @@
 
 #include "guiQt/config.hpp"
 
-#include <QPushButton>
-#include <QObject>
-#include <QSlider>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPointer>
-
-#include <fwTools/Failed.hpp>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
+
+#include <QLabel>
+#include <QLineEdit>
+#include <QObject>
+#include <QPointer>
+#include <QPushButton>
+#include <QSlider>
 
 namespace guiQt
 {
 
 namespace editor
 {
-
 
 /**
  * @brief   This editor allows to draw a slider with an integer data.
@@ -67,7 +66,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSlider)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSlider)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     GUIQT_API SSlider() noexcept;
@@ -97,27 +96,25 @@ public:
 
 protected:
 
-
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroys the layout
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Configure the service
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Signal when the position os the slider changed
     ValueChangedSignalType::sptr m_sigValueChanged;
-
 
 protected Q_SLOTS:
 
@@ -129,7 +126,6 @@ protected Q_SLOTS:
 
     /// SLOT : Called to set the max range
     void setMaxValue(int value);
-
 
     /// Internal slot. Called when the cursor starts to move.
     void sliderPressed();
@@ -151,7 +147,8 @@ private:
     QPointer<QLabel>        m_maxValueLabel;        ///< Maximum value of the slider displayed on the right side.
     QPointer<QLabel>        m_textLabel;            ///< Text displayed on the left.
     QPointer<QPushButton>   m_resetButton;          ///< Button to reset the slider to default value.
-    QPointer<QLineEdit>     m_valueEdit;            ///< Edit box, allowing the user to change the slider value precisely.
+    QPointer<QLineEdit>     m_valueEdit;            ///< Edit box, allowing the user to change the slider value
+                                                    // precisely.
 
     int m_value;                                    ///< Current value.
     int m_minValue;                                 ///< Minimum value.
@@ -163,7 +160,6 @@ private:
     bool m_hasEditBox;                              ///< If true, the edit box is available, and the value label is off.
     bool m_sliderPressed;                           ///< Set to true when the slider is pressed.
 };
-
 
 }
 }

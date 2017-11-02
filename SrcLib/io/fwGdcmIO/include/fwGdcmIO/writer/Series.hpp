@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,9 +12,11 @@
 #include "fwGdcmIO/exception/Failed.hpp"
 
 #include <fwData/location/Folder.hpp>
+
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Series.hpp>
+
 #include <fwTools/ProgressAdviser.hpp>
 
 namespace fwGdcmIO
@@ -58,13 +60,13 @@ public:
      * It manages writing of the following general DICOM modules : patient, study and series
      * @note Currently, it handles image, SR and RT document writing.
      */
-    FWGDCMIO_API void write();
+    FWGDCMIO_API void write() throw (::fwGdcmIO::exception::Failed)override;
 
     /**
      * Override
      * @brief Do nothing
      */
-    FWGDCMIO_API std::string extension();
+    FWGDCMIO_API std::string extension() override;
 
     /// Get Fiducials Export Mode
     const FiducialsExportMode& getFiducialsExportMode() const
@@ -84,7 +86,7 @@ private:
      * @brief Check if there is comment on acquisition.
      * @param[in] series ImageSeries that must be checked.
      */
-    bool hasDocumentSR(::fwMedData::ImageSeries::csptr series) const;
+    bool hasDocumentSR(const ::fwMedData::ImageSeries::csptr& series) const;
 
     /**
      * @brief Returns the image instance used to create the reconstruction

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,15 @@
 #ifndef __FWGUI_DIALOG_IPROGRESSDIALOG_HPP__
 #define __FWGUI_DIALOG_IPROGRESSDIALOG_HPP__
 
-#include <string>
-#include <boost/function.hpp>
-#include <boost/signals2.hpp>
+#include "fwGui/config.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwData/location/ILocation.hpp>
 
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/config.hpp"
+#include <boost/signals2.hpp>
+
+#include <functional>
+#include <string>
 
 namespace fwGui
 {
@@ -22,14 +23,12 @@ namespace dialog
 {
 /**
  * @brief   Defines the generic Progress dialog for IHM.
+ *
+ * @note    inherits from ::boost::signals2::trackable to autoDisconnect if handler is destroyed before the notifier.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
- * @class   IProgressDialog
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject,
-                                        public ::boost::signals2::trackable                                // to autoDisconnect if handler is destroyed before the notifier
+                                        public ::boost::signals2::trackable
 {
 
 public:
@@ -39,7 +38,6 @@ public:
     typedef std::string FactoryRegistryKeyType;
     typedef boost::function< void () >  CancelCallbackType;
 
-
     /// this *unique* key should  be used *for all* factory for specific LocationDialog(qt,wx,...)
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
@@ -47,29 +45,37 @@ public:
     FWGUI_API IProgressDialog();
 
     ///set the title for the dialog
-    FWGUI_API virtual void setTitle(const std::string &title) = 0;
+    FWGUI_API virtual void setTitle(const std::string& title) = 0;
 
     ///set the message for the dialog
-    FWGUI_API virtual void setMessage(const std::string &msg) = 0;
+    FWGUI_API virtual void setMessage(const std::string& msg) = 0;
 
     /// action called by ::fwTools::ProgressAdviser
-    FWGUI_API virtual void operator()(float percent,std::string msg) = 0;
+    FWGUI_API virtual void operator()(float percent, std::string msg) = 0;
 
     FWGUI_API virtual void setCancelCallback(CancelCallbackType callback);
+
+    //------------------------------------------------------------------------------
 
     virtual void setCancelRaiseException(bool raise)
     {
         m_raise = raise;
     }
 
+    //------------------------------------------------------------------------------
+
     virtual bool getCanceled()
     {
         return m_canceled;
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void hideCancelButton()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void setProcessUserEvents(bool process)
     {
@@ -88,6 +94,8 @@ protected:
     bool m_processUserEvents;
 
 protected:
+    //------------------------------------------------------------------------------
+
     static sptr progressDialogFactory()
     {
         ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
@@ -102,5 +110,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_DIALOG_IPROGRESSDIALOG_HPP__*/
-
 

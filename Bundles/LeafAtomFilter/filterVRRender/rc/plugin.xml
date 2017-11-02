@@ -1,4 +1,4 @@
-<plugin id="filterVRRender" class="::filterVRRender::Plugin"  version="@DASH_VERSION@" >
+<plugin id="filterVRRender" class="::filterVRRender::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="filterVRRender" />
 

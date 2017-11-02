@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ class DATAREG_CLASS_API List : public ::fwServices::IXMLParser
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (List)(::fwServices::IXMLParser) );
+    fwCoreServiceClassDefinitionsMacro( (List)(::fwServices::IXMLParser) );
 
     /**
      * @brief   Constructor : does nothing.
@@ -45,15 +45,15 @@ public:
     {
     }
 
-    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj );
+    DATAREG_API void createConfig( ::fwTools::Object::sptr _obj ) override;
 
-    DATAREG_API void startConfig();
+    DATAREG_API void startConfig() override;
 
-    DATAREG_API void updateConfig();
+    DATAREG_API void updateConfig() override;
 
-    DATAREG_API void stopConfig();
+    DATAREG_API void stopConfig() override;
 
-    DATAREG_API void destroyConfig();
+    DATAREG_API void destroyConfig() override;
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
      *
      * Parse the List configuration element to configure and add its objects.
      */
-    DATAREG_API virtual void updating( );
+    DATAREG_API virtual void updating( ) override;
 
 private:
 

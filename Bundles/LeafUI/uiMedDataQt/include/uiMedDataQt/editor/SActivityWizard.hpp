@@ -65,8 +65,8 @@ namespace editor
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
-         <icon type="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
+         <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+         <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
      </icons>
    </service>
    @endcode
@@ -122,16 +122,16 @@ public:
 protected:
 
     ///This method creates the editor gui.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method destroys the editor gui.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Update the activity if it is defined in the configuration, else does nothing.
-    virtual void updating();
+    virtual void updating() override;
 
     /// Initialize the editor.
-    virtual void configuring();
+    virtual void configuring() override;
 
 private:
 

@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #include "fwDataTools/helper/Field.hpp"
 
@@ -11,6 +10,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
+#include <fwData/Exception.hpp>
 #include <fwData/Object.hpp>
 
 #include <algorithm>
@@ -23,8 +23,8 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Field::Field( ::fwData::Object::sptr object )
-    : m_object ( object )
+Field::Field( ::fwData::Object::sptr object ) :
+    m_object( object )
 {
 }
 
@@ -38,29 +38,17 @@ Field::~Field()
 
 void Field::setField(const fwData::Object::FieldNameType& name, fwData::Object::sptr obj)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field  = object->getField(name);
-    if (!field)
-    {
-        m_addedFields[name] = obj;
-    }
-    else
-    {
-        m_newChangedFields[name] = obj;
-        m_oldChangedFields[name] = field;
-    }
-    object->setField(name, obj);
+    this->addOrSwap(name, obj);
 }
 
 //-----------------------------------------------------------------------------
 
 void Field::setFields( const fwData::Object::FieldMapType& newFields)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
+    SLM_ASSERT("Field helper need a non-null object pointer", object);
     const ::fwData::Object::FieldMapType oldFields = object->getFields();
-    this->buildMessage(newFields,oldFields);
+    this->buildMessage(newFields, oldFields);
     object->setFields(newFields);
 }
 
@@ -68,10 +56,10 @@ void Field::setFields( const fwData::Object::FieldMapType& newFields)
 
 void Field::updateFields( const fwData::Object::FieldMapType& fieldMap)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
+    SLM_ASSERT("Field helper need a non-null object pointer", object);
     const ::fwData::Object::FieldMapType oldFields = object->getFields();
-    this->buildMessage(fieldMap,oldFields);
+    this->buildMessage(fieldMap, oldFields);
     object->updateFields(fieldMap);
 }
 
@@ -79,15 +67,90 @@ void Field::updateFields( const fwData::Object::FieldMapType& fieldMap)
 
 void Field::removeField(const fwData::Object::FieldNameType& name)
 {
+    this->remove(name);
+}
+
+//-----------------------------------------------------------------------------
+
+void Field::add(const fwData::Object::FieldNameType& _name, fwData::Object::sptr _obj)
+{
+    ::fwData::Object::sptr object = m_object.lock();
+    SLM_ASSERT("Field helper need a non-null object pointer", object);
+
+    ::fwData::Object::sptr field = object->getField(_name);
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Field already exists"), field);
+
+    m_addedFields[_name] = _obj;
+
+    object->setField(_name, _obj);
+}
+
+//-----------------------------------------------------------------------------
+
+void Field::swap(const fwData::Object::FieldNameType& _name, fwData::Object::sptr _obj)
+{
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field  = object->getField(name);
 
-    if (field)
+    ::fwData::Object::sptr field = object->getField(_name);
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Field does not exist"), !field);
+
+    m_newChangedFields[_name] = _obj;
+    m_oldChangedFields[_name] = field;
+
+    object->setField(_name, _obj);
+}
+
+//-----------------------------------------------------------------------------
+
+void Field::addOrSwap(const fwData::Object::FieldNameType& _name, fwData::Object::sptr _obj)
+{
+    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    ::fwData::Object::sptr object = m_object.lock();
+
+    ::fwData::Object::sptr field = object->getField(_name);
+
+    if (!field)
     {
-        m_removedFields[name] = field;
+        m_addedFields[_name] = _obj;
     }
-    object->removeField(name);
+    else
+    {
+        m_newChangedFields[_name] = _obj;
+        m_oldChangedFields[_name] = field;
+    }
+    object->setField(_name, _obj);
+
+}
+
+//-----------------------------------------------------------------------------
+
+void Field::remove(const fwData::Object::FieldNameType& _name)
+{
+    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    ::fwData::Object::sptr object = m_object.lock();
+    ::fwData::Object::sptr field  = object->getField(_name);
+
+    FW_RAISE_EXCEPTION_IF(::fwData::Exception("Field does not exist"), !field);
+
+    m_removedFields[_name] = field;
+    object->removeField(_name);
+}
+
+//-----------------------------------------------------------------------------
+
+void Field::clear()
+{
+    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    ::fwData::Object::sptr object = m_object.lock();
+
+    auto fieldNames = object->getFieldNames();
+    for(const auto& name : fieldNames)
+    {
+        ::fwData::Object::sptr field = object->getField(name);
+        m_removedFields[name]        = field;
+        object->removeField(name);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -96,12 +159,12 @@ void Field::notify()
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
 
-    if ( !m_addedFields.empty() )
+    if ( !m_removedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::AddedFieldsSignalType >(
-            ::fwData::Object::s_ADDED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< ::fwData::Object::RemovedFieldsSignalType >(
+            ::fwData::Object::s_REMOVED_FIELDS_SIG);
 
-        sig->asyncEmit(m_addedFields);
+        sig->asyncEmit(m_removedFields);
     }
     if ( !m_newChangedFields.empty() && !m_oldChangedFields.empty() )
     {
@@ -110,12 +173,12 @@ void Field::notify()
 
         sig->asyncEmit(m_newChangedFields, m_oldChangedFields);
     }
-    if ( !m_removedFields.empty() )
+    if ( !m_addedFields.empty() )
     {
-        auto sig = m_object.lock()->signal< ::fwData::Object::RemovedFieldsSignalType >(
-            ::fwData::Object::s_REMOVED_FIELDS_SIG);
+        auto sig = m_object.lock()->signal< ::fwData::Object::AddedFieldsSignalType >(
+            ::fwData::Object::s_ADDED_FIELDS_SIG);
 
-        sig->asyncEmit(m_removedFields);
+        sig->asyncEmit(m_addedFields);
     }
     OSLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
                  + "', nothing to notify.",

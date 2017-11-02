@@ -84,23 +84,23 @@ public:
      * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
      * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Installs GUI : create container and add selector.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Destroys GUI.
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Configures the service according to the xml tags found.
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Fill selector with the series contained in SeriesDB.
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 protected Q_SLOTS:
 

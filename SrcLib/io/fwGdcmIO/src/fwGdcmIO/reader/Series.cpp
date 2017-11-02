@@ -1,31 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/Series.hpp"
-#include "fwGdcmIO/reader/iod/CTMRImageIOD.hpp"
+
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/iod/ComprehensiveSRIOD.hpp"
+#include "fwGdcmIO/reader/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
 #include <fwData/Image.hpp>
+
 #include <fwDicomTools/Series.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-#include <fwTools/dateAndTime.hpp>
-
-#include <gdcmImageReader.h>
-#include <gdcmScanner.h>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/make_shared.hpp>
+
+#include <gdcmImageReader.h>
+#include <gdcmScanner.h>
 
 namespace fwGdcmIO
 {
@@ -34,7 +35,8 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-Series::Series() : m_enableBufferRotation(true)
+Series::Series() :
+    m_enableBufferRotation(true)
 {
 
 }
@@ -48,7 +50,8 @@ Series::~Series()
 
 // ----------------------------------------------------------------------------
 
-::fwMedData::Series::sptr Series::read(::fwMedData::DicomSeries::sptr dicomSeries)
+::fwMedData::Series::sptr Series::read(const ::fwMedData::DicomSeries::sptr& dicomSeries)
+throw(::fwGdcmIO::exception::Failed)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Logger should not be null.", m_logger);
@@ -56,8 +59,6 @@ Series::~Series()
     // Create instance
     SPTR(::fwGdcmIO::container::DicomInstance) instance =
         std::make_shared< ::fwGdcmIO::container::DicomInstance >(dicomSeries);
-
-    m_cancelled = false;
 
     // Create result
     ::fwMedData::Series::sptr result;
@@ -78,7 +79,8 @@ Series::~Series()
             imageSeries->setImage(image);
 
             // Create IOD Reader
-            ::fwGdcmIO::reader::iod::CTMRImageIOD iod(dicomSeries, instance, m_logger, m_callback, m_cancelled);
+            ::fwGdcmIO::reader::iod::CTMRImageIOD iod(dicomSeries, instance, m_logger,
+                                                      m_progressCallback, m_cancelRequestedCallback);
             iod.setBufferRotationEnabled(m_enableBufferRotation);
 
             try
@@ -103,9 +105,8 @@ Series::~Series()
             ::fwMedData::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
 
             // Create IOD Reader
-            ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger, m_callback,
-                                                                m_cancelled);
-
+            ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger,
+                                                                m_progressCallback, m_cancelRequestedCallback);
 
             try
             {
@@ -134,8 +135,8 @@ Series::~Series()
                     ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
 
                 // Create IOD Reader
-                ::fwGdcmIO::reader::iod::SpatialFiducialsIOD iod(dicomSeries, instance, m_logger, m_callback,
-                                                                 m_cancelled);
+                ::fwGdcmIO::reader::iod::SpatialFiducialsIOD iod(dicomSeries, instance, m_logger,
+                                                                 m_progressCallback, m_cancelRequestedCallback);
 
                 try
                 {
@@ -149,15 +150,16 @@ Series::~Series()
             }
             else
             {
-                m_logger->critical(
-                    "The spatial fiducials series \""+dicomSeries->getInstanceUID()+
-                    "\" could not be read as it refers to an unknown series UID.");
+                m_logger->critical("The spatial fiducials series \"" + dicomSeries->getInstanceUID() +
+                                   "\" could not be read as it refers to an unknown series UID.");
             }
         }
         // If the DicomSeries contains a SR
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
                  ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                 sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+                 sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by
+                                                                 // "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())
+                                                                 // == ::gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
             SPTR(::fwGdcmIO::container::DicomInstance) imageInstance =
@@ -169,8 +171,8 @@ Series::~Series()
             if(imageInstance && imageSeries)
             {
                 // Create readers
-                ::fwGdcmIO::reader::iod::ComprehensiveSRIOD iod(dicomSeries, imageInstance, m_logger, m_callback,
-                                                                m_cancelled);
+                ::fwGdcmIO::reader::iod::ComprehensiveSRIOD iod(dicomSeries, imageInstance, m_logger,
+                                                                m_progressCallback, m_cancelRequestedCallback);
 
                 try
                 {
@@ -184,9 +186,8 @@ Series::~Series()
             }
             else
             {
-                m_logger->critical(
-                    "The structured report series \""+dicomSeries->getInstanceUID()+
-                    "\" could not be read as it refers to an unknown series UID.");
+                m_logger->critical("The structured report series \"" + dicomSeries->getInstanceUID() +
+                                   "\" could not be read as it refers to an unknown series UID.");
             }
 
         }
@@ -206,7 +207,7 @@ Series::~Series()
 //------------------------------------------------------------------------------
 
 SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSeriesInstance(
-    ::fwMedData::DicomSeries::sptr dicomSeries)
+    const ::fwMedData::DicomSeries::sptr& dicomSeries)
 {
     SPTR(::fwGdcmIO::container::DicomInstance) result;
 
@@ -239,14 +240,14 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
 
                 // Series Instance UID - Type 1
                 seriesInstanceUID =
-                    ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(referencedSeriesItemDataset);
+                    ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000E >(referencedSeriesItemDataset);
             }
         }
     }
 
     if(!seriesInstanceUID.empty())
     {
-        for(SeriesContainerMapType::value_type v: m_seriesContainerMap)
+        for(SeriesContainerMapType::value_type v : m_seriesContainerMap)
         {
             if(v.first->getSeriesInstanceUID() == seriesInstanceUID)
             {
@@ -262,7 +263,7 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferenced
 //------------------------------------------------------------------------------
 
 SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSeriesInstance(
-    ::fwMedData::DicomSeries::sptr dicomSeries)
+    const ::fwMedData::DicomSeries::sptr& dicomSeries)
 {
 
     SPTR(::fwGdcmIO::container::DicomInstance) result;
@@ -305,7 +306,7 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
                     {
                         ::gdcm::Item seriesItem = seriesSequence->GetItem(1);
                         const ::gdcm::DataSet& seriesItemDataset = seriesItem.GetNestedDataSet();
-                        seriesInstanceUID = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(
+                        seriesInstanceUID = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000E >(
                             seriesItemDataset);
                     }
                 }
@@ -316,7 +317,7 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
 
     if(!seriesInstanceUID.empty())
     {
-        for(SeriesContainerMapType::value_type v: m_seriesContainerMap)
+        for(SeriesContainerMapType::value_type v : m_seriesContainerMap)
         {
             if(v.first->getSeriesInstanceUID() == seriesInstanceUID)
             {
@@ -328,6 +329,7 @@ SPTR(::fwGdcmIO::container::DicomInstance) Series::getStructuredReportReferenced
 
     return result;
 }
+//------------------------------------------------------------------------------
 
 }  // namespace reader
 }  // namespace fwGdcmIO

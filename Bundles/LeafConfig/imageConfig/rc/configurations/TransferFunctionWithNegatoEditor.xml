@@ -1,3 +1,15 @@
+<!--
+Example:
+
+<service uid="..." type="::fwServices::SConfigController">
+    <appConfig id="TransferFunctionWithNegatoEditor" />
+    <inout key="image" uid="..." />
+    <inout key="histogram" uid="..." />
+    <inout key="landmarks" uid="..." />
+    <inout replace="transferFunctionOutput" by="..." />
+    <parameter replace="WID_PARENT" by="..." />
+</service>
+-->
 <extension implements="::fwServices::registry::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
@@ -5,21 +17,20 @@
         <param name="image" />
         <param name="histogram" />
         <param name="landmarks" />
-        <param name="TFSelections" />
-        <param name="SelectedTFKey" />
-        <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
+        <param name="TFPath" default="uiTF-0.1/tf"/>
+        <param name="transferFunctionOutput" />
     </parameters>
-
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}"     type="::fwData::Image"     src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
         <object uid="${landmarks}" type="::fwData::Landmarks" src="ref"/>
 
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
+        <object uid="${transferFunctionOutput}" type="::fwData::TransferFunction" src="deferred" />
 
         <service uid="tfEditor" type="::gui::view::SDefaultView">
             <gui>
@@ -44,9 +55,10 @@
         </service>
 
         <service uid="tfm" type="::uiTF::TransferFunctionEditor">
-            <inout key="transferFunctions" uid="TFSet" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <config selectedTFKey="${SelectedTFKey}" useDefaultPath="no">
+            <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
+            <in key="currentTF" uid="${transferFunctionOutput}" optional="yes"/>
+            <out key="tf" uid="${transferFunctionOutput}" />
+            <config useDefaultPath="no">
                 <path>${TFPath}</path>
             </config>
         </service>
@@ -67,19 +79,17 @@
         <service uid="cfgNegato" type="::fwServices::SConfigController">
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
-            <inout key="TFSelections" uid="${TFSelections}" />
             <inout key="landmarks" uid="${landmarks}" />
+            <inout key="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="yes" />
             <parameter replace="WID_PARENT" by="negatoView" />
-            <parameter replace="selectedTFKey" by="${SelectedTFKey}" />
         </service>
 
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${image}"/>
             <inout key="histogram" uid="${histogram}"/>
-            <inout key="TFSelections" uid="${TFSelections}" />
+            <inout key="transferFunction" uid="${transferFunctionOutput}" />
             <parameter replace="WID_PARENT" by="tfScene"/>
-            <parameter replace="SelectedTFKey" by="${SelectedTFKey}" />
         </service>
 
         <connect>

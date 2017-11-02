@@ -22,7 +22,7 @@
  *  Example of plugin.xml:
  *
  * @code{xml}
-    <plugin id="Tuto01Basic" version="@DASH_VERSION@">
+    <plugin id="Tuto01Basic" version="@PROJECT_VERSION@">
 
         <!-- The bundles in requirements are automatically started when this Application is launched. -->
         <requirement id="dataReg" />
@@ -38,7 +38,7 @@
                     <gui>
                         <frame>
                             <name>tutoBasicApplicationName</name>
-                            <icon>@BUNDLE_PREFIX@/Tuto01Basic_0-1/tuto.ico</icon>
+                            <icon>Tuto01Basic-0.1/tuto.ico</icon>
                             <minSize width="800" height="600" />
                         </frame>
                     </gui>

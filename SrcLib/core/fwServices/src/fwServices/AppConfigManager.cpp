@@ -26,6 +26,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/thread/futures/wait_for_all.hpp>
 
 namespace fwServices
 {
@@ -332,10 +333,10 @@ void AppConfigManager::stopStartedServices()
 
         const ::fwServices::IService::sptr srv = w_srv.lock();
         OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        futures.push_back(srv->stop());
+        futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
-    ::boost::wait_for_all(futures.begin(), futures.end());
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -388,14 +389,15 @@ void AppConfigManager::processStartItems()
                 SLM_FATAL_IF( this->msgHead() + "Start is requested for service '" + uid + "', though this identifier "
                               "exists, this is not a service.", !srv);
 
-                futures.push_back(srv->start());
+                futures.emplace_back(srv->start());
 
                 m_startedSrv.push_back(srv);
             }
 
         }
     }
-    ::boost::wait_for_all(futures.begin(), futures.end());
+
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -432,12 +434,12 @@ void AppConfigManager::processUpdateItems()
                 SLM_FATAL_IF( this->msgHead() + "Update is requested for service '" + uid +
                               "', though this identifier exists, this is not a service.", !srv);
 
-                futures.push_back(srv->update());
+                futures.emplace_back(srv->update());
             }
         }
     }
 
-    ::boost::wait_for_all(futures.begin(), futures.end());
+    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -550,6 +552,21 @@ void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr c
                     {
                         createService = false;
                     }
+                }
+                else
+                {
+                    SLM_ERROR_IF(
+                        this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
+                        "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
+                        "intended to use a deferred object instead ?", objectCfg.m_optional);
+                }
+
+                // Extra check to warn the user that an object is used as output but not marked as deferred
+                if(objectCfg.m_access == ::fwServices::IService::AccessType::OUTPUT)
+                {
+                    SLM_ERROR_IF(this->msgHead() + "Object '" + objectCfg.m_uid + "' is used as output in service '" +
+                                 srvConfig.m_uid + "' but it not declared as 'deferred'.",
+                                 it == m_deferredObjects.end());
                 }
             }
 
@@ -833,7 +850,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
         auto& uid = srvCfg->m_uid;
 
         bool createService = true;
-        bool reconnect     = false;
 
         // Look for all objects (there could be more than the current object) and check if they are all created
         for(const auto& objCfg : srvCfg->m_objects)
@@ -864,17 +880,30 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
                     SLM_ASSERT(this->msgHead() + "No service registered with UID \"" + uid + "\".", srv);
 
                     // We have an optional object
-                    if( objCfg.m_optional && !::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
+                    if( objCfg.m_optional)
                     {
-                        // Register the key on the service
-                        ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
+                        // Check if we already registered an object at this key
+                        auto registeredObj = ::fwServices::OSR::getRegistered(objCfg.m_key, objCfg.m_access, srv);
+                        if(registeredObj != nullptr)
+                        {
+                            // If this is not the object we have to swap, then unregister it
+                            if(registeredObj != object)
+                            {
+                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                            }
+                        }
 
-                        // Call the swapping callback of the service and wait for it
-                        srv->swapKey(objCfg.m_key, nullptr).wait();
+                        if(registeredObj != object)
+                        {
+                            // Register the key on the service
+                            ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
+
+                            // Call the swapping callback of the service and wait for it
+                            srv->swapKey(objCfg.m_key, ::fwData::Object::constCast(registeredObj)).wait();
+                        }
                     }
 
                     createService = false;
-                    reconnect     = true;
                 }
             }
         }
@@ -888,15 +917,6 @@ void AppConfigManager::addObjects(fwData::Object::sptr obj, const std::string& i
             // Debug message
             SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically created because its "
                       "objects are all available.");
-        }
-        else if(reconnect)
-        {
-            // Update auto connections
-            ::fwServices::IService::sptr srv = ::fwServices::get(uid);
-            OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << uid << "\".", srv);
-
-            srv->autoDisconnect();
-            srv->autoConnect();
         }
     }
 

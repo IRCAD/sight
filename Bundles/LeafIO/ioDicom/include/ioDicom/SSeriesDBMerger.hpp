@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #include "ioDicom/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -38,7 +39,7 @@ class IODICOM_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv ) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBMerger)( ::fwGui::IActionSrv ) );
 
     /// Constructor
     IODICOM_API SSeriesDBMerger() noexcept;
@@ -49,19 +50,19 @@ public:
 protected:
 
     /// Do nothing.
-    IODICOM_API virtual void configuring();
+    IODICOM_API virtual void configuring() override;
 
     /// Override
-    IODICOM_API virtual void starting();
+    IODICOM_API virtual void starting() override;
 
     /// Override
-    IODICOM_API virtual void stopping();
+    IODICOM_API virtual void stopping() override;
 
     /// Override
-    IODICOM_API void updating();
+    IODICOM_API void updating() override;
 
     /// Override
-    IODICOM_API void info(std::ostream& _sstream );
+    IODICOM_API void info(std::ostream& _sstream ) override;
 };
 
 } // namespace ioDicom

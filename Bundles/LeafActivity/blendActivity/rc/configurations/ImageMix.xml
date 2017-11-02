@@ -3,17 +3,19 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="TF_COMPOSITE_ID" />
-        <param name="SELECTED_TF_KEYA" />
-        <param name="SELECTED_TF_KEYB" />
+        <param name="tfBackgroundImage" />
+        <param name="tfFrontImage" />
         <param name="backgroundImageUid" />
         <param name="frontImageUid" />
         <param name="patient_name" default="" />
     </parameters>
     <config>
-        <object uid="${TF_COMPOSITE_ID}" type="::fwData::Composite" src="ref" />
         <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
+
+        <object uid="${tfBackgroundImage}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${tfFrontImage}" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
@@ -79,7 +81,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="bg_windowLevel" start="yes" />
+                <view sid="bg_windowLevel" start="no" />
             </registry>
         </service>
 
@@ -93,12 +95,12 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="front_windowLevel" start="yes" />
+                <view sid="front_windowLevel" start="no" />
                 <view sid="front_imageTransparency" start="yes" />
             </registry>
         </service>
 
-        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" autoConnect="no" />
+        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" />
 
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
             <in key="image" uid="${backgroundImageUid}" />
@@ -114,8 +116,7 @@
         </service>
         <service uid="bg_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <config selectedTFKey="${SELECTED_TF_KEYA}" />
+            <inout key="tf" uid="${tfBackgroundImage}" />
         </service>
 
         <service type="::ctrlMemory::LockDumpSrv" autoConnect="no">
@@ -134,8 +135,7 @@
 
         <service uid="front_windowLevel" type="::uiImageQt::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TF_COMPOSITE_ID}" />
-            <config selectedTFKey="${SELECTED_TF_KEYB}" />
+            <inout key="tf" uid="${tfFrontImage}" />
         </service>
 
         <!-- Generic scene to show merging of backgroung and front images -->
@@ -159,6 +159,7 @@
 
         <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
+            <inout key="tf" uid="${tfBackgroundImage}" />
             <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
         </service>
 
@@ -186,9 +187,9 @@
                 <key uid="${backgroundImageUid}" tfalpha="no" />
                 <key uid="${frontImageUid}" tfalpha="yes" />
             </inout>
-            <inout group="tfSelection">
-                <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYA}" />
-                <key uid="${TF_COMPOSITE_ID}" selectedTFKey="${SELECTED_TF_KEYB}" />
+            <inout group="tf" optional="yes">
+                <key uid="${tfBackgroundImage}" />
+                <key uid="${tfFrontImage}" />
             </inout>
             <config vtkimageregister="imageBlend" />
         </service>
@@ -208,12 +209,12 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <!-- START AND STOP SERVICES -->
         <connect>
             <signal>snapshot/snapped</signal>
             <slot>snapshotAdaptor/snap</slot>
         </connect>
 
+        <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
 
         <!-- blendGenericScene adaptors -->
@@ -225,6 +226,10 @@
         <start uid="nameAdaptor" />
         <start uid="myImagesProbeCursor" />
         <start uid="MPRNegato3D" />
+
+        <!-- deferred -->
+        <start uid="bg_windowLevel" />
+        <start uid="front_windowLevel" />
 
     </config>
 </extension>

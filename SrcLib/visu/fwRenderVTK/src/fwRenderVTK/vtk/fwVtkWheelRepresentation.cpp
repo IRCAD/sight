@@ -33,7 +33,6 @@ fwVtkWheelRepresentation::fwVtkWheelRepresentation() :
     m_orientation(0.),
     m_nSectors(288),
     m_nMarkedSectors(8),
-    m_rainbowMode(false),
     m_hover(false)
 {
     this->m_center.x = -std::numeric_limits<double>::infinity();

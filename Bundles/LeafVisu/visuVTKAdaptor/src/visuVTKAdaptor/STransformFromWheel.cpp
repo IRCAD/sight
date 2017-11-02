@@ -9,10 +9,6 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
@@ -21,7 +17,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
-#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
 #include <vtkAbstractPropPicker.h>
@@ -31,19 +26,22 @@ namespace visuVTKAdaptor
 
 fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::STransformFromWheel);
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TRANSFORM_SLOT  = "updateTransform";
+static const ::fwCom::Slots::SlotKeyType s_ROTATE_TRANSFORM_SLOT  = "rotateTransform";
+static const ::fwCom::Slots::SlotKeyType s_TRANSLATE_TRANSFORM    = "translateTransform";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT     = "image";
 static const ::fwServices::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
 STransformFromWheel::STransformFromWheel() :
+    m_orientation(::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS),
     m_interactionMode(2),
-    m_initAngle(0.)
+    m_initAngle(0.),
+    m_translate(false)
 {
-    newSlot(s_UPDATE_TRANSFORM_SLOT, &STransformFromWheel::updateTransform, this);
+    newSlot(s_ROTATE_TRANSFORM_SLOT, &STransformFromWheel::rotateTransform, this);
+    newSlot(s_TRANSLATE_TRANSFORM, &STransformFromWheel::translateTransform, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &STransformFromWheel::updateSliceOrientation, this);
 }
 
@@ -73,7 +71,26 @@ void STransformFromWheel::configuring()
     }
     else
     {
-        SLM_WARN("Wrong interaction mode specified. Set to 2D.")
+        SLM_WARN("Wrong interaction mode specified. Set to 2D.");
+    }
+
+    const std::string orientation = config.get<std::string>("orientation", "");
+
+    if(orientation == "axial")
+    {
+        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS;
+    }
+    else if(orientation == "sagittal")
+    {
+        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS;
+    }
+    else if(orientation == "frontal")
+    {
+        m_orientation = ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS;
+    }
+    else
+    {
+        SLM_FATAL("Unknown orientation: '" + orientation + "'.");
     }
 }
 
@@ -100,13 +117,22 @@ void STransformFromWheel::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap STransformFromWheel::getAutoConnections() const
+void STransformFromWheel::applyTransformToOutput(const glm::dmat4& transform) const
 {
-    KeyConnectionsMap connections;
+    ::fwData::TransformationMatrix3D::sptr outTrans =
+        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
-    connections.push(s_IMAGE_INOUT, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
+    SLM_ASSERT("No 'transform' found.", outTrans);
 
-    return connections;
+    ::glm::dmat4 finalTransform = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(outTrans);
+    finalTransform              = finalTransform * transform;
+
+    ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(outTrans, finalTransform);
+
+    auto sig = outTrans->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
+                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -115,83 +141,48 @@ void STransformFromWheel::updateSliceOrientation(int from, int to)
 {
     if( to == static_cast< int > ( m_orientation ) )
     {
-        m_orientation = static_cast< Orientation > ( from );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation > ( from );
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast< Orientation >( to );
+        m_orientation = static_cast< ::fwDataTools::helper::MedicalImageAdaptor::Orientation >( to );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void STransformFromWheel::updateTransform(double cx, double cy, double wheelAngle)
+void STransformFromWheel::rotateTransform(double cx, double cy, double wheelAngle)
 {
-    vtkAbstractPropPicker* picker = this->getRenderService()->getPicker(m_pickerId);
-
     const double angle = wheelAngle - m_initAngle;
     m_initAngle = wheelAngle;
 
+    // Get wheel position in image space.
+    vtkAbstractPropPicker* picker = this->getRenderService()->getPicker(m_pickerId);
+
     SLM_ASSERT("No picker named '" + m_pickerId + "'.", picker);
 
-    double displayPos[3] = { cx, cy, 0. };
-    picker->Pick( displayPos, this->getRenderer());
+    double displayPosition[3] = { cx, cy, 0. };
+    picker->Pick( displayPosition, this->getRenderer());
 
     double worldPos[3];
     ::fwRenderVTK::vtk::getNearestPickedPosition(picker, this->getRenderer(), worldPos);
 
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
-    SLM_ASSERT("No 'image' found.", image);
-
-    m_weakImage = image;
-
-    int imageIndex[3];
-    this->worldToSliceIndex(worldPos, imageIndex);
-
-    const auto& spacing = image->getSpacing();
-    const auto& origin  = image->getOrigin();
-
-    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
-    {
-        SLM_WARN("Image has not been initialized.")
-        return;
-    }
-
     ::glm::dvec3 rotAxis;
-    ::glm::dvec3 pos(imageIndex[0] * spacing[0] + origin[0],
-                     imageIndex[1] * spacing[1] + origin[1],
-                     imageIndex[2] * spacing[2] + origin[2]);
+    ::glm::dvec3 pos(worldPos[0], worldPos[1], worldPos[2]);
 
-    if(m_interactionMode == 3)
+    rotAxis[m_orientation] = 1.;
+
+    if(m_interactionMode == 2)
     {
         switch (m_orientation)
         {
-            case Z_AXIS:
-                rotAxis = ::glm::dvec3(0., 0., 1.);
-                break;
-            case Y_AXIS:
-                rotAxis = ::glm::dvec3(0., 1., 0.);
-                break;
-            case X_AXIS:
-                rotAxis = ::glm::dvec3(1., 0., 0.);
-                break;
-        }
-    }
-    else
-    {
-        switch (m_orientation)
-        {
-            case Z_AXIS:
-                rotAxis = ::glm::dvec3(0., 0., 1.);
-                break;
-            case Y_AXIS:
-                rotAxis = ::glm::dvec3(0., -1., 0.);
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break;
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
+                rotAxis = -rotAxis;
                 pos     = ::glm::dvec3(pos.x, pos.z, pos.y);
                 break;
-            case X_AXIS:
-                rotAxis = ::glm::dvec3(1., 0., 0.);
-                pos     = ::glm::dvec3(pos.z, pos.x, pos.y);
+            case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
+                pos = ::glm::dvec3(pos.z, pos.x, pos.y);
                 break;
         }
     }
@@ -200,20 +191,51 @@ void STransformFromWheel::updateTransform(double cx, double cy, double wheelAngl
     const ::glm::dmat4 rotMat      = ::glm::rotate(invTransMat, angle, rotAxis);
     const ::glm::dmat4 centeredRot = ::glm::translate(rotMat, -pos);
 
-    ::fwData::TransformationMatrix3D::sptr outTrans =
-        this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    this->applyTransformToOutput(centeredRot);
+}
 
-    SLM_ASSERT("No 'transform' found.", outTrans);
+//------------------------------------------------------------------------------
 
-    ::glm::dmat4 finalTransform = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(outTrans);
-    finalTransform              = finalTransform * centeredRot;
+void STransformFromWheel::translateTransform(fwDataTools::PickingInfo info)
+{
+    if(info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)
+    {
+        std::copy(info.m_worldPos, info.m_worldPos + 3, m_lastPickedPos);
 
-    ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(outTrans, finalTransform);
+        m_translate = true;
+    }
+    else if(m_translate && info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
+    {
+        ::glm::dvec3 transVec(m_lastPickedPos[0] - info.m_worldPos[0],
+                              m_lastPickedPos[1] - info.m_worldPos[1],
+                              m_lastPickedPos[2] - info.m_worldPos[2]);
 
-    auto sig = outTrans->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
-                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
+        if(m_interactionMode == 2)
+        {
+            switch (m_orientation)
+            {
+                case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Z_AXIS: break;
+                case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::Y_AXIS:
+                    transVec = ::glm::dvec3(transVec.x, transVec.z, transVec.y);
+                    break;
+                case ::fwDataTools::helper::MedicalImageAdaptor::Orientation::X_AXIS:
+                    transVec = ::glm::dvec3(transVec.z, transVec.x, transVec.y);
+                    break;
+            }
+        }
 
-    sig->asyncEmit();
+        const ::glm::dmat4 transMat = ::glm::translate(transVec);
+
+        this->applyTransformToOutput(transMat);
+
+        std::copy(info.m_worldPos, info.m_worldPos + 3, m_lastPickedPos);
+    }
+    else if(info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
+    {
+        m_translate = false;
+    }
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

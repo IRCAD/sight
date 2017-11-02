@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,9 @@
 #include "ioGdcm/config.hpp"
 
 #include <fwCom/Signal.hpp>
+
 #include <fwGui/IActionSrv.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 namespace fwJobs
@@ -28,7 +30,7 @@ class IOGDCM_CLASS_API SDicomSeriesConverter : public ::fwGui::IActionSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesConverter)( ::fwGui::IActionSrv ) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesConverter)( ::fwGui::IActionSrv ) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
@@ -54,19 +56,19 @@ protected:
        </service>
        @endcode
      */
-    IOGDCM_API virtual void configuring();
+    IOGDCM_API virtual void configuring() override;
 
     /// Override
-    IOGDCM_API virtual void starting();
+    IOGDCM_API virtual void starting() override;
 
     /// Override
-    IOGDCM_API virtual void stopping();
+    IOGDCM_API virtual void stopping() override;
 
     /// Override
-    IOGDCM_API void updating();
+    IOGDCM_API void updating() override;
 
     /// Override
-    IOGDCM_API void info(std::ostream& _sstream );
+    IOGDCM_API void info(std::ostream& _sstream ) override;
 
 protected:
 

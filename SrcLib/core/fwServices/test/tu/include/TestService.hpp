@@ -33,12 +33,7 @@ public:
     static unsigned int s_UPDATE_COUNTER;
 
     fwCoreServiceClassDefinitionsMacro( (TestService)(::fwServices::IService) );
-    TestService() noexcept :
-        m_isUpdated(false),
-        m_isUpdated2(false),
-        m_isUpdatedMessage(false),
-        m_startOrder(0),
-        m_updateOrder(0)
+    TestService() noexcept
     {
     }
 
@@ -54,9 +49,7 @@ public:
     virtual void starting() override;
     //------------------------------------------------------------------------------
 
-    virtual void stopping() final
-    {
-    }
+    virtual void stopping() final;
     virtual void updating() override;
     //------------------------------------------------------------------------------
 
@@ -109,12 +102,20 @@ public:
         return m_updateOrder;
     }
 
+    //------------------------------------------------------------------------------
+
+    void setRaiseException(bool raiseException)
+    {
+        m_raiseException = raiseException;
+    }
+
 protected:
-    bool m_isUpdated;
-    bool m_isUpdated2;
-    bool m_isUpdatedMessage;
-    unsigned int m_startOrder;
-    unsigned int m_updateOrder;
+    bool m_isUpdated { false };
+    bool m_isUpdated2 { false };
+    bool m_isUpdatedMessage { false };
+    bool m_raiseException { false };
+    unsigned int m_startOrder { 0 };
+    unsigned int m_updateOrder { 0 };
 };
 
 /**
@@ -135,15 +136,10 @@ public:
     typedef ::fwCom::Signal< void (const std::string&)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
-    TestServiceImplementation() noexcept
-    {
-        newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
-        newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
-    }
+    TestServiceImplementation() noexcept;
+
     //-------------------------------------------------------------------------
-    virtual ~TestServiceImplementation() noexcept
-    {
-    }
+    virtual ~TestServiceImplementation() noexcept;
 
     //-------------------------------------------------------------------------
     virtual void starting() final

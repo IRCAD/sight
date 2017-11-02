@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef __FWATOMS_BLOB_HPP__
 #define __FWATOMS_BLOB_HPP__
 
-#include <fwMemory/BufferObject.hpp>
-
-#include "fwAtoms/config.hpp"
 #include "fwAtoms/Base.hpp"
+#include "fwAtoms/config.hpp"
 #include "fwAtoms/factory/new.hpp"
+
+#include <fwMemory/BufferObject.hpp>
 
 namespace fwAtoms
 {
@@ -59,18 +59,18 @@ public:
      * @{
      */
     FWATOMS_API ::fwMemory::BufferObject::sptr getBufferObject() const;
-    FWATOMS_API void setBufferObject(const ::fwMemory::BufferObject::sptr &bo);
+    FWATOMS_API void setBufferObject(const ::fwMemory::BufferObject::sptr& bo);
     /// @}
 
     /**
      * @brief Returns a clone object
      */
-    FWATOMS_API virtual Base::sptr clone() const;
+    FWATOMS_API virtual Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const
+    ::fwAtoms::Base::AtomType type() const override
     {
         return ::fwAtoms::Base::BLOB;
     }
@@ -81,8 +81,6 @@ protected:
 };
 
 }
-
-
 
 #endif /* __FWATOMS_BLOB_HPP__ */
 

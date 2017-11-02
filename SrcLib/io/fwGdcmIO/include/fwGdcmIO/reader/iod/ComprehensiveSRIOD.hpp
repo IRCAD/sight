@@ -29,18 +29,20 @@ public:
      * @param[in] dicomSeries DicomSeries
      * @param[in] instance Instance
      * @param[in] logger Logger
-     * @param[in] callback Progress callback
-     * @param[in] cancelled cancel information
+     * @param[in] progress Progress callback
+     * @param[in] cancel Cancel requested callback
      */
-    FWGDCMIO_API ComprehensiveSRIOD(::fwMedData::DicomSeries::sptr dicomSeries,
-                                    SPTR(::fwGdcmIO::container::DicomInstance)instance, ::fwLog::Logger::sptr logger,
-                                    ProgressCallback& callback, bool& cancelled);
+    FWGDCMIO_API ComprehensiveSRIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                    const ::fwLog::Logger::sptr& logger = nullptr,
+                                    ProgressCallback progress = nullptr,
+                                    CancelRequestedCallback cancel = nullptr);
 
     /// Destructor
     FWGDCMIO_API ~ComprehensiveSRIOD();
 
-    //// Read DICOM file
-    FWGDCMIO_API void read(::fwMedData::Series::sptr series);
+    /// Read DICOM file
+    FWGDCMIO_API void read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed);
 
 
 };

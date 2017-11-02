@@ -4,15 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/reader/ie/Series.hpp"
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
-#include <gdcmUIDGenerator.h>
-
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
 #include <sstream>
@@ -26,15 +25,15 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Series::Series(::fwMedData::DicomSeries::sptr dicomSeries,
-               SPTR(::gdcm::Reader)reader,
-               SPTR(::fwGdcmIO::container::DicomInstance)instance,
-               ::fwMedData::Series::sptr series,
-               ::fwLog::Logger::sptr logger,
-               const ProgressCallback& callback,
-               const bool& cancelled) :
-    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Series >(dicomSeries, reader, instance, series, logger,
-                                                                     callback, cancelled)
+Series::Series(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+               const SPTR(::gdcm::Reader)& reader,
+               const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+               const ::fwMedData::Series::sptr& series,
+               const ::fwLog::Logger::sptr& logger,
+               ProgressCallback progress,
+               CancelRequestedCallback cancel) :
+    ::fwGdcmIO::reader::ie::InformationEntity< ::fwMedData::Series >(dicomSeries, reader, instance, series,
+                                                                     logger, progress, cancel)
 {
 }
 
@@ -52,23 +51,23 @@ void Series::readGeneralSeriesModule()
     ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     // Serie's instance UID - Type 1
-    const std::string& instanceUID = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000e >(dataset);
+    const std::string& instanceUID = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0020, 0x000e >(dataset);
     m_object->setInstanceUID(instanceUID);
 
     // Series's modality - Type 1
-    const std::string& modality = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x0060 >(dataset);
+    const std::string& modality = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0060 >(dataset);
     m_object->setModality(modality);
 
     // Serie's date - Type 3
-    const std::string& date = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x0021 >(dataset);
+    const std::string& date = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0021 >(dataset);
     m_object->setDate(date);
 
     // Serie's time - Type 3
-    const std::string& time = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x0031 >(dataset);
+    const std::string& time = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x0031 >(dataset);
     m_object->setTime(time);
 
     // Serie's description
-    const std::string& description = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x103e >(dataset);
+    const std::string& description = ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x103e >(dataset);
     m_object->setDescription(description);
 
     // Serie's number - Type 2
@@ -76,7 +75,7 @@ void Series::readGeneralSeriesModule()
 
     // Performing physicians name - Type 3
     const std::string& performingPhysicianNamesStr =
-        ::fwGdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x1050 >(dataset);
+        ::fwGdcmIO::helper::DicomDataReader::getTagValue< 0x0008, 0x1050 >(dataset);
 
     if(!performingPhysicianNamesStr.empty())
     {

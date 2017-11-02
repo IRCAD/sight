@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,10 +49,10 @@ public:
     FWMEDDATA_API virtual ~ActivitySeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /**
      * @name Getters / Setters
@@ -61,15 +61,15 @@ public:
     /**
      * @brief Data container
      * @{ */
-    SPTR(::fwData::Composite) getData () const;
+    SPTR(::fwData::Composite) getData() const;
     void setData(const SPTR(::fwData::Composite)& val);
     /**  @} */
 
     /**
      * @brief Activity configuration identifier
      * @{ */
-    const ConfigIdType &getActivityConfigId () const;
-    void setActivityConfigId (const ConfigIdType &val);
+    const ConfigIdType& getActivityConfigId () const;
+    void setActivityConfigId (const ConfigIdType& val);
     /**  @} */
 
     /**  @} */
@@ -86,7 +86,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline SPTR(::fwData::Composite) ActivitySeries::getData () const
+inline SPTR(::fwData::Composite) ActivitySeries::getData() const
 {
     return m_data;
 }
@@ -100,14 +100,14 @@ inline void ActivitySeries::setData(const SPTR(::fwData::Composite)& val)
 
 //-----------------------------------------------------------------------------
 
-inline const ActivitySeries::ConfigIdType &ActivitySeries::getActivityConfigId () const
+inline const ActivitySeries::ConfigIdType& ActivitySeries::getActivityConfigId () const
 {
     return m_activityConfigId;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ActivitySeries::setActivityConfigId (const ActivitySeries::ConfigIdType &val)
+inline void ActivitySeries::setActivityConfigId (const ActivitySeries::ConfigIdType& val)
 {
     m_activityConfigId = val;
 }
@@ -117,5 +117,4 @@ inline void ActivitySeries::setActivityConfigId (const ActivitySeries::ConfigIdT
 }   //end namespace fwMedData
 
 #endif // __FWMEDDATA_ACTIVITYSERIES_HPP__
-
 

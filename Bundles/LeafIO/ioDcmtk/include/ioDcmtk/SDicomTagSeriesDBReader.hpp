@@ -58,28 +58,28 @@ public:
 protected:
 
     /// Override
-    IODCMTK_API virtual void starting();
+    IODCMTK_API virtual void starting() override;
 
     /// Override
-    IODCMTK_API virtual void stopping();
+    IODCMTK_API virtual void stopping() override;
 
     /// Override
-    IODCMTK_API virtual void configuring();
+    IODCMTK_API virtual void configuring() override;
 
     /// Override
-    IODCMTK_API void updating();
+    IODCMTK_API void updating() override;
 
     /// Override
-    IODCMTK_API void info(std::ostream& _sstream );
+    IODCMTK_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    IODCMTK_API virtual std::string getSelectorDialogTitle();
+    IODCMTK_API virtual std::string getSelectorDialogTitle() override;
 
     /// Override
-    IODCMTK_API virtual void configureWithIHM();
+    IODCMTK_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IODCMTK_API ::io::IOPathType getIOPathType() const;
+    IODCMTK_API ::io::IOPathType getIOPathType() const override;
 
 private:
 

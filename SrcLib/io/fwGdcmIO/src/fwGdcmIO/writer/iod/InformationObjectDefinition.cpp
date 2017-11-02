@@ -17,9 +17,16 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-InformationObjectDefinition::InformationObjectDefinition(
-    SPTR(::fwGdcmIO::container::DicomInstance)instance, ::boost::filesystem::path folderPath) :
-    m_instance(instance), m_folderPath(folderPath)
+InformationObjectDefinition::InformationObjectDefinition(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                                         const ::boost::filesystem::path& destinationPath,
+                                                         const ::fwLog::Logger::sptr& logger,
+                                                         ProgressCallback progress,
+                                                         CancelRequestedCallback cancel) :
+    m_instance(instance),
+    m_destinationPath(destinationPath),
+    m_logger(logger),
+    m_progressCallback(progress),
+    m_cancelRequestedCallback(cancel)
 {
     SLM_ASSERT("Instance should not be null.", instance);
 }
@@ -30,6 +37,7 @@ InformationObjectDefinition::~InformationObjectDefinition()
 {
 }
 
+//------------------------------------------------------------------------------
 } // namespace iod
 } // namespace writer
 } // namespace fwGdcmIO

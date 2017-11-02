@@ -40,6 +40,7 @@
 #include <boost/optional.hpp>
 
 #include <vtkCellPicker.h>
+#include <vtkImageFlip.h>
 #include <vtkInstantiator.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
@@ -69,7 +70,8 @@ SRender::SRender() noexcept :
     m_renderMode(RenderMode::AUTO),
     m_width(1280),
     m_height(720),
-    m_offScreen(false)
+    m_offScreen(false),
+    m_flip(false)
 {
     newSignal<DroppedSignalType>(s_DROPPED_SIG);
 
@@ -231,6 +233,8 @@ void SRender::configuring()
 
     SLM_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
 
+    m_flip = (srvConf.get<std::string>("flip", "false") == "true");
+
     if(nbInouts == 1)
     {
         const std::string key = srvConf.get<std::string>("inout.<xmlattr>.key", "");
@@ -240,6 +244,7 @@ void SRender::configuring()
     }
     else // no offscreen rendering.
     {
+        SLM_WARN_IF("Flip tag is set to 'true' but no off screen render image is used.", m_flip);
         this->initialize();
     }
 
@@ -287,7 +292,7 @@ void SRender::configuring()
         unsigned int timeStep = static_cast<unsigned int>( 1000.f / targetFrameRate );
         m_timer = m_associatedWorker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(timeStep);
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(timeStep);
         m_timer->setFunction( std::bind( &SRender::requestRender, this)  );
         m_timer->setDuration(duration);
     }
@@ -369,22 +374,33 @@ void SRender::render()
     OSLM_ASSERT("Scene must be started", this->isStarted());
     if (m_offScreen)
     {
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
+        SLM_ASSERT("Offscreen image not found.", image);
+
         vtkSmartPointer<vtkRenderWindow> renderWindow = m_interactorManager->getInteractor()->GetRenderWindow();
 
         renderWindow->Render();
 
-        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkWindowToImageFilter::New();
+        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkSmartPointer<vtkWindowToImageFilter>::New();
         windowToImageFilter->SetInputBufferTypeToRGBA();
         windowToImageFilter->SetInput( renderWindow );
         windowToImageFilter->Update();
 
-        vtkImageData* vtkImage = windowToImageFilter->GetOutput();
-        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_OFFSCREEN_INOUT);
-        SLM_ASSERT("Offscreen image not found.", image);
-
         {
             ::fwData::mt::ObjectWriteLock lock(image);
-            ::fwVtkIO::fromVTKImage(vtkImage, image);
+            if(m_flip)
+            {
+                vtkSmartPointer<vtkImageFlip> flipImage = vtkSmartPointer<vtkImageFlip>::New();
+                flipImage->SetFilteredAxes(1);
+                flipImage->SetInputData(windowToImageFilter->GetOutput());
+                flipImage->Update();
+
+                ::fwVtkIO::fromVTKImage(flipImage->GetOutput(), image);
+            }
+            else
+            {
+                ::fwVtkIO::fromVTKImage(windowToImageFilter->GetOutput(), image);
+            }
         }
 
         auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -392,9 +408,6 @@ void SRender::render()
             ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
-
-        // If we don't do explicitly, the filter is not destroyed and this leads to a huge memory leak
-        windowToImageFilter->Delete();
     }
     else
     {
@@ -446,7 +459,7 @@ void SRender::startContext()
         m_interactorManager = interactorManager;
     }
 
-    InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
+    auto interactor = vtkSmartPointer<InteractorStyle3DForNegato>::New();
     SLM_ASSERT("Can't instantiate interactor", interactor);
     interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
     m_interactorManager->getInteractor()->SetInteractorStyle( interactor );

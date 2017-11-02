@@ -41,39 +41,36 @@ SPTR( Bundle ) Bundle::getLoadingBundle()
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle( const boost::filesystem::path& location,
+Bundle::Bundle( const ::boost::filesystem::path& location,
                 const std::string& id,
                 const std::string& version ) :
-    m_location( location ),
-    m_identifier( id ),
-    m_version( version ),
-    m_enable( false ),
-    m_started( false ),
-    m_initialized( false )
-
+    Bundle(location, id, version, "")
 {
-    // Post-condition.
-    assert( m_location.is_complete() == true );
 }
 
 //------------------------------------------------------------------------------
 
-Bundle::Bundle(
-    const boost::filesystem::path& location,
-    const std::string& id,
-    const std::string& version,
-    const std::string& c ) :
-    m_location( location ),
+Bundle::Bundle( const ::boost::filesystem::path& location,
+                const std::string& id,
+                const std::string& version,
+                const std::string& c ) :
+    m_resourcesLocation( location.lexically_normal() ),
     m_identifier( id ),
     m_version( version ),
-    m_class( c ),
-    m_enable( false ),
-    m_started( false ),
-    m_initialized( false )
-
+    m_class( c )
 {
     // Post-condition.
-    assert( m_location.is_complete() == true );
+    SLM_ASSERT( "Invalid bundle location.",  m_resourcesLocation.is_complete() == true );
+
+    // Starting from FW4SPL 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
+    std::string strLocation       = location.string();
+    const std::string strRCPrefix = BUNDLE_RC_PREFIX;
+    const auto itBundle           = strLocation.find(strRCPrefix);
+    if(itBundle != std::string::npos)
+    {
+        strLocation.replace(itBundle, strRCPrefix.length(), std::string(BUNDLE_LIB_PREFIX));
+    }
+    m_libraryLocation = ::boost::filesystem::path(strLocation);
 }
 
 //------------------------------------------------------------------------------
@@ -275,9 +272,16 @@ const std::string& Bundle::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-const boost::filesystem::path& Bundle::getLocation() const
+const ::boost::filesystem::path& Bundle::getLibraryLocation() const
 {
-    return m_location;
+    return m_libraryLocation;
+}
+
+//------------------------------------------------------------------------------
+
+const ::boost::filesystem::path& Bundle::getResourcesLocation() const
+{
+    return m_resourcesLocation;
 }
 
 //------------------------------------------------------------------------------
@@ -301,13 +305,13 @@ void Bundle::loadLibraries()
     // Ensure the bundle is enabled.
     if( m_enable == false )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": bundle is not enabled." );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": bundle is not enabled." );
     }
 
     // Pre-condition
     SLM_ASSERT("Bundle is already loaded", m_loadingBundle == 0 );
 
-    SLM_TRACE( "Loading " + this->getIdentifier() + "_" + this->getVersion().string() + " library...");
+    SLM_TRACE( "Loading " + this->getIdentifier() + s_VERSION_DELIMITER + this->getVersion().string() + " library...");
 
     // References the current bundle as the loading bundle.
     m_loadingBundle = shared_from_this();
@@ -343,7 +347,7 @@ void Bundle::loadLibraries()
 
     // Post-condition
     assert( m_loadingBundle == 0 );
-    SLM_TRACE("Library " + m_identifier + "_" + m_version.string() + " loaded");
+    SLM_TRACE("Library " + getBundleStr(m_identifier, m_version) + " loaded");
 }
 
 //------------------------------------------------------------------------------
@@ -374,7 +378,7 @@ void Bundle::loadRequirements()
     {
         std::string message;
 
-        message += "Bundle " + m_identifier + "_" + m_version.string() + " was not able to load requirements. ";
+        message += "Bundle " + getBundleStr(m_identifier, m_version) + " was not able to load requirements. ";
         message += e.what();
         throw RuntimeException( message );
     }
@@ -384,11 +388,11 @@ void Bundle::loadRequirements()
 
 void Bundle::start()
 {
-    SLM_ASSERT("Bundle " + m_identifier + "_" + m_version.string() + " already started.",
+    SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " already started.",
                !m_started );
     if( m_enable == false )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": bundle is not enabled." );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": bundle is not enabled." );
     }
 
     if( m_plugin == 0 )
@@ -398,11 +402,11 @@ void Bundle::start()
         try
         {
             startPlugin();
-            SLM_TRACE(m_identifier + "_" + m_version.string() + " Started");
+            SLM_TRACE(getBundleStr(m_identifier, m_version) + " Started");
         }
         catch( std::exception& e )
         {
-            throw RuntimeException( m_identifier + "_" + m_version.string() +
+            throw RuntimeException( getBundleStr(m_identifier, m_version) +
                                     ": start plugin error (after load requirement) :" + e.what() );
         }
     }
@@ -412,7 +416,7 @@ void Bundle::start()
 
 void Bundle::startPlugin()
 {
-    SLM_ASSERT("Bundle " + m_identifier + "_" + m_version.string() + " plugin is already started.",
+    SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " plugin is already started.",
                !m_started );
     // Retrieves the type of the plugin.
     const std::string pluginType( getClass() );
@@ -436,14 +440,14 @@ void Bundle::startPlugin()
     // Ensures that a plugin has been created.
     if( plugin == 0 )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": unable to create a plugin instance." );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": unable to create a plugin instance." );
     }
 
-    SLM_TRACE("Starting " + m_identifier + "_" + m_version.string() + " Bundle's plugin.");
+    SLM_TRACE("Starting " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
     // Stores and start the plugin.
     try
     {
-        SLM_TRACE("Register stopper for " + m_identifier + "_" + m_version.string() + " Bundle's plugin.");
+        SLM_TRACE("Register stopper for " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
         ::fwRuntime::profile::getCurrentProfile()->add(
             SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier(), this->getVersion())));
         m_plugin = plugin;
@@ -454,7 +458,7 @@ void Bundle::startPlugin()
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": start plugin error : " + e.what() );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
     }
 }
 
@@ -462,20 +466,20 @@ void Bundle::startPlugin()
 
 void Bundle::stop()
 {
-    SLM_ASSERT("Bundle "+ m_identifier + "_" + m_version.string() + " not started.", m_started );
-    SLM_ASSERT(m_identifier + "_" + m_version.string() + " : m_plugin not an intance.", m_plugin != 0 );
-    SLM_ASSERT("Bundle " + m_identifier + "_" + m_version.string() + " not uninitialized.", !m_initialized );
+    SLM_ASSERT("Bundle "+ getBundleStr(m_identifier, m_version) + " not started.", m_started );
+    SLM_ASSERT(getBundleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != 0 );
+    SLM_ASSERT("Bundle " + getBundleStr(m_identifier, m_version) + " not uninitialized.", !m_initialized );
 
-    SLM_TRACE("Stopping " + m_identifier + "_" + m_version.string() + " Bundle's plugin.");
+    SLM_TRACE("Stopping " + getBundleStr(m_identifier, m_version) + " Bundle's plugin.");
     try
     {
         m_plugin->stop();
         m_started = false;
-        OSLM_TRACE(m_identifier + "_" + m_version.string() << " Stopped");
+        OSLM_TRACE(getBundleStr(m_identifier, m_version) << " Stopped");
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": stop plugin error : " + e.what() );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": stop plugin error : " + e.what() );
     }
 
     ::fwRuntime::Runtime::getDefault()->unregisterBundle(this->shared_from_this());
@@ -496,18 +500,18 @@ void Bundle::stop()
 //------------------------------------------------------------------------------
 void Bundle::initialize()
 {
-    SLM_ASSERT("Bundle '" + m_identifier + "_" + m_version.string() + "' not started.", m_started );
-    SLM_ASSERT("Bundle '"+ m_identifier + "_" + m_version.string() + "' already initialized.", !m_initialized );
+    SLM_ASSERT("Bundle '" + getBundleStr(m_identifier, m_version) + "' not started.", m_started );
+    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' already initialized.", !m_initialized );
     try
     {
         m_initialized = true;
-        SLM_TRACE("Initializing " + m_identifier + "_" + m_version.string() + " ...");
+        SLM_TRACE("Initializing " + getBundleStr(m_identifier, m_version) + " ...");
         m_plugin->initialize();
-        SLM_TRACE("             " + m_identifier + "_" + m_version.string() + " Initialized");
+        SLM_TRACE("             " + getBundleStr(m_identifier, m_version) + " Initialized");
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": initialize plugin error : " + e.what() );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
     }
 }
 
@@ -515,8 +519,8 @@ void Bundle::initialize()
 
 void Bundle::uninitialize()
 {
-    SLM_ASSERT("Bundle '"+ m_identifier + "_" + m_version.string() + "' has not been started.", m_plugin );
-    SLM_ASSERT("Bundle '"+ m_identifier + "_" + m_version.string() + "' not initialized.", m_initialized );
+    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' has not been started.", m_plugin );
+    SLM_ASSERT("Bundle '"+ getBundleStr(m_identifier, m_version) + "' not initialized.", m_initialized );
     try
     {
         SLM_TRACE("Uninitializing " + this->getIdentifier() + " ...");
@@ -526,7 +530,7 @@ void Bundle::uninitialize()
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( m_identifier + "_" + m_version.string() + ": initialize plugin error : " + e.what() );
+        throw RuntimeException( getBundleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
     }
 }
 
@@ -565,6 +569,13 @@ const std::string Bundle::getParameterValue( const std::string& identifier ) con
 bool Bundle::hasParameter( const std::string& identifier ) const
 {
     return (m_parameters.find(identifier) != m_parameters.end());
+}
+
+//------------------------------------------------------------------------------
+
+std::string fwRuntime::Bundle::getBundleStr(const std::string& identifier, const fwRuntime::Version& version)
+{
+    return identifier + s_VERSION_DELIMITER + version.string();
 }
 
 //------------------------------------------------------------------------------

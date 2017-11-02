@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWMDSEMANTICPATCH_V2_V03AGO_FWDATA_IMAGE_HPP__
 #define __FWMDSEMANTICPATCH_V2_V03AGO_FWDATA_IMAGE_HPP__
 
-#include <fwAtomsPatch/ISemanticPatch.hpp>
-
 #include "fwMDSemanticPatch/config.hpp"
+
+#include <fwAtomsPatch/ISemanticPatch.hpp>
 
 namespace fwMDSemanticPatch
 {
@@ -34,7 +34,7 @@ public:
     FWMDSEMANTICPATCH_API ~Image();
 
     /// Copy constructor
-    FWMDSEMANTICPATCH_API Image( const Image &cpy );
+    FWMDSEMANTICPATCH_API Image( const Image& cpy );
 
     /**
      * @brief Applies patch.
@@ -44,7 +44,7 @@ public:
     FWMDSEMANTICPATCH_API virtual void apply(
         const ::fwAtoms::Object::sptr& previous,
         const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) override;
 
 };
 

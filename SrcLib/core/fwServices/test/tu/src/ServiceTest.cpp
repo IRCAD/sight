@@ -192,10 +192,12 @@ void ServiceTest::testStartStopUpdate()
 
     // Service must be stop when it is created
     CPPUNIT_ASSERT(service->isStopped());
+    CPPUNIT_ASSERT(!service->isStarted());
 
     // Start service
     service->start();
     CPPUNIT_ASSERT(service->isStarted());
+    CPPUNIT_ASSERT(!service->isStopped());
 
     // Update service
     service->update();
@@ -204,10 +206,110 @@ void ServiceTest::testStartStopUpdate()
     // Stop service
     service->stop();
     CPPUNIT_ASSERT(service->isStopped());
+    CPPUNIT_ASSERT(!service->isStarted());
 
     // Erase Service
     ::fwServices::OSR::unregisterService(service);
     CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
+}
+
+//------------------------------------------------------------------------------
+
+void ServiceTest::testStartStopUpdateExceptions()
+{
+    // Add service
+    auto service = ::fwServices::add< ::fwServices::ut::TestService>("::fwServices::ut::TestServiceImplementation");
+
+    // Service must be stop when it is created
+    CPPUNIT_ASSERT(service->isStopped());
+
+    // Start service
+    service->start();
+    CPPUNIT_ASSERT(service->isStarted());
+
+    // Stop service
+    service->stop();
+    CPPUNIT_ASSERT(service->isStopped());
+
+    // Start service with exceptions
+    service->setRaiseException(true);
+    service->start();
+    CPPUNIT_ASSERT(service->isStopped());
+
+    // Check we can catch the exception
+    bool exceptionCaught = false;
+    try
+    {
+        service->start().get();
+    }
+    catch(::fwCore::Exception e)
+    {
+        exceptionCaught = true;
+        CPPUNIT_ASSERT_EQUAL(std::string("start error"), std::string(e.what()));
+    }
+    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(service->isStopped());
+
+    // Start service again
+    service->setRaiseException(false);
+    service->start();
+    CPPUNIT_ASSERT(service->isStarted());
+
+    // Update service
+    service->update();
+    CPPUNIT_ASSERT(service->getIsUpdated());
+    service->resetIsUpdated();
+    CPPUNIT_ASSERT(!service->getIsUpdated());
+
+    // Update service with exception caught
+    service->setRaiseException(true);
+    exceptionCaught = false;
+    try
+    {
+        service->update().get();
+    }
+    catch(::fwCore::Exception e)
+    {
+        exceptionCaught = true;
+        CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
+    }
+    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(!service->getIsUpdated());
+
+    // Update service without exception caught
+    service->update();
+    CPPUNIT_ASSERT(!service->getIsUpdated());
+
+    // Update service
+    service->setRaiseException(false);
+    service->update();
+    CPPUNIT_ASSERT(service->getIsUpdated());
+
+    // Stop service with exception caught
+    service->setRaiseException(true);
+    exceptionCaught = false;
+    try
+    {
+        service->stop().get();
+    }
+    catch(::fwCore::Exception e)
+    {
+        exceptionCaught = true;
+        CPPUNIT_ASSERT_EQUAL(std::string("stop error"), std::string(e.what()));
+    }
+    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(service->isStarted());
+
+    // Update service without exception caught
+    service->stop();
+    CPPUNIT_ASSERT(service->isStarted());
+
+    service->setRaiseException(false);
+    service->stop();
+    CPPUNIT_ASSERT(service->isStopped());
+
+    // Erase Service
+    ::fwServices::OSR::unregisterService(service);
 }
 
 //------------------------------------------------------------------------------
@@ -228,6 +330,8 @@ struct TestServiceSignals : public ::fwCom::HasSlots
         m_worker = ::fwThread::Worker::New();
         m_slots.setWorker(m_worker);
     }
+
+    virtual ~TestServiceSignals();
 
     //------------------------------------------------------------------------------
 
@@ -378,6 +482,12 @@ void ServiceTest::testCommunication()
     ::fwServices::OSR::unregisterService(service2);
 
     activeWorkers->clearRegistry();
+}
+
+//------------------------------------------------------------------------------
+
+TestServiceSignals::~TestServiceSignals()
+{
 }
 
 //------------------------------------------------------------------------------

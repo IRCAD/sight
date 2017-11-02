@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWMEDDATA_NAVIGATIONSERIES_HPP__
 #define __FWMEDDATA_NAVIGATIONSERIES_HPP__
 
-#include "fwMedData/Series.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
 
 #include <fwData/factory/new.hpp>
 
@@ -49,10 +49,10 @@ public:
     FWMEDDATA_API virtual ~NavigationSeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
     /// Adds a position associate with the specified timestamp
     FWMEDDATA_API void addPosition(TimestampType time, const CoordinateType& pos);
@@ -100,5 +100,4 @@ protected:
 }   //end namespace fwMedData
 
 #endif // __FWMEDDATA_NAVIGATIONSERIES_HPP__
-
 

@@ -32,16 +32,15 @@ namespace visuVTKAdaptor
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoOneSlice" autoConnect="yes">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
+       <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" picker="negatodefault" sliceIndex="axial"
-               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
-               selectedTFKey="tkKey" />
+               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0" />
    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
- *
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer (mandatory): defines the renderer to show the image.
@@ -52,7 +51,6 @@ namespace visuVTKAdaptor
  *    - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API SNegatoOneSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                  public ::fwRenderVTK::IAdaptor
@@ -99,10 +97,12 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
+    /// Select the current tf
+    VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -112,7 +112,7 @@ protected:
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     vtkObject* getImageSource();
     void cleanImageSource();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWGUI_CURSOR_HPP__
 #define __FWGUI_CURSOR_HPP__
 
-#include <fwCore/base.hpp>
-
-#include "fwGui/ICursor.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/ICursor.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwGui
 {
@@ -18,10 +18,6 @@ namespace fwGui
 /**
  * @brief   Defines the generic cursor for IHM.
  * Use the Delegate design pattern
- * @class   Cursor
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API Cursor : public ::fwGui::ICursor
 {
@@ -37,10 +33,10 @@ public:
 
     // TODO : update API to reflect the cursor stack
     /// Set the cursor
-    FWGUI_API virtual void setCursor( ::fwGui::ICursor::CursorType cursor);
+    FWGUI_API virtual void setCursor( ::fwGui::ICursor::CursorType cursor) override;
 
     /// Set the default cursor
-    FWGUI_API virtual void setDefaultCursor();
+    FWGUI_API virtual void setDefaultCursor() override;
 
 protected:
 
@@ -51,5 +47,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_CURSOR_HPP__*/
-
 

@@ -65,24 +65,21 @@ public:
     /// Updates the TransformationMatrix3D from the vtkTransform
     VISUVTKADAPTOR_API void updateFromVtk();
 
-    /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
-    VISUVTKADAPTOR_API virtual int getStartPriority();
-
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void configuring() override;
 
     /// Registers transforms and then updates
-    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void starting() override;
 
     /// Updates the vtkTransform from the TransformationMatrix3D
-    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void updating() override;
 
     /// Cleanup
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void stopping() override;
 
     /// Updates
-    VISUVTKADAPTOR_API void swapping();
+    VISUVTKADAPTOR_API void swapping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -90,7 +87,7 @@ protected:
      *
      * Connect TransformationMatrix3D::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Current vtkTransform
     vtkTransform* m_transform;

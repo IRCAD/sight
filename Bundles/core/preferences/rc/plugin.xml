@@ -1,4 +1,4 @@
-<plugin id="preferences" class="preferences::Plugin" version="@DASH_VERSION@" >
+<plugin id="preferences" class="preferences::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="preferences"/>
     

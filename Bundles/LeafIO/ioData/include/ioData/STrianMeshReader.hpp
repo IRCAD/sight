@@ -53,7 +53,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    IODATA_API virtual std::vector< std::string > getSupportedExtensions();
+    IODATA_API virtual std::vector< std::string > getSupportedExtensions() override;
 
     /**
      * @brief Configure the mesh path.
@@ -61,11 +61,11 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IODATA_API void configureWithIHM();
+    IODATA_API void configureWithIHM() override;
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const;
+    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -78,7 +78,7 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    virtual void starting()
+    virtual void starting() override
     {
     }
 
@@ -87,14 +87,14 @@ protected:
      *
      * The stopping method is empty for this service.
      */
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
 
     /**
      * @brief Configuring method : calls implementation from `io::IReader`
      */
-    IODATA_API virtual void configuring();
+    IODATA_API virtual void configuring() override;
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -103,7 +103,7 @@ protected:
      * The mesh is read with the reader ::fwDataIO::reader::MeshReader.
      * Notify reading.
      */
-    IODATA_API void updating();
+    IODATA_API void updating() override;
 
     /**
      * @brief Info method.
@@ -113,7 +113,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream& _sstream );
+    IODATA_API virtual void info(std::ostream& _sstream ) override;
     /// @}
 
 };

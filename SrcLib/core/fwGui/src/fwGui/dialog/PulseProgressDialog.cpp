@@ -8,8 +8,6 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/bind.hpp>
-
 namespace fwGui
 {
 namespace dialog
@@ -23,7 +21,7 @@ PulseProgressDialog::PulseProgressDialog(
     ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function<void()>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function<void()>(
                                                                                   [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
@@ -68,7 +66,7 @@ void PulseProgressDialog::show()
     if (m_implementation)
     {
         ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
-            ::boost::bind(&IPulseProgressDialog::show, m_implementation)).wait();
+            std::bind(&IPulseProgressDialog::show, m_implementation)).wait();
     }
     else
     {

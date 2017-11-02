@@ -10,7 +10,6 @@
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 
 #include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
@@ -116,15 +115,13 @@ void DicomSeriesDBWriter::write()
     {
         const ::fwMedData::DicomSeries::sptr& dicomSeries = ::fwMedData::DicomSeries::dynamicCast(series);
 
-        ::fwJobs::Job::sptr job = ::fwJobs::Job::New("Write Dicom series",
-                                                     [&, dicomSeries](::fwJobs::Job& runningJob)
+        ::fwJobs::Job::sptr job = ::fwJobs::Job::New("Write Dicom series", [&, dicomSeries](::fwJobs::Job& runningJob)
                 {
                     if(!runningJob.cancelRequested())
                     {
                         m_anonymizer->resetIndex();
 
-                        ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer =
-                            ::fwGdcmIO::helper::DicomSeriesWriter::New();
+                        ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
                         writer->setObject(dicomSeries);
                         writer->setAnonymizer(m_anonymizer);
                         writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
@@ -135,8 +132,7 @@ void DicomSeriesDBWriter::write()
                         }
                                                  );
 
-                        writer->getJob()->addDoneWorkHook(
-                            [&](::fwJobs::IJob& subJob, std::uint64_t oldWork)
+                        writer->getJob()->addDoneWorkHook([&](::fwJobs::IJob& subJob, std::uint64_t oldWork)
                         {
                             runningJob.doneWork(subJob.getDoneWorkUnits());
                         });
@@ -170,6 +166,6 @@ void DicomSeriesDBWriter::write()
     futureAG.wait();
 }
 
+//------------------------------------------------------------------------------
 } // namespace helper
-
 } // namespace fwGdcmIO

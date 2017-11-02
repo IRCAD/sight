@@ -164,9 +164,9 @@ public:
      * @name Slot API
      */
     //@{
-    typedef ::boost::shared_future< void > SharedFutureType;
-    typedef ::boost::packaged_task< void > PackagedTaskType;
-    typedef ::boost::future< void > UniqueFutureType;
+    typedef std::shared_future< void > SharedFutureType;
+    typedef std::packaged_task< void ()> PackagedTaskType;
+    typedef std::future< void > UniqueFutureType;
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_SLOT;
     typedef ::fwCom::Slot<SharedFutureType()> StartSlotType;
@@ -531,21 +531,23 @@ public:
      * @brief Register an input object for this service
      * @param[in] obj input object used by the service
      * @param[in] key key of the object in the new adaptor
-     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
      * @return
      */
     FWSERVICES_API void registerInput(const::fwData::Object::csptr& obj, const std::string& key,
-                                      const bool autoConnect = false);
+                                      const bool autoConnect = false, const bool optional = false);
 
     /**
      * @brief Register an in/out object for this service
      * @param[in] obj in/out object used by the service
      * @param[in] key key of the object in the new adaptor
-     * @param[in] autoConnect if true, the service will be connected to all of its objects
+     * @param[in] autoConnect if true, the service will be connected to the object's signals
+     * @param[in] optional if true, the service can be started even if the objet is not present
      * @return
      */
     FWSERVICES_API void registerInOut(const::fwData::Object::sptr& obj, const std::string& key,
-                                      const bool autoConnect = false);
+                                      const bool autoConnect = false, const bool optional = false);
 
 protected:
 
@@ -695,16 +697,16 @@ protected:
 private:
 
     /// Connect the service with configuration services and objects
-    FWSERVICES_API virtual void connectToConfig();
+    FWSERVICES_API void connectToConfig();
 
     /// Disconnect the service from configuration services and objects
-    FWSERVICES_API virtual void disconnectFromConfig();
+    FWSERVICES_API void disconnectFromConfig();
 
     /// Connect the service with its data
-    FWSERVICES_API virtual void autoConnect();
+    FWSERVICES_API void autoConnect();
 
     /// Disconnect the service from its data
-    FWSERVICES_API virtual void autoDisconnect();
+    FWSERVICES_API void autoDisconnect();
 
     /// Add a known connection from the appConfig
     FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& info);

@@ -39,7 +39,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (QtContainer)(::fwGui::container::fwContainer),
                                             (()),
-                                            ::fwGui::factory::New< QtContainer > );
+                                            ::fwGui::factory::New< QtContainer > )
 
     FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) noexcept;
 
@@ -56,12 +56,12 @@ public:
      */
     FWGUIQT_API virtual void setLayout(QLayout* const layout);
 
-    FWGUIQT_API virtual void clean();
-    FWGUIQT_API virtual void destroyContainer();
-    FWGUIQT_API virtual bool isShownOnScreen();
+    FWGUIQT_API virtual void clean() override;
+    FWGUIQT_API virtual void destroyContainer() override;
+    FWGUIQT_API virtual bool isShownOnScreen() override;
 
-    FWGUIQT_API virtual void setVisible(bool isVisible);
-    FWGUIQT_API virtual void setEnabled(bool isEnabled);
+    FWGUIQT_API virtual void setVisible(bool isVisible) override;
+    FWGUIQT_API virtual void setEnabled(bool isEnabled) override;
 
 private:
 

@@ -25,6 +25,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/regex.hpp>
 
+#include <functional>
+
 namespace fwServices
 {
 
@@ -125,7 +127,8 @@ void IService::setOutput(const IService::KeyType& key, const fwData::Object::spt
 
 //------------------------------------------------------------------------------
 
-void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect)
+void IService::registerInput(const ::fwData::Object::csptr& obj, const std::string& key, const bool autoConnect,
+                             const bool optional)
 {
     ::fwServices::OSR::registerServiceInput(obj, key, this->getSptr());
 
@@ -133,14 +136,15 @@ void IService::registerInput(const ::fwData::Object::csptr& obj, const std::stri
     objConfig.m_key         = key;
     objConfig.m_access      = AccessType::INPUT;
     objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = false;
+    objConfig.m_optional    = optional;
 
     m_serviceConfig.m_objects.push_back(objConfig);
 }
 
 //------------------------------------------------------------------------------
 
-void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect)
+void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::string& key, const bool autoConnect,
+                             const bool optional)
 {
     ::fwServices::OSR::registerService(obj, key, AccessType::INOUT, this->getSptr());
 
@@ -148,7 +152,7 @@ void IService::registerInOut(const ::fwData::Object::sptr& obj, const std::strin
     objConfig.m_key         = key;
     objConfig.m_access      = AccessType::INOUT;
     objConfig.m_autoConnect = autoConnect;
-    objConfig.m_optional    = false;
+    objConfig.m_optional    = optional;
 
     m_serviceConfig.m_objects.push_back(objConfig);
 }
@@ -262,7 +266,7 @@ void IService::configure()
             }
             catch (std::exception& e)
             {
-                SLM_FATAL("Error while configuring service '" + this->getID() + "' : " + e.what());
+                SLM_ERROR("Error while configuring service '" + this->getID() + "' : " + e.what());
             }
         }
         else if( m_globalState == STARTED )
@@ -292,24 +296,35 @@ IService::SharedFutureType IService::start()
 
         this->connectToConfig();
 
-        PackagedTaskType task( ::boost::bind(&IService::starting, this) );
-        UniqueFutureType ufuture = task.get_future();
+        PackagedTaskType task( std::bind(&IService::starting, this) );
+        SharedFutureType future = task.get_future();
 
         m_globalState = STARTING;
         task();
-        m_globalState = STARTED;
 
-        if ( ufuture.has_exception() )
+        try
         {
-            ufuture.get();
+            // This allows to trigger the exception if there was one
+            future.get();
         }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while STARTING service '" + this->getID() + "' : " + e.what());
+            SLM_ERROR("Service '" + this->getID() + "' is still STOPPED.");
+            m_globalState = STOPPED;
+            this->disconnectFromConfig();
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        m_globalState = STARTED;
 
         this->autoConnect();
 
         auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
         sig->asyncEmit();
 
-        return ::boost::move(ufuture);
+        return future;
     }
     else
     {
@@ -327,24 +342,35 @@ IService::SharedFutureType IService::stop()
 
         this->autoDisconnect();
 
-        PackagedTaskType task( ::boost::bind(&IService::stopping, this) );
-        UniqueFutureType ufuture = task.get_future();
+        PackagedTaskType task( std::bind(&IService::stopping, this) );
+        SharedFutureType future = task.get_future();
 
         m_globalState = STOPPING;
         task();
-        m_globalState = STOPPED;
 
-        if ( ufuture.has_exception() )
+        try
         {
-            ufuture.get();
+            // This allows to trigger the exception if there was one
+            future.get();
         }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while STOPPING service '" + this->getID() + "' : " + e.what());
+            SLM_ERROR("Service '" + this->getID() + "' is still STARTED.");
+            m_globalState = STARTED;
+            this->autoConnect();
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        m_globalState = STOPPED;
 
         auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
         sig->asyncEmit();
 
         this->disconnectFromConfig();
 
-        return ::boost::move(ufuture);
+        return future;
     }
     else
     {
@@ -363,22 +389,30 @@ IService::SharedFutureType IService::update()
         OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
                     "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
-        PackagedTaskType task( ::boost::bind(&IService::updating, this) );
-        UniqueFutureType ufuture = task.get_future();
+        PackagedTaskType task( std::bind(&IService::updating, this) );
+        SharedFutureType future = task.get_future();
 
         m_updatingState = UPDATING;
         task();
         m_updatingState = NOTUPDATING;
 
-        if ( ufuture.has_exception() )
+        try
         {
-            ufuture.get();
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while UPDATING service '" + this->getID() + "' : " + e.what());
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
         }
 
         auto sig = this->signal<StartedSignalType>(s_UPDATED_SIG);
         sig->asyncEmit();
 
-        return ::boost::move(ufuture);
+        return future;
     }
     else
     {
@@ -398,20 +432,28 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
             "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
             m_globalState != STARTED);
 
-        PackagedTaskType task( ::boost::bind(&IService::swapping, this) );
-        UniqueFutureType ufuture = task.get_future();
+        PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
+        SharedFutureType future = task.get_future();
 
         m_globalState = SWAPPING;
         ::fwServices::OSR::swapService( _obj, this->getSptr() );
         task();
         m_globalState = STARTED;
 
-        if ( ufuture.has_exception() )
+        try
         {
-            ufuture.get();
+            // This allows to trigger the exception if there was one
+            future.get();
+        }
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
         }
 
-        return ::boost::move(ufuture);
+        return future;
     }
     else
     {
@@ -430,18 +472,32 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
             (_obj ? _obj->getID() : "nullptr"),
             m_globalState != STARTED);
 
-        PackagedTaskType task( ::boost::bind(&IService::swapping, this, _key) );
-        UniqueFutureType ufuture = task.get_future();
+        auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
+        PackagedTaskType task( fn );
+        SharedFutureType future = task.get_future();
+
+        this->autoDisconnect();
 
         m_globalState = SWAPPING;
         task();
         m_globalState = STARTED;
 
-        if ( ufuture.has_exception() )
+        try
         {
-            ufuture.get();
+            // This allows to trigger the exception if there was one
+            future.get();
         }
-        return ::boost::move(ufuture);
+        catch (std::exception& e)
+        {
+            SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+
+        this->autoConnect();
+
+        return future;
     }
     else
     {

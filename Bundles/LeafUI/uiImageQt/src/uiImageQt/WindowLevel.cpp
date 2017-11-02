@@ -23,6 +23,8 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -45,18 +47,17 @@ namespace uiImageQt
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image );
 
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "TFSelections";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
-WindowLevel::WindowLevel() noexcept
+WindowLevel::WindowLevel() noexcept :
+    m_widgetDynamicRangeMin(-1024),
+    m_widgetDynamicRangeWidth(4000),
+    m_autoWindowing(false),
+    m_enableSquareTF(true)
 {
-    m_widgetDynamicRangeMin   = -1024.;
-    m_widgetDynamicRangeWidth = 4000.;
-    m_autoWindowing           = false;
-    m_useImageGreyLevelTF     = false;
-
     this->installTFSlots(this);
 }
 
@@ -91,19 +92,20 @@ void WindowLevel::starting()
 
     m_toggleTFButton = new QToolButton();
     QIcon ico;
-    QString squareIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/square.png");
-    QString rampIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
-    ico.addPixmap(QPixmap(squareIcon), QIcon::Normal, QIcon::On);
-    ico.addPixmap(QPixmap(rampIcon), QIcon::Normal, QIcon::Off);
+    std::string squareIcon(::fwRuntime::getBundleResourceFilePath("uiImageQt", "square.png").string());
+    std::string rampIcon(::fwRuntime::getBundleResourceFilePath("uiImageQt", "ramp.png").string());
+    ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
+    ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
     m_toggleTFButton->setCheckable(true);
+    m_toggleTFButton->setVisible(m_enableSquareTF);
 
     m_toggleAutoButton = new QToolButton();
     QIcon icon;
-    QString windo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
-    icon.addFile(windo, QSize(), QIcon::Normal, QIcon::On);
-    QString nowindo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
-    icon.addFile(nowindo, QSize(), QIcon::Normal, QIcon::Off);
+    std::string windo(::fwRuntime::getBundleResourceFilePath("uiImageQt", "windowing.svg").string());
+    icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
+    std::string nowindo(::fwRuntime::getBundleResourceFilePath("uiImageQt", "nowindowing.svg").string());
+    icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
     m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");
     m_toggleAutoButton->setCheckable(true);
@@ -134,7 +136,6 @@ void WindowLevel::starting()
     layout->addWidget( m_valueTextMax, 1, 4 );
 
     qtContainer->setLayout( layout );
-    this->updating();
 
     m_dynamicRangeSignalMapper = new QSignalMapper(this);
 
@@ -147,7 +148,10 @@ void WindowLevel::starting()
     QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
                      SLOT(onDynamicRangeSelectionChanged( QAction* )));
 
-    this->installTFConnections();
+    ::fwData::TransferFunction::sptr tf = this->getInOut < ::fwData::TransferFunction >(s_TF_INOUT);
+    this->setOrCreateTF(tf, image);
+
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -174,27 +178,22 @@ void WindowLevel::configuring()
 {
     this->initialize();
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("config");
-    SLM_ASSERT("WindowLevel config is empty.", configs.size() == 1);
+    const ConfigType srvConfig = this->getConfigTree();
 
-    ::fwRuntime::ConfigurationElement::sptr config = configs.front();
-    if (config->hasAttribute("autoWindowing"))
+    if (srvConfig.count("config.<xmlattr>"))
     {
-        std::string autoWindowing = config->getExistingAttributeValue("autoWindowing");
+        const ConfigType config = srvConfig.get_child("config.<xmlattr>");
+
+        const std::string autoWindowing = config.get("autoWindowing", "no");
         SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
                    autoWindowing == "yes" || autoWindowing == "no");
         m_autoWindowing = (autoWindowing == "yes");
-    }
 
-    if ( config->hasAttribute("useImageGreyLevelTF") )
-    {
-        std::string useImageGreyLevelTF = config->getExistingAttributeValue("useImageGreyLevelTF");
-        SLM_ASSERT("Bad value for 'useImageGreyLevelTF' attribute. It must be 'yes' or 'no'!",
-                   useImageGreyLevelTF == "yes" || useImageGreyLevelTF == "no");
-        m_useImageGreyLevelTF = (useImageGreyLevelTF == "yes");
+        const std::string enableSquareTF = config.get("enableSquareTF", "yes");
+        SLM_ASSERT("Bad value for 'enableSquareTF' attribute. It must be 'yes' or 'no'!",
+                   enableSquareTF == "yes" || enableSquareTF == "no");
+        m_enableSquareTF = (enableSquareTF == "yes");
     }
-
-    this->parseTFConfig(config);
 }
 
 //------------------------------------------------------------------------------
@@ -207,21 +206,9 @@ void WindowLevel::updating()
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
-
-    this->updateTransferFunction(image);
     if(imageIsValid)
     {
         this->updateImageInfos(image);
-
-        // test if service must use image grey level tf ( when another tf pool is defined )
-        if( m_useImageGreyLevelTF  && tfSelection)
-        {
-            ::fwData::TransferFunction::sptr newTF = this->getImageGreyLevelTF();
-            this->swapCurrentTFAndNotify( newTF );
-            m_toggleTFButton->setCheckable(true);
-        }
 
         if(m_autoWindowing)
         {
@@ -239,31 +226,32 @@ void WindowLevel::updating()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::swapping()
+void WindowLevel::swapping(const KeyType& key)
 {
-    this->removeTFConnections();
-    this->updating();
-    this->installTFConnections();
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+
+        ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
+
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updatingTFPoints()
+void WindowLevel::updateTFPoints()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updatingTFWindowing(double /*window*/, double /*level*/)
+void WindowLevel::updateTFWindowing(double /*window*/, double /*level*/)
 {
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
-
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-    SLM_ASSERT("Image is not valid", imageIsValid);
-    this->updateTransferFunction(image);
-
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", pTF);
     ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
@@ -325,7 +313,8 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    this->getTransferFunction()->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin, _imageMax) );
+    this->getTransferFunction()->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin,
+                                                                                          _imageMax) );
     auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
         ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
@@ -360,22 +349,22 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
     {
         case 0:
             break;
-        case 1: // -1024; 1023
+        case 1:         // -1024; 1023
             min = -1024;
             max = 1023;
             break;
-        case 2: // -100; 300
+        case 2:         // -100; 300
             min = -100;
             max = 300;
             break;
-        case 3: // Fit Window/Level
+        case 3:         // Fit Window/Level
             min = std::min(wl.first, wl.second);
             max = std::max(wl.first, wl.second);
             break;
-        case 4: // Fit Image Range
+        case 4:         // Fit Image Range
             ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
             break;
-        case 5: // Custom : TODO
+        case 5:         // Custom : TODO
             break;
         default:
             SLM_ASSERT("Unknown range selector index", 0);
@@ -405,9 +394,7 @@ void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 void WindowLevel::onToggleTF(bool squareTF)
 {
-    bool usedGreyLevelTF = false;
-
-    ::fwData::TransferFunction::sptr oldTF = this->getTransferFunction();
+    ::fwData::TransferFunction::sptr currentTF = this->getTransferFunction();
     ::fwData::TransferFunction::sptr newTF;
 
     if( squareTF )
@@ -421,11 +408,9 @@ void WindowLevel::onToggleTF(bool squareTF)
     }
     else
     {
-        // test if service must use image grey level tf ( when another tf pool is defined )
-        if( m_useImageGreyLevelTF && this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT) )
+        if( m_previousTF )
         {
-            newTF           = this->getImageGreyLevelTF();
-            usedGreyLevelTF = true;
+            newTF = m_previousTF;
         }
         else
         {
@@ -433,20 +418,19 @@ void WindowLevel::onToggleTF(bool squareTF)
         }
     }
 
-    newTF->setWindow( oldTF->getWindow() );
-    newTF->setLevel( oldTF->getLevel() );
+    newTF->setWindow( currentTF->getWindow() );
+    newTF->setLevel( currentTF->getLevel() );
 
-    this->swapCurrentTFAndNotify( newTF );
+    m_previousTF = ::fwData::Object::copy(currentTF);
 
-    if ( usedGreyLevelTF )
+    currentTF->deepCopy(newTF);
+
+    // Send signal
+    auto sig = currentTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
+        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        // Send signal
-        auto sig = newTF->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
-            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
-            sig->asyncEmit( newTF->getWindow(), newTF->getLevel());
-        }
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFPoints));
+        sig->asyncEmit();
     }
 }
 
@@ -501,17 +485,6 @@ bool WindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::setEnabled(bool enable)
-{
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
-    container->setEnabled(enable);
-}
-
-//------------------------------------------------------------------------------
-
 void WindowLevel::setWidgetDynamicRange(double min, double max)
 {
     if(fabs(max - min) < 1.e-05)
@@ -526,49 +499,11 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 
 //------------------------------------------------------------------------------
 
-::fwData::TransferFunction::sptr WindowLevel::getImageGreyLevelTF()
-{
-    ::fwData::TransferFunction::sptr defaultTF;
-
-    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
-
-    // Create pool
-    ::fwDataTools::helper::Image helper(image);
-    helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
-
-    // Get pool
-    const std::string poolFieldName = ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId;
-    ::fwData::Composite::sptr pool = image->getField< ::fwData::Composite >(poolFieldName);
-
-    // Get image default image tf
-    const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
-    defaultTF = ::fwData::TransferFunction::dynamicCast((*pool)[defaultTFName]);
-
-    return defaultTF;
-}
-
-//------------------------------------------------------------------------------
-
-void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF )
-{
-    // Change TF
-    ::fwData::Composite::sptr pool = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    OSLM_ASSERT( "The object '" + s_TF_SELECTION_INOUT + "' doesn't exist.", pool );
-    ::fwDataTools::helper::Composite compositeHelper( pool );
-    compositeHelper.swap( this->getSelectedTFKey(), newTF );
-
-    // Notify change
-    compositeHelper.notify();
-}
-
-//------------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

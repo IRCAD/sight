@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -72,7 +72,7 @@ void ArrayTest::allocation()
 
     char* buffer = new char[1000];
 
-    for (int i = 0; i<1000; i++)
+    for (int i = 0; i < 1000; i++)
     {
         buffer[i] = i;
     }
@@ -140,7 +140,7 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({7, 94})));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({8, 23})));
 
-    ::fwData::Array::SizeType newSize = {100,10};
+    ::fwData::Array::SizeType newSize = {100, 10};
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
@@ -158,7 +158,7 @@ void ArrayTest::resize()
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({38, 2})));
 
     newSize.clear();
-    newSize = {25,40};
+    newSize = {25, 40};
 
     array->resize(newSize);
     CPPUNIT_ASSERT(newSize == array->getSize());
@@ -219,7 +219,7 @@ void ArrayTest::reallocate()
     ::fwDataTools::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
-    ::fwData::Array::SizeType size = {10,100};
+    ::fwData::Array::SizeType size = {10, 100};
 
     array->resize("uint32", size, NB_COMPONENT, true);
     // CPPUNIT_ASSERT(array->getBuffer() != NULL);
@@ -239,7 +239,7 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({7, 94})));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({8, 23})));
 
-    ::fwData::Array::SizeType newSize = {100,100};
+    ::fwData::Array::SizeType newSize = {100, 100};
 
     array->resize(newSize, NB_COMPONENT, true);
     CPPUNIT_ASSERT(newSize == array->getSize());
@@ -281,7 +281,6 @@ void ArrayTest::reallocate()
     arrayHelper.setItem({99, 99}, 1, &value4);
     CPPUNIT_ASSERT_EQUAL(  value4, *(arrayHelper.getItem< unsigned int >({99, 99}, 1)));
 
-
     newSize.clear();
     newSize = {10, 100};
 
@@ -301,7 +300,7 @@ void ArrayTest::reallocate()
     CPPUNIT_ASSERT_EQUAL(  (size_t)8, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)4*10*100*2, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({5, 0},0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({5, 0}, 0)));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)999, *(arrayHelper.getItem< unsigned int >({9, 49}, 1)));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({3, 16}, 0)));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)947, *(arrayHelper.getItem< unsigned int >({3, 47}, 1)));
@@ -310,25 +309,25 @@ void ArrayTest::reallocate()
     array->setType(::fwTools::Type::create("uint16"));
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*2, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*10*100*2, array->getSizeInBytes());
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)0, *(arrayHelper.getItem< ::boost::uint16_t >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)10, *(arrayHelper.getItem< ::boost::uint16_t >({0, 1})));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)999, *(arrayHelper.getItem< ::boost::uint16_t >({9, 99})));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, *(arrayHelper.getItem< ::boost::uint16_t >({6, 32})));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)947, *(arrayHelper.getItem< ::boost::uint16_t >({7, 94})));
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)238, *(arrayHelper.getItem< ::boost::uint16_t >({8, 23})));
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)0, *(arrayHelper.getItem< std::uint16_t >({0, 0})));
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)10, *(arrayHelper.getItem< std::uint16_t >({0, 1})));
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)999, *(arrayHelper.getItem< std::uint16_t >({9, 99})));
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)326, *(arrayHelper.getItem< std::uint16_t >({6, 32})));
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)947, *(arrayHelper.getItem< std::uint16_t >({7, 94})));
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)238, *(arrayHelper.getItem< std::uint16_t >({8, 23})));
 
     array->setNumberOfComponents(1);
     CPPUNIT_ASSERT(newSize == array->getSize());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2, array->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (size_t)2*10*100, array->getSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)0, *(arrayHelper.getItem< unsigned int >({0, 0})));
-    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 2},0)));
+    CPPUNIT_ASSERT_EQUAL(  (unsigned int)10, *(arrayHelper.getItem< unsigned int >({0, 2}, 0)));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)326, *(arrayHelper.getItem< unsigned int >({2, 65})));
     CPPUNIT_ASSERT_EQUAL(  (unsigned int)238, *(arrayHelper.getItem< unsigned int >({6, 47}, 0)));
 
-    ::boost::uint16_t val;
+    std::uint16_t val;
     arrayHelper.getItem({2, 65}, &val);
-    CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, val);
+    CPPUNIT_ASSERT_EQUAL(  (std::uint16_t)326, val);
 
     char* charValue = arrayHelper.getBufferPtr({6, 47}, 0, array->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL( (unsigned int)238, *(reinterpret_cast<unsigned int*>(charValue)));
@@ -345,7 +344,7 @@ void ArrayTest::copy()
     ::fwDataTools::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
-    ::fwData::Array::SizeType size = {10,100};
+    ::fwData::Array::SizeType size = {10, 100};
 
     array->resize("uint32", size, NB_COMPONENT, true);
     CPPUNIT_ASSERT(arrayHelper.getBuffer() != NULL);
@@ -357,7 +356,6 @@ void ArrayTest::copy()
     {
         *iter = count++;
     }
-
 
     ::fwData::Array::sptr deepCopyArray;
     deepCopyArray = ::fwData::Object::copy(array);

@@ -1,5 +1,5 @@
 
-<plugin id="Tuto03DataService" version="@DASH_VERSION@">
+<plugin id="Tuto03DataService" version="@PROJECT_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -21,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>tutoDataService</name>
-                        <icon>@BUNDLE_PREFIX@/Tuto03DataService_0-1/tuto.ico</icon>
+                        <icon>Tuto03DataService-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

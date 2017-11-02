@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,6 @@
 #include <cppunit/XmlOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 
-
 #ifdef BUNDLE_TEST_PROFILE
 
 #include <boost/filesystem/operations.hpp>
@@ -31,16 +30,15 @@
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/io/ProfileReader.hpp>
 
-
 class MiniLauncher
 {
 public:
     MiniLauncher( ::boost::filesystem::path profilePath )
     {
-        ::boost::filesystem::path cwd        = ::boost::filesystem::current_path();
-        ::boost::filesystem::path bundlePath = cwd / ::boost::filesystem::path(BUNDLE_PREFIX);
+        ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
+        runtime->addDefaultBundles();
 
-        ::fwRuntime::addBundles(bundlePath);
+        ::boost::filesystem::path cwd = ::boost::filesystem::current_path();
 
         if (!::boost::filesystem::exists( profilePath ))
         {
@@ -51,7 +49,6 @@ public:
         {
             throw (std::invalid_argument("<" + profilePath.string() + "> not found." ));
         }
-
 
         m_profile = ::fwRuntime::io::ProfileReader::createProfile(profilePath);
         ::fwRuntime::profile::setCurrentProfile(m_profile);
@@ -76,7 +73,6 @@ private:
 
 #endif
 
-
 struct Options
 {
     bool verbose;
@@ -89,12 +85,18 @@ struct Options
     std::string profile;
 #endif
 
-    Options() : verbose(false), xmlReport(false), listTests(false)
+    Options() :
+        verbose(false),
+        xmlReport(false),
+        listTests(false)
 #ifdef BUNDLE_TEST_PROFILE
-                , profile( BUNDLE_TEST_PROFILE )
+        ,
+        profile( BUNDLE_TEST_PROFILE )
 #endif
     {
     }
+
+    //------------------------------------------------------------------------------
 
     bool parse(int argc, char* argv[])
     {
@@ -175,10 +177,8 @@ struct Options
 
 };
 
-
 CPPUNIT_NS_BEGIN
 class SynchronizationObject;
-
 
 class TestLister : public TestResult
 {
@@ -187,15 +187,21 @@ public:
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void startTest( Test* test )
     {
         std::cout << test->getName() << std::endl;
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void runTest( Test* test )
     {
         test->run( this );
     }
+
+    //------------------------------------------------------------------------------
 
     virtual bool protect( const Functor& functor,
                           Test* test,
@@ -205,8 +211,9 @@ public:
     }
 
 };
-CPPUNIT_NS_END
+//------------------------------------------------------------------------------
 
+CPPUNIT_NS_END
 
 int main( int argc, char* argv[] )
 {
@@ -224,7 +231,6 @@ int main( int argc, char* argv[] )
 #ifdef BUNDLE_TEST_PROFILE
     MiniLauncher miniLaucher( options.profile );
 #endif
-
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 

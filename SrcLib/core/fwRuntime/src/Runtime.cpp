@@ -78,6 +78,20 @@ void Runtime::addBundles( const ::boost::filesystem::path& repository )
 
 //------------------------------------------------------------------------------
 
+void Runtime::addDefaultBundles()
+{
+    // Bundles location
+    const auto location = this->getWorkingPath() / BUNDLE_RC_PREFIX;
+
+    SLM_ASSERT("Default Bundles location not found: " + location.string(), ::boost::filesystem::exists(location));
+
+    // Read bundles
+    this->addBundles(location);
+    SLM_ASSERT("Couldn't load any bundle from path: " + location.string(), this->bundlesBegin() != this->bundlesEnd());
+}
+
+//------------------------------------------------------------------------------
+
 Runtime::BundleIterator Runtime::bundlesBegin()
 {
     return m_bundles.begin();

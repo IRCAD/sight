@@ -34,10 +34,10 @@ vtkStandardNewMacro(fwHandleRepresentation3D);
 fwHandleRepresentation3D::fwHandleRepresentation3D()
 {
     // Instantiate a handle template shape as a cube
-    this->CubeSource = vtkCubeSource::New();
+    this->CubeSource = vtkSmartPointer<vtkCubeSource>::New();
 
     // Instantiate a handle template shape as a sphere
-    this->SphereSource = vtkSphereSource::New();
+    this->SphereSource = vtkSmartPointer<vtkSphereSource>::New();
     this->SphereSource->SetThetaResolution(20);
     this->SphereSource->SetPhiResolution(20);
     this->SphereSource->Update();
@@ -47,25 +47,24 @@ fwHandleRepresentation3D::fwHandleRepresentation3D()
 
     this->ShapeRepresentation = SPHERE;
 
-    vtkSmartPointer<vtkCylinderSource> cynlinderSource = vtkCylinderSource::New();
-    cynlinderSource->SetCenter(0., -1., 0.);
-    cynlinderSource->SetResolution(64);
-    cynlinderSource->SetHeight(0.);
-    this->Marker = cynlinderSource;
+    auto cylinderSource = vtkSmartPointer<vtkCylinderSource>::New();
+    cylinderSource->SetCenter(0., -1., 0.);
+    cylinderSource->SetResolution(64);
+    cylinderSource->SetHeight(0.);
+    this->Marker = cylinderSource;
 
-    this->CleanPolyData = vtkCleanPolyData::New();
+    this->CleanPolyData = vtkSmartPointer<vtkCleanPolyData>::New();
     this->CleanPolyData->PointMergingOn();
     this->CleanPolyData->CreateDefaultLocator();
     this->CleanPolyData->SetInputConnection(0, this->Marker->GetOutputPort(0));
 
-    vtkPolyDataNormals* MarkerNormals = vtkPolyDataNormals::New();
+    auto MarkerNormals = vtkSmartPointer<vtkPolyDataNormals>::New();
     MarkerNormals->SetInputConnection( 0, this->CleanPolyData->GetOutputPort(0) );
 
-    this->MarkerMapper = vtkPolyDataMapper::New();
+    this->MarkerMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     this->MarkerMapper->SetInputConnection( MarkerNormals->GetOutputPort() );
-    MarkerNormals->Delete();
 
-    this->Follower = vtkFollower::New();
+    this->Follower = vtkSmartPointer<vtkFollower>::New();
     this->Follower->SetMapper(this->MarkerMapper);
     this->Follower->RotateX(90);
 
@@ -74,7 +73,7 @@ fwHandleRepresentation3D::fwHandleRepresentation3D()
 
     this->MarkerRadiusFactor = 1.2;
     this->SetMarkerProperty(this->MarkerProperty);
-    cynlinderSource->SetRadius(this->MarkerRadiusFactor * this->SphereSource->GetRadius());
+    cylinderSource->SetRadius(this->MarkerRadiusFactor * this->SphereSource->GetRadius());
 }
 
 //----------------------------------------------------------------------

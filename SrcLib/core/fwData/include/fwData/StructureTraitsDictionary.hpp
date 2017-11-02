@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWDATA_STRUCTURETRAITSDICTIONARY_HPP__
 #define __FWDATA_STRUCTURETRAITSDICTIONARY_HPP__
 
-#include "fwData/StructureTraits.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
+#include "fwData/StructureTraits.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(StructureTraitsDictionary), FWDATA_API);
 
@@ -39,7 +39,6 @@ public:
     /// Destructor. Does nothing.
     FWDATA_API virtual ~StructureTraitsDictionary();
 
-
     /**
      * @brief Add a structure in dictionary
      * @param [in] structureTraits a StructureTraits correctly initialized.
@@ -60,10 +59,10 @@ public:
     FWDATA_API StructureTypeNameContainer getStructureTypeNames() const;
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 private:
 

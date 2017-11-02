@@ -56,12 +56,12 @@ public:
     SCENE2D_API virtual ~SHistogram() noexcept;
 
 protected:
-    SCENE2D_API void configuring();
-    SCENE2D_API void starting();
-    SCENE2D_API void updating();
-    SCENE2D_API void stopping();
+    SCENE2D_API void configuring() override;
+    SCENE2D_API void starting() override;
+    SCENE2D_API void updating() override;
+    SCENE2D_API void stopping() override;
 
-    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event );
+    SCENE2D_API void processInteraction( ::fwRenderQt::data::Event& _event ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -69,7 +69,7 @@ protected:
      *
      * Connect SHistogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    SCENE2D_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,13 +8,12 @@
 #define __FWDATA_MESH_HPP__
 
 #include "fwData/Array.hpp"
+#include "fwData/config.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/factory/new.hpp"
-#include "fwData/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include <boost/cstdint.hpp>
 #include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
@@ -77,13 +76,10 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >);
 
-
     fwCampMakeFriendDataMacro((fwData)(Mesh));
 
-
     typedef std::map< std::string, ::fwData::Array::sptr > ArrayMapType;
-    typedef boost::uint64_t Id;
-
+    typedef std::uint64_t Id;
 
     typedef enum
     {
@@ -103,12 +99,12 @@ public:
     } ColorArrayTypes;
 
     typedef float PointValueType;
-    typedef boost::uint8_t ColorValueType;
+    typedef std::uint8_t ColorValueType;
     typedef float NormalValueType;
     typedef float TexCoordValueType;
     typedef Id CellValueType;
     typedef Id CellDataOffsetType;
-    typedef boost::uint8_t CellTypes;
+    typedef std::uint8_t CellTypes;
 
     typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
     typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
@@ -142,11 +138,10 @@ public:
     FWDATA_API virtual ~Mesh();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
-
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Allocate Mesh memory
@@ -181,7 +176,6 @@ public:
 
     /// Allocates texCoords array according to the number of cells of the mesh.
     FWDATA_API size_t allocateCellTexCoords();
-
 
     /**
      * @brief Adjust mesh memory usage
@@ -288,7 +282,6 @@ public:
     /// Get cell data size.
     FWDATA_API Id getCellDataSize() const;
 
-
     /**
      * @brief Get the mesh data size in bytes.
      *
@@ -305,17 +298,16 @@ public:
     FWDATA_API size_t getAllocatedSizeInBytes() const;
 
     /// Add an array in the mesh array-map
-    FWDATA_API void addDataArray(const std::string &name, ::fwData::Array::sptr array);
+    FWDATA_API void addDataArray(const std::string& name, ::fwData::Array::sptr array);
 
     /// Get an array in the mesh array-map
-    FWDATA_API ::fwData::Array::sptr getDataArray(const std::string &name) const;
+    FWDATA_API ::fwData::Array::sptr getDataArray(const std::string& name) const;
 
     /// Remove an array in the mesh array-map
-    FWDATA_API void removeDataArray(const std::string &name);
+    FWDATA_API void removeDataArray(const std::string& name);
 
     /// Return all array names stock in the mesh array-map
     FWDATA_API std::vector<std::string> getDataArrayNames() const;
-
 
     /***
      * @name Signals
@@ -404,7 +396,8 @@ protected:
      * Contains cell data : cell points ids are contiguously stored regardless
      * of the cell type. Size depends of cell type. If we have only TRIANGLE type, size = m_nbCells x 3.
      *
-     * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, QUAD_ID1, QUAD_ID2, QUAD_ID3, QUAD_ID4, ... ]
+     * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, QUAD_ID1, QUAD_ID2,
+     * QUAD_ID3, QUAD_ID4, ... ]
      */
     ::fwData::Array::sptr m_cellData;
 
@@ -460,7 +453,8 @@ protected:
      */
     ::fwData::Array::sptr m_cellTexCoords;
 
-    /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific analysis.
+    /// Array map where you can add few additional arrays registered thanks to a key to perform/conserve some specific
+    // analysis.
     ArrayMapType m_arrayMap;
 };
 

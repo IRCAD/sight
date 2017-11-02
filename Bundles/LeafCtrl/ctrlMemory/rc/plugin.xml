@@ -1,4 +1,4 @@
-<plugin id="ctrlMemory" class="::ctrlMemory::Plugin"  version="@DASH_VERSION@" >
+<plugin id="ctrlMemory" class="::ctrlMemory::Plugin"  version="@PROJECT_VERSION@" >
     
     <library name="ctrlMemory" />
 

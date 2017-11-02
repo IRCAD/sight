@@ -6,14 +6,13 @@
 
 #include "fwGdcmIO/writer/ie/Image.hpp"
 
-#include "fwGdcmIO/helper/DicomData.hpp"
-
-#include <fwData/Image.hpp>
+#include "fwGdcmIO/helper/DicomDataTools.hpp"
+#include "fwGdcmIO/helper/DicomDataWriter.hxx"
 
 #include <fwDataTools/helper/Image.hpp>
+#include <fwData/Image.hpp>
 
 #include <gdcmImageWriter.h>
-#include <gdcmUIDGenerator.h>
 
 namespace fwGdcmIO
 {
@@ -24,10 +23,13 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Image::Image(SPTR(::gdcm::Writer)writer,
-             SPTR(::fwGdcmIO::container::DicomInstance)instance,
-             ::fwData::Image::sptr image) :
-    ::fwGdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image)
+Image::Image(const SPTR(::gdcm::Writer)& writer,
+             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+             const ::fwData::Image::sptr& image,
+             const ::fwLog::Logger::sptr& logger,
+             ProgressCallback progress,
+             CancelRequestedCallback cancel) :
+    ::fwGdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image, logger, progress, cancel)
 {
 }
 
@@ -52,7 +54,7 @@ void Image::writeGeneralImageModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Instance Number
-    ::fwGdcmIO::helper::DicomData::setTagValue< int, 0x0020, 0x0013 >(instanceNumber, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< int, 0x0020, 0x0013 >(instanceNumber, dataset);
 
 }
 
@@ -65,11 +67,11 @@ void Image::writeImagePlaneModule()
 
     // Retrieve GDCM image
     SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
-    ::gdcm::Image& gdcmImage              = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY FW4SPL), but stuff like "Pixel Aspect Ratio"
-    const std::size_t dimension          = m_object->getNumberOfDimensions();
+    const std::size_t dimension = m_object->getNumberOfDimensions();
     const std::vector< double >& spacing = m_object->getSpacing();
     for (unsigned int i = 0; i < dimension; ++i)
     {
@@ -79,7 +81,7 @@ void Image::writeImagePlaneModule()
 
     // Slice Thickness - Type 2
     // NOTE: ::gdcm::ImageWriter may replace SliceThickness values according to Image Origins
-    ::fwGdcmIO::helper::DicomData::setTagValue< double, 0x0018, 0x0050 >(spacing[2], dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< double, 0x0018, 0x0050 >(spacing[2], dataset);
 
     // Image Orientation (Patient) - Type 1
     // This tag his handled by gdcm writer
@@ -92,10 +94,10 @@ void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
-    ::gdcm::Image& gdcmImage              = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
-    const std::vector< double >& origin  = m_object->getOrigin();
+    const std::vector< double >& origin = m_object->getOrigin();
     const std::vector< double >& spacing = m_object->getSpacing();
     gdcmImage.SetOrigin(0, origin[0]);
     gdcmImage.SetOrigin(1, origin[1]);
@@ -108,16 +110,16 @@ void Image::writeImagePixelModule()
 {
     // Retrieve GDCM image
     ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
-    ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Image's photometric interpretation - Type 1
     ::gdcm::PhotometricInterpretation photoInter =
-        ::fwGdcmIO::helper::DicomData::getPhotometricInterpretation(*m_object);
+        ::fwGdcmIO::helper::DicomDataTools::getPhotometricInterpretation(m_object);
     gdcmImage.SetPhotometricInterpretation(photoInter);
     OSLM_TRACE("Image's photometric interpretation : " << photoInter);
 
     // Image's pixel type
-    ::gdcm::PixelFormat pixelFormat = ::fwGdcmIO::helper::DicomData::getPixelType(m_object);
+    ::gdcm::PixelFormat pixelFormat = ::fwGdcmIO::helper::DicomDataTools::getPixelType(m_object);
     gdcmImage.SetPixelFormat(pixelFormat);
     OSLM_TRACE("Image's pixel type : " << pixelFormat);
 
@@ -145,11 +147,11 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
 
     // Retrieve GDCM image
     ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
-    ::gdcm::Image& gdcmImage         = imageWriter->GetImage();
+    ::gdcm::Image& gdcmImage = imageWriter->GetImage();
 
     // Compute buffer size
     const ::fwData::Image::SizeType& size = m_object->getSize();
-    std::size_t bufferLength              = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
+    std::size_t bufferLength = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength*size[2]) : bufferLength;
 
     // Retrieve image buffer
@@ -170,15 +172,15 @@ void Image::writeVOILUTModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     const double windowCenter = m_object->getWindowCenter();
-    const double windowWidth  = m_object->getWindowWidth();
+    const double windowWidth = m_object->getWindowWidth();
     if(windowCenter || windowWidth)
     {
         // Image's windows center
-        ::fwGdcmIO::helper::DicomData::setTagValues< double, 0x0028, 0x1050 >(&windowCenter, 1, dataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< double, 0x0028, 0x1050 >(&windowCenter, 1, dataset);
         OSLM_TRACE("Image's window center : " << windowCenter);
 
         // Image's windows width
-        ::fwGdcmIO::helper::DicomData::setTagValues< double, 0x0028, 0x1051 >(&windowWidth, 1, dataset);
+        ::fwGdcmIO::helper::DicomDataWriter::setTagValues< double, 0x0028, 0x1051 >(&windowWidth, 1, dataset);
         OSLM_TRACE("Image's window width : " << windowWidth);
     }
 
@@ -192,7 +194,7 @@ void Image::writeSOPCommonModule()
     ::gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Class UID
-    ::fwGdcmIO::helper::DicomData::setTagValue<  0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue<  0x0008, 0x0016 >(m_instance->getSOPClassUID(), dataset);
     SLM_TRACE("SOP Class UID : " + m_instance->getSOPClassUID());
 }
 
@@ -205,7 +207,7 @@ void Image::writeSOPCommonModuleSpecificTags(unsigned int instanceNumber)
 
     // SOP Instance UID
     const std::string sopInstanceUID = m_instance->getSOPInstanceUIDContainer()[instanceNumber];
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0018 >(sopInstanceUID, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0018 >(sopInstanceUID, dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -217,17 +219,17 @@ void Image::writeCTImageModule()
 
     // Image Type - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > imageType = "ORIGINAL\\PRIMARY\\AXIAL";
-    ::fwGdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1, dataset);
 
     // Acquisition Number - Type 2 - FIXME: Fake Value
     unsigned int acquisitionNumber = 1;
-    ::fwGdcmIO::helper::DicomData::setTagValue< unsigned int, 0x0020, 0x0012 >(acquisitionNumber, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< unsigned int, 0x0020, 0x0012 >(acquisitionNumber, dataset);
 
     // KVP - Type 2 - FIXME: Fake Value
-    ::fwGdcmIO::helper::DicomData::setTagValue< double, 0x0018, 0x0060 >(1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< double, 0x0018, 0x0060 >(1, dataset);
 
     // Rescale Type - Type 1C - FIXME: Fake Value
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0028, 0x1054 >("HU", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0028, 0x1054 >("HU", dataset);
 
 }
 
@@ -240,37 +242,34 @@ void Image::writeMRImageModule()
 
     // Image Type - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > imageType = "ORIGINAL\\PRIMARY\\MPR";
-    ::fwGdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0008, 0x0008 >(&imageType, 1, dataset);
 
     // Scanning Sequence - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > scanningSequence = "SE";
-    ::fwGdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0020 >(&scanningSequence, 1,
-                                                                                            dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0020 >(&scanningSequence, 1, dataset);
 
     // Sequence Variant - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > sequenceVariant = "NONE";
-    ::fwGdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0021 >(&sequenceVariant, 1,
-                                                                                            dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0021 >(&sequenceVariant, 1, dataset);
 
     // Scan Options - Type 2 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > scanOption = "";
-    ::fwGdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0022 >(&scanOption, 1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0022 >(&scanOption, 1, dataset);
 
     // MR Acquisition Type - Type 2 - FIXME: Fake Value
-    ::fwGdcmIO::helper::DicomData::setTagValue< 0x0018, 0x0023 >("3D", dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0018, 0x0023 >("3D", dataset);
 
     // Repetition Time - Type 2C - FIXME: Fake Value
-    ::fwGdcmIO::helper::DicomData::setTagValue< double, 0x0018, 0x0080 >(0, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< double, 0x0018, 0x0080 >(0, dataset);
 
     // Echo Time - Type 2 - FIXME: Fake Value
-    ::fwGdcmIO::helper::DicomData::setTagValue< double, 0x0018, 0x0081 >(1, dataset);
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< double, 0x0018, 0x0081 >(1, dataset);
 
     // Echo Train Length - Type 2 - FIXME: Fake Value
-    ::fwGdcmIO::helper::DicomData::setTagValue< unsigned int, 0x0018, 0x0091 >(1, dataset);
-
-
+    ::fwGdcmIO::helper::DicomDataWriter::setTagValue< unsigned int, 0x0018, 0x0091 >(1, dataset);
 }
 
+//------------------------------------------------------------------------------
 
 } // namespace ie
 } // namespace writer

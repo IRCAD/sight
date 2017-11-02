@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __GUI_ASPECT_SDEFAULTMENUBAR_HPP__
 #define __GUI_ASPECT_SDEFAULTMENUBAR_HPP__
 
-#include <fwGui/IMenuBarSrv.hpp>
-
 #include "gui/config.hpp"
+
+#include <fwGui/IMenuBarSrv.hpp>
 
 namespace gui
 {
@@ -24,7 +24,7 @@ class GUI_CLASS_API SDefaultMenuBar : public ::fwGui::IMenuBarSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDefaultMenuBar)(::fwGui::IMenuBarSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SDefaultMenuBar)(::fwGui::IMenuBarSrv) );
 
     /// Constructor. Do nothing.
     GUI_API SDefaultMenuBar() noexcept;
@@ -68,22 +68,22 @@ protected:
      *
      *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
      */
-    GUI_API virtual void configuring();
+    GUI_API virtual void configuring() override;
 
     /**
      * @brief Create the menus and start the managed services.
      * @see ::fwGui::IMenuBarSrv::create()
      */
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
     /**
      * @brief Stop all menu of this menuBar and destroy MenuBar
      * @see ::fwGui::IMenuBarSrv::destroy()
      */
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     /// Updating service, do nothing.
-    GUI_API virtual void updating();
+    GUI_API virtual void updating() override;
 
     ///@}
 };

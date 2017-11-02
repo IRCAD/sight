@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,9 @@
 #ifndef __FWDATA_POINTLIST_HPP__
 #define __FWDATA_POINTLIST_HPP__
 
-
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 #include "fwData/Point.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -37,7 +36,6 @@ public:
 
     typedef std::vector< ::fwData::Point::sptr > PointListContainer;
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -48,20 +46,20 @@ public:
     FWDATA_API virtual ~PointList();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// @brief get/set points container
     /// @{
     const PointListContainer  getPoints () const;
 
-    PointListContainer & getRefPoints ();
+    PointListContainer& getRefPoints ();
 
-    const PointListContainer & getCRefPoints () const;
+    const PointListContainer& getCRefPoints () const;
 
-    void setPoints (const PointListContainer & _vPoints);
+    void setPoints (const PointListContainer& _vPoints);
 
     ///Push back a ::fwData::Point in the pointlist
     void pushBack(const ::fwData::Point::sptr&);
@@ -98,21 +96,21 @@ inline const PointList::PointListContainer PointList::getPoints () const
 
 //-----------------------------------------------------------------------------
 
-inline PointList::PointListContainer & PointList::getRefPoints ()
+inline PointList::PointListContainer& PointList::getRefPoints ()
 {
     return this->m_vPoints;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const PointList::PointListContainer & PointList::getCRefPoints () const
+inline const PointList::PointListContainer& PointList::getCRefPoints () const
 {
     return this->m_vPoints;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void PointList::setPoints (const PointList::PointListContainer & _vPoints)
+inline void PointList::setPoints (const PointList::PointListContainer& _vPoints)
 {
     this->m_vPoints = _vPoints;
 }

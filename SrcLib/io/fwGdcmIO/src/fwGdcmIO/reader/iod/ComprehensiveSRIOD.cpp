@@ -1,20 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/reader/iod/ComprehensiveSRIOD.hpp"
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/ie/Document.hpp"
 
-#include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -27,10 +22,12 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-ComprehensiveSRIOD::ComprehensiveSRIOD(::fwMedData::DicomSeries::sptr dicomSeries,
-                                       SPTR(::fwGdcmIO::container::DicomInstance)instance, ::fwLog::Logger::sptr logger,
-                                       ProgressCallback& callback, bool& cancelled) :
-    ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, callback, cancelled)
+ComprehensiveSRIOD::ComprehensiveSRIOD(const ::fwMedData::DicomSeries::sptr& dicomSeries,
+                                       const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                                       const ::fwLog::Logger::sptr& logger,
+                                       ProgressCallback progress,
+                                       CancelRequestedCallback cancel) :
+    ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
 
@@ -43,7 +40,7 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series)
+void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series) throw(::fwGdcmIO::exception::Failed)
 {
     // Retrieve image series
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
@@ -62,7 +59,7 @@ void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series)
 
     // Create Information Entity helpers
     ::fwGdcmIO::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
-                                                m_progressCallback, m_cancelled);
+                                                m_progressCallback, m_cancelRequestedCallback);
 
     // Read SR
     documentIE.readSR();

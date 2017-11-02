@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,11 +12,14 @@
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
+
 #include <fwDataIO/reader/GenericObjectReader.hpp>
-#include <fwDataIO/reader/IObjectReader.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
 #include <fwLog/Logger.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/IService.hpp>
 
 namespace fwJobs
@@ -33,7 +36,7 @@ namespace reader
 {
 
 /**
- * @brief   This class adds patient(s) from DICOM file(s) to fwData::SeriesDB.
+ * @brief This class adds patient(s) from DICOM file(s) to fwData::SeriesDB.
  */
 class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                                     public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
@@ -58,15 +61,16 @@ public:
     FWGDCMIO_API ~SeriesDB();
 
     /// Reads DICOM data from configured path and fills SeriesDB object
-    FWGDCMIO_API void read();
+    FWGDCMIO_API void read() override;
 
     /**
      * @brief Reads DICOM data from DicomSeries and fills SeriesDB object
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    FWGDCMIO_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB,
-                                            ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+    FWGDCMIO_API void readFromDicomSeriesDB(const ::fwMedData::SeriesDB::csptr& dicomSeriesDB,
+                                            const ::fwServices::IService::sptr& notifier
+                                                = ::fwServices::IService::sptr());
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -129,9 +133,8 @@ public:
         m_logger = logger;
     }
 
-
     /// Getter for reader's job
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
 
     /// Enable buffer rotation
     void setBufferRotationEnabled(bool enabled)
@@ -152,31 +155,32 @@ private:
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+    void convertDicomSeries(const ::fwServices::IService::sptr& notifier = ::fwServices::IService::sptr());
 
     /**
      * @brief Function used to sort DicomSeries
      * @param[in] a First DicomSeries
      * @param[in] b Second DicomSeries
      */
-    static bool dicomSeriesComparator(SPTR(::fwMedData::DicomSeries) a, SPTR(::fwMedData::DicomSeries) b);
+    static bool dicomSeriesComparator(const SPTR(::fwMedData::DicomSeries)& a,
+                                      const SPTR(::fwMedData::DicomSeries)& b);
 
-    ///Object Reader Map
+    /// Object Reader Map
     DicomSeriesContainerType m_dicomSeriesContainer;
 
-    ///True if the reader can use the dicomdir file.
+    /// True if the reader can use the dicomdir file.
     bool m_isDicomdirActivated;
 
-    ///Dicom filter type that must be applied prior to the reading process
+    /// Dicom filter type that must be applied prior to the reading process
     std::string m_dicomFilterType;
 
-    ///Supported SOP Class container
+    /// Supported SOP Class container
     SupportedSOPClassContainerType m_supportedSOPClassContainer;
 
-    ///Logger
+    /// Logger
     ::fwLog::Logger::sptr m_logger;
 
-    ///Observer managing all subjobs
+    /// Observer managing all subjobs
     SPTR(::fwJobs::Aggregator) m_job;
 
     /// Enable buffer rotation

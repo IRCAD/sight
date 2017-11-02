@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,8 @@
 namespace fwJobs
 {
 
+//------------------------------------------------------------------------------
+
 Observer::sptr Observer::New(const std::string& name, std::uint64_t workUnits)
 {
     return std::make_shared<Observer>( name, workUnits );
@@ -16,7 +18,8 @@ Observer::sptr Observer::New(const std::string& name, std::uint64_t workUnits)
 
 //------------------------------------------------------------------------------
 
-Observer::Observer(const std::string &name, std::uint64_t workUnits) : IJob(name)
+Observer::Observer(const std::string& name, std::uint64_t workUnits) :
+    IJob(name)
 {
     m_finishTask = PackagedTask([this]()
         {
@@ -59,8 +62,7 @@ void Observer::finish()
 IJob::SharedFuture Observer::runImpl()
 {
     ::fwCore::mt::ReadLock lock(m_mutex);
-    return ::boost::move(m_finishTask.get_future());
+    return m_finishTask.get_future();
 }
-
 
 } //namespace fwJobs

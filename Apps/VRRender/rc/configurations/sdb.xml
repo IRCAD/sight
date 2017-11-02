@@ -34,18 +34,18 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
-                    <menuItem name="Export" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
-                    <menuItem name="Launch activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Launch_activity.svg" />
-                    <menuItem name="Create a new activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/CreateActivity.svg" />
+                    <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
+                    <menuItem name="Export" icon="media-0.1/icons/Export.svg" />
+                    <menuItem name="Launch activity" icon="media-0.1/icons/Launch_activity.svg" />
+                    <menuItem name="Create a new activity" icon="media-0.1/icons/CreateActivity.svg" />
                     <separator />
-                    <menuItem name="2D visualization" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png" />
-                    <menuItem name="3D visualization" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" />
-                    <menuItem name="Volume rendering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-VR.png" />
+                    <menuItem name="2D visualization" icon="media-0.1/icons/icon-2D.png" />
+                    <menuItem name="3D visualization" icon="media-0.1/icons/icon-3D.png" />
+                    <menuItem name="Volume rendering" icon="media-0.1/icons/icon-VR.png" />
                     <separator />
-                    <menuItem name="DICOM PACS Reader" icon="@BUNDLE_PREFIX@/media_0-1/icons/Pull.svg" />
-                    <menuItem name="DICOM PACS Writer" icon="@BUNDLE_PREFIX@/media_0-1/icons/Push.svg" />
-                    <menuItem name="DICOM Filtering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-DICOM-Filtering.svg" />
+                    <menuItem name="DICOM PACS Reader" icon="media-0.1/icons/Pull.svg" />
+                    <menuItem name="DICOM PACS Writer" icon="media-0.1/icons/Push.svg" />
+                    <menuItem name="DICOM Filtering" icon="media-0.1/icons/icon-DICOM-Filtering.svg" />
                 </layout>
             </gui>
             <registry>
@@ -75,8 +75,8 @@
             <inout key="seriesDB" uid="${SERIESDB}" />
             <ioSelectorConfig>FullSDBReaderIOSelectorConfig</ioSelectorConfig>
             <icons>
-                <icon type="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
-                <icon type="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
+                <icon type="::fwMedData::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
+                <icon type="::fwMedData::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
             </icons>
         </service>
 
@@ -102,8 +102,8 @@
                 </parameters>
                 <filter>
                     <mode>exclude</mode>
-                    <id>ImageSeriesExport2</id>
-                    <id>ModelSeriesExport2</id>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
                     <id>SDBVRRender</id>
                 </filter>
             </config>
@@ -201,8 +201,8 @@
             <in key="series" uid="selections" />
             <filter>
                 <mode>exclude</mode>
-                <id>ImageSeriesExport2</id>
-                <id>ModelSeriesExport2</id>
+                <id>ImageSeriesExport</id>
+                <id>ModelSeriesExport</id>
                 <id>SDBVRRender</id>
             </filter>
         </service>
@@ -215,8 +215,9 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>ImageSeriesExport2</id>
-                    <id>ModelSeriesExport2</id>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
+                    <id>DicomSeriesExport</id>
                 </filter>
             </config>
         </service>

@@ -44,15 +44,6 @@ void TransformationMatrix3DWriterService::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > TransformationMatrix3DWriterService::getSupportedExtensions()
-{
-    std::vector< std::string > extensions;
-    extensions.push_back(".trf");
-    return extensions;
-}
-
-//-----------------------------------------------------------------------------
-
 void TransformationMatrix3DWriterService::starting( )
 {
     SLM_TRACE_FUNC();

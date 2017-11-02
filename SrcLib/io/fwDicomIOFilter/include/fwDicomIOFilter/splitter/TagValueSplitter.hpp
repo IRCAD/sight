@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,6 @@
 
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/splitter/ISplitter.hpp"
-
-
-#include <dcmtk/dcmdata/dctagkey.h>
 
 #include <fwMedData/DicomSeries.hpp>
 
@@ -39,16 +36,16 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
+        const ::fwMedData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
 
     /// Return the name of the filter
-    FWDICOMIOFILTER_API virtual std::string getName() const;
+    FWDICOMIOFILTER_API virtual std::string getName() const override;
 
     /// Return the description of the filter
-    FWDICOMIOFILTER_API virtual std::string getDescription() const;
+    FWDICOMIOFILTER_API virtual std::string getDescription() const override;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const;
+    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const override;
 
     /**
      * @brief Tag used to sort instances
@@ -57,14 +54,20 @@ public:
     {
         return m_tag;
     }
+    //------------------------------------------------------------------------------
+
     DcmTagKey& getRefTag ()
     {
         return this->m_tag;
     }
+    //------------------------------------------------------------------------------
+
     const DcmTagKey& getCRefTag() const
     {
         return this->m_tag;
     }
+    //------------------------------------------------------------------------------
+
     void setTag (const DcmTagKey& _tag)
     {
         this->m_tag = _tag;
@@ -85,6 +88,5 @@ protected:
 
 } // namespace splitter
 } // namespace fwDicomIOFilter
-
 
 #endif /* __FWDICOMIOFILTER_SPLITTER_TAGVALUESPLITTER_HPP__ */

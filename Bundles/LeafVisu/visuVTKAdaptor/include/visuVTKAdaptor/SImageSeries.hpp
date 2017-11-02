@@ -26,15 +26,16 @@ namespace visuVTKAdaptor
  * @code{.xml}
    <service type="::visuVTKAdaptor::SImageSeries" autoConnect="yes">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
+       <inout key="tf" uid="..." optional="yes" />
        <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"
-               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
-               selectedTFKey="tkKey" />
+               transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0" />
    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction (CT-GreyLevel). The transferFunction's signals are automatically connected to
+ *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
@@ -50,7 +51,6 @@ namespace visuVTKAdaptor
  *    - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
  *    - \b vtkimagesource (optional): source image, used for blend
  *    - \b actorOpacity (optional, default=1.0): actor opacity (float)
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API SImageSeries : public ::fwDataTools::helper::MedicalImageAdaptor,
                                               public ::fwRenderVTK::IAdaptor
@@ -86,16 +86,16 @@ public:
 protected:
 
     /// Configure the adaptor.
-    VISUVTKADAPTOR_API void configuring();
+    VISUVTKADAPTOR_API void configuring() override;
 
     /// Calls doUpdate()
-    VISUVTKADAPTOR_API void starting();
+    VISUVTKADAPTOR_API void starting() override;
 
     /// Creates and starts image adaptor. Redraw all (stop then restart sub services).
-    VISUVTKADAPTOR_API void updating();
+    VISUVTKADAPTOR_API void updating() override;
 
     /// Stops and unregister image subservice.
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void stopping() override;
 
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
     void setSliceMode(SNegatoMPR::SliceMode sliceMode);

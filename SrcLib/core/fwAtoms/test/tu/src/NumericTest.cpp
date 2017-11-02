@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #include "NumericTest.hpp"
 
 #include <fwAtoms/Exception.hpp>
-
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
 
 #include <boost/lexical_cast.hpp>
+
 #include <limits>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtoms::ut::NumericTest );
@@ -20,6 +20,8 @@ namespace fwAtoms
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void NumericTest::setUp()
 {
@@ -32,7 +34,6 @@ void NumericTest::tearDown()
 {
     // Clean up after the test run.
 }
-
 
 //-----------------------------------------------------------------------------
 
@@ -110,7 +111,7 @@ void NumericTest::floatingTest()
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d2)), numeric->getString());
     CPPUNIT_ASSERT_EQUAL(d2, numeric->getValue<double>());
     CPPUNIT_ASSERT_THROW( numeric->getValue< float >(), boost::numeric::positive_overflow );
-    CPPUNIT_ASSERT_THROW( numeric->getValue< ::boost::uint64_t >(), boost::numeric::positive_overflow );
+    CPPUNIT_ASSERT_THROW( numeric->getValue< std::uint64_t >(), boost::numeric::positive_overflow );
 
     numeric = fwAtoms::Numeric::New(d3);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d3)), numeric->getString());
@@ -127,17 +128,20 @@ void NumericTest::floatingTest()
 
 //-----------------------------------------------------------------------------
 
-
 class variant_visitor : public boost::static_visitor<>
 {
 public:
 
-    void operator()( ::boost::blank & ) const
+    //------------------------------------------------------------------------------
+
+    void operator()( ::boost::blank& ) const
     {
         CPPUNIT_ASSERT_MESSAGE("This shall not happen", 0);
     }
+    //------------------------------------------------------------------------------
+
     template <typename U>
-    void operator()( U & value ) const
+    void operator()( U& value ) const
     {
         fwAtoms::Numeric::sptr numeric = ::fwAtoms::Numeric::New(value);
         CPPUNIT_ASSERT_EQUAL(U(value), numeric->getValue<U>());
@@ -150,21 +154,22 @@ public:
     }
 };
 
+//------------------------------------------------------------------------------
 
 void NumericTest::mixedTest()
 {
     fwAtoms::Numeric::ValueType values[] = {
-        std::numeric_limits<  ::boost::int64_t >::min(),
-        ::boost::int64_t(-1234),
-        ::boost::int64_t(0),
-        ::boost::int64_t(1234),
-        std::numeric_limits<  ::boost::int64_t >::max(),
+        std::numeric_limits<  std::int64_t >::min(),
+        std::int64_t(-1234),
+        std::int64_t(0),
+        std::int64_t(1234),
+        std::numeric_limits<  std::int64_t >::max(),
 
-        std::numeric_limits<  ::boost::uint64_t >::min(),
-        ::boost::uint64_t(-1234),
-        ::boost::uint64_t(0),
-        ::boost::uint64_t(1234),
-        std::numeric_limits<  ::boost::uint64_t >::max(),
+        std::numeric_limits<  std::uint64_t >::min(),
+        std::uint64_t(-1234),
+        std::uint64_t(0),
+        std::uint64_t(1234),
+        std::numeric_limits<  std::uint64_t >::max(),
 
         -std::numeric_limits<  float >::max(),
         float(-1234),
@@ -182,7 +187,7 @@ void NumericTest::mixedTest()
 
     };
 
-    for( fwAtoms::Numeric::ValueType &v : values )
+    for( fwAtoms::Numeric::ValueType& v : values )
     {
         boost::apply_visitor( variant_visitor(), v );
     }

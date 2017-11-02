@@ -8,14 +8,12 @@
 
 #include "fwDataIO/reader/registry/macros.hpp"
 
+#include <fwData/location/SingleFile.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Tag.hpp>
-#include <fwData/location/SingleFile.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
-
-#include <boost/cstdint.hpp>
 
 #include <fstream>
 #include <iostream>

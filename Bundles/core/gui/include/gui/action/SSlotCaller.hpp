@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@ class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSlotCaller)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SSlotCaller)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;
@@ -56,25 +56,23 @@ public:
 protected:
 
     /// This method gives information about the class.
-    GUI_API virtual void info(std::ostream& _sstream );
+    GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /// This method run the specified slots.
-    GUI_API void updating();
+    GUI_API void updating() override;
 
     ///  This method is used to configure the service parameters: specifies which slots must be called.
-    GUI_API void configuring();
+    GUI_API void configuring() override;
 
-    GUI_API virtual void starting();
+    GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping();
+    GUI_API virtual void stopping() override;
 
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;
 };
 
-
 } // namespace action
 } // namespace gui
-
 
 #endif /*__GUI_ACTION_SSLOTCALLER_HPP__*/

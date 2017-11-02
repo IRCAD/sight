@@ -38,9 +38,9 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      */
-    FWGDCMIO_API Measurement(SPTR(::gdcm::Writer)writer,
-                             SPTR(::fwGdcmIO::container::DicomInstance)instance,
-                             ::fwData::Image::sptr image);
+    FWGDCMIO_API Measurement(const SPTR(::gdcm::Writer)& writer,
+                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
+                             const ::fwData::Image::sptr& image);
 
     /// Destructor
     FWGDCMIO_API virtual ~Measurement();
@@ -50,7 +50,8 @@ public:
      * @param[in] parent Parent node
      * @param[in] useSCoord3D True if we must write SCOORD3D, false if we must write SCOORD
      */
-    FWGDCMIO_API virtual void createNodes(SPTR(::fwGdcmIO::container::sr::DicomSRNode) parent, bool useSCoord3D = true);
+    FWGDCMIO_API virtual void createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
+                                          bool useSCoord3D = true);
 
 
 protected:
@@ -62,8 +63,10 @@ protected:
      * @param[in] id ID of the ficudial
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
-    void createMeasurement(SPTR(::fwGdcmIO::container::sr::DicomSRNode) parent,
-                           const SPTR(::fwData::PointList)& pointList, unsigned int id, bool useSCoord3D);
+    void createMeasurement(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& parent,
+                           const SPTR(::fwData::PointList)& pointList,
+                           unsigned int id,
+                           bool useSCoord3D);
 
 
 };

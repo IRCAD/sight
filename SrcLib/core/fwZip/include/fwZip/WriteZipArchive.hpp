@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,23 +7,20 @@
 #ifndef __FWZIP_WRITEZIPARCHIVE_HPP__
 #define __FWZIP_WRITEZIPARCHIVE_HPP__
 
-#include <ostream>
-
-#include <boost/filesystem/path.hpp>
-
-
-#include <fwCore/macros.hpp>
-
 #include "fwZip/config.hpp"
 #include "fwZip/IWriteArchive.hpp"
 
+#include <fwCore/macros.hpp>
+
+#include <boost/filesystem/path.hpp>
+
+#include <ostream>
 
 namespace fwZip
 {
 
 /**
  * @brief   This class defines functions to write a file in a zip archive.
- * @class   WriteZipArchive
  */
 class FWZIP_CLASS_API WriteZipArchive : public IWriteArchive
 {
@@ -38,13 +35,13 @@ public:
      * @brief Constructors. Initializes archive path.
      *
      */
-    FWZIP_API WriteZipArchive( const ::boost::filesystem::path &archive );
+    FWZIP_API WriteZipArchive( const ::boost::filesystem::path& archive );
 
     /**
      * @brief Constructors. Initializes archive path and comment.
      *
      */
-    FWZIP_API WriteZipArchive( const ::boost::filesystem::path &archive, const std::string& comment );
+    FWZIP_API WriteZipArchive( const ::boost::filesystem::path& archive, const std::string& comment );
 
     FWZIP_API ~WriteZipArchive();
 
@@ -56,7 +53,7 @@ public:
      * @throw ::fwZip::exception::Write if archive cannot be opened.
      * @note Last output stream is automatically flushed before creation of new file entry in zip archive.
      */
-    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path);
+    FWZIP_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) override;
 
     /**
      * @brief Writes source file in archive.
@@ -65,8 +62,8 @@ public:
      *
      * @throw ::fwZip::exception::Read if source file cannot be opened.
      */
-    FWZIP_API void putFile(const ::boost::filesystem::path &sourceFile,
-                           const ::boost::filesystem::path &path);
+    FWZIP_API void putFile(const ::boost::filesystem::path& sourceFile,
+                           const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Creates a folder in archive.
@@ -74,12 +71,12 @@ public:
      *
      * @todo: file attribute isn't correctly set in zip archive.
      */
-    FWZIP_API bool createDir(const ::boost::filesystem::path &path);
+    FWZIP_API bool createDir(const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
      */
-    FWZIP_API const ::boost::filesystem::path getArchivePath() const;
+    FWZIP_API const ::boost::filesystem::path getArchivePath() const override;
 
 protected:
 
@@ -89,7 +86,6 @@ protected:
 };
 
 }
-
 
 #endif /* __FWZIP_WRITEZIPARCHIVE_HPP__ */
 

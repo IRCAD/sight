@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__
 #define __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__
 
-#include <vtkSmartPointer.h>
-#include <vtkLogLookupTable.h>
+#include "fwVtkIO/config.hpp"
 
 #include <fwData/TransferFunction.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <vtkLogLookupTable.h>
+#include <vtkSmartPointer.h>
 
 namespace fwVtkIO
 {
@@ -22,10 +22,6 @@ namespace helper
 
 /**
  * @brief   Helper to manage vtk data from ::fwData::TransferFunction.
- * @class   TransferFunction
- *
- * @date    2012.
- *
  */
 class FWVTKIO_CLASS_API TransferFunction
 {
@@ -40,11 +36,10 @@ public:
      * @param[in] size lookup table size
      * @param[out] lt vtkLookupTable
      */
-    FWVTKIO_API static void toVtkLookupTable(
-        ::fwData::TransferFunction::sptr tf,
-        vtkSmartPointer<vtkLookupTable>  lt,
-        bool allowTransparency = false,
-        unsigned int size = 256 );
+    FWVTKIO_API static void toVtkLookupTable(fwData::TransferFunction::csptr tf,
+                                             vtkSmartPointer<vtkLookupTable>  lt,
+                                             bool allowTransparency = false,
+                                             unsigned int size = 256 );
 
     /*!
      * @brief Convert the range of an Image or a TransferFunction to a black and white vtkLookupTable.

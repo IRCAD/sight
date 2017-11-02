@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,8 +13,6 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
-
-#include <boost/cstdint.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATA_API);
 
@@ -42,12 +40,11 @@ public:
     /// Destructor
     FWDATA_API virtual ~ResectionDB();
 
-
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     typedef std::vector< ::fwData::Resection::sptr > ResectionContainerType;
 
@@ -65,8 +62,8 @@ public:
      * @{
      * @brief Get/Set value of the resections.
      */
-    const ResectionContainerType &getResections () const;
-    void setResections (const ResectionContainerType &val);
+    const ResectionContainerType& getResections () const;
+    void setResections (const ResectionContainerType& val);
     /// @}
 
     /**
@@ -75,10 +72,9 @@ public:
      */
     const ::fwData::Resection::sptr  getSafeResection() const;
     ::fwData::Resection::sptr & getRefSafeResection();
-    const ::fwData::Resection::sptr & getCRefSafeResection() const;
+    const ::fwData::Resection::sptr& getCRefSafeResection() const;
     void setSafeResection(const ::fwData::Resection::sptr& _safeResection);
     /// @}
-
 
     /***
      * @name Signals
@@ -118,14 +114,14 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline const ResectionDB::ResectionContainerType &ResectionDB::getResections () const
+inline const ResectionDB::ResectionContainerType& ResectionDB::getResections () const
 {
     return m_resections;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ResectionDB::setResections (const ResectionDB::ResectionContainerType &val)
+inline void ResectionDB::setResections (const ResectionDB::ResectionContainerType& val)
 {
     m_resections = val;
 }
@@ -139,14 +135,14 @@ inline const ::fwData::Resection::sptr ResectionDB::getSafeResection() const
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::Resection::sptr & ResectionDB::getRefSafeResection()
+inline ::fwData::Resection::sptr& ResectionDB::getRefSafeResection()
 {
     return m_safeResection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::Resection::sptr & ResectionDB::getCRefSafeResection() const
+inline const ::fwData::Resection::sptr& ResectionDB::getCRefSafeResection() const
 {
     return m_safeResection;
 }

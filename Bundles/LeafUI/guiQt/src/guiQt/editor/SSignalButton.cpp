@@ -154,7 +154,7 @@ void SSignalButton::configuring()
     {
         SLM_ASSERT("Button must be 'checkable' in order to defined 'icon2'", m_checkable);
         SLM_ASSERT("'icon' tag must be defined in order to specify 'icon2'", iconCfg);
-        m_icon2 = ::boost::filesystem::path(icon2Cfg->getValue());
+        m_icon2 = ::fwRuntime::getBundleResourceFilePath(icon2Cfg->getValue());
     }
 
     ::fwRuntime::ConfigurationElement::sptr checkedCfg = config->findConfigurationElement("checked");

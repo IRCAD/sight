@@ -1,4 +1,4 @@
-<plugin id="ioQt" class="::ioQt::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioQt" class="::ioQt::Plugin" version="@PROJECT_VERSION@" >
     <library name="ioQt" />
 
     <requirement id="dataReg" />

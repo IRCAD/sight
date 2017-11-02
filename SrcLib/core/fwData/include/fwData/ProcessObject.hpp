@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWDATA_PROCESSOBJECT_HPP__
 #define __FWDATA_PROCESSOBJECT_HPP__
 
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 #include <map>
 #include <vector>
@@ -17,7 +17,6 @@ namespace fwData
 {
 class Field;
 }
-
 
 fwCampAutoDeclareDataMacro((fwData)(ProcessObject), FWDATA_API);
 
@@ -32,7 +31,6 @@ class FWDATA_CLASS_API ProcessObject : public Object
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()),
                                             ::fwData::factory::New< ProcessObject >);
-
 
     fwCampMakeFriendDataMacro((fwData)(ProcessObject));
 
@@ -85,18 +83,18 @@ public:
      * @{
      * @brief Retrieve the input data.
      */
-    const ProcessObjectMapType &getInputs () const;
+    const ProcessObjectMapType& getInputs () const;
 
-    void setInputs (const ProcessObjectMapType &val);
+    void setInputs (const ProcessObjectMapType& val);
     /// @}
 
     /**
      * @{
      * @briefRetrieve the output data.
      */
-    const ProcessObjectMapType &getOutputs () const;
+    const ProcessObjectMapType& getOutputs () const;
 
-    void setOutputs (const ProcessObjectMapType &val);
+    void setOutputs (const ProcessObjectMapType& val);
     /// @}
 
     /**
@@ -136,10 +134,10 @@ public:
     FWDATA_API void clearOutputs();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& source );
+    FWDATA_API void shallowCopy( const Object::csptr& source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) override;
 
 protected:
 
@@ -179,7 +177,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-
 template< class OBJECTTYPE >
 inline typename OBJECTTYPE::sptr ProcessObject::getInput(const ProcessObject::ParamNameType& name)
 {
@@ -196,28 +193,28 @@ inline typename OBJECTTYPE::sptr ProcessObject::getOutput(const ProcessObject::P
 
 //-----------------------------------------------------------------------------
 
-inline const ProcessObject::ProcessObjectMapType &ProcessObject::getInputs () const
+inline const ProcessObject::ProcessObjectMapType& ProcessObject::getInputs () const
 {
     return m_inputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ProcessObject::setInputs (const ProcessObject::ProcessObjectMapType &val)
+inline void ProcessObject::setInputs (const ProcessObject::ProcessObjectMapType& val)
 {
     m_inputs = val;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const ProcessObject::ProcessObjectMapType &ProcessObject::getOutputs () const
+inline const ProcessObject::ProcessObjectMapType& ProcessObject::getOutputs () const
 {
     return m_outputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ProcessObject::setOutputs (const ProcessObject::ProcessObjectMapType &val)
+inline void ProcessObject::setOutputs (const ProcessObject::ProcessObjectMapType& val)
 {
     m_outputs = val;
 }
@@ -225,7 +222,6 @@ inline void ProcessObject::setOutputs (const ProcessObject::ProcessObjectMapType
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
 
 #endif // __FWDATA_PROCESSOBJECT_HPP__
 

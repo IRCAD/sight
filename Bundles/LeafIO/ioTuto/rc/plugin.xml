@@ -1,4 +1,4 @@
-<plugin id="ioTuto" class="ioTuto::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioTuto" class="ioTuto::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ioTuto" />
 

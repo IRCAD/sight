@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,29 +7,25 @@
 #ifndef __FWTOOLS_UUID_HPP__
 #define __FWTOOLS_UUID_HPP__
 
-#include <string>
-#include <map>
+#include "fwTools/config.hpp"
+#include "fwTools/Object.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include "fwTools/Object.hpp"
-#include "fwTools/config.hpp"
+#include <map>
+#include <string>
 
 namespace fwTools
 {
 /**
  * @brief   Management of UUID on objects.
- * @class   UUID
- *
- * @date    2007-2009.
- *
  */
 class FWTOOLS_CLASS_API UUID
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((UUID), (( )), new UUID );
+    fwCoreClassFactoryMacro((UUID), (( )), new UUID );
 
     typedef std::string UUIDType;
 
@@ -37,7 +33,7 @@ public:
      * @brief   Return true iff the given uuid is used
      * @note This method is thread-safe.
      */
-    FWTOOLS_API static bool exist( const UUIDType & uuid);
+    FWTOOLS_API static bool exist( const UUIDType& uuid);
 
     /**
      * @brief   Return an uuid to the given object : if no one previously set then generate a new one
@@ -49,7 +45,7 @@ public:
      * @brief   Return a smart ptr on the object related to a given UUID : return null shared if not supervised
      * @note This method thread-safe.
      */
-    FWTOOLS_API static ::fwTools::Object::sptr get( const UUIDType & uuid );
+    FWTOOLS_API static ::fwTools::Object::sptr get( const UUIDType& uuid );
 
     /**
      * @brief   Return a new extended UUID;
@@ -62,7 +58,7 @@ public:
      * @return true if the uuid is set, else false.
      * @note This method is thread-safe.
      */
-    FWTOOLS_API static bool set(::fwTools::Object::sptr object,  const UUID::UUIDType & uuid);
+    FWTOOLS_API static bool set(::fwTools::Object::sptr object,  const UUID::UUIDType& uuid);
 
     /**
      * @brief   Destructor : does nothing.
@@ -80,7 +76,6 @@ protected:
      * @brief   Default constructor : does nothing.
      */
     FWTOOLS_API UUID();
-
 
     /// Mutex used to lock uuid object access.
     ::fwCore::mt::ReadWriteMutex m_uuidMutex;

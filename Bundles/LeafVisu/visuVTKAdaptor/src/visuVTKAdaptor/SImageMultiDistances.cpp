@@ -71,8 +71,8 @@ public:
 
     vtkDistanceDeleteCallBack( SImageMultiDistances* service ) :
         m_service(service),
-        m_picker( vtkCellPicker::New() ),
-        m_propCollection( vtkPropCollection::New() )
+        m_picker( vtkSmartPointer< vtkCellPicker>::New() ),
+        m_propCollection( vtkSmartPointer< vtkPropCollection>::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
@@ -146,8 +146,8 @@ public:
 protected:
 
     SImageMultiDistances* m_service;
-    vtkPicker* m_picker;
-    vtkPropCollection* m_propCollection;
+    vtkSmartPointer< vtkPicker> m_picker;
+    vtkSmartPointer< vtkPropCollection> m_propCollection;
     double m_display[3];
     int m_lastPos[2];
 

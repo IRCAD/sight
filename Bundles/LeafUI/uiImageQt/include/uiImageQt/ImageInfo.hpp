@@ -43,18 +43,18 @@ public:
 protected:
 
     /// Starts editor.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops editor.
-    virtual void stopping();
+    virtual void stopping() override;
 
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void swapping();
+    virtual void swapping() override;
 
-    virtual void configuring();
+    virtual void configuring() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 private:
 

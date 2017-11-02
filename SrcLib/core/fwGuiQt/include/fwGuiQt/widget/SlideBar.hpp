@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,12 @@
 #ifndef __FWGUIQT_WIDGET_SLIDEBAR_HPP__
 #define __FWGUIQT_WIDGET_SLIDEBAR_HPP__
 
-
 #include "fwGuiQt/config.hpp"
 
 #include <QApplication>
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QWidget>
-
 
 namespace fwGuiQt
 {
@@ -59,12 +57,11 @@ public:
     }
 
     /// Show/hide the slide widget. The widget is animated
-    FWGUIQT_API virtual void setVisible(bool visible);
-
+    FWGUIQT_API virtual void setVisible(bool visible) override;
 
 protected:
     /// Filter 'Resize' and 'Move' events to update the widget position.
-    bool eventFilter(QObject* obj, QEvent* event);
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
 
@@ -86,7 +83,6 @@ private:
     double m_opacity; /// widget opacity [0 - 1]
     bool m_isShown; ///< flag if widget is visible
     Aligment m_align; ///< defines the widget alignement (left, right, top or bottom)
-
 
 };
 

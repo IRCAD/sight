@@ -28,18 +28,18 @@ namespace visuVTKAdaptor
  * @code{.xml}
    <service type="::visuVTKAdaptor::SNegatoWindowingInteractor" autoConnect="yes">
        <inout key="image" uid="..." />
-       <inout key="tfSelection" uid="..." />
-       <config picker="negatodefault" selectedTFKey="tkKey" />
+       <inout key="tf" uid="..." optional="yes" />
+       <config picker="negatodefault" />
    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image to display.
- * - \b tfSelection [::fwData::Composite] (optional): composite containing the TransferFunction.
+ * - \b tf [::fwData::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ *      image's default transferFunction
  *
  * @subsection Configuration Configuration:
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b picker (mandatory): identifier of the picker
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
  */
 class VISUVTKADAPTOR_CLASS_API SNegatoWindowingInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                             public ::fwRenderVTK::IAdaptor
@@ -63,10 +63,13 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
+
+    /// Select the current tf
+    VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -75,7 +78,7 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     vtkCommand* m_vtkObserver;
     double m_initialWindow;

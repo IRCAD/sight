@@ -14,7 +14,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
@@ -37,8 +36,8 @@ namespace scene2D
 {
 namespace adaptor
 {
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_INOUT = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
@@ -109,8 +108,6 @@ void SNegato::configuring()
             m_changeSliceTypeAllowed = false;
         }
     }
-    SLM_ASSERT("'selectedTFKey' attribute is missing.", config.count("selectedTFKey"));
-    this->setSelectedTFKey(config.get<std::string>("selectedTFKey"));
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +133,7 @@ void SNegato::updateBufferFromImage( QImage* qimg )
     const double tfMax = tf->getMinMaxTFValues().second;
     const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
-    ::std::uint8_t* pDest = qimg->bits();
+    std::uint8_t* pDest = qimg->bits();
 
     // Fill image according to current slice type:
     if( m_orientation == MedicalImageAdaptor::X_AXIS ) // sagittal
@@ -294,12 +291,12 @@ QImage* SNegato::createQImage()
 
 void SNegato::starting()
 {
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_INOUT);
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    this->setTransferFunction(tf);
 
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateImageInfos( image );
-    this->updateTransferFunction( image );
+    this->createTransferFunction( image );
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode( QGraphicsPixmapItem::BoundingRectShape );
@@ -325,6 +322,21 @@ void SNegato::updating()
 {
     m_qimg = this->createQImage();
     this->updateBufferFromImage( m_qimg );
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
+        this->updating();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -392,14 +404,14 @@ void SNegato::updateBuffer()
 
 //------------------------------------------------------------------------------
 
-void SNegato::updatingTFPoints()
+void SNegato::updateTFPoints()
 {
     this->updateBufferFromImage( m_qimg );
 }
 
 //------------------------------------------------------------------------------
 
-void SNegato::updatingTFWindowing(double window, double level)
+void SNegato::updateTFWindowing(double window, double level)
 {
     this->updateBufferFromImage( m_qimg );
 }

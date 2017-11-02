@@ -1,5 +1,11 @@
 fwLoadProperties()
 
+if(WIN32)
+    set(FW_QT5_PLUGINS_PATH "bin/qt5/plugins")
+else()
+    set(FW_QT5_PLUGINS_PATH "lib/qt5/plugins")
+endif()
+
 configure_file("${CMAKE_CURRENT_LIST_DIR}/bin/qt.conf" "${CMAKE_BINARY_DIR}/bin/qt.conf")
 
 target_compile_definitions(${FWPROJECT_NAME} PUBLIC "-DQT_NO_KEYWORDS")

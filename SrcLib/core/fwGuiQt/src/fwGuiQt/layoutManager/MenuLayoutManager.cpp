@@ -1,23 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
+
 #include "fwGuiQt/ActionCallback.hpp"
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
-#include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
 #include <boost/assign/list_of.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
+
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
+
+#include <functional>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::MenuLayoutManager,
                     ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
@@ -50,19 +52,19 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
     QMenu* menu = m_parent->getQtMenu();
 
-    QActionGroup * actionGroup = 0;
+    QActionGroup* actionGroup  = 0;
     unsigned int menuItemIndex = 0;
     for ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo : m_actionInfo)
     {
         ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
 
-        QAction *action = menu->addAction( QString::fromStdString(actionInfo.m_name) );
+        QAction* action = menu->addAction( QString::fromStdString(actionInfo.m_name) );
 
         action->setSeparator(actionInfo.m_isSeparator);
 
         if (!actionInfo.m_icon.empty())
         {
-            QIcon icon(QString::fromStdString(actionInfo.m_icon));
+            QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
             action->setIcon(icon);
         }
         if (actionInfo.m_type == ::fwGui::layoutManager::IMenuLayoutManager::QUIT)
@@ -137,12 +139,11 @@ void MenuLayoutManager::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-
 void MenuLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
         ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
-    QAction *action = menuItemContainer->getQtMenuItem();
+    QAction* action = menuItemContainer->getQtMenuItem();
     action->setVisible(isVisible);
 }
 
@@ -152,7 +153,7 @@ void MenuLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr 
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
         ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
-    QAction *action = menuItemContainer->getQtMenuItem();
+    QAction* action = menuItemContainer->getQtMenuItem();
     action->setEnabled(isEnabled);
 }
 
@@ -162,7 +163,7 @@ void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr 
 {
     ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
         ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
-    QAction *action = menuItemContainer->getQtMenuItem();
+    QAction* action = menuItemContainer->getQtMenuItem();
     action->setChecked(isChecked);
 }
 
@@ -170,6 +171,4 @@ void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr 
 
 } // namespace layoutManager
 } // namespace fwGui
-
-
 

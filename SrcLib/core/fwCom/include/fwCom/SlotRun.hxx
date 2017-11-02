@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,23 +11,25 @@
 #endif
 
 #include "fwCom/exception/NoWorker.hpp"
-#include "fwCom/util/WeakCall.hpp"
 #include "fwCom/SlotBase.hxx"
+#include "fwCom/util/WeakCall.hpp"
+
+#include <fwCore/mt/types.hpp>
 
 #include <fwThread/TaskHandler.hpp>
 #include <fwThread/Worker.hpp>
 
-#include <fwCore/mt/types.hpp>
-
-#include <boost/thread/future.hpp>
+#include <future>
 
 namespace fwCom
 {
 
+//------------------------------------------------------------------------------
+
 template< typename ... A >
-inline ::boost::function< void() > SlotRun< void (A ...) >::bindRun( A ... args  ) const
+inline std::function< void() > SlotRun< void (A ...) >::bindRun( A ... args  ) const
 {
-    return ::boost::bind( ( void (SelfType::*)( A ... ) const ) &SelfType::run, this, args ... );
+    return std::bind( ( void (SelfType::*)( A ... ) const ) &SelfType::run, this, args ... );
 }
 
 //-----------------------------------------------------------------------------
@@ -78,16 +80,16 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
 // keyword
 template< typename ... A >
 template< typename R, typename WEAKCALL >
-::boost::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread::Worker::sptr& worker, WEAKCALL f )
+std::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread::Worker::sptr& worker, WEAKCALL f )
 {
-    ::boost::packaged_task< R > task( f );
-    ::boost::future< R > ufuture = task.get_future();
+    std::packaged_task< R() > task( f );
+    std::future< R > ufuture = task.get_future();
 
-    ::boost::function< void () > ftask = ::fwThread::moveTaskIntoFunction(task);
+    std::function< void() > ftask = ::fwThread::moveTaskIntoFunction(task);
 
     worker->post(ftask);
 
-    return ::boost::move(ufuture);
+    return std::move(ufuture);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +97,4 @@ template< typename R, typename WEAKCALL >
 } // namespace fwCom
 
 #endif /* __FWCOM_SLOTRUN_HXX__ */
-
-
-
 

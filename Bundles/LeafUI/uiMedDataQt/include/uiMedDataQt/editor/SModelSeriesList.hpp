@@ -61,19 +61,19 @@ public:
      * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
      * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
 
     ///This method launches the IEditor::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void swapping();
+    virtual void swapping() override;
 
     /**
      * @brief Configures the editor.
@@ -97,10 +97,10 @@ protected:
      *
      * @throw fwTools::Failed
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     typedef std::map< std::string, ValueView* > DisplayedInformation;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,16 +10,16 @@
 
 #include <fwCom/Signals.hpp>
 
-#include <fwTools/Failed.hpp>
-
 #include <fwGui/IActionSrv.hpp>
 
-#include <vector>
+#include <fwTools/Failed.hpp>
 
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
+
+#include <vector>
 
 namespace fwData
 {
@@ -77,7 +77,7 @@ class UIPREFERENCES_CLASS_API SPreferencesConfiguration : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SPreferencesConfiguration)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SPreferencesConfiguration)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;
@@ -92,22 +92,22 @@ public:
 protected:
 
     /// Start the action. Gets the preference composite
-    virtual void starting();
+    virtual void starting() override;
 
     /// Does nothing
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Shows a dialog to configure preferences declared in xml.
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
     /// Configures the service
-    virtual void configuring();
+    virtual void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
     void onSelectDir(QPointer<QLineEdit> lineEdit);
 

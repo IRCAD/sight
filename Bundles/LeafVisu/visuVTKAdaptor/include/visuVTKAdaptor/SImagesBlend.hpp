@@ -45,9 +45,9 @@ namespace visuVTKAdaptor
             <key uid="..." tfalpha="no" />
             <key uid="..." tfalpha="yes" opacity="0.5" />
         </inout>
-        <inout group="tfSelection">
-            <key uid="..." selectedTFKey="selected1" />
-            <key uid="..." selectedTFKey="selected2" />
+        <inout group="tf" optional="yes">
+            <key uid="..." />
+            <key uid="..." />
         </inout>
         <config renderer="default" vtkimageregister="imageBlend" checkerboardDivision="10" />
     </service>
@@ -57,9 +57,8 @@ namespace visuVTKAdaptor
  *      required)
  *    - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato
  *    - \b opacity (optional, default=1.0): opacity (0.0..1.0)
- * - \b tfSelection [::fwData::Composite] : group containing the TransferFunction selection Composite associated to the
- *      image
- *    - \b selectedTFKey (optional): key of the transfer function to use in negato
+ * - \b tf [::fwData::TransferFunction](optional) : group containing the TransferFunction used to display the images, if
+ *      it is not set, the default image's transfer function is used (CT-GreyLevel)
  * @note There must be as much elements in the two groups
  *
  * @subsection Configuration Configuration:
@@ -106,10 +105,11 @@ protected:
         double m_imageOpacity;
     };
 
-    VISUVTKADAPTOR_API void configuring();
-    VISUVTKADAPTOR_API void starting();
-    VISUVTKADAPTOR_API void updating();
-    VISUVTKADAPTOR_API void stopping();
+    VISUVTKADAPTOR_API void configuring() override;
+    VISUVTKADAPTOR_API void starting() override;
+    VISUVTKADAPTOR_API void updating() override;
+    VISUVTKADAPTOR_API void stopping() override;
+    VISUVTKADAPTOR_API void swapping(const KeyType& key) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -118,7 +118,7 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const;
+    VISUVTKADAPTOR_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     void addImageAdaptors();
     void removeImageAdaptors();
@@ -136,20 +136,11 @@ private:
     void changeCheckerboardDivision(int division);
 
     /// Create a new image adaptor
-    void addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr tfSelection, const ImageInfo& info,
-                  const std::string& selectedTFKey);
+    void addImage(::fwData::Image::sptr img, ::fwData::TransferFunction::sptr tf, const ImageInfo& info);
 
     typedef std::vector< ImageInfo > ImageInfoMap;
     /// Map containing the image displaying information
     ImageInfoMap m_imagesInfo;
-
-    typedef std::vector< std::string > TFSelectionKeys;
-    /// Vector containing the tf selection keys
-    TFSelectionKeys m_tfSelectionKeys;
-
-    /// map <fwId, adaptor>
-    typedef std::map< std::string, ::fwRenderVTK::IAdaptor::sptr > RegisteredImageMap;
-    RegisteredImageMap m_registeredImages;
 
     /// Holds the vtkImageblend or vtkimageCheckerboard algorithms
     vtkThreadedImageAlgorithm* m_imageAlgorithm;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,6 @@
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-
-#include <vector>
-#include <map>
-#include <limits>
 
 fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 
@@ -34,12 +26,11 @@ class FWDATA_CLASS_API TransferFunction : public Object
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()),
-                                            ::fwData::factory::New< TransferFunction >);
+                                            ::fwData::factory::New< TransferFunction >)
 
     /// Macro for deep and shallow copies
 
-    fwCampMakeFriendDataMacro((fwData)(TransferFunction));
-
+    fwCampMakeFriendDataMacro((fwData)(TransferFunction))
 
     /// Defines color structure for TF
     struct TFColor
@@ -71,6 +62,8 @@ public:
             b = _b;
             a = _a;
         }
+
+        //------------------------------------------------------------------------------
 
         inline bool operator== (const TFColor& _color) const
         {
@@ -111,10 +104,10 @@ public:
     FWDATA_API static TransferFunction::sptr createDefaultTF();
 
     /// Shallow copy method
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Deep copy method
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Get all the point values of the TF (keys of the map m_tfData)
     FWDATA_API TFValueVectorType getTFValues() const;
@@ -138,10 +131,10 @@ public:
     FWDATA_API const TFDataType& getTFData() const;
 
     /// Set all the TF data (clear previous tf data).
-    FWDATA_API void setTFData( const TFDataType & tfData );
+    FWDATA_API void setTFData( const TFDataType& tfData );
 
     /// Add a new TF color point.
-    FWDATA_API void addTFColor( TFValueType value, const TFColor & color );
+    FWDATA_API void addTFColor( TFValueType value, const TFColor& color );
 
     /// Erase a TF color point.
     FWDATA_API void eraseTFValue( TFValueType value);
@@ -178,16 +171,16 @@ public:
     void setWindow (double val);
 
     /// Transfert function name
-    const std::string &getName () const;
-    void setName (const std::string &val);
+    const std::string& getName () const;
+    void setName (const std::string& val);
 
     /// is TF clamped
     bool  getIsClamped () const;
     void setIsClamped (bool val);
 
     /// set the TF background color when tf 'IsClamped' is true
-    const TFColor &getBackgroundColor () const;
-    void setBackgroundColor (const TFColor &val);
+    const TFColor& getBackgroundColor () const;
+    void setBackgroundColor (const TFColor& val);
 
     /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
@@ -235,7 +228,7 @@ private:
      **/
     bool m_isClamped;
 
-}; // class TransferFunction
+};
 
 //-----------------------------------------------------------------------------
 
@@ -298,14 +291,14 @@ inline void TransferFunction::setWindow (double val)
 
 //-----------------------------------------------------------------------------
 
-inline const std::string &TransferFunction::getName () const
+inline const std::string& TransferFunction::getName () const
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void TransferFunction::setName (const std::string &val)
+inline void TransferFunction::setName (const std::string& val)
 {
     m_name = val;
 }
@@ -326,14 +319,14 @@ inline void TransferFunction::setIsClamped (bool val)
 
 //-----------------------------------------------------------------------------
 
-inline const TransferFunction::TFColor &TransferFunction::getBackgroundColor () const
+inline const TransferFunction::TFColor& TransferFunction::getBackgroundColor () const
 {
     return m_backgroundColor;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void TransferFunction::setBackgroundColor (const TFColor &val)
+inline void TransferFunction::setBackgroundColor (const TFColor& val)
 {
     m_backgroundColor = val;
 }

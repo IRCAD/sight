@@ -1,2 +1,2 @@
-<plugin id="style" version="@DASH_VERSION@" >
+<plugin id="style" version="@PROJECT_VERSION@" >
 </plugin>

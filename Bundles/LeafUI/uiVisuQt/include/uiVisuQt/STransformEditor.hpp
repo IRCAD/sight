@@ -58,16 +58,16 @@ public:
 protected:
 
     /// This method is used to configure the service parameters:
-    UIVISUQT_API virtual void configuring();
+    UIVISUQT_API virtual void configuring() override;
 
     ///This method launches the ::fwGui::IGuiContainerSrv::create method.
-    UIVISUQT_API virtual void starting();
+    UIVISUQT_API virtual void starting() override;
 
     ///This method launches the ::fwGui::IGuiContainerSrv::destroy method.
-    UIVISUQT_API virtual void stopping();
+    UIVISUQT_API virtual void stopping() override;
 
     /// Updates Slider value
-    UIVISUQT_API virtual void updating();
+    UIVISUQT_API virtual void updating() override;
 
 private Q_SLOTS:
 

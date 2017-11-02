@@ -17,7 +17,6 @@ static std::stringstream spiritDebugStream;
   #define BOOST_SPIRIT_DEBUG
 #endif
 
-#include <boost/cstdint.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -45,10 +44,10 @@ static std::stringstream spiritDebugStream;
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsHelper.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include "fwDataIO/reader/DictionaryReader.hpp"
 #include "fwDataIO/reader/registry/macros.hpp"
-
-#include <string>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::DictionaryReader );
 
@@ -359,8 +358,7 @@ std::string DictionaryReader::extension()
 
 ::boost::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
-    std::string dicoPath = std::string("./share/") + PRJ_NAME +"_"+ FWDATAIO_VER + "/OrganDictionary.dic";
-    return dicoPath;
+    return ::fwRuntime::getLibraryResourceFilePath(PRJ_NAME "-" FWDATAIO_VER "/OrganDictionary.dic");
 }
 
 //------------------------------------------------------------------------------

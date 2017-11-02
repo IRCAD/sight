@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,16 @@
 #ifndef __FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP__
 #define __FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP__
 
-#include <QPointer>
-#include <QObject>
-#include <QPoint>
+#include "fwGuiQt/config.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwGui/layoutManager/IFrameLayoutManager.hpp>
 
-#include "fwGuiQt/container/QtContainer.hpp"
-#include "fwGuiQt/config.hpp"
+#include <QObject>
+#include <QPoint>
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QMainWindow;
@@ -27,10 +27,6 @@ namespace fwGui
 
 /**
  * @brief   Defines the frame manager.
- * @class   FrameLayoutManager
- *
- * @date    2009-2010.
- *
  */
 class FWGUIQT_CLASS_API FrameLayoutManager : public QObject,
                                              public ::fwGui::layoutManager::IFrameLayoutManager
@@ -49,12 +45,12 @@ public:
     /**
      * @brief Instantiate frame.
      */
-    FWGUIQT_API virtual void createFrame();
+    FWGUIQT_API virtual void createFrame() override;
 
     /**
      * @brief Destroy local frame with sub containers.
      */
-    FWGUIQT_API virtual void destroyFrame();
+    FWGUIQT_API virtual void destroyFrame() override;
 
 private Q_SLOTS:
     void onCloseFrame();
@@ -71,5 +67,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP__*/
-
 

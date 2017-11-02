@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWCORE_BASEOBJECT_HPP__
 #define __FWCORE_BASEOBJECT_HPP__
-
 
 #include "fwCore/macros.hpp"
 #include "fwCore/config.hpp"
@@ -22,14 +21,11 @@ namespace fwCore
  */
 class FWCORE_CLASS_API BaseObject : public std::enable_shared_from_this<BaseObject>
 {
-
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (BaseObject) );
+    fwCoreBaseClassDefinitionsMacro( (BaseObject) )
 
 protected:
-    virtual ~BaseObject()
-    {
-    }
+    FWCORE_API virtual ~BaseObject();
     using std::enable_shared_from_this<BaseObject>::shared_from_this;
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 #define __FWDATA_PORT_HPP__
 
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(Port), FWDATA_API);
 
@@ -37,10 +37,10 @@ public:
      * @brief Retrieve the identifier.
      */
     const std::string  getIdentifier () const;
-    std::string & getRefIdentifier ();
-    const std::string & getCRefIdentifier () const;
+    std::string& getRefIdentifier ();
+    const std::string& getCRefIdentifier () const;
     void setIdentifier (const std::string _identifier);
-    void setCRefIdentifier (const std::string & _identifier);
+    void setCRefIdentifier (const std::string& _identifier);
     /// @}
 
     /**
@@ -49,10 +49,10 @@ public:
      */
 
     const std::string  getType () const;
-    std::string & getRefType ();
-    const std::string & getCRefType () const;
+    std::string& getRefType ();
+    const std::string& getCRefType () const;
     void setType (const std::string _type);
-    void setCRefType (const std::string & _type);
+    void setCRefType (const std::string& _type);
     /// @}
 
     /**
@@ -63,10 +63,10 @@ public:
     /// @}
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
 protected:
 
@@ -85,14 +85,14 @@ inline const std::string Port::getIdentifier () const
 
 //-----------------------------------------------------------------------------
 
-inline std::string & Port::getRefIdentifier ()
+inline std::string& Port::getRefIdentifier ()
 {
     return this->m_identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string & Port::getCRefIdentifier () const
+inline const std::string& Port::getCRefIdentifier () const
 {
     return this->m_identifier;
 }
@@ -106,7 +106,7 @@ inline void Port::setIdentifier (const std::string _identifier)
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setCRefIdentifier (const std::string & _identifier)
+inline void Port::setCRefIdentifier (const std::string& _identifier)
 {
     this->m_identifier = _identifier;
 }
@@ -120,14 +120,14 @@ inline const std::string Port::getType () const
 
 //-----------------------------------------------------------------------------
 
-inline std::string & Port::getRefType ()
+inline std::string& Port::getRefType ()
 {
     return this->m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string & Port::getCRefType () const
+inline const std::string& Port::getCRefType () const
 {
     return this->m_type;
 }
@@ -141,7 +141,7 @@ inline void Port::setType (const std::string _type)
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setCRefType (const std::string & _type)
+inline void Port::setCRefType (const std::string& _type)
 {
     this->m_type = _type;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,17 +17,12 @@
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
 
-#include <boost/type_traits/is_same.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/typeof/typeof.hpp>
-#include <boost/chrono/duration.hpp>
-
 #include <cppunit/Exception.h>
 
 #include <QApplication>
 #include <QTimer>
 
+#include <functional>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGuiQt::ut::WorkerQtTest );
@@ -43,21 +38,29 @@ namespace ut
 
 struct TestHandler
 {
-    TestHandler() : m_step(0), m_threadCheckOk(true)
+    TestHandler() :
+        m_step(0),
+        m_threadCheckOk(true)
     {
     }
 
+    //------------------------------------------------------------------------------
+
     void nextStep()
     {
-        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(50));
+        std::this_thread::sleep_for( std::chrono::milliseconds(50));
         this->nextStepNoSleep();
     }
+
+    //------------------------------------------------------------------------------
 
     void nextStepNoSleep()
     {
         m_threadCheckOk &= (m_workerThreadId == ::fwThread::getCurrentThreadId());
         ++m_step;
     }
+
+    //------------------------------------------------------------------------------
 
     void setWorkerId(::fwThread::ThreadIdType id)
     {
@@ -121,14 +124,14 @@ void WorkerQtTest::twiceInitTest()
 
 //-----------------------------------------------------------------------------
 
-void runBasicTest(TestHandler &handler, ::fwThread::Worker::sptr worker)
+void runBasicTest(TestHandler& handler, ::fwThread::Worker::sptr worker)
 {
     handler.setWorkerId(worker->getThreadId());
-    worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
-    worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
-    worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
+    worker->post( std::bind( &TestHandler::nextStep, &handler) );
+    worker->post( std::bind( &TestHandler::nextStep, &handler) );
+    worker->post( std::bind( &TestHandler::nextStep, &handler) );
 
-    worker->post( ::boost::bind( &QApplication::quit ) );
+    worker->post( std::bind( &QApplication::quit ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +159,7 @@ void WorkerQtTest::postFromInsideTest()
 {
     TestHandler handler;
 
-    m_worker->post( ::boost::bind(&runBasicTest, boost::ref(handler), m_worker) );
+    m_worker->post( std::bind(&runBasicTest, std::ref(handler), m_worker) );
 
     m_worker->getFuture().wait();
 
@@ -170,10 +173,10 @@ void doNothing()
 
 //-----------------------------------------------------------------------------
 
-void runFromOutsideTest(TestHandler &handler, ::fwThread::Worker::sptr worker)
+void runFromOutsideTest(TestHandler& handler, ::fwThread::Worker::sptr worker)
 {
     //waiting for WorkerQt to start
-    worker->postTask<void>( ::boost::bind( &doNothing ) ).wait();
+    worker->postTask<void>( std::bind( &doNothing ) ).wait();
 
     runBasicTest(handler, worker);
 }
@@ -184,9 +187,7 @@ void WorkerQtTest::postFromOutsideTest()
 {
     TestHandler handler;
 
-    ::boost::thread testThread(
-        ::boost::bind(&runFromOutsideTest, boost::ref(handler), m_worker)
-        );
+    std::thread testThread(std::bind(&runFromOutsideTest, std::ref(handler), m_worker));
 
     m_worker->getFuture().wait();
 
@@ -198,9 +199,8 @@ void WorkerQtTest::postFromOutsideTest()
 #define QT_TEST_START \
     try
 
-
 #define QT_TEST_END \
-    catch(CppUnit::Exception &e) \
+    catch(CppUnit::Exception& e) \
     { \
         std::cerr << e.what() << std::endl; \
         exception = e; \
@@ -212,8 +212,8 @@ static CppUnit::Exception exception;
 
 //-----------------------------------------------------------------------------
 
-void runBasicTimerTest( TestHandler &handler,
-                        const ::fwThread::Timer::sptr &timer,
+void runBasicTimerTest( TestHandler& handler,
+                        const ::fwThread::Timer::sptr& timer,
                         ::fwThread::Timer::TimeDurationType duration )
 {
     timer->start();
@@ -229,11 +229,11 @@ void runBasicTimerTest( TestHandler &handler,
 
 //-----------------------------------------------------------------------------
 
-void oneShotBasicTimerTest(int &i,
-                           TestHandler &handler,
-                           const ::fwThread::Timer::sptr &timer,
+void oneShotBasicTimerTest(int& i,
+                           TestHandler& handler,
+                           const ::fwThread::Timer::sptr& timer,
                            ::fwThread::Timer::TimeDurationType duration,
-                           const ::fwThread::Worker::sptr &worker )
+                           const ::fwThread::Worker::sptr& worker )
 {
     handler.nextStepNoSleep();
 
@@ -244,7 +244,6 @@ void oneShotBasicTimerTest(int &i,
         CPPUNIT_ASSERT_EQUAL(i, handler.m_step);
     }
     QT_TEST_END;
-
 
     if(++i == 50)
     {
@@ -257,7 +256,7 @@ void oneShotBasicTimerTest(int &i,
             CPPUNIT_ASSERT_EQUAL(49, handler.m_step);
         }
         QT_TEST_END;
-        worker->post( ::boost::bind( &QApplication::quit ) );
+        worker->post( std::bind( &QApplication::quit ) );
     }
 }
 
@@ -271,13 +270,13 @@ void WorkerQtTest::basicTimerTest()
 
         ::fwThread::Timer::sptr timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(10);
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(10);
 
         int i = 1;
         timer->setFunction(
-            ::boost::bind(
+            std::bind(
                 &oneShotBasicTimerTest,
-                boost::ref(i), handler, ::boost::ref(timer), duration, ::boost::ref(m_worker) )
+                std::ref(i), handler, std::ref(timer), duration, std::ref(m_worker) )
             );
         timer->setDuration(duration);
 
@@ -285,12 +284,11 @@ void WorkerQtTest::basicTimerTest()
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
         CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-        m_worker->post( ::boost::bind(&runBasicTimerTest, ::boost::ref(handler), ::boost::ref(timer), duration) );
+        m_worker->post( std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration) );
 
         ::fwThread::Worker::FutureType future = m_worker->getFuture();
         future.wait();
 
-        CPPUNIT_ASSERT( future.has_value() );
         CPPUNIT_ASSERT_EQUAL( 0, boost::any_cast<int>( future.get() ) );
     }
 }

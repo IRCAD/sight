@@ -583,7 +583,7 @@ public:
     }
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache )
+    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache ) override
     {
     }
 

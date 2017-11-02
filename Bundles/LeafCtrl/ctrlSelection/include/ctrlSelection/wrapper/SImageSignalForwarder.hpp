@@ -56,24 +56,24 @@ public:
 protected:
 
     /// Implements starting method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void starting();
+    CTRLSELECTION_API virtual void starting() override;
 
     /// Implements stopping method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void stopping();
+    CTRLSELECTION_API virtual void stopping() override;
 
     /// Implements swapping method derived from IService. Convert the image.
-    CTRLSELECTION_API virtual void swapping();
+    CTRLSELECTION_API virtual void swapping() override;
 
     /**
      * @brief Configures the service.
      */
-    CTRLSELECTION_API virtual void configuring();
+    CTRLSELECTION_API virtual void configuring() override;
 
     /// Implements updating method derived from IService. Does nothing.
-    CTRLSELECTION_API virtual void updating();
+    CTRLSELECTION_API virtual void updating() override;
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream ) override;
 
 private:
 

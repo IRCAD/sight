@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,23 +7,21 @@
 #ifndef __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
 #define __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
 
-
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/factory/new.hpp"
 #include "fwDataIO/writer/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/Object.hpp>
-
 #include <fwData/location/ILocation.hpp>
 
 #include <fwJobs/IJob.hpp>
 
+#include <fwTools/Object.hpp>
+
 #include <boost/filesystem/path.hpp>
 
 #include <cstdint>
-
 
 namespace fwDataIO
 {
@@ -33,9 +31,6 @@ namespace writer
 
 /**
  * @brief   Base class for all object writers.
- * @class   IObjectWriter
- *
- * @date    2009
  *
  * This class defines the API to use basic object writers. This writer is not
  * a service. Their equivalent exist as services see ::io::IWriter. To write an
@@ -153,6 +148,5 @@ protected:
 } // namespace writer
 
 } // namespace fwDataIO
-
 
 #endif // __FWDATAIO_WRITER_IOBJECTWRITER_HPP__

@@ -8,6 +8,8 @@
 
 #include <fwAtomsPatch/VersionsManager.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 namespace fwMDSemanticPatch
 {
 
@@ -16,8 +18,9 @@ namespace fwMDSemanticPatch
 void PatchLoader::loadPatches()
 {
     SPTR(::fwAtomsPatch::VersionsManager) versionManager = ::fwAtomsPatch::VersionsManager::getDefault();
-    versionManager->buildVersionTable("./share/fwMDSemanticPatch_" FWMDSEMANTICPATCH_VER "/");
-    versionManager->buildLinkTable("./share/fwMDSemanticPatch_" FWMDSEMANTICPATCH_VER "/");
+    auto path = ::fwRuntime::getLibraryResourceFilePath("fwMDSemanticPatch-" FWMDSEMANTICPATCH_VER "/");
+    versionManager->buildVersionTable(path.string());
+    versionManager->buildLinkTable(path.string());
 }
 
 //------------------------------------------------------------------------------
@@ -26,6 +29,8 @@ std::string PatchLoader::getCurrentVersion()
 {
     return "V10";
 }
+
+//------------------------------------------------------------------------------
 
 } //namespace fwMDSemanticPatch
 

@@ -85,11 +85,11 @@
         <service uid="action_quit" type="::gui::action::SQuit" />
 
         <service uid="action_about" type="::uiGenericQt::action::SShowAbout">
-            <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/about/about.html" />
+            <filename id="VRRender-${appVersion}/about/about.html" />
         </service>
 
         <service uid="action_acknowledgments" type="::uiGenericQt::action::SShowAbout">
-            <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/documentations/ack.html"/>
+            <filename id="VRRender-${appVersion}/documentations/ack.html"/>
             <title>Acknowledgments</title>
             <size width="500" height="600" />
         </service>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,6 @@ public:
 
     typedef std::array< ::fwData::Point::sptr, 3> PointContainer;
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -44,10 +43,10 @@ public:
     FWDATA_API virtual ~Plane();
 
     /// Defines shallow copy
-    FWDATA_API void shallowCopy( const Object::csptr& _source );
+    FWDATA_API void shallowCopy( const Object::csptr& _source ) override;
 
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Re-initialize the plane with 3 points
     FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2,

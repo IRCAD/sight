@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __FWDATA_ARRAY_HPP__
 #define __FWDATA_ARRAY_HPP__
 
-#include "fwData/Exception.hpp"
 #include "fwData/config.hpp"
-#include "fwData/Object.hpp"
+#include "fwData/Exception.hpp"
 #include "fwData/factory/new.hpp"
-
-#include <fwTools/Type.hpp>
+#include "fwData/Object.hpp"
 
 #include <fwMemory/BufferObject.hpp>
+
+#include <fwTools/Type.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Array), FWDATA_API);
 
@@ -50,7 +50,6 @@ public:
      */
     typedef OffsetType IndexType;
 
-
     /*
      * public API
      */
@@ -63,9 +62,8 @@ public:
 
     FWDATA_API virtual ~Array();
 
-
     /// Defines deep copy
-    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
+    FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -91,15 +89,15 @@ public:
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, size_t nbOfComponents,
+    FWDATA_API virtual size_t resize(const ::fwTools::Type& type, const SizeType& size, size_t nbOfComponents,
                                      bool reallocate = false);
 
     /// Aliases to the resize method
-    FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
+    FWDATA_API virtual size_t resize(const std::string& type, const SizeType& size, size_t nbOfComponents,
                                      bool reallocate = false);
-    FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents, bool reallocate =
+    FWDATA_API virtual size_t resize(const SizeType& size, size_t nbOfComponents, bool reallocate =
                                          false);
-    FWDATA_API virtual size_t resize(const SizeType &size, bool reallocate = false);
+    FWDATA_API virtual size_t resize(const SizeType& size, bool reallocate = false);
 
     /**
      * @brief Clear this array.
@@ -114,7 +112,6 @@ public:
      * vector.
      */
     FWDATA_API virtual bool empty() const;
-
 
     /**
      * @brief Get the size of one element of the array,
@@ -143,14 +140,14 @@ public:
      *
      * @return vector of size lengths in each dimension
      */
-    FWDATA_API virtual const SizeType &getSize() const;
+    FWDATA_API virtual const SizeType& getSize() const;
 
     /**
      * @brief Getter for the array strides
      *
      * @return vector of steps in each dimension for array walking
      */
-    FWDATA_API virtual const OffsetType &getStrides() const;
+    FWDATA_API virtual const OffsetType& getStrides() const;
 
     /**
      * @brief Setter for array's number of components
@@ -193,8 +190,8 @@ public:
      *
      * @param type new array type
      */
-    FWDATA_API virtual void setType(const std::string &type);
-    FWDATA_API virtual void setType(const ::fwTools::Type &type);
+    FWDATA_API virtual void setType(const std::string& type);
+    FWDATA_API virtual void setType(const ::fwTools::Type& type);
 
     /**
      * @brief Getter for array's type
@@ -213,7 +210,7 @@ public:
      *
      * @return buffer offset
      */
-    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component,
+    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType& id, size_t component,
                                        size_t sizeOfType ) const;
 
     /**
@@ -231,7 +228,6 @@ public:
 
     void setBufferObject (const ::fwMemory::BufferObject::sptr& val);
 
-
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
 
@@ -240,7 +236,7 @@ protected:
     /// Not implemented
     Array( const Array& );
 
-    const Array & operator= ( const Array& );
+    const Array& operator= ( const Array& );
 
     OffsetType m_strides;
     ::fwTools::Type m_type;
@@ -266,7 +262,6 @@ inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
 }
 
 //-----------------------------------------------------------------------------
-
 
 } // namespace fwData
 

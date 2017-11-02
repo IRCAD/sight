@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,6 @@ namespace registry
 {
 } // namespace registry
 
-
 /// Contains fwActivities::validator::factory utilities
 namespace factory
 {
@@ -67,7 +66,7 @@ namespace factory
          <id>myActivityId</id>
          <title>3D Visu</title>
          <desc>Activity description ...</desc>
-         <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png</icon>
+         <icon>media-0.1/icons/icon-3D.png</icon>
          <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
@@ -81,7 +80,8 @@ namespace factory
                  <desc>Description of the required data....</desc>
                  <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>
-            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true" />
+            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
+ * create="true" />
              <!-- ...-->
          </requirements>
          <builder>::fwActivities::builder::ActivitySeries</builder>

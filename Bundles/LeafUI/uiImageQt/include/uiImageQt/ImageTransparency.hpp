@@ -49,22 +49,22 @@ public:
      * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const override;
 
 protected:
     /// Starts editor.
-    virtual void starting();
+    virtual void starting() override;
 
     /// Stops editor.
-    virtual void stopping();
+    virtual void stopping() override;
 
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void swapping();
+    virtual void swapping() override;
 
-    virtual void configuring();
+    virtual void configuring() override;
 
-    virtual void info( std::ostream& _sstream );
+    virtual void info( std::ostream& _sstream ) override;
 
 protected Q_SLOTS:
 

@@ -337,8 +337,8 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
         CharVectors normalCounts(rt.numberOfThread());
 
         rt( std::bind(&generateRegionCellNormalsByPoints,
-                      ::boost::ref(normalsData),
-                      ::boost::ref(normalCounts),
+                      std::ref(normalsData),
+                      std::ref(normalCounts),
                       std::placeholders::_3,
                       meshHelper,
                       std::placeholders::_1,
@@ -346,18 +346,18 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
             numberOfCells);
 
         rt( std::bind(&vectorSum<FloatVectors::value_type::value_type>,
-                      ::boost::ref(normalsData),
+                      std::ref(normalsData),
                       std::placeholders::_1, std::placeholders::_2),
             nbOfPoints*3);
 
         rt( std::bind(&vectorSum<CharVectors::value_type::value_type>,
-                      ::boost::ref(normalCounts),
+                      std::ref(normalCounts),
                       std::placeholders::_1, std::placeholders::_2),
             nbOfPoints);
 
         rt( std::bind( &normalizeRegionCellNormalsByPoints,
-                       ::boost::ref(normalsData[0]),
-                       ::boost::ref(normalCounts[0]),
+                       std::ref(normalsData[0]),
+                       std::ref(normalCounts[0]),
                        mesh, std::placeholders::_1, std::placeholders::_2),
             nbOfPoints);
 

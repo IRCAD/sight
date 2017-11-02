@@ -60,7 +60,7 @@ void Activater::addDisableExtension( const std::string& identifier )
 void Activater::apply()
 {
     std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to activate Bundle " + m_identifier + "_" + m_version.string() + ". Not found.", bundle == 0);
+    SLM_FATAL_IF("Unable to activate Bundle " + m_identifier + "-" + m_version.string() + ". Not found.", bundle == 0);
 
     bundle->setEnable( true );
 

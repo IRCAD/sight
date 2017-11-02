@@ -45,16 +45,16 @@ public:
 protected:
 
     /// Do nothing
-    virtual void starting();
+    virtual void starting() override;
 
     /// Do nothing
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Display the array values
-    virtual void updating();
+    virtual void updating() override;
 
     /// Do nothing
-    virtual void configuring();
+    virtual void configuring() override;
 };
 
 }  // namespace Tuto16MultithreadConsole

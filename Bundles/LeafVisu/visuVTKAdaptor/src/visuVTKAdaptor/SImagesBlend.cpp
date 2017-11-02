@@ -33,6 +33,7 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/regex.h>
 
 #include <vtkImageBlend.h>
 #include <vtkImageCheckerboard.h>
@@ -48,8 +49,8 @@ namespace visuVTKAdaptor
 const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
 const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
 
-static const ::fwServices::IService::KeyType s_IMAGE_GROUP        = "image";
-static const ::fwServices::IService::KeyType s_TF_SELECTION_GROUP = "tfSelection";
+static const ::fwServices::IService::KeyType s_IMAGE_GROUP = "image";
+static const ::fwServices::IService::KeyType s_TF_GROUP    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -101,6 +102,8 @@ void SImagesBlend::starting()
 void SImagesBlend::stopping()
 {
     this->removeImageAdaptors();
+    m_imageAlgorithm = nullptr;
+    m_imagesInfo.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -138,21 +141,6 @@ void SImagesBlend::configuring()
                 m_imagesInfo.push_back(info);
             }
         }
-        else if (group == s_TF_SELECTION_GROUP)
-        {
-            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, inoutConfig.equal_range("key"))
-            {
-                const ::fwServices::IService::ConfigType& specAssoc = v.second;
-                const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
-                const std::string tfKey                             = attr.get("selectedTFKey", "");
-
-                m_tfSelectionKeys.push_back(tfKey);
-            }
-        }
-        else
-        {
-            OSLM_FATAL("group named '" + group + "' is not managed");
-        }
     }
 
     const ConfigType config = srvConfig.get_child("config.<xmlattr>");
@@ -163,6 +151,41 @@ void SImagesBlend::configuring()
 
     // Get the default division count for checkerboard algorithm
     m_checkerboardDivision = config.get<int>("checkerboardDivision", 10);
+}
+
+//------------------------------------------------------------------------------
+
+void SImagesBlend::swapping(const KeyType& key)
+{
+    const std::string regexStr = "([[:word:]]+)#([[:digit:]]+)";
+    ::boost::regex re(regexStr);
+    ::boost::smatch match;
+    if( ::boost::regex_match(key, match, re) )
+    {
+        const std::string group   = match[1];
+        const unsigned long index = std::stoul(match[2]);
+
+        if (group == s_TF_GROUP && this->getRegisteredServices().size() > index)
+        {
+            ::fwServices::IService::wptr wsrv = this->getRegisteredServices()[index];
+
+            if (!wsrv.expired())
+            {
+                ::fwData::TransferFunction::sptr tf  = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, index);
+                ::fwServices::IService::sptr service = wsrv.lock();
+                if (tf)
+                {
+                    service->registerInOut(tf, SImage::s_TF_INOUT, true, true);
+                    service->swapKey(SImage::s_TF_INOUT, nullptr);
+                }
+                else if(::fwServices::OSR::isRegistered(SImage::s_TF_INOUT, AccessType::INOUT, service))
+                {
+                    ::fwServices::OSR::unregisterService(SImage::s_TF_INOUT, AccessType::INOUT, service);
+                    service->swapKey(SImage::s_TF_INOUT, nullptr);
+                }
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -243,19 +266,28 @@ void SImagesBlend::addImageAdaptors()
     size_t lastValidIndex = 0;
 
     const size_t nbImages = this->getKeyGroupSize(s_IMAGE_GROUP);
+    const size_t nbTFs    = this->getKeyGroupSize(s_TF_GROUP);
+    SLM_ASSERT("'" + s_TF_GROUP + "' group must have the same number of elements that '" + s_IMAGE_GROUP +"'",
+               nbTFs == 0 || nbImages == nbTFs);
+
     for(size_t i = 0; i < nbImages; ++i)
     {
-        ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
-        ::fwData::Composite::sptr composite = this->getInOut< ::fwData::Composite >(s_TF_SELECTION_GROUP, i);
+        ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, i);
+        ::fwData::TransferFunction::sptr tf;
 
-        if (img && composite)
+        if (img)
         {
+            if (nbTFs > 0)
+            {
+                tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, i);
+            }
+
             const ImageInfo& info = m_imagesInfo[i];
 
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
-                this->addImage(img, composite, info, m_tfSelectionKeys[i]);
+                this->addImage(img, tf, info);
 
                 ++addedImageCount;
                 lastValidIndex = i;
@@ -266,11 +298,14 @@ void SImagesBlend::addImageAdaptors()
     // If Checkerboard is used and only one image is valid, we must duplicate the image adaptor to display the image
     if(addedImageCount == 1 && nullptr != vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId)))
     {
-        ::fwData::Image::sptr img           = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, lastValidIndex);
-        ::fwData::Composite::sptr composite =
-            this->getInOut< ::fwData::Composite >(s_TF_SELECTION_GROUP, lastValidIndex);
+        ::fwData::Image::sptr img = this->getInOut< ::fwData::Image >(s_IMAGE_GROUP, lastValidIndex);
+        ::fwData::TransferFunction::sptr tf;
+        if (nbTFs > 0)
+        {
+            tf = this->getInOut< ::fwData::TransferFunction >(s_TF_GROUP, lastValidIndex);
+        }
         const ImageInfo& info = m_imagesInfo[lastValidIndex];
-        this->addImage(img, composite, info, m_tfSelectionKeys[lastValidIndex]);
+        this->addImage(img, tf, info);
     }
 }
 
@@ -328,14 +363,16 @@ void SImagesBlend::changeMode(std::string _value, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr tfSelection, const ImageInfo& info,
-                            const std::string& selectedTFKey)
+void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunction::sptr tf, const ImageInfo& info)
 {
     // create the srv configuration for objects auto-connection
     auto imageAdaptor = this->registerService< ::visuVTKAdaptor::SImage>("::visuVTKAdaptor::SImage");
     // register image
     imageAdaptor->registerInOut(img, SImage::s_IMAGE_INOUT, true);
-    imageAdaptor->registerInOut(tfSelection, SImage::s_TF_SELECTION_INOUT, false);
+    if (tf)
+    {
+        imageAdaptor->registerInOut(tf, SImage::s_TF_INOUT, false, true);
+    }
 
     imageAdaptor->setRenderService(this->getRenderService());
     imageAdaptor->setRendererId( this->getRendererId() );
@@ -346,9 +383,6 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::Composite::sptr
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
     imageAdaptor->setImageOpacity(info.m_imageOpacity);
     imageAdaptor->setAllowAlphaInTF(info.m_useTFAlfa);
-    imageAdaptor->setSelectedTFKey( selectedTFKey );
-
-    m_registeredImages[img->getID()] = imageAdaptor;
 
     imageAdaptor->start();
 }

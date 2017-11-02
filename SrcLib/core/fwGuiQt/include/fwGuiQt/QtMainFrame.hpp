@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,12 @@
 #ifndef __FWGUIQT_QTMAINFRAME_HPP__
 #define __FWGUIQT_QTMAINFRAME_HPP__
 
-
-#include <QPointer>
-#include <QMainWindow>
-
-#include <boost/function.hpp>
-
 #include "fwGuiQt/config.hpp"
+
+#include <QMainWindow>
+#include <QPointer>
+
+#include <functional>
 
 namespace fwGuiQt
 {
@@ -33,16 +32,14 @@ public:
      */
     FWGUIQT_API QtMainFrame() noexcept;
 
-
     /// @brief Destructor.
     FWGUIQT_API virtual ~QtMainFrame() noexcept;
 
-    typedef ::boost::function0<void> CloseCallback;
+    typedef std::function<void ()> CloseCallback;
     FWGUIQT_API void setCloseCallback(CloseCallback fct);
 
-
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent* event);
 
 private:
     CloseCallback m_fctCloseCallback;
