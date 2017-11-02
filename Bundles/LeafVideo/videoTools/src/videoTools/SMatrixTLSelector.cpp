@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,8 +13,8 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -124,10 +124,9 @@ void SMatrixTLSelector::starting()
         }
     }
 
-
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
     m_timer                                      = m_associatedWorker->createTimer();
-    ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(m_timeStep);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
     m_timer->setFunction( std::bind( &SMatrixTLSelector::synchronize, this)  );
     m_timer->setDuration(duration);
     m_timer->start();
@@ -212,11 +211,11 @@ void SMatrixTLSelector::synchronize()
                         const float* values = buffer->getElement(index);
 
                         ::fwData::TransformationMatrix3D::sptr matrix = matrixCfg.m_matrix;
-                        for(unsigned int i = 0; i < 4; ++i)
+                        for(std::uint8_t i = 0; i < 4; ++i)
                         {
-                            for(unsigned int j = 0; j < 4; ++j)
+                            for(std::uint8_t j = 0; j < 4; ++j)
                             {
-                                matrix->setCoefficient(i,j,values[i*4+j]);
+                                matrix->setCoefficient(i, j, values[i*4+j]);
                             }
                         }
 
@@ -232,7 +231,6 @@ void SMatrixTLSelector::synchronize()
             }
         }
     }
-
 
 }
 
@@ -259,10 +257,10 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
             image->allocate(size, frameTL->getType(), frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(3,0);
+            ::fwData::Image::OriginType origin(3, 0);
 
             image->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(3,voxelSize);
+            ::fwData::Image::SpacingType spacing(3, voxelSize);
             image->setSpacing(spacing);
             image->setWindowWidth(1);
             image->setWindowCenter(0);
@@ -288,9 +286,8 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
             return;
         }
 
-
-        const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
-        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
         //Notify
@@ -301,6 +298,5 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
 }
 
 // ----------------------------------------------------------------------------
-
 
 }  // namespace videoTools

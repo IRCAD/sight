@@ -44,18 +44,18 @@
                 <layout>
                     <editor/>
                     <separator/>
-                    <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
-                    <menuItem name="pause" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
+                    <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                    <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                    <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
                     <separator/>
                     <editor/>
                     <separator/>
-                    <menuItem name="Check" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                    <menuItem name="Check" icon="media-0.1/icons/Import.svg" />
                     <separator/>
-                    <menuItem name="Compute Registration" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/CheckButton.svg" />
+                    <menuItem name="Compute Registration" icon="arMedia-0.1/icons/CheckButton.svg" />
                     <separator/>
-                    <menuItem name="Save" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
-                    <menuItem name="Show/Hide" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/show.svg" icon2="@BUNDLE_PREFIX@/arMedia_0-1/icons/hide.svg" style="check" />
+                    <menuItem name="Save" icon="arMedia-0.1/icons/save.svg" />
+                    <menuItem name="Show/Hide" icon="arMedia-0.1/icons/show.svg" icon2="arMedia-0.1/icons/hide.svg" style="check" />
                 </layout>
             </gui>
             <registry>

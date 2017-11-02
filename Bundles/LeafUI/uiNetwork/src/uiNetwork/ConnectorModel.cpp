@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiNetwork/ConnectorModel.hpp"
 
-#include <fwServices/macros.hpp>
 #include <fwRuntime/ConfigurationElementContainer.hpp>
+
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <boost/function.hpp>
-#include <boost/bind.hpp>
 
 #include <algorithm>
 
@@ -63,24 +63,23 @@ void ConnectorModel::initialize (::fwRuntime::ConfigurationElement::csptr config
     ::fwRuntime::ConfigurationElementContainer serviceConfigs;
     ::fwRuntime::ConfigurationElementContainer::Iterator it;
 
-
     serviceFactory        = ::fwServices::registry::ServiceFactory::getDefault();
-    m_registeredListeners = serviceFactory->getImplementationIdFromObjectAndType (obj->getClassname(),
-                                                                                  "::ioNetwork::INetworkListener");
-    m_registeredSenders = serviceFactory->getImplementationIdFromObjectAndType (obj->getClassname(),
-                                                                                "::ioNetwork::INetworkSender");
-    serviceConfigs = configElement->findAllConfigurationElement ("config");
+    m_registeredListeners = serviceFactory->getImplementationIdFromObjectAndType(obj->getClassname(),
+                                                                                 "::ioNetwork::INetworkListener");
+    m_registeredSenders = serviceFactory->getImplementationIdFromObjectAndType(obj->getClassname(),
+                                                                               "::ioNetwork::INetworkSender");
+    serviceConfigs = configElement->findAllConfigurationElement("config");
     for (it = serviceConfigs.begin(); it != serviceConfigs.end(); ++it)
     {
         currentConfig = *it;
-        if (!currentConfig->hasAttribute ("impl"))
+        if (!currentConfig->hasAttribute("impl"))
         {
-            throw ::fwTools::Failed ("Missing 'impl' attribute in service configuration");
+            throw ::fwTools::Failed("Missing 'impl' attribute in service configuration");
         }
-        serviceName = currentConfig->getAttributeValue ("impl");
+        serviceName = currentConfig->getAttributeValue("impl");
         if (!this->isRegisteredService(serviceName))
         {
-            throw ::fwTools::Failed ("Cannot find service name in registered service");
+            throw ::fwTools::Failed("Cannot find service name in registered service");
         }
         m_serviceConfigs[serviceName] = currentConfig;
     }

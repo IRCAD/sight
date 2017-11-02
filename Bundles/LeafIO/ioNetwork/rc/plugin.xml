@@ -1,4 +1,4 @@
-<plugin id="ioNetwork" class="::ioNetwork::Plugin" version="@DASH_VERSION@" >
+<plugin id="ioNetwork" class="::ioNetwork::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="ioNetwork" />
 

@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __ARLCORE_POINTSLIST_H__
 #define __ARLCORE_POINTSLIST_H__
-
 
 #include <arlcore/Common.h>
 
@@ -25,7 +24,6 @@
 
 #include <fwCore/macros.hpp>
 #include <fwTools/Object.hpp>
-
 
 namespace arlCore
 {
@@ -57,11 +55,10 @@ class PointList : public Object
  */
 public:
 
-
     fwCoreClassDefinitionsWithNFactoriesMacro( (PointList)(::fwTools::Object),
-                                               ((std::make_shared< PointList >,() ))
-                                                   ((PointListFactory,((int)) ))
-                                                   ((PointListFactory,(( const std::vector< Point::csptr >&)) ))
+                                               ((std::make_shared< PointList >, () ))
+                                                   ((PointListFactory, ((int)) ))
+                                                   ((PointListFactory, (( const std::vector< Point::csptr >&)) ))
                                                );
     fwCoreAllowSharedFromThis();
 
@@ -89,7 +86,7 @@ public:
     //! @brief Destructor
     ARLCORE_API ~PointList( void );
 
-    ARLCORE_API std::string getString( void ) const;
+    ARLCORE_API std::string getString( void ) const override;
 
     /**
      * @brief Save a file of points (arlPointList, gnuplot, .vtk)
@@ -341,7 +338,8 @@ ARLCORE_API bool save( const std::vector< Point::sptr >& pl, const std::string& 
                        ARLCORE_POINT_SAVE_TYPE type = ARLCORE_POINT_SAVE_FULL, bool justVisible = false,
                        bool overwrite = true );
 
-//  ARLCORE_API bool save( const std::vector<PointList>& lists, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type=ARLCORE_POINT_SAVE_FULL, bool overwrite=true );
+//  ARLCORE_API bool save( const std::vector<PointList>& lists, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE
+// type=ARLCORE_POINT_SAVE_FULL, bool overwrite=true );
 
 /**
  * @brief : Compute the distance betwween the points p1 and p2
@@ -352,7 +350,8 @@ ARLCORE_API bool distance( CSPTR( PointList ) p1, CSPTR( PointList ) p2, std::ve
 ARLCORE_API unsigned int findNearPoint( const std::vector< Point::csptr >&, CSPTR(
                                             Point) pt, std::vector< unsigned int > &pos, double& distance,
                                         double scalar = -1.0);
-//ARLCORE_API unsigned int findNearPoint( const std::vector< Point::sptr>&, CSPTR(Point) pt, std::vector< unsigned int > &pos, double &distance, double scalar=-1.0);
+//ARLCORE_API unsigned int findNearPoint( const std::vector< Point::sptr>&, CSPTR(Point) pt, std::vector< unsigned int >
+// &pos, double &distance, double scalar=-1.0);
 ARLCORE_API unsigned int statistic( const std::vector< Point::csptr>&, unsigned int dimension, Point::sptr pt );
 ARLCORE_API unsigned int statistic( const std::vector< Point::sptr>&, unsigned int dimension, Point::sptr pt );
 ARLCORE_API unsigned int matching3D3D( CSPTR( PointList ) a, CSPTR(

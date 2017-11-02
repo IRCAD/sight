@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,10 +47,9 @@ class VIDEOTOOLS_CLASS_API SFrameUpdater : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameUpdater)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameUpdater)(::fwServices::IController) );
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> UpdateFrameSlotType;
 
     /// Type of signal m_sigRenderRequested
     typedef ::fwCom::Signal< void () > RenderRequestedSignalType;
@@ -67,16 +66,16 @@ public:
 protected:
 
     /// Starting method. Initialize timer.
-    VIDEOTOOLS_API virtual void starting();
+    VIDEOTOOLS_API virtual void starting() override;
 
     /// Configuring method.
-    VIDEOTOOLS_API virtual void configuring();
+    VIDEOTOOLS_API virtual void configuring() override;
 
     /// Stopping method.
-    VIDEOTOOLS_API virtual void stopping();
+    VIDEOTOOLS_API virtual void stopping() override;
 
     /// Updating method. Deforms the mesh
-    VIDEOTOOLS_API virtual void updating();
+    VIDEOTOOLS_API virtual void updating() override;
 
     /// Update frame slots
     VIDEOTOOLS_API virtual void updateFrame( ::fwCore::HiResClock::HiResClockType timestamp );
@@ -87,36 +86,28 @@ protected:
     /// Request Render
     VIDEOTOOLS_API void requestRender();
 
+    /// Reset the last timestamp when the timeline is cleared
+    VIDEOTOOLS_API void resetTimeline();
+
 private:
 
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
-
-    /// Slots used when the frame have been refreshed
-    UpdateFrameSlotType::sptr m_slotUpdateFrame;
-
-    /// Signal that emits signal when refresh is requested
-    RenderRequestedSignalType::sptr m_sigRenderRequested;
-
-    /// Connections
-    ::fwCom::helper::SigSlotConnection m_connections;
-
-    /// Frame timeline key
-    std::string m_frameTLKey;
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connections
+     *
+     * Connect ::arData::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
+     * Connect ::arData::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
+     */
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Frame timeline
     ::arData::FrameTL::csptr m_frameTL;
-
-    /// Image key
-    std::string m_imageKey;
 
     /// Image
     ::fwData::Image::sptr m_image;
 
     /// Last timestamp
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
-
-    /// Last matrix updated key
-    std::string m_lastMatrixUpdatedKey;
 
     /// Hight resolution timer to log information about computing function time
     ::fwCore::HiResTimer m_hiRestimer;

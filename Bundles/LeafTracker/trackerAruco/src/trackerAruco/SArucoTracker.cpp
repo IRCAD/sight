@@ -284,6 +284,9 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
                         if(m_debugMarkers)
                         {
                             detectedMarkers[i].draw(inImage, cvScalar(color[0], color[1], color[2], 255), 2);
+                            ::cv::Point2f center = detectedMarkers[i].getCenter();
+                            ::cv::circle(inImage, center, 7, cvScalar(color[0], color[1], color[2],
+                                                                      255), 1, ::cv::LINE_8);
                         }
 
                         // Push matrix

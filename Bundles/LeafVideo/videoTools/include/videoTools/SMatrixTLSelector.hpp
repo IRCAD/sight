@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,14 @@
 #include "videoTools/config.hpp"
 
 #include <arServices/ISynchronizer.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
+
 #include <fwData/Composite.hpp>
+
 #include <fwServices/IController.hpp>
+
 #include <fwThread/Timer.hpp>
 
 namespace arData
@@ -100,16 +104,16 @@ protected:
 
        @endcode
      */
-    VIDEOTOOLS_API void configuring();
+    VIDEOTOOLS_API void configuring() override;
 
     /// This method is used to initialize the service.
-    VIDEOTOOLS_API void starting();
+    VIDEOTOOLS_API void starting() override;
 
     /// Does nothing.
-    VIDEOTOOLS_API void stopping();
+    VIDEOTOOLS_API void stopping() override;
 
     /// Does nothing.
-    void updating()
+    void updating() override
     {
     }
 
@@ -124,7 +128,6 @@ private:
     ::fwCore::HiResClock::HiResClockType m_tolerance; ///< Tolerance to take into account matrix
 
     bool m_imagesInitialized;
-
 
     ///< registers matrices with associated timeline key
     MatrixCfgVectorType m_matrixCfgVector;

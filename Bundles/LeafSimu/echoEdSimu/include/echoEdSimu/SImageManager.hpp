@@ -62,19 +62,19 @@ public:
 protected:
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void configuring();
+    ECHOEDSIMU_API virtual void configuring() override;
 
     /// Grab the input echographic and CT images
-    ECHOEDSIMU_API virtual void starting();
+    ECHOEDSIMU_API virtual void starting() override;
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void stopping();
+    ECHOEDSIMU_API virtual void stopping() override;
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void updating();
+    ECHOEDSIMU_API virtual void updating() override;
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void swapping();
+    ECHOEDSIMU_API virtual void swapping() override;
 
 private:
 

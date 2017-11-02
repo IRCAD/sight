@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,19 +11,18 @@
 
 #include <arData/FrameTL.hpp>
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwCore/HiResClock.hpp>
 #include <fwCore/base.hpp>
+#include <fwCore/HiResClock.hpp>
 
 #include <fwServices/IController.hpp>
 
 #include <fwTools/fwID.hpp>
 
 #include <boost/filesystem/path.hpp>
-
 
 namespace fwData
 {
@@ -92,16 +91,16 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Does nothing.
-    VIDEOQT_API virtual void starting();
+    VIDEOQT_API virtual void starting() override;
 
     /// Does nothing.
-    VIDEOQT_API virtual void stopping();
+    VIDEOQT_API virtual void stopping() override;
 
     /// Does nothing.
-    VIDEOQT_API virtual void updating();
+    VIDEOQT_API virtual void updating() override;
 
     /// Parse the configuration
-    VIDEOQT_API virtual void configuring();
+    VIDEOQT_API virtual void configuring() override;
 
 private:
 
@@ -146,6 +145,5 @@ private:
 };
 
 } //namespace videoQt
-
 
 #endif // __VIDEOQT_SFRAMERECORDER_HPP__

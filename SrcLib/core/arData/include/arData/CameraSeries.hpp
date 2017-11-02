@@ -54,13 +54,13 @@ public:
      * @brief Defines shallow copy
      * @throws ::fwData::Exception if an errors occurs during copy
      */
-    ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
+    ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source ) override;
 
     /**
      * @brief Defines deep copy
      * @throws ::fwData::Exception if an errors occurs during copy
      */
-    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache);
+    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**@name Signals API
      * @{

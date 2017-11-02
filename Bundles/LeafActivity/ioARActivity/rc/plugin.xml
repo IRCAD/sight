@@ -1,4 +1,4 @@
-<plugin id="ioARActivity" version="@DASH_VERSION@">
+<plugin id="ioARActivity" version="@PROJECT_VERSION@">
 
     <requirement id="io" />
     <requirement id="uiIO" />

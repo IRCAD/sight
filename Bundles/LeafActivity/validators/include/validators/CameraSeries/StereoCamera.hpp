@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,6 @@ public:
                                             (()),
                                             ::fwActivities::validator::factory::New< StereoCamera > );
 
-
     /// Constructor. Do nothing.
     VALIDATORS_API StereoCamera(::fwActivities::IValidator::Key key);
 
@@ -37,13 +36,12 @@ public:
      * @brief Checks if the current CameraSeries contains two calibrated Cameras and an extrinsic matrix.
      * @see ::fwActivities::IValidator::validate
      */
-    VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object) &currentObject ) const;
+    VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object)& currentObject ) const
+    override;
 };
 
 } // namespace CameraSeries
 } // namespace validators
-
-
 
 #endif // __VALIDATORS_CAMERASERIES_STEREOCAMERA_HPP__
 

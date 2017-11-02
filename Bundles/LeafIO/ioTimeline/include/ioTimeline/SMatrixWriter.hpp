@@ -57,27 +57,27 @@ public:
     IOTIMELINE_API virtual ~SMatrixWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    IOTIMELINE_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    IOTIMELINE_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    IOTIMELINE_API virtual void configureWithIHM();
+    IOTIMELINE_API virtual void configureWithIHM() override;
 
     /// Return file type (::io::FOLDER)
-    IOTIMELINE_API virtual ::io::IOPathType getIOPathType() const;
+    IOTIMELINE_API virtual ::io::IOPathType getIOPathType() const override;
 
 protected:
 
     /// Does nothing
-    IOTIMELINE_API virtual void configuring();
+    IOTIMELINE_API virtual void configuring() override;
 
     /// Does nothing
-    IOTIMELINE_API virtual void starting();
+    IOTIMELINE_API virtual void starting() override;
 
     /// Does nothing
-    IOTIMELINE_API virtual void stopping();
+    IOTIMELINE_API virtual void stopping() override;
 
     /// Does nothing
-    IOTIMELINE_API virtual void updating();
+    IOTIMELINE_API virtual void updating() override;
 
 private:
 

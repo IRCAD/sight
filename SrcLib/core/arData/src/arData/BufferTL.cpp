@@ -1,17 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "arData/BufferTL.hpp"
 
-#include <fwCore/base.hpp>
+#include <fwCom/Signal.hxx>
 
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-
-#include <boost/bind.hpp>
 #include <boost/pool/pool.hpp>
 
 #include <cmath>
@@ -227,6 +223,9 @@ void BufferTL::clearTimeline()
 {
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     m_timeline.clear();
+
+    auto sig = this->signal<ObjectClearedSignalType>(s_CLEARED_SIG);
+    sig->asyncEmit();
 }
 
 } // namespace arData

@@ -69,26 +69,30 @@ void SAtomNetworkReader::stopping()
 void SAtomNetworkReader::updating()
 {
     ::fwData::String::sptr request;
-    ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Object::sptr obj;
 
     try
     {
-        obj     = this->getObject();
-        request = ::fwData::String::New();
+        ::fwData::Object::sptr obj = this->getObject();
+        request                    = ::fwData::String::New();
         request->setValue("GET ATOM");
         m_socket = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(::zmqNetwork::Socket::Client,
                                                                        ::zmqNetwork::Socket::Request));
         m_socket->start(m_host);
         m_socket->sendObject(request);
-        m_socket->receiveObject(obj);
+        std::string deviceName;
+        ::fwData::Object::sptr receiveObject = m_socket->receiveObject(deviceName);
         m_socket->sendObject(request);
         m_socket->stop();
-        ::fwData::Object::ModifiedSignalType::sptr sig;
-        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+
+        if(receiveObject)
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
+            obj->shallowCopy(receiveObject);
+            ::fwData::Object::ModifiedSignalType::sptr sig;
+            sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
+            }
         }
     }
     catch (std::exception& err)
@@ -98,7 +102,7 @@ void SAtomNetworkReader::updating()
             m_socket->sendObject(request);
         }
         m_socket->stop();
-        msgDialog.showMessageDialog("Error", err.what());
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", err.what());
     }
 }
 

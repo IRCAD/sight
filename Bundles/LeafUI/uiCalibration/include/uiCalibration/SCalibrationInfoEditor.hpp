@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,9 +14,9 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QPointer>
 #include <QLabel>
 #include <QListWidget>
+#include <QPointer>
 #include <QPushButton>
 
 namespace uiCalibration
@@ -72,22 +72,22 @@ public:
 protected:
 
     /// Initializes the editor
-    UICALIBRATION_API void configuring();
+    UICALIBRATION_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    UICALIBRATION_API void starting();
+    UICALIBRATION_API void starting() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    UICALIBRATION_API void stopping();
+    UICALIBRATION_API void stopping() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    UICALIBRATION_API void updating();
+    UICALIBRATION_API void updating() override;
 
     /**
      * @brief Slot: removes the current selected image.

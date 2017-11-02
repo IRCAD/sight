@@ -17,13 +17,24 @@
 
 #include <fwData/Composite.hpp>
 
+#include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <io/IReader.hpp>
 
 #include <QHBoxLayout>
+#include <QInputDialog>
+#include <QStringList>
 
 namespace uiCalibration
 {
@@ -78,12 +89,19 @@ void SCameraConfigLauncher::starting()
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString(BUNDLE_PREFIX) + QString("/media_0-1/icons/Import.svg"));
+    QIcon addIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("media", "icons/Import.svg").string()));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon removeIcon(QString(BUNDLE_PREFIX) + QString("/arMedia_0-1/icons/remove.svg"));
+    QIcon importIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
+                                                                                   "icons/CameraSeries.svg").string()));
+    m_importButton = new QPushButton(importIcon, "");
+    m_importButton->setToolTip("Import an intrinsic calibration.");
+    layout->addWidget(m_importButton);
+
+    QIcon removeIcon(QString::fromStdString(::fwRuntime::getBundleResourceFilePath("arMedia",
+                                                                                   "icons/remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);
@@ -118,6 +136,7 @@ void SCameraConfigLauncher::starting()
 
     QObject::connect(m_cameraComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCameraChanged(int)));
     QObject::connect(m_addButton, SIGNAL(clicked()), this, SLOT(onAddClicked()));
+    QObject::connect(m_importButton, SIGNAL(clicked()), this, SLOT(onImportClicked()));
     QObject::connect(m_removeButton, SIGNAL(clicked()), this, SLOT(onRemoveClicked()));
     QObject::connect(m_extrinsicButton, SIGNAL(toggled(bool)), this, SLOT(onExtrinsicToggled(bool)));
 
@@ -181,6 +200,100 @@ void SCameraConfigLauncher::onAddClicked()
     m_removeButton->setEnabled(true);
 
     this->addCamera();
+}
+
+//------------------------------------------------------------------------------
+
+void SCameraConfigLauncher::onImportClicked()
+{
+    auto sdb = ::fwMedData::SeriesDB::New();
+    ::fwServices::IService::sptr readerService =
+        ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
+    ::fwServices::OSR::registerService(sdb, readerService);
+
+    try
+    {
+        ::io::IReader::sptr reader = ::io::IReader::dynamicCast(readerService);
+        reader->start();
+        reader->configureWithIHM();
+        reader->update();
+        reader->stop();
+    }
+    catch(std::exception const& e)
+    {
+        ::fwGui::dialog::MessageDialog dlg;
+        const auto msg = "Cannot read file: " + std::string(e.what());
+        dlg.setTitle("Read error");
+        dlg.setMessage(msg);
+        dlg.setIcon(::fwGui::dialog::IMessageDialog::Icons::CRITICAL);
+        SLM_ERROR(msg);
+
+        throw;
+    }
+    ::fwServices::OSR::unregisterService(readerService);
+
+    auto series       = sdb->getContainer();
+    auto cameraSeries = std::vector< ::arData::CameraSeries::sptr>();
+
+    for (auto& series_ : series)
+    {
+        auto cameraSeries_ = ::arData::CameraSeries::dynamicCast(series_);
+        if (cameraSeries_ != nullptr)
+        {
+            cameraSeries.push_back(cameraSeries_);
+        }
+    }
+
+    if (cameraSeries.size() == 0)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "No CameraSeries in SDB",
+            "There are no CameraSeries present in the loaded SeriesDB",
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
+    }
+    else
+    {
+        QStringList cameras;
+        std::map< std::string, ::arData::Camera::sptr> map;
+        for (auto nSeries = 0; nSeries != cameraSeries.size(); ++nSeries)
+        {
+            auto cameraSeries_ = cameraSeries[nSeries];
+            for (auto nCam = 0; nCam != cameraSeries_->getNumberOfCameras(); ++nCam)
+            {
+                auto cam      = cameraSeries_->getCamera(nCam);
+                auto cameraID =
+                    cam->getCameraID() + " [" + std::to_string(nSeries) + ", " +  std::to_string(nCam) + "]";
+                map.insert(std::make_pair(cameraID, cam));
+                cameras << QString(cameraID.data());
+            }
+        }
+
+        if (cameras.size() == 0)
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "No Cameras in SDB",
+                "There are CameraSeries present in the loaded SeriesDB, but no Cameras were found",
+                ::fwGui::dialog::IMessageDialog::CRITICAL);
+        }
+        else
+        {
+            auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+            bool ok          = false;
+            auto selected    = QInputDialog::getItem(
+                qtContainer->getQtContainer(), "Please select a camera", "Camera", cameras, 0, false, &ok);
+            if (ok)
+            {
+                const auto selectedStd    = selected.toStdString();
+                const auto selectedCamera = map[selectedStd];
+                const auto camIdx         = m_cameraComboBox->currentIndex();
+                auto camera               = m_cameraSeries->getCamera(camIdx);
+                camera->deepCopy(selectedCamera);
+                camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType>(
+                    ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG)
+                ->asyncEmit();
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

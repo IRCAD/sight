@@ -17,8 +17,8 @@ namespace ioCalibration
  * @brief SOpenCVWriter class exports arData::CameraSeries in xml/yaml files using openCV
  *
  * @code{.xml}
-       <service uid="..." type="::ioCalibration::SExportCalibrationXml" >
-           <in key="target" uid="..." />
+       <service uid="..." type="::ioCalibration::SOpenCVWriter" >
+           <in key="data" uid="..." />
        </service>
  * @endcode
  *
@@ -44,6 +44,7 @@ namespace ioCalibration
               -5.2791699999999997e-02 -1.7561800000000000e-01
               -5.7609100000000004e-04 -2.5522000000000001e-03
               5.0100999999999996e-01</data></distortion>
+              <scale>1</scale>
             <extrinsic>
             </extrinsic>
         </camera>
@@ -69,7 +70,7 @@ public:
 protected:
 
     /// configure with IHM
-    IOCALIBRATION_API void configureWithIHM();
+    IOCALIBRATION_API void configureWithIHM() override;
 
     /**
      * @brief Prompt a dialog to define file location.
@@ -80,22 +81,22 @@ protected:
     /**
      * @brief Configures the service.
      */
-    IOCALIBRATION_API void configuring();
+    IOCALIBRATION_API void configuring() override;
 
     /// Does nothing.
-    IOCALIBRATION_API void starting();
+    IOCALIBRATION_API void starting() override;
 
     /// Calls stopping and starting.
-    IOCALIBRATION_API void swapping();
+    IOCALIBRATION_API void swapping() override;
 
     /// Computes intrinsic calibration
-    IOCALIBRATION_API void updating();
+    IOCALIBRATION_API void updating() override;
 
     /// Removes connections
-    IOCALIBRATION_API void stopping();
+    IOCALIBRATION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    IOCALIBRATION_API ::io::IOPathType getIOPathType() const;
+    IOCALIBRATION_API ::io::IOPathType getIOPathType() const override;
 
 };
 

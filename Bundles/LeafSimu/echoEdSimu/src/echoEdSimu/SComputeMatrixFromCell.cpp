@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,7 +63,7 @@ void SComputeMatrixFromCell::starting()
 
     /// Get the first cell coordinates
     const unsigned int indexCell = 0;
-    int x,y,z;
+    int x, y, z;
     for(int i = 0; i < 4; ++i)
     {
         ::fwData::Array::IndexType indexCellVector;
@@ -79,7 +79,7 @@ void SComputeMatrixFromCell::starting()
     }
 
     /// Find the first cell of the second line to know the number of cell per line.
-    int currentX,currentY,currentZ;
+    int currentX, currentY, currentZ;
     do
     {
         ++m_nbCellsPerLine;
@@ -195,7 +195,7 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
 
     ::fwData::Mesh::PointValueType zVector[3] = {0., 0., 1.};
 
-    ::glm::vec3 yAxis(nx,ny, nz);
+    ::glm::vec3 yAxis(nx, ny, nz);
     ::glm::vec3 zAxis(zVector[0], zVector[1], zVector[2]);
     ::glm::vec3 xAxis;
 
@@ -213,7 +213,6 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
     coefs[1] = yAxis[0];
     coefs[5] = yAxis[1];
     coefs[9] = yAxis[2];
-
 
     coefs[0] = xAxis[0];
     coefs[4] = xAxis[1];

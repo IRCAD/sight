@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,18 +9,24 @@
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
+
 #include <igtlNetwork/Server.hpp>
 
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
+#include <chrono>
 #include <fstream>
-#include <vector>
-#include <stdexcept>
 #include <functional>
+#include <stdexcept>
+#include <thread>
+#include <vector>
 
 using namespace networkPlayer;
+
+//------------------------------------------------------------------------------
 
 static ::fwData::TransformationMatrix3D::sptr     toMatrix (std::vector<double> const& data)
 {
@@ -35,22 +41,26 @@ static ::fwData::TransformationMatrix3D::sptr     toMatrix (std::vector<double> 
             ++row;
             column = 0;
         }
-        matrix->setCoefficient (row, column, data[i]);
+        matrix->setCoefficient(row, column, data[i]);
         ++column;
     }
     return matrix;
 }
+
+//------------------------------------------------------------------------------
 
 static double   toDouble (std::string const& str)
 {
     return ::boost::lexical_cast<double> (str);
 }
 
+//------------------------------------------------------------------------------
+
 template<typename Socket>
 static void     readStream (std::istream& stream, Socket& socket)
 {
     std::istringstream lineStream;
-    ::boost::uint32_t diffTime;
+    std::uint32_t diffTime;
     double prevTime = -1;
     std::string line;
     std::vector<std::string>    words;
@@ -58,34 +68,34 @@ static void     readStream (std::istream& stream, Socket& socket)
 
     while (!stream.eof())
     {
-        std::getline (stream, line);
-        lineStream.str (line);
+        std::getline(stream, line);
+        lineStream.str(line);
 
         // iterate all word and push it in words vector
-        std::copy (std::istream_iterator<std::string> (lineStream),
-                   std::istream_iterator<std::string>(),
-                   std::back_inserter<std::vector<std::string> > (words));
+        std::copy(std::istream_iterator<std::string> (lineStream),
+                  std::istream_iterator<std::string>(),
+                  std::back_inserter<std::vector<std::string> > (words));
 
         // test if words size is time + 16 value for 4x4 matrix
         if (words.size() == 17)
         {
             // resize datas by words size to prepare transform
-            datas.resize (words.size());
+            datas.resize(words.size());
 
             // transform a all word in words in double and push it in datas
-            std::transform (words.begin(), words.end(), datas.begin(), &toDouble);
+            std::transform(words.begin(), words.end(), datas.begin(), &toDouble);
             if (prevTime == -1)
             {
                 prevTime = datas[0];
             }
             else
             {
-                diffTime = static_cast< ::boost::uint32_t> (datas[0] - prevTime);
+                diffTime = static_cast< std::uint32_t> (datas[0] - prevTime);
                 prevTime = datas[0];
-                ::boost::this_thread::sleep (::boost::posix_time::milliseconds (diffTime));
+                std::this_thread::sleep_for(std::chrono::milliseconds(diffTime));
 
             }
-            socket.sendObject (toMatrix (datas));
+            socket.sendObject(toMatrix(datas));
         }
         lineStream.clear();
         datas.clear();
@@ -93,9 +103,11 @@ static void     readStream (std::istream& stream, Socket& socket)
     }
 }
 
+//------------------------------------------------------------------------------
+
 int     main (int ac, char** av)
 {
-    typedef ::fwCore::util::FactoryRegistry<INetworkPlayer::sptr ()>       FactoryRegistryType;
+    typedef ::fwCore::util::FactoryRegistry<INetworkPlayer::sptr()>       FactoryRegistryType;
 
     FactoryRegistryType factoryRegistry;
     std::string file;

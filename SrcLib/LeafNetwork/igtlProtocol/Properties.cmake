@@ -12,7 +12,7 @@ set( DEPENDENCIES
     fwAtoms
     fwAtomConversion
     fwAtomsBoostIO
-    fwVtkIO
+    fwDataTools
 )
 set( REQUIREMENTS  )
 

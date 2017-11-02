@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,21 +7,20 @@
 #ifndef __ARLCORE_POINT_H__
 #define __ARLCORE_POINT_H__
 
-
 #include <fwCore/macros.hpp>
-#include <arlcore/Common.h>
-
-#include <vector>
-#include <vnl/vnl_vector.h>
-#include <vnl/vnl_vector_fixed.h>
-#include <vnl/vnl_matrix.h>
 
 #include <fwTools/Object.hpp>
 
+#include <arlcore/Colour.h>
 #include <arlcore/Common.h>
 #include <arlcore/Object.h>
-#include <arlcore/Colour.h>
 #include <arlcore/vnl_covariance_matrix.h>
+
+#include <vnl/vnl_matrix.h>
+#include <vnl/vnl_vector.h>
+#include <vnl/vnl_vector_fixed.h>
+
+#include <vector>
 
 namespace arlCore
 {
@@ -37,7 +36,7 @@ static std::string ARLCORE_SHAPE_NAMES[ARLCORE_SHAPE_NBSHAPES] =
 { "ARLCORE_SHAPE_UNKNOWN", "ARLCORE_SHAPE_CUBE", "ARLCORE_SHAPE_SPHERE", "ARLCORE_SHAPE_SPHERESURFACE",
   "ARLCORE_SHAPE_SPHERE_CAP", "ARLCORE_SHAPE_DISC", "ARLCORE_SHAPE_PLAINSQUARE", "ARLCORE_SHAPE_CIRCLE",
   "ARLCORE_SHAPE_EDGESQUARE",
-  "ARLCORE_SHAPE_SOLIDANGLE", "ARLCORE_SHAPE_SOLIDANGLE_SURFACE",", ARLCORE_SHAPE_CHESSBOARD"};
+  "ARLCORE_SHAPE_SOLIDANGLE", "ARLCORE_SHAPE_SOLIDANGLE_SURFACE", ", ARLCORE_SHAPE_CHESSBOARD"};
 
 class Point : public Object
 {
@@ -61,20 +60,18 @@ class Point : public Object
  */
 public:
 
-
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwTools::Object),
-                                               ((std::make_shared< Point >,() ))
-                                                   ((PointFactory,((Point::csptr)) ))
-                                                   ((PointFactory,((int)) ))
-                                                   ((PointFactory,((double))((double)) ))
-                                                   ((PointFactory,((double))((double)) ((double)) ))
+                                               ((std::make_shared< Point >, () ))
+                                                   ((PointFactory, ((Point::csptr)) ))
+                                                   ((PointFactory, ((int)) ))
+                                                   ((PointFactory, ((double))((double)) ))
+                                                   ((PointFactory, ((double))((double)) ((double)) ))
                                                );
 
     ARLCORE_API static Point::sptr PointFactory( Point::csptr p );
     ARLCORE_API static Point::sptr PointFactory( int );
     ARLCORE_API static Point::sptr PointFactory( double x, double y );
     ARLCORE_API static Point::sptr PointFactory( double x, double y, double z );
-
 
     /******* VAG transpose from Object ****/
     //! @return Is the object OK ? VAG transpose from inheritance of Object
@@ -128,10 +125,10 @@ public:
     ARLCORE_API virtual ~Point( void );
 
     //! @return Description of the current point
-    ARLCORE_API std::string getString( void ) const;
+    ARLCORE_API std::string getString( void ) const override;
 
     //! @brief Save the current point
-    ARLCORE_API bool save( const std::string& fileName, bool overwrite = true ) const;
+    ARLCORE_API bool save( const std::string& fileName, bool overwrite = true ) const override;
 
     //! @brief Add the current point into an PointList open file stream
     ARLCORE_API bool save( std::fstream &f, unsigned no = 0, ARLCORE_POINT_SAVE_TYPE = ARLCORE_POINT_SAVE_FULL ) const;
@@ -140,7 +137,7 @@ public:
     ARLCORE_API bool save( std::fstream &f, unsigned int cam,  SPTR(void) videoTag, int fringe ) const;
 
     //! @brief Load a point
-    ARLCORE_API bool load( const std::string& fileName );
+    ARLCORE_API bool load( const std::string& fileName ) override;
 
     //! @brief Load a point from an open file stream
     ARLCORE_API bool load( std::ifstream& f, int& no, unsigned int dim = 0 );
@@ -205,7 +202,7 @@ public:
      * @return Reference on statistic vector for each coordinates when using pond function
      * @remark Use computeStat on each returned vector to extract statistic informations
      */
-    ARLCORE_API const std::vector< vnl_vector_fixed<double,5> >& getStatistic( void );
+    ARLCORE_API const std::vector< vnl_vector_fixed<double, 5> >& getStatistic( void );
 
     //! @brief Ajoute les coordonnées du point p au point courant
 
@@ -271,7 +268,8 @@ public:
     //! @brief Compute the cross product of two 3D vectors and put the result in *this : *this = vec1 x vec2
     ARLCORE_API bool cross_3D( CSPTR( Point )  vec1, CSPTR( Point )  vec2 );
 
-    //! @brief Dot product of 2 vectors : *this = vec1^T x vec2. *this is of dimension 1 ! (covariance matrix is computed as well)
+    //! @brief Dot product of 2 vectors : *this = vec1^T x vec2. *this is of dimension 1 ! (covariance matrix is
+    // computed as well)
     ARLCORE_API bool dotProduct( CSPTR( Point )  vec1, CSPTR( Point )  vec2 );
 
     //! @brief Point 1D = var1/var2 with computation of the covariance matrix
@@ -344,7 +342,7 @@ private:
     vnl_vector<double> m_coordinates;
 
     double m_ponderation;
-    std::vector< vnl_vector_fixed<double,5> > m_stat;
+    std::vector< vnl_vector_fixed<double, 5> > m_stat;
 
     // Erreur à la création du point
     // 2D : Différence subpixel / 1ere estimation
@@ -375,7 +373,8 @@ ARLCORE_API double surface( const std::vector< arlCore::Point::csptr >& );
 
 // TODO Suppress PointsCont and replace them with PointsList
 //  typedef std::vector<Point> PointsCont;
-//  ARLCORE_API unsigned int load( PointsCont &list, const char *fileName, Point::ARLCORE_POINT_TYPE type = Point::ARLCORE_POINT_TYPE_UNKNOWN, long int date=0 );
+//  ARLCORE_API unsigned int load( PointsCont &list, const char *fileName, Point::ARLCORE_POINT_TYPE type =
+// Point::ARLCORE_POINT_TYPE_UNKNOWN, long int date=0 );
 
 } // namespace arlCore
 #endif // __ARLCORE_POINT_H__

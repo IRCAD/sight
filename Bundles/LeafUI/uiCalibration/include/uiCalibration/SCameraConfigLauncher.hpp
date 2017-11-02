@@ -43,14 +43,12 @@ namespace uiCalibration
                <appConfig id="calIntrinsicView" />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
-               <parameter replace="videoGrabberImpl" by="::videoBundleExample::SFrameGrabber" />
            </intrinsic>
            <extrinsic>
                <appConfig id="calExtrinsicView" />
                <inout key="cameraSeries" uid="..." />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
-               <parameter replace="videoGrabberImpl" by="::videoBundleExample::SFrameGrabber" />
            </extrinsic>
        </config>
    </service>
@@ -83,20 +81,21 @@ public:
 
 protected:
 
-    virtual void configuring();
+    virtual void configuring() override;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting();
+    virtual void starting() override;
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping();
+    virtual void stopping() override;
 
-    virtual void updating();
+    virtual void updating() override;
 
-    virtual void swapping();
+    virtual void swapping() override;
 
 private Q_SLOTS:
     void onAddClicked();
+    void onImportClicked();
     void onRemoveClicked();
     void onExtrinsicToggled(bool checked);
     void onCameraChanged(int index);
@@ -114,6 +113,7 @@ private:
 
     QPointer<QComboBox> m_cameraComboBox;
     QPointer<QPushButton> m_addButton;
+    QPointer<QPushButton> m_importButton;
     QPointer<QPushButton> m_removeButton;
     QPointer<QPushButton> m_extrinsicButton;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
 
 #include <fwZip/exception/Write.hpp>
 
-#include <boost/integer_traits.hpp>
-#include <boost/date_time.hpp>
-#include <boost/iostreams/stream.hpp>
-#include <boost/filesystem/operations.hpp>
-
 #include <archive_entry.h>
+
+#include <boost/date_time.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/integer_traits.hpp>
+#include <boost/iostreams/stream.hpp>
 
 namespace igtlProtocol
 {
@@ -38,12 +38,10 @@ MemoryArchiveSink::~MemoryArchiveSink()
 void MemoryArchiveSink::archive()
 {
     size_t size;
+    ::boost::posix_time::ptime now = ::boost::date_time::not_a_date_time;
 
-    struct archive_entry* entry;
-    ::boost::posix_time::ptime now = boost::date_time::not_a_date_time;
-
-    entry = archive_entry_new();
-    now   = ::boost::posix_time::microsec_clock::universal_time();
+    struct archive_entry* entry = archive_entry_new();
+    now = ::boost::posix_time::microsec_clock::universal_time();
     archive_entry_set_pathname(entry, m_path.string().c_str());
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);

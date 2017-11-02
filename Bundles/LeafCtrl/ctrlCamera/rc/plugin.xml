@@ -1,4 +1,4 @@
-<plugin id="ctrlCamera" class="::ctrlCamera::Plugin" version="@DASH_VERSION@" >
+<plugin id="ctrlCamera" class="::ctrlCamera::Plugin" version="@PROJECT_VERSION@" >
     
     <library name="ctrlCamera" />
     

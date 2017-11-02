@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,23 +8,15 @@
 #define __VIDEOQT_SFRAMEGRABBER_HPP__
 
 #include "videoQt/config.hpp"
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <videoQt/player/QVideoPlayer.hpp>
 
 #include <arServices/IGrabber.hpp>
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/Failed.hpp>
-
-#include <fwThread/Worker.hpp>
-
-#include <videoQt/player/QVideoPlayer.hpp>
-
+#include <QImage>
 #include <QObject>
 #include <QPointer>
-#include <QImage>
 
 namespace arData
 {
@@ -67,7 +59,7 @@ class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
 Q_OBJECT;
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
 
     /// Constructor. Do nothing.
     VIDEOQT_API SFrameGrabber() noexcept;
@@ -78,41 +70,31 @@ public:
 protected:
 
     /// Initialize the layout and the camera.
-    VIDEOQT_API virtual void starting();
+    VIDEOQT_API virtual void starting() override;
 
     /// Destroy the layout.
-    VIDEOQT_API virtual void stopping();
+    VIDEOQT_API virtual void stopping() override;
 
     /// Do nothing.
-    VIDEOQT_API virtual void updating();
+    VIDEOQT_API virtual void updating() override;
 
     /// Do nothing.
-    VIDEOQT_API virtual void configuring();
+    VIDEOQT_API virtual void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
-    virtual void startCamera();
+    virtual void startCamera() override;
 
     /// SLOT : Stop camera
-    virtual void stopCamera();
+    virtual void stopCamera() override;
 
     /// SLOT : Pause camera
-    virtual void pauseCamera();
+    virtual void pauseCamera() override;
 
     /// SLOT : enable/disable loop in video
-    virtual void toggleLoopMode();
+    virtual void toggleLoopMode() override;
 
     /// SLOT : set the new position in the video.
-    virtual void setPosition(int64_t position);
-
-    /// Gets camera from m_cameraID
-    CSPTR(::arData::Camera) getCamera();
-
-    /// Mirrored the frame in the desired direction
-    void setMirror(bool horizontallyFlip = false, bool verticallyFlip = false)
-    {
-        m_horizontallyFlip = horizontallyFlip;
-        m_verticallyFlip   = verticallyFlip;
-    }
+    virtual void setPosition(int64_t position) override;
 
 protected Q_SLOTS:
 
@@ -122,10 +104,19 @@ protected Q_SLOTS:
     /// Call when reading position changed in the video.
     void onPositionChanged(qint64 position);
 
+    /// Call our internal slots.
+    void onPresentFrame(const QVideoFrame& frame);
+
+private:
     /// SLOT: copy and push video frame in the timeline.
     void presentFrame(const QVideoFrame& frame);
 
-private:
+    /// Mirrored the frame in the desired direction
+    void setMirror(bool horizontallyFlip = false, bool verticallyFlip = false)
+    {
+        m_horizontallyFlip = horizontallyFlip;
+        m_verticallyFlip   = verticallyFlip;
+    }
 
     /// FwID of arData::Camera
     std::string m_cameraID;
@@ -133,11 +124,17 @@ private:
     /// state of the loop mode
     bool m_loopVideo;
 
+    /// Video frame
+    QVideoFrame m_videoFrame;
+
     /// Camera
     player::QVideoPlayer* m_videoPlayer;
 
+    /// Slot to call present frame method
+    ::fwCom::Slot<void(const QVideoFrame& frame)>::sptr m_slotPresentFrame;
+
     /// Worker for the m_slotPresentFrame
-    ::fwThread::Worker::sptr m_worker;
+    ::fwThread::Worker::sptr m_workerPresentFrame;
 
     /// Mutex to protect concurrent access for m_videoFrame
     mutable ::fwCore::mt::ReadWriteMutex m_videoFrameMutex;

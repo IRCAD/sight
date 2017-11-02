@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlNetwork/INetwork.hpp"
+
 #include "igtlNetwork/Exception.hpp"
 
 #include <fwTools/Stringizer.hpp>
@@ -31,7 +32,7 @@ INetwork::~INetwork()
 
 //------------------------------------------------------------------------------
 
-bool INetwork::sendObject (::fwData::Object::sptr obj)
+bool INetwork::sendObject(const ::fwData::Object::csptr& obj)
 {
     igtl::MessageBase::Pointer msg;
 
@@ -52,35 +53,29 @@ bool INetwork::sendMsg (igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-bool INetwork::receiveObject(::fwData::Object::sptr obj)
+::fwData::Object::sptr INetwork::receiveObject(std::string& deviceName)
 {
-    ::igtl::MessageHeader::Pointer headerMsg;
-    ::igtl::MessageBase::Pointer msg;
-
-    headerMsg = this->receiveHeader();
+    ::fwData::Object::sptr obj;
+    ::igtl::MessageHeader::Pointer headerMsg = this->receiveHeader();
     if (headerMsg.IsNotNull())
     {
-        msg = this->receiveBody (headerMsg);
+        ::igtl::MessageBase::Pointer msg = this->receiveBody(headerMsg);
         if (msg.IsNotNull())
         {
-            m_dataConverter->fromIgtlMessage(msg, obj);
-            return true;
+            obj        = m_dataConverter->fromIgtlMessage(msg);
+            deviceName = headerMsg->GetDeviceName();
         }
     }
-    return false;
+    return obj;
 }
-
 
 //------------------------------------------------------------------------------
 
 ::igtl::MessageHeader::Pointer INetwork::receiveHeader()
 {
-    ::igtl::MessageHeader::Pointer headerMsg;
-    int sizeReceive;
-
-    headerMsg = ::igtl::MessageHeader::New();
+    ::igtl::MessageHeader::Pointer headerMsg = ::igtl::MessageHeader::New();
     headerMsg->InitPack();
-    sizeReceive = m_socket->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+    const int sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
     if (sizeReceive == -1 || sizeReceive == 0)
     {
@@ -94,7 +89,7 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
         }
         else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
         {
-            std::string deviceName = headerMsg->GetDeviceName();
+            const std::string deviceName = headerMsg->GetDeviceName();
 
             if(m_filteringByDeviceName)
             {
@@ -126,16 +121,16 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
     ::igtl::MessageBase::Pointer msg;
 
     msg = ::igtlProtocol::MessageFactory::create(headerMsg->GetDeviceType());
-    msg->SetMessageHeader (headerMsg);
+    msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
-    result = m_socket->Receive (msg->GetPackBodyPointer(), msg->GetPackBodySize());
+    result = m_socket->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
     if (result == -1)
     {
         return ::igtl::MessageBase::Pointer();
     }
 
-    unpackResult = msg->Unpack (1);
+    unpackResult = msg->Unpack(1);
     if (unpackResult & igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;
@@ -145,14 +140,14 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj)
 
 //------------------------------------------------------------------------------
 
-::igtl::Socket::Pointer INetwork::getSocket()
+::igtl::Socket::Pointer INetwork::getSocket() const
 {
     return m_socket;
 }
 
 //------------------------------------------------------------------------------
 
-void INetwork::addAuthorizedDevice(std::string deviceName)
+void INetwork::addAuthorizedDevice(const std::string& deviceName)
 {
     std::set< std::string >::iterator it = m_deviceNamesIn.find(deviceName);
 
@@ -164,7 +159,7 @@ void INetwork::addAuthorizedDevice(std::string deviceName)
 
 //------------------------------------------------------------------------------
 
-bool INetwork::getFilteringByDeviceName()
+bool INetwork::getFilteringByDeviceName() const
 {
     return m_filteringByDeviceName;
 }
@@ -186,20 +181,19 @@ void INetwork::setFilteringByDeviceName(bool filtering)
 
 //------------------------------------------------------------------------------
 
-void INetwork::setDeviceNameOut(std::string deviceName)
+void INetwork::setDeviceNameOut(const std::string& deviceName)
 {
     m_deviceNameOut = deviceName;
 }
 
 //------------------------------------------------------------------------------
 
-std::string INetwork::getDeviceNameOut()
+std::string INetwork::getDeviceNameOut() const
 {
     return m_deviceNameOut;
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace igtlNetwork
 

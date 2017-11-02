@@ -60,19 +60,19 @@ public:
 protected:
 
     /// Does nothing
-    UICALIBRATION_API virtual void configuring();
+    UICALIBRATION_API virtual void configuring() override;
 
     /// Create UI.
-    UICALIBRATION_API virtual void starting();
+    UICALIBRATION_API virtual void starting() override;
 
     /// Destroy UI.
-    UICALIBRATION_API virtual void stopping();
+    UICALIBRATION_API virtual void stopping() override;
 
     /// Does nothing.
-    UICALIBRATION_API virtual void updating();
+    UICALIBRATION_API virtual void updating() override;
 
     /// Defines the connection betwwen camera and matrix and this editor
-    UICALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const;
+    UICALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __UICALIBRATION_SINTRINSICEDITION_HPP__
 #define __UICALIBRATION_SINTRINSICEDITION_HPP__
 
-#include "uiCalibration/SUpdateIntrinsicDialog.hpp"
 #include "uiCalibration/config.hpp"
+#include "uiCalibration/SUpdateIntrinsicDialog.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -24,7 +24,6 @@ namespace uiCalibration
 {
 /**
  * @brief   SIntrinsicEdition service is used to set the intrinsic parameter infos.
- * @class   SIntrinsicEdition
  */
 class UICALIBRATION_CLASS_API SIntrinsicEdition : public QObject,
                                                   public ::fwServices::IService
@@ -48,28 +47,27 @@ public:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    UICALIBRATION_API void configuring();
+    UICALIBRATION_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    UICALIBRATION_API void starting();
+    UICALIBRATION_API void starting() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    UICALIBRATION_API void stopping();
+    UICALIBRATION_API void stopping() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    UICALIBRATION_API void updating();
+    UICALIBRATION_API void updating() override;
 
     /**
      * @brief Swapping method : This method is used to swap the service.
      */
-    UICALIBRATION_API void swapping();
-
+    UICALIBRATION_API void swapping() override;
 
 private Q_SLOTS:
 
@@ -77,7 +75,7 @@ private Q_SLOTS:
      * @brief onNewCalibration
      * @param cal
      */
-    void onNewCalibration( std::array< double, 12 > & cal);
+    void onNewCalibration( std::array< double, 12 >& cal);
 
 private:
 
@@ -85,9 +83,8 @@ private:
 
     void readCalibration();
 
-
-    std::array<double,4>    m_intrinsic;
-    std::array<double,5>    m_distParameters;
+    std::array<double, 4>    m_intrinsic;
+    std::array<double, 5>    m_distParameters;
 
     double m_skew;
     std::array< double, 2 > m_resolution;

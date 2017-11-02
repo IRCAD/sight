@@ -1,15 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "igtlOSUtil.h"
-#include "igtlMessageHeader.h"
 #include "igtlMessageBase.h"
+#include "igtlMessageHeader.h"
+#include "igtlOSUtil.h"
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <igtlNetwork/Server.hpp>
@@ -18,11 +19,10 @@
 #include <boost/type.hpp>
 
 #include <fstream>
+#include <functional>
+#include <map>
 #include <sstream>
 #include <vector>
-#include <map>
-#include <functional>
-
 
 /**
  * @brief Utility app to redirect IGTL message with specific device name to a specific port
@@ -52,7 +52,7 @@ struct configuration
     std::string deviceIn;
     std::string deviceOut;
     std::string deviceType;
-    ::boost::uint16_t port;
+    std::uint16_t port;
     ::fwThread::Worker::sptr worker;
 
 };
@@ -69,9 +69,8 @@ std::map< std::string, configuration > initialize(std::string configFile)
     std::vector< std::string > messageType;
     std::vector< std::string > deviceInTab;
     std::vector< std::string > deviceOutTab;
-    std::vector< ::boost::uint16_t > portTab;
+    std::vector< std::uint16_t > portTab;
     std::map< std::string, configuration > association;
-
 
     std::ifstream fileStream;
     fileStream.open(configFile.c_str(), std::ios::in);
@@ -83,19 +82,19 @@ std::map< std::string, configuration > initialize(std::string configFile)
 
         unsigned int i = 0;
 
-        while(std::getline (fileStream, line))
+        while(std::getline(fileStream, line))
         {
-            lineStream.str (line);
+            lineStream.str(line);
             // iterate all word and push it in words vector
-            std::copy (std::istream_iterator<std::string> (lineStream),
-                       std::istream_iterator<std::string>(),
-                       std::back_inserter<std::vector<std::string> > (words));
+            std::copy(std::istream_iterator<std::string> (lineStream),
+                      std::istream_iterator<std::string>(),
+                      std::back_inserter<std::vector<std::string> > (words));
 
-            OSLM_FATAL_IF("Configuration file empty ",words.size() == 0);
+            OSLM_FATAL_IF("Configuration file empty ", words.size() == 0);
 
             if(words[0].find("#") == std::string::npos)
             {
-                OSLM_FATAL_IF("Error in configuration file line: '"<<i<<"'.",words.size() != 4);
+                OSLM_FATAL_IF("Error in configuration file line: '"<<i<<"'.", words.size() != 4);
 
                 OSLM_INFO(
                     "Type : "<<words[0]<<", device In : "<<words[1]<< ", device Out : "<<words[2]<<", port : "<<
@@ -104,7 +103,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
                 messageType.push_back(words[0]);
                 deviceInTab.push_back(words[1]);
                 deviceOutTab.push_back(words[2]);
-                portTab.push_back(::boost::lexical_cast< ::boost::uint16_t > (words[3]));
+                portTab.push_back(::boost::lexical_cast< std::uint16_t > (words[3]));
             }
 
             lineStream.clear();
@@ -113,12 +112,11 @@ std::map< std::string, configuration > initialize(std::string configFile)
         }
     }
 
-
-    for(unsigned int i = 0; i< messageType.size(); i++)
+    for(unsigned int i = 0; i < messageType.size(); i++)
     {
         //check if port num for this config isn't used
         std::map< std::string, configuration >::iterator it;
-        igtlNetwork::Server::sptr server = ::igtlNetwork::Server::sptr (new ::igtlNetwork::Server());
+        igtlNetwork::Server::sptr server = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
         bool serverAlreadyStarted = false;
 
@@ -142,20 +140,18 @@ std::map< std::string, configuration > initialize(std::string configFile)
         config.port       = portTab[i];
         config.worker     = worker;
 
-
         config.server = server;
         if(!serverAlreadyStarted)
         {
             config.server->start(config.port);
 
-            std::function<void() > task = std::bind (&::igtlNetwork::Server::runServer, config.server);
+            std::function<void() > task = std::bind(&::igtlNetwork::Server::runServer, config.server);
             config.worker->post(task);
         }
 
         association[deviceInTab[i]] = config;
 
     }
-
 
     return association;
 }
@@ -176,19 +172,18 @@ int main (int argc, char** argv)
         exit(0);
     }
 
-    ::boost::uint16_t port = ::boost::lexical_cast< ::boost::uint16_t >(argv[1]);
+    std::uint16_t port = ::boost::lexical_cast< std::uint16_t >(argv[1]);
     std::string configFile(argv[2]);
 
     //Initialization of parameters
-    //std::map< std::string , igtlNetwork::Server::sptr > associationDeviceServer = initialize(configFile);
     std::map< std::string, configuration > associationDeviceServer = initialize(configFile);
 
-    ::igtlNetwork::Server::sptr receiveServer = ::igtlNetwork::Server::sptr (new ::igtlNetwork::Server());
+    ::igtlNetwork::Server::sptr receiveServer = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
     ::fwThread::Worker::sptr worker           = ::fwThread::Worker::New();
     try
     {
         receiveServer->start(port);
-        std::function<void() > task = std::bind (&::igtlNetwork::Server::runServer, receiveServer);
+        std::function<void() > task = std::bind(&::igtlNetwork::Server::runServer, receiveServer);
         worker->post(task);
 
     }
@@ -199,22 +194,20 @@ int main (int argc, char** argv)
 
     OSLM_INFO("server started on port: "<<port);
 
-
     //main loop
     while (1)
     {
         // Create a message buffer to receive header
-        igtl::MessageHeader::Pointer headerMsg;
-        igtl::MessageBase::Pointer msg;
+        ::igtl::MessageHeader::Pointer headerMsg;
+        ::igtl::MessageBase::Pointer msg;
 
         std::vector< ::igtl::MessageBase::Pointer > headerMsgs;
         // Initialize receive buffer
-        headerMsgs = receiveServer->receiveHeader();
+        headerMsgs = receiveServer->receiveHeaders();
 
-        for(unsigned int i = 0; i< headerMsgs.size(); ++i)
+        for(unsigned int i = 0; i < headerMsgs.size(); ++i)
         {
             headerMsg = headerMsgs[i];
-
 
             if(headerMsg.IsNotNull())
             {
@@ -236,7 +229,7 @@ int main (int argc, char** argv)
                     {
                         if(sendingServer)
                         {
-                            msg = receiveServer->receiveBody(headerMsg,i);
+                            msg = receiveServer->receiveBody(headerMsg, i);
 
                             if(msg.IsNotNull())
                             {

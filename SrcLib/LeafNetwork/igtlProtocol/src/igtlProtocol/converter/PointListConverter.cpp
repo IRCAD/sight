@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlProtocol/converter/PointListConverter.hpp"
+
 #include "igtlProtocol/DataConverter.hpp"
 
 #include <fwData/PointList.hpp>
@@ -12,6 +13,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 
 #include <igtl/igtlPointMessage.h>
+
 #include <algorithm>
 
 namespace igtlProtocol
@@ -39,10 +41,9 @@ PointListConverter::~PointListConverter()
 {
     float pos[3];
     ::igtl::PointElement::Pointer elem;
-    ::igtl::PointMessage::Pointer dest;
     ::fwData::PointList::csptr srcPoints = ::fwData::PointList::dynamicConstCast(src);
 
-    dest = ::igtl::PointMessage::New();
+    ::igtl::PointMessage::Pointer dest = ::igtl::PointMessage::New();
     for(::fwData::Point::sptr const &srcPoint :  srcPoints->getCRefPoints())
     {
         std::transform(srcPoint->getCRefCoord().begin(), srcPoint->getCRefCoord().end(), pos,
@@ -56,21 +57,16 @@ PointListConverter::~PointListConverter()
 
 //-----------------------------------------------------------------------------
 
-void PointListConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                         ::fwData::Object::sptr& destObj) const
+::fwData::Object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a ::fwData::PointList"),
-                          destObj->getClassname() != PointListConverter::s_FWDATA_OBJECT_TYPE);
-
     float igtlPos[3];
     ::igtl::PointElement::Pointer elem;
     std::vector< ::fwData::Point::sptr> fwPoints;
     ::fwData::Point::sptr fwPoint;
-    ::igtl::PointMessage::Pointer srcPoints;
-    ::fwData::PointList::sptr dest;
 
-    srcPoints = ::igtl::PointMessage::Pointer(dynamic_cast< ::igtl::PointMessage* >(src.GetPointer()));
-    dest      = ::fwData::PointList::dynamicCast(destObj);
+    ::igtl::PointMessage* msg               = dynamic_cast< ::igtl::PointMessage* >(src.GetPointer());
+    ::igtl::PointMessage::Pointer srcPoints = ::igtl::PointMessage::Pointer(msg);
+    ::fwData::PointList::sptr dest          = ::fwData::PointList::New();
     for (int i = 0; i < srcPoints->GetNumberOfPointElement(); ++i)
     {
         fwPoint = ::fwData::Point::New();
@@ -81,6 +77,8 @@ void PointListConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
         fwPoints.push_back(fwPoint);
     }
     dest->setPoints(fwPoints);
+
+    return dest;
 }
 
 //-----------------------------------------------------------------------------

@@ -41,7 +41,7 @@ class UITOOLS_CLASS_API STextStatus : public QObject,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STextStatus)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (STextStatus)(::gui::editor::IEditor) )
 
     /// Constructor. Do nothing.
     UITOOLS_API STextStatus();
@@ -59,23 +59,23 @@ protected:
     /**
      * @brief Configure the service
      */
-    virtual void configuring();
+    virtual void configuring() override;
 
     /**
      * @brief Install the layout.
      */
-    virtual void starting();
+    virtual void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping();
+    virtual void stopping() override;
 
     /// Does nothing
-    virtual void updating();
+    virtual void updating() override;
 
     /// Does nothing
-    virtual void swapping();
+    virtual void swapping() override;
 
 private:
 

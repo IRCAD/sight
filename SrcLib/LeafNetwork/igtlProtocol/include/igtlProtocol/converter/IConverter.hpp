@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,9 @@
 #include "igtlProtocol/exception/Conversion.hpp"
 
 #include <fwCore/macros.hpp>
+
 #include <fwData/Object.hpp>
+
 #include <fwTools/Failed.hpp>
 
 #include <igtl/igtlMessageBase.h>
@@ -38,10 +40,10 @@ public:
 
     /**
      * @brief method to implement conversion igtl message to fwData object
-
+     *
+     * @return a fwData::Object
      */
-    IGTLPROTOCOL_API virtual void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                                                   ::fwData::Object::sptr& dest) const = 0;
+    IGTLPROTOCOL_API virtual ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const = 0;
 
     /**
      * @brief method to implement conversion fwData object to igtl message

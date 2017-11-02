@@ -1,8 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "ioZMQ/SZeroMQSender.hpp"
+
+#include "ioZMQ/Patterns.hpp"
+#include "ioZMQ/ZeroMQConfigurationParser.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -11,20 +16,18 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include "ioZMQ/SZeroMQSender.hpp"
-#include "ioZMQ/ZeroMQConfigurationParser.hpp"
-#include "ioZMQ/Patterns.hpp"
+#include <fwCore/spyLog.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwCore/spyLog.hpp>
-#include <fwServices/macros.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <sstream>
 
-fwServicesRegisterMacro (::ioNetwork::INetworkSender, ::ioZMQ::SZeroMQSender, ::fwData::Object);
-
+fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioZMQ::SZeroMQSender);
 
 namespace ioZMQ
 {
@@ -34,12 +37,10 @@ const ::fwCom::Slots::SlotKeyType SZeroMQSender::s_UPDATE_CONFIGURATION_SLOT = "
 //-----------------------------------------------------------------------------
 
 SZeroMQSender::SZeroMQSender() :
-    ::ioNetwork::INetworkSender()
+    m_patternMode(::zmqNetwork::Socket::Publish),
+    m_sockMode(::zmqNetwork::Socket::Server)
 {
-    m_updateConfigurationSlot = ::fwCom::newSlot (&SZeroMQSender::updateConfiguration, this);
-    ::fwCom::HasSlots::m_slots (SZeroMQSender::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot);
-
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
+    newSlot(s_UPDATE_CONFIGURATION_SLOT, &SZeroMQSender::updateConfiguration, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,9 +55,9 @@ void SZeroMQSender::configuring()
 {
     try
     {
-        ZeroMQConfigurationParser parser (m_configuration);
+        ZeroMQConfigurationParser parser(m_configuration);
 
-        parser.parse (Patterns::getSupportedWriterPatterns());
+        parser.parse(Patterns::getSupportedWriterPatterns());
         m_hostStr     = parser.getHostname();
         m_sockMode    = parser.getSocketMode();
         m_patternMode = parser.getPatternMode();
@@ -69,16 +70,16 @@ void SZeroMQSender::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::setPort (boost::uint16_t const port)
+void SZeroMQSender::setPort (std::uint16_t const port)
 {
     std::string newHost;
     std::stringstream stream;
 
-    if (m_hostStr.substr (0, 3) != "tcp")
+    if (m_hostStr.substr(0, 3) != "tcp")
     {
-        throw ::fwTools::Failed ("Change port is only supported for tcp protocol");
+        throw ::fwTools::Failed("Change port is only supported for tcp protocol");
     }
-    newHost = m_hostStr.substr (0, m_hostStr.find (":", 4));
+    newHost = m_hostStr.substr(0, m_hostStr.find(":", 4));
     stream << newHost << ":" << port;
     m_hostStr = stream.str();
 }
@@ -87,26 +88,24 @@ void SZeroMQSender::setPort (boost::uint16_t const port)
 
 void SZeroMQSender::starting()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
-
     try
     {
-        ::ioNetwork::INetworkSender::starting();
-        m_socket = ::zmqNetwork::Socket::sptr (new ::zmqNetwork::Socket (m_sockMode, m_patternMode));
-        m_socket->start (m_hostStr);
-        m_sigServerStarted->asyncEmit();
+        m_socket = std::make_shared< ::zmqNetwork::Socket >(m_sockMode, m_patternMode);
+        m_socket->start(m_hostStr);
+        m_sigConnected->asyncEmit();
     }
     catch (std::exception& err)
     {
-        msgDialog.showMessageDialog ("Error", "Cannot start the sender : " + std::string (err.what()));
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error",
+                                                          "Cannot start the sender : " + std::string(err.what()));
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::updateConfiguration (::zmqNetwork::Socket::PatternMode const pattern,
-                                         ::zmqNetwork::Socket::SocketMode const sockMode,
-                                         std::string const& host)
+void SZeroMQSender::updateConfiguration (const ::zmqNetwork::Socket::PatternMode pattern,
+                                         const ::zmqNetwork::Socket::SocketMode sockMode,
+                                         const std::string& host)
 {
     m_sockMode    = sockMode;
     m_patternMode = pattern;
@@ -118,17 +117,30 @@ void SZeroMQSender::updateConfiguration (::zmqNetwork::Socket::PatternMode const
 void SZeroMQSender::stopping()
 {
     m_socket->stop();
-    ::ioNetwork::INetworkSender::stopping();
-    m_sigServerStopped->asyncEmit();
+    m_sigDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj)
+void SZeroMQSender::sendObject(const ::fwData::Object::csptr& obj)
 {
     try
     {
-        m_socket->sendObject (obj);
+        m_socket->sendObject(obj);
+    }
+    catch(std::exception& err)
+    {
+        OSLM_FATAL("Failed to send object: "<< err.what());
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SZeroMQSender::sendObject(const ::fwData::Object::csptr& obj,  const size_t)
+{
+    try
+    {
+        m_socket->sendObject(obj);
     }
     catch(std::exception& err)
     {
@@ -139,5 +151,4 @@ void SZeroMQSender::sendObject (const ::fwData::Object::sptr& obj)
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-
 

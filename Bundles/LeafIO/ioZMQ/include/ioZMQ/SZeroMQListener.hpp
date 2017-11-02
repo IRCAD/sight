@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,11 +10,12 @@
 #include "ioZMQ/config.hpp"
 
 #include <fwCom/Slot.hpp>
-#include <zmqNetwork/Socket.hpp>
-#include <ioNetwork/INetworkListener.hpp>
+
 #include <fwThread/Worker.hpp>
 
-#include <boost/thread.hpp>
+#include <zmqNetwork/Socket.hpp>
+
+#include <ioNetwork/INetworkListener.hpp>
 
 namespace ioZMQ
 {
@@ -27,16 +28,15 @@ class IOZMQ_CLASS_API SZeroMQListener : public ::ioNetwork::INetworkListener
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SZeroMQListener) (::ioNetwork::INetworkListener));
+    fwCoreServiceClassDefinitionsMacro( (SZeroMQListener) (::ioNetwork::INetworkListener));
 
     /**
      * @brief Slot to update configuration
      */
     IOZMQ_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CONFIGURATION_SLOT;
-    typedef ::fwCom::Slot< void (::zmqNetwork::Socket::PatternMode const,
-                                 ::zmqNetwork::Socket::SocketMode const,
-                                 std::string const& host) >                 UpdateConfigurationSlotType;
-
+    typedef ::fwCom::Slot< void (const ::zmqNetwork::Socket::PatternMode,
+                                 const ::zmqNetwork::Socket::SocketMode,
+                                 const std::string& host) >                 UpdateConfigurationSlotType;
 
     /// Constructor
     IOZMQ_API SZeroMQListener();
@@ -50,17 +50,17 @@ protected:
      *
      * @see ZeroMQConfigurationParser for the format of the configuration
      */
-    IOZMQ_API virtual void configuring();
+    IOZMQ_API virtual void configuring() override;
 
     /**
      * @brief start the socket
      */
-    IOZMQ_API virtual void starting();
+    IOZMQ_API virtual void starting() override;
 
     /**
      * @brief stop the socket
      */
-    IOZMQ_API virtual void stopping();
+    IOZMQ_API virtual void stopping() override;
 
     /**
      * @brief slot method to update configuration
@@ -73,7 +73,7 @@ protected:
                                           ::zmqNetwork::Socket::SocketMode const sockMode,
                                           std::string const& host);
 
-    IOZMQ_API void setHost(std::string const& host, boost::uint16_t const port);
+    IOZMQ_API void setHost(std::string const& host, std::uint16_t const port);
 
 private:
     /**

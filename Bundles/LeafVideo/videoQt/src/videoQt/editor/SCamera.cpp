@@ -13,6 +13,7 @@
 #include <arPreferences/preferences.hpp>
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -45,6 +46,10 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera );
 
 const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
 
+const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_DEVICE_SLOT = "configureDevice";
+const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_FILE_SLOT   = "configureFile";
+const ::fwCom::Slots::SlotKeyType SCamera::s_CONFIGURE_STREAM_SLOT = "configureStream";
+
 //------------------------------------------------------------------------------
 
 SCamera::SCamera() noexcept :
@@ -52,6 +57,9 @@ SCamera::SCamera() noexcept :
     m_numCreateCameras(0),
     m_sigConfiguredCameras(newSignal<ConfiguredCamerasSignalType>(s_CONFIGURED_CAMERAS_SIG))
 {
+    newSlot(s_CONFIGURE_DEVICE_SLOT, &SCamera::onChooseDevice, this );
+    newSlot(s_CONFIGURE_FILE_SLOT, &SCamera::onChooseFile, this );
+    newSlot(s_CONFIGURE_STREAM_SLOT, &SCamera::onChooseStream, this );
 }
 
 //------------------------------------------------------------------------------

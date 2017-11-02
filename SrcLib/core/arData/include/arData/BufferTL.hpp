@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __ARDATA_BUFFERTL_HPP__
 #define __ARDATA_BUFFERTL_HPP__
 
+#include "arData/config.hpp"
+#include "arData/TimeLine.hpp"
+#include "arData/timeline/Buffer.hpp"
+
 #include <boost/array.hpp>
 #include <boost/pool/poolfwd.hpp>
 
-#include "arData/config.hpp"
-#include "arData/timeline/Buffer.hpp"
-#include "arData/TimeLine.hpp"
-
 fwCampAutoDeclareDataMacro((arData)(BufferTL), ARDATA_API);
-
 
 namespace arData
 {
@@ -27,7 +26,7 @@ class ARDATA_CLASS_API BufferTL : public TimeLine
 {
 
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro( (BufferTL) (::fwData::Object) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (BufferTL) (::fwData::Object) )
 
     typedef ::fwCore::HiResClock::HiResClockType TimestampType;
     typedef std::map< TimestampType, SPTR(::arData::timeline::Buffer) > TimelineType;
@@ -52,26 +51,26 @@ public:
      * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
     ARDATA_API virtual CSPTR(::arData::timeline::Object) getClosestObject(
-        ::fwCore::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const;
+        ::fwCore::HiResClock::HiResClockType timestamp, DirectionType direction = BOTH) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
     ARDATA_API virtual CSPTR(::arData::timeline::Object) getObject(::fwCore::HiResClock::HiResClockType timestamp)
-    const;
+    const override;
 
     /// Clear the timeline
     ARDATA_API virtual void clearTimeline();
 
     /// Push a buffer to the timeline
-    ARDATA_API virtual void pushObject(const SPTR(::arData::timeline::Object)& obj);
+    ARDATA_API virtual void pushObject(const SPTR(::arData::timeline::Object)& obj) override;
 
     /// Remove a buffer to the timeline
-    ARDATA_API virtual SPTR(::arData::timeline::Object) popObject(TimestampType timestamp);
+    ARDATA_API virtual SPTR(::arData::timeline::Object) popObject(TimestampType timestamp) override;
 
     /// Change a buffer timestamp to the timeline
-    ARDATA_API virtual void modifyTime(TimestampType timestamp, TimestampType newTimestamp);
+    ARDATA_API virtual void modifyTime(TimestampType timestamp, TimestampType newTimestamp) override;
 
     /// Change a buffer object to the specified timestamp
-    ARDATA_API virtual void setObject(TimestampType timestamp, const SPTR(::arData::timeline::Object)& obj);
+    ARDATA_API virtual void setObject(TimestampType timestamp, const SPTR(::arData::timeline::Object)& obj) override;
 
     /// Return the last object in the timeline
     ARDATA_API CSPTR(::arData::timeline::Object) getNewerObject() const;
@@ -94,7 +93,6 @@ public:
         return m_pool != nullptr;
     }
 
-
 protected:
 
     /// Allocate the pool buffer.
@@ -115,6 +113,5 @@ protected:
 }; // class BufferTL
 
 } // namespace arData
-
 
 #endif // __ARDATA_BUFFERTL_HPP__

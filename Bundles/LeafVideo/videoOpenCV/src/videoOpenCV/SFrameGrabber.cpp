@@ -192,7 +192,7 @@ void SFrameGrabber::stopCamera()
         const ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp() + 1;
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+        std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
         std::fill(destBuffer,
                   destBuffer + frameTL->getWidth() * frameTL->getHeight() * frameTL->getNumberOfComponents(), 0);
@@ -235,7 +235,7 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000 / fps);
+        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / fps);
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabVideo, this));
         m_timer->setDuration(duration);
@@ -354,11 +354,11 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
             ::fwThread::Timer::TimeDurationType duration;
             if (!m_useTimelapse)
             {
-                duration = ::boost::chrono::milliseconds(1000/m_fps);
+                duration = std::chrono::milliseconds(1000/m_fps);
             }
             else if (m_imageToRead.size() >= 2)
             {
-                duration = ::boost::chrono::milliseconds(
+                duration = std::chrono::milliseconds(
                     static_cast<std::int64_t>(m_imageTimestamps[1] - m_imageTimestamps[0]));
                 m_timer->setOneShot(true);
             }
@@ -439,7 +439,7 @@ void SFrameGrabber::grabVideo()
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            ::boost::uint8_t* frameBuffOut                = bufferOut->addElement(0);
+            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
             ::cv::Mat imgOut(image.size(), image.type(), (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
@@ -519,7 +519,7 @@ void SFrameGrabber::grabImage()
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            ::boost::uint8_t* frameBuffOut                = bufferOut->addElement(0);
+            std::uint8_t* frameBuffOut = bufferOut->addElement(0);
 
             // Create an openCV mat that aliases the buffer created from the output timeline
             ::cv::Mat imgOut(image.size(), image.type(), (void*)frameBuffOut, ::cv::Mat::AUTO_STEP);
@@ -569,7 +569,7 @@ void SFrameGrabber::grabImage()
                     if (m_loopVideo)
                     {
                         m_imageCount                                 = 0;
-                        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
+                        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000/m_fps);
                         m_timer->setDuration(duration);
                         m_timer->start();
                     }
@@ -577,7 +577,7 @@ void SFrameGrabber::grabImage()
                 else
                 {
                     ::fwThread::Timer::TimeDurationType duration =
-                        ::boost::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
+                        std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
                     m_timer->stop();
                     m_timer->setDuration(duration);
                     m_timer->start();

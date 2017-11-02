@@ -28,10 +28,11 @@ namespace videoCalibration
  *
  * @code{.xml}
      <service uid="..." type="::videoCalibration::SReprojectionError">
-        <in key="matrixTL" uid="matrix"/>
-        <in key="markerTL" uid="marker"/>
-        <in key="camera" uid="camera1"/>
-        <in key="extrinsic" uid="matrix"/>
+        <in key="matrixTL" uid="..."/>
+        <in key="markerTL" uid="..."/>
+        <in key="camera" uid="..."/>
+        <in key="extrinsic" uid="..."/>
+        <inout key="frameTL" uid="..." />
         <out key="error" uid="doubleError" />
         <patternWidth>80</patternWidth>
      </service>
@@ -41,6 +42,8 @@ namespace videoCalibration
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
+ * @subsection InOut InOut
+ *  - \b frameTL [::arData::FrameTL] : frame timeline used to draw reprojected points (optional)
  * @subsection Output Output
  * - \b error [::fwData::Float] : computed error
  * @subsection Configuration Configuration
@@ -66,28 +69,28 @@ public:
     VIDEOCALIBRATION_API ~SReprojectionError();
 
     /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    VIDEOCALIBRATION_API void configuring();
+    VIDEOCALIBRATION_API void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    VIDEOCALIBRATION_API void starting();
+    VIDEOCALIBRATION_API void starting() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    VIDEOCALIBRATION_API void updating();
+    VIDEOCALIBRATION_API void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    VIDEOCALIBRATION_API void stopping();
+    VIDEOCALIBRATION_API void stopping() override;
 
 private:
 
@@ -114,7 +117,7 @@ private:
     ::cv::Scalar m_cvColor;
     /// if true: display circle centered at reprojection point.
     bool m_display;
-
+    /// extrinsic matrix (can be identity)
     ::cv::Mat m_extrinsic;
 
 };

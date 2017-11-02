@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IController.hpp>
-
-
+#include <fwServices/macros.hpp>
 
 namespace ctrlCamera
 {
@@ -66,7 +64,7 @@ class CTRLCAMERA_CLASS_API SExtractDeviceInfo : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SExtractDeviceInfo)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SExtractDeviceInfo)(::fwServices::IController) );
 
     /// Constructor
     CTRLCAMERA_API SExtractDeviceInfo();
@@ -77,16 +75,16 @@ public:
 protected:
 
     /// Does nothing
-    CTRLCAMERA_API virtual void starting();
+    CTRLCAMERA_API virtual void starting() override;
 
     /// Configure the service
-    CTRLCAMERA_API virtual void configuring();
+    CTRLCAMERA_API virtual void configuring() override;
 
     /// Does nothing
-    CTRLCAMERA_API virtual void stopping();
+    CTRLCAMERA_API virtual void stopping() override;
 
     /// Does nothing
-    CTRLCAMERA_API virtual void updating();
+    CTRLCAMERA_API virtual void updating() override;
 
 private:
 
@@ -99,6 +97,5 @@ private:
 };
 
 } // namespace ctrlCamera
-
 
 #endif /* __CTRLCAMERA_SEXTRACTDEVICEINFO_HPP__ */

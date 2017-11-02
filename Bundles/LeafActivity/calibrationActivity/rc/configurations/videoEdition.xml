@@ -4,7 +4,6 @@
         <param name="WID_PARENT" />
         <param name="camera" />
         <param name="videoGrabber" />
-        <param name="videoGrabberImpl" />
         <param name="cameraModifiedChannel" default="cameraModified" />
         <param name="videoPositionChangedChannel" default="videoPositionChanged" />
         <param name="videoPositionModifiedChannel" default="videoPositionModified" />
@@ -35,7 +34,7 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Edit" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="Edit" icon="arMedia-0.1/icons/configuration.svg" />
                 </layout>
             </gui>
             <registry>
@@ -73,7 +72,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="${videoGrabber}" type="${videoGrabberImpl}">
+        <service uid="${videoGrabber}" type="::videoTools::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="timeLine" />
         </service>

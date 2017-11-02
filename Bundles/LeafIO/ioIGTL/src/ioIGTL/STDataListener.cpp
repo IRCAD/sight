@@ -103,10 +103,11 @@ void STDataListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
+        m_sigConnected->asyncEmit();
     }
     catch (::fwCore::Exception& ex)
     {
@@ -126,15 +127,16 @@ void STDataListener::runClient()
         return;
     }
 
-    m_sigClientConnected->asyncEmit();
-
     // 2. Receive messages
     try
     {
         while (m_client.isConnected())
         {
-            if (m_client.receiveObject(composite))
+            std::string deviceName;
+            ::fwData::Object::sptr receiveObject = m_client.receiveObject(deviceName);
+            if (receiveObject)
             {
+                composite->shallowCopy(receiveObject);
                 this->manageTimeline(composite);
             }
         }
@@ -155,7 +157,6 @@ void STDataListener::runClient()
             SLM_ERROR(ex.what());
         }
     }
-    m_sigClientDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
@@ -175,6 +176,7 @@ void STDataListener::stopping()
 {
     m_client.disconnect();
     m_clientFuture.wait();
+    m_sigDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
@@ -217,8 +219,7 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
     matTL->pushObject(matrixBuf);
 
     ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+    sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

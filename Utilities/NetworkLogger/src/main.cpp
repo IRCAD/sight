@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,19 +10,22 @@
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <boost/date_time.hpp>
 
-#include <iostream>
-#include <stdexcept>
 #include <fstream>
-#include <sstream>
 #include <functional>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 using namespace networkLogger;
 
-static std::string                      getCurrentTime()
+//------------------------------------------------------------------------------
+
+static std::string getCurrentTime()
 {
     unsigned long int currentTime;
     ::boost::posix_time::microsec_clock clock;
@@ -31,7 +34,9 @@ static std::string                      getCurrentTime()
     return ::boost::lexical_cast<std::string> (currentTime);
 }
 
-static std::string      formatTransformMatrix (::fwData::TransformationMatrix3D::sptr const& matrix)
+//------------------------------------------------------------------------------
+
+static std::string formatTransformMatrix (::fwData::TransformationMatrix3D::sptr const& matrix)
 {
     std::stringstream stream;
 
@@ -39,27 +44,32 @@ static std::string      formatTransformMatrix (::fwData::TransformationMatrix3D:
     {
         for (int j = 0; j < 4; ++j)
         {
-            stream << matrix->getCoefficient (i, j) << " ";
+            stream << matrix->getCoefficient(i, j) << " ";
         }
     }
     return stream.str();
 }
 
+//------------------------------------------------------------------------------
+
 template<typename Socket>
 static void writeStream (std::ostream& outputStream, Socket& socket)
 {
-    ::fwData::TransformationMatrix3D::sptr matrixReceived = ::fwData::TransformationMatrix3D::New();
-
-    while (socket.receiveObject(matrixReceived))
+    ::fwData::Object::sptr obj;
+    std::string deviceName;
+    while (obj = socket.receiveObject(deviceName))
     {
-        outputStream << getCurrentTime() << " " << formatTransformMatrix (matrixReceived);
+        ::fwData::TransformationMatrix3D::sptr matrixReceived = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+        outputStream << getCurrentTime() << " " << formatTransformMatrix(matrixReceived);
         outputStream << std::endl;
     }
 }
 
+//------------------------------------------------------------------------------
+
 int main (int ac, char** av)
 {
-    typedef ::fwCore::util::FactoryRegistry<INetworkLogger::sptr ()>       FactoryRegistryType;
+    typedef ::fwCore::util::FactoryRegistry<INetworkLogger::sptr()> FactoryRegistryType;
 
     FactoryRegistryType factoryRegistry;
     INetworkLogger::sptr logger;
@@ -73,10 +83,10 @@ int main (int ac, char** av)
                                                 &writeStream<ZeroMQLogger::SocketType>));
     if (ac > 3)
     {
-        filename = std::string (av[2]);
+        filename = std::string(av[2]);
         try
         {
-            fileStream.open (filename.c_str(), std::ios::out | std::ios::app);
+            fileStream.open(filename.c_str(), std::ios::out | std::ios::app);
             if (fileStream.is_open())
             {
                 socketType = std::string(av[1]);
@@ -93,11 +103,11 @@ int main (int ac, char** av)
         }
         catch (std::exception const& err)
         {
-            SLM_ERROR (err.what());
+            SLM_ERROR(err.what());
         }
     }
     else
     {
-        SLM_ERROR ("./NetworkLogger <type> <filename> < <ip> <port> | zmq_connect_str>");
+        SLM_ERROR("./NetworkLogger <type> <filename> < <ip> <port> | zmq_connect_str>");
     }
 }

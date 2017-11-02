@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __VIDEOCALIBRATION_SOPENCVINTRINSIC_HPP__
 #define __VIDEOCALIBRATION_SOPENCVINTRINSIC_HPP__
 
-#include "videoCalibration/ICalibration.hpp"
 #include "videoCalibration/config.hpp"
+#include "videoCalibration/ICalibration.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -52,19 +52,19 @@ public:
 protected:
 
     /// Configures the service.
-    VIDEOCALIBRATION_API void configuring();
+    VIDEOCALIBRATION_API void configuring() override;
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting();
+    VIDEOCALIBRATION_API void starting() override;
 
     /// Calls stopping and starting.
-    VIDEOCALIBRATION_API void swapping();
+    VIDEOCALIBRATION_API void swapping() override;
 
     /// Computes intrinsic calibration
-    VIDEOCALIBRATION_API void updating();
+    VIDEOCALIBRATION_API void updating() override;
 
     /// Removes connections
-    VIDEOCALIBRATION_API void stopping();
+    VIDEOCALIBRATION_API void stopping() override;
 
     /**
      * @brief SLOT: update the chessboard size.

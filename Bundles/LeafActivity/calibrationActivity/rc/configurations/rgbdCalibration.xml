@@ -19,21 +19,16 @@
         <object uid="snapshotDepth" type="::fwData::Image" />
         <object uid="snapshotColor" type="::fwData::Image" />
         <object uid="snapshotIR" type="::fwData::Image" />
-        <object uid="tFSelectionDepth" type="::fwData::Composite">
-            <item key="SelectedTF">
-                <object uid="selectedTF" type="::fwData::TransferFunction">
-                    <colors>
-                        <step color="#000000ff" value="0" />
-                        <step color="#ff0000ff" value="1" />
-                        <step color="#ffff00ff" value="500" />
-                        <step color="#00ff00ff" value="1000" />
-                        <step color="#00ffffff" value="1500" />
-                        <step color="#0000ffff" value="2000" />
-                        <step color="#000000ff" value="4000" />
-                    </colors>
-                </object>
-
-            </item>
+        <object uid="tfDepth" type="::fwData::TransferFunction">
+            <colors>
+                <step color="#000000ff" value="0" />
+                <step color="#ff0000ff" value="1" />
+                <step color="#ffff00ff" value="500" />
+                <step color="#00ff00ff" value="1000" />
+                <step color="#00ffffff" value="1500" />
+                <step color="#0000ffff" value="2000" />
+                <step color="#000000ff" value="4000" />
+            </colors>
         </object>
 
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
@@ -57,14 +52,14 @@
         <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
+                    <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                    <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                     <separator/>
-                    <menuItem name="configure depth record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
-                    <menuItem name="configure color record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
-                    <menuItem name="configure infrared record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="configure depth record" icon="arMedia-0.1/icons/configuration.svg" />
+                    <menuItem name="configure color record" icon="arMedia-0.1/icons/configuration.svg" />
+                    <menuItem name="configure infrared record" icon="arMedia-0.1/icons/configuration.svg" />
                     <separator/>
-                    <menuItem name="start record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/camera-photo.svg" />
+                    <menuItem name="start record" icon="arMedia-0.1/icons/camera-photo.svg" />
                 </layout>
             </gui>
             <registry>
@@ -138,8 +133,8 @@
 
         <service uid="depthVideo" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="imageDepth" />
-            <inout key="tfSelection" uid="tFSelectionDepth" />
-            <config renderer="default" selectedTFKey="SelectedTF" />
+            <in key="tf" uid="tfDepth" />
+            <config renderer="default" />
         </service>
 
         <service uid="depthVideoInteractor" type="::visuVTKAdaptor::SInteractorStyle">
@@ -180,10 +175,10 @@
             </scene>
         </service>
 
-        <service uid="depthNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="depthNegato" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <inout key="image" uid="snapshotDepth" />
-            <inout key="tfSelection" uid="tFSelectionDepth" />
-            <config renderer="default" mode="2d" slices="1" picker="picker" selectedTFKey="SelectedTF" />
+            <in key="tf" uid="tfDepth" />
+            <config renderer="default" />
         </service>
 
         <service uid="depthNegatoInteractor" type="::visuVTKAdaptor::SInteractorStyle">

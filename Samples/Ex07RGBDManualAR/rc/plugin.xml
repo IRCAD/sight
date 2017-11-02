@@ -1,8 +1,9 @@
-<plugin id="Ex07RGBDManualAR" version="@DASH_VERSION@">
+<plugin id="Ex07RGBDManualAR" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="visuVTKARAdaptor" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07RGBDManualARConfig</id>
@@ -13,20 +14,22 @@
             <object uid="cameraDepth" type="::arData::Camera" src="deferred" />
             <object uid="seriesDB" type="::fwMedData::SeriesDB" />
             <object uid="frameTL" type="::arData::FrameTL" />
-            <object uid="tagTL" type="::arData::MarkerTL" />
+            <object uid="maskTL" type="::arData::FrameTL" />
             <object uid="videoImage" type="::fwData::Image" />
+            <object uid="backgroundMask" type="::fwData::Image" />
+            <object uid="foregroundMask" type="::fwData::Image" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
             <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
-            <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="skinMesh" type="::fwData::Mesh" src="deferred" />
             <object uid="modelseries" type="::fwMedData::ModelSeries" src="deferred" />
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Ex07RGBDManualAR</name>
-                        <icon>@BUNDLE_PREFIX@/Ex07RGBDManualAR_0-1/app.ico</icon>
+                        <icon>Ex07RGBDManualAR-0.1/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
@@ -34,7 +37,21 @@
                 <registry>
                     <menuBar sid="menuBar" start="yes" />
                     <toolBar sid="toolbar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
                     <view sid="genericScene" />
+                    <view sid="thresholdSlider" start="yes"/>
                 </registry>
             </service>
 
@@ -76,17 +93,24 @@
             <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg" />
+                        <menuItem name="Load Calibration" icon="media-0.1/icons/Plus.svg" />
                         <separator/>
-                        <menuItem name="Load Transformation" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg" />
+                        <menuItem name="Load Transformation" icon="media-0.1/icons/Plus.svg" />
                         <separator/>
-                        <menuItem name="Load Model" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg" />
+                        <menuItem name="Load Model" icon="media-0.1/icons/Plus.svg" />
                         <separator/>
                         <editor/>
-                        <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
-                        <menuItem name="pause" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
-                        <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
+                        <menuItem name="pause" icon="arMedia-0.1/icons/pause-cam.svg" />
+                        <menuItem name="Manage organs color" icon="media-0.1/icons/ManageOrgan.png" style="check" />
+                        <separator/>
+                        <menuItem name="Learn background model" icon="media-0.1/icons/icon-frontal.png" />
+                        <menuItem name="Learn foreground model" icon="media-0.1/icons/icon-blend.png" />
+                        <menuItem name="Segmentation parameters" icon="media-0.1/icons/Settings.svg" style="check" />
+                        <editor />
+                        <editor />
+                        <editor />
                     </layout>
                 </gui>
                 <registry>
@@ -98,6 +122,12 @@
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
                     <menuItem sid="organManager" start="no" />
+                    <menuItem sid="learnBackground" start="yes" />
+                    <menuItem sid="learnForeground" start="yes" />
+                    <menuItem sid="segmentationParameters" start="yes" />
+                    <editor sid="noiseLevel" start="yes" />
+                    <editor sid="bgComponents" start="yes" />
+                    <editor sid="fgComponents" start="yes" />
                 </registry>
             </service>
 
@@ -142,7 +172,7 @@
             <service uid="organManager" type="::gui::action::SConfigLauncher">
                 <appConfig id="OrganManagerWithSeries" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
-                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/Ex07RGBDManualAR_0-1/app.ico" />
+                <parameter replace="ICON_PATH" by="Ex07RGBDManualAR-0.1/app.ico" />
                 <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
                 <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>
@@ -163,7 +193,7 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-                <inout key="target" uid="cameraSeries" />
+                <inout key="data" uid="cameraSeries" />
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -200,6 +230,52 @@
                 </out>
             </service>
 
+            <service uid="learnBackground" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>extractForeground/setBackground</slot>
+                </slots>
+            </service>
+
+            <service uid="learnForeground" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>extractForeground/setForeground</slot>
+                </slots>
+            </service>
+
+            <service uid="segmentationParameters" type="::gui::action::SModifyLayout">
+                <state active="false" />
+                <config>
+                    <show_or_hide sid="noiseLevel" />
+                    <show_or_hide sid="bgComponents" />
+                    <show_or_hide sid="fgComponents" />
+                    <show_or_hide sid="thresholdSlider" />
+                </config>
+            </service>
+
+            <service uid="thresholdSlider" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
+                </parameters>
+            </service>
+
+            <service uid="noiseLevel" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
+                </parameters>
+            </service>
+
+            <service uid="bgComponents" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
+                </parameters>
+            </service>
+
+            <service uid="fgComponents" type="::guiQt::editor::SParameters">
+                <parameters>
+                    <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
+                </parameters>
+            </service>
+
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -207,41 +283,73 @@
                 <scene>
                     <renderer id="video" layer="0" background="0.0" />
                     <renderer id="default" layer="1" background="0.0" />
+                    <renderer id="foreground" layer="2" background="0.0" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
-                    <adaptor uid="registrationTransform" />
                     <adaptor uid="modelseriesAdpt" />
                     <adaptor uid="cameraAdpt" />
+                    <adaptor uid="foregroundAdpt" />
                 </scene>
             </service>
 
             <service uid="videoAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
-                <in key="frame" uid="videoImage" />
                 <in key="camera" uid="cameraRGB" />
-                <config renderer="video" />
+                <in key="frame" uid="videoImage" />
+                <config renderer="video" interpolate="false" />
+            </service>
+
+            <service uid="foregroundAdpt" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
+                <in key="frame" uid="foregroundMask" />
+                <config renderer="foreground" interpolate="false" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-                <config renderer="default" style="InteractorStyle2DForNegato" />
-            </service>
-
-            <service uid="registrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-                <inout key="tm3d" uid="inverseMat" />
-                <config renderer="default" picker="" transform="registrationMatrix" />
+                <config renderer="default" style="FixedInteractorStyle" />
             </service>
 
             <service uid="modelseriesAdpt" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
                 <in key="model" uid="modelseries" />
-                <config renderer="default" picker="default" autoresetcamera="no" color="" transform="registrationMatrix" />
+                <config renderer="default" picker="default" autoresetcamera="no" color="" transform="id" />
             </service>
 
             <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-                <inout key="transform" uid="identity" />
+                <inout key="transform" uid="inverseMat" />
                 <in key="camera" uid="cameraRGB" />
                 <config renderer="default" />
             </service>
 
             <!-- *************************** End generic scene *************************** -->
+
+            <!-- *************************** Begin offscreen scene *************************** -->
+
+            <service uid="offscreenRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <inout key="offScreen" uid="backgroundMask" />
+                <flip>true</flip>
+                <scene width="640" height="480">
+                    <renderer id="default" layer="0" background="0.0" />
+                    <adaptor uid="interactorStyleOffscreen" />
+                    <adaptor uid="meshAdptOffscreen" />
+                    <adaptor uid="cameraAdptOffscreen" />
+                </scene>
+            </service>
+
+            <service uid="interactorStyleOffscreen" type="::visuVTKAdaptor::SInteractorStyle">
+                <config renderer="default" style="FixedInteractorStyle" />
+            </service>
+
+
+            <service uid="meshAdptOffscreen" type="::visuVTKAdaptor::SMesh" autoConnect="yes">
+                <in key="mesh" uid="skinMesh" />
+                <config renderer="default" picker="default" autoresetcamera="no" color="#FFFFFF" transform="id" shadingMode="ambient" />
+            </service>
+
+            <service uid="cameraAdptOffscreen" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="inverseMat" />
+                <in key="camera" uid="cameraRGB" />
+                <config renderer="default" />
+            </service>
+
+            <!-- *************************** End offscreen scene *************************** -->
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="CameraSelector" type="::videoQt::editor::SCamera">
@@ -258,8 +366,8 @@
             <!-- Use the extrinsic matrix to get back in the RGB space -->
             <service uid="concatenate" type="::maths::SConcatenateMatrices">
                 <in group="matrix">
-                    <key uid="extrinsic" autoConnect="yes" />
-                    <key uid="matrix" autoConnect="yes" />
+                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                    <key uid="extrinsic" autoConnect="yes" inverse="true" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
@@ -268,12 +376,36 @@
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
+                    <key uid="maskTL" />
                 </in>
                 <inout group="image">
                     <key uid="videoImage" />
+                    <key uid="foregroundMask" />
                 </inout>
                 <framerate>30</framerate>
-                <tolerance>100</tolerance>
+                <tolerance>200</tolerance>
+            </service>
+
+            <!-- Extract model called "Skin" in the model series -->
+            <service uid="extractSkin" type="::ctrlCamp::SExtractMeshByType" >
+               <inout key="source" uid="modelseries">
+                   <extract type="Skin" />
+               </inout>
+               <out group="target">
+                   <key uid="skinMesh"/>
+               </out>
+            </service>
+
+            <!-- Split background and foreground image -->
+            <service uid="extractForeground" type="::colourSegmentation::SColourImageMasking" worker="videoExtraction">
+                <in key="videoTL" uid="frameTL" autoConnect="yes" />
+                <in key="mask" uid="backgroundMask" />
+                <inout key="videoMaskTL" uid="maskTL" />
+                <config scaleFactor="1.0" noise="30" foregroundComponents="5" backgroundComponents="5"/>
+                <HSV>
+                    <lower>35,0,0</lower>
+                    <upper>360.5,255,255</upper>
+                </HSV>
             </service>
 
             <!-- signal/slot connection -->
@@ -294,7 +426,6 @@
                 <slot>frameGrabber/stopCamera</slot>
             </connect>
 
-            <!-- start services -->
             <connect channel="ModelRepresentationChannel">
                 <slot>modelseriesAdpt/updateNormalMode</slot>
             </connect>
@@ -303,6 +434,27 @@
                 <slot>modelseriesAdpt/showReconstructions</slot>
             </connect>
 
+            <connect>
+                <signal>thresholdSlider/intChanged</signal>
+                <slot>extractForeground/setThreshold</slot>
+            </connect>
+
+            <connect>
+                <signal>noiseLevel/doubleChanged</signal>
+                <slot>extractForeground/setNoiseLevel</slot>
+            </connect>
+
+            <connect>
+                <signal>bgComponents/intChanged</signal>
+                <slot>extractForeground/setBackgroundComponents</slot>
+            </connect>
+
+            <connect>
+                <signal>fgComponents/intChanged</signal>
+                <slot>extractForeground/setForegroundComponents</slot>
+            </connect>
+
+            <!-- start services -->
             <start uid="mainFrame" />
             <start uid="extractModelSeries" />
             <start uid="frameGrabber" />
@@ -315,12 +467,22 @@
             <start uid="concatenate" />
             <start uid="organManager" />
             <start uid="genericScene" />
+            <start uid="offscreenRender" />
+            <start uid="extractSkin" />
+            <start uid="extractForeground" />
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
-            <start uid="registrationTransform" />
             <start uid="modelseriesAdpt" />
             <start uid="cameraAdpt" />
+            <start uid="foregroundAdpt" />
+            <!-- VTK scene 'offscreenRender' -->
+            <start uid="interactorStyleOffscreen" />
+            <start uid="meshAdptOffscreen" />
+            <start uid="cameraAdptOffscreen" />
+            <!-- Update -->
+            <update uid="extractSkin" />
+            <update uid="segmentationParameters" />
         </config>
     </extension>
 </plugin>

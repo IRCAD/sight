@@ -8,10 +8,8 @@
 #define __IGTLNETWORK_SERVER_HPP__
 
 #include "igtlNetwork/Client.hpp"
-#include "igtlNetwork/INetwork.hpp"
 #include "igtlNetwork/config.hpp"
-
-#include <boost/type.hpp>
+#include "igtlNetwork/INetwork.hpp"
 
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
@@ -20,6 +18,7 @@
 
 #include <list>
 #include <string>
+#include <vector>
 
 namespace igtlNetwork
 {
@@ -49,7 +48,7 @@ public:
      *
      * @param[in] port the port to listen
      */
-    IGTLNETWORK_API void start(::boost::uint16_t port);
+    IGTLNETWORK_API void start(std::uint16_t port);
 
     /**
      * @brief method to wait a connection
@@ -71,7 +70,7 @@ public:
     /**
      * @brief method to broadcast to all client the obj
      */
-    IGTLNETWORK_API void broadcast(::fwData::Object::sptr obj);
+    IGTLNETWORK_API void broadcast(const ::fwData::Object::csptr& obj);
 
     /**
      * @brief method to broadcast to all client a msg
@@ -83,7 +82,7 @@ public:
      *
      * @return the port listened by server instance
      */
-    IGTLNETWORK_API ::boost::uint16_t getPort() const;
+    IGTLNETWORK_API std::uint16_t getPort() const;
 
     /**
      * @brief method to run server and start event loop of server
@@ -93,14 +92,14 @@ public:
     /**
      * @brief method to have the current number of clients
      */
-    IGTLNETWORK_API size_t getNumberOfClients();
+    IGTLNETWORK_API size_t getNumberOfClients() const;
+
     /**
-     * @brief methdo to receive all headers of all connected clients
+     * @brief method to receive all headers of all connected clients
      *
      * @return vector of igl::MessageHeader::Pointer
      */
-
-    IGTLNETWORK_API std::vector< ::igtl::MessageHeader::Pointer > receiveHeader();
+    IGTLNETWORK_API std::vector< ::igtl::MessageHeader::Pointer > receiveHeaders();
 
     /** @brief receive body pack of a specific connected client
      *
@@ -109,13 +108,20 @@ public:
      *
      *  @return Message
      */
-    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header,
-                                                              unsigned int client);
+    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer header,
+                                                             unsigned int client);
 
     /**
-     * @brief set the device name when a message is sended
+     * @brief method to retrieve vector of received object from all connected clients
+     *
+     * @return a vector of smart pointer of fwData object
      */
-    IGTLNETWORK_API void setMessageDeviceName(std::string deviceName);
+    IGTLNETWORK_API std::vector< ::fwData::Object::sptr > receiveObjects(std::vector<std::string>& deviceNames);
+
+    /**
+     * @brief set the device name when a message is sent
+     */
+    IGTLNETWORK_API void setMessageDeviceName(const std::string& deviceName);
 
 private:
 
@@ -132,7 +138,7 @@ private:
     std::vector< Client::sptr > m_clients;
 
     /// Server port
-    ::boost::uint16_t m_port;
+    std::uint16_t m_port;
 
     /// integer constant for success
     static const int s_SUCCESS = 0;

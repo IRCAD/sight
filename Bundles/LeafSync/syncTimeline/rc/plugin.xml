@@ -1,4 +1,4 @@
-<plugin id="syncTimeline" class="syncTimeline::Plugin" version="@DASH_VERSION@" >
+<plugin id="syncTimeline" class="syncTimeline::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="syncTimeline" />
 

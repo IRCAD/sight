@@ -61,7 +61,6 @@
 
         <service uid="videoAdaptor" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="${imageVideo}" />
-            <in key="camera" uid="${camera}" />
             <config renderer="video" />
         </service>
 
@@ -158,7 +157,7 @@
             <slot>markerMesh/updateVisibility</slot>
             <slot>markerMesh2/updateVisibility</slot>
         </connect>
-        
+
         <!-- *************************** End connect declaration ****************************** -->
         <!-- *************************** Begin Start ****************************************** -->
 

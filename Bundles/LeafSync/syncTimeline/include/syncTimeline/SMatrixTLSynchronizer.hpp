@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,12 +10,15 @@
 #include "syncTimeline/config.hpp"
 
 #include <arServices/ISynchronizer.hpp>
+
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
-#include <fwData/Composite.hpp>
-#include <fwServices/IController.hpp>
-#include <fwThread/Timer.hpp>
 
+#include <fwData/Composite.hpp>
+
+#include <fwServices/IController.hpp>
+
+#include <fwThread/Timer.hpp>
 
 namespace arData
 {
@@ -78,21 +81,21 @@ public:
 protected:
 
     /// Does nothing
-    SYNCTIMELINE_API void configuring();
+    SYNCTIMELINE_API void configuring() override;
 
     /// This method is used to initialize the service.
-    SYNCTIMELINE_API void starting();
+    SYNCTIMELINE_API void starting() override;
 
     /// Does nothing.
-    SYNCTIMELINE_API void stopping();
+    SYNCTIMELINE_API void stopping() override;
 
     /// Does nothing.
-    SYNCTIMELINE_API void updating();
+    SYNCTIMELINE_API void updating() override;
 
     /// Synchronize
     SYNCTIMELINE_API void synchronize();
 
-    SYNCTIMELINE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    SYNCTIMELINE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

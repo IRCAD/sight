@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,14 @@
 #ifndef __ARDATA_FRAMETL_HPP__
 #define __ARDATA_FRAMETL_HPP__
 
-#include <fwData/factory/new.hpp>
-#include <fwTools/Type.hpp>
-
 #include "arData/GenericTL.hpp"
 #include "arData/GenericTL.hxx"
 #include "arData/timeline/GenericObject.hpp"
 #include "arData/timeline/GenericObject.hxx"
+
+#include <fwData/factory/new.hpp>
+
+#include <fwTools/Type.hpp>
 
 fwCampAutoDeclareDataMacro((arData)(FrameTL), ARDATA_API);
 
@@ -26,8 +27,8 @@ class ARDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (FrameTL)(::arData::TimeLine),(()),::fwData::factory::New< FrameTL >);
-    fwCampMakeFriendDataMacro((arData)(FrameTL));
+    fwCoreClassDefinitionsWithFactoryMacro( (FrameTL)(::arData::TimeLine), (()), ::fwData::factory::New< FrameTL >)
+    fwCampMakeFriendDataMacro((arData)(FrameTL))
 
     /**
      * @brief Constructor
@@ -39,7 +40,7 @@ public:
     ARDATA_API virtual ~FrameTL();
 
     /// Defines deep copy
-    ARDATA_API virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
+    ARDATA_API virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Initializes the size of the pool buffer.
     ARDATA_API void initPoolSize(size_t width, size_t height,
@@ -73,7 +74,7 @@ public:
 private:
 
     /// Forbid the use of this inherited method.
-    ARDATA_API virtual void initPoolSize(unsigned int maxElementNum);
+    ARDATA_API virtual void initPoolSize(unsigned int maxElementNum) override;
 
     /// frame width
     size_t m_width;

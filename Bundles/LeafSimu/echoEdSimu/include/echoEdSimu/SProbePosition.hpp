@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,11 +30,10 @@ class ECHOEDSIMU_CLASS_API SProbePosition : public ::arServices::ISimulator
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SProbePosition)(::arServices::ISimulator) );
-
+    fwCoreServiceClassDefinitionsMacro( (SProbePosition)(::arServices::ISimulator) );
 
     ECHOEDSIMU_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (int,int)> PositionModifiedSignalType;
+    typedef ::fwCom::Signal<void (int, int)> PositionModifiedSignalType;
 
     /// Constructor.
     ECHOEDSIMU_API SProbePosition() noexcept;
@@ -50,16 +49,16 @@ protected:
         <service uid="SProbePositionInstance" impl="::echoEdSimu::SProbePosition" type="::arServices::ISimulator" />
        @endcode
      */
-    ECHOEDSIMU_API virtual void configuring();
+    ECHOEDSIMU_API virtual void configuring() override;
 
     /// Do nothing.
-    ECHOEDSIMU_API virtual void starting();
+    ECHOEDSIMU_API virtual void starting() override;
 
     /// Do nothing.
-    ECHOEDSIMU_API virtual void stopping();
+    ECHOEDSIMU_API virtual void stopping() override;
 
     /// Generate the indices (i,j) corresponding to the translation of the matrix.
-    ECHOEDSIMU_API virtual void updating();
+    ECHOEDSIMU_API virtual void updating() override;
 
 private:
     /// Key of the matrix in the composite

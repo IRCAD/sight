@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,6 @@
 
 #include <fwServices/IController.hpp>
 
-#include <boost/type.hpp>
-#include <map>
-#include <string>
-
 namespace ioNetwork
 {
 
@@ -25,50 +21,35 @@ namespace ioNetwork
  * @brief Abstract class for network listeners if you want create a new network listener you must be inherit
  *
  */
-class IONETWORK_CLASS_API INetworkListener :
-    public ::fwServices::IController
+class IONETWORK_CLASS_API INetworkListener : public ::fwServices::IController
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (INetworkListener) (::fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro( (INetworkListener) (::fwServices::IController));
 
     /**
-     * @brief Receive object signal is emitted when listener receive a new object from network
+     * @brief Service connected signal is emitted when listener is connected
      */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_RECEIVED_OBJECT_SIGNAL;
+    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CONNECTED_SIGNAL;
 
     /**
-     * @typedef ReceivedObjectSignalType
+     * @typedef ConnectedSignalType
      *
-     * @brief ReceivedObjectSignalType is stored and emit it when receive new object from network
+     * @brief ConnectedSignalType is stored and emit it when listener is connected
      */
-    typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReceivedObjectSignalType;
+    typedef ::fwCom::Signal< void () >  ConnectedSignalType;
 
     /**
-     * @brief Client connected signal is emitted when listener is connected to a server
+     * @brief Service disconnected signal is emitted when listener is disconnected
      */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CLIENT_CONNECTED_SIGNAL;
+    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_DISCONNECTED_SIGNAL;
 
     /**
-     * @typedef ClientConnectedSignalType
+     * @typedef DisconnectSignalType
      *
-     * @brief ClientConnectedSignalType is stored and emit it when listener is connected
+     * @brief DisconnectSignalType is stored and emit it when listener is disconnected
      */
-    typedef ::fwCom::Signal< void () >  ClientConnectedSignalType;
-
-    /**
-     * @brief Client disconnected signal is emitted when listener is disconnected from the server
-     */
-    IONETWORK_API static const ::fwCom::Signals::SignalKeyType s_CLIENT_DISCONNECTED_SIGNAL;
-
-    /**
-     * @typedef ClientDisconnectSignalType
-     *
-     * @brief ClientDisconnectSignalType is stored and emit it when listener is disconnected
-     */
-    typedef ::fwCom::Signal< void () > ClientDisconnectSignalType;
-
-
+    typedef ::fwCom::Signal< void () > DisconnectSignalType;
 
     /// Constructor
     IONETWORK_API INetworkListener();
@@ -77,41 +58,20 @@ public:
     IONETWORK_API virtual ~INetworkListener();
 
 protected:
-    /// Overrides
-    IONETWORK_API virtual void configuring();
 
     /// Overrides
-    IONETWORK_API virtual void starting();
+    IONETWORK_API virtual void updating() override;
 
     /// Overrides
-    IONETWORK_API virtual void stopping();
+    IONETWORK_API virtual void swapping() override;
 
-    /// Overrides
-    IONETWORK_API virtual void updating();
+    /// Signal emitted when service is connected
+    ConnectedSignalType::sptr m_sigConnected;
 
-    /// Overrides
-    IONETWORK_API virtual void swapping();
-
-    /**
-     * @brief notify application the object has updated use the s_MODIFIED_SIG signal from Object
-     * You should use a service class to transform this signal to the signal you wanted
-     *
-     * @param[in] obj the new object
-     */
-    IONETWORK_API void notifyObjectUpdated();
-
-    /// Signal emitted when you receive an object
-    ReceivedObjectSignalType::sptr m_sigReceivedObject;
-
-    /// Signal emitted when client is connected
-    ClientConnectedSignalType::sptr m_sigClientConnected;
-
-    /// Signal emitted when client is disconnected
-    ClientDisconnectSignalType::sptr m_sigClientDisconnected;
+    /// Signal emitted when service is disconnected
+    DisconnectSignalType::sptr m_sigDisconnected;
 
 };
-
-
 
 } // namespace ioNetwork
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ public:
      *
      * @return an fwData::Image converted from an igtl::ImageMessage
      */
-    IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src, ::fwData::Object::sptr& dest) const;
+    IGTLPROTOCOL_API ::fwData::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
      * @brief convert a ::fwData::Line to an igtl::PositionMessage

@@ -11,6 +11,7 @@
 #include <arData/timeline/Buffer.hpp>
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -42,6 +43,9 @@ const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
 const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "image";
 const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
+// Private slot
+const ::fwCom::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
+
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
@@ -52,6 +56,17 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 {
     m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
     m_sigAllMatricesFound    = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
+
+    newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
+    return connections;
 }
 
 // ----------------------------------------------------------------------------
@@ -114,7 +129,7 @@ void SFrameMatrixSynchronizer::starting()
 
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
     m_timer                                      = m_associatedWorker->createTimer();
-    ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(m_timeStep);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
     m_timer->setFunction( std::bind( &SFrameMatrixSynchronizer::synchronize, this)  );
     m_timer->setDuration(duration);
     m_timer->start();
@@ -263,8 +278,8 @@ void SFrameMatrixSynchronizer::synchronize()
             return;
         }
 
-        const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
-        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+        const std::uint8_t* frameBuff = &buffer->getElement(0);
+        std::uint8_t* index           = arrayHelper.begin< std::uint8_t >();
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
         // Notify
@@ -296,11 +311,11 @@ void SFrameMatrixSynchronizer::synchronize()
 
                         ::fwData::TransformationMatrix3D::sptr matrix = matrixKey.first;
 
-                        for(unsigned int i = 0; i < 4; ++i)
+                        for(std::uint8_t i = 0; i < 4; ++i)
                         {
-                            for(unsigned int j = 0; j < 4; ++j)
+                            for(std::uint8_t j = 0; j < 4; ++j)
                             {
-                                matrix->setCoefficient(i, j, values[i*4+j]);
+                                matrix->setCoefficient(i, j, static_cast<double>(values[i*4+j]));
                             }
                         }
 
@@ -325,13 +340,20 @@ void SFrameMatrixSynchronizer::synchronize()
         m_sigSynchronizationDone->asyncEmit(matrixTimestamp);
     }
     m_sigAllMatricesFound->asyncEmit(m_totalOutputMatrices == syncMatricesNbr);
-
 }
 
 // ----------------------------------------------------------------------------
 
 void SFrameMatrixSynchronizer::updating()
 {
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrameMatrixSynchronizer::resetTimeline()
+{
+    // Reset the last timestamp in case the grabber uses a different time scale
+    m_lastTimestamp = std::numeric_limits<double>::lowest();
 }
 
 // ----------------------------------------------------------------------------

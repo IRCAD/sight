@@ -78,10 +78,10 @@ public:
     IOTIMELINE_API virtual ~SMatricesReader() noexcept;
 
     /// Display a location dialog allowing to select the video file to save
-    IOTIMELINE_API virtual void configureWithIHM();
+    IOTIMELINE_API virtual void configureWithIHM() override;
 
     /// Return file type (::io::FILE)
-    IOTIMELINE_API virtual ::io::IOPathType getIOPathType() const;
+    IOTIMELINE_API virtual ::io::IOPathType getIOPathType() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.
@@ -97,16 +97,16 @@ public:
 protected:
 
     /// Does nothing
-    IOTIMELINE_API virtual void configuring();
+    IOTIMELINE_API virtual void configuring() override;
 
     /// Does nothing
-    IOTIMELINE_API virtual void starting();
+    IOTIMELINE_API virtual void starting() override;
 
     /// Does nothing
-    IOTIMELINE_API virtual void stopping();
+    IOTIMELINE_API virtual void stopping() override;
 
     /// Does nothing
-    IOTIMELINE_API virtual void updating();
+    IOTIMELINE_API virtual void updating() override;
 
 private:
 

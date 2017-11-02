@@ -1,26 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "igtlProtocol/RawMessage.hpp"
 #include "igtlProtocol/MessageFactory.hpp"
 
-#include <igtl/igtlTransformMessage.h>
+#include "igtlProtocol/RawMessage.hpp"
+
 #include <igtl/igtlImageMessage.h>
 #include <igtl/igtlPointMessage.h>
-#include <igtl/igtlStringMessage.h>
-#include <igtl/igtlPositionMessage.h>
 #include <igtl/igtlPolyDataMessage.h>
+#include <igtl/igtlPositionMessage.h>
+#include <igtl/igtlStringMessage.h>
 #include <igtl/igtlTrackingDataMessage.h>
-
-#include <boost/bind.hpp>
+#include <igtl/igtlTransformMessage.h>
 
 namespace igtlProtocol
 {
 
 MessageFactory::CreatorContainer MessageFactory::s_creators = MessageFactory::initFactory();
+
+//------------------------------------------------------------------------------
 
 MessageFactory::CreatorContainer MessageFactory::initFactory()
 {
@@ -35,15 +36,15 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
     container["TDATA"]     = &MessageMaker< ::igtl::TrackingDataMessage, false>::createMessage;
     container["STT_TDATA"] = &MessageMaker< ::igtl::StartTrackingDataMessage, false>::createMessage;
     container["STP_TDATA"] = &MessageMaker< ::igtl::StopTrackingDataMessage, false>::createMessage;
-    container["ATOMS"]     = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "ATOMS");
-    container["INTEGER"]   = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "INTEGER");
-    container["FLOAT"]     = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "FLOAT");
+    container["ATOMS"]     = std::bind(&MessageMaker< RawMessage, true >::createMessage, "ATOMS");
+    container["INTEGER"]   = std::bind(&MessageMaker< RawMessage, true >::createMessage, "INTEGER");
+    container["FLOAT"]     = std::bind(&MessageMaker< RawMessage, true >::createMessage, "FLOAT");
     return container;
 }
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MessageFactory::create(std::string const& type)
+::igtl::MessageBase::Pointer MessageFactory::create(const std::string& type)
 {
     CreatorContainer::const_iterator it;
 

@@ -1,4 +1,4 @@
-<plugin id="Ex06RGBDStream" version="@DASH_VERSION@">
+<plugin id="Ex06RGBDStream" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
     <requirement id="scene2D" />
@@ -14,21 +14,16 @@
             <object uid="imageDepth" type="::fwData::Image" />
             <object uid="imageVideo" type="::fwData::Image" />
             <object uid="viewport" type="::fwRenderQt::data::Viewport" />
-            <object uid="tfSelectionDepth" type="::fwData::Composite">
-                <item key="SelectedTF">
-                    <object uid="selectedTF" type="::fwData::TransferFunction">
-                        <colors>
-                            <step color="#000000ff" value="0" />
-                            <step color="#ff0000ff" value="1" />
-                            <step color="#ffff00ff" value="500" />
-                            <step color="#00ff00ff" value="1000" />
-                            <step color="#00ffffff" value="1500" />
-                            <step color="#0000ffff" value="2000" />
-                            <step color="#000000ff" value="5000" />
-                        </colors>
-                    </object>
-
-                </item>
+            <object uid="tfDepth" type="::fwData::TransferFunction">
+                <colors>
+                    <step color="#000000ff" value="0" />
+                    <step color="#ff0000ff" value="1" />
+                    <step color="#ffff00ff" value="500" />
+                    <step color="#00ff00ff" value="1000" />
+                    <step color="#00ffffff" value="1500" />
+                    <step color="#0000ffff" value="2000" />
+                    <step color="#000000ff" value="5000" />
+                </colors>
             </object>
 
             <!-- ***************************************** Begin layouts declaration ***************************************** -->
@@ -36,7 +31,7 @@
                 <gui>
                     <frame>
                         <name>Ex06RGBDStream</name>
-                        <icon>@BUNDLE_PREFIX@/Ex06RGBDStream_@DASH_VERSION@/ex06rgbdstream.ico</icon>
+                        <icon>Ex06RGBDStream-@PROJECT_VERSION@/ex06rgbdstream.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>
@@ -51,8 +46,8 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
-                        <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
+                        <menuItem name="start" icon="arMedia-0.1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="arMedia-0.1/icons/stop-cam.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -119,8 +114,8 @@
 
             <service uid="depthAdaptor" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
                 <in key="frame" uid="imageDepth" />
-                <inout key="tfSelection" uid="tfSelectionDepth" />
-                <config renderer="default" selectedTFKey="SelectedTF" />
+                <in key="tf" uid="tfDepth" />
+                <config renderer="default" />
             </service>
 
             <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -187,9 +182,9 @@
 
             <service uid="tf2" type="::scene2D::adaptor::STransferFunction" autoConnect="yes">
                 <inout key="image" uid="imageDepth" />
-                <inout key="tfSelection" uid="tfSelectionDepth" />
+                <inout key="tf" uid="tfDepth" />
                 <inout key="viewport" uid="viewport" />
-                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" selectedTFKey="SelectedTF" />
+                <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
             <service uid="viewportRangeUpdater" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes">
