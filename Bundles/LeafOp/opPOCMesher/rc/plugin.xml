@@ -1,4 +1,4 @@
-<plugin id="opPOCMesher" class="::opPOCMesher::Plugin" version="@DASH_VERSION@">
+<plugin id="opPOCMesher" class="::opPOCMesher::Plugin" version="@PROJECT_VERSION@">
 
     <library name="opPOCMesher" />
 

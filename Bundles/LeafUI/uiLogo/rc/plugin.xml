@@ -1,4 +1,4 @@
-<plugin id="uiLogo" class="::uiLogo::Plugin" version="@DASH_VERSION@">
+<plugin id="uiLogo" class="::uiLogo::Plugin" version="@PROJECT_VERSION@">
 
     <library name="uiLogo" />
 

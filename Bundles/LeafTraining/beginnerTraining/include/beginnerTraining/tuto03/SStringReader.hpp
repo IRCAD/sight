@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ class BEGINNERTRAINING_CLASS_API SStringReader : public ::io::IReader
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStringReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SStringReader)(::io::IReader) );
 
     BEGINNERTRAINING_API SStringReader();
     BEGINNERTRAINING_API virtual ~SStringReader() noexcept;
@@ -44,19 +44,19 @@ public:
 protected:
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void starting();
+    BEGINNERTRAINING_API virtual void starting() override;
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void stopping();
+    BEGINNERTRAINING_API virtual void stopping() override;
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void updating();
+    BEGINNERTRAINING_API virtual void updating() override;
 
     /// Overrides io method
-    BEGINNERTRAINING_API virtual void configureWithIHM();
+    BEGINNERTRAINING_API virtual void configureWithIHM() override;
 
     /// Overrides io method
-    BEGINNERTRAINING_API virtual ::io::IOPathType getIOPathType() const;
+    BEGINNERTRAINING_API virtual ::io::IOPathType getIOPathType() const override;
 
     /// Notify modification of associated data
     BEGINNERTRAINING_API void notifyMessage();

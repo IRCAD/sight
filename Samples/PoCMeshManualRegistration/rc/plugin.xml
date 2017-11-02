@@ -1,4 +1,4 @@
-<plugin id="PoCMeshManualRegistration" version="@DASH_VERSION@">
+<plugin id="PoCMeshManualRegistration" version="@PROJECT_VERSION@">
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
@@ -25,7 +25,7 @@
                 <gui>
                     <frame>
                         <name>PoC Mesh Manual Registration</name>
-                        <icon>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/tuto.ico</icon>
+                        <icon>PoCMeshManualRegistration-0.1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar/>
@@ -209,8 +209,8 @@
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                    <icon>media-0.1/icons/sliceHide.png</icon>
+                    <icon2>media-0.1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
@@ -238,12 +238,12 @@
 
             <service uid="cam2ReaderFile" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="cam2Mesh" />
-                <file>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/cam.trian</file>
+                <file>PoCMeshManualRegistration-0.1/cam.trian</file>
             </service>
 
             <service uid="cam1ReaderFile" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="cam1Mesh" />
-                <file>@BUNDLE_PREFIX@/PoCMeshManualRegistration_0-1/cam.trian</file>
+                <file>PoCMeshManualRegistration-0.1/cam.trian</file>
             </service>
 
             <!-- ***************************************** Begin render scenes declarations    ***************************************** -->

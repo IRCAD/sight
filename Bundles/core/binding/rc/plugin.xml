@@ -1,4 +1,4 @@
-<plugin id="binding" class="::binding::Plugin" version="@DASH_VERSION@" >
+<plugin id="binding" class="::binding::Plugin" version="@PROJECT_VERSION@" >
     
     <library name="binding" />
 

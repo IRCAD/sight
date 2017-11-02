@@ -17,12 +17,28 @@
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
         <object uid="targetSlice" type="::fwData::Image" />
         <object uid="transformedSlice" type="::fwData::Image" />
-        <object uid="TFSelectionComposite" type="::fwData::Composite" />
-        <object uid="TFTransformedComposite" type="::fwData::Composite" />
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
         <object uid="inverseFinalTransform" type="::fwData::TransformationMatrix3D" />
+
+        <!-- Transfer Functions -->
+        <object uid="TFTransformedComposite" type="::fwData::Composite" />
+        <object uid="referenceTransferFunction" type="::fwData::TransferFunction">
+            <colors isClamped="false">
+                <step color="#00000000" value="-1024" />
+                <step color="#ffffffff" value="1024" />
+            </colors>
+        </object>
+        <object uid="targetTransferFunction" type="::fwData::TransferFunction">
+            <colors isClamped="false">
+                <step color="#00000000" value="-1024" />
+                <step color="#ffffffff" value="1024" />
+            </colors>
+        </object>
+        <object uid="transformedTransferFunction" type="::fwData::TransferFunction" src="deferred" />
+
+        <!-- Matrices -->
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="flipSagittalMatrix" type="::fwData::TransformationMatrix3D">
             <matrix>
@@ -61,6 +77,8 @@
         <object uid="centerTransformReference" type="::fwData::TransformationMatrix3D" />
         <object uid="flipTransform" type="::fwData::TransformationMatrix3D" />
         <object uid="identity" type="::fwData::TransformationMatrix3D" />
+
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -265,19 +283,18 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="transformedTFSelector" start="yes" />
-                <view wid="tfWidget" />
-                <view sid="transformedWindowLevel" start="yes" />
+                <view sid="transformedTFSelector" start="no" />
+                <view wid="tfWidgetView" />
+                <view sid="transformedWindowLevel" start="no" />
             </registry>
         </service>
 
         <service uid="tfWidget" type="::fwServices::SConfigController">
             <appConfig id="TransferFunctionWidget" />
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="histogram" uid="Histogram" />
-            <inout key="TFSelections" uid="TFSelectionComposite" />
-            <parameter replace="WID_PARENT" uid="tfWidget" />
-            <parameter replace="SelectedTFKey" by="transformedTF" />
+            <inout key="image" uid="${referenceImageUid}"/>
+            <inout key="histogram" uid="Histogram"/>
+            <inout key="transferFunction" uid="transformedTransferFunction" />
+            <parameter replace="WID_PARENT" by="tfWidgetView"/>
         </service>
 
         <service uid="computeCenter" type="::guiQt::editor::SSignalButton">
@@ -321,8 +338,8 @@
 
         <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tfSelection" uid="TFSelectionComposite" />
-            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="referenceTF" />
+            <inout key="tf" uid="referenceTransferFunction" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
         </service>
 
         <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
@@ -350,6 +367,7 @@
                 <renderer id="default" background="#052833" />
                 <adaptor uid="blendNegatoMPR" />
                 <adaptor uid="blendInteractorStyle" />
+                <adaptor uid="blendPickerInteractor" />
                 <adaptor uid="slicerImageAdaptor" />
                 <adaptor uid="2DWheel" />
                 <adaptor uid="transformFromWheel" />
@@ -366,7 +384,7 @@
         </service>
 
         <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP;MOUSE_MOVE;MOUSE_LEFT_DOWN" abortOnPick="true" />
         </service>
 
         <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
@@ -374,9 +392,8 @@
         </service>
 
         <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
-            <inout key="image" uid="${targetImageUid}" autoConnect="yes"/>
             <inout key="transform" uid="${transformUid}" />
-            <config renderer="default" picker="picker" />
+            <config renderer="default" picker="picker" mode="2d" orientation="axial" />
         </service>
 
         <!-- Adaptor to show background and front image merge in the same view. -->
@@ -385,9 +402,9 @@
                 <key uid="targetSlice" tfalpha="no" />
                 <key uid="transformedSlice" tfalpha="no" />
             </inout>
-            <inout group="tfSelection">
-                <key uid="TFSelectionComposite" selectedTFKey="targetTF" />
-                <key uid="TFSelectionComposite" selectedTFKey="transformedTF" />
+            <inout group="tf" optional="yes">
+                <key uid="targetTransferFunction" />
+                <key uid="transformedTransferFunction" />
             </inout>
             <config vtkimageregister="imageBlend" />
         </service>
@@ -413,32 +430,30 @@
 
         <service uid="targetNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
-            <inout key="tfSelection" uid="TFSelectionComposite" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" selectedTFKey="targetTF" />
+            <inout key="tf" uid="targetTransferFunction" />
+            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" />
         </service>
 
         <service uid="3DreferenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tfSelection" uid="TFSelectionComposite" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" selectedTFKey="referenceTF" transform="registration" />
+            <inout key="tf" uid="referenceTransferFunction" />
+            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" transform="registration" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="transformedImageManager" type="::fwServices::SConfigController" autoConnect="no">
+        <service uid="referenceImageManager" type="::fwServices::SConfigController">
             <appConfig id="ImageManager" />
             <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
-            <parameter replace="IMAGE_UID" uid="${referenceImageUid}" />
-            <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
-            <parameter replace="TF_KEY" by="referenceTF" />
+            <inout key="image" uid="${referenceImageUid}" />
+            <inout key="transferFunction" uid="referenceTransferFunction" />
         </service>
 
-        <service uid="targetImageManager" type="::fwServices::SConfigController" autoConnect="no">
+        <service uid="targetImageManager" type="::fwServices::SConfigController">
             <appConfig id="ImageManager" />
             <parameter replace="WID_PARENT" uid="targetSceneEditor" />
-            <parameter replace="IMAGE_UID" uid="${targetImageUid}" />
-            <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
-            <parameter replace="TF_KEY" by="targetTF" />
+            <inout key="image" uid="${targetImageUid}" />
+            <inout key="transferFunction" uid="targetTransferFunction" />
         </service>
 
         <service uid="transformedTransparencySlider" type="::uiImageQt::ImageTransparency" autoConnect="yes">
@@ -447,15 +462,14 @@
         </service>
 
         <service uid="transformedTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
-            <inout key="transferFunctions" uid="TFTransformedComposite" />
-            <inout key="TFSelections" uid="TFSelectionComposite" />
-            <config selectedTFKey="transformedTF" />
+            <inout key="tfPool" uid="TFTransformedComposite" />
+            <out key="tf" uid="transformedTransferFunction" />
         </service>
 
         <service uid="transformedWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
-            <inout key="TFSelections" uid="TFSelectionComposite" />
-            <config selectedTFKey="transformedTF" autoWindowing="yes" />
+            <inout key="tf" uid="transformedTransferFunction" />
+            <config autoWindowing="yes" enableSquareTF="no" />
         </service>
 
         <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
@@ -672,14 +686,24 @@
 
         <connect>
             <signal>2DWheel/wheelUpdated</signal>
-            <slot>transformFromWheel/updateTransform</slot>
+            <slot>transformFromWheel/rotateTransform</slot>
+        </connect>
+
+        <connect>
+            <signal>blendPickerInteractor/picked</signal>
+            <slot>transformFromWheel/translateTransform</slot>
+        </connect>
+
+        <connect>
+            <signal>${targetImageUid}/sliceTypeModified</signal>
+            <slot>transformFromWheel/updateSliceType</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
 
         <start uid="mainView" />
         <start uid="medicalImageTargetSrv" />
-        <start uid="transformedImageManager" />
+        <start uid="referenceImageManager" />
         <start uid="targetImageManager" />
         <start uid="computetransformedHistogram" />
         <start uid="referenceLandmarkManager" />
@@ -696,6 +720,8 @@
         <start uid="resetIdentity" />
         <start uid="inverseMat" />
         <start uid="tfWidget" />
+        <start uid="transformedTFSelector" />
+        <start uid="transformedWindowLevel" />
         <start uid="targetPlaneSlice" />
         <start uid="transformedPlaneSlice" />
         <!-- VTK scene 'referenceScene' -->
@@ -706,6 +732,7 @@
         <!-- VTK scene 'blendScene' -->
         <start uid="blendNegatoMPR" />
         <start uid="blendInteractorStyle" />
+        <start uid="blendPickerInteractor" />
         <start uid="slicerImageAdaptor" />
         <start uid="2DWheel" />
         <start uid="transformFromWheel" />

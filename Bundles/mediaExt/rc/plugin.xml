@@ -1,2 +1,2 @@
-<plugin id="mediaExt" version="@DASH_VERSION@" >
+<plugin id="mediaExt" version="@PROJECT_VERSION@" >
 </plugin>

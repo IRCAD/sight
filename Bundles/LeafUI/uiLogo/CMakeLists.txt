@@ -1,7 +1,7 @@
 fwLoadProperties()
 
 if(${FWPROJECT_NAME}_INSTALL)
-    install(DIRECTORY "${QT_DIR}/plugins" DESTINATION qtplugins COMPONENT QtPlugins)
+    install(DIRECTORY "${QT_DIR}/lib/qt5/plugins" DESTINATION qtplugins COMPONENT QtPlugins)
 endif()
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)

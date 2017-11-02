@@ -1,14 +1,14 @@
-<plugin id="PoCRegistration" version="@DASH_VERSION@" >
+<plugin id="PoCRegistration" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
-    
+
     <requirement id="patchMedicalData" />
-    
+
     <requirement id="filterVRRender" />
     <requirement id="activities" />
     <requirement id="preferences" />
-    
+
     <requirement id="gui" />
     <requirement id="guiQt" />
     <requirement id="media" />
@@ -21,8 +21,8 @@
         <id>PoCRegistrationAppBase</id>
         <parameters>
             <param name="appName" value="PoCRegistration @PROJECT_VERSION@" />
-            <param name="appIconPath" value="@BUNDLE_PREFIX@/PoCRegistration_@DASH_VERSION@/app.ico" />
-            <param name="appVersion" value="@DASH_VERSION@" />
+            <param name="appIconPath" value="PoCRegistration_@PROJECT_VERSION@/app.ico" />
+            <param name="appVersion" value="@PROJECT_VERSION@" />
         </parameters>
     </extension>
 
@@ -30,7 +30,7 @@
         <id>activitySelector</id>
         <title>Choose your activity</title>
         <desc>Activity selector for PoCRegistrationExt</desc>
-        <icon>NONE</icon>
+        <icon>media-0.1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="activitySelector">
             <parameters />

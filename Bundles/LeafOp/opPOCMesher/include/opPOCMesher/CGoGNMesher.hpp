@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,13 @@
 #ifndef __OPPOCMESHER_CGOGNMESHER_HPP__
 #define __OPPOCMESHER_CGOGNMESHER_HPP__
 
-#include <string>
+#include "opPOCMesher/config.hpp"
 
 #include <fwCom/Slots.hpp>
+
 #include <opVTKMesh/IMesher.hpp>
-#include "opPOCMesher/config.hpp"
+
+#include <string>
 
 namespace opPOCMesher
 {
@@ -53,7 +55,7 @@ class OPPOCMESHER_CLASS_API CGoGNMesher : public ::opVTKMesh::IMesher
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ((CGoGNMesher)(::opVTKMesh::IMesher) );
+    fwCoreServiceClassDefinitionsMacro((CGoGNMesher)(::opVTKMesh::IMesher) );
 
     /**
      * @brief Constructor. Initializes slots.
@@ -70,22 +72,22 @@ protected:
     /**
      * @brief This method starts the operator. Does nothing.
      */
-    OPPOCMESHER_API void starting();
+    OPPOCMESHER_API void starting() override;
 
     /**
      * @brief This method stops the operator. Does nothing.
      */
-    OPPOCMESHER_API void stopping();
+    OPPOCMESHER_API void stopping() override;
 
     /**
      * @brief Declare the configuration to define percent of reduction, image source and ModelSeries destination.
      */
-    OPPOCMESHER_API void configuring();
+    OPPOCMESHER_API void configuring() override;
 
     /**
      * @brief This method is used to update services. Does nothing.
      */
-    OPPOCMESHER_API void updating();
+    OPPOCMESHER_API void updating() override;
 
 private:
 

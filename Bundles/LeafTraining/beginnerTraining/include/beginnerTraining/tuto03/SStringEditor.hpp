@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SStringEditor)(::gui::editor::IEditor) );
 
     BEGINNERTRAINING_API SStringEditor();
 
@@ -52,16 +52,16 @@ protected Q_SLOTS:
 protected:
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void configuring();
+    BEGINNERTRAINING_API virtual void configuring() override;
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void starting();
+    BEGINNERTRAINING_API virtual void starting() override;
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void stopping();
+    BEGINNERTRAINING_API virtual void stopping() override;
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void updating();
+    BEGINNERTRAINING_API virtual void updating() override;
 
     /// Method to notify modification on data
     BEGINNERTRAINING_API void notifyMessage();
