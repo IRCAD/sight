@@ -33,7 +33,8 @@ const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT   = "newImage";
 const ::fwCom::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
 const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
-static const std::string s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
 
 //------------------------------------------------------------------------------
 
@@ -105,10 +106,6 @@ void SNegato2D::configuring()
 
         this->setFiltering(filtering);
     }
-
-    auto cfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Tag 'config' not found.", cfg);
-    this->parseTFConfig(cfg);
 }
 
 //------------------------------------------------------------------------------
@@ -117,11 +114,13 @@ void SNegato2D::starting()
 {
     this->initialize();
 
-    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
-    this->setTransferFunctionSelection(tfSelection);
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing.", image);
+
+    ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+    this->setOrCreateTF(tf, image);
 
     this->updateImageInfos(this->getInOut< ::fwData::Image >(s_IMAGE_INOUT));
-    this->updateTransferFunction(this->getImage());
 
     // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -142,9 +141,7 @@ void SNegato2D::starting()
 
     this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
-    this->installTFConnections();
-
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     if(isValid)
     {
         this->newImage();
@@ -180,6 +177,21 @@ void SNegato2D::updating()
 
 //------------------------------------------------------------------------------
 
+void SNegato2D::swapping(const KeyType& key)
+{
+    if (key == s_TF_INOUT)
+    {
+        ::fwData::TransferFunction::sptr tf = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
+        ::fwData::Image::sptr image         = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        SLM_ASSERT("Missing image", image);
+
+        this->setOrCreateTF(tf, image);
+        this->updateTFPoints();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SNegato2D::newImage()
 {
     if(m_3DOgreTexture.isNull())
@@ -189,7 +201,8 @@ void SNegato2D::newImage()
     }
     this->getRenderService()->makeCurrent();
 
-    ::fwData::Image::sptr image = this->getImage();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
@@ -203,7 +216,7 @@ void SNegato2D::newImage()
     this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
 
     // Update tranfer function in Gpu programs
-    this->updatingTFPoints();
+    this->updateTFPoints();
 
     this->requestRender();
 }
@@ -231,10 +244,10 @@ void SNegato2D::changeSliceType(int _from, int _to)
     m_plane->setOrientationMode(newOrientationMode);
 
     // Update TF
-    this->updatingTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
+    this->updateTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
 
     // Update threshold if necessary
-    this->updatingTFPoints();
+    this->updateTFPoints();
 
     this->updateShaderSliceIndexParameter();
 }
@@ -243,7 +256,8 @@ void SNegato2D::changeSliceType(int _from, int _to)
 
 void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
-    ::fwData::Image::sptr image = this->getImage();
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
     m_axialIndex->value()    = _axialIndex;
     m_frontalIndex->value()  = _frontalIndex;
@@ -270,7 +284,7 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::updatingTFPoints()
+void SNegato2D::updateTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -286,7 +300,7 @@ void SNegato2D::updatingTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SNegato2D::updatingTFWindowing(double window, double level)
+void SNegato2D::updateTFWindowing(double window, double level)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 

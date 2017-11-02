@@ -48,16 +48,16 @@ public:
 protected:
 
     /// Configure the editor to associate with each object type
-    UIVISUOGRE_API virtual void configuring();
+    UIVISUOGRE_API virtual void configuring() override;
 
     /// Start the service, slot connections, QtContainer initialization .
-    UIVISUOGRE_API virtual void starting();
+    UIVISUOGRE_API virtual void starting() override;
 
     /// Destroy the service and the container.
-    UIVISUOGRE_API virtual void stopping();
+    UIVISUOGRE_API virtual void stopping() override;
 
     /// Update the interface.
-    UIVISUOGRE_API virtual void updating();
+    UIVISUOGRE_API virtual void updating() override;
 
 private:
     /// Clear the current container

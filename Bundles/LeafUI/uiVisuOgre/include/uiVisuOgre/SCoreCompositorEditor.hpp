@@ -64,16 +64,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    UIVISUOGRE_API virtual void configuring();
+    UIVISUOGRE_API virtual void configuring() override;
 
     /// FILL ME.
-    UIVISUOGRE_API virtual void starting();
+    UIVISUOGRE_API virtual void starting() override;
 
     /// FILL ME.
-    UIVISUOGRE_API virtual void stopping();
+    UIVISUOGRE_API virtual void stopping() override;
 
     /// FILL ME.
-    UIVISUOGRE_API virtual void updating();
+    UIVISUOGRE_API virtual void updating() override;
 
     /// FILL ME.
     UIVISUOGRE_API void refreshRenderers();

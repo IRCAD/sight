@@ -108,8 +108,12 @@ void Window::initialise()
 #endif
 
 #if defined(Q_OS_MAC)
-    parameters["macAPI"]               = "cocoa";
-    parameters["macAPICocoaUseNSView"] = "true";
+    parameters["macAPI"]               = Ogre::String("cocoa");
+    parameters["macAPICocoaUseNSView"] = Ogre::String("true");
+
+    // We set the contextProfile to GLNativeSupport::CONTEXT_CORE by default otherwise ogre will initialize the default
+    // context to "compatibility" which wil set openGL version to 2.1 which do not support all the feature we want
+    parameters["contextProfile"] = Ogre::String("1");
 #endif
 
     // We create the renderWindow with a dummy size of 1 by 1, otherwise we would have to wait for the widget to

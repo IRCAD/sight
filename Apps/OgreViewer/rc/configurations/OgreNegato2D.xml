@@ -3,11 +3,12 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="imageUID" />
-        <param name="TFSelections" />
+        <param name="TF" />
     </parameters>
     <config>
         <object uid="${imageUID}" type="::fwData::Image" src="ref" />
-        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+        <object uid="${TF}" type="::fwData::TransferFunction" src="deferred" />
+
         <service uid="OgreNegato2D" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -41,20 +42,27 @@
 
         <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TF" uid="${TFSelections}" />
-            <config layer="default" selectedTFKey="SelectedTF" />
+            <inout key="tf" uid="${TF}" optional="yes" />
+            <config layer="default" />
         </service>
 
         <!-- End Generic Scene ***************************************** -->
+
+        <!-- ************************************* Services ************************************ -->
+
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
+        <!-- *************************************** Starts ************************************ -->
+
         <start uid="OgreNegato2D" />
+
         <!-- Ogre scene 'negato2DScene' -->
         <start uid="interactorAdaptor" />
         <start uid="negato2DAdaptor" />
+
     </config>
 </extension>

@@ -145,15 +145,15 @@ protected:
     FWRENDEROGRE_API void render();
 
     /// Configures the adaptors and the connections
-    FWRENDEROGRE_API virtual void starting();
+    FWRENDEROGRE_API virtual void starting() override;
     /// Stops all the adaptors
-    FWRENDEROGRE_API virtual void stopping();
+    FWRENDEROGRE_API virtual void stopping() override;
 
     ///Configures the adaptor
-    FWRENDEROGRE_API virtual void configuring();
+    FWRENDEROGRE_API virtual void configuring() override;
 
     /// Does nothing.
-    FWRENDEROGRE_API void updating();
+    FWRENDEROGRE_API void updating() override;
 
 private:
 

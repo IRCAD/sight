@@ -43,19 +43,19 @@ public:
                                             const std::string& _mtlName);
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
-    FWRENDEROGRE_API void _updateRenderQueue(::Ogre::RenderQueue* _queue);
+    FWRENDEROGRE_API virtual void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
 
     /** @copydoc SimpleRenderable::getMovableType. */
-    FWRENDEROGRE_API const ::Ogre::String& getMovableType(void) const;
+    FWRENDEROGRE_API virtual const ::Ogre::String& getMovableType(void) const override;
 
     /** @copydoc SimpleRenderable::getRenderOperation. */
-    FWRENDEROGRE_API void getRenderOperation(::Ogre::RenderOperation& _op);
+    FWRENDEROGRE_API virtual void getRenderOperation(::Ogre::RenderOperation& _op) override;
 
     /// Delegate to the subentity.
-    ::Ogre::Real getBoundingRadius(void) const;
+    virtual ::Ogre::Real getBoundingRadius(void) const override;
 
     /// @copydoc Renderable::getSquaredViewDepth
-    ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const;
+    virtual ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
     void setDirty();

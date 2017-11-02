@@ -114,12 +114,10 @@ void IVolumeRenderer::scaleCube(const fwData::Image::SpacingType& spacing)
     const double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
     const double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
 
-    const double maxDim = std::max(width, std::max(height, depth));
-
     const ::Ogre::Vector3 scaleFactors(
-        static_cast<float>(width  / maxDim),
-        static_cast<float>(height / maxDim),
-        static_cast<float>(depth  / maxDim));
+        static_cast<float>(width ),
+        static_cast<float>(height),
+        static_cast<float>(depth ));
 
     m_volumeSceneNode->setScale(scaleFactors);
 }

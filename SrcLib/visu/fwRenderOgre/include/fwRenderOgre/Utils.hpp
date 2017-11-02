@@ -29,6 +29,10 @@ namespace factory
 {
 class R2VBRenderable;
 }
+namespace vr
+{
+class GridProxyGeometryFactory;
+}
 }
 
 namespace fwRenderOgre
@@ -47,7 +51,7 @@ public:
      *        In this case, you can call this method in the Plugin.cpp file of this Bundle
      * @param path Relative path to the ressource.cfg file from a specific Bundle
      */
-    FWRENDEROGRE_API static void addResourcesPath(const std::string& path);
+    FWRENDEROGRE_API static void addResourcesPath(const ::boost::filesystem::path& path);
 
     /**
      * @brief getOgreRoot
@@ -121,6 +125,7 @@ private:
     static ::Ogre::OverlaySystem* s_overlaySystem;
 
     static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;
+    static ::fwRenderOgre::vr::GridProxyGeometryFactory* s_gridProxyGeometryFactory;
 };
 
 } // namespace fwRenderOgre

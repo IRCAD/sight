@@ -14,58 +14,28 @@ endif()
 fwLoadProperties()
 
 find_package (Boost COMPONENTS regex REQUIRED)
-
-if(WIN32)
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${EXTERNAL_LIBRARIES}/cmake)
-elseif(APPLE)
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${EXTERNAL_LIBRARIES}/CMake)
-    set(CMAKE_FRAMEWORK_PATH ${EXTERNAL_LIBRARIES}/lib/${CMAKE_BUILD_TYPE})
-else()
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH};${EXTERNAL_LIBRARIES}/lib/OGRE/cmake)
-endif()
-
 find_package(OGRE REQUIRED)
 
 # This is a hack to copy plugins inside the build directory
 # Most developers executes apps inside the build directory so this is done as a convenience
 if(NOT APPLE)
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-        set(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR_DBG}")
+    if(WIN32)
+        file(GLOB OGRE_PLUGINS "${OGRE_CONFIG_DIR}/RenderSystem*.dll" "${OGRE_CONFIG_DIR}/Plugin_*.dll")
     else()
-        set(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR_REL}")
+        file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
     endif()
-
-    file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
     file(INSTALL ${OGRE_PLUGINS} DESTINATION "${PROJECT_BINARY_DIR}/ogreplugins/")
 
     # This copies the plugins into the install directory
     install(DIRECTORY "${PROJECT_BINARY_DIR}/ogreplugins/" DESTINATION "ogrePlugins/")
 else()
-
-    # Seen on macOS 10.12.3, the OGRE_PLUGIN_DIR_DBG is empty in Debug, but the
-    #OGRE_PLUGIN_DIR_REL is correctly set. Not sure if this a bug of our side or ogre mac
-    # As a workaround, we check the content if it is empty, we take the other one
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        if("${OGRE_PLUGIN_DIR_DBG}" STREQUAL "")
-            set(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR_REL}")
-        else()
-            set(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR_DBG}")
-        endif()
-    else()
-        if("${OGRE_PLUGIN_DIR_REL}" STREQUAL "")
-            set(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR_DBG}")
-        else()
-            set(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR_REL}")
-        endif()
-    endif()
-
-    # Ogre search frameworks plugings in /Contents/Frameworks/
-    set(FRAMEWORKS_DIR "${PROJECT_BINARY_DIR}/bin/Contents/Frameworks")
+    # Ogre search frameworks plugings in /Contents/Plugins/
+    set(FRAMEWORKS_DIR "${PROJECT_BINARY_DIR}/bin/Contents/Plugins")
     file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*")
     file(INSTALL ${OGRE_PLUGINS} DESTINATION ${FRAMEWORKS_DIR})
 
     # This copies the plugins into the install directory
-    install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "/bin/Contents/Frameworks/")
+    install(DIRECTORY ${FRAMEWORKS_DIR} DESTINATION "bin/Contents")
 endif()
 
 fwForwardInclude(
@@ -73,8 +43,25 @@ fwForwardInclude(
     ${OGRE_Overlay_INCLUDE_DIRS}
 )
 
-fwForwardLink(
-    ${OGRE_LIBRARIES}
-    ${OGRE_Overlay_LIBRARIES}
-    ${Boost_REGEX_LIBRARY}
-)
+# The new cmake config files are broken, they give only the library names without any path or suffix
+# We hack them but definitely this should be fixed upstream
+if(WIN32)
+    foreach(OGRE_LIB ${OGRE_LIBRARIES})
+        if(IS_ABSOLUTE ${OGRE_LIB})
+            list(APPEND OGRE_FIXED_LIBRARIES ${OGRE_LIB})
+        else()
+            list(APPEND OGRE_FIXED_LIBRARIES "${OGRE_LIBRARY_DIRS}/${OGRE_LIB}.lib")
+        endif()
+    endforeach()
+
+    fwForwardLink(
+        ${OGRE_FIXED_LIBRARIES}
+        ${Boost_REGEX_LIBRARY}
+    )
+else()
+    fwForwardLink(
+        -L${OGRE_LIBRARY_DIRS}
+        ${OGRE_LIBRARIES}
+        ${Boost_REGEX_LIBRARY}
+    )
+endif()

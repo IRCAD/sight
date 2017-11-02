@@ -8,6 +8,7 @@
 
 #include "fwRenderOgre/compositor/MaterialMgrListener.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include "fwRenderOgre/vr/GridProxyGeometry.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -15,6 +16,8 @@
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
+
+#include <fwRuntime/operations.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -26,22 +29,21 @@
 #include <cstdint>
 
 #ifdef __MACOSX__
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins_osx.cfg"
+#define PLUGIN_PATH "plugins_osx.cfg"
 #elif _DEBUG
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins_d.cfg"
+#define PLUGIN_PATH "plugins_d.cfg"
 #else
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins.cfg"
+#define PLUGIN_PATH "plugins.cfg"
 #endif
-
-#define RESOURCES_PATH "./share/fwRenderOgre_0-1/resources.cfg"
 
 namespace fwRenderOgre
 {
 
 static std::set<std::string> s_resourcesPath;
 
-::Ogre::OverlaySystem* Utils::s_overlaySystem                           = nullptr;
-::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory = nullptr;
+::Ogre::OverlaySystem* Utils::s_overlaySystem                                   = nullptr;
+::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
+::fwRenderOgre::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -85,9 +87,10 @@ void loadResources()
 
 //------------------------------------------------------------------------------
 
-void Utils::addResourcesPath(const std::string& path)
+void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 {
-    s_resourcesPath.insert(path);
+    SLM_ASSERT("Empty resource path", !path.empty());
+    s_resourcesPath.insert(path.string());
 }
 
 //------------------------------------------------------------------------------
@@ -105,12 +108,13 @@ void Utils::addResourcesPath(const std::string& path)
 
     if(root == nullptr)
     {
-        root            = new ::Ogre::Root(PLUGIN_PATH);
+        root = new ::Ogre::Root(::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH).string());
+
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
         const Ogre::RenderSystemList& rsList = root->getAvailableRenderers();
 
-        Ogre::RenderSystem* rs;
+        Ogre::RenderSystem* rs = nullptr;
 
         if(!rsList.empty())
         {
@@ -124,9 +128,9 @@ void Utils::addResourcesPath(const std::string& path)
 
         renderOrder.push_back("OpenGL");
         //renderOrder.push_back("OpenGL 3+");
-        for (::Ogre::StringVector::iterator iter = renderOrder.begin(); iter != renderOrder.end(); iter++)
+        for (::Ogre::StringVector::iterator iter = renderOrder.begin(); iter != renderOrder.end(); ++iter)
         {
-            for (::Ogre::RenderSystemList::const_iterator it = rsList.begin(); it != rsList.end(); it++)
+            for (::Ogre::RenderSystemList::const_iterator it = rsList.begin(); it != rsList.end(); ++it)
             {
                 if ((*it)->getName().find(*iter) != Ogre::String::npos)
                 {
@@ -139,18 +143,7 @@ void Utils::addResourcesPath(const std::string& path)
                 break;
             }
         }
-        if (rs == nullptr)
-        {
-            if (!root->restoreConfig())
-            {
-                if (!root->showConfigDialog())
-                {
-                    OGRE_EXCEPT(::Ogre::Exception::ERR_INVALIDPARAMS,
-                                "Abort render system configuration",
-                                "Window::initialize");
-                }
-            }
-        }
+        SLM_ASSERT("Abort render system configuration, no render system found", rs);
 
         /*
            Setting size and VSync on windows will solve a lot of problems
@@ -169,18 +162,18 @@ void Utils::addResourcesPath(const std::string& path)
 
         root->initialise(false);
 
-        ::fwRenderOgre::Utils::addResourcesPath(RESOURCES_PATH);
-        loadResources();
+        auto resourcePath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/resources.cfg" );
+        ::fwRenderOgre::Utils::addResourcesPath( resourcePath );
 
-        // TODO : Check utility of TextureManager in a shader-based programming model (RenderSystemGL3+)
-        if(::Ogre::Root::getSingleton().getRenderSystem()->getName() != "OpenGL 3+ Rendering Subsystem (ALPHA)")
-        {
-            ::Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-        }
+        loadResources();
 
         // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
+
+        // Register factory for GridProxyGeometry objects
+        s_gridProxyGeometryFactory = OGRE_NEW ::fwRenderOgre::vr::GridProxyGeometryFactory();
+        ::Ogre::Root::getSingleton().addMovableObjectFactory(s_gridProxyGeometryFactory);
 
         // Add the material manager listener that allows us to generate OIT techniques
         ::Ogre::MaterialManager::getSingleton().addListener(new ::fwRenderOgre::compositor::MaterialMgrListener());
@@ -193,6 +186,9 @@ void Utils::addResourcesPath(const std::string& path)
 
 void Utils::destroyOgreRoot()
 {
+    ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_gridProxyGeometryFactory);
+    delete s_gridProxyGeometryFactory;
+
     ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_R2VBRenderableFactory);
     delete s_R2VBRenderableFactory;
 
@@ -212,12 +208,12 @@ void Utils::destroyOgreRoot()
     SLM_ASSERT("Image is null", imageFw);
 
     ::Ogre::Image imageOgre;
-    uint32_t width = 1, height = 1, depth = 1;
 
     // If image is flipped, try to switch image
     ::fwData::Image::SizeType imageSize = imageFw->getSize();
 
-    width = static_cast<uint32_t>(imageSize[0]);
+    uint32_t width  = static_cast<uint32_t>(imageSize[0]);
+    uint32_t height = 1, depth = 1;
 
     if(imageSize.size() >= 2)
     {

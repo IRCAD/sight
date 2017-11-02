@@ -6,8 +6,6 @@ uniform int u_slice;
 
 uniform sampler3D u_image;
 
-uniform float u_sampleDistance;
-
 out float o_brickMax;
 
 //-----------------------------------------------------------------------------
@@ -34,8 +32,11 @@ void main()
             for(int w = brickBeginPosition.z; w < brickEndPosition.z; ++ w)
             {
                 float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r; // const
+
+                // We only want to check if the voxel is not empty meaning its extinction coefficient is zero.
+                // Therefore there is NO NEED TO CALCULATE THE EXTINCTION COEFFICIENT here since it is equal to zero
+                // if and only if the opacity is equal to zero.
                 float voxelOpacity = sampleTransferFunction(intensity).a; // const
-                voxelOpacity = 1 - exp(-voxelOpacity * u_sampleDistance);
 
                 brickMax = brickMax || voxelOpacity != 0;
             }

@@ -64,19 +64,19 @@ protected:
      * - type attribute is a fw4spl data type
      * - editor attribute is the editor associated to the type given in association.
      */
-    UIVISUOGRE_API virtual void configuring();
+    UIVISUOGRE_API virtual void configuring() override;
 
     /// Start the service, slot connections, QtContainer initialization .
-    UIVISUOGRE_API virtual void starting();
+    UIVISUOGRE_API virtual void starting() override;
 
     /// Destroy the service and the container.
-    UIVISUOGRE_API virtual void stopping();
+    UIVISUOGRE_API virtual void stopping() override;
 
     /// Called once we change the data.
-    UIVISUOGRE_API virtual void swapping();
+    UIVISUOGRE_API virtual void swapping() override;
 
     /// Update the interface.
-    UIVISUOGRE_API virtual void updating();
+    UIVISUOGRE_API virtual void updating() override;
 
 private:
 
