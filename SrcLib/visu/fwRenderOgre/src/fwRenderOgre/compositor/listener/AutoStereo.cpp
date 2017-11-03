@@ -45,15 +45,15 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     // Cleanng the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& tech : m_createdTechniques)
     {
-        ::Ogre::Material* mtl                      = tech->getParent();
-        ::Ogre::Material::TechniqueIterator techIt = mtl->getTechniqueIterator();
+        ::Ogre::Material* mtl = tech->getParent();
+
+        const ::Ogre::Material::Techniques techniques = mtl->getTechniques();
 
         std::vector< unsigned short > removeTechniqueVector;
 
         unsigned short index = 0;
-        while( techIt.hasMoreElements())
+        for(const auto technique : techniques)
         {
-            ::Ogre::Technique* technique = techIt.getNext();
             if(tech == technique)
             {
                 removeTechniqueVector.push_back(index);
@@ -93,7 +93,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
         const std::string passIdStr = _schemeName.substr(11);
         const int passId            = std::stoi(passIdStr);
-        if( m_renderTargets != nullptr && passId >= m_renderTargets->size())
+        if( m_renderTargets != nullptr && static_cast<unsigned>(passId) >= m_renderTargets->size())
         {
             // We reach this branch when switching between two stereo modes
             // because the new compositor is instantiated but the volume adaptor is not yet restarted

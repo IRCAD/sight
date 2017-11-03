@@ -348,10 +348,10 @@ void SMaterial::swapTexture()
 
     this->cleanTransparencyTechniques();
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+
+    for(const auto technique : techniques)
     {
-        ::Ogre::Technique* technique = techIt.getNext();
         SLM_ASSERT("Technique is not set", technique);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*technique))
@@ -417,10 +417,10 @@ void SMaterial::removeTextureAdaptor()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+
+    for(const auto technique : techniques)
     {
-        ::Ogre::Technique* technique = techIt.getNext();
         SLM_ASSERT("Technique is not set", technique);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*technique))
@@ -466,15 +466,14 @@ void SMaterial::updateOptionsMode(int optionsMode)
     // First remove the normals pass if there is already one
     this->removePass(s_NORMALS_PASS);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    const ::Ogre::Real normalLength = this->computeNormalLength();
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    const ::Ogre::Real normalLength               = this->computeNormalLength();
 
     if(optionsMode != ::fwData::Material::STANDARD)
     {
-        while( techIt.hasMoreElements())
-        {
-            ::Ogre::Technique* currentTechnique = techIt.getNext();
 
+        for(const auto currentTechnique : techniques)
+        {
             // We need the first pass of the current technique in order to copy its rendering states in the normals pass
             ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
             SLM_ASSERT("Pass is null", firstPass);
@@ -525,13 +524,12 @@ void SMaterial::updatePolygonMode(int polygonMode)
     // First remove a previous normal pass if it exists
     this->removePass(s_EDGE_PASS);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
 
     if(polygonMode == ::fwData::Material::EDGE)
     {
-        while( techIt.hasMoreElements())
+        for(const auto tech : techniques)
         {
-            ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
             ::Ogre::Pass* firstPass = tech->getPass(0);
@@ -562,9 +560,8 @@ void SMaterial::updatePolygonMode(int polygonMode)
     }
     else
     {
-        while( techIt.hasMoreElements())
+        for(const auto tech : techniques)
         {
-            ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
             ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
@@ -633,10 +630,9 @@ void SMaterial::updateShadingMode( int shadingMode  )
     this->cleanTransparencyTechniques();
 
     // Iterate through each technique found in the material and switch the shading mode
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
@@ -775,11 +771,9 @@ void SMaterial::removePass(const std::string& _name)
 {
     SLM_ASSERT("Material is not set", m_material);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-
-    while( techIt.hasMoreElements())
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    for(const auto technique : techniques)
     {
-        ::Ogre::Technique* technique = techIt.getNext();
         SLM_ASSERT("Technique is not set", technique);
 
         ::Ogre::Technique::PassIterator passIt = technique->getPassIterator();
@@ -810,14 +804,14 @@ void SMaterial::cleanTransparencyTechniques()
 {
     SLM_ASSERT("Material is not set", m_material);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
 
     std::vector< unsigned short > removeTechniqueVector;
 
     unsigned short index = 0;
-    while( techIt.hasMoreElements())
+
+    for(const auto technique : techniques)
     {
-        ::Ogre::Technique* technique = techIt.getNext();
         SLM_ASSERT("Technique is not set", technique);
 
         auto scheme = technique->getSchemeName();

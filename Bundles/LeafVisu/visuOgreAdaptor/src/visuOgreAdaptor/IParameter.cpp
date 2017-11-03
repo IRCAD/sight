@@ -136,11 +136,11 @@ void IParameter::updating()
     }
     if(m_techniqueName.empty())
     {
-        bool bSet = false;
-        ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-        while( techIt.hasMoreElements())
+        bool bSet                                     = false;
+        const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+
+        for(const auto tech : techniques)
         {
-            ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
             bSet |= this->setParameter(*tech);

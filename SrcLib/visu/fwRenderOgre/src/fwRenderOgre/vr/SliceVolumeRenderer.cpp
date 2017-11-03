@@ -38,12 +38,10 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
 
     for(const std::string& mtlName : vrMaterials)
     {
-        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
-        ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
-
-        while( techIt.hasMoreElements())
+        ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
+        const ::Ogre::Material::Techniques techniques = volumeMtl->getTechniques();
+        for(const auto tech : techniques)
         {
-            ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
             if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))

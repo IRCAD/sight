@@ -172,10 +172,10 @@ void SMaterialSelector::onReloadMaterial()
 
     material->reload();
 
-    ::Ogre::Material::TechniqueIterator techIt = material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
+    const ::Ogre::Material::Techniques techniques = material->getTechniques();
+
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
