@@ -91,7 +91,7 @@ void SMaterial::loadMaterialParameters()
     // We retrieve the parameters of the base material in a temporary material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
 
-    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", !material.isNull() );
+    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -344,7 +344,7 @@ void SMaterial::swapTexture()
     SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
 
     ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
-    SLM_ASSERT("Texture not set in Texture adaptor", !currentTexture.isNull());
+    SLM_ASSERT("Texture not set in Texture adaptor", currentTexture);
 
     this->cleanTransparencyTechniques();
 
@@ -773,7 +773,7 @@ void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
 
 void SMaterial::removePass(const std::string& _name)
 {
-    SLM_ASSERT("Material is not set", !m_material.isNull());
+    SLM_ASSERT("Material is not set", m_material);
 
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
 
@@ -808,7 +808,7 @@ void SMaterial::removePass(const std::string& _name)
 
 void SMaterial::cleanTransparencyTechniques()
 {
-    SLM_ASSERT("Material is not set", !m_material.isNull());
+    SLM_ASSERT("Material is not set", m_material);
 
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
 

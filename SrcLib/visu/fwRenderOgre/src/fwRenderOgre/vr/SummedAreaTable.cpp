@@ -114,7 +114,7 @@ SummedAreaTable::~SummedAreaTable()
 
 void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::TexturePtr _gpuTf, float _sampleDistance)
 {
-    if(m_sourceBuffer.isNull())
+    if(!m_sourceBuffer)
     {
         this->updateSatFromTexture(_imgTexture);
     }

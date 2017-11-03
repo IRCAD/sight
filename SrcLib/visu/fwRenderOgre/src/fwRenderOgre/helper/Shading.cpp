@@ -516,7 +516,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
     auto resource = mgr.getResourceByName(_name, "Materials");
-    if( !resource.isNull() )
+    if(resource)
     {
         return resource.dynamicCast< ::Ogre::GpuProgram>();
     }

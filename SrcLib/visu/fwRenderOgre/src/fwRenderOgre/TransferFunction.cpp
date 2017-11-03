@@ -37,7 +37,7 @@ TransferFunction::~TransferFunction()
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
     m_texture = ::Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture");
-    if(m_texture.isNull())
+    if(!m_texture)
     {
         m_texture = ::Ogre::TextureManager::getSingleton().createManual(
             _parentId + "_tfTexture",                                   // name

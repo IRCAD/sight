@@ -165,7 +165,7 @@ void SMaterialSelector::onReloadMaterial()
     auto materialName = m_materialBox->currentText().toStdString();
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName);
 
-    if(material.isNull())
+    if(!material)
     {
         OSLM_ERROR("Could not find material" << materialName);
     }

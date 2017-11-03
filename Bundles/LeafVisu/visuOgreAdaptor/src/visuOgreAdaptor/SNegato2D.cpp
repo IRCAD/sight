@@ -194,7 +194,7 @@ void SNegato2D::swapping(const KeyType& key)
 
 void SNegato2D::newImage()
 {
-    if(m_3DOgreTexture.isNull())
+    if(!m_3DOgreTexture)
     {
         // The adaptor hasn't start yet (the window is maybe not visible)
         return;

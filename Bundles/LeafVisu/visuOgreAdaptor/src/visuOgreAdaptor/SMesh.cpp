@@ -6,16 +6,17 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 
-#define FW_PROFILING_DISABLED
-
-#include <fwCore/Profiling.hpp>
+#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwDataTools/helper/MeshGetter.hpp>
+#define FW_PROFILING_DISABLED
+#include <fwCore/Profiling.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
+
+#include <fwDataTools/helper/MeshGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwRenderOgre/helper/Mesh.hpp>
@@ -27,8 +28,6 @@
 #include <fwServices/op/Get.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-
-#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <cstdint>
 
@@ -513,8 +512,8 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
                 // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
                 // We don't reallocate if we have more space than requested
-                bool createIndexBuffer = ibuf.isNull();
-                if( !ibuf.isNull())
+                bool createIndexBuffer = !ibuf;
+                if( ibuf)
                 {
                     // reallocate if new mesh has more indexes or IndexType change
                     createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i]) || (indicesPrev32Bits != indices32Bits);
@@ -893,7 +892,7 @@ void SMesh::updateColors(const ::fwData::Mesh::csptr& mesh)
             }
         }
 
-        if(m_perPrimitiveColorTexture.isNull())
+        if(!m_perPrimitiveColorTexture)
         {
             m_perPrimitiveColorTextureName = this->getID() + "_PerCellColorTexture";
             m_perPrimitiveColorTexture     = ::Ogre::TextureManager::getSingleton().create(
@@ -917,7 +916,7 @@ void SMesh::updateColors(const ::fwData::Mesh::csptr& mesh)
     }
     else
     {
-        if(!m_perPrimitiveColorTexture.isNull())
+        if(m_perPrimitiveColorTexture)
         {
             m_perPrimitiveColorTexture->freeInternalResources();
         }

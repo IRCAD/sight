@@ -76,7 +76,7 @@ GridProxyGeometry::~GridProxyGeometry()
         ::Ogre::MeshManager::getSingleton().remove(mesh->getHandle());
     }
 
-    if(!m_gridTexture.isNull())
+    if(m_gridTexture)
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
     }
@@ -105,7 +105,7 @@ void GridProxyGeometry::updateGridSize()
             (static_cast<int>(imageSize[i]) % m_brickSize[i] != 0);
     }
 
-    if(!m_gridTexture.isNull())
+    if(m_gridTexture)
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
         m_gridTexture.reset();

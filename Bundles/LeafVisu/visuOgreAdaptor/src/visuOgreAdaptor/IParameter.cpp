@@ -130,7 +130,7 @@ void IParameter::configuring()
 
 void IParameter::updating()
 {
-    if(m_material.isNull() || !m_dirty)
+    if(!m_material || !m_dirty)
     {
         return;
     }

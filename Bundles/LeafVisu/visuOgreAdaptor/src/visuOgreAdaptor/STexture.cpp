@@ -57,7 +57,7 @@ STexture::~STexture() noexcept
 
 bool STexture::isValid() const
 {
-    if(!m_texture.isNull())
+    if(m_texture)
     {
         if(m_texture->getFormat() != ::Ogre::PF_UNKNOWN)
         {

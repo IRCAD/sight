@@ -48,7 +48,7 @@ fwRenderOgre::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
 void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
                                                      const std::string& _mtlName)
 {
-    if(m_r2vbBuffer.isNull() || m_maxOutputVertexCount < _vertexCount)
+    if(!m_r2vbBuffer || m_maxOutputVertexCount < _vertexCount)
     {
         m_r2vbBuffer = ::Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
 
