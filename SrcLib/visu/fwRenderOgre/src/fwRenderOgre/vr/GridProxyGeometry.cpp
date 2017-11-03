@@ -44,7 +44,9 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     instance->mParentSceneManager  = _sceneManager;
     instance->m_3DImageTexture     = _3DImageTexture;
     instance->m_gpuTF              = _tf;
-    instance->setMaterial(_mtlName);
+
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName);
+    instance->setMaterial(mat);
 
     instance->initialize();
     instance->manualUpdate();
@@ -320,8 +322,8 @@ void GridProxyGeometry::clipGrid(const Ogre::AxisAlignedBox& _clippingBox)
     }
     else if(realClippingBox.isNull())
     {
-        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(NAN));
-        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(NAN));
+        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(std::nanf("")));
+        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(std::nanf("")));
     }
     else // Infinite box
     {

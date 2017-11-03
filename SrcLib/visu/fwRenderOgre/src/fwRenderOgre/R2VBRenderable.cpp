@@ -7,6 +7,7 @@
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
 
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRenderQueue.h>
 
 namespace fwRenderOgre
@@ -29,7 +30,9 @@ fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::strin
     instance->mParentSceneManager  = _sceneManager;
 
     // Input material name
-    instance->setMaterial(_mtlName);
+
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName);
+    instance->setMaterial(mat);
     return instance;
 }
 

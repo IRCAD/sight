@@ -52,12 +52,12 @@ CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
 
 CollisionTools::~CollisionTools()
 {
-    if (mRaySceneQuery != NULL)
+    if (mRaySceneQuery != nullptr)
     {
         delete mRaySceneQuery;
     }
 
-    if (mTSMRaySceneQuery != NULL)
+    if (mTSMRaySceneQuery != nullptr)
     {
         delete mTSMRaySceneQuery;
     }
@@ -128,7 +128,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
     float closest_distance;
 
     // check we are initialised
-    if (mRaySceneQuery != NULL)
+    if (mRaySceneQuery != nullptr)
     {
         // create a query object
         mRaySceneQuery->setRay(ray);
@@ -167,7 +167,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
         }
 
         // only check this result if its a hit against an entity
-        if ((query_result[qr_idx].movable != NULL)  &&
+        if ((query_result[qr_idx].movable != nullptr)  &&
             (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0))
         {
             // get the entity to check

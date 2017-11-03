@@ -220,7 +220,7 @@ void Negato2DInteractor::updateCameraAngle()
     this->updateRenderWindowDimensions();
     ::Ogre::Real orthoWidth, orthoHeight, imageToWindowRatio;
 
-    if( m_renderWindowWidth == m_renderWindowHeight )
+    if( static_cast<int>(m_renderWindowWidth) == static_cast<int>(m_renderWindowHeight) )
     {
         this->getCamera()->setOrthoWindow( m_currentWidth, m_currentHeight );
     }

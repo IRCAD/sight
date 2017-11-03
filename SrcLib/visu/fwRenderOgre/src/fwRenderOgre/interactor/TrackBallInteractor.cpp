@@ -79,7 +79,8 @@ void TrackballInteractor::wheelEvent(int delta, int /*x*/, int /*y*/)
     ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
     ::Ogre::Vector3 direction  = camera->getDirection();
-    direction                  = direction * z;
+    //::Ogre::Vector3 direction  = m_sceneManager->getRootSceneNode()->getLocalAxes().ToAngleAxis();
+    direction = direction * z;
     camNode->translate( direction, ::Ogre::Node::TS_LOCAL );
 }
 
