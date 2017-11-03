@@ -133,10 +133,10 @@ void SNegato3D::starting()
     this->createTransferFunction(image);
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-        this->getID() + "_Texture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true).first.dynamicCast< ::Ogre::Texture>();
+    m_3DOgreTexture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture >(
+        ::Ogre::TextureManager::getSingleton().createOrRetrieve(this->getID() + "_Texture",
+                                                                ::Ogre::ResourceGroupManager::
+                                                                DEFAULT_RESOURCE_GROUP_NAME, true).first );
 
     // TF texture initialization
     m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());

@@ -663,7 +663,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
 
                     SLM_ASSERT("Texture should have been created before in SMesh", !result.second);
 
-                    ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
+                    ::Ogre::TexturePtr tex = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( result.first );
 
                     if(texUnitState == nullptr)
                     {

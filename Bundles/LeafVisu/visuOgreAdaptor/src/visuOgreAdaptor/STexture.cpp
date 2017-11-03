@@ -113,10 +113,12 @@ void STexture::starting()
 {
     this->initialize();
 
-    m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-        m_textureName,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true).first.dynamicCast< ::Ogre::Texture>();
+    m_texture =
+        ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                                                            m_textureName,
+                                                            ::Ogre::
+                                                            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                            true).first);
 
     this->updating();
 }
