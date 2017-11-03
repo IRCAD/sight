@@ -235,7 +235,7 @@ bool SliceVolumeRenderer::planeEdgeIntersection(const ::Ogre::Vector3& _planeNor
     const ::Ogre::Vector3 edgePoint0 = m_clippedImagePositions[_edgeVertexIndex0];
     const ::Ogre::Vector3 edgePoint1 = m_clippedImagePositions[_edgeVertexIndex1];
 
-    if(_planeNormal.dotProduct(edgePoint1 - edgePoint0) != 0) // plane and edge are not parallel
+    if(static_cast<int>(_planeNormal.dotProduct(edgePoint1 - edgePoint0)) != 0) // plane and edge are not parallel
     {
         // intersectPoint represents the intersection point r on the parametric line described by this equation:
         // S(r) = _egdePoint0 + r * (_edgePoint1 - _edgePoint0)

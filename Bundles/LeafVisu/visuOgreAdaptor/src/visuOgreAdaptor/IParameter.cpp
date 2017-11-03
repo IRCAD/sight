@@ -261,7 +261,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         std::vector< ::fwData::Point::sptr > points = pointListValue->getPoints();
         int nbPoints                                = static_cast<int>(points.size());
 
-        float* paramValues = new float[nbPoints * 3];
+        float* paramValues = new float[static_cast<unsigned long long>(nbPoints * 3)];
 
         for(int i = 0; i < nbPoints * 3; )
         {
