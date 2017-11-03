@@ -123,7 +123,7 @@ void STextureSelector::onLoadButton()
 
     auto srv           = ::fwServices::add< ::gui::editor::IDialogEditor >(image, "::uiIO::editor::SIOSelector");
     auto ioSelectorSrv = ::uiIO::editor::SIOSelector::dynamicCast(srv);
-    if (ioSelectorSrv != NULL)
+    if (ioSelectorSrv != nullptr)
     {
         ioSelectorSrv->setIOMode(::uiIO::editor::SIOSelector::READER_MODE);
         ioSelectorSrv->configure();

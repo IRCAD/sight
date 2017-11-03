@@ -40,7 +40,7 @@ CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
     mSceneMgr = sceneMgr;
 
     mRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
-    if (NULL == mRaySceneQuery)
+    if (nullptr == mRaySceneQuery)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
         return;

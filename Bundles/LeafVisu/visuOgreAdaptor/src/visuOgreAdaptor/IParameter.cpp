@@ -296,7 +296,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     else if(objClass == "::fwData::Array")
     {
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
-        SLM_ASSERT("The object is NULL", arrayObject);
+        SLM_ASSERT("The object is nullptr", arrayObject);
 
         size_t numComponents = arrayObject->getNumberOfComponents();
         if(numComponents <= 3)
