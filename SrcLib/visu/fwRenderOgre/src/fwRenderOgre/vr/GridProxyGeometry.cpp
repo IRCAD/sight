@@ -108,7 +108,7 @@ void GridProxyGeometry::updateGridSize()
     if(!m_gridTexture.isNull())
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
-        m_gridTexture.setNull();
+        m_gridTexture.reset();
     }
 
     this->setupGrid();

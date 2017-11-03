@@ -162,7 +162,7 @@ void SNegato2D::stopping()
     m_plane->removeAndDestroyPlane();
     delete m_plane;
 
-    m_3DOgreTexture.setNull();
+    m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
     this->requestRender();

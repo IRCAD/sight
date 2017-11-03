@@ -91,7 +91,7 @@ void SVideo::starting()
 
 void SVideo::stopping()
 {
-    m_texture.setNull();
+    m_texture.reset();
 }
 
 //------------------------------------------------------------------------------

@@ -124,9 +124,9 @@ SMesh::SMesh() noexcept :
     newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
 
-    m_ogreMesh.setNull();
-    m_r2vbMesh.setNull();
-    m_perPrimitiveColorTexture.setNull();
+    m_ogreMesh.reset();
+    m_r2vbMesh.reset();
+    m_perPrimitiveColorTexture.reset();
 
     memset(m_subMeshes, 0, sizeof(m_subMeshes));
 
@@ -295,8 +295,8 @@ void SMesh::stopping()
     auto& meshMgr = ::Ogre::MeshManager::getSingleton();
     meshMgr.remove(m_ogreMesh->getHandle());
     meshMgr.remove(m_r2vbMesh->getHandle());
-    m_ogreMesh.setNull();
-    m_r2vbMesh.setNull();
+    m_ogreMesh.reset();
+    m_r2vbMesh.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -921,7 +921,7 @@ void SMesh::updateColors(const ::fwData::Mesh::csptr& mesh)
         {
             m_perPrimitiveColorTexture->freeInternalResources();
         }
-        m_perPrimitiveColorTexture.setNull();
+        m_perPrimitiveColorTexture.reset();
         m_perPrimitiveColorTextureName = "";
     }
 

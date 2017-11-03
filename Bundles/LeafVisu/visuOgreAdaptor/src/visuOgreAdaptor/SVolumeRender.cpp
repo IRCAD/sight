@@ -376,10 +376,10 @@ void SVolumeRender::stopping()
     m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
-    m_3DOgreTexture.setNull();
+    m_3DOgreTexture.reset();
 
     ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
-    m_maskTexture.setNull();
+    m_maskTexture.reset();
 
     m_gpuTF.removeTexture();
     m_preIntegrationTable.removeTexture();

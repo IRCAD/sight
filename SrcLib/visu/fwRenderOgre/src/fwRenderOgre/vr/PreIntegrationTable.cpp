@@ -61,7 +61,7 @@ void PreIntegrationTable::createTexture(const std::string& _parentId)
 void PreIntegrationTable::removeTexture()
 {
     ::Ogre::TextureManager::getSingleton().remove(m_tableTexture->getHandle());
-    m_tableTexture.setNull();
+    m_tableTexture.reset();
 }
 
 //-----------------------------------------------------------------------------

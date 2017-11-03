@@ -149,7 +149,7 @@ void STexture::stopping()
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();
-    m_texture.setNull();
+    m_texture.reset();
 }
 
 //-----------------------------------------------------------------------------

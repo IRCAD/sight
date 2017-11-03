@@ -178,7 +178,7 @@ void IParameter::updating()
 
 void IParameter::stopping()
 {
-    m_material.setNull();
+    m_material.reset();
 }
 
 //------------------------------------------------------------------------------

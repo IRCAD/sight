@@ -189,7 +189,7 @@ void SNegato3D::stopping()
     delete m_planes[1];
     delete m_planes[2];
 
-    m_3DOgreTexture.setNull();
+    m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
     this->requestRender();

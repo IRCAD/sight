@@ -279,7 +279,7 @@ void SMaterial::starting()
 
 void SMaterial::stopping()
 {
-    m_material.setNull();
+    m_material.reset();
     m_textureConnection.disconnect();
     this->unregisterServices();
 
