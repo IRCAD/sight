@@ -564,12 +564,10 @@ void SMaterial::updatePolygonMode(int polygonMode)
         {
             SLM_ASSERT("Technique is not set", tech);
 
-            ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+            ::Ogre::Technique::Passes passIt = tech->getPasses();
 
-            while ( passIt.hasMoreElements() )
+            for(const auto ogrePass : passIt)
             {
-                ::Ogre::Pass* ogrePass = passIt.getNext();
-
                 switch( polygonMode )
                 {
                     case ::fwData::Material::SURFACE:
@@ -635,12 +633,10 @@ void SMaterial::updateShadingMode( int shadingMode  )
     {
         SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+        ::Ogre::Technique::Passes passIt = tech->getPasses();
 
-        while ( passIt.hasMoreElements() )
+        for(const auto ogrePass : passIt)
         {
-            ::Ogre::Pass* ogrePass = passIt.getNext();
-
             // Discard edge pass
             if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
             {
@@ -776,13 +772,12 @@ void SMaterial::removePass(const std::string& _name)
     {
         SLM_ASSERT("Technique is not set", technique);
 
-        ::Ogre::Technique::PassIterator passIt = technique->getPassIterator();
+        ::Ogre::Technique::Passes passIt = technique->getPasses();
         std::vector< ::Ogre::Pass* > removePassVector;
 
         // Collect the passes to remove
-        while ( passIt.hasMoreElements() )
+        for(const auto ogrePass : passIt)
         {
-            ::Ogre::Pass* ogrePass = passIt.getNext();
             if(ogrePass->getName() == _name)
             {
                 removePassVector.push_back(ogrePass);

@@ -65,11 +65,9 @@ MaterialMgrListener::~MaterialMgrListener()
 
     // The R2VB material does not need to fill the OIT schemes, though Ogre get us here to know what to do
     // We simply return the main technique in this case
-    ::Ogre::Technique::PassIterator passIt = defaultTech->getPassIterator();
-    while ( passIt.hasMoreElements() )
+    ::Ogre::Technique::Passes passIt = defaultTech->getPasses();
+    for(const auto pass : passIt)
     {
-        ::Ogre::Pass* pass = passIt.getNext();
-
         if(  ::Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/" ) )
         {
             return defaultTech;
@@ -81,11 +79,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBT_REPLACE);
@@ -103,11 +99,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             pass->setDepthCheckEnabled(true);
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
@@ -163,11 +157,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBT_REPLACE);
@@ -180,11 +172,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             // replace fragment program and build it if needed
             auto fpName  = pass->getFragmentProgramName();
             auto newName = ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(fpName, algoName+ "/weightBlend");
@@ -227,11 +217,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             pass->setFragmentProgram(algoName + "/transmittanceBlend_FP");
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(::Ogre::CULL_NONE);
@@ -257,11 +245,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
@@ -276,11 +262,9 @@ MaterialMgrListener::~MaterialMgrListener()
     {
         newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
-        ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
-        while ( passIt.hasMoreElements() )
+        ::Ogre::Technique::Passes passIt = newTech->getPasses();
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
-
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);

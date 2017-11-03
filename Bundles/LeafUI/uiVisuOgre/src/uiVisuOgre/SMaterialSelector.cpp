@@ -178,11 +178,10 @@ void SMaterialSelector::onReloadMaterial()
     {
         SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+        ::Ogre::Technique::Passes passIt = tech->getPasses();
 
-        while ( passIt.hasMoreElements() )
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
             SLM_ASSERT("No pass found", pass);
 
             if(!pass->getVertexProgramName().empty())
