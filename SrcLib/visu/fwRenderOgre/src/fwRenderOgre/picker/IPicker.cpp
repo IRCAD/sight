@@ -59,9 +59,13 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 #endif
 
     ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager);
-    bool entityFound = tool.raycast(r, m_rayIntersect, m_selectedObject, distance,
-                                    ::Ogre::SceneManager::ENTITY_TYPE_MASK);
-
+    //, m_rayIntersect m_selectedObject, distance,
+    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> res = tool.raycast(r,
+                                                                                    ::Ogre::SceneManager::ENTITY_TYPE_MASK);
+    bool entityFound                                                 = std::get<0>(res);
+    m_rayIntersect   = std::get<1>(res);
+    m_selectedObject = std::get<2>(res);
+    distance         = std::get<3>(res);
     if (entityFound)
     {
 
