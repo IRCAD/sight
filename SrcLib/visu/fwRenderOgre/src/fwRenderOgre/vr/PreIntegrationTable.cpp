@@ -103,7 +103,7 @@ void PreIntegrationTable::imageUpdate(const fwData::Image::sptr& _img, const ::f
                 OSLM_FATAL("Invalid pixel format for pre-integration, pixels must be integers");
         }
 
-        unsigned textureSize = m_valueInterval.second - m_valueInterval.first;
+        unsigned textureSize = static_cast<unsigned>(m_valueInterval.second - m_valueInterval.first);
 
         if(textureSize != m_textureSize)
         {
@@ -148,7 +148,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, fl
 
         _tf->setIsClamped(false);
 
-        for(int k = 0; k < (int)m_textureSize; ++k)
+        for(int k = 0; k < static_cast<int>(m_textureSize); ++k)
         {
             ::fwData::TransferFunction::TFValueType value = k + m_valueInterval.first;
 
@@ -204,7 +204,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, fl
 
                 res = ::glm::clamp(res, 0.f, 1.f);
 
-                m_table[sb * m_textureSize + sf] = {
+                m_table[static_cast<unsigned>(sb) * m_textureSize + static_cast<unsigned>(sf)] = {
                     static_cast<uint8_t>(res.b * 255.f),
                     static_cast<uint8_t>(res.g * 255.f),
                     static_cast<uint8_t>(res.r * 255.f),

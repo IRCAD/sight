@@ -62,7 +62,7 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, i
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::wheelEvent(int delta, int x, int y)
+void TrackballInteractor::wheelEvent(int delta, int /*x*/, int /*y*/)
 {
     // The zoom factor is reduced when coming closer and increased when going away
     const float fNewZoom = (delta > 0) ? m_fZoom * 0.85f : m_fZoom / 0.85f;

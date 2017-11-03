@@ -70,26 +70,26 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
 
     for (unsigned int i = 0; i < uiNumCells; ++i)
     {
-        long offset = static_cast<long>(cellDataOffsets[i]);
-        if ( cellsType[i] == ::fwData::Mesh::TRIANGLE )
+        long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
+        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
         {
             *pTriangles++ = static_cast<T>(cells[offset]);
             *pTriangles++ = static_cast<T>(cells[offset + 1]);
             *pTriangles++ = static_cast<T>(cells[offset + 2]);
         }
-        else if ( cellsType[i] == ::fwData::Mesh::QUAD )
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::QUAD )
         {
             *pQuads++ = static_cast<T>(cells[offset]);
             *pQuads++ = static_cast<T>(cells[offset + 1]);
             *pQuads++ = static_cast<T>(cells[offset + 2]);
             *pQuads++ = static_cast<T>(cells[offset + 3]);
         }
-        else if ( cellsType[i] == ::fwData::Mesh::EDGE )
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::EDGE )
         {
             *pEdges++ = static_cast<T>(cells[offset]);
             *pEdges++ = static_cast<T>(cells[offset + 1]);
         }
-        else if ( cellsType[i] == ::fwData::Mesh::TETRA )
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TETRA )
         {
             *pTetras++ = static_cast<T>(cells[offset]);
             *pTetras++ = static_cast<T>(cells[offset + 1]);
@@ -366,7 +366,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
             for(unsigned int i = 0; i < cellsType.size() && computeNormals; ++i)
             {
-                auto cellType = cellsType[i];
+                auto cellType = cellsType[static_cast<int>(i)];
                 if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA)
                 {
                     computeNormals = false;
@@ -435,7 +435,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
-        auto cellType = cellsType[i];
+        auto cellType = cellsType[static_cast<int>(i)];
         if(cellType == ::fwData::Mesh::TRIANGLE)
         {
             numIndices[::fwData::Mesh::TRIANGLE] += 3;
@@ -646,7 +646,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             sceneMgr->getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
-        const unsigned int numSubEntities = m_r2vbEntity->getNumSubEntities();
+        const unsigned int numSubEntities = static_cast<unsigned>(m_r2vbEntity->getNumSubEntities());
         for(unsigned int i = 0; i < numSubEntities; ++i)
         {
             auto subEntity = m_r2vbEntity->getSubEntity(i);
@@ -750,15 +750,15 @@ void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
         FW_PROFILE_AVG("UPDATE BBOX", 5);
         for (unsigned int i = 0; i < numPoints; ++i)
         {
-            const auto& pt0 = points[i][0];
+            const auto& pt0 = points[static_cast<int>(i)][0];
             xMin = std::min(xMin, pt0);
             xMax = std::max(xMax, pt0);
 
-            const auto& pt1 = points[i][1];
+            const auto& pt1 = points[static_cast<int>(i)][1];
             yMin = std::min(yMin, pt1);
             yMax = std::max(yMax, pt1);
 
-            const auto& pt2 = points[i][2];
+            const auto& pt2 = points[static_cast<int>(i)][2];
             zMin = std::min(zMin, pt2);
             zMax = std::max(zMax, pt2);
         }
@@ -768,7 +768,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
         FW_PROFILE_AVG("UPDATE POS", 5);
         for (unsigned int i = 0; i < numPoints; ++i)
         {
-            memcpy(pPos, &points[i][0], 3 * sizeof(PointValueType) );
+            memcpy(pPos, &points[static_cast<int>(i)][0], 3 * sizeof(PointValueType) );
 
             pPos += uiStrideFloat;
         }
@@ -782,7 +782,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
 
         for (unsigned int i = 0; i < numPoints; ++i)
         {
-            memcpy(pNormal, &normals[i][0], 3 * sizeof(NormalValueType) );
+            memcpy(pNormal, &normals[static_cast<int>(i)][0], 3 * sizeof(NormalValueType) );
             pNormal += uiStrideFloat;
         }
     }
@@ -1008,8 +1008,8 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::csptr& mesh)
         // Copy UV coordinates for each mesh point
         for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
         {
-            pUV[2 * i]     = uvCoord[i][0];
-            pUV[2 * i + 1] = uvCoord[i][1];
+            pUV[2 * i]     = uvCoord[static_cast<int>(i)][0];
+            pUV[2 * i + 1] = uvCoord[static_cast<int>(i)][1];
         }
 
         uvbuf->unlock();

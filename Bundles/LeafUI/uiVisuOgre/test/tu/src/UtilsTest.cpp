@@ -51,10 +51,10 @@ void UtilsTest::convertQColorToOgreColor()
     ::Ogre::ColourValue refColor;
 
     ::Ogre::ColourValue resultColor = ::uiVisuOgre::helper::Utils::convertQColorToOgreColor(QColor(255, 255, 255));
-    CPPUNIT_ASSERT(resultColor.r == refColor.r);
-    CPPUNIT_ASSERT(resultColor.g == refColor.g);
-    CPPUNIT_ASSERT(resultColor.b == refColor.b);
-    CPPUNIT_ASSERT(resultColor.a == refColor.a);
+    CPPUNIT_ASSERT(static_cast<int>(resultColor.r) == static_cast<int>(refColor.r));
+    CPPUNIT_ASSERT(static_cast<int>(resultColor.g) == static_cast<int>(refColor.g));
+    CPPUNIT_ASSERT(static_cast<int>(resultColor.b) == static_cast<int>(refColor.b));
+    CPPUNIT_ASSERT(static_cast<int>(resultColor.a) == static_cast<int>(refColor.a));
 }
 
 //------------------------------------------------------------------------------

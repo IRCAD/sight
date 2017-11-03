@@ -27,7 +27,7 @@ const ::Ogre::String& R2VBRenderable::getType(void) const
 //-----------------------------------------------------------------------------
 
 ::Ogre::MovableObject* R2VBRenderable::createInstanceImpl(
-    const ::Ogre::String& name, const ::Ogre::NameValuePairList* params)
+    const ::Ogre::String& name, const ::Ogre::NameValuePairList* /*params*/)
 {
     return new ::fwRenderOgre::R2VBRenderable(name);
 }

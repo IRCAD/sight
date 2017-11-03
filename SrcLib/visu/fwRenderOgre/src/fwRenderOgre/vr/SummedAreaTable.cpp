@@ -42,7 +42,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(::Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialRender(::Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
     {
         ::Ogre::Pass* satInitPass = mat->getTechnique(0)->getPass(0);
 
@@ -70,7 +70,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(::Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialRender(::Ogre::uint32 /*pass_id*/, Ogre::MaterialPtr& mat)
     {
         ::Ogre::Pass* satPass = mat->getTechnique(0)->getPass(0);
 

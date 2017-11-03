@@ -55,7 +55,7 @@ class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor,
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::IAdaptor))
 
     /// Constructor.
     VISUOGREADAPTOR_API SCamera() noexcept;

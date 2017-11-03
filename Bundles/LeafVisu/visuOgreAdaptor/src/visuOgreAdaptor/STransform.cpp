@@ -103,7 +103,7 @@ void STransform::updateFromOgre()
     {
         for (size_t ct = 0; ct < 4; ct++)
         {
-            m_fwTransform->setCoefficient(ct, lt, m_ogreTransform[ct][lt]);
+            m_fwTransform->setCoefficient(ct, lt, static_cast<double>(m_ogreTransform[ct][lt]));
         }
     }
 

@@ -49,7 +49,7 @@ class VISUOGREADAPTOR_CLASS_API SReconstruction : public ::fwRenderOgre::IAdapto
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SReconstruction)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SReconstruction)(::fwRenderOgre::IAdaptor) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SReconstruction() noexcept;

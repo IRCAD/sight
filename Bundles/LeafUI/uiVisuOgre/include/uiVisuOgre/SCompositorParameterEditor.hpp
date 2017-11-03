@@ -37,7 +37,7 @@ class UIVISUOGRE_CLASS_API SCompositorParameterEditor : public ::gui::editor::IE
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorParameterEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCompositorParameterEditor)(::gui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SCompositorParameterEditor() noexcept;

@@ -159,7 +159,7 @@ void SLightSelector::onChangedLightsState(int _state)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous)
+void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* /*_previous*/)
 {
     if(_item)
     {
@@ -184,7 +184,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onAddLight(bool _checked)
+void SLightSelector::onAddLight(bool /*_checked*/)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -212,7 +212,7 @@ void SLightSelector::onAddLight(bool _checked)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onRemoveLight(bool _checked)
+void SLightSelector::onRemoveLight(bool /*_checked*/)
 {
     ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
 
@@ -231,7 +231,7 @@ void SLightSelector::onRemoveLight(bool _checked)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onEditAmbientColor(bool _checked)
+void SLightSelector::onEditAmbientColor(bool /*_checked*/)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());

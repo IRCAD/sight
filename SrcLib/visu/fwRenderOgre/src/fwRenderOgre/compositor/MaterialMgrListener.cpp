@@ -28,12 +28,12 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-::Ogre::Technique* fwRenderOgre::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short _schemeIndex,
+::Ogre::Technique* fwRenderOgre::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short /*_schemeIndex*/,
                                                                                        const ::Ogre::String &_schemeName,
                                                                                        ::Ogre::Material *_originalMaterial,
-                                                                                       unsigned short _lodIndex,
-                                                                                       const ::Ogre::Renderable *
-                                                                                       _renderable)
+                                                                                       unsigned short /*_lodIndex*/,
+                                                                                       const ::Ogre::Renderable*
+                                                                                       /*_renderable*/)
 {
     // Don't know what is this for exactly, but we don't care so we filter this out
     if(_schemeName == "ShaderGeneratorDefaultScheme")
@@ -349,6 +349,7 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
     newTech->setSchemeName(_schemeName);
 
     ::Ogre::Pass* pass = newTech->getPass(0);
+    (void)(pass);
     SLM_ASSERT("Empty pass", pass);
 
     return newTech;

@@ -78,7 +78,7 @@ IVolumeRenderer::~IVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
+void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr /*tf*/)
 {
 
 }
@@ -101,7 +101,7 @@ void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 
 //-----------------------------------------------------------------------------
 
-void IVolumeRenderer::resizeViewport(int w, int h)
+void IVolumeRenderer::resizeViewport(int /*w*/, int /*h*/)
 {
 
 }

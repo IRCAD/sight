@@ -49,7 +49,7 @@ class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::visuOgreAdaptor:
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::visuOgreAdaptor::IParameter) );
+    fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::visuOgreAdaptor::IParameter) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SCompositorParameter() noexcept;

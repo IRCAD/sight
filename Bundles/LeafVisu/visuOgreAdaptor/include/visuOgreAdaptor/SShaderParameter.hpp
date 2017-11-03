@@ -49,7 +49,7 @@ class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::visuOgreAdaptor::IPa
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::visuOgreAdaptor::IParameter) );
+    fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::visuOgreAdaptor::IParameter) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() noexcept;

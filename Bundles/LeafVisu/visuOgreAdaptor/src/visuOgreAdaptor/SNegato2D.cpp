@@ -223,7 +223,7 @@ void SNegato2D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::changeSliceType(int _from, int _to)
+void SNegato2D::changeSliceType(int /*_from*/, int _to)
 {
     OrientationMode newOrientationMode;
 
@@ -300,7 +300,7 @@ void SNegato2D::updateTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SNegato2D::updateTFWindowing(double window, double level)
+void SNegato2D::updateTFWindowing(double /*window*/, double /*leve*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 

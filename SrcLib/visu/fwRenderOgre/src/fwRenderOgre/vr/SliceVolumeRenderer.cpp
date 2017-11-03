@@ -180,11 +180,11 @@ void SliceVolumeRenderer::updateAllSlices()
     // compute all slices
     for(int sliceNumber = m_nbSlices - 1; sliceNumber > 0; --sliceNumber)
     {
-        Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, (unsigned)closestVtxIndex);
+        Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, static_cast<unsigned>(closestVtxIndex));
 
         if(intersections.size() >= 3)
         {
-            updateSlice(intersections, sliceNumber);
+            updateSlice(intersections, static_cast<unsigned>(sliceNumber));
         }
 
         // set next plane

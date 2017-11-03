@@ -68,7 +68,7 @@ public:
     };
 
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
-    fwCoreAllowSharedFromThis();
+    fwCoreAllowSharedFromThis()
 
     /**@name Signals API
      * @{

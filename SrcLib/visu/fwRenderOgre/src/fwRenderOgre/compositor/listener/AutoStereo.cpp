@@ -72,11 +72,11 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(unsigned short _schemeIndex,
+::Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(unsigned short /*_schemeIndex*/,
                                                                       const ::Ogre::String& _schemeName,
                                                                       ::Ogre::Material* _originalMaterial,
-                                                                      unsigned short _lodIndex,
-                                                                      const ::Ogre::Renderable* _renderable)
+                                                                      unsigned short /*_lodIndex*/,
+                                                                      const ::Ogre::Renderable* /*_renderable*/)
 {
     ::Ogre::Technique* newTech = nullptr;
     if(_schemeName.find("AutoStereo") != std::string::npos)
@@ -195,6 +195,7 @@ Ogre::Technique* AutoStereoCompositorListener::copyTechnique(::Ogre::Technique* 
     newTech->setSchemeName(_schemeName);
 
     ::Ogre::Pass* pass = newTech->getPass(0);
+    (void)(pass);
     SLM_ASSERT("Empty pass", pass);
 
     return newTech;

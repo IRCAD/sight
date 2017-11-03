@@ -86,7 +86,7 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
 
     // If the transfer function is clamped, we have to force the extremity colors to black
     bool isTFClamped = _tf->getIsClamped();
-    ::fwData::TransferFunction::TFColor black(0.f, 0.f, 0.f, 1.f);
+    ::fwData::TransferFunction::TFColor black(0., 0., 0., 1.);
 
     // We need first and last colors defined in the TF in order to fill the uninterpolated ranges (left and right)
     const ::fwData::TransferFunction::TFColor lBoundaryColor = isTFClamped ? black : tfData.cbegin()->second;

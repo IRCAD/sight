@@ -39,7 +39,7 @@ class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderOgre::IAdaptor) )
 
     typedef ::fwCom::Signal< void ( double* ) > UpdateSizeSigType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_UPDATE_SIZE_SIG;

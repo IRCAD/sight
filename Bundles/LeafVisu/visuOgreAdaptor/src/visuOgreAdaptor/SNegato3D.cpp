@@ -265,7 +265,7 @@ void SNegato3D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::changeSliceType(int _from, int _to)
+void SNegato3D::changeSliceType(int /*_from*/, int _to)
 {
     // We have to update the active plane
     m_activePlane = m_planes[_to];

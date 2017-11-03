@@ -87,7 +87,7 @@ void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int x, int y, int dx, int dy)
+void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int /*x*/, int /*y*/, int dx, int dy)
 {
     if(button == MIDDLE && m_totalWidth > 1)
     {

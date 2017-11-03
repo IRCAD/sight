@@ -77,7 +77,7 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::buttonReleaseEvent(MouseButton button, int x, int y)
+void VRWidgetsInteractor::buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
 {
     m_widget->widgetReleased();
     m_pickedObject = nullptr;

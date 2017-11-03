@@ -82,8 +82,8 @@ SVolumeRender::SVolumeRender() noexcept :
     m_satShellRadius(4),
     m_satConeAngle(0.1f),
     m_satConeSamples(50),
-    m_aoFactor(1.f),
-    m_colorBleedingFactor(1.f),
+    m_aoFactor(1.),
+    m_colorBleedingFactor(1.),
     m_autoResetCamera(true)
 {
     this->installTFSlots(this);
@@ -235,7 +235,7 @@ void SVolumeRender::updateTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateTFWindowing(double window, double level)
+void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -746,7 +746,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType mode)
+void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType /*mode*/)
 {
     this->stopping();
     this->starting();

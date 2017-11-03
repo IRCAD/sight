@@ -101,8 +101,8 @@ bool CollisionTools::raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* c
                                        const Ogre::uint32 queryMask)
 {
     // Create the ray to test
-    Ogre::Real tx = mousecoords.x / (::Ogre::Real) rw->getWidth();
-    Ogre::Real ty = mousecoords.y / (::Ogre::Real) rw->getHeight();
+    Ogre::Real tx = mousecoords.x / static_cast< ::Ogre::Real>(rw->getWidth());
+    Ogre::Real ty = mousecoords.y / static_cast< ::Ogre::Real>(rw->getHeight());
     Ogre::Ray ray = camera->getCameraToViewportRay(tx, ty);
 
     return raycast(ray, result, target, closest_distance, queryMask);
@@ -235,7 +235,7 @@ void CollisionTools::calculateY(::Ogre::SceneNode* n, const bool doTerrainCheck,
     }
     else
     {
-        if (!doTerrainCheck && colY == -99999)
+        if (!doTerrainCheck && static_cast<int>(colY) == -99999)
         {
             colY = y;
         }
