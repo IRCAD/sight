@@ -76,7 +76,7 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
     SLM_ASSERT("the 2 pointLists must have the same number of points",
                pointList1->getPoints().size() == pointList2->getPoints().size() );
 
-    const ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
+    ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
     ::fwData::PointList::PointListContainer points2 = pointList2->getRefPoints();
 
     const size_t size = points1.size();
@@ -84,15 +84,6 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
     // Initialize the two lists by transforming the points with their associated matrix
     for(size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::sptr pt1       = points1[i];
-        ::fwData::Point::sptr pt2       = points2[i];
-        ::fwData::Point::sptr ptOutput1 = ::fwData::Point::New();
-        ::fwData::Point::sptr ptOutput2 = ::fwData::Point::New();
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, ptOutput1);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix2, pt2, ptOutput2);
-
-        points1[i]->setCoord(ptOutput1->getCoord());
-        points2[i]->setCoord(ptOutput2->getCoord());
     }
 
     // Transform the point lists into list< ::glm::dvec3 >
@@ -101,8 +92,23 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
 
     for(size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        ::fwData::Point::sptr pt1       = points1[i];
+        ::fwData::Point::sptr pt2       = points2[i];
+        ::fwData::Point::sptr ptOutput1 = ::fwData::Point::New();
+        ::fwData::Point::sptr ptOutput2 = ::fwData::Point::New();
+
+        // Transform the current point with the input matrix
+        ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, ptOutput1);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrix2, pt2, ptOutput2);
+
+        ::fwData::Point::PointCoordArrayType tmp1 = ptOutput1->getCoord();
+        ::fwData::Point::PointCoordArrayType tmp2 = ptOutput2->getCoord();
+
+        // Update the point in the Point list
+        points1[i]->setCoord(tmp1);
+        points2[i]->setCoord(tmp2);
+
+        // Add the point to a list< ::glm::dvec3
         list1.push_back(::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]));
         list2.push_back(::glm::dvec3( tmp2[0], tmp2[1], tmp2[2]));
     }
