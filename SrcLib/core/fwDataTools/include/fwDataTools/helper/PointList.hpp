@@ -11,6 +11,7 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 namespace fwDataTools
 {
@@ -35,6 +36,15 @@ public:
     /// Return an array of the size of one the pointlists (they must have the same size)
     static ::fwData::Array::sptr
     computeDistance(::fwData::PointList::sptr pointList1, ::fwData::PointList::sptr pointList2);
+
+    /// Associate 2 point lists
+    /// Take 2 point lists as input and re-order the second one, so that the points at the
+    /// same index on both lists are the closest to each other
+    /// The points in each point lists will be transformed by the associated matrix
+    static void associatePointLists(const ::fwData::PointList::sptr pointList1,
+                                    ::fwData::TransformationMatrix3D::csptr matrix1,
+                                    ::fwData::PointList::sptr pointList2,
+                                    ::fwData::TransformationMatrix3D::csptr matrix2);
 
 };
 

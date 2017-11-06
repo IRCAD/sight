@@ -117,5 +117,66 @@ void PointListTest::computeDistance()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void PointListTest::associatePointLists()
+{
+    const size_t nbPoints = 42;
+
+    ::fwData::PointList::sptr pl1;
+    ::fwData::PointList::sptr pl2;
+
+    ::fwData::Point::sptr p;
+
+    // Simple test with parallel point lists
+    {
+        pl1 = ::fwData::PointList::New();
+        pl2 = ::fwData::PointList::New();
+
+        // Associate empty point lists
+        ::fwDataTools::helper::PointList::associatePointLists(pl1, ::fwData::TransformationMatrix3D::New(),
+                                                              pl2, ::fwData::TransformationMatrix3D::New());
+    }
+
+    // Simple test with parallel point lists
+    {
+        pl1 = ::fwData::PointList::New();
+        pl2 = ::fwData::PointList::New();
+
+        // Build 2 pointlists:
+        // The first one with increasing x values
+        // And the second one with inscreasing x values but shifted in y
+        for(size_t i = 0; i <= nbPoints; i++)
+        {
+            p = ::fwData::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            pl1->pushBack(p);
+
+            p = ::fwData::Point::New(static_cast<float>(nbPoints - i), 0.0f, 0.0f);
+            pl2->pushBack(p);
+        }
+
+        // Associate the point lists
+        ::fwDataTools::helper::PointList::associatePointLists(pl1, ::fwData::TransformationMatrix3D::New(),
+                                                              pl2, ::fwData::TransformationMatrix3D::New());
+
+        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
+        ::fwData::PointList::PointListContainer points2 = pl2->getRefPoints();
+
+        const size_t size = points1.size();
+
+        for(size_t i = 0; i < size; ++i)
+        {
+            ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+            ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[2], tmp2[2], 1e-8);
+        }
+
+    }
+
+}
+
 } //namespace ut
 } //namespace fwDataTools

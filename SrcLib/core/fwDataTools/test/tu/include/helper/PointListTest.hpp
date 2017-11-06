@@ -19,6 +19,7 @@ class PointListTest : public CPPUNIT_NS::TestFixture
 private:
     CPPUNIT_TEST_SUITE( PointListTest );
     CPPUNIT_TEST( computeDistance );
+    CPPUNIT_TEST( associatePointLists );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,6 +28,8 @@ public:
     void tearDown();
 
     void computeDistance();
+
+    void associatePointLists();
 };
 } //namespace ut
 } //namespace fwDataTools
