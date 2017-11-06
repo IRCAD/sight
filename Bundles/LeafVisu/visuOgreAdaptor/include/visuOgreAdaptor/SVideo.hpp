@@ -23,13 +23,13 @@ namespace visuOgreAdaptor
  *
  * @code{.xml}
         <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
-            <in key="frame" uid="..." />
+            <in key="image" uid="..." />
             <in key="camera" uid="..." />
             <config renderer="default" reversed="true" />
         </service>
    @endcode
  * @subsection Input Input:
- * - \b frame [::fwData::Image]: frame displayed.
+ * - \b image [::fwData::Image]: frame displayed.
  * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
  * @subsection Configuration Configuration:
  * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.

@@ -24,8 +24,9 @@ namespace visuOgreAdaptor
  * @brief   This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.
  *
  * @section Slots Slots
- * - \b addReconstruction() : show a new reconstruction.
- * - \b removeReconstruction() : hide a deleted reconstruction.
+ * - \b addReconstruction(): show a new reconstruction.
+ * - \b removeReconstruction(): hide a deleted reconstruction.
+ * - \b showReconstructions(bool): update all reconstructions visibility.
 
  * @section XML XML Configuration
  *
@@ -63,6 +64,15 @@ public:
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
+    /**
+     * @name Slots API
+     * @{
+     */
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
+    /**
+     * @}
+     */
+
 protected:
     /// Creates a Transform Service, then updates.
     VISUOGREADAPTOR_API void starting() override;
@@ -73,12 +83,15 @@ protected:
     /// Closes connections and unregisters service.
     VISUOGREADAPTOR_API void stopping() override;
 
-    /// Calls updating
-    VISUOGREADAPTOR_API void addReconstruction();
-    /// calls stopping.
-    VISUOGREADAPTOR_API void removeReconstruction();
-
 private:
+    /// Slot: Calls updating
+    void addReconstruction();
+    /// Slot: calls updating.
+    void removeReconstruction();
+    /// Slot: update all reconstructions visibility.
+    void showReconstructions(bool _show);
+    /// Slot: update all reconstructions visibility using "ShowReconstructions" field.
+    void changeField();
 
     /// Defines if the camera must be reset automatically
     bool m_autoResetCamera;

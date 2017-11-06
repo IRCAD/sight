@@ -30,8 +30,13 @@ namespace visuOgreAdaptor
 {
 //-----------------------------------------------------------------------------
 
+// Private slots
 static const ::fwCom::Slots::SlotKeyType s_ADD_RECONSTRUCTION_SLOT    = "addReconstruction";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_RECONSTRUCTION_SLOT = "removeReconstruction";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT          = "changeField";
+
+// Public slot
+const ::fwCom::Slots::SlotKeyType SModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
 static const std::string s_MODEL_INPUT = "model";
 
@@ -45,6 +50,8 @@ SModelSeries::SModelSeries() noexcept :
 {
     newSlot(s_ADD_RECONSTRUCTION_SLOT, &SModelSeries::addReconstruction, this);
     newSlot(s_REMOVE_RECONSTRUCTION_SLOT, &SModelSeries::removeReconstruction, this);
+    newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::changeField, this);
+    newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeries::showReconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +157,34 @@ void SModelSeries::addReconstruction()
 
 void SModelSeries::removeReconstruction()
 {
-    this->stopping();
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeries::showReconstructions(bool _show)
+{
+    auto adaptors = this->getRegisteredServices();
+    for(auto adaptor : adaptors)
+    {
+        auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
+        recAdaptor->setForceHide(!_show);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeries::changeField()
+{
+    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
+    const bool showRec     = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+
+    auto adaptors = this->getRegisteredServices();
+    for(auto adaptor : adaptors)
+    {
+        auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
+        recAdaptor->setForceHide(!showRec);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -162,6 +196,9 @@ void SModelSeries::removeReconstruction()
     connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTION_SLOT);
     connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG,
                       s_REMOVE_RECONSTRUCTION_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
     return connections;
 }
 

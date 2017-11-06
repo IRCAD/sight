@@ -191,15 +191,15 @@
                 <inout key="cameraTF" uid="cameraTF_UID" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
-                <parameter replace="WID_PARENT" uid="OgreSceneView" />
-                <parameter replace="genericSceneUID" uid="genericSceneUID" />
+                <parameter replace="WID_PARENT" by="OgreSceneView" />
+                <parameter replace="genericSceneUID" by="genericSceneUID" />
             </service>
 
             <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
                 <appConfig id="OgreNegato2D" />
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TF" uid="TF" optional="yes" />
-                <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
+                <parameter replace="WID_PARENT" by="OgreNegato2DView" />
             </service>
 
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
@@ -207,7 +207,7 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
                 <inout key="TF" uid="TF" optional="yes" />
-                <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
+                <parameter replace="WID_PARENT" by="OgreVolumeRenderingView" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
@@ -217,13 +217,13 @@
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
                 <appConfig id="OgreOrganManagerWithSeries" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeriesUID" />
-                <parameter replace="WID_PARENT" uid="organView" />
+                <parameter replace="WID_PARENT" by="organView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgLightManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreLightManager" />
-                <parameter replace="WID_PARENT" uid="lightView" />
+                <parameter replace="WID_PARENT" by="lightView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
@@ -232,14 +232,14 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="maskUID" uid="maskUID" />
                 <inout key="TF" uid="TF" optional="yes" />
-                <parameter replace="WID_PARENT" uid="histogramView" />
+                <parameter replace="WID_PARENT" by="histogramView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
             </service>
 
             <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreIDVR" />
                 <inout key="maskUID" uid="maskUID" />
-                <parameter replace="WID_PARENT" uid="idvrView" />
+                <parameter replace="WID_PARENT" by="idvrView" />
                 <parameter replace="ICON_PATH" by="arMedia-0.1/icons/app.ico" />
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
@@ -276,6 +276,12 @@
             <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
                 <inout key="image" uid="imageUID" autoConnect="yes" />
             </service>
+
+            <!-- Shared channels between OgreVolumeRendering and OgreIDVR configurations -->
+            <connect channel="idvrEnumParamChannel" />
+            <connect channel="idvrBoolParamChannel" />
+            <connect channel="idvrDoubleParamChannel" />
+            <connect channel="idvrColorParamChannel" />
 
             <!-- Start/Stop services -->
             <start uid="medicalImage" />

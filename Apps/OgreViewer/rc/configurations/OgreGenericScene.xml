@@ -132,8 +132,8 @@
             <inout key="tf" uid="${TF}" optional="yes" />
             <config layer="default" />
         </service>
-
         <!-- ********************************* End Generic Scene ******************************* -->
+
         <!-- ************************************* Services ************************************ -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
             <in group="frameTL">
@@ -161,7 +161,6 @@
         </service>
 
         <!-- *************************************** Starts ************************************ -->
-
 
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />
