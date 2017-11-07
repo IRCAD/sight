@@ -1,0 +1,32 @@
+<plugin id="handEyeActivity" version="@PROJECT_VERSION@">
+
+    <requirement id="visuVTKARAdaptor"/>
+    <requirement id="visuVTKAdaptor"/>
+    <requirement id="visuVTKQt"/>
+    <requirement id="uiSelector"/>
+    <requirement id="videoTools"/>
+    <requirement id="trackerAruco"/>
+    <!--<requirement id="trackingCalibration" /> -->
+
+    <xi:include href="configurations/handEyeCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>handEyeCalibration</id>
+        <title>Hand-Eye Calibration</title>
+        <desc>Hand-Eye Calibration Activity</desc>
+        <icon>Bundles/rdMedia-0.1/icons/intraOpBreathing.svg</icon>
+        <requirements>
+            <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="2" maxOccurs="2">
+                <key>camera1</key>
+                <key>camera2</key>
+            </requirement>
+        </requirements>
+        <appConfig id="handEyeCalibration">
+            <parameters>
+                <parameter replace="camera1Uid" by="@values.cameraSeries.values.camera1.cameras.0" />
+                <parameter replace="camera2Uid" by="@values.cameraSeries.values.camera2.cameras.0" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>
