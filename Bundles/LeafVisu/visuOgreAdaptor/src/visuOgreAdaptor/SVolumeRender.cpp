@@ -315,8 +315,6 @@ void SVolumeRender::starting()
     }
     else
     {
-        const auto stereoMode = layer->getStereoMode();
-
         m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
                                                                                   layer,
                                                                                   m_volumeSceneNode,
@@ -324,7 +322,6 @@ void SVolumeRender::starting()
                                                                                   m_maskTexture,
                                                                                   m_gpuTF,
                                                                                   m_preIntegrationTable,
-                                                                                  stereoMode,
                                                                                   m_ambientOcclusion,
                                                                                   m_colorBleeding);
 

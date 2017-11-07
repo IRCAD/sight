@@ -963,14 +963,14 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
     {
         const float eyeAngle = 0.02321f;
-        const float angle    = eyeAngle * -2.f + eyeAngle * float(cameraIdx);
+        const float angle    = eyeAngle * (-2.f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
     else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
     {
         const float eyeAngle = 0.01625f;
-        const float angle    = eyeAngle * -3.5f + eyeAngle * float(cameraIdx);
+        const float angle    = eyeAngle * (-3.5f + float(cameraIdx));
 
         extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
     }
@@ -985,7 +985,7 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
         }
     }
 
-    ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrixWithRSDepth();
+    const ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrixWithRSDepth();
 
     return projMat * extrinsicTransform;
 }

@@ -56,7 +56,7 @@ public:
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
-                                              ::fwRenderOgre::Layer::StereoModeType stereoMode,
+//                                              ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                               bool ambientOcclusion = false,
                                               bool colorBleeding = false,
                                               bool shadows = false,
@@ -173,9 +173,6 @@ private:
 
     /// Image dimensions.
     ::fwData::Image::SizeType m_imageSize;
-
-    /// Sets stereoscopic volume rendering for autostereoscopic monitors.
-    ::fwRenderOgre::Layer::StereoModeType m_stereoMode;
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
