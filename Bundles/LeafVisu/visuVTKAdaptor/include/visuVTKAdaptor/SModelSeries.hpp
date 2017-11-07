@@ -106,7 +106,6 @@ protected:
      * @name Slots methods
      * @{
      */
-
     /**
      * Slot: used to update normal display for the adaptor on object with givent uid 'recID'
      * (0: none, 1: point, 2: cell)
@@ -115,6 +114,9 @@ protected:
 
     /// Slot: show(or hide) reconstructions
     void showReconstructions(bool show);
+
+    /// Slot: update all reconstructions visibility using "ShowReconstructions" field.
+    void showReconstructionsOnFieldChanged();
     /**
      * @}
      */

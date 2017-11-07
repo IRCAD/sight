@@ -251,18 +251,6 @@
             </connect>
 
             <!--
-                Connection to show/hide reconstructions when using the Hide all organs" checkbox
-            -->
-            <connect>
-                <signal>listOrganEditor/recDisplayModified</signal>
-                <slot>modelSeriesAdaptor/showReconstructions</slot>
-            </connect>
-
-            <connect channel="modelSeriesNormalChannel">
-                <signal>representationEditor/normalsModeModified</signal>
-            </connect>
-
-            <!--
                 Connection for snapshot:
                 connect the editor signal "snapped" to the adaptor slot "snap"
             -->
@@ -295,10 +283,6 @@
             <connect>
                 <signal>sliceListEditor/selected</signal>
                 <slot>MPRNegato3D/updateSliceMode</slot>
-            </connect>
-
-            <connect channel="modelSeriesNormalChannel">
-                <slot>modelSeriesAdaptor/updateNormalMode</slot>
             </connect>
 
             <start uid="mainFrame" />

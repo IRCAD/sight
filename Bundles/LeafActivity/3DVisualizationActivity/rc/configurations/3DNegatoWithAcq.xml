@@ -7,8 +7,6 @@
         <param name="landmarks" />
         <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
-        <param name="ModelRepresentationChannel" />
-        <param name="ModelDisplayChannel" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="PickingChannel" default="pickingChannel" />
         <param name="setSagittalCameraChannel" />
@@ -174,14 +172,6 @@
         <connect>
             <signal>distanceNegatoEditor/distanceRequested</signal>
             <slot>multiDistances/createDistance</slot>
-        </connect>
-
-        <connect channel="${ModelRepresentationChannel}">
-            <slot>modelSeries/updateNormalMode</slot>
-        </connect>
-
-        <connect channel="${ModelDisplayChannel}">
-            <slot>modelSeries/showReconstructions</slot>
         </connect>
 
         <connect channel="${PickingChannel}">

@@ -24,6 +24,8 @@
 
 #include <fwDataCamp/getObject.hpp>
 
+#include <fwDataTools/helper/Field.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
@@ -124,7 +126,6 @@ public:
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries);
 
-const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_REC_DISPLAY_MODIFIED__SIG   = "recDisplayModified";
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
@@ -133,7 +134,6 @@ SModelSeriesList::SModelSeriesList() noexcept :
     m_tree(new QTreeWidget()),
     m_enableHideAll(true)
 {
-    m_sigRecDisplayModified     = newSignal< RecDisplayModifiedSignalType >( s_REC_DISPLAY_MODIFIED__SIG );
     m_sigReconstructionSelected = newSignal< ReconstructionSelectedSignalType >( s_RECONSTRUCTION_SELECTED_SIG );
     m_sigEmptiedSelection       = newSignal< EmptiedSelectionSignalType >( s_EMPTIED_SELECTION_SIG );
 
@@ -275,12 +275,6 @@ void SModelSeriesList::swapping()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::info( std::ostream& _sstream )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SModelSeriesList::updateReconstructions()
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer
@@ -342,7 +336,7 @@ void SModelSeriesList::fillTree()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
+void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* )
 {
     SLM_ASSERT( "Current selected item is null", current );
     std::string id = current->data(0, Qt::UserRole).toString().toStdString();
@@ -361,7 +355,7 @@ void SModelSeriesList::onCurrentItemChanged ( QTreeWidgetItem* current, int colu
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* item, int column)
+void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* item, int )
 {
     std::string id = item->data(0, Qt::UserRole).toString().toStdString();
     ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
@@ -391,10 +385,10 @@ void SModelSeriesList::onShowReconstructions(int state )
     m_tree->setEnabled(!visible);
 
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-    modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
-
-    ::fwCom::Connection::Blocker block(m_sigRecDisplayModified->getConnection(m_slotShowReconstuctions));
-    m_sigRecDisplayModified->asyncEmit(state == Qt::Unchecked);
+    {
+        ::fwDataTools::helper::Field helper( modelSeries );
+        helper.addOrSwap("ShowReconstructions", ::fwData::Boolean::New(state == Qt::Unchecked));
+    }
 }
 
 //------------------------------------------------------------------------------

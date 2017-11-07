@@ -507,7 +507,7 @@ vtkAbstractPropPicker* SRender::getPicker(PickerIdType pickerId)
     PickersMapType::const_iterator iter = m_pickers.find(pickerId);
     if ( iter == m_pickers.end())
     {
-        SLM_WARN("Picker '" + pickerId + "' not found");
+        SLM_DEBUG("Picker '" + pickerId + "' not found");
         return nullptr;
     }
     return iter->second;
@@ -520,7 +520,7 @@ vtkObject* SRender::getVtkObject(const VtkObjectIdType& objectId) const
     VtkObjectMapType::const_iterator iter = m_vtkObjects.find(objectId);
     if ( iter == m_vtkObjects.end())
     {
-        SLM_WARN("vtkObject '" + objectId + "' not found");
+        SLM_DEBUG("vtkObject '" + objectId + "' not found");
         return nullptr;
     }
     return iter->second;

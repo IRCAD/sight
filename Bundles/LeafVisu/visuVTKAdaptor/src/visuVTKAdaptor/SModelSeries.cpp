@@ -35,8 +35,12 @@ namespace visuVTKAdaptor
 
 const ::fwCom::Signals::SignalKeyType SModelSeries::s_TEXTURE_APPLIED_SIG = "textureApplied";
 
+// Public slots
 const ::fwCom::Slots::SlotKeyType SModelSeries::s_UPDATE_NORMAL_MODE_SLOT   = "updateNormalMode";
 const ::fwCom::Slots::SlotKeyType SModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+
+// Private slot
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
 
 static const ::fwServices::IService::KeyType s_MODEL_INPUT = "model";
 
@@ -51,6 +55,7 @@ SModelSeries::SModelSeries() noexcept :
 
     newSlot(s_UPDATE_NORMAL_MODE_SLOT, &SModelSeries::updateNormalMode, this);
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeries::showReconstructions, this);
+    newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
 }
 
 //------------------------------------------------------------------------------
@@ -180,12 +185,37 @@ void SModelSeries::showReconstructions(bool show)
 
 //------------------------------------------------------------------------------
 
+void SModelSeries::showReconstructionsOnFieldChanged()
+{
+    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
+    const bool show        = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+
+    auto subServices = this->getRegisteredServices();
+    for( auto& wService : subServices)
+    {
+        auto service = wService.lock();
+        if(service)
+        {
+            auto reconstructionAdaptor = ::visuVTKAdaptor::SReconstruction::dynamicCast(service);
+            if (reconstructionAdaptor)
+            {
+                reconstructionAdaptor->setForceHide( !show );
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 ::fwServices::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
+    connections.push(s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
 
     return connections;
 }

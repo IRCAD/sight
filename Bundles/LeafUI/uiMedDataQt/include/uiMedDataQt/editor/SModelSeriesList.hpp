@@ -99,17 +99,12 @@ protected:
      */
     virtual void configuring() override;
 
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
-
     typedef std::map< std::string, ValueView* > DisplayedInformation;
 
     void updateReconstructions();
 
     void fillTree();
 
-    static const ::fwCom::Signals::SignalKeyType s_REC_DISPLAY_MODIFIED__SIG;
-    typedef ::fwCom::Signal< void (bool) > RecDisplayModifiedSignalType;
     static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
     typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
     static const ::fwCom::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
@@ -148,9 +143,6 @@ private:
     DisplayedInformation m_displayedInfo;
 
     bool m_enableHideAll;
-
-    /// Signal emitted when m_showCheckBox value changed
-    RecDisplayModifiedSignalType::sptr m_sigRecDisplayModified;
 
     /// Signal emitted when a reconstruction is selected
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;

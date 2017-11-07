@@ -4,8 +4,7 @@
         <param name="ORGAN_MANAGER_MODELSERIES" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
         <param name="ICON_PATH" />
-        <param name="ModelRepresentationChannel" />
-        <param name="ModelDisplayChannel" />
+        <param name="WindowTitle" default="Organs Manager"/>
     </parameters>
     <config>
 
@@ -17,7 +16,7 @@
             <window onclose="notify" />
             <gui>
                 <frame>
-                    <name>Organs Manager</name>
+                    <name>${WindowTitle}</name>
                     <icon>${ICON_PATH}</icon>
                     <style mode="STAY_ON_TOP" />
                 </frame>
@@ -70,15 +69,6 @@
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>organManagerFrame/closed</signal>
-        </connect>
-
-        <connect channel="${ModelDisplayChannel}">
-            <signal>listOrganEditor/recDisplayModified</signal>
-            <slot>listOrganEditor/showReconstructions</slot>
-        </connect>
-
-        <connect channel="${ModelRepresentationChannel}">
-            <signal>representationEditor/normalsModeModified</signal>
         </connect>
 
         <!-- START AND STOP SERVICES -->
