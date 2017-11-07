@@ -1,13 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWDATATOOLS_UT_FIELDHELPERTEST_HPP__
 #define __FWDATATOOLS_UT_FIELDHELPERTEST_HPP__
-
-#include <fwCore/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -17,9 +15,7 @@ namespace ut
 {
 
 /**
- * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
- * @see     ICompositeParser
- * @see     CompositeEditor
+ * @brief   Test ::fwDataTools::helper::Field methods.
  */
 class FieldHelperTest : public CPPUNIT_NS::TestFixture
 {
@@ -32,12 +28,8 @@ public:
     void setUp();
     void tearDown();
 
-    // fonctions de tests
-    /// Test the compositeMsg with sending and receiving the message in the test services
     void testHelper();
-
 };
-
 
 } //namespace ut
 } //namespace fwDataTools

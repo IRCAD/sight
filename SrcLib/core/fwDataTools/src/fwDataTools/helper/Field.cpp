@@ -6,9 +6,7 @@
 
 #include "fwDataTools/helper/Field.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
 
 #include <fwData/Exception.hpp>
 #include <fwData/Object.hpp>
@@ -32,6 +30,10 @@ Field::Field( ::fwData::Object::sptr object ) :
 
 Field::~Field()
 {
+    if(!m_addedFields.empty() || !m_newChangedFields.empty() || !m_removedFields.empty() )
+    {
+        notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -48,19 +50,8 @@ void Field::setFields( const fwData::Object::FieldMapType& newFields)
     ::fwData::Object::sptr object = m_object.lock();
     SLM_ASSERT("Field helper need a non-null object pointer", object);
     const ::fwData::Object::FieldMapType oldFields = object->getFields();
-    this->buildMessage(newFields, oldFields);
+    this->buildMessage(oldFields, newFields);
     object->setFields(newFields);
-}
-
-//-----------------------------------------------------------------------------
-
-void Field::updateFields( const fwData::Object::FieldMapType& fieldMap)
-{
-    ::fwData::Object::sptr object = m_object.lock();
-    SLM_ASSERT("Field helper need a non-null object pointer", object);
-    const ::fwData::Object::FieldMapType oldFields = object->getFields();
-    this->buildMessage(fieldMap, oldFields);
-    object->updateFields(fieldMap);
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +111,6 @@ void Field::addOrSwap(const fwData::Object::FieldNameType& _name, fwData::Object
         m_oldChangedFields[_name] = field;
     }
     object->setField(_name, _obj);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -183,6 +173,11 @@ void Field::notify()
     OSLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
                  + "', nothing to notify.",
                  m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
+
+    m_removedFields.clear();
+    m_newChangedFields.clear();
+    m_oldChangedFields.clear();
+    m_addedFields.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -229,18 +224,18 @@ void Field::buildMessage(const ::fwData::Object::FieldMapType& oldFields,
         std::back_inserter(removed)
         );
 
-    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName :  added)
+    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName : added)
     {
         m_addedFields[fieldName] = newFields.find(fieldName)->second;
     }
 
-    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName :  changed)
+    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName : changed)
     {
         m_newChangedFields[fieldName] = newFields.find(fieldName)->second;
         m_oldChangedFields[fieldName] = oldFields.find(fieldName)->second;
     }
 
-    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName :  changed)
+    for(const ::fwData::Object::FieldNameVectorType::value_type& fieldName : removed)
     {
         m_removedFields[fieldName] = oldFields.find(fieldName)->second;
     }
