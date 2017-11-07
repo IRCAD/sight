@@ -145,9 +145,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 {
     m_fullScreenQuad->setCorners(-1, 1, 1, -1);
 
-    const unsigned int numViewPoints = m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 :
-                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO       ? 2 : 1;
+    const unsigned int numViewPoints = this->getLayer()->getNumberOfCameras();
 
     const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
     const float hRatio = numViewPoints != 1 && numViewPoints != 2 ? 0.5f : 1.f;
@@ -168,7 +166,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             ::Ogre::TU_RENDERTARGET ));
     }
 
-    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(numViewPoints > 1)
     {
         m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
@@ -347,9 +345,6 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination::sptr
 
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
-    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.",
-                 m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
-
     m_preIntegratedRendering = preIntegratedRendering;
 
     this->createRayTracingMaterial();
@@ -664,39 +659,13 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometry->getWorldTransforms(&worldMat);
 
-    float eyeAngle = 0.f;
-    float angle    = 0.f;
-    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
-    {
-        eyeAngle = 0.02321f;
-        angle    = eyeAngle * -2.f;
-    }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
-    {
-        eyeAngle = 0.01625f;
-        angle    = eyeAngle * -3.5f;
-    }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
-    {
-        eyeAngle = 0.10472f;
-        angle    = -0.05235f;
-    }
-
     ::Ogre::RenderOperation fsRenderOp;
     m_fullScreenQuad->getRenderOperation(fsRenderOp);
 
+    std::uint8_t textureIdx = 0;
     for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
     {
-        ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
-
-        // Move to the next view point if we're in 3D mode
-        if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
-        {
-            const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
-
-            angle  += eyeAngle;
-            projMat = projMat * shearTransform;
-        }
+        ::Ogre::Matrix4 projMat = this->getLayer()->getCameraProjMat(textureIdx++);
 
         ::Ogre::Viewport* entryPtsVp = entryPtsText->getBuffer()->getRenderTarget()->getViewport(0);
         entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH | ::Ogre::FBT_STENCIL, ::Ogre::ColourValue::White);

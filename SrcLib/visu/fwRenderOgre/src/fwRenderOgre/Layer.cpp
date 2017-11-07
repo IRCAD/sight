@@ -93,8 +93,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
-        auto stereoMode = m_layer->getStereoMode();
-        if(stereoMode != Layer::StereoModeType::NONE)
+        if(m_layer->getStereoMode() != Layer::StereoModeType::NONE)
         {
             // Set the focal length using the point of interest of the interactor
             // This works well for the trackball but this would need to be adjusted for an another interactor type
@@ -106,41 +105,16 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
             const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
-                float eyeAngle = 0.f;
-                float angle    = 0.f;
-
-                if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
-                {
-                    eyeAngle = 0.02321f;
-                    angle    = eyeAngle * -2.f;
-                }
-                else if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
-                {
-                    eyeAngle = 0.01625f;
-                    angle    = eyeAngle * -3.5f;
-                }
-                else if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
-                {
-                    eyeAngle = 0.10472f;
-                    angle    = -0.05235f;
-                }
-
                 auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
 
-                for(size_t i = 0; i < 8; ++i)
+                for(std::uint8_t i = 0; i < m_layer->getNumberOfCameras(); ++i)
                 {
-                    const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(
-                        *_camera, angle);
-
-                    ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
-                    projMat                 = projMat * shearTransform;
+                    ::Ogre::Matrix4 projMat = m_layer->getCameraProjMat(i);
 
                     projMat[1][0] = -projMat[1][0];
                     projMat[1][1] = -projMat[1][1];
                     projMat[1][2] = -projMat[1][2];
                     projMat[1][3] = -projMat[1][3];
-
-                    angle += eyeAngle;
 
                     const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
                     {
@@ -977,6 +951,52 @@ bool Layer::isSceneCreated() const
 ::Ogre::Camera* Layer::getDefaultCamera() const
 {
     return m_camera;
+}
+
+//-------------------------------------------------------------------------------------
+
+Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
+{
+    SLM_ASSERT("Index exceeds the number of cameras used for this stereo mode", cameraIdx < this->getNumberOfCameras());
+    ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
+
+    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+    {
+        const float eyeAngle = 0.02321f;
+        const float angle    = eyeAngle * -2.f + eyeAngle * float(cameraIdx);
+
+        extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
+    }
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+    {
+        const float eyeAngle = 0.01625f;
+        const float angle    = eyeAngle * -3.5f + eyeAngle * float(cameraIdx);
+
+        extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
+    }
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
+    {
+        if(cameraIdx == 1)
+        {
+            extrinsicTransform = ::Ogre::Matrix4(1, 0, 0, 5,
+                                                 0, 1, 0, 0,
+                                                 0, 0, 1, 0,
+                                                 0, 0, 0, 1);
+        }
+    }
+
+    ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrixWithRSDepth();
+
+    return projMat * extrinsicTransform;
+}
+
+//-------------------------------------------------------------------------------------
+
+uint8_t Layer::getNumberOfCameras() const
+{
+    return m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
+           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 :
+           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO       ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------

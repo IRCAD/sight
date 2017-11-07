@@ -236,6 +236,10 @@ public:
 
     FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera() const;
 
+    FWRENDEROGRE_API ::Ogre::Matrix4 getCameraProjMat(const std::uint8_t cameraIdx) const;
+
+    FWRENDEROGRE_API std::uint8_t getNumberOfCameras() const;
+
     /// Default light flag setter.
     FWRENDEROGRE_API void setHasDefaultLight(bool hasDefaultLight);
 
