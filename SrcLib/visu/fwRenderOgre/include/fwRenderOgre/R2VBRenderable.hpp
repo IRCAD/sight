@@ -13,6 +13,7 @@
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreNode.h>
 #include <OGRE/OgreRenderToVertexBuffer.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSimpleRenderable.h>
@@ -52,16 +53,16 @@ public:
     FWRENDEROGRE_API virtual void getRenderOperation(::Ogre::RenderOperation& _op) override;
 
     /// Delegate to the subentity.
-    virtual ::Ogre::Real getBoundingRadius(void) const override;
+    FWRENDEROGRE_API virtual ::Ogre::Real getBoundingRadius(void) const override;
 
     /// @copydoc Renderable::getSquaredViewDepth
-    virtual ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
+    FWRENDEROGRE_API virtual ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
-    void setDirty();
+    FWRENDEROGRE_API void setDirty();
 
     /// Runs the R2VB process.
-    void manualUpdate();
+    FWRENDEROGRE_API void manualUpdate();
 
 protected:
     /// Source object of the r2vb process
@@ -102,7 +103,7 @@ inline Ogre::Real R2VBRenderable::getBoundingRadius() const
 
 inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera* _cam) const
 {
-    return m_srcObject->getSquaredViewDepth(_cam);
+    return this->getParentNode()->getSquaredViewDepth(_cam);
 }
 
 //-----------------------------------------------------------------------------
