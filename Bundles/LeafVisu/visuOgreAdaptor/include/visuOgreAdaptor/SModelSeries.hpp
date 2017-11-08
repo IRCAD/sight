@@ -24,8 +24,6 @@ namespace visuOgreAdaptor
  * @brief   This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.
  *
  * @section Slots Slots
- * - \b addReconstruction(): show a new reconstruction.
- * - \b removeReconstruction(): hide a deleted reconstruction.
  * - \b showReconstructions(bool): update all reconstructions visibility.
 
  * @section XML XML Configuration
@@ -84,14 +82,10 @@ protected:
     VISUOGREADAPTOR_API void stopping() override;
 
 private:
-    /// Slot: Calls updating
-    void addReconstruction();
-    /// Slot: calls updating.
-    void removeReconstruction();
     /// Slot: update all reconstructions visibility.
     void showReconstructions(bool _show);
     /// Slot: update all reconstructions visibility using "ShowReconstructions" field.
-    void changeField();
+    void showReconstructionsOnFieldChanged();
 
     /// Defines if the camera must be reset automatically
     bool m_autoResetCamera;
