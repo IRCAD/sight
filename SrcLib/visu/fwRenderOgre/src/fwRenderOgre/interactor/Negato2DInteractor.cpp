@@ -207,7 +207,8 @@ void Negato2DInteractor::resetCameraPosition()
     if(!m_camera)
     {
         m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-        m_cameraPos = m_camera->getPosition();
+        m_cameraPos =
+            m_camera->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->getPosition();
         m_camera->setOrthoWindow(1.f, 1.f);
     }
     return m_camera;

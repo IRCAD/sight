@@ -166,11 +166,13 @@ void SVideo::updating()
 
                 if (m_reverse)
                 {
-                    cam->setPosition(shiftX, -shiftY, 0);
+                    cam->getSceneManager()->getSceneNode(
+                        ::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->setPosition(shiftX, -shiftY, 0);
                 }
                 else
                 {
-                    cam->setPosition(-shiftX, shiftY, 0);
+                    cam->getSceneManager()->getSceneNode(
+                        ::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->setPosition(-shiftX, shiftY, 0);
                 }
             }
         }
