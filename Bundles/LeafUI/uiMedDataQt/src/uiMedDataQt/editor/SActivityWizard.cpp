@@ -122,13 +122,20 @@ void SActivityWizard::configuring()
 
         for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
         {
-            std::string type = elt->getAttributeValue("type");
+            const std::string type = elt->getAttributeValue("type");
             SLM_ASSERT("'series' attribute is missing", !type.empty());
 
-            std::string icon = elt->getAttributeValue("icon");
+            const std::string icon = elt->getAttributeValue("icon");
             SLM_ASSERT("'icon' attribute is missing", !icon.empty());
 
-            m_objectIcons[type] = icon;
+            auto file = ::fwRuntime::getBundleResourceFilePath(icon);
+            if(file.empty())
+            {
+                // If not found in a bundle, look into libraries
+                file = ::fwRuntime::getLibraryResourceFilePath(icon);
+                SLM_ERROR_IF("Resource '" + icon + "' has not been found in any bundle or library", file.empty());
+            }
+            m_objectIcons[type] = file.string();
         }
     }
 }
