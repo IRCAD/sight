@@ -645,11 +645,11 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             sceneMgr->getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
-        const unsigned int numSubEntities = static_cast<unsigned>(m_r2vbEntity->getNumSubEntities());
-        for(unsigned int i = 0; i < numSubEntities; ++i)
+        const size_t numSubEntities = m_r2vbEntity->getNumSubEntities();
+        for(size_t i = 0; i < numSubEntities; ++i)
         {
-            auto subEntity = m_r2vbEntity->getSubEntity(i);
-            auto subMesh   = subEntity->getSubMesh();
+            const auto subEntity = m_r2vbEntity->getSubEntity(i);
+            const auto subMesh   = subEntity->getSubMesh();
 
             const bool bQuad  = (subMesh == m_subMeshes[::fwData::Mesh::QUAD]);
             const bool bTetra = (subMesh == m_subMeshes[::fwData::Mesh::TETRA]);
