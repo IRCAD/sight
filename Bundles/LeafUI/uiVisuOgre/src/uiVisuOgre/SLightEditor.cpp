@@ -171,27 +171,37 @@ void SLightEditor::onEditPhiOffset(int _value)
 
 void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 {
-    SLM_ASSERT("The selected light adaptor doesn't exist.", _lightAdaptor);
     m_currentLight = _lightAdaptor;
-
-    m_lightNameLbl->setText(m_currentLight->getName().c_str());
-    m_lightTypeBox->setCurrentIndex(static_cast<int>(m_currentLight->getType()));
-
-    m_diffuseColorBtn->setEnabled(true);
-    m_specularColorBtn->setEnabled(true);
-
-    if(!m_currentLight->isOrphanNode())
+    if(_lightAdaptor)
     {
-        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
-                                                 ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
-        m_thetaSlider->setEnabled(true);
+        SLM_ASSERT("The selected light adaptor doesn't exist.", _lightAdaptor);
 
-        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() + ::fwRenderOgre::ILight::s_OFFSET_RANGE /
-                                               2));
-        m_phiSlider->setEnabled(true);
+        m_lightNameLbl->setText(m_currentLight->getName().c_str());
+        m_lightTypeBox->setCurrentIndex(static_cast<int>(m_currentLight->getType()));
+
+        m_diffuseColorBtn->setEnabled(true);
+        m_specularColorBtn->setEnabled(true);
+
+        if(!m_currentLight->isOrphanNode())
+        {
+            m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
+                                                     ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
+            m_thetaSlider->setEnabled(true);
+
+            m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() +
+                                                   ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
+            m_phiSlider->setEnabled(true);
+        }
+        else
+        {
+            m_thetaSlider->setEnabled(false);
+            m_phiSlider->setEnabled(false);
+        }
     }
     else
     {
+        m_diffuseColorBtn->setEnabled(false);
+        m_specularColorBtn->setEnabled(false);
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
     }

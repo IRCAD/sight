@@ -225,6 +225,10 @@ void SLightSelector::onRemoveLight(bool _checked)
         this->updateLightsList();
 
         m_removeLightBtn->setEnabled(false);
+
+        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
+        sig->asyncEmit(nullptr);
+
         currentLayer->requestRender();
     }
 }
