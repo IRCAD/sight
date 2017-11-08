@@ -148,7 +148,7 @@ void SlotTest::runTest ()
 
     slot1->run(34, 66);
     slot2->run();
-    slot3->run(88.1236);
+    slot3->run(88.1236F);
 
     CPPUNIT_ASSERT_EQUAL( 100, lastSumResult );
     CPPUNIT_ASSERT( a.m_method0 );
@@ -333,9 +333,9 @@ struct B
         return oldId;
     }
 
-    bool m_firstRun;
-
     std::thread::id m_threadId;
+
+    bool m_firstRun;
 
     ::fwCore::mt::ReadWriteMutex m_mutex;
 };
@@ -398,6 +398,7 @@ void SlotTest::workerSwapTest()
         // wait until we entered in slot's function
         while(b.m_firstRun)
         {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         m0->setWorker(w2);
@@ -430,6 +431,7 @@ void SlotTest::workerSwapTest()
         // wait until we entered in slot's function
         while(b.m_firstRun)
         {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
         m0->setWorker(w2);
