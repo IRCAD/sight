@@ -236,12 +236,12 @@ void SCurvedHistogram::updating()
 
     ::fwData::mt::ObjectReadLock lock(histogram);
 
+    m_layer = new QGraphicsItemGroup();
+
+    m_painterPath = new QPainterPath();
+
     if (!histogram->getValues().empty())
     {
-        m_layer = new QGraphicsItemGroup();
-
-        m_painterPath = new QPainterPath();
-
         Points controlPoints = this->getControlPoints( histogram );
         Points bSplinePoints = this->getBSplinePoints( controlPoints );
 
