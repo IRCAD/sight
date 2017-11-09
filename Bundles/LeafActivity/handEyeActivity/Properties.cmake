@@ -29,5 +29,6 @@ set( REQUIREMENTS
         eigenTools
         handEyeCalibration
         uiHandEye
+        ioTimeline
         )
 

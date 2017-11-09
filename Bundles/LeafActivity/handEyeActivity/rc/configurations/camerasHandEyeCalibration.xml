@@ -1,5 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>handEyeCalibration</id>
+    <id>camerasHandEyeCalibration</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="ICON_PATH" />

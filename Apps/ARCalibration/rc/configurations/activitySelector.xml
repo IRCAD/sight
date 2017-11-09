@@ -51,6 +51,7 @@
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
                 <id>TrackedSenseCameraRegistration</id>
+                <id>trackingHandEyeCalibration</id>
             </filter>
         </service>
 
