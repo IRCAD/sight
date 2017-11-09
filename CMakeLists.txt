@@ -77,10 +77,14 @@ endif()
 
 
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
+
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
+set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
+mark_as_advanced(TESTS_XML_OUTPUT)
+
 set(ADDITIONAL_PROJECTS CACHE PATH
         "Paths to the additional projects"
-    )
+)
 
 set(SET_API_VERSION ON)
 
@@ -446,7 +450,13 @@ macro(fwCppunitTest FWPROJECT_NAME)
     endif()
 
     set(${FWPROJECT_NAME}_EXECUTABLE "$<TARGET_FILE:${FWPROJECT_NAME}>")
-    add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE} )
+
+    if(TESTS_XML_OUTPUT)
+        add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE} --xml)
+        set_tests_properties(${FWPROJECT_NAME} PROPERTIES TIMEOUT 240)
+    else()
+        add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE})
+    endif()
 
     # Adds project into folder test
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "test")
