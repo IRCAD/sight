@@ -22,7 +22,6 @@ namespace videoOpenCV
  * @note The method 'updating' allows to save the timeline frame with the current timestamp. If you want to save all the
  *       frame when they are pushed in the timeline, you must use the slots 'startRecord' and 'stopRecord'
  *
- * @todo Currently, this service writes only image with extension .tiff with no compression.
  * @todo Only image of type 'uint8' (RGB and RGBA) and grayscale image of type 'uint8' and 'uint16' are managed.
  *
  * @section Slots Slots
@@ -36,6 +35,7 @@ namespace videoOpenCV
    <service type="::videoOpenCV::SFrameWriter">
        <in key="data" uid="..." autoConnect="yes" />
        <windowTitle>Select the image file to load</windowTitle>
+       <format>.tiff</format>
    </service>
    @endcode
  * @subsection Input Input
@@ -43,6 +43,7 @@ namespace videoOpenCV
  *
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
+ * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
 class VIDEOOPENCV_CLASS_API SFrameWriter : public ::io::IWriter
 {
@@ -97,6 +98,8 @@ private:
     int m_imageType; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
 
     bool m_isRecording; ///< flag if the service is recording.
+
+    std::string m_format;  ///< file format (.tiff by default)
 };
 
 } // videoOpenCV

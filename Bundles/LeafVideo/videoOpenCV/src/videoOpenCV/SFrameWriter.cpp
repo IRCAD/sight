@@ -40,7 +40,8 @@ static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
 
 SFrameWriter::SFrameWriter() noexcept :
     m_imageType(0),
-    m_isRecording(false)
+    m_isRecording(false),
+    m_format(".tiff")
 {
     newSlot(s_SAVE_FRAME, &SFrameWriter::saveFrame, this);
     newSlot(s_START_RECORD, &SFrameWriter::startRecord, this);
@@ -66,6 +67,11 @@ SFrameWriter::~SFrameWriter() noexcept
 void SFrameWriter::configuring()
 {
     ::io::IWriter::configuring();
+
+    ::fwServices::IService::ConfigType config = this->getConfigTree();
+
+    m_format = config.get<std::string>("format", ".tiff");
+
 }
 
 //------------------------------------------------------------------------------
@@ -138,16 +144,16 @@ void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 
         if (buffer)
         {
-            int width  = static_cast<int>( frameTL->getWidth() );
-            int height = static_cast<int>( frameTL->getHeight() );
+            const int width  = static_cast<int>( frameTL->getWidth() );
+            const int height = static_cast<int>( frameTL->getHeight() );
 
             const std::uint8_t* imageBuffer = &buffer->getElement(0);
 
             ::cv::Mat image(::cv::Size(width, height), m_imageType, (void*)imageBuffer, ::cv::Mat::AUTO_STEP);
 
-            size_t time = static_cast<size_t>(timestamp);
-            std::string filename( "img_" + std::to_string(time) + ".tiff");
-            ::boost::filesystem::path path = this->getFolder() / filename;
+            const size_t time = static_cast<size_t>(timestamp);
+            const std::string filename( "img_" + std::to_string(time) + m_format);
+            const ::boost::filesystem::path path = this->getFolder() / filename;
 
             if (image.type() == CV_8UC3)
             {

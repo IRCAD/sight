@@ -36,7 +36,7 @@ namespace videoOpenCV
  * @brief   Defines the service which grab video frame.
  *
  * @note Only file source is currently managed.
- * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jgp). The service uses
+ * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jpg). The service uses
  * the timestamp to order the frames and to push them in the timeline.
  *
  * @section Signals Signals
