@@ -88,7 +88,7 @@ std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string& identifi
 
 //------------------------------------------------------------------------------
 
-const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept
+::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept
 {
     Runtime* rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
@@ -103,8 +103,8 @@ const boost::filesystem::path getBundleResourcePath(const std::string& bundleIde
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
-                                                          const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
+                                                    const ::boost::filesystem::path& path) noexcept
 {
     Runtime* rntm                     = Runtime::getDefault();
     std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
@@ -119,7 +119,7 @@ const ::boost::filesystem::path getBundleResourceFilePath(const std::string& bun
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept
 {
     SLM_ASSERT("Path should be relative", path.is_relative());
     const std::string bundleIdentifierAndVersion = path.begin()->string();
@@ -158,7 +158,7 @@ const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesys
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept
 {
     // Currently the library resources are at the same location than bundles
     // This might change in the future
@@ -168,7 +168,7 @@ const ::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesy
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::path& path) noexcept
 {
     auto file = ::fwRuntime::getBundleResourceFilePath(path);
     if(file.empty())
@@ -182,24 +182,24 @@ const ::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::p
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
-                                                       const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
+                                                 const ::boost::filesystem::path& path) noexcept
 {
     return bundle->getResourcesLocation() / path;
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
-                                                       const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
+                                                 const ::boost::filesystem::path& path) noexcept
 {
     return getBundleResourcePath(element->getBundle(), path);
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath(const IExecutable* executable,
-                                                      const ::boost::filesystem::path& path) noexcept
+::boost::filesystem::path getBundleResourcePath(const IExecutable* executable,
+                                                const ::boost::filesystem::path& path) noexcept
 {
     return getBundleResourcePath(executable->getBundle(), path);
 }

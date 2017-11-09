@@ -265,7 +265,7 @@ FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string& ident
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the bundle having the specified identifier.
@@ -275,8 +275,8 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::str
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
-                                                                      const boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
+                                                                  const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a bundle identifier.
@@ -287,7 +287,7 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourceFilePath(const std:
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
@@ -298,7 +298,7 @@ FWRUNTIME_API const ::boost::filesystem::path getBundleResourceFilePath(const ::
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const ::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path
@@ -318,7 +318,7 @@ FWRUNTIME_API const ::boost::filesystem::path getLibraryResourceFilePath(const :
  *
  * @return  a system valid path or an empty path if nothing is found
  */
-FWRUNTIME_API const ::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified bundle.
@@ -328,8 +328,8 @@ FWRUNTIME_API const ::boost::filesystem::path getResourceFilePath(const ::boost:
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
-                                                                   const boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
+                                                               const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the bundle of the specified configuration element.
@@ -339,8 +339,8 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_p
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
-                                                                   const boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
+                                                               const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
@@ -350,8 +350,8 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_p
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecutable* executable,
-                                                                  const boost::filesystem::path& path) noexcept;
+FWRUNTIME_API ::boost::filesystem::path getBundleResourcePath(const IExecutable* executable,
+                                                              const ::boost::filesystem::path& path) noexcept;
 
 /**
  * @brief   Loads all bundles that can be found in the specified directory.
