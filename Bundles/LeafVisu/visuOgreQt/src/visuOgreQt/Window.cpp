@@ -74,7 +74,8 @@ void Window::render(QPainter* painter)
 
 void Window::initialise()
 {
-    SLM_ASSERT("OpenGL RenderSystem not found", ::fwRenderOgre::Utils::getOgreRoot()->getName().find("GL") != std::string::npos);
+    SLM_ASSERT("OpenGL RenderSystem not found", ::fwRenderOgre::Utils::getOgreRoot()->getName().find(
+                   "GL") != std::string::npos);
 
     Ogre::NameValuePairList parameters;
 
