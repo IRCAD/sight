@@ -33,7 +33,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SStereoSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SStereoSelector)(::gui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SStereoSelector() noexcept;

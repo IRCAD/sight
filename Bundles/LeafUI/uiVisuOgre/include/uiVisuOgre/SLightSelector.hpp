@@ -50,7 +50,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLightSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SLightSelector)(::gui::editor::IEditor) )
 
     /**
      * @name Signals API

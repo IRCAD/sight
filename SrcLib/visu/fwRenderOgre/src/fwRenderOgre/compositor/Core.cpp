@@ -157,7 +157,7 @@ void Core::setupTransparency()
         bool needFinalCompositorSwap(false);
 
         // If the compositor chain already contains the final compositor, we have to remove it
-        if(!(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
+        if(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR))
         {
             compositorManager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
             compositorManager.removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);

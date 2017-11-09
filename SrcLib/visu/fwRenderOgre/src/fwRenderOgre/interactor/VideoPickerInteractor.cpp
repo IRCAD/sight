@@ -39,7 +39,8 @@ void VideoPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
             ::fwData::Point::sptr point                = fwData::Point::New();
-            ::fwData::Point::PointCoordArrayType cords = {{click.x, click.y, click.z}};
+            ::fwData::Point::PointCoordArrayType cords =
+            {{static_cast<double>(click.x), static_cast<double>(click.y), static_cast<double>(click.z)}};
             point->setCoord(cords);
 
             m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));

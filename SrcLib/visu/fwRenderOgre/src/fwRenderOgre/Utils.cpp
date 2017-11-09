@@ -58,14 +58,14 @@ void loadResources()
         {
             cf.load(path);
 
-            ::Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+            const ::Ogre::ConfigFile::SettingsBySection_ secis = cf.getSettingsBySection();
 
-            while (seci.hasMoreElements())
+            for(const auto& seci : secis)
             {
-                resourceGroupName                              = seci.peekNextKey();
-                ::Ogre::ConfigFile::SettingsMultiMap* settings = seci.getNext();
+                resourceGroupName                             = seci.first;
+                ::Ogre::ConfigFile::SettingsMultiMap settings = seci.second;
                 ::Ogre::ConfigFile::SettingsMultiMap::iterator i;
-                for (i = settings->begin(); i != settings->end(); ++i)
+                for (i = settings.begin(); i != settings.end(); ++i)
                 {
                     typeName = i->first;
                     archName = i->second;

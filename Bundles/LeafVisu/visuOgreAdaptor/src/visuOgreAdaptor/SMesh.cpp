@@ -6,16 +6,17 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 
-#define FW_PROFILING_DISABLED
-
-#include <fwCore/Profiling.hpp>
+#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwDataTools/helper/MeshGetter.hpp>
+#define FW_PROFILING_DISABLED
+#include <fwCore/Profiling.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
+
+#include <fwDataTools/helper/MeshGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwRenderOgre/helper/Mesh.hpp>
@@ -27,8 +28,6 @@
 #include <fwServices/op/Get.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-
-#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <cstdint>
 
@@ -70,26 +69,26 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
 
     for (unsigned int i = 0; i < uiNumCells; ++i)
     {
-        long offset = static_cast<long>(cellDataOffsets[i]);
-        if ( cellsType[i] == ::fwData::Mesh::TRIANGLE )
+        long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
+        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
         {
             *pTriangles++ = static_cast<T>(cells[offset]);
             *pTriangles++ = static_cast<T>(cells[offset + 1]);
             *pTriangles++ = static_cast<T>(cells[offset + 2]);
         }
-        else if ( cellsType[i] == ::fwData::Mesh::QUAD )
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::QUAD )
         {
             *pQuads++ = static_cast<T>(cells[offset]);
             *pQuads++ = static_cast<T>(cells[offset + 1]);
             *pQuads++ = static_cast<T>(cells[offset + 2]);
             *pQuads++ = static_cast<T>(cells[offset + 3]);
         }
-        else if ( cellsType[i] == ::fwData::Mesh::EDGE )
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::EDGE )
         {
             *pEdges++ = static_cast<T>(cells[offset]);
             *pEdges++ = static_cast<T>(cells[offset + 1]);
         }
-        else if ( cellsType[i] == ::fwData::Mesh::TETRA )
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TETRA )
         {
             *pTetras++ = static_cast<T>(cells[offset]);
             *pTetras++ = static_cast<T>(cells[offset + 1]);
@@ -124,9 +123,9 @@ SMesh::SMesh() noexcept :
     newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
 
-    m_ogreMesh.setNull();
-    m_r2vbMesh.setNull();
-    m_perPrimitiveColorTexture.setNull();
+    m_ogreMesh.reset();
+    m_r2vbMesh.reset();
+    m_perPrimitiveColorTexture.reset();
 
     memset(m_subMeshes, 0, sizeof(m_subMeshes));
 
@@ -295,8 +294,8 @@ void SMesh::stopping()
     auto& meshMgr = ::Ogre::MeshManager::getSingleton();
     meshMgr.remove(m_ogreMesh->getHandle());
     meshMgr.remove(m_r2vbMesh->getHandle());
-    m_ogreMesh.setNull();
-    m_r2vbMesh.setNull();
+    m_ogreMesh.reset();
+    m_r2vbMesh.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -366,7 +365,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
             for(unsigned int i = 0; i < cellsType.size() && computeNormals; ++i)
             {
-                auto cellType = cellsType[i];
+                auto cellType = cellsType[static_cast<int>(i)];
                 if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA)
                 {
                     computeNormals = false;
@@ -435,7 +434,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
-        auto cellType = cellsType[i];
+        auto cellType = cellsType[static_cast<int>(i)];
         if(cellType == ::fwData::Mesh::TRIANGLE)
         {
             numIndices[::fwData::Mesh::TRIANGLE] += 3;
@@ -513,8 +512,8 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
                 // Allocate index buffer of the requested number of vertices (ibufCount) if necessary
                 // We don't reallocate if we have more space than requested
-                bool createIndexBuffer = ibuf.isNull();
-                if( !ibuf.isNull())
+                bool createIndexBuffer = !ibuf;
+                if( ibuf)
                 {
                     // reallocate if new mesh has more indexes or IndexType change
                     createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i]) || (indicesPrev32Bits != indices32Bits);
@@ -646,7 +645,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             sceneMgr->getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
-        const unsigned int numSubEntities = m_r2vbEntity->getNumSubEntities();
+        const unsigned int numSubEntities = static_cast<unsigned>(m_r2vbEntity->getNumSubEntities());
         for(unsigned int i = 0; i < numSubEntities; ++i)
         {
             auto subEntity = m_r2vbEntity->getSubEntity(i);
@@ -750,15 +749,15 @@ void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
         FW_PROFILE_AVG("UPDATE BBOX", 5);
         for (unsigned int i = 0; i < numPoints; ++i)
         {
-            const auto& pt0 = points[i][0];
+            const auto& pt0 = points[static_cast<int>(i)][0];
             xMin = std::min(xMin, pt0);
             xMax = std::max(xMax, pt0);
 
-            const auto& pt1 = points[i][1];
+            const auto& pt1 = points[static_cast<int>(i)][1];
             yMin = std::min(yMin, pt1);
             yMax = std::max(yMax, pt1);
 
-            const auto& pt2 = points[i][2];
+            const auto& pt2 = points[static_cast<int>(i)][2];
             zMin = std::min(zMin, pt2);
             zMax = std::max(zMax, pt2);
         }
@@ -768,7 +767,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
         FW_PROFILE_AVG("UPDATE POS", 5);
         for (unsigned int i = 0; i < numPoints; ++i)
         {
-            memcpy(pPos, &points[i][0], 3 * sizeof(PointValueType) );
+            memcpy(pPos, &points[static_cast<int>(i)][0], 3 * sizeof(PointValueType) );
 
             pPos += uiStrideFloat;
         }
@@ -782,7 +781,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
 
         for (unsigned int i = 0; i < numPoints; ++i)
         {
-            memcpy(pNormal, &normals[i][0], 3 * sizeof(NormalValueType) );
+            memcpy(pNormal, &normals[static_cast<int>(i)][0], 3 * sizeof(NormalValueType) );
             pNormal += uiStrideFloat;
         }
     }
@@ -893,7 +892,7 @@ void SMesh::updateColors(const ::fwData::Mesh::csptr& mesh)
             }
         }
 
-        if(m_perPrimitiveColorTexture.isNull())
+        if(!m_perPrimitiveColorTexture)
         {
             m_perPrimitiveColorTextureName = this->getID() + "_PerCellColorTexture";
             m_perPrimitiveColorTexture     = ::Ogre::TextureManager::getSingleton().create(
@@ -917,11 +916,11 @@ void SMesh::updateColors(const ::fwData::Mesh::csptr& mesh)
     }
     else
     {
-        if(!m_perPrimitiveColorTexture.isNull())
+        if(m_perPrimitiveColorTexture)
         {
             m_perPrimitiveColorTexture->freeInternalResources();
         }
-        m_perPrimitiveColorTexture.setNull();
+        m_perPrimitiveColorTexture.reset();
         m_perPrimitiveColorTextureName = "";
     }
 
@@ -1008,8 +1007,8 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::csptr& mesh)
         // Copy UV coordinates for each mesh point
         for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
         {
-            pUV[2 * i]     = uvCoord[i][0];
-            pUV[2 * i + 1] = uvCoord[i][1];
+            pUV[2 * i]     = uvCoord[static_cast<int>(i)][0];
+            pUV[2 * i + 1] = uvCoord[static_cast<int>(i)][1];
         }
 
         uvbuf->unlock();

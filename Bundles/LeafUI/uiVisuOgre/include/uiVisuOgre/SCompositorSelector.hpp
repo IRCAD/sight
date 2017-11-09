@@ -37,7 +37,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCompositorSelector)(::gui::editor::IEditor) )
 
     /** @} */
 

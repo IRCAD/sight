@@ -52,7 +52,7 @@ class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SModelSeries)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeries)(::fwRenderOgre::IAdaptor) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SModelSeries() noexcept;

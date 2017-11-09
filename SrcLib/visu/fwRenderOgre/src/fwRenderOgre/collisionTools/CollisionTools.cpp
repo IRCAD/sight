@@ -35,31 +35,12 @@
 namespace fwRenderOgre
 {
 
-#ifdef ETM_TERRAIN
-CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr, const ET::TerrainInfo* terrainInfo)
-{
-    mRaySceneQuery = sceneMgr->createRayQuery(::Ogre::Ray());
-    if (NULL == mRaySceneQuery)
-    {
-        // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
-        return;
-    }
-    mRaySceneQuery->setSortByDistance(true);
-
-    mTSMRaySceneQuery = NULL;
-
-    mTerrainInfo = terrainInfo;
-
-    _heightAdjust = 0.0f;
-}
-#endif
-
 CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
 {
     mSceneMgr = sceneMgr;
 
     mRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
-    if (NULL == mRaySceneQuery)
+    if (nullptr == mRaySceneQuery)
     {
         // LOG_ERROR << "Failed to create Ogre::RaySceneQuery instance" << ENDLOG;
         return;
@@ -67,45 +48,19 @@ CollisionTools::CollisionTools(::Ogre::SceneManager* sceneMgr)
     mRaySceneQuery->setSortByDistance(true);
 
     mTSMRaySceneQuery = mSceneMgr->createRayQuery(::Ogre::Ray());
-
-    _heightAdjust = 0.0f;
 }
 
 CollisionTools::~CollisionTools()
 {
-    if (mRaySceneQuery != NULL)
+    if (mRaySceneQuery != nullptr)
     {
         delete mRaySceneQuery;
     }
 
-    if (mTSMRaySceneQuery != NULL)
+    if (mTSMRaySceneQuery != nullptr)
     {
         delete mTSMRaySceneQuery;
     }
-}
-
-//------------------------------------------------------------------------------
-
-bool CollisionTools::raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
-                                       Ogre::Vector3& result, Ogre::Entity*& target, float& closest_distance,
-                                       const Ogre::uint32 queryMask)
-{
-    return raycastFromCamera(rw, camera, mousecoords, result, (::Ogre::MovableObject*&)target, closest_distance,
-                             queryMask);
-}
-
-//------------------------------------------------------------------------------
-
-bool CollisionTools::raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
-                                       Ogre::Vector3& result, Ogre::MovableObject*& target, float& closest_distance,
-                                       const Ogre::uint32 queryMask)
-{
-    // Create the ray to test
-    Ogre::Real tx = mousecoords.x / (::Ogre::Real) rw->getWidth();
-    Ogre::Real ty = mousecoords.y / (::Ogre::Real) rw->getHeight();
-    Ogre::Ray ray = camera->getCameraToViewportRay(tx, ty);
-
-    return raycast(ray, result, target, closest_distance, queryMask);
 }
 
 //------------------------------------------------------------------------------
@@ -118,13 +73,14 @@ bool CollisionTools::collidesWithEntity(const Ogre::Vector3& fromPoint, const Og
     Ogre::Vector3 toPointAdj(toPoint.x, toPoint.y + rayHeightLevel, toPoint.z);
     Ogre::Vector3 normal = toPointAdj - fromPointAdj;
     float distToDest     = normal.normalise();
+    float distToColl     = 0.0f;
 
-    Ogre::Vector3 myResult(0, 0, 0);
-    Ogre::MovableObject* myObject = NULL;
-    float distToColl              = 0.0f;
+    std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*,
+               float> res = raycastFromPoint(fromPointAdj, normal, queryMask);
 
-    if (raycastFromPoint(fromPointAdj, normal, myResult, myObject, distToColl, queryMask))
+    if (std::get<0>(res))
     {
+        distToColl  = std::get<3>(res);
         distToColl -= collisionRadius;
         return (distToColl <= distToDest);
     }
@@ -136,160 +92,43 @@ bool CollisionTools::collidesWithEntity(const Ogre::Vector3& fromPoint, const Og
 
 //------------------------------------------------------------------------------
 
-float CollisionTools::getTSMHeightAt(const float x, const float z)
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycastFromCamera(::Ogre::RenderWindow* rw,
+                                                                                               Ogre::Camera* camera,
+                                                                                               const Ogre::Vector2& mousecoords,
+                                                                                               const Ogre::uint32 queryMask)
 {
-    float y = 0.0f;
+    // Create the ray to test
+    Ogre::Real tx = mousecoords.x / static_cast< ::Ogre::Real>(rw->getWidth());
+    Ogre::Real ty = mousecoords.y / static_cast< ::Ogre::Real>(rw->getHeight());
+    Ogre::Ray ray = camera->getCameraToViewportRay(tx, ty);
 
-    static Ogre::Ray updateRay;
-
-    updateRay.setOrigin(::Ogre::Vector3(x, 9999, z));
-    updateRay.setDirection(::Ogre::Vector3::NEGATIVE_UNIT_Y);
-
-    mTSMRaySceneQuery->setRay(updateRay);
-    Ogre::RaySceneQueryResult& qryResult = mTSMRaySceneQuery->execute();
-
-    Ogre::RaySceneQueryResult::iterator i = qryResult.begin();
-    if (i != qryResult.end() && i->worldFragment)
-    {
-        y = i->worldFragment->singleIntersection.y;
-    }
-    return y;
+    return raycast(ray, queryMask);
 }
 
 //------------------------------------------------------------------------------
 
-void CollisionTools::calculateY(::Ogre::SceneNode* n, const bool doTerrainCheck, const bool doGridCheck,
-                                const float gridWidth,
-                                const Ogre::uint32 queryMask)
-{
-    Ogre::Vector3 pos = n->getPosition();
-
-    float x = pos.x;
-    float z = pos.z;
-    float y = pos.y;
-
-    Ogre::Vector3 myResult(0, 0, 0);
-    Ogre::MovableObject* myObject = NULL;
-    float distToColl              = 0.0f;
-
-    float terrY = 0, colY = 0, colY2 = 0;
-
-    if( raycastFromPoint(::Ogre::Vector3(x, y, z), Ogre::Vector3::NEGATIVE_UNIT_Y, myResult, myObject, distToColl,
-                         queryMask))
-    {
-        if (myObject != NULL)
-        {
-            colY = myResult.y;
-        }
-        else
-        {
-            colY = -99999;
-        }
-    }
-
-    //if doGridCheck is on, repeat not to fall through small holes for example when crossing a hangbridge
-    if (doGridCheck)
-    {
-        if( raycastFromPoint(::Ogre::Vector3(x, y,
-                                             z)+
-                             (n->getOrientation()*
-                              Ogre::Vector3(0, 0,
-                                            gridWidth)), Ogre::Vector3::NEGATIVE_UNIT_Y, myResult, myObject, distToColl,
-                             queryMask))
-        {
-            if (myObject != NULL)
-            {
-                colY = myResult.y;
-            }
-            else
-            {
-                colY = -99999;
-            }
-        }
-        if (colY < colY2)
-        {
-            colY = colY2;
-        }
-    }
-
-    // set the parameter to false if you are not using ETM or TSM
-    if (doTerrainCheck)
-    {
-
-#ifdef ETM_TERRAIN
-        // ETM height value
-        terrY = mTerrainInfo->getHeightAt(x, z);
-#else
-        // TSM height value
-        terrY = getTSMHeightAt(x, z);
-#endif
-
-        if(terrY < colY )
-        {
-            n->setPosition(x, colY+_heightAdjust, z);
-        }
-        else
-        {
-            n->setPosition(x, terrY+_heightAdjust, z);
-        }
-    }
-    else
-    {
-        if (!doTerrainCheck && colY == -99999)
-        {
-            colY = y;
-        }
-        n->setPosition(x, colY+_heightAdjust, z);
-    }
-}
-
-// raycast from a point in to the scene.
-// returns success or failure.
-// on success the point is returned in the result.
-bool CollisionTools::raycastFromPoint(const Ogre::Vector3& point,
-                                      const Ogre::Vector3& normal,
-                                      Ogre::Vector3& result, Ogre::Entity*& target,
-                                      float& closest_distance,
-                                      const Ogre::uint32 queryMask)
-{
-    return raycastFromPoint(point, normal, result, (::Ogre::MovableObject*&)target, closest_distance, queryMask);
-}
-
-//------------------------------------------------------------------------------
-
-bool CollisionTools::raycastFromPoint(const Ogre::Vector3& point,
-                                      const Ogre::Vector3& normal,
-                                      Ogre::Vector3& result, Ogre::MovableObject*& target,
-                                      float& closest_distance,
-                                      const Ogre::uint32 queryMask)
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycastFromPoint(
+    const Ogre::Vector3& point, const Ogre::Vector3& normal, const Ogre::uint32 queryMask)
 {
     // create the ray to test
     static Ogre::Ray ray;
     ray.setOrigin(point);
     ray.setDirection(normal);
 
-    return raycast(ray, result, target, closest_distance, queryMask);
+    return raycast(ray, queryMask);
 }
 
 //------------------------------------------------------------------------------
 
-bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::Entity*& target,
-                             float& closest_distance,
-                             const Ogre::uint32 queryMask)
+std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::raycast(const Ogre::Ray& ray,
+                                                                                     const Ogre::uint32 queryMask)
 {
-    return raycast(ray, result, (::Ogre::MovableObject*&)target, closest_distance, queryMask);
-}
-
-//------------------------------------------------------------------------------
-
-bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::MovableObject*& target,
-                             float& closest_distance,
-                             const Ogre::uint32 queryMask)
-{
-    target = NULL;
+    Ogre::Vector3 result;
+    Ogre::MovableObject* target = nullptr;
+    float closest_distance;
 
     // check we are initialised
-    if (mRaySceneQuery != NULL)
+    if (mRaySceneQuery != nullptr)
     {
         // create a query object
         mRaySceneQuery->setRay(ray);
@@ -299,13 +138,13 @@ bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::
         if (mRaySceneQuery->execute().size() <= 0)
         {
             // raycast did not hit an objects bounding box
-            return (false);
+            return std::make_tuple(false, result, target, closest_distance);
         }
     }
     else
     {
         //LOG_ERROR << "Cannot raycast without RaySceneQuery instance" << ENDLOG;
-        return (false);
+        return std::make_tuple(false, result, target, closest_distance);
     }
 
     // at this point we have raycast to a series of different objects bounding boxes.
@@ -328,7 +167,7 @@ bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::
         }
 
         // only check this result if its a hit against an entity
-        if ((query_result[qr_idx].movable != NULL)  &&
+        if ((query_result[qr_idx].movable != nullptr)  &&
             (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0))
         {
             // get the entity to check
@@ -389,12 +228,12 @@ bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::
     {
         // raycast success
         result = closest_result;
-        return (true);
+        return std::make_tuple(true, result, target, closest_distance);
     }
     else
     {
         // raycast failed
-        return (false);
+        return std::make_tuple(false, result, target, closest_distance);
     }
 }
 
@@ -533,17 +372,5 @@ void CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
 }
 
 //------------------------------------------------------------------------------
-
-void CollisionTools::setHeightAdjust(const float heightadjust)
-{
-    _heightAdjust = heightadjust;
-}
-
-//------------------------------------------------------------------------------
-
-float CollisionTools::getHeightAdjust(void)
-{
-    return _heightAdjust;
-}
 
 }

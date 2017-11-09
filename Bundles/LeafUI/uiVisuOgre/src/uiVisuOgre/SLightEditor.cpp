@@ -135,7 +135,7 @@ void SLightEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onEditDiffuseColor(bool _checked)
+void SLightEditor::onEditDiffuseColor(bool /*_checked*/)
 {
     ::Ogre::ColourValue newDiffuseColor = this->editColor(m_currentLight->getDiffuseColor(),
                                                           "Light diffuse color");
@@ -145,7 +145,7 @@ void SLightEditor::onEditDiffuseColor(bool _checked)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onEditSpecularColor(bool _checked)
+void SLightEditor::onEditSpecularColor(bool /*_checked*/)
 {
     ::Ogre::ColourValue newSpecularColor = this->editColor(m_currentLight->getSpecularColor(),
                                                            "Light specular color");

@@ -165,24 +165,23 @@ void SMaterialSelector::onReloadMaterial()
     auto materialName = m_materialBox->currentText().toStdString();
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName);
 
-    if(material.isNull())
+    if(!material)
     {
         OSLM_ERROR("Could not find material" << materialName);
     }
 
     material->reload();
 
-    ::Ogre::Material::TechniqueIterator techIt = material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
+    const ::Ogre::Material::Techniques techniques = material->getTechniques();
+
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+        ::Ogre::Technique::Passes passIt = tech->getPasses();
 
-        while ( passIt.hasMoreElements() )
+        for(const auto pass : passIt)
         {
-            ::Ogre::Pass* pass = passIt.getNext();
             SLM_ASSERT("No pass found", pass);
 
             if(!pass->getVertexProgramName().empty())

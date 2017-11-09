@@ -44,7 +44,9 @@ GridProxyGeometry* GridProxyGeometry::New(const std::string& _name, ::Ogre::Scen
     instance->mParentSceneManager  = _sceneManager;
     instance->m_3DImageTexture     = _3DImageTexture;
     instance->m_gpuTF              = _tf;
-    instance->setMaterial(_mtlName);
+
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName);
+    instance->setMaterial(mat);
 
     instance->initialize();
     instance->manualUpdate();
@@ -76,7 +78,7 @@ GridProxyGeometry::~GridProxyGeometry()
         ::Ogre::MeshManager::getSingleton().remove(mesh->getHandle());
     }
 
-    if(!m_gridTexture.isNull())
+    if(m_gridTexture)
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
     }
@@ -105,10 +107,10 @@ void GridProxyGeometry::updateGridSize()
             (static_cast<int>(imageSize[i]) % m_brickSize[i] != 0);
     }
 
-    if(!m_gridTexture.isNull())
+    if(m_gridTexture)
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
-        m_gridTexture.setNull();
+        m_gridTexture.reset();
     }
 
     this->setupGrid();
@@ -320,8 +322,8 @@ void GridProxyGeometry::clipGrid(const Ogre::AxisAlignedBox& _clippingBox)
     }
     else if(realClippingBox.isNull())
     {
-        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(NAN));
-        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(NAN));
+        geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(std::nanf("")));
+        geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(std::nanf("")));
     }
     else // Infinite box
     {

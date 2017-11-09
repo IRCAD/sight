@@ -87,7 +87,7 @@ void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int x, int y, int dx, int dy)
+void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int /*x*/, int /*y*/, int dx, int dy)
 {
     if(button == MIDDLE && m_totalWidth > 1)
     {
@@ -207,7 +207,8 @@ void Negato2DInteractor::resetCameraPosition()
     if(!m_camera)
     {
         m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
-        m_cameraPos = m_camera->getPosition();
+        m_cameraPos =
+            m_camera->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME)->getPosition();
         m_camera->setOrthoWindow(1.f, 1.f);
     }
     return m_camera;
@@ -220,7 +221,7 @@ void Negato2DInteractor::updateCameraAngle()
     this->updateRenderWindowDimensions();
     ::Ogre::Real orthoWidth, orthoHeight, imageToWindowRatio;
 
-    if( m_renderWindowWidth == m_renderWindowHeight )
+    if( static_cast<int>(m_renderWindowWidth) == static_cast<int>(m_renderWindowHeight) )
     {
         this->getCamera()->setOrthoWindow( m_currentWidth, m_currentHeight );
     }

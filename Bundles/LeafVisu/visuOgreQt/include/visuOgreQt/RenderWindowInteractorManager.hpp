@@ -49,30 +49,30 @@ public:
     VISUOGREQT_API virtual ~RenderWindowInteractorManager();
 
     /// Call Widget render
-    VISUOGREQT_API virtual void requestRender();
+    VISUOGREQT_API virtual void requestRender() override;
 
     /// Create the container that holds the QtWidget.
     VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
-                                                bool renderOnDemand, bool fullscreen);
+                                                bool renderOnDemand, bool fullscreen) override;
 
     /// Connects widget and SRender signals and slots.
-    VISUOGREQT_API virtual void connectToContainer();
+    VISUOGREQT_API virtual void connectToContainer() override;
 
     /// Not implemented yet
     /// Deletes interactor and manages correctly the window (removing layout).
-    VISUOGREQT_API virtual void disconnectInteractor();
+    VISUOGREQT_API virtual void disconnectInteractor() override;
 
     /// Returns Ogre widget
-    VISUOGREQT_API virtual int getWidgetId() const;
+    VISUOGREQT_API virtual int getWidgetId() const override;
 
     /// Returns frame ID
-    VISUOGREQT_API virtual int getFrameId() const;
+    VISUOGREQT_API virtual int getFrameId() const override;
 
     /// Set this render service as the current OpenGL context
-    VISUOGREQT_API virtual void makeCurrent();
+    VISUOGREQT_API virtual void makeCurrent() override;
 
     /// Get Ogre RenderWindow
-    VISUOGREQT_API virtual ::Ogre::RenderWindow* getRenderWindow();
+    VISUOGREQT_API virtual ::Ogre::RenderWindow* getRenderWindow() override;
 
 private Q_SLOTS:
 

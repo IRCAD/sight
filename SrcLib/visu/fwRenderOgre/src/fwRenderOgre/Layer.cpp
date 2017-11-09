@@ -58,8 +58,9 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 
 //-----------------------------------------------------------------------------
 
-const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
-const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
+const std::string Layer::DEFAULT_CAMERA_NAME        = "DefaultCam";
+const std::string Layer::DEFAULT_LIGHT_NAME         = "DefaultLight";
+const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
 
 //-----------------------------------------------------------------------------
 
@@ -258,7 +259,7 @@ void Layer::createScene()
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
     // Create the camera
-    m_camera = m_sceneManager->createCamera(DEFAULT_CAMERA_NAME);
+    m_camera = m_sceneManager->createCamera(Layer::DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
@@ -302,7 +303,7 @@ void Layer::createScene()
         // Create background rectangle covering the whole screen
         ::Ogre::Rectangle2D* rect = new ::Ogre::Rectangle2D();
         rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-        rect->setMaterial(this->getName() + "backgroundMat");
+        rect->setMaterial(material);
 
         // Render the background before everything else
         rect->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
@@ -321,7 +322,8 @@ void Layer::createScene()
     m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
 
     // Creating Camera Scene Node
-    ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
+    ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode(
+        Layer::s_DEFAULT_CAMERA_NODE_NAME);
     cameraNode->setPosition(::Ogre::Vector3(0, 0, 5));
     cameraNode->lookAt(::Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 

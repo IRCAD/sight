@@ -57,7 +57,7 @@ STexture::~STexture() noexcept
 
 bool STexture::isValid() const
 {
-    if(!m_texture.isNull())
+    if(m_texture)
     {
         if(m_texture->getFormat() != ::Ogre::PF_UNKNOWN)
         {
@@ -113,10 +113,12 @@ void STexture::starting()
 {
     this->initialize();
 
-    m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-        m_textureName,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true).first.dynamicCast< ::Ogre::Texture>();
+    m_texture =
+        ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                                                            m_textureName,
+                                                            ::Ogre::
+                                                            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                            true).first);
 
     this->updating();
 }
@@ -149,7 +151,7 @@ void STexture::stopping()
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();
-    m_texture.setNull();
+    m_texture.reset();
 }
 
 //-----------------------------------------------------------------------------

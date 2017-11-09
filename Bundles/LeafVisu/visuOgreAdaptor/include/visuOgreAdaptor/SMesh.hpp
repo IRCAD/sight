@@ -90,7 +90,7 @@ class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SMesh)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((SMesh)(::fwRenderOgre::IAdaptor))
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SMesh() noexcept;

@@ -106,11 +106,10 @@ void Plane::initializeMaterial()
     // is null when we call this method on the first time (from doStart() for instance)
     m_texMaterial->touch();
 
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -310,11 +309,10 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 {
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -333,11 +331,10 @@ void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 
 void Plane::switchThresholding(bool _threshold)
 {
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -421,11 +418,10 @@ void Plane::setEntityOpacity(float _f)
 
 void Plane::changeSlice(float sliceIndex)
 {
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))

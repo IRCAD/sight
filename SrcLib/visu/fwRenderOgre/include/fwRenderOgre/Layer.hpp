@@ -67,8 +67,8 @@ public:
         AUTOSTEREO_8,
     };
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
-    fwCoreAllowSharedFromThis();
+    fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer)
+    fwCoreAllowSharedFromThis()
 
     /**@name Signals API
      * @{
@@ -247,6 +247,8 @@ public:
     FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
     FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
+
+    FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NODE_NAME;
 
 private:
     /// Slot: Interact with the scene.

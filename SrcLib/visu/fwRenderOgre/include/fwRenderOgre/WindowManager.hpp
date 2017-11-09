@@ -26,8 +26,8 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API WindowManager : public ::fwCore::BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (WindowManager)(::fwRenderOgre::WindowManager), (()), new WindowManager);
-    fwCoreAllowSharedFromThis();
+    fwCoreClassDefinitionsWithFactoryMacro( (WindowManager)(::fwRenderOgre::WindowManager), (()), new WindowManager)
+    fwCoreAllowSharedFromThis()
 
     /// register an ogre window
     FWRENDEROGRE_API void registerWindow(::Ogre::RenderWindow* _window);
