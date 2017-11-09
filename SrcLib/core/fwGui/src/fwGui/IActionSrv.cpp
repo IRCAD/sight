@@ -9,6 +9,7 @@
 #include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -29,6 +30,11 @@ const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_VISIBLE_SLOT       = "setVis
 const ::fwCom::Slots::SlotKeyType IActionSrv::s_SHOW_SLOT              = "show";
 const ::fwCom::Slots::SlotKeyType IActionSrv::s_HIDE_SLOT              = "hide";
 
+const ::fwCom::Signals::SignalKeyType IActionSrv::s_ENABLED_SIG   = "enabled";
+const ::fwCom::Signals::SignalKeyType IActionSrv::s_DISABLED_SIG  = "disabled";
+const ::fwCom::Signals::SignalKeyType IActionSrv::s_CHECKED_SIG   = "checked";
+const ::fwCom::Signals::SignalKeyType IActionSrv::s_UNCHECKED_SIG = "unchecked";
+
 IActionSrv::IActionSrv() :
     m_activeStateValue(true),
     m_isActive(false),
@@ -45,6 +51,11 @@ IActionSrv::IActionSrv() :
     newSlot(s_SET_VISIBLE_SLOT, &IActionSrv::setVisible, this);
     newSlot(s_SHOW_SLOT, &IActionSrv::show, this);
     newSlot(s_HIDE_SLOT, &IActionSrv::hide, this);
+
+    m_sigEnabled   = newSignal< EnabledSignalType >(s_ENABLED_SIG);
+    m_sigDisabled  = newSignal< DisabledSignalType >(s_DISABLED_SIG);
+    m_sigChecked   = newSignal< CheckedSignalType >(s_CHECKED_SIG);
+    m_sigUnchecked = newSignal< UncheckedSignalType >(s_UNCHECKED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -158,6 +169,14 @@ void IActionSrv::setIsActive(bool isActive)
 {
     m_isActive = isActive;
     this->m_registrar->actionServiceSetActive(m_activeStateValue == isActive);
+    if(isActive)
+    {
+        m_sigChecked->asyncEmit();
+    }
+    else
+    {
+        m_sigUnchecked->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -176,7 +195,7 @@ void IActionSrv::deactivate()
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getIsActive()
+bool IActionSrv::getIsActive() const
 {
     return m_isActive;
 }
@@ -187,6 +206,14 @@ void IActionSrv::setIsExecutable(bool isExecutable)
 {
     m_isExecutable = isExecutable;
     this->m_registrar->actionServiceSetExecutable(isExecutable);
+    if(isExecutable)
+    {
+        m_sigEnabled->asyncEmit();
+    }
+    else
+    {
+        m_sigDisabled->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -205,7 +232,7 @@ void IActionSrv::setInexecutable()
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getIsExecutable()
+bool IActionSrv::getIsExecutable() const
 {
     return m_isExecutable;
 }
@@ -234,7 +261,7 @@ void IActionSrv::hide()
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::isVisible()
+bool IActionSrv::isVisible() const
 {
     return m_isVisible;
 }
