@@ -73,7 +73,7 @@ public:
     /**
      * @brief Override from RenderTargetListener
      */
-    VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt);
+    VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) override;
 
     VISUOGREQT_API void setFullScreen(bool fullscreen);
 
