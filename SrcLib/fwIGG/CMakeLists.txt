@@ -1,11 +1,12 @@
 fwLoadProperties()
 
-
 find_package( ZLIB REQUIRED )
-fwInclude(${ZLIB_INCLUDE_DIRS})
+find_package(Eigen REQUIRED)
+
 find_library(cgogn_LIBRARY NAMES cgogn libcgogn PATHS ${EXTERNAL_LIBRARIES}/lib)
 
 fwForwardInclude(
+    ${EIGEN3_INCLUDE_DIR}
     ${EXTERNAL_LIBRARIES}/include/cgogn/include
     )
 fwLink(
