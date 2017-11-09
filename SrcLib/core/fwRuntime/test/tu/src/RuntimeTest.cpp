@@ -98,6 +98,12 @@ void RuntimeTest::testOperations()
     path = ::fwRuntime::getLibraryResourceFilePath("fwLibrary-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
 
+    path = ::fwRuntime::getResourceFilePath("fwLibrary-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
+
+    path = ::fwRuntime::getResourceFilePath("servicesReg-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
+
     // (Bundle, path) prototype
     path = ::fwRuntime::getBundleResourceFilePath("servicesReg", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);

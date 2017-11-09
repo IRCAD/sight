@@ -224,13 +224,7 @@ void SSelector::configuring()
             const std::string icon = elt->getAttributeValue("icon");
             SLM_ASSERT("'icon' attribute is missing", !icon.empty());
 
-            auto file = ::fwRuntime::getBundleResourceFilePath(icon);
-            if(file.empty())
-            {
-                // If not found in a bundle, look into libraries
-                file = ::fwRuntime::getLibraryResourceFilePath(icon);
-                SLM_ERROR_IF("Resource '" + icon + "' has not been found in any bundle or library", file.empty());
-            }
+            const auto file = ::fwRuntime::getResourceFilePath(icon);
             m_seriesIcons[series] = file.string();
         }
     }

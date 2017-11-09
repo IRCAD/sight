@@ -150,14 +150,7 @@ void IReader::configuring()
         else if (config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
-            auto file                  = ::fwRuntime::getBundleResourceFilePath(resource);
-            if(file.empty())
-            {
-                // If not found in a bundle, look into libraries
-                file = ::fwRuntime::getLibraryResourceFilePath(resource);
-                SLM_ERROR_IF("Resource '" + resource + "' has not been found in any bundle or library", file.empty());
-            }
-
+            const auto file            = ::fwRuntime::getResourceFilePath(resource);
             this->setFile(file);
         }
     }
@@ -179,14 +172,7 @@ void IReader::configuring()
         for (auto resourceCfg = resourcesCfg.first; resourceCfg != resourcesCfg.second; ++resourceCfg)
         {
             const std::string resource = resourceCfg->second.get_value<std::string>();
-            auto file                  = ::fwRuntime::getBundleResourceFilePath(resource);
-            if(file.empty())
-            {
-                // If not found in a bundle, look into libraries
-                file = ::fwRuntime::getLibraryResourceFilePath(resource);
-                SLM_ERROR_IF("Resource '" + resource + "' has not been found in any bundle or library", file.empty());
-            }
-
+            const auto file            = ::fwRuntime::getResourceFilePath(resource);
             locations.push_back(file);
         }
         this->setFiles(locations);

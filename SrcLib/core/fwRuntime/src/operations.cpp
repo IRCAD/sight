@@ -158,12 +158,26 @@ const ::boost::filesystem::path getBundleResourceFilePath(const ::boost::filesys
 
 //------------------------------------------------------------------------------
 
-const boost::filesystem::path getLibraryResourceFilePath(const boost::filesystem::path& path) noexcept
+const ::boost::filesystem::path getLibraryResourceFilePath(const ::boost::filesystem::path& path) noexcept
 {
     // Currently the library resources are at the same location than bundles
     // This might change in the future
     Runtime* rntm = Runtime::getDefault();
     return rntm->getWorkingPath() / BUNDLE_RC_PREFIX / path;
+}
+
+//------------------------------------------------------------------------------
+
+const ::boost::filesystem::path getResourceFilePath(const ::boost::filesystem::path& path) noexcept
+{
+    auto file = ::fwRuntime::getBundleResourceFilePath(path);
+    if(file.empty())
+    {
+        // If not found in a bundle, look into libraries
+        file = ::fwRuntime::getLibraryResourceFilePath(path);
+        SLM_ERROR_IF("Resource '" + path.string() + "' has not been found in any bundle or library", file.empty());
+    }
+    return file;
 }
 
 //------------------------------------------------------------------------------
