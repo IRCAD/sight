@@ -28,6 +28,7 @@ namespace videoOpenCV
  * - \b saveFrame(timestamp) : add the current frame in the video
  * - \b startRecord() : start recording
  * - \b stopRecord() : stop recording
+ * - \b setFormatParameter(value, key) : change format
  *
  * @section XML XML Configuration
  *
@@ -94,6 +95,9 @@ private:
 
     /// SLOT: Strop recording
     void stopRecord();
+
+    ///Slot called when a format is changed
+    void setFormatParameter(std::string val, std::string key);
 
     int m_imageType; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
 
