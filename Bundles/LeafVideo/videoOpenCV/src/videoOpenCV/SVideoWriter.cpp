@@ -102,10 +102,7 @@ void SVideoWriter::configureWithIHM()
 
 void SVideoWriter::stopping()
 {
-    if (m_writer)
-    {
-        this->stopRecord();
-    }
+    this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
@@ -204,8 +201,11 @@ void SVideoWriter::startRecord()
 
 void SVideoWriter::stopRecord()
 {
-    m_writer->release();
-    m_writer.reset();
+    if(m_writer)
+    {
+        m_writer->release();
+        m_writer.reset();
+    }
 }
 
 //------------------------------------------------------------------------------
