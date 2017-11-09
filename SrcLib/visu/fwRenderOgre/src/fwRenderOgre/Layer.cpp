@@ -303,9 +303,7 @@ void Layer::createScene()
         // Create background rectangle covering the whole screen
         ::Ogre::Rectangle2D* rect = new ::Ogre::Rectangle2D();
         rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-
-        ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(this->getName() + "backgroundMat");
-        rect->setMaterial(mat);
+        rect->setMaterial(material);
 
         // Render the background before everything else
         rect->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
