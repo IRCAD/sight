@@ -10,8 +10,8 @@
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/TransferFunction.hpp>
 
-#include <OGRE/OgreImage.h>
 #include <OGRE/OgreTexture.h>
 
 namespace visuOgreAdaptor
@@ -25,12 +25,14 @@ namespace visuOgreAdaptor
         <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="..." />
             <in key="camera" uid="..." />
+            <in key="tf" uid="..." optional="yes" />
             <config renderer="default" reversed="true" />
         </service>
    @endcode
  * @subsection Input Input:
  * - \b image [::fwData::Image]: frame displayed.
  * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
+ * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
  * @subsection Configuration Configuration:
  * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
  */
@@ -69,11 +71,17 @@ protected:
 
 private:
 
-    /// Ogre image created from current data Image. It is shown in the frame.
-    ::Ogre::Image* m_imageData;
+    /// Slot: Updates the displayed transfer function
+    void updateTF();
 
     /// Ogre texture used to store the fwImage
     ::Ogre::TexturePtr m_texture;
+
+    /// Ogre Material used to display the video plane
+    ::Ogre::MaterialPtr m_material;
+
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
+    std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// True if the texture is initialized
     bool m_isTextureInit;
@@ -82,10 +90,10 @@ private:
     std::string m_cameraUID;
 
     /// Store previous image size
-    unsigned int m_previousWidth;
+    size_t m_previousWidth;
 
     /// Store previous image spacing
-    unsigned int m_previousHeight;
+    size_t m_previousHeight;
 
     /// If true, the actor is rotated in z and y axis.
     bool m_reverse;
