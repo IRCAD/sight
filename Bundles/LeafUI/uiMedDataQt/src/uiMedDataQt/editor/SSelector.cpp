@@ -28,6 +28,8 @@
 
 #include <fwMedDataTools/helper/SeriesDB.hpp>
 
+#include <fwRuntime/operations.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <QVBoxLayout>
@@ -216,13 +218,14 @@ void SSelector::configuring()
 
         for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
         {
-            std::string series = elt->getAttributeValue("series");
+            const std::string series = elt->getAttributeValue("series");
             SLM_ASSERT("'series' attribute is missing", !series.empty());
 
-            std::string icon = elt->getAttributeValue("icon");
+            const std::string icon = elt->getAttributeValue("icon");
             SLM_ASSERT("'icon' attribute is missing", !icon.empty());
 
-            m_seriesIcons[series] = icon;
+            const auto file = ::fwRuntime::getResourceFilePath(icon);
+            m_seriesIcons[series] = file.string();
         }
     }
 }
