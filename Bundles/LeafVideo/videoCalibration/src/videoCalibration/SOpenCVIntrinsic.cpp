@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,9 +12,11 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/PointList.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -23,8 +25,8 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwTools/Object.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -101,6 +103,7 @@ void SOpenCVIntrinsic::updating()
 {
     ::arData::CalibrationInfo::csptr calInfo = this->getInput< ::arData::CalibrationInfo>("calibrationInfo");
     ::arData::Camera::sptr cam               = this->getInOut< ::arData::Camera >("camera");
+    ::fwData::Vector::sptr poseCamera        = this->getInOut< ::fwData::Vector >("poseVector");
 
     SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
@@ -146,14 +149,44 @@ void SOpenCVIntrinsic::updating()
         ::cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
 
         double err = ::cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
+
+        if(poseCamera)
+        {
+            poseCamera->getContainer().clear();
+
+            for(size_t index = 0; index < rvecs.size(); ++index)
+            {
+                ::fwData::TransformationMatrix3D::sptr mat3D = ::fwData::TransformationMatrix3D::New();
+
+                ::cv::Mat rmat;
+                ::cv::Rodrigues(rvecs.at(index), rmat);
+
+                ::cv::Mat tmat = tvecs.at(index);
+
+                for(size_t i = 0; i < 3; ++i)
+                {
+                    for(size_t j = 0; j < 3; ++j)
+                    {
+                        mat3D->setCoefficient(i, j, rmat.at< double >(static_cast<int>(i),
+                                                                      static_cast<int>(j)));
+                    }
+                    mat3D->setCoefficient(i, 3, tmat.at< double >(static_cast<int>(i)));
+                }
+
+                poseCamera->getContainer().push_back(mat3D);
+                auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
+                    ::fwData::Vector::s_ADDED_OBJECTS_SIG);
+            }
+        }
+
         OSLM_DEBUG("Calibration error :" << err);
 
         ::fwData::mt::ObjectWriteLock camLock(cam);
 
-        cam->setCx(cameraMatrix.at<double>(0,2));
-        cam->setCy(cameraMatrix.at<double>(1,2));
-        cam->setFx(cameraMatrix.at<double>(0,0));
-        cam->setFy(cameraMatrix.at<double>(1,1));
+        cam->setCx(cameraMatrix.at<double>(0, 2));
+        cam->setCy(cameraMatrix.at<double>(1, 2));
+        cam->setFx(cameraMatrix.at<double>(0, 0));
+        cam->setFy(cameraMatrix.at<double>(1, 1));
         cam->setWidth(img->getSize()[0]);
         cam->setHeight(img->getSize()[1]);
         cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
@@ -164,7 +197,7 @@ void SOpenCVIntrinsic::updating()
         sig = cam->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
             ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
-        sig->asyncEmit ();
+        sig->asyncEmit();
     }
 }
 

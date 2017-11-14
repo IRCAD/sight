@@ -35,9 +35,13 @@
         <desc>Hand-Eye Calibration Activity using a camera and a tracking system</desc>
         <icon>arMedia-0.1/icons/calibrationActivity.svg</icon>
         <requirements>
+            <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <key>camera</key>
+            </requirement>
         </requirements>
         <appConfig id="trackingHandEyeCalibration">
             <parameters>
+                <parameter replace="camera" by="@values.cameraSeries.cameras.0" />
             </parameters>
         </appConfig>
     </extension>

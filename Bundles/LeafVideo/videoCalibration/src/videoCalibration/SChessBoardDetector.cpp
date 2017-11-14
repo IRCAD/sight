@@ -8,6 +8,9 @@
 
 #include <arData/CalibrationInfo.hpp>
 
+#include <cvIO/FrameTL.hpp>
+#include <cvIO/Image.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
@@ -37,6 +40,7 @@ const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_NOT_DETE
 
 const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
 const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
+const ::fwServices::IService::KeyType s_DETECTION_INOUT   = "detection";
 
 // ----------------------------------------------------------------------------
 
@@ -108,7 +112,13 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
         ::fwCore::HiResClock::HiResClockType lastTimestamp;
         lastTimestamp = std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-        size_t numTimeline = this->getKeyGroupSize(s_TIMELINE_INPUT);
+        size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
+        size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
+
+        OSLM_ERROR_IF("Number of input and detection timelines are different.", numTimeline != numDetection);
+
+        const bool detection = (numDetection > 0) && (numTimeline == numDetection);
+
         // Grab timeline objects
         for(size_t i = 0; i < numTimeline; ++i)
         {
@@ -121,7 +131,21 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
         for(size_t i = 0; i < numTimeline; ++i)
         {
             auto tl = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
-            ::fwData::PointList::sptr chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
+
+            ::fwData::PointList::sptr chessBoardPoints;
+            if(detection)
+            {
+                auto tlDetection = this->getInOut< ::arData::FrameTL >(s_DETECTION_INOUT, i);
+                if(!tlDetection->isAllocated())
+                {
+                    tlDetection->initPoolSize(tl->getWidth(), tl->getHeight(), ::fwTools::Type::s_UINT8, 4);
+                }
+                chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height, tlDetection);
+            }
+            else
+            {
+                chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
+            }
 
             if(!chessBoardPoints)
             {
@@ -229,7 +253,8 @@ void SChessBoardDetector::updateChessboardSize()
 
 SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameTL::csptr tl,
                                                                 ::fwCore::HiResClock::HiResClockType timestamp,
-                                                                size_t xDim, size_t yDim)
+                                                                size_t xDim, size_t yDim,
+                                                                ::arData::FrameTL::sptr tlDetection)
 {
     ::fwData::PointList::sptr pointlist;
 
@@ -240,26 +265,11 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
         const auto pixType = tl->getType();
         OSLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
 
-        const int height = static_cast<int>(tl->getHeight());
-        const int width  = static_cast<int>(tl->getWidth());
-
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
         ::cv::Mat grayImg;
-        if (tl->getNumberOfComponents() == 1)
-        {
-            grayImg = ::cv::Mat(height, width, CV_8UC1, frameBuff);
-        }
-        else if (tl->getNumberOfComponents() == 3)
-        {
-            ::cv::Mat img(height, width, CV_8UC3, frameBuff);
-            ::cv::cvtColor(img, grayImg, CV_RGB2GRAY);
-        }
-        else
-        {
-            ::cv::Mat img(height, width, CV_8UC4, frameBuff);
-            ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
-        }
+        ::cv::Mat img = ::cvIO::FrameTL::moveToCv(tl, frameBuff);
+        ::cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
 
         ::cv::Size boardSize(static_cast<int>(xDim) - 1, static_cast<int>(yDim) - 1);
         std::vector< ::cv::Point2f > corners;
@@ -267,7 +277,8 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
         const int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS
                           | CV_CALIB_CB_FAST_CHECK;
 
-        if (::cv::findChessboardCorners(grayImg, boardSize, corners, flags))
+        const bool patternWasFound = ::cv::findChessboardCorners(grayImg, boardSize, corners, flags);
+        if(patternWasFound)
         {
             ::cv::TermCriteria term(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS, 30, 0.1);
             ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
@@ -280,6 +291,25 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
             {
                 ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
                 points.push_back(point);
+            }
+
+            if(tlDetection)
+            {
+                SPTR(::arData::FrameTL::BufferType) detectionBuffer = tlDetection->createBuffer(timestamp);
+                std::uint8_t* frameDetectionBuffer = detectionBuffer->addElement(0);
+                ::cv::Mat frameDetectionCV = ::cvIO::FrameTL::moveToCv(tlDetection, frameDetectionBuffer);
+
+                ::cv::Mat imgCpy;
+                img.copyTo(imgCpy);
+
+                ::cv::drawChessboardCorners(imgCpy, boardSize, corners, patternWasFound);
+
+                imgCpy.copyTo(frameDetectionCV);
+
+                tlDetection->pushObject(detectionBuffer);
+                auto sig = tlDetection->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG);
+                sig->asyncEmit(timestamp);
             }
         }
     }

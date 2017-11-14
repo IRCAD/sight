@@ -10,8 +10,8 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwData/List.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -22,8 +22,8 @@ namespace trackingCalibration
 
 fwServicesRegisterMacro(::arServices::IRegisterer, ::trackingCalibration::SHandEyeCalibration);
 
-static const ::fwServices::IService::KeyType s_MATRIXLIST1_INPUT = "matrixList1";
-static const ::fwServices::IService::KeyType s_MATRIXLIST2_INPUT = "matrixList2";
+static const ::fwServices::IService::KeyType s_MATRIXVECTOR1_INPUT = "matrixVector1";
+static const ::fwServices::IService::KeyType s_MATRIXVECTOR2_INPUT = "matrixVector2";
 
 // -----------------------------------------------------------------------------
 
@@ -76,31 +76,32 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
     SLM_WARN_IF("Invoking computeHandEye while service is STOPPED", this->isStopped() );
     ::fwData::TransformationMatrix3D::sptr matrix3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
-    ::fwData::List::csptr list1 = this->getInput< ::fwData::List>("s_MATRIXLIST1_INPUT");
-    SLM_ASSERT("The second list is null", list1);
+    ::fwData::Vector::csptr vector1 = this->getInput< ::fwData::Vector >("s_MATRIXVECTOR1_INPUT");
+    SLM_ASSERT("The second vector is null", vector1);
 
-    ::fwData::List::csptr list2 = this->getInput< ::fwData::List>("s_MATRIXLIST2_INPUT");
-    SLM_ASSERT("The second list is null", list2);
+    ::fwData::Vector::csptr vector2 = this->getInput< ::fwData::Vector >("s_MATRIXVECTOR2_INPUT");
+    SLM_ASSERT("The second vector is null", vector2);
 
-    SLM_ASSERT("The first and the second matrices list should have the same size", list1->size() == list2->size());
+    SLM_ASSERT("The first and the second matrices vector should have the same size",
+               vector1->size() == vector2->size());
 
-    ::fwData::List::ConstIteratorType it1, it2;
+    ::fwData::Vector::ConstIteratorType it1, it2;
 
-    it1 = list1->begin();
-    it2 = list2->begin();
+    it1 = vector1->begin();
+    it2 = vector2->begin();
 
-    for(; it1 != list1->end() && it2 != list2->end();
+    for(; it1 != vector1->end() && it2 != vector2->end();
         ++it1, ++it2)
     {
         ::fwData::TransformationMatrix3D::sptr matrix1, matrix2;
 
         matrix1 = ::fwData::TransformationMatrix3D::dynamicCast(*it1);
 
-        SLM_ASSERT("This element of the list is not a TransformationMatrix3D", matrix1);
+        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrix1);
 
         matrix2 = ::fwData::TransformationMatrix3D::dynamicCast(*it2);
 
-        SLM_ASSERT("This element of the list is not a TransformationMatrix3D", matrix2);
+        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrix2);
 
         m_handEyeApi->pushMatrix(matrix1, matrix2);
     }

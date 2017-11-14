@@ -12,8 +12,8 @@
 #include <arData/MatrixTL.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/List.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/Vector.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -26,7 +26,7 @@ namespace uiHandEye
 {
 /**
  * @brief   SHandEyeEditor service is used to handle the calibration points acquisition.
- * This service takes two matrixTL in inputs, and fill the two fwData::List of TransformationMatrix3D when the
+ * This service takes two matrixTL in inputs, and fill the two fwData::Vector of TransformationMatrix3D when the
  * 'addSlot' is called.
  *
  * @section slots slots
@@ -39,13 +39,13 @@ namespace uiHandEye
     <service uid="..." type="::uiHandEye::SHandEyeEditor">
         <in key="matrixTL1" uid="..." />
         <in key="matrixTL2" uid="..." />
-        <inout key="matrixList1" uid="..." />
-        <inout key="matrixList2" uid="..." />
+        <inout key="matrixVector1" uid="..." />
+        <inout key="matrixVector2" uid="..." />
     </service>
    @endcode
  * @subsection InOut InOut:
- * - \b matrixList1: the matrix List 1 (filled when 'addSlot' is called)
- * - \b matrixList2: the matrix List 2 (filled when 'addSlot' is called)
+ * - \b matrixVector1: the matrix Vector 1 (filled when 'addSlot' is called)
+ * - \b matrixVector2: the matrix Vector 2 (filled when 'addSlot' is called)
  * @subsection Inputs Inputs:
  * - \b matrixTL1: the matrix TL 1
  * - \b matrixTL2: the matrix TL 2
@@ -129,7 +129,7 @@ protected:
 
 private Q_SLOTS:
     /**
-     * @brief Slot called when an element is double-clicked in the list widget.
+     * @brief Slot called when an element is double-clicked in the vector widget.
      */
     void onItemDoubleClicked(QListWidgetItem*);
 
@@ -146,7 +146,7 @@ private:
     QPointer< QLabel > m_nbCapturesLabel;
 
     /**
-     * @brief Calibration point list.
+     * @brief Calibration point vector.
      */
     QPointer< QListWidget > m_capturesListWidget;
 

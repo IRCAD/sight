@@ -16,21 +16,21 @@
 namespace trackingCalibration
 {
 /**
- * @brief Service that will compute the Hand-Eye Calibration from two list of corresponding tracking matrices
+ * @brief Service that will compute the Hand-Eye Calibration from two vectors of corresponding tracking matrices
  *
  * @code{.xml}
     <service uid="..." type="::trackingCalibration::SHandEyeCalibration" >
         <inout key="matrix" uid="..." />
-        <in key="matrixList1" uid="..." />
-        <in key="matrixList2" uid="..." />
+        <in key="matrixVector1" uid="..." />
+        <in key="matrixVector2" uid="..." />
     </service>
    @endcode
  * @subsection InOut InOut:
  * - \b matrix uid of the matrix
  *
  * @subsection Inputs Inputs:
- * - \b matrixList1 uid of the matrix List 1
- * - \b matrixList2 uid of the matrix List 2
+ * - \b matrixVector1 uid of the matrix vector 1
+ * - \b matrixVector2 uid of the matrix vector 2
  */
 class TRACKINGCALIBRATION_CLASS_API SHandEyeCalibration : public ::arServices::IRegisterer
 {
