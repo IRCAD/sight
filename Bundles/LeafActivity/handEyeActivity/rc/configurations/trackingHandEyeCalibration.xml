@@ -86,32 +86,16 @@
         <service uid="paramView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view caption="matrices view" proportion="1" />
-                    <view caption="Hand Eye" proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="matricesView" start="yes" />
-                <view sid="handEyeView" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="matricesView" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
+                    <view proportion="1" />
                 </layout>
+                <toolBar>
+                    <toolBitmapSize height="24" width="24" />
+                </toolBar>
             </gui>
             <registry>
-                <view sid="matrixViewer0" start="yes" />
-                <view sid="matrixViewer1" start="yes" />
-                <view sid="matrixViewer2" start="yes" />
-                <view sid="matrixViewer3" start="yes" />
+                <view sid="handEyeView" start="yes" />
+                <toolBar sid="handEyeToolBar" start="yes" />
             </registry>
         </service>
 
@@ -145,17 +129,28 @@
 
         <service uid="handEyeView" type="::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
-                    <view align="center" />
-                    <view align="bottom" />
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="Matrices" />
+                    <view caption="Chessboard vector matrices" />
                 </layout>
-                <toolBar align="left">
-                    <toolBitmapSize height="24" width="24" />
-                </toolBar>
             </gui>
             <registry>
-                <toolBar sid="handEyeToolBar" start="yes" />
+                <view sid="matricesView" start="yes" />
                 <view sid="handEyeEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="matricesView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view />
+                    <view />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="matrixViewer" start="yes" />
                 <view sid="matrixViewerHE" start="yes" />
             </registry>
         </service>
@@ -164,7 +159,6 @@
             <gui>
                 <layout>
                     <menuItem name="Add" icon="media-0.1/icons/Import.svg" />
-                    <menuItem name="Remove" icon="arMedia-0.1/icons/remove.svg" />
                     <menuItem name="Reset" icon="arMedia-0.1/icons/reset.svg" />
                     <menuItem name="Calibrate with Hand Eye" icon="arMedia-0.1/icons/CheckButton.svg" />
                     <menuItem name="Show Matrices" icon="media-0.1/icons/Preview.svg" />
@@ -173,7 +167,6 @@
             </gui>
             <registry>
                 <menuItem sid="actionAdd" start="yes" />
-                <menuItem sid="actionRemove" start="yes" />
                 <menuItem sid="actionReset" start="yes" />
                 <menuItem sid="actionCalibrate" start="yes" />
                 <menuItem sid="actionDisplayMatrices" start="yes" />
@@ -188,26 +181,20 @@
         <service uid="actionAdd" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>chessboardDetector/detectPoints</slot>
-                <!--<slot>pushMatrixSensor/add</slot>-->
+                <slot>pushMatrixSensor/addCopy</slot>
             </slots>
         </service>
 
         <service uid="actionReset" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>handEyeEditor/reset</slot>
-            </slots>
-        </service>
-
-        <service uid="actionRemove" type="::gui::action::SSlotCaller">
-            <slots>
-                <slot>handEyeEditor/remove</slot>
+                <slot>pushMatrixSensor/clear</slot>
             </slots>
         </service>
 
         <service uid="actionCalibrate" type="::uiTools::action::STimestampSlotCaller">
             <slots>
-                <!--<slot>handEyeCalibration/computeRegistration</slot>-->
-                <slot>cameraPose/update</slot>
+                <slot>handEyeCalibration/computeRegistration</slot>
             </slots>
         </service>
 
@@ -282,11 +269,8 @@
             <createTimestamp>true</createTimestamp>
         </service>
 
-        <service uid="handEyeEditor" type="::uiHandEye::SHandEyeEditor" autoConnect="yes">
-            <inout key="matrixVector1" uid="matrixVectorPose" />
-            <inout key="matrixVector2" uid="matrixVectorSensor" />
-            <in key="matrixTL1" uid="matrixTL" />
-            <in key="matrixTL2" uid="matrixTL2" />
+        <service uid="handEyeEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+            <inout key="calInfo1" uid="calibInfo" />
         </service>
 
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
@@ -317,24 +301,9 @@
             </inout>
         </service>
 
-        <service uid="matrixViewer0" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="matrix0" autoConnect="yes"/>
-            <title>Matrix 0</title>
-        </service>
-
-        <service uid="matrixViewer1" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="matrix1" />
-            <title>Matrix 1</title>
-        </service>
-
-        <service uid="matrixViewer2" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="matrix2" />
-            <title>Matrix 2</title>
-        </service>
-
-        <service uid="matrixViewer3" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
-            <in key="matrix" uid="matrix3" />
-            <title>Matrix 3</title>
+        <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
+            <in key="matrix" uid="matrix0" />
+            <title>Sensor Matrix  </title>
         </service>
 
         <!-- Hand Eye -->
@@ -474,6 +443,17 @@
         <connect>
             <signal>action_chessBoardSize/parametersModified</signal>
             <slot>chessboardDetector/updateChessboardSize</slot>
+        </connect>
+
+        <connect>
+            <signal>calibInfo/addedRecord</signal>
+            <slot>cameraPose/update</slot>
+        </connect>
+
+        <connect>
+            <signal>calibInfo/addedRecord</signal>
+            <signal>calibInfo/resetRecord</signal>
+            <slot>handEyeEditor/update</slot>
         </connect>
 
         <!-- *************************** End Connections *************************** -->

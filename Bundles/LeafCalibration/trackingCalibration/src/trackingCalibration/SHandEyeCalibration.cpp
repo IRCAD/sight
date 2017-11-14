@@ -76,10 +76,10 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
     SLM_WARN_IF("Invoking computeHandEye while service is STOPPED", this->isStopped() );
     ::fwData::TransformationMatrix3D::sptr matrix3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
-    ::fwData::Vector::csptr vector1 = this->getInput< ::fwData::Vector >("s_MATRIXVECTOR1_INPUT");
-    SLM_ASSERT("The second vector is null", vector1);
+    ::fwData::Vector::csptr vector1 = this->getInput< ::fwData::Vector >(s_MATRIXVECTOR1_INPUT);
+    SLM_ASSERT("The first vector is null", vector1);
 
-    ::fwData::Vector::csptr vector2 = this->getInput< ::fwData::Vector >("s_MATRIXVECTOR2_INPUT");
+    ::fwData::Vector::csptr vector2 = this->getInput< ::fwData::Vector >(s_MATRIXVECTOR2_INPUT);
     SLM_ASSERT("The second vector is null", vector2);
 
     SLM_ASSERT("The first and the second matrices vector should have the same size",
