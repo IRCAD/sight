@@ -231,7 +231,8 @@ void GridProxyGeometry::setupGrid()
 
         this->m_r2vbSource->getSubEntity(0)->getRenderOperation(this->m_gridRenderOp);
 
-        this->setOutputSettings(meshVtxData->vertexCount * 36, false, false, "VolumeBricks");
+        this->setOutputSettings(meshVtxData->vertexCount * 36, false, false);
+        this->setRenderToBufferMaterial("VolumeBricks");
     }
 
     // Set shader parameters.

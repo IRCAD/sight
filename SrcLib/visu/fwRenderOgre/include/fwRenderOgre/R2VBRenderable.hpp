@@ -8,6 +8,7 @@
 #define __FWRENDEROGRE_R2VBRENDERABLE_HPP__
 
 #include "fwRenderOgre/config.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
 
 #include <fwData/Mesh.hpp>
 
@@ -40,8 +41,7 @@ public:
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
-    FWRENDEROGRE_API void setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
-                                            const std::string& _mtlName);
+    FWRENDEROGRE_API void setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord);
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
     FWRENDEROGRE_API virtual void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
@@ -63,6 +63,13 @@ public:
 
     /// Runs the R2VB process.
     FWRENDEROGRE_API void manualUpdate();
+
+    /// Set the material used to process the geometry pass.
+    FWRENDEROGRE_API void setRenderToBufferMaterial(const std::string& _mtlName);
+
+    ::fwRenderOgre::IAdaptor::wptr m_materialAdaptor;
+
+    ::fwData::Mesh::CellTypesEnum getInputPrimitiveType() const;
 
 protected:
     /// Source object of the r2vb process
@@ -118,6 +125,20 @@ inline void R2VBRenderable::setDirty()
 inline void R2VBRenderable::manualUpdate()
 {
     m_r2vbBuffer->update(mParentSceneManager);
+}
+
+//-----------------------------------------------------------------------------
+
+inline void R2VBRenderable::setRenderToBufferMaterial(const std::string& _mtlName)
+{
+    m_r2vbBuffer->setRenderToBufferMaterialName(_mtlName);
+}
+
+//------------------------------------------------------------------------------
+
+inline ::fwData::Mesh::CellTypesEnum R2VBRenderable::getInputPrimitiveType() const
+{
+    return m_inputPrimitiveType;
 }
 
 } // namespace fwRenderOgre

@@ -11,16 +11,14 @@
 #include "visuOgreAdaptor/SMaterial.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
-
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Mesh.hpp>
 
-#include <Ogre.h>
+#include <OGRE/OgreEntity.h>
 
 namespace fwData
 {
@@ -56,7 +54,7 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b updateVisibility(bool): Sets whether the mesh is to be seen or not.
- * - \b modifyMesh(): Called when the mesh is modified.
+ * - \b update(): Called when the mesh is modified.
  * - \b modifyColors(): Called when the point colors are modified.
  * - \b modifyTexCoords(): Called when the texture coordinates are modified.
  * - \b modifyVertices(): Called when the vertices are modified.
@@ -133,39 +131,19 @@ public:
 
 private:
 
-    enum BufferBinding
-    {
-        POSITION_NORMAL = 0,
-        COLOUR          = 1,
-        TEXCOORD        = 2,
-        NUM_BINDINGS
-    };
-
     /// Configures the adaptor
     void configuring() override;
     /// Manually creates a Mesh in the Default Ogre Ressource group
     void starting() override;
     /// Deletes the mesh after unregistering the service, and shutting connections.
     void stopping() override;
-    /// Checks if the fwData::Mesh has changed, and updates it if it has.
+    /// Called when the mesh is modified
     void updating() override;
 
     ::Ogre::Entity* newEntity();
 
-    /// Bind a vertex layer
-    void bindLayer(const ::fwData::Mesh::csptr& _mesh, BufferBinding _binding, ::Ogre::VertexElementSemantic _semantic,
-                   ::Ogre::VertexElementType _type);
-
     /// Updates the Mesh, checks if color, number of vertices have changed, and updates them.
     void updateMesh(const ::fwData::Mesh::sptr& mesh);
-    /// Updates the vertices position
-    void updateVertices(const ::fwData::Mesh::csptr& mesh);
-    /// Updates the vertices colors.
-    void updateColors(const ::fwData::Mesh::csptr& mesh);
-    /// Updates the vertices texture coordinates.
-    void updateTexCoords(const ::fwData::Mesh::csptr& mesh);
-    /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
-    void clearMesh();
     /// Instantiates a new material adaptor
     ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
     /// Associates a new SMaterial to the managed SMesh.
@@ -185,10 +163,8 @@ private:
      * @name Slots methods
      * @{
      */
-    /// Slot: called when the mesh is modified
     /// Slot: called when the vertices are modified
     void modifyVertices();
-    void modifyMesh();
     /// Slot: called when the point colors are modified
     void modifyPointColors();
     /// Slot: called when the texture coordinates are modified
@@ -202,8 +178,6 @@ private:
 
     /// Node in the scene graph
     ::Ogre::Entity* m_entity;
-    /// Actual mesh data
-    ::Ogre::MeshPtr m_ogreMesh;
 
     /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
@@ -213,41 +187,10 @@ private:
     ::fwData::Material::sptr m_material;
     /// Attached Material's name
     std::string m_materialTemplateName;
-    /// Texture used to store per-primitive color
-    ::Ogre::TexturePtr m_perPrimitiveColorTexture;
-    /// Name of the texture used to store per-primitive color
-    std::string m_perPrimitiveColorTextureName;
 
-    /// Number of primitives types that are handled by ::fwData::Mesh
-    static const unsigned int s_numPrimitiveTypes = ::fwData::Mesh::TETRA + 1;
-
-    /// Pointers on submeshes needed for reallocation check.
-    /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
-    ::Ogre::SubMesh* m_subMeshes[s_numPrimitiveTypes];
-
-    /// Maximum size of a texture (TODO: get this from hardware instead)
-    static const unsigned int s_maxTextureSize = 2048;
-
-    /// Name of the mesh in Ogre
-    std::string m_meshName;
     /// Attached texture adaptor UID
     std::string m_textureName;
 
-    /// Binding for each layer
-    unsigned short m_binding[NUM_BINDINGS];
-
-    /// Defines if there is a normal layer
-    bool m_hasNormal;
-    /// Defines if there is a vertex color layer
-    bool m_hasVertexColor;
-    /// Defines if there is a primitive color layer
-    bool m_hasPrimitiveColor;
-    /// defines if the mesh changes dynamically, defined in m_configuration
-    bool m_isDynamic;
-    /// defines if the vertices change dynamically, defined in m_configuration
-    bool m_isDynamicVertices;
-    /// defines if the mesh has UV coordinates, defined in m_configuration
-    bool m_hasUV;
     /// Indicates if the mesh adaptor is managed by a reconstruction adaptor
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
@@ -259,14 +202,13 @@ private:
     /// The configured shading mode
     std::string m_shadingMode;
 
-    /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
-    ::Ogre::Entity* m_r2vbEntity;
-    /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
-    ::Ogre::MeshPtr m_r2vbMesh;
-    /// Name of the r2vb mesh
-    std::string m_r2vbMeshName;
-    /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::map< ::fwData::Mesh::CellTypes, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
+    /// defines if the mesh changes dynamically, defined in m_configuration
+    bool m_isDynamic { false };
+    /// defines if the vertices change dynamically, defined in m_configuration
+    bool m_isDynamicVertices { false };
+
+    ::fwRenderOgre::Mesh::sptr m_meshGeometry;
+
     /// SMaterial adaptors attached to the r2vb objects
     std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 };
@@ -311,7 +253,7 @@ inline ::Ogre::Entity* SMesh::getEntity() const
 
 inline bool SMesh::getVisibility() const
 {
-    return m_entity ? m_entity->getVisible() : false;
+    return m_entity ? m_entity->getVisible() : m_isVisible;
 }
 
 //------------------------------------------------------------------------------
@@ -319,6 +261,10 @@ inline bool SMesh::getVisibility() const
 inline void SMesh::setDynamic(bool _isDynamic)
 {
     m_isDynamic = _isDynamic;
+    if(m_meshGeometry)
+    {
+        m_meshGeometry->setDynamic(_isDynamic);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -326,6 +272,10 @@ inline void SMesh::setDynamic(bool _isDynamic)
 inline void SMesh::setDynamicVertices(bool _isDynamic)
 {
     m_isDynamicVertices = _isDynamic;
+    if(m_meshGeometry)
+    {
+        m_meshGeometry->setDynamicVertices(_isDynamic);
+    }
 }
 
 //-----------------------------------------------------------------------------

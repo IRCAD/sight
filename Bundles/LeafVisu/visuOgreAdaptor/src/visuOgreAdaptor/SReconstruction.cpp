@@ -13,6 +13,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwRenderOgre/Material.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -30,7 +32,7 @@ static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 
 SReconstruction::SReconstruction() noexcept :
     m_autoResetCamera(true),
-    m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
+    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_isDynamic(false),
     m_isDynamicVertices(false)
 {

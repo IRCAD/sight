@@ -23,9 +23,9 @@ flat layout(location = 2) in vec4 inColor;
 layout(location = 2) in vec4 inColor;
 #   endif // FLAT
 
+#ifdef DIFFUSE_TEX
 layout(location = 3) in vec2 inTexCoord;
 
-#ifdef DIFFUSE_TEX
 uniform sampler2D u_texture;
 #endif // DIFFUSE_TEX
 

@@ -18,10 +18,12 @@
 #include <fwData/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/Material.hpp>
+#include <fwRenderOgre/Mesh.hpp>
+#include <fwRenderOgre/R2VBRenderable.hpp>
 
 #include <boost/shared_ptr.hpp>
 
-#include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 
@@ -83,9 +85,6 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_TEXTURE_SLOT;
     /** @} */
 
-    /// Name of the default used as a base for the instance created by this adaptor
-    VISUOGREADAPTOR_API static const std::string DEFAULT_MATERIAL_TEMPLATE_NAME;
-
     /// Constructor
     VISUOGREADAPTOR_API SMaterial() noexcept;
 
@@ -107,16 +106,7 @@ public:
     /// Set material template name
     void setMaterialTemplateName(const std::string& materialName);
 
-    bool getHasMeshNormal() const;
-    void setHasMeshNormal(bool hasMeshNormal);
-
-    bool getHasVertexColor() const;
-    void setHasVertexColor(bool hasMeshNormal);
-
-    bool getHasPrimitiveColor() const;
-    void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
-
-    void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
+    void setMeshAttributes(const ::fwRenderOgre::Mesh::sptr& _mesh);
 
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
@@ -124,7 +114,7 @@ public:
     const std::string& getShadingMode() const;
     void setShadingMode(const std::string& _shadingMode);
 
-    void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
+    void setR2VBObject(::fwRenderOgre::R2VBRenderable* _r2vbObject);
 
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -163,34 +153,9 @@ private:
     ::fwData::Object::sptr createObjectFromShaderParameter(::Ogre::GpuConstantType type,
                                                            std::string paramName);
 
-    /// Loads material parameters from ressources
-    void loadMaterialParameters();
+    /// create shader parameters adaptors from ressources
+    void createShaderParameterAdaptors();
 
-    /// Updates material options mode (standard, point normals or cells normals)
-    void updateOptionsMode( int optionMode );
-
-    /// Updates material polygon mode (surface, point or wireframe)
-    void updatePolygonMode( int polygonMode );
-
-    /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
-    void updateShadingMode( int shadingMode );
-
-    /// Update material color in fixed function pipeline
-    void updateRGBAMode( ::fwData::Material::sptr fw_material );
-
-    /// Generates a normal length according to the mesh's bounding box
-    ::Ogre::Real computeNormalLength();
-
-    /// Remove a rendering pass in all techniques on the current material
-    void removePass(const std::string& _name);
-
-    /// Remove all techniques related to order independent transparency support
-    /// Each time we have to modify the shader programs, we clean everything
-    /// and we let the MaterialMgrListener generate the techniques from the basic techniques defined in the .material
-    void cleanTransparencyTechniques();
-
-    /// Associated Ogre material
-    ::Ogre::MaterialPtr m_material;
     /// Material name. It is auto generated.
     std::string m_materialName;
 
@@ -202,26 +167,6 @@ private:
     ::visuOgreAdaptor::STexture::sptr m_texAdaptor;
     std::string m_textureName;
 
-    /// Defines if the associated mesh has a normal layer
-    bool m_hasMeshNormal;
-
-    /// Defines if the associated mesh has a a per vertex color layer
-    bool m_hasVertexColor;
-
-    /// Defines if the associated mesh has a a per primitive color layer
-    bool m_hasPrimitiveColor;
-
-    /// Primitive type of the associated mesh
-    ::fwData::Mesh::CellTypesEnum m_primitiveType;
-
-    /// Name of the texture used to store per-primitive color
-    std::string m_perPrimitiveColorTextureName;
-
-    /// Bounding box of the mesh
-    ::Ogre::AxisAlignedBox m_meshBoundingBox;
-    /// Factor used to ease the normals length
-    ::Ogre::Real m_normalLengthFactor;
-
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Signal/Slot connections with texture adaptor
@@ -232,66 +177,21 @@ private:
 
     /// Current number of lights in the scene.
     int m_lightsNumber;
+
+    ::fwRenderOgre::Material::uptr m_materialFw;
+    ::fwRenderOgre::Mesh::wptr m_meshFw;
+    ::fwRenderOgre::R2VBRenderable* m_r2vbObject { nullptr };
 };
 
 //------------------------------------------------------------------------------
 // Inline functions
+//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
-inline ::Ogre::MaterialPtr SMaterial::getMaterial()
+inline void SMaterial::setMeshAttributes(const fwRenderOgre::Mesh::sptr& _mesh)
 {
-    return m_material;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool SMaterial::getHasMeshNormal() const
-{
-    return m_hasMeshNormal;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMaterial::setHasMeshNormal(bool _hasMeshNormal)
-{
-    m_hasMeshNormal = _hasMeshNormal;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool SMaterial::getHasVertexColor() const
-{
-    return m_hasVertexColor;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMaterial::setHasVertexColor(bool _hasVertexColor)
-{
-    m_hasVertexColor = _hasVertexColor;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool SMaterial::getHasPrimitiveColor() const
-{
-    return m_hasPrimitiveColor;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMaterial::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName)
-{
-    m_hasPrimitiveColor            = _hasPrimitiveColor;
-    m_perPrimitiveColorTextureName = _textureName;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMaterial::setPrimitiveType(::fwData::Mesh::CellTypesEnum _type)
-{
-    m_primitiveType = _type;
+    m_meshFw = _mesh;
 }
 
 //------------------------------------------------------------------------------
@@ -338,9 +238,9 @@ inline void SMaterial::setShadingMode(const std::string& _shadingMode)
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox& _bbox)
+inline void SMaterial::setR2VBObject(::fwRenderOgre::R2VBRenderable* _r2vbObject)
 {
-    m_meshBoundingBox = _bbox;
+    m_r2vbObject = _r2vbObject;
 }
 
 //------------------------------------------------------------------------------

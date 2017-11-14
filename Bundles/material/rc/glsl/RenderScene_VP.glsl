@@ -12,20 +12,19 @@ uniform mat4 u_proj;
 in vec4 position;
 in vec3 normal;
 
-#ifdef DIFFUSE_TEX
-in vec2 uv0;
-#endif // DIFFUSE_TEX
-
 #ifdef VERTEX_COLOR
 in vec4 colour;
 #endif // VERTEX_COLOR
 
+#ifdef DIFFUSE_TEX
+in vec2 uv0;
+#endif // DIFFUSE_TEX
 
 #ifdef R2VB
 
 out vec3 oNormal;
 #   ifdef VERTEX_COLOR
-out vec3 oColor;
+out vec4 oColor;
 #   endif // VERTEX_COLOR
 #   ifdef DIFFUSE_TEX
 out vec2 oTexCoord;
