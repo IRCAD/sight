@@ -34,7 +34,7 @@ class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::gui::editor::IEdito
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShaderParameterEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SShaderParameterEditor)(::gui::editor::IEditor) )
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;

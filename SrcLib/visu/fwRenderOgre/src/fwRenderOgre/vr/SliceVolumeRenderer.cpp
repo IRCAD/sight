@@ -38,12 +38,10 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
 
     for(const std::string& mtlName : vrMaterials)
     {
-        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
-        ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
-
-        while( techIt.hasMoreElements())
+        ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
+        const ::Ogre::Material::Techniques techniques = volumeMtl->getTechniques();
+        for(const auto tech : techniques)
         {
-            ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
             if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -180,11 +178,11 @@ void SliceVolumeRenderer::updateAllSlices()
     // compute all slices
     for(int sliceNumber = m_nbSlices - 1; sliceNumber > 0; --sliceNumber)
     {
-        Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, (unsigned)closestVtxIndex);
+        Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, static_cast<unsigned>(closestVtxIndex));
 
         if(intersections.size() >= 3)
         {
-            updateSlice(intersections, sliceNumber);
+            updateSlice(intersections, static_cast<unsigned>(sliceNumber));
         }
 
         // set next plane
@@ -237,7 +235,7 @@ bool SliceVolumeRenderer::planeEdgeIntersection(const ::Ogre::Vector3& _planeNor
     const ::Ogre::Vector3 edgePoint0 = m_clippedImagePositions[_edgeVertexIndex0];
     const ::Ogre::Vector3 edgePoint1 = m_clippedImagePositions[_edgeVertexIndex1];
 
-    if(_planeNormal.dotProduct(edgePoint1 - edgePoint0) != 0) // plane and edge are not parallel
+    if(static_cast<int>(_planeNormal.dotProduct(edgePoint1 - edgePoint0)) != 0) // plane and edge are not parallel
     {
         // intersectPoint represents the intersection point r on the parametric line described by this equation:
         // S(r) = _egdePoint0 + r * (_edgePoint1 - _edgePoint0)

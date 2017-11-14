@@ -67,15 +67,21 @@ void SLightSelector::starting()
         this->getContainer());
 
     m_layersBox       = new QComboBox();
-    m_lightsState     = new QCheckBox("Switch lights on/off");
     m_lightsList      = new QListWidget();
     m_addLightBtn     = new QPushButton("Add light");
     m_removeLightBtn  = new QPushButton("Remove light");
     m_ambientColorBtn = new QPushButton("Scene ambient color");
 
+    QHBoxLayout* layoutButton = new QHBoxLayout;
+    m_checkAllButton = new QPushButton(tr("Check all"));
+    layoutButton->addWidget(m_checkAllButton, 0);
+
+    m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+    layoutButton->addWidget(m_unCheckAllButton, 0);
+
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
-    layout->addWidget(m_lightsState);
+    layout->addLayout(layoutButton);
     layout->addWidget(m_lightsList);
 
     QHBoxLayout* addRemoveLayout = new QHBoxLayout();
@@ -94,8 +100,6 @@ void SLightSelector::starting()
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
-    QObject::connect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
-
     QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
                      this, SLOT(onSelectedLightItem(QListWidgetItem*, QListWidgetItem*)));
     QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
@@ -106,6 +110,8 @@ void SLightSelector::starting()
 
     QObject::connect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 
+    QObject::connect(m_checkAllButton, SIGNAL(clicked()), this, SLOT(onCheckAllCheckBox()));
+    QObject::connect(m_unCheckAllButton, SIGNAL(clicked()), this, SLOT(onUnCheckAllCheckBox()));
 }
 
 //------------------------------------------------------------------------------
@@ -148,17 +154,6 @@ void SLightSelector::onSelectedLayerItem(int _index)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onChangedLightsState(int _state)
-{
-    for(int i(0); i < m_lightsList->count(); ++i)
-    {
-        QListWidgetItem* item = m_lightsList->item(i);
-        item->setCheckState(static_cast< ::Qt::CheckState >(_state));
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous)
 {
     if(_item)
@@ -184,7 +179,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onAddLight(bool _checked)
+void SLightSelector::onAddLight(bool /*_checked*/)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -212,7 +207,7 @@ void SLightSelector::onAddLight(bool _checked)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onRemoveLight(bool _checked)
+void SLightSelector::onRemoveLight(bool /*_checked*/)
 {
     ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
 
@@ -225,13 +220,17 @@ void SLightSelector::onRemoveLight(bool _checked)
         this->updateLightsList();
 
         m_removeLightBtn->setEnabled(false);
+
+        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
+        sig->asyncEmit(nullptr);
+
         currentLayer->requestRender();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onEditAmbientColor(bool _checked)
+void SLightSelector::onEditAmbientColor(bool /*_checked*/)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
@@ -370,8 +369,33 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-NewLightDialog::NewLightDialog(QWidget* parent) :
-    QDialog(parent)
+void SLightSelector::onCheckAllCheckBox()
+{
+    this->onCheckAllBoxes(true);
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::onUnCheckAllCheckBox()
+{
+    this->onCheckAllBoxes(false);
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::onCheckAllBoxes( bool _visible )
+{
+    for( int i = 0; i < m_lightsList->count(); ++i )
+    {
+        auto item = m_lightsList->item( i );
+        item->setCheckState(_visible ? ::Qt::Checked : ::Qt::Unchecked );
+    }
+}
+
+//------------------------------------------------------------------------------
+
+NewLightDialog::NewLightDialog(QWidget* _parent) :
+    QDialog(_parent)
 {
     m_lightNameLbl  = new QLabel("Name :", this);
     m_lightNameEdit = new QLineEdit(this);

@@ -108,8 +108,6 @@ std::string Shading::getPermutation(::fwData::Material::ShadingType _mode, bool 
         case ::fwData::Material::PHONG:
             suffix = s_PIXELLIGHTING;
             break;
-        default:
-            SLM_ERROR("Unknown shading mode. ");
     }
 
     if(_vertexColor)
@@ -516,9 +514,9 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
     auto resource = mgr.getResourceByName(_name, "Materials");
-    if( !resource.isNull() )
+    if(resource)
     {
-        return resource.dynamicCast< ::Ogre::GpuProgram>();
+        return ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(resource);
     }
 
     // Create shader object
@@ -528,7 +526,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     newProgram->setSourceFile(_sourceFileName);
 
     auto srcResource = mgr.getResourceByName(_baseName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    auto srcProgram  = srcResource.dynamicCast< ::Ogre::GpuProgram>();
+    auto srcProgram  = ::Ogre::dynamic_pointer_cast< ::Ogre::GpuProgram>(srcResource);
     ::Ogre::String preprocessorDefines = srcProgram->getParameter("preprocessor_defines");
 
     for(const auto& params : _parameters)

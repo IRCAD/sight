@@ -1,5 +1,10 @@
 fwLoadProperties()
 
+# Treat warnings as errors
+if ( CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    target_compile_options(${FWPROJECT_NAME} PRIVATE "-Werror")
+endif ()
+
 add_definitions("-DQT_NO_KEYWORDS")
 
 if(UNIX AND NOT APPLE)
@@ -8,20 +13,16 @@ else()
     find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 endif()
 
-#find_package(OIS REQUIRED)
-
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Gui_INCLUDE_DIRS}
     ${Qt5Widgets_INCLUDE_DIRS}
-#    ${OIS_INCLUDE_DIRS}
 )
 
 fwLink(
     ${Qt5Core_LIBRARIES}
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
-#    ${OIS_LIBRARIES}
 )
 
 if(UNIX AND NOT APPLE)

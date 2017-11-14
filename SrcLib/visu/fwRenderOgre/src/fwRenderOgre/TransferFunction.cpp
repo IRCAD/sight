@@ -37,7 +37,7 @@ TransferFunction::~TransferFunction()
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
     m_texture = ::Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture");
-    if(m_texture.isNull())
+    if(!m_texture)
     {
         m_texture = ::Ogre::TextureManager::getSingleton().createManual(
             _parentId + "_tfTexture",                                   // name
@@ -55,7 +55,7 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 void TransferFunction::removeTexture()
 {
     ::Ogre::TextureManager::getSingleton().remove(m_texture->getHandle());
-    m_texture.setNull();
+    m_texture.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
 
     // If the transfer function is clamped, we have to force the extremity colors to black
     bool isTFClamped = _tf->getIsClamped();
-    ::fwData::TransferFunction::TFColor black(0.f, 0.f, 0.f, 1.f);
+    ::fwData::TransferFunction::TFColor black(0., 0., 0., 1.);
 
     // We need first and last colors defined in the TF in order to fill the uninterpolated ranges (left and right)
     const ::fwData::TransferFunction::TFColor lBoundaryColor = isTFClamped ? black : tfData.cbegin()->second;

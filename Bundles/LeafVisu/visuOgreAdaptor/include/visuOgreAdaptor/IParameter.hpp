@@ -22,7 +22,7 @@ class VISUOGREADAPTOR_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (IParameter)(::fwRenderOgre::IAdaptor) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (IParameter)(::fwRenderOgre::IAdaptor) )
 
     /**
      * @name Slots API

@@ -32,7 +32,7 @@ namespace visuOgreQt
 //-----------------------------------------------------------------------------
 
 RenderWindowInteractorManager::RenderWindowInteractorManager(
-    ::fwRenderOgre::IRenderWindowInteractorManager::Key key )
+    ::fwRenderOgre::IRenderWindowInteractorManager::Key /*key*/ )
 {
 }
 

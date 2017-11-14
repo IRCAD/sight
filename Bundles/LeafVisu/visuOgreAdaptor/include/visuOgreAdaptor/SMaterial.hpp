@@ -69,7 +69,7 @@ class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderOgre::IAdaptor) )
 
     /**
      * @name Slots API

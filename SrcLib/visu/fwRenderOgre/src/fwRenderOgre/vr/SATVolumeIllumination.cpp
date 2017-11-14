@@ -47,7 +47,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialRender(::Ogre::uint32 /*pass_id*/, ::Ogre::MaterialPtr& mat)
     {
         ::Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
@@ -57,7 +57,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void notifyMaterialSetup(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialSetup(::Ogre::uint32 /*pass_id*/, ::Ogre::MaterialPtr& mat)
     {
         ::Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
@@ -130,7 +130,7 @@ void SATVolumeIllumination::updateVolIllum()
     // Do this for now but at the end we should use our own texture
     m_illuminationVolume = m_sat.getSpareTexture();
 
-    const int depth = m_illuminationVolume->getDepth();
+    const int depth = static_cast<int>(m_illuminationVolume->getDepth());
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
@@ -151,8 +151,9 @@ void SATVolumeIllumination::updateVolIllum()
     // Update illumination volume slice by slice.
     for(m_currentSliceIndex = 0; m_currentSliceIndex < depth; ++m_currentSliceIndex)
     {
-        ::Ogre::RenderTarget* rt = m_illuminationVolume->getBuffer()->getRenderTarget(m_currentSliceIndex);
-        ::Ogre::Viewport* vp     = rt->getViewport(0);
+        ::Ogre::RenderTarget* rt =
+            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(m_currentSliceIndex));
+        ::Ogre::Viewport* vp = rt->getViewport(0);
 
         // Add compositor.
         compositorManager.addCompositor(vp, "VolumeIllumination");
@@ -207,12 +208,13 @@ void SATVolumeIllumination::updateTexture()
         m_dummyCamera = m_sceneManager->createCamera(m_parentId + "_VolumeIllumination_DummyCamera");
     }
 
-    const int depth = satTexture->getDepth();
+    const int depth = static_cast<int>(satTexture->getDepth());
     for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
     {
         // Init source buffer
-        ::Ogre::RenderTarget* renderTarget = m_illuminationVolume->getBuffer()->getRenderTarget(sliceIndex);
-        ::Ogre::Viewport* vp               = renderTarget->addViewport(m_dummyCamera);
+        ::Ogre::RenderTarget* renderTarget =
+            m_illuminationVolume->getBuffer()->getRenderTarget(static_cast<size_t>(sliceIndex));
+        ::Ogre::Viewport* vp = renderTarget->addViewport(m_dummyCamera);
 
         vp->setOverlaysEnabled(false);
     }

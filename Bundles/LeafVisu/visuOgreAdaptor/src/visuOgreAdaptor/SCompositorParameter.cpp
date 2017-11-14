@@ -34,7 +34,7 @@ fwServicesRegisterMacro( ::visuOgreAdaptor::IParameter, ::visuOgreAdaptor::SComp
 class CompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
-    CompositorListener(::Ogre::Viewport* _vp, SCompositorParameter::sptr _adaptor) :
+    CompositorListener(::Ogre::Viewport* /*_vp*/, SCompositorParameter::sptr _adaptor) :
         m_adaptor(_adaptor)
     {
     }
@@ -44,7 +44,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
+    void notifyMaterialRender(::Ogre::uint32 /*pass_id*/, ::Ogre::MaterialPtr& mat)
     {
         auto adaptor = m_adaptor.lock();
         SLM_ASSERT("Adaptor has expired.", adaptor);

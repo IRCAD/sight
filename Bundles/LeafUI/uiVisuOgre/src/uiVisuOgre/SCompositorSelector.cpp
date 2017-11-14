@@ -182,7 +182,7 @@ void SCompositorSelector::updateCompositorList()
         ::Ogre::ResourcePtr compositor = iter.getNext();
         if (compositor->getGroup() == ::material::s_COMPOSITOR_RESOURCEGROUP_NAME)
         {
-            QString compositorName = compositor.getPointer()->getName().c_str();
+            QString compositorName = compositor.get()->getName().c_str();
             m_currentLayer.lock()->addAvailableCompositor(compositorName.toStdString());
 
             QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);

@@ -74,7 +74,7 @@ class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) )
 
     FWRENDEROGRE_API SRender() noexcept;
     FWRENDEROGRE_API virtual ~SRender() noexcept;

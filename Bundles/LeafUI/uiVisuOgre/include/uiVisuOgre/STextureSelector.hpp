@@ -32,7 +32,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STextureSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (STextureSelector)(::gui::editor::IEditor) )
 
     UIVISUOGRE_API STextureSelector() noexcept;
     UIVISUOGRE_API virtual ~STextureSelector() noexcept;

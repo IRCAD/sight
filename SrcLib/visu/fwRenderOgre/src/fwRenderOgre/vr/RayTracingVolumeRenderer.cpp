@@ -174,7 +174,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     // This can happen when reinstancing this class (e.g. switching 3D mode)
     ::Ogre::GpuProgramManager::SharedParametersMap spMap =
         ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
-    if(spMap["RTVParams"].isNull())
+    if(!spMap["RTVParams"])
     {
         m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
     }
@@ -503,7 +503,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     {
         ::Ogre::ResourcePtr matResource =
             mm.getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-        if(!matResource.isNull())
+        if(matResource)
         {
             mm.remove(matResource);
             // Our manual object still references the material and uses the material name to know if it should modify

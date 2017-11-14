@@ -62,7 +62,7 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, i
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::wheelEvent(int delta, int x, int y)
+void TrackballInteractor::wheelEvent(int delta, int /*x*/, int /*y*/)
 {
     // The zoom factor is reduced when coming closer and increased when going away
     const float fNewZoom = (delta > 0) ? m_fZoom * 0.85f : m_fZoom / 0.85f;
@@ -78,9 +78,7 @@ void TrackballInteractor::wheelEvent(int delta, int x, int y)
     // Last, translate the camera
     ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-    ::Ogre::Vector3 direction  = camera->getDirection();
-    direction                  = direction * z;
-    camNode->translate( direction, ::Ogre::Node::TS_LOCAL );
+    camNode->translate( ::Ogre::Vector3(0, 0, -1)*z, ::Ogre::Node::TS_LOCAL );
 }
 
 // ----------------------------------------------------------------------------

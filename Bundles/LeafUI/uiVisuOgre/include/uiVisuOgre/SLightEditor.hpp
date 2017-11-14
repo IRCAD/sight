@@ -41,7 +41,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLightEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SLightEditor)(::gui::editor::IEditor) )
 
     /**
      * @name Slots API

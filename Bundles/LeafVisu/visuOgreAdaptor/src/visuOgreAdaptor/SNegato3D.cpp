@@ -133,10 +133,10 @@ void SNegato3D::starting()
     this->createTransferFunction(image);
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-        this->getID() + "_Texture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true).first.dynamicCast< ::Ogre::Texture>();
+    m_3DOgreTexture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture >(
+        ::Ogre::TextureManager::getSingleton().createOrRetrieve(this->getID() + "_Texture",
+                                                                ::Ogre::ResourceGroupManager::
+                                                                DEFAULT_RESOURCE_GROUP_NAME, true).first );
 
     // TF texture initialization
     m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
@@ -189,7 +189,7 @@ void SNegato3D::stopping()
     delete m_planes[1];
     delete m_planes[2];
 
-    m_3DOgreTexture.setNull();
+    m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
     this->requestRender();
@@ -265,7 +265,7 @@ void SNegato3D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato3D::changeSliceType(int _from, int _to)
+void SNegato3D::changeSliceType(int /*_from*/, int _to)
 {
     // We have to update the active plane
     m_activePlane = m_planes[_to];

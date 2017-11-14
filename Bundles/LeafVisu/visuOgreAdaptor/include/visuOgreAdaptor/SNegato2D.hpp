@@ -55,7 +55,7 @@ public:
 
     typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
-    fwCoreServiceClassDefinitionsMacro( (SNegato2D)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegato2D)(::fwRenderOgre::IAdaptor) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SNegato2D() noexcept;
