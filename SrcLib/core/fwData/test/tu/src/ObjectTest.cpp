@@ -51,16 +51,9 @@ void ObjectTest::fieldTest()
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
 
-    ::fwData::Object::FieldMapType localFields       = obj->getFields();
     ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields();
-    localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2, fieldObj2));
 
-    CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), nullobj);
-    CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID3), nullobj);
-
-    obj->updateFields(localFields);
+    obj->setField(FIELD_ID2, fieldObj2);
     CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(2));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID2), fieldObj2);

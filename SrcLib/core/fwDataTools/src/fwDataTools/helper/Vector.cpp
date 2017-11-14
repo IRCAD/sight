@@ -28,6 +28,10 @@ Vector::Vector( ::fwData::Vector::wptr _vector ) :
 
 Vector::~Vector()
 {
+    if(!m_addedObjects.empty() || !m_removedObjects.empty())
+    {
+        notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -90,6 +94,9 @@ void Vector::notify()
     }
     OSLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
                  m_addedObjects.empty() && m_removedObjects.empty());
+
+    m_removedObjects.clear();
+    m_addedObjects.clear();
 }
 
 //-----------------------------------------------------------------------------

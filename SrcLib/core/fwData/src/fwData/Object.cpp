@@ -108,13 +108,6 @@ void Object::removeField( const FieldNameType& name )
     }
 }
 
-//------------------------------------------------------------------------------
-
-void Object::updateFields( const FieldMapType& fieldMap )
-{
-    m_fields.insert(fieldMap.begin(), fieldMap.end());
-}
-
 //-----------------------------------------------------------------------------
 
 void Object::fieldShallowCopy(const ::fwData::Object::csptr& source)

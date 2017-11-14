@@ -27,7 +27,7 @@ public:
     /// Constructor. Initialize parameters.
     FWDATATOOLS_API Field( ::fwData::Object::sptr object );
 
-    /// Destructor. Do nothing.
+    /// Destructor. Call notify if changes has been made.
     FWDATATOOLS_API ~Field();
 
     /**
@@ -50,11 +50,6 @@ public:
      * @brief Replace the field map content.
      */
     FWDATATOOLS_API void setFields( const ::fwData::Object::FieldMapType& newFields );
-
-    /**
-     * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
-     */
-    FWDATATOOLS_API void updateFields( const ::fwData::Object::FieldMapType& fieldMap );
 
     /**
      * @brief Removes field with specified name.
@@ -109,7 +104,7 @@ public:
      */
     FWDATATOOLS_API void clear();
 
-    /// Send the built message
+    /// Send the built message and clear the internal maps
     FWDATATOOLS_API void notify();
 
 protected:

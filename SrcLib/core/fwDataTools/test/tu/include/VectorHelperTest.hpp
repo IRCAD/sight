@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_UT_FIELDHELPERTEST_HPP__
-#define __FWDATATOOLS_UT_FIELDHELPERTEST_HPP__
+#ifndef __FWDATATOOLS_UT_VECTORHELPERTEST_HPP__
+#define __FWDATATOOLS_UT_VECTORHELPERTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -15,11 +15,11 @@ namespace ut
 {
 
 /**
- * @brief   Test ::fwDataTools::helper::Field methods.
+ * @brief   Test ::fwDataTools::helper::Vector methods.
  */
-class FieldHelperTest : public CPPUNIT_NS::TestFixture
+class VectorHelperTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( FieldHelperTest );
+CPPUNIT_TEST_SUITE( VectorHelperTest );
 CPPUNIT_TEST( testHelper );
 CPPUNIT_TEST_SUITE_END();
 
@@ -34,4 +34,4 @@ public:
 } //namespace ut
 } //namespace fwDataTools
 
-#endif // __FWDATATOOLS_UT_FIELDHELPERTEST_HPP__
+#endif // __FWDATATOOLS_UT_VECTORHELPERTEST_HPP__
