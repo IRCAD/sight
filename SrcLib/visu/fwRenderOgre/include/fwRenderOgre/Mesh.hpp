@@ -11,6 +11,7 @@
 #include "fwRenderOgre/Material.hpp"
 
 #include <fwData/Mesh.hpp>
+#include <fwData/PointList.hpp>
 
 #include <OGRE/OgreMesh.h>
 
@@ -37,7 +38,7 @@ public:
     };
 
     /// Constructor
-    FWRENDEROGRE_API Mesh(const std::string _name);
+    FWRENDEROGRE_API Mesh(const std::string& _name);
 
     /// Destructor
     FWRENDEROGRE_API ~Mesh();
@@ -53,20 +54,24 @@ public:
 
     FWRENDEROGRE_API void setVisible(bool _visible);
     FWRENDEROGRE_API void updateMesh(const ::fwData::Mesh::sptr& _mesh);
+    FWRENDEROGRE_API void updateMesh(const ::fwData::PointList::csptr& _pointList);
     FWRENDEROGRE_API std::vector<R2VBRenderable*> updateR2VB(const ::fwData::Mesh::sptr& _mesh,
                                                              ::Ogre::SceneManager& _sceneMgr,
                                                              const std::string& _materialName, bool _hasTexture);
 
     /// Updates the vertices position
-    FWRENDEROGRE_API void updateVertices(const ::fwData::Mesh::csptr& mesh);
+    FWRENDEROGRE_API void updateVertices(const ::fwData::Mesh::csptr& _mesh);
+    /// Updates the vertices position
+    FWRENDEROGRE_API void updateVertices(const ::fwData::PointList::csptr& mesh);
     /// Updates the vertices colors.
-    FWRENDEROGRE_API void updateColors(const ::fwData::Mesh::csptr& mesh);
+    FWRENDEROGRE_API void updateColors(const ::fwData::Mesh::csptr& _mesh);
     /// Updates the vertices texture coordinates.
-    FWRENDEROGRE_API void updateTexCoords(const ::fwData::Mesh::csptr& mesh);
+    FWRENDEROGRE_API void updateTexCoords(const ::fwData::Mesh::csptr& _mesh);
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
     FWRENDEROGRE_API void clearMesh(::Ogre::SceneManager& _sceneMgr);
 
-    FWRENDEROGRE_API void updateMaterial(const ::fwRenderOgre::Material::uptr& _material, bool _isR2VB);
+    FWRENDEROGRE_API void updateMaterial(const ::fwRenderOgre::Material::uptr& _material, bool _isR2VB,
+                                         const ::Ogre::AxisAlignedBox& _bbox);
 
     FWRENDEROGRE_API bool hasColorLayerChanged(const ::fwData::Mesh::csptr& _mesh);
 
@@ -90,7 +95,7 @@ private:
 
     /// Pointers on submeshes needed for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
-    ::Ogre::SubMesh* m_subMeshes[s_numPrimitiveTypes];
+    std::array< ::Ogre::SubMesh*, s_numPrimitiveTypes> m_subMeshes;
 
     /// Texture used to store per-primitive color
     ::Ogre::TexturePtr m_perPrimitiveColorTexture;

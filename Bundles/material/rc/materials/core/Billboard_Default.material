@@ -1,0 +1,103 @@
+
+//---------------------------------------------------------------------------
+
+vertex_program Default/Billboard_VP glsl
+{
+    source Billboard_Default_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldView worldview_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/Billboard_GP glsl
+{
+    source Billboard_Default_GP.glsl
+    default_params
+    {
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_proj projection_matrix
+        param_named u_sceneSize float 10.
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/Billboard_Depth_GP glsl
+{
+    source Billboard_Default_GP.glsl
+    preprocessor_defines DEPTH=1
+}
+
+
+//---------------------------------------------------------------------------
+
+fragment_program Billboard_FP glsl
+{
+    source Billboard_Default_FP.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Default/Billboard_FP glsl
+{
+    source Main_FP.glsl
+    attach Billboard_FP
+    default_params
+    {
+        param_named u_texture int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material Billboard_Default
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref Default/Billboard_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_GP
+            {
+            }
+
+            fragment_program_ref Default/Billboard_FP
+            {
+            }
+
+            texture_unit sprite
+            {
+                texture sphere.png 2d
+                tex_coord_set 0
+                filtering bilinear
+            }
+
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Default/Billboard_VP
+            {
+            }
+
+            geometry_program_ref Default/Billboard_Depth_GP
+            {
+            }
+        }
+    }
+
+}

@@ -82,17 +82,17 @@
             <service uid="tabView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
-                        <view caption="VTK" selected="no" />
-                        <view caption="Ogre" selected="no" />
+                        <view caption="Ogre" selected="yes" />
                         <view caption="2D Negato Ogre" selected="no" />
-                        <view caption="Ogre VR" selected="yes" />
+                        <view caption="Ogre VR" selected="no" />
+                        <view caption="VTK" selected="no" />
                     </layout>
                 </gui>
                 <registry>
-                    <view wid="VTKSceneView" start="yes" />
                     <view wid="OgreSceneView" start="yes" />
                     <view wid="OgreNegato2DView" start="yes" />
                     <view wid="OgreVolumeRenderingView" start="yes" />
+                    <view wid="VTKSceneView" start="yes" />
                 </registry>
             </service>
 

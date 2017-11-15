@@ -116,16 +116,18 @@ void SReconstruction::updating()
 {
     if (!m_meshAdaptor.expired())
     {
+        auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
-        // Retrieves the associated f4s reconstruction object
-        ::fwData::Reconstruction::csptr reconstruction = this->getInput< ::fwData::Reconstruction >(
-            s_RECONSTRUCTION_INPUT);
-
-        // Updates the mesh adaptor according to the reconstruction
-        meshAdaptor->setMaterial(reconstruction->getMaterial());
-        meshAdaptor->swap(reconstruction->getMesh());
-        meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+        // Do nothing if the mesh is identical
+        auto mesh = ::fwServices::OSR::getRegistered("mesh", ::fwServices::IService::AccessType::INOUT, meshAdaptor);
+        if(mesh != reconstruction->getMesh())
+        {
+            // Updates the mesh adaptor according to the reconstruction
+            meshAdaptor->setMaterial(reconstruction->getMaterial());
+            meshAdaptor->swap(reconstruction->getMesh());
+            meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+        }
     }
     else
     {

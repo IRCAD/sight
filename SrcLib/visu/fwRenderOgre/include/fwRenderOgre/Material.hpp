@@ -50,9 +50,6 @@ public:
     /// Update material color in fixed function pipeline
     FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr fw_material );
 
-    /// Generates a normal length according to the mesh's bounding box
-    FWRENDEROGRE_API ::Ogre::Real computeNormalLength();
-
     FWRENDEROGRE_API void setHasMeshNormal(bool hasMeshNormal);
     FWRENDEROGRE_API void setHasVertexColor(bool hasMeshNormal);
     FWRENDEROGRE_API void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
@@ -92,9 +89,6 @@ private:
 
     /// Bounding box of the mesh
     ::Ogre::AxisAlignedBox m_meshBoundingBox;
-
-    /// Factor used to ease the normals length
-    ::Ogre::Real m_normalLengthFactor;
 
     /// Name of the material template
     std::string m_templateName;

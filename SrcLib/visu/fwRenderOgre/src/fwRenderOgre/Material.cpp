@@ -7,6 +7,7 @@
 #include "fwRenderOgre/Material.hpp"
 
 #include "fwRenderOgre/helper/Shading.hpp"
+#include <fwRenderOgre/Layer.hpp>
 
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
@@ -30,7 +31,6 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
     m_hasPrimitiveColor(false),
     m_primitiveType(::fwData::Mesh::TRIANGLE),
     m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
-    m_normalLengthFactor(0.1f),
     m_templateName(_templateName)
 {
     m_material = ::Ogre::MaterialManager::getSingleton().create(
@@ -61,7 +61,7 @@ void Material::updateOptionsMode(int _optionsMode)
     this->removePass(s_NORMALS_PASS);
 
     const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
-    const ::Ogre::Real normalLength               = this->computeNormalLength();
+    const ::Ogre::Real sceneSize                  = m_meshBoundingBox.getSize().length();
 
     if(_optionsMode != ::fwData::Material::STANDARD)
     {
@@ -98,7 +98,26 @@ void Material::updateOptionsMode(int _optionsMode)
                 }
 
                 // Updates the normal length according to the bounding box's size
-                normalsPass->getGeometryProgramParameters()->setNamedConstant("u_normalLength", normalLength);
+                normalsPass->getGeometryProgramParameters()->setNamedConstant("u_sceneSize", sceneSize);
+            }
+        }
+    }
+    else
+    {
+        for(const auto currentTechnique : techniques)
+        {
+            // We need the first pass of the current technique in order to copy its rendering states in the normals pass
+            ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
+            SLM_ASSERT("Pass is null", firstPass);
+
+            if(firstPass->hasGeometryProgram())
+            {
+                ::Ogre::GpuProgramParametersSharedPtr gp = firstPass->getGeometryProgramParameters();
+
+                if(gp && gp->_findNamedConstantDefinition("u_sceneSize"))
+                {
+                    gp->setNamedConstant("u_sceneSize", sceneSize);
+                }
             }
         }
     }
@@ -328,17 +347,6 @@ void Material::updateRGBAMode(fwData::Material::sptr fw_material)
     ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
     m_material->setSpecular( specular );
     m_material->setShininess( 25 );
-}
-
-//------------------------------------------------------------------------------
-
-::Ogre::Real Material::computeNormalLength()
-{
-    // TODO: use length
-    const ::Ogre::Vector3 meshBBoxSize = m_meshBoundingBox.getSize();
-    const ::Ogre::Real averageSize     = ( meshBBoxSize.x + meshBBoxSize.y + meshBBoxSize.z ) /
-                                         static_cast< ::Ogre::Real >(3.0);
-    return averageSize * m_normalLengthFactor;
 }
 
 //------------------------------------------------------------------------------

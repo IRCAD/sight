@@ -234,14 +234,14 @@ void SMesh::updating()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
+void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
+    ::fwData::mt::ObjectReadLock lock(_mesh);
 
-    const size_t uiNumVertices = mesh->getNumberOfPoints();
+    const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
@@ -257,7 +257,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry->updateMesh(mesh);
+    m_meshGeometry->updateMesh(_mesh);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -274,9 +274,9 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     // Update vertex layers
     //------------------------------------------
 
-    m_meshGeometry->updateVertices(mesh);
-    m_meshGeometry->updateColors(mesh);
-    m_meshGeometry->updateTexCoords(mesh);
+    m_meshGeometry->updateVertices(_mesh);
+    m_meshGeometry->updateColors(_mesh);
+    m_meshGeometry->updateTexCoords(_mesh);
 
     //------------------------------------------
     // Create sub-services
@@ -292,7 +292,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         this->updateXMLMaterialAdaptor();
     }
 
-    auto r2vbRenderables = m_meshGeometry->updateR2VB(mesh, *sceneMgr,
+    auto r2vbRenderables = m_meshGeometry->updateR2VB(_mesh, *sceneMgr,
                                                       m_materialAdaptor->getMaterialName(),
                                                       m_materialAdaptor->hasDiffuseTexture());
     for(auto renderable : r2vbRenderables)

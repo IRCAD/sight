@@ -266,7 +266,9 @@ void SMaterial::updating()
 {
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
-    m_meshFw.lock()->updateMaterial(m_materialFw, m_r2vbObject != nullptr);
+    auto bbox = this->getLayer()->computeWorldBoundingBox();
+
+    m_meshFw.lock()->updateMaterial(m_materialFw, m_r2vbObject != nullptr, bbox);
     if(m_r2vbObject)
     {
         m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType());

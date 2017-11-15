@@ -35,7 +35,7 @@ const unsigned int Mesh::s_maxTextureSize;
 
 template <typename T>
 void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
-                 ::fwDataTools::helper::MeshGetter& _meshHelper, size_t uiNumCells)
+                 ::fwDataTools::helper::MeshGetter& _meshHelper, size_t _uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
@@ -48,7 +48,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
     ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType             = _meshHelper.getCellTypes();
 
-    for (unsigned int i = 0; i < uiNumCells; ++i)
+    for (unsigned int i = 0; i < _uiNumCells; ++i)
     {
         long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
         if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
@@ -81,9 +81,9 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
 
 //------------------------------------------------------------------------------
 
-Mesh::Mesh(const std::string _name)
+Mesh::Mesh(const std::string& _name)
 {
-    memset(m_subMeshes, 0, sizeof(m_subMeshes));
+    m_subMeshes.fill(nullptr);
 
     m_binding[POSITION_NORMAL] = 0;
     m_binding[COLOUR]          = 0xFFFF;
@@ -243,8 +243,6 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
                                               ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
                                               ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
 
-        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-
         size_t offset = 0;
 
         // Create declaration (memory format) of vertex data based on ::fwData::Mesh
@@ -264,7 +262,8 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
         }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
-        vbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
+        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+        vbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
         bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
     else
@@ -347,6 +346,11 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
                     {
                         m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
                         m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_LINE_LIST;
+                    }
+                    else if(cellType == ::fwData::Mesh::POINT )
+                    {
+                        m_subMeshes[i]                = m_ogreMesh->createSubMesh(name);
+                        m_subMeshes[i]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
                     }
                     else if(cellType == ::fwData::Mesh::QUAD || cellType == ::fwData::Mesh::TETRA )
                     {
@@ -434,6 +438,81 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 //------------------------------------------------------------------------------
 
+void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
+{
+    auto points = _pointList->getCRefPoints();
+
+    /// The values in this table refer to vertices in the above table
+    size_t uiNumVertices = points.size();
+    OSLM_DEBUG("Vertices #" << uiNumVertices);
+
+    // Check if mesh attributes
+    m_hasNormal = false;
+
+    //------------------------------------------
+    // Create vertex arrays
+    //------------------------------------------
+
+    // Create vertex data structure for all vertices shared between submeshes
+    if(!m_ogreMesh->sharedVertexData)
+    {
+        m_ogreMesh->sharedVertexData = new ::Ogre::VertexData();
+    }
+
+    ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    size_t uiPrevNumVertices = 0;
+    if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
+    {
+        uiPrevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
+    }
+
+    if(uiPrevNumVertices < uiNumVertices)
+    {
+        FW_PROFILE("REALLOC MESH");
+
+        // We need to reallocate
+        m_ogreMesh->sharedVertexData->vertexCount = uiNumVertices;
+
+        // Allocate vertex buffer of the requested number of vertices (vertexCount)
+        // and bytes per vertex (offset)
+        ::Ogre::HardwareVertexBufferSharedPtr vbuf;
+        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
+                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
+                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+        size_t offset = 0;
+
+        // Create declaration (memory format) of vertex data based on ::fwData::Mesh
+        ::Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
+
+        // Clear if necessary
+        declMain->removeAllElements();
+
+        // 1st buffer
+        declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
+        offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
+
+        // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
+        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+        vbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
+        bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
+    }
+    else
+    {
+        // We don't reallocate, we keep the same vertex buffers and only update the number of vertices
+        m_ogreMesh->sharedVertexData->vertexCount = uiNumVertices;
+    }
+
+    if(m_subMeshes[::fwData::Mesh::POINT] == nullptr)
+    {
+        m_subMeshes[::fwData::Mesh::POINT] =
+            m_ogreMesh->createSubMesh(std::to_string(::fwData::Mesh::POINT));
+        m_subMeshes[::fwData::Mesh::POINT]->operationType = ::Ogre::RenderOperation::OT_POINT_LIST;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 std::vector<R2VBRenderable*> Mesh::updateR2VB(const::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
                                               const std::string& _materialName, bool _hasTexture)
 {
@@ -498,7 +577,7 @@ std::vector<R2VBRenderable*> Mesh::updateR2VB(const::fwData::Mesh::sptr& _mesh, 
 
 //-----------------------------------------------------------------------------
 
-void Mesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
+void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
 {
     FW_PROFILE_AVG("UPDATE VERTICES", 5);
 
@@ -506,11 +585,11 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
     ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
 
-    /// Upload the index data to the card
+    /// Upload the vertex data to the GPU
     void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with ::fwData::Mesh
-    ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+    ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
     ::fwData::Mesh::ConstPointsMultiArrayType points = meshHelper.getPoints();
 
     size_t uiStrideFloat = 3;
@@ -524,14 +603,14 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
 
     // Copy position and normal of each vertices
     // Compute bounding box (for culling)
-    float xMin = std::numeric_limits<float>::max();
-    float yMin = std::numeric_limits<float>::max();
-    float zMin = std::numeric_limits<float>::max();
-    float xMax = -std::numeric_limits<float>::max();
-    float yMax = -std::numeric_limits<float>::max();
-    float zMax = -std::numeric_limits<float>::max();
+    PointValueType xMin = std::numeric_limits<PointValueType>::max();
+    PointValueType yMin = std::numeric_limits<PointValueType>::max();
+    PointValueType zMin = std::numeric_limits<PointValueType>::max();
+    PointValueType xMax = std::numeric_limits<PointValueType>::lowest();
+    PointValueType yMax = std::numeric_limits<PointValueType>::lowest();
+    PointValueType zMax = std::numeric_limits<PointValueType>::lowest();
 
-    const unsigned int numPoints = static_cast<unsigned int>(mesh->getNumberOfPoints());
+    const unsigned int numPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
@@ -588,20 +667,96 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& mesh)
 
 //-----------------------------------------------------------------------------
 
-void Mesh::updateColors(const ::fwData::Mesh::csptr& mesh)
+void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
+{
+    FW_PROFILE_AVG("UPDATE VERTICES", 5);
+
+    // Getting Vertex Buffer
+    ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
+
+    /// Upload the vertex data to the GPU
+    void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+
+    // Update Ogre Mesh with ::fwData::Mesh
+
+    size_t uiStrideFloat = 3;
+
+    typedef ::fwData::Point::PointCoordType PointType;
+
+    // Copy position and normal of each vertices
+    // Compute bounding box (for culling)
+    PointType xMin = std::numeric_limits<PointType>::max();
+    PointType yMin = std::numeric_limits<PointType>::max();
+    PointType zMin = std::numeric_limits<PointType>::max();
+    PointType xMax = std::numeric_limits<PointType>::lowest();
+    PointType yMax = std::numeric_limits<PointType>::lowest();
+    PointType zMax = std::numeric_limits<PointType>::lowest();
+
+    const auto& points     = _pointList->getCRefPoints();
+    const size_t numPoints = points.size();
+
+    {
+        FW_PROFILE_AVG("UPDATE BBOX", 5);
+        for (size_t i = 0; i < numPoints; ++i)
+        {
+            const auto point = points[i]->getCRefCoord();
+            const auto& pt0  = point[0];
+            xMin = std::min(xMin, pt0);
+            xMax = std::max(xMax, pt0);
+
+            const auto& pt1 = point[1];
+            yMin = std::min(yMin, pt1);
+            yMax = std::max(yMax, pt1);
+
+            const auto& pt2 = point[2];
+            zMin = std::min(zMin, pt2);
+            zMax = std::max(zMax, pt2);
+        }
+    }
+    {
+        float* __restrict pPos = static_cast< float* >( pVertex );
+        FW_PROFILE_AVG("UPDATE POS", 5);
+        for (size_t i = 0; i < numPoints; ++i)
+        {
+            const auto point = points[i]->getCRefCoord();
+            pPos[0] = static_cast<float>(point[0]);
+            pPos[1] = static_cast<float>(point[1]);
+            pPos[2] = static_cast<float>(point[2]);
+
+            pPos += uiStrideFloat;
+        }
+    }
+    // Unlock vertex data
+    vbuf->unlock();
+
+    ::Ogre::AxisAlignedBox bbox( static_cast<float>(xMin), static_cast<float>(yMin), static_cast<float>(zMin),
+                                 static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax));
+    m_ogreMesh->_setBounds( bbox );
+    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(static_cast<float>(xMax - xMin)) +
+                                                              ::Ogre::Math::Sqr(static_cast<float>(yMax - yMin)) +
+                                                              ::Ogre::Math::Sqr(static_cast<float>(zMax - zMin)))* .5f);
+
+    /// Notify Mesh object that it has been modified
+    m_ogreMesh->load();
+}
+
+//-----------------------------------------------------------------------------
+
+void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
 {
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SLM_ASSERT("Invalid vertex buffer binding", bind);
 
-    const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
-    const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
+    const bool hasVertexColor    = (_mesh->getPointColorsArray() != nullptr);
+    const bool hasPrimitiveColor = (_mesh->getCellColorsArray() != nullptr);
 
     // 1 - Initialization
     if(hasVertexColor)
     {
-        bindLayer(mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_UBYTE4);
+        bindLayer(_mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_UBYTE4);
     }
     else
     {
@@ -668,7 +823,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& mesh)
     // 2 - Copy of vertices
     if (hasVertexColor)
     {
-        ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+        ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
@@ -680,14 +835,14 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& mesh)
         const std::uint8_t* icolors = reinterpret_cast<const std::uint8_t*>(colors.data());
 
         // Copy points
-        ::fwRenderOgre::helper::Mesh::copyColors(pColor, icolors, mesh->getNumberOfPoints(), colors.shape()[1]);
+        ::fwRenderOgre::helper::Mesh::copyColors(pColor, icolors, _mesh->getNumberOfPoints(), colors.shape()[1]);
 
         cbuf->unlock();
     }
 
     if(hasPrimitiveColor)
     {
-        ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+        ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
         // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
@@ -700,7 +855,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& mesh)
         const std::uint8_t* icolors = reinterpret_cast<const std::uint8_t*>(colors.data());
 
         // Copy cells
-        ::fwRenderOgre::helper::Mesh::copyColors(pColorDest, icolors, mesh->getNumberOfCells(), colors.shape()[1]);
+        ::fwRenderOgre::helper::Mesh::copyColors(pColorDest, icolors, _mesh->getNumberOfCells(), colors.shape()[1]);
 
         pixelBuffer->unlock();
     }
@@ -716,18 +871,18 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& mesh)
 
 //-----------------------------------------------------------------------------
 
-void Mesh::updateTexCoords(const ::fwData::Mesh::csptr& mesh)
+void Mesh::updateTexCoords(const ::fwData::Mesh::csptr& _mesh)
 {
-    m_hasUV = (mesh->getPointTexCoordsArray() != nullptr);
+    m_hasUV = (_mesh->getPointTexCoordsArray() != nullptr);
 
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
     if (m_hasUV)
     {
-        bindLayer(mesh, TEXCOORD, ::Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
+        bindLayer(_mesh, TEXCOORD, ::Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
 
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
-        ::fwDataTools::helper::MeshGetter meshHelper(mesh);
+        ::fwDataTools::helper::MeshGetter meshHelper(_mesh);
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
@@ -737,7 +892,7 @@ void Mesh::updateTexCoords(const ::fwData::Mesh::csptr& mesh)
         ::fwData::Mesh::ConstPointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
 
         // Copy UV coordinates for each mesh point
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        for (unsigned int i = 0; i < _mesh->getNumberOfPoints(); ++i)
         {
             pUV[2 * i]     = uvCoord[static_cast<int>(i)][0];
             pUV[2 * i + 1] = uvCoord[static_cast<int>(i)][1];
@@ -788,10 +943,10 @@ void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
 
 //------------------------------------------------------------------------------
 
-void Mesh::updateMaterial(const Material::uptr& _material, bool _isR2VB)
+void Mesh::updateMaterial(const Material::uptr& _material, bool _isR2VB, const ::Ogre::AxisAlignedBox& _bbox)
 {
     _material->setHasMeshNormal(m_hasNormal);
-    _material->setMeshBoundingBox(m_ogreMesh->getBounds());
+    _material->setMeshBoundingBox(_bbox);
 
     // The r2vb pipeline outputs per-vertex color if we have per-primitive color
     // Thus for the rendering pipeline it is only viewed as per-vertex color
@@ -832,6 +987,7 @@ void Mesh::invalidateR2VB()
         r2vbObject.second->setDirty();
     }
 }
+
 //------------------------------------------------------------------------------
 
 } // namespace fwRenderOgre

@@ -10,7 +10,7 @@ layout(line_strip, max_vertices = 2) out;
 #    endif
 
 uniform mat4 u_worldViewProj;
-uniform float u_normalLength;
+uniform float u_sceneSize;
 
 #    ifdef POINT
 in VertexDataIn
@@ -29,6 +29,7 @@ layout(location = 2) out vec4 outColor;
 
 void main()
 {
+    float scale = u_sceneSize * 0.02;
 #    ifdef POINT
         for(int i = 0; i < 3; i++)
         {
@@ -45,7 +46,7 @@ void main()
             EmitVertex();
 
             // Vertex normal summit
-            gl_Position = u_worldViewProj * (P + vec4(N, 0.) * u_normalLength);
+            gl_Position = u_worldViewProj * (P + vec4(N, 0.) * scale);
 
 #        ifndef DEPTH
             outColor = u_normalColor;
@@ -80,7 +81,7 @@ void main()
         EmitVertex();
 
         // Cell normal summit
-        gl_Position = u_worldViewProj * (P + vec4(N, 0.) * u_normalLength);
+        gl_Position = u_worldViewProj * (P + vec4(N, 0.) * scale);
 
 #        ifndef DEPTH
             outColor = u_normalColor;

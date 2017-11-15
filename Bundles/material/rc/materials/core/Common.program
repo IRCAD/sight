@@ -58,7 +58,7 @@ geometry_program VerticesNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
         param_named u_normalColor float4 1. 0. 0. 1.
     }
 }
@@ -72,7 +72,7 @@ geometry_program CellsNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
         param_named u_normalColor float4 1. 1. 0. 1.
     }
 }
@@ -86,7 +86,7 @@ geometry_program DepthPeeling/depthMap/VerticesNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
     }
 }
 
@@ -99,7 +99,7 @@ geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
     }
 }
 
