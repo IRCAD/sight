@@ -192,7 +192,13 @@
             </slots>
         </service>
 
-        <service uid="actionCalibrate" type="::uiTools::action::STimestampSlotCaller">
+        <service uid="actionCalibrate" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>cameraPose/update</slot>
+            </slots>
+        </service>
+
+        <service uid="computeRegistration" type="::uiTools::action::STimestampSlotCaller">
             <slots>
                 <slot>handEyeCalibration/computeRegistration</slot>
             </slots>
@@ -446,8 +452,8 @@
         </connect>
 
         <connect>
-            <signal>calibInfo/addedRecord</signal>
-            <slot>cameraPose/update</slot>
+            <signal>${camera}/intrinsicCalibrated</signal>
+            <slot>computeRegistration/update</slot>
         </connect>
 
         <connect>
@@ -467,6 +473,7 @@
         <start uid="chessboardDetector" />
         <start uid="cameraPose" />
         <start uid="pushMatrixSensor" />
+        <start uid="computeRegistration" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
         <!-- VTK scene 'chessboardDetectionView' -->
