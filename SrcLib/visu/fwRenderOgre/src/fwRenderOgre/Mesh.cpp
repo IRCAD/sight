@@ -257,8 +257,11 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
         declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
         offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
 
-        declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
-        offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
+        if(m_hasNormal)
+        {
+            declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
+            offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
+        }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
         vbuf = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
