@@ -80,8 +80,7 @@ static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2
                                        nbComponents)                                                                   \
     {                                                                                                                  \
         COMPARE_IMAGE_ATTRS_MACRO(expSize, expSpacing, expOrigin, size, spacing, origin)                               \
-        CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(expNbComponents),                                                  \
-                              static_cast< size_t >( nbComponents) );                                                  \
+        CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(expNbComponents), static_cast< size_t >( nbComponents) );          \
     }
 
 #define WRITER_TEST(writerclass, readerclass, imagetype, filename)                                                     \
@@ -248,7 +247,7 @@ void ImageTest::testFromVtk()
         vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                             \
                                                                                                                        \
         CPPUNIT_ASSERT(vtkImage);                                                                                      \
-        vtkImage->SetDimensions(64, 64, 1);                                                                            \
+        vtkImage->SetDimensions(64, 64, 2);                                                                            \
         vtkImage->SetSpacing(1.0, 1.0, 0.0);                                                                           \
         int dataType = ::fwVtkIO::TypeTranslator::translate(::fwTools::Type::create(type));                            \
         vtkImage->AllocateScalars(dataType, nbComponents);                                                             \
