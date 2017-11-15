@@ -166,6 +166,7 @@ void SVideo::updating()
             sn->setPosition(0, 0, 0);
 
             ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+            SLM_ASSERT("Default camera not found", cam);
             cam->setProjectionType(::Ogre::PT_ORTHOGRAPHIC);
             cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]));
 
@@ -179,14 +180,15 @@ void SVideo::updating()
                     const float shiftX = static_cast<float>(size[0] ) / 2.f - static_cast<float>(camera->getCx());
                     const float shiftY = static_cast<float>(size[1] ) / 2.f - static_cast<float>(camera->getCy());
 
-                    auto node = cam->getSceneManager()->getSceneNode(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NODE_NAME);
+                    auto camNode           = cam->getParentSceneNode();
+                    const auto curPosition = camNode->getPosition();
                     if (m_reverse)
                     {
-                        node->setPosition(shiftX, -shiftY, 0);
+                        camNode->setPosition(shiftX, -shiftY, curPosition.z);
                     }
                     else
                     {
-                        node->setPosition(-shiftX, shiftY, 0);
+                        camNode->setPosition(-shiftX, shiftY, curPosition.z);
                     }
                 }
             }
