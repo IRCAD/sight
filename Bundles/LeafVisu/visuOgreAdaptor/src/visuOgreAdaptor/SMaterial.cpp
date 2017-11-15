@@ -371,7 +371,7 @@ void SMaterial::removeTextureAdaptor()
     // Update the shaders
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
-                                     this->hasDiffuseTexture(), m_texAdaptor->getUseAlpha() );
+                                     this->hasDiffuseTexture(), false );
 
     this->requestRender();
 }
