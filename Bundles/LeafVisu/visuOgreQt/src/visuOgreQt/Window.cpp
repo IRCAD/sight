@@ -76,8 +76,8 @@ void Window::initialise()
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
-    ::Ogre::RenderSystem* rs = m_ogreRoot->getRenderSystem();
-    SLM_ASSERT("OpenGL RenderSystem not found", rs->getName().find("GL") != std::string::npos);
+    SLM_ASSERT("OpenGL RenderSystem not found",
+               m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
 
     Ogre::NameValuePairList parameters;
 
