@@ -79,8 +79,6 @@ void SCamera::starting()
     m_camera      = this->getLayer()->getDefaultCamera();
     m_calibration = this->getInput< ::arData::Camera >("calibration");
 
-    this->createTransformService();
-
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
     if (m_calibration)
@@ -102,49 +100,45 @@ void SCamera::stopping()
 
 void SCamera::updating()
 {
-}
+    ::Ogre::Camera* camera = m_camera;
 
-//------------------------------------------------------------------------------
-
-void SCamera::createTransformService()
-{
+    // Multithreaded lock
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    ::fwData::mt::ObjectReadLock lock(transform);
 
-    if(!transform)
+    // Received input lign and column data from f4s transformation matrix
+    ::Ogre::Matrix4 ogreMatrix;
+    for (size_t lt = 0; lt < 4; lt++)
     {
-        transform = ::fwData::TransformationMatrix3D::New();
+        for (size_t ct = 0; ct < 4; ct++)
+        {
+            ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+        }
     }
 
-    auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
-    transformService->registerInOut(transform, "transform", true);
+    lock.unlock();
 
-    m_transformService = transformService;
+    // Decompose the camera matrix
+    ::Ogre::Vector3 position;
+    ::Ogre::Vector3 scale;
+    ::Ogre::Quaternion orientation;
+    ogreMatrix.decomposition(position, scale, orientation);
 
-    transformService->setID(this->getID() + "_" + transformService->getID());
-    transformService->setRenderService(this->getRenderService());
-    transformService->setLayerID(m_layerID);
-    // For now we use the only one Ogre camera in the layer as input
-    transformService->setTransformId(m_camera->getParentSceneNode()->getName());
-    transformService->setParentTransformId(this->getParentTransformId());
+    const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
+    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    orientation = orientation * rotateZ * rotateY;
 
-    transformService->start();
+    ::Ogre::Node* parent = camera->getParentNode();
 
-    this->attachNode(m_camera);
-}
+    // Reset the camera position
+    parent->setPosition(0, 0, 0);
+    parent->setOrientation(Ogre::Quaternion::IDENTITY);
 
-//-----------------------------------------------------------------------------
+    // Update the camera position
+    parent->rotate(orientation);
+    parent->translate(position);
 
-void SCamera::attachNode(::Ogre::MovableObject* _node)
-{
-    auto transformService = this->getTransformService();
-
-    ::Ogre::SceneNode* transNode = transformService->getSceneNode();
-    ::Ogre::SceneNode* node      = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -188,8 +182,6 @@ void SCamera::updateTF3D()
 
     // And the last  value
     newTransMat[3][3] = 1;
-
-    this->getTransformService()->setTransform(newTransMat);
 }
 
 //------------------------------------------------------------------------------

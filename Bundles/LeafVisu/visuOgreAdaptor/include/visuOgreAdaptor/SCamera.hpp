@@ -50,8 +50,7 @@ namespace visuOgreAdaptor
  * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
  * - \b calibration [::arData::Camera]: camera containing calibration information.
  */
-class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor,
-                                          public ::fwRenderOgre::ITransformable
+class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {
 
 public:
@@ -89,9 +88,6 @@ public:
     /// Aspect ratio setter.
     VISUOGREADAPTOR_API virtual void setAspectRatio(::Ogre::Real _ratio);
 
-    /// Transform Id setter.
-    VISUOGREADAPTOR_API virtual void setTransformName(::fwRenderOgre::SRender::OgreObjectIdType newId);
-
 protected:
     /// Configures the service.
     VISUOGREADAPTOR_API void configuring() override;
@@ -106,15 +102,6 @@ protected:
     VISUOGREADAPTOR_API void updating() override;
 
 private:
-
-    /// Returns a shared pointer of the attached transform service.
-    ::visuOgreAdaptor::STransform::sptr getTransformService();
-
-    /// Creates a transform Service, and attaches it to a corresponding scene node in the scene.
-    void createTransformService();
-
-    /// Attaches a movable object to the associated scene node.
-    void attachNode(::Ogre::MovableObject* _node);
 
     /// Calibrate the camera parameters according to an arData::Camera.
     void calibrate();
@@ -144,20 +131,6 @@ private:
 inline ::Ogre::Camera* SCamera::getCamera()
 {
     return m_camera;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SCamera::setTransformName(::fwRenderOgre::SRender::OgreObjectIdType newId)
-{
-    this->setTransformId(newId);
-}
-
-//------------------------------------------------------------------------------
-
-inline ::visuOgreAdaptor::STransform::sptr SCamera::getTransformService()
-{
-    return ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 }
 
 //------------------------------------------------------------------------------
