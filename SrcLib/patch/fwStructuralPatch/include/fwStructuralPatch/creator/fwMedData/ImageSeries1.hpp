@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_IMAGESERIES1_HPP__
-#define __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_IMAGESERIES1_HPP__
+#pragma once
 
 #include "fwStructuralPatch/config.hpp"
 #include "fwStructuralPatch/creator/fwMedData/Series1.hpp"
@@ -33,15 +32,13 @@ public:
     FWSTRUCTURALPATCH_API ~ImageSeries1();
 
     /// Copy constructor
-    FWSTRUCTURALPATCH_API ImageSeries1( const ImageSeries1 &cpy );
+    FWSTRUCTURALPATCH_API ImageSeries1( const ImageSeries1& cpy );
 
     /// Creates the specified object (sets 'image' attribute) and calls creator 'Series1'.
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create();
+    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
 
 };
 
 } // namespace fwMedData
 } // namespace creator
 } // namespace fwStructuralPatch
-
-#endif // __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_IMAGESERIES1_HPP__
