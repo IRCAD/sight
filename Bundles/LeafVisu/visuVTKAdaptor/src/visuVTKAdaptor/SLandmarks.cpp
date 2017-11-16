@@ -80,7 +80,7 @@ public:
                                            size_t pointIndex,
                                            vtkAbstractPropPicker* picker,
                                            vtkRenderer* renderer,
-                                           SLandmarks::LabelActorType& labelActor)
+                                           vtkActor2D* labelActor)
     {
         return new vtkLandmarkUpdateCallBack(landmarks, pointModifiedSlot, groupName, pointIndex, picker, renderer,
                                              labelActor);
@@ -94,7 +94,7 @@ public:
                                size_t pointIndex,
                                vtkAbstractPropPicker* picker,
                                vtkRenderer* renderer,
-                               SLandmarks::LabelActorType& labelActor) :
+                               vtkActor2D* labelActor) :
         m_landmarks(landmarks),
         m_pointModifiedSlot(pointModifiedSlot),
         m_groupName(groupName),
@@ -188,7 +188,7 @@ protected:
 
     vtkRenderer* m_renderer;
 
-    SLandmarks::LabelActorType m_labelActor;
+    vtkActor2D* m_labelActor;
 };
 
 //------------------------------------------------------------------------------
@@ -371,7 +371,7 @@ void SLandmarks::removePoint(std::string groupName, size_t index)
 
     auto& handleToRemove = landmarkHandleGroup[index];
 
-    LabelActorType& label = m_labels[handleToRemove];
+    vtkActor2D* label = m_labels[handleToRemove];
     this->getRenderer()->RemoveViewProp(label);
     label->Delete();
 
@@ -394,7 +394,7 @@ void SLandmarks::removePoint(std::string groupName, size_t index)
         vtkLandmarkUpdateCallBack* commandToUpdate = dynamic_cast<vtkLandmarkUpdateCallBack* >(m_commands[handle]);
         commandToUpdate->updateInfo(groupName, i);
 
-        LabelActorType& labelToUpdate             = m_labels[handle];
+        vtkActor2D* labelToUpdate                 = m_labels[handle];
         vtkSmartPointer<vtkTextMapper> textMapper = vtkTextMapper::SafeDownCast(labelToUpdate->GetMapper());
         const std::string label                   = groupName + "_" + std::to_string(i);
         textMapper->SetInput(label.c_str());
@@ -438,7 +438,7 @@ void SLandmarks::modifyGroup(std::string groupName)
         rep->SetHandleSize(group.m_size);
         rep->SetVisibility(group.m_visibility);
 
-        LabelActorType& textActor                 = m_labels[handle];
+        vtkActor2D* textActor                     = m_labels[handle];
         vtkSmartPointer<vtkTextMapper> textMapper = vtkTextMapper::SafeDownCast(textActor->GetMapper());
         textMapper->GetTextProperty()->SetColor(color[0], color[1], color[2]);
         textActor->SetVisibility(group.m_visibility);
@@ -501,7 +501,7 @@ void SLandmarks::modifyPoint(std::string groupName, size_t index)
     vtkHandleRepresentation* handleRep = vtkHandleRepresentation::SafeDownCast(widget->GetRepresentation());
     handleRep->SetWorldPosition(point.data());
 
-    LabelActorType textActor = m_labels[widget];
+    vtkActor2D* textActor = m_labels[widget];
     textActor->GetPositionCoordinate()->SetValue(point.data());
 
     this->getRenderer()->ResetCameraClippingRange();
@@ -519,7 +519,7 @@ void SLandmarks::renameGroup(std::string oldName, std::string newName)
     size_t count = 0;
     for(auto& handle : landmarkHandleGroup)
     {
-        LabelActorType& textActor = m_labels[handle];
+        vtkActor2D* textActor = m_labels[handle];
 
         vtkCommand* command                       = m_commands[handle];
         vtkLandmarkUpdateCallBack* updateCallback = dynamic_cast<vtkLandmarkUpdateCallBack* >(command);
@@ -668,8 +668,8 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     const ::fwData::Landmarks::ColorType& color = group.m_color;
 
     // TODO add option for cube representation
-    vtkSmartPointer< ::fwRenderVTK::vtk::fwHandleRepresentation3D > pointRep =
-        vtkSmartPointer< ::fwRenderVTK::vtk::fwHandleRepresentation3D>::New();
+    ::fwRenderVTK::vtk::fwHandleRepresentation3D* pointRep =
+        ::fwRenderVTK::vtk::fwHandleRepresentation3D::New();
 
     if (group.m_shape == ::fwData::Landmarks::Shape::SPHERE)
     {
@@ -710,7 +710,7 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     // create label
     const std::string label = groupName + "_" + std::to_string(pointIndex);
 
-    vtkSmartPointer<vtkActor2D> textActor     = vtkSmartPointer< vtkActor2D>::New();
+    vtkActor2D* textActor                     = vtkActor2D::New();
     vtkSmartPointer<vtkTextMapper> textMapper = vtkSmartPointer< vtkTextMapper>::New();
     textMapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
     textMapper->GetTextProperty()->ShadowOn(); // better contrast
