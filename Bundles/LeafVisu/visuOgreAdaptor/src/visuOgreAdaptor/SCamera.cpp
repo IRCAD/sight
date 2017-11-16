@@ -218,14 +218,14 @@ void SCamera::setAspectRatio(::Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    if ( m_calibration )
+    if ( m_calibration && m_calibration->getIsCalibrated() )
     {
         const double fy = m_calibration->getFy();
+
         m_camera->setFOVy(
             ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
                                                        atan(static_cast< double >(m_calibration->getHeight() / 2.0) /
                                                             fy))));
-
         this->updating();
     }
 }
