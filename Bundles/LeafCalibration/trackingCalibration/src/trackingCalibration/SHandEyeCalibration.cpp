@@ -13,6 +13,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/make_unique.hpp>
@@ -90,20 +92,47 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
     it1 = vector1->begin();
     it2 = vector2->begin();
 
-    for(; it1 != vector1->end() && it2 != vector2->end();
+    for(; it1 != vector1->end()-1 && it2 != vector2->end()-1;
         ++it1, ++it2)
     {
-        ::fwData::TransformationMatrix3D::sptr matrix1, matrix2;
+        ::fwData::TransformationMatrix3D::sptr matrixAi,
+        matrixAj,
+        matrixBi,
+        matrixBj;
 
-        matrix1 = ::fwData::TransformationMatrix3D::dynamicCast(*it1);
+        ::fwData::TransformationMatrix3D::sptr matrixAjTrans = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixA       = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixBjTrans = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixB       = ::fwData::TransformationMatrix3D::New();
 
-        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrix1);
+        matrixAi = ::fwData::TransformationMatrix3D::dynamicCast(*it1);
+        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixAi);
+        matrixAj = ::fwData::TransformationMatrix3D::dynamicCast(*(it1 + 1));
+        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixAj);
 
-        matrix2 = ::fwData::TransformationMatrix3D::dynamicCast(*it2);
+        /*
+           // Transpose the matrix
+           for(size_t i = 0; i < 4; ++i)
+           {
+            for(size_t j = 0; j < 4; ++j)
+            {
+                matrixAjTrans->setCoefficient(j,i, matrixAj->getCoefficient(i, j));
+            }
+           }
+         */
 
-        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrix2);
+        ::fwDataTools::TransformationMatrix3D::invert(matrixAj, matrixAjTrans);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrixAi, matrixAjTrans, matrixA);
 
-        m_handEyeApi->pushMatrix(matrix1, matrix2);
+        matrixBi = ::fwData::TransformationMatrix3D::dynamicCast(*it2);
+        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBi);
+        matrixBj = ::fwData::TransformationMatrix3D::dynamicCast(*(it2 + 1));
+        SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBj);
+
+        ::fwDataTools::TransformationMatrix3D::invert(matrixBj, matrixBjTrans);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrixBi, matrixBjTrans, matrixB);
+
+        m_handEyeApi->pushMatrix(matrixA, matrixB);
     }
 
     ::fwData::TransformationMatrix3D::sptr result = m_handEyeApi->computeHandEye();

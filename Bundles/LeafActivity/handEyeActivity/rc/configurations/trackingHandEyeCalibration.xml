@@ -22,7 +22,7 @@
         <object uid="matrix3" type="::fwData::TransformationMatrix3D" />
         <object uid="matrix0Inv" type="::fwData::TransformationMatrix3D" />
         <object uid="handEyeMatrix" type="::fwData::TransformationMatrix3D" />
-        <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="sensorMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="chessMat" type="::fwData::TransformationMatrix3D" src="deferred" />
         <object uid="matrixVectorPose" type="::fwData::Vector" />
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
@@ -396,7 +396,7 @@
                 <key uid="matrix0" autoConnect="yes" />
                 <key uid="handEyeMatrix" inverse="true" autoConnect="yes" />
             </in>
-            <inout key="output" uid="cameraMatrix" />
+            <inout key="output" uid="sensorMatrix" />
         </service>
 
         <service uid="extractor" type="::ctrlCamp::SExtractObj">
@@ -461,13 +461,18 @@
             <scene autoRender="false">
                 <renderer id="default" layer="1" background="0.0" />
                 <renderer id="background" layer="0" background="0.0" />
-                <adaptor uid="chessMatTransformAdaptor" />
                 <adaptor uid="videoAdptResult" />
                 <adaptor uid="sensorAxis" />
                 <adaptor uid="cameraAdpt" />
                 <adaptor uid="interactorStyle" />
                 <adaptor uid="sensorChess" />
+                <adaptor uid="sensorTransformAdaptor" />
             </scene>
+        </service>
+
+        <service uid="sensorTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="sensorMatrix" />
+            <config renderer="default" transform="vtkSensorMatrix" />
         </service>
 
         <service uid="videoAdptResult" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
@@ -486,7 +491,7 @@
         </service>
 
         <service uid="sensorAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="5" transform="identityMatrix" label="no" marker="yes" markerColor="#FF00FF" />
+            <config renderer="default" length="100" transform="vtkSensorMatrix" label="no" marker="yes" markerColor="#FF00FF" />
         </service>
 
         <service uid="sensorChess" type="::visuVTKAdaptor::SAxis">
@@ -551,12 +556,12 @@
         <!-- VTK scene 'chessboardDetectionView' -->
         <start uid="videoAdptChessboard" />
         <!-- VTK scene 'resultView' -->
-        <start uid="chessMatTransformAdaptor" />
         <start uid="videoAdptResult" />
-<!--        <start uid="sensorAxis" />-->
+        <start uid="sensorAxis" />
         <start uid="cameraAdpt" />
         <start uid="interactorStyle" />
         <start uid="sensorChess" />
+        <start uid="sensorTransformAdaptor" />
         <!-- Update -->
         <update uid="extractor" />
 
