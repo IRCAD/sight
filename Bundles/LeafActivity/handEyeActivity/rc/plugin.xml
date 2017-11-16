@@ -41,7 +41,7 @@
         </requirements>
         <appConfig id="trackingHandEyeCalibration">
             <parameters>
-                <parameter replace="camera" by="@values.cameraSeries.cameras.0" />
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
             </parameters>
         </appConfig>
     </extension>

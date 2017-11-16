@@ -4,21 +4,26 @@
         <param name="WID_PARENT" />
         <param name="ICON_PATH" />
         <param name="SERIESDB" />
-        <param name="camera" />
+        <param name="cameraSeries" />
     </parameters>
     <config>
-        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
+        <object uid="camera" type="::arData::Camera" src="deferred" />
         <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="detectionTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="detectionImage" type="::fwData::Image" />
         <object uid="matrixTL" type="::arData::MatrixTL" />
         <object uid="matrixTL2" type="::arData::MatrixTL" />
+        <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
         <object uid="matrix0" type="::fwData::TransformationMatrix3D" />
         <object uid="matrix1" type="::fwData::TransformationMatrix3D" />
         <object uid="matrix2" type="::fwData::TransformationMatrix3D" />
         <object uid="matrix3" type="::fwData::TransformationMatrix3D" />
+        <object uid="matrix0Inv" type="::fwData::TransformationMatrix3D" />
         <object uid="handEyeMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="chessMat" type="::fwData::TransformationMatrix3D" src="deferred" />
         <object uid="matrixVectorPose" type="::fwData::Vector" />
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
@@ -117,7 +122,7 @@
             </gui>
             <registry>
                 <menuItem sid="loadCsv" start="yes" />
-                <editor sid="cameraSelector" start="yes" />
+                <editor sid="cameraSelector" />
                 <menuItem sid="actionStartCamera" start="yes" />
                 <menuItem sid="actionStopCamera" start="yes" />
                 <menuItem sid="actionPauseCamera" start="yes" />
@@ -250,12 +255,12 @@
         <!-- *************************** Begin Services *************************** -->
 
         <service uid="cameraSelector" type="::videoQt::editor::SCamera">
-            <inout key="camera" uid="${camera}" />
+            <inout key="camera" uid="camera" />
             <videoSupport>yes</videoSupport>
         </service>
 
         <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber">
-            <in key="camera" uid="${camera}" />
+            <in key="camera" uid="camera" />
             <inout key="frameTL" uid="frameTL" />
             <oneShot>true</oneShot>
             <useTimelapse>false</useTimelapse>
@@ -339,7 +344,7 @@
 
         <service uid="cameraPose" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
             <in key="calibrationInfo" uid="calibInfo" />
-            <inout key="camera" uid="${camera}" />
+            <inout key="camera" uid="camera" />
             <inout key="poseVector" uid="matrixVectorPose" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
@@ -372,8 +377,46 @@
         </service>
 
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
-           <inout key="object" uid="matrix0" />
+           <inout key="object" uid="matrix0Inv" />
            <inout key="vector" uid="matrixVectorSensor" />
+        </service>
+
+        <service uid="invertMatrix0" type="::maths::SConcatenateMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="matrix0" inverse="true" />
+            </in>
+            <inout key="output" uid="matrix0Inv" />
+        </service>
+
+        <service uid="concatMatrix" type="::maths::SConcatenateMatrices"  >
+            <in group="matrix">
+                <!--<key uid="handEyeMatrix" autoConnect="yes" />
+                <key uid="matrix0" inverse="true" />
+                <key uid="extrinsic" inverse="true"/>-->
+                <key uid="matrix0" autoConnect="yes" />
+                <key uid="handEyeMatrix" inverse="true" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="cameraMatrix" />
+        </service>
+
+        <service uid="extractor" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="${cameraSeries}">
+                <extract from="@cameras.0" />
+                <extract from="@extrinsic_matrices.0" />
+            </inout>
+            <out group="target">
+                <key uid="camera" />
+                <key uid="extrinsic" />
+            </out>
+        </service>
+
+        <service uid="extractChessMat" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="matrixVectorPose">
+                <extract from="@values.0" />
+            </inout>
+            <out group="target">
+                <key uid="chessMat" />
+            </out>
         </service>
 
         <!-- *************************** End Services *************************** -->
@@ -418,13 +461,36 @@
             <scene autoRender="false">
                 <renderer id="default" layer="1" background="0.0" />
                 <renderer id="background" layer="0" background="0.0" />
+                <adaptor uid="chessMatTransformAdaptor" />
                 <adaptor uid="videoAdptResult" />
+                <adaptor uid="sensorAxis" />
+                <adaptor uid="cameraAdpt" />
+                <adaptor uid="interactorStyle" />
+                <adaptor uid="sensorChess" />
             </scene>
         </service>
 
         <service uid="videoAdptResult" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="videoImage" />
             <config renderer="background" />
+        </service>
+
+        <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
+            <inout key="transform" uid="chessMat" />
+            <in key="camera" uid="camera" />
+            <config renderer="default" />
+        </service>
+
+        <service uid="interactorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="FixedInteractorStyle" />
+        </service>
+
+        <service uid="sensorAxis" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="5" transform="identityMatrix" label="no" marker="yes" markerColor="#FF00FF" />
+        </service>
+
+        <service uid="sensorChess" type="::visuVTKAdaptor::SAxis">
+            <config renderer="default" length="100" transform="identityMatrix" label="no" marker="yes" markerColor="#FF0000" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -452,8 +518,9 @@
         </connect>
 
         <connect>
-            <signal>${camera}/intrinsicCalibrated</signal>
+            <signal>camera/intrinsicCalibrated</signal>
             <slot>computeRegistration/update</slot>
+            <slot>extractChessMat/update</slot>
         </connect>
 
         <connect>
@@ -465,6 +532,8 @@
         <!-- *************************** End Connections *************************** -->
 
         <start uid="mainView" />
+        <start uid="extractor" />
+        <start uid="extractChessMat" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
         <start uid="synchronizer2" />
@@ -474,12 +543,22 @@
         <start uid="cameraPose" />
         <start uid="pushMatrixSensor" />
         <start uid="computeRegistration" />
+        <start uid="invertMatrix0" />
+        <start uid="concatMatrix" />
+        <start uid="cameraSelector" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
         <!-- VTK scene 'chessboardDetectionView' -->
         <start uid="videoAdptChessboard" />
         <!-- VTK scene 'resultView' -->
+        <start uid="chessMatTransformAdaptor" />
         <start uid="videoAdptResult" />
+<!--        <start uid="sensorAxis" />-->
+        <start uid="cameraAdpt" />
+        <start uid="interactorStyle" />
+        <start uid="sensorChess" />
+        <!-- Update -->
+        <update uid="extractor" />
 
     </config>
 </extension>

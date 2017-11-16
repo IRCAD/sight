@@ -18,6 +18,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
 #include <fwPreferences/helper.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -173,6 +175,7 @@ void SOpenCVIntrinsic::updating()
                     mat3D->setCoefficient(i, 3, tmat.at< double >(static_cast<int>(i)));
                 }
 
+                ::fwDataTools::TransformationMatrix3D::invert(mat3D, mat3D);
                 poseCamera->getContainer().push_back(mat3D);
                 auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
                     ::fwData::Vector::s_ADDED_OBJECTS_SIG);

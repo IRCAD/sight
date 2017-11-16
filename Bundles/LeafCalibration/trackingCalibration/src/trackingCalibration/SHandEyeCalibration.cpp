@@ -82,8 +82,8 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
     ::fwData::Vector::csptr vector2 = this->getInput< ::fwData::Vector >(s_MATRIXVECTOR2_INPUT);
     SLM_ASSERT("The second vector is null", vector2);
 
-    SLM_ASSERT("The first and the second matrices vector should have the same size",
-               vector1->size() == vector2->size());
+    SLM_ASSERT("The first and the second matrices vector should have the same size and > 1",
+               (vector1->size() == vector2->size()) && (vector1->size() > 1));
 
     ::fwData::Vector::ConstIteratorType it1, it2;
 
