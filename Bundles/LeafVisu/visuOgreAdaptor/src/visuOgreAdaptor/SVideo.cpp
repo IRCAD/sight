@@ -36,8 +36,9 @@ namespace visuOgreAdaptor
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVideo, ::fwData::Image);
 
-static const char* VIDEO_MATERIAL_NAME        = "Video";
-static const char* VIDEO_WITHTF_MATERIAL_NAME = "VideoWithTF";
+static const std::string VIDEO_MATERIAL_NAME            = "Video";
+static const std::string VIDEO_WITHTF_MATERIAL_NAME     = "VideoWithTF";
+static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
@@ -74,37 +75,6 @@ void SVideo::configuring()
 void SVideo::starting()
 {
     this->initialize();
-
-    m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
-        this->getID() + "_VideoTexture",
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
-
-    auto& mtlMgr = ::Ogre::MaterialManager::getSingleton();
-    auto tf      = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
-    // Duplicate default material to create Video material
-    ::Ogre::MaterialPtr defaultMat = mtlMgr.getByName(tf ? VIDEO_WITHTF_MATERIAL_NAME : VIDEO_MATERIAL_NAME);
-
-    m_material = mtlMgr.create( this->getID() + "_VideoMaterial", ::Ogre::ResourceGroupManager::
-                                DEFAULT_RESOURCE_GROUP_NAME);
-
-    defaultMat->copyDetailsTo(m_material);
-
-    // Set the texture to the main material pass
-    ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-    ogrePass->getTextureUnitState("image")->setTexture(m_texture);
-
-    if(tf)
-    {
-        // TF texture initialization
-        m_gpuTF = ::boost::make_unique< ::fwRenderOgre::TransferFunction>();
-        m_gpuTF->createTexture(this->getID());
-
-        ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-        ogrePass->getTextureUnitState("tf")->setTexture(m_gpuTF->getTexture());
-
-        this->updateTF();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -128,22 +98,81 @@ void SVideo::updating()
     {
         ::fwData::mt::ObjectReadLock lock(imageF4s);
 
+        auto type = imageF4s->getType();
+
+        if (!m_isTextureInit || type != m_previousType )
+        {
+            // /////////////////////////////////////////////////////////////////////
+            // Create the appropriate material according to the texture format
+            // /////////////////////////////////////////////////////////////////////
+
+            m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
+                this->getID() + "_VideoTexture",
+                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                true);
+
+            auto& mtlMgr = ::Ogre::MaterialManager::getSingleton();
+            auto tf      = this->getInput< ::fwData::TransferFunction>(s_TF_INPUT);
+
+            ::Ogre::MaterialPtr defaultMat;
+            if(tf)
+            {
+                if(type == ::fwTools::Type::s_FLOAT || type == ::fwTools::Type::s_DOUBLE)
+                {
+                    defaultMat = mtlMgr.getByName(VIDEO_WITHTF_MATERIAL_NAME);
+                }
+                else
+                {
+                    defaultMat = mtlMgr.getByName(VIDEO_WITHTF_INT_MATERIAL_NAME);
+                }
+            }
+            else
+            {
+                defaultMat = mtlMgr.getByName(VIDEO_MATERIAL_NAME);
+            }
+            // Duplicate default material to create Video material
+            m_material = mtlMgr.create( this->getID() + "_VideoMaterial",
+                                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+            defaultMat->copyDetailsTo(m_material);
+
+            // Set the texture to the main material pass
+            ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+            ogrePass->getTextureUnitState("image")->setTexture(m_texture);
+
+            if(tf)
+            {
+                // TF texture initialization
+                m_gpuTF = ::boost::make_unique< ::fwRenderOgre::TransferFunction>();
+                m_gpuTF->createTexture(this->getID());
+
+                ::Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+                ogrePass->getTextureUnitState("tf")->setTexture(m_gpuTF->getTexture());
+
+                this->updateTF();
+            }
+            m_previousType = type;
+        }
+
         ::fwData::Image::SizeType size = imageF4s->getSize();
         ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D, true);
 
         if (!m_isTextureInit || size[0] != m_previousWidth || size[1] != m_previousHeight )
         {
+            // /////////////////////////////////////////////////////////////////////
+            // Create the plane entity
+            // /////////////////////////////////////////////////////////////////////
             const std::string thisID        = this->getID();
             const std::string videoMeshName = thisID + "_VideoMesh";
             const std::string entityName    = thisID + "_VideoEntity";
             const std::string nodeName      = thisID + "_VideoSceneNode";
 
-            // Create Ogre Plane
             ::Ogre::MovablePlane plane( ::Ogre::Vector3::UNIT_Z, 0 );
 
             ::Ogre::SceneManager* sceneManager = this->getSceneManager();
             ::Ogre::MeshManager& meshManager   = ::Ogre::MeshManager::getSingleton();
-            /// Delete deprecated Ogre resources if necessary
+
+            // Delete deprecated Ogre resources if necessary
             if (meshManager.resourceExists(videoMeshName))
             {
                 ::Ogre::ResourcePtr mesh = meshManager.getResourceByName(videoMeshName);

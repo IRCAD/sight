@@ -84,19 +84,22 @@ private:
     std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// True if the texture is initialized
-    bool m_isTextureInit;
+    bool m_isTextureInit { false };
 
     /// UID of the camera
     std::string m_cameraUID;
 
     /// Store previous image size
-    size_t m_previousWidth;
+    size_t m_previousWidth { 0 };
 
     /// Store previous image spacing
-    size_t m_previousHeight;
+    size_t m_previousHeight { 0 };
+
+    /// Store previous image type
+    ::fwTools::Type m_previousType;
 
     /// If true, the actor is rotated in z and y axis.
-    bool m_reverse;
+    bool m_reverse { false };
 };
 
 } // visuOgreAdaptor
