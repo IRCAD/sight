@@ -24,6 +24,7 @@
         <object uid="handEyeMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="sensorMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="chessMat" type="::fwData::TransformationMatrix3D" src="deferred" />
+        <object uid="chessMatInv" type="::fwData::TransformationMatrix3D" />
         <object uid="matrixVectorPose" type="::fwData::Vector" />
         <object uid="matrixVectorSensor" type="::fwData::Vector" />
         <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
@@ -377,7 +378,8 @@
         </service>
 
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
-           <inout key="object" uid="matrix0Inv" />
+           <!--<inout key="object" uid="matrix0Inv" />-->
+           <inout key="object" uid="matrix0" />
            <inout key="vector" uid="matrixVectorSensor" />
         </service>
 
@@ -393,8 +395,8 @@
                 <!--<key uid="handEyeMatrix" autoConnect="yes" />
                 <key uid="matrix0" inverse="true" />
                 <key uid="extrinsic" inverse="true"/>-->
-                <key uid="matrix0" autoConnect="yes" />
-                <key uid="handEyeMatrix" inverse="true" autoConnect="yes" />
+                <key uid="matrix0" inverse="true" autoConnect="yes" />
+                <key uid="handEyeMatrix" inverse="false" autoConnect="yes" />
             </in>
             <inout key="output" uid="sensorMatrix" />
         </service>
@@ -417,6 +419,13 @@
             <out group="target">
                 <key uid="chessMat" />
             </out>
+        </service>
+
+        <service uid="invertChessMat" type="::maths::SConcatenateMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="chessMat" inverse="true" />
+            </in>
+            <inout key="output" uid="chessMatInv" />
         </service>
 
         <!-- *************************** End Services *************************** -->
@@ -467,6 +476,7 @@
                 <adaptor uid="interactorStyle" />
                 <adaptor uid="sensorChess" />
                 <adaptor uid="sensorTransformAdaptor" />
+                <adaptor uid="chessMatTransformAdaptor" />
             </scene>
         </service>
 
@@ -475,13 +485,18 @@
             <config renderer="default" transform="vtkSensorMatrix" />
         </service>
 
+        <service uid="chessMatTransformAdaptor" type="::visuVTKAdaptor::STransform" autoConnect="yes">
+            <inout key="tm3d" uid="chessMatInv" />
+            <config renderer="default" transform="vtkInvertChessMat" />
+        </service>
+
         <service uid="videoAdptResult" type="::visuVTKARAdaptor::SVideo" autoConnect="yes">
             <in key="frame" uid="videoImage" />
             <config renderer="background" />
         </service>
 
         <service uid="cameraAdpt" type="::visuVTKARAdaptor::SCamera" autoConnect="yes">
-            <inout key="transform" uid="chessMat" />
+            <inout key="transform" uid="identityMatrix" />
             <in key="camera" uid="camera" />
             <config renderer="default" />
         </service>
@@ -491,11 +506,11 @@
         </service>
 
         <service uid="sensorAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="100" transform="vtkSensorMatrix" label="no" marker="yes" markerColor="#FF00FF" />
+            <config renderer="default" length="100" transform="vtkSensorMatrix" label="no" marker="yes" markerColor="#00FF00" />
         </service>
 
         <service uid="sensorChess" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="100" transform="identityMatrix" label="no" marker="yes" markerColor="#FF0000" />
+            <config renderer="default" length="100" transform="vtkInvertChessMat" label="no" marker="yes" markerColor="#FF0000" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -551,17 +566,19 @@
         <start uid="invertMatrix0" />
         <start uid="concatMatrix" />
         <start uid="cameraSelector" />
+        <start uid="invertChessMat" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
         <!-- VTK scene 'chessboardDetectionView' -->
         <start uid="videoAdptChessboard" />
         <!-- VTK scene 'resultView' -->
         <start uid="videoAdptResult" />
-        <start uid="sensorAxis" />
+        <!--<start uid="sensorAxis" />-->
         <start uid="cameraAdpt" />
         <start uid="interactorStyle" />
         <start uid="sensorChess" />
         <start uid="sensorTransformAdaptor" />
+        <start uid="chessMatTransformAdaptor" />
         <!-- Update -->
         <update uid="extractor" />
 
