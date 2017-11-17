@@ -187,7 +187,7 @@ void AutomaticRegistrationTest::rigidTransformTest()
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
                                                  itkReg::MEAN_SQUARES,
-                                                 0.00001, 0.3, 1000);
+                                                 0.00001, 1000);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
     const ::glm::dmat4 id  = res * rigidTrf;
@@ -225,7 +225,7 @@ void AutomaticRegistrationTest::translateTransformTest()
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
                                                  itkReg::NORMALIZED_CORRELATION,
-                                                 0.000001, 0.1, 500);
+                                                 0.000001, 500);
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -261,7 +261,7 @@ void AutomaticRegistrationTest::rotationTransformTest()
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
                                                  itkReg::MEAN_SQUARES,
-                                                 0.000001, 0.3, 1500);
+                                                 0.000001, 1500);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
     const ::glm::dmat4 id  = res * rot;

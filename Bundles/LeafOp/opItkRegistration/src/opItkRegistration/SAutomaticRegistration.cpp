@@ -15,7 +15,6 @@
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
-#include <itkRegistrationOp/AutomaticRegistrationV4.hpp>
 
 namespace opItkRegistration
 {
@@ -94,17 +93,8 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    if(m_legacyMode)
-    {
-        ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                                  m_maxStep, m_maxIterations);
-
-    }
-    else
-    {
-        ::itkRegistrationOp::AutomaticRegistrationV4::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                                    m_maxIterations);
-    }
+    ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                              m_maxIterations);
 
     m_sigComputed->asyncEmit();
 

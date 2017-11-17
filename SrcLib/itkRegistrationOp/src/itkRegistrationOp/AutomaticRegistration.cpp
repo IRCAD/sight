@@ -10,6 +10,7 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwGui/backend.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwItkIO/helper/Transform.hpp>
@@ -25,202 +26,70 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/mat4x4.hpp>
 
+#include <itkCastImageFilter.h>
 #include <itkCenteredTransformInitializer.h>
-#include <itkCommand.h>
-#include <itkGradientDescentOptimizer.h>
+#include <itkCorrelationImageToImageMetricv4.h>
 #include <itkImage.h>
-#include <itkImageRegistrationMethod.h>
-#include <itkImageToImageMetric.h>
+#include <itkImageRegistrationMethodv4.h>
+#include <itkImageToImageMetricv4.h>
 #include <itkLinearInterpolateImageFunction.h>
-#include <itkMattesMutualInformationImageToImageMetric.h>
-#include <itkMeanReciprocalSquareDifferenceImageToImageMetric.h>
-#include <itkMeanSquaresImageToImageMetric.h>
-#include <itkMinimumMaximumImageCalculator.h>
-#include <itkNormalizedCorrelationImageToImageMetric.h>
+#include <itkMattesMutualInformationImageToImageMetricv4.h>
+#include <itkMeanSquaresImageToImageMetricv4.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkRegularStepGradientDescentOptimizerv4.h>
 #include <itkVersorRigid3DTransform.h>
-#include <itkVersorRigid3DTransformOptimizer.h>
 
 namespace itkRegistrationOp
 {
 
-//------------------------------------------------------------------------------
-
-struct RegistratorParameters
-{
-    ::fwData::Image::csptr i_target;
-    ::fwData::Image::csptr i_reference;
-    ::fwData::TransformationMatrix3D::sptr o_trf;
-    MetricType i_metric;
-    double i_minStep;
-    double i_maxStep;
-    unsigned long i_maxIters;
-};
+typedef typename ::itk::Image< float, 3 > RegisteredImageType;
 
 //------------------------------------------------------------------------------
 
-template<typename TARGET_PIXELTYPE>
-struct Registrator
+template < typename OUTPUT_PIXELTYPE >
+struct ItkImageCaster
 {
+    typedef typename ::itk::Image<OUTPUT_PIXELTYPE, 3> OutputImageType;
+
+    struct Params
+    {
+        ::fwData::Image::csptr i_img;
+        typename OutputImageType::Pointer o_img;
+    };
+
     //------------------------------------------------------------------------------
 
-    template<class REFERENCE_PIXELTYPE>
-    void operator()(RegistratorParameters& params)
+    template< typename INPUT_PIXELTYPE >
+    void operator()(Params& p)
     {
-        const unsigned int Dimension = 3;
-        typedef itk::Image< TARGET_PIXELTYPE, Dimension >  TargetImageType;
-        typedef itk::Image< REFERENCE_PIXELTYPE, Dimension >  ReferenceImageType;
+        typedef typename ::itk::Image<INPUT_PIXELTYPE, 3> InputImageType;
 
-        typedef ::itk::VersorRigid3DTransform< double > TransformType;
-        typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
-        typedef ::itk::LinearInterpolateImageFunction< ReferenceImageType, double > InterpolatorType;
-        typedef ::itk::ImageRegistrationMethod< TargetImageType, ReferenceImageType > RegistrationType;
+        // Convert to ITK.
+        typename InputImageType::Pointer tmp = ::fwItkIO::itkImageFactory< InputImageType >(p.i_img);
 
-        const typename TargetImageType::Pointer targetImage =
-            ::fwItkIO::itkImageFactory< TargetImageType >(params.i_target);
-        const typename ReferenceImageType::Pointer referenceImage =
-            ::fwItkIO::itkImageFactory< ReferenceImageType >(params.i_reference);
-
-        typename RegistrationType::Pointer registration = RegistrationType::New();
-        typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-        OptimizerType::Pointer optimizer = OptimizerType::New();
-
-        typename ::itk::ImageToImageMetric< TargetImageType, ReferenceImageType >::Pointer metric;
-
-        switch(params.i_metric)
-        {
-            case MEAN_SQUARES:
-                metric = ::itk::MeanSquaresImageToImageMetric< TargetImageType, ReferenceImageType >::New();
-                break;
-            case NORMALIZED_CORRELATION:
-                metric = ::itk::NormalizedCorrelationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
-                break;
-            case PATTERN_INTENSITY:
-                metric =
-                    ::itk::MeanReciprocalSquareDifferenceImageToImageMetric< TargetImageType,
-                                                                             ReferenceImageType >::New();
-                break;
-            case MUTUAL_INFORMATION:
-                auto mutInfo =
-                    ::itk::MattesMutualInformationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
-                mutInfo->SetNumberOfSpatialSamples(targetImage->GetLargestPossibleRegion().GetNumberOfPixels() * 0.5);
-                mutInfo->SetNumberOfHistogramBins(3000);
-
-                metric = mutInfo;
-        }
-
-        registration->SetMetric(metric);
-        registration->SetOptimizer(optimizer.GetPointer());
-        registration->SetInterpolator(interpolator);
-
-        // Initialize transform.
-        TransformType::Pointer itkTransform = TransformType::New();
-
-        typedef itk::CenteredTransformInitializer< TransformType, TargetImageType, ReferenceImageType >
-            TransformInitializerType;
-
-        typename TransformInitializerType::Pointer initializer = TransformInitializerType::New();
-
-        initializer->SetTransform( itkTransform );
-        initializer->SetFixedImage( targetImage );
-        initializer->SetMovingImage(referenceImage );
-
-        initializer->MomentsOn();
-        initializer->InitializeTransform();
-
-        // Extract rotation and translation from the f4s matrix.
-        const ::glm::dmat4 initMat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(params.o_trf);
-        const double scale         = std::pow(::glm::determinant(initMat), 1./3.);
-
-        const ::glm::dquat orientation = ::glm::toQuat(initMat / scale);
-
-        const ::glm::dvec3 translation = ::glm::dvec3(::glm::column(initMat, 3));
-        const ::glm::dvec3 axis        = ::glm::axis(orientation);
-
-        typedef TransformType::VersorType VersorType;
-        typedef VersorType::VectorType VectorType;
-        VersorType rotation;
-        VectorType itkAxis;
-        itkAxis[0] = axis.x;
-        itkAxis[1] = axis.y;
-        itkAxis[2] = axis.z;
-
-        VectorType itkTrans;
-        itkTrans[0] = translation.x;
-        itkTrans[1] = translation.y;
-        itkTrans[2] = translation.z;
-
-        rotation.Set(itkAxis, ::glm::angle(orientation));
-        itkTransform->SetRotation( rotation );
-        itkTransform->SetTranslation(itkTrans);
-
-        registration->SetTransform(itkTransform);
-        registration->SetFixedImage(targetImage);
-        registration->SetMovingImage(referenceImage);
-        registration->SetFixedImageRegion(targetImage->GetLargestPossibleRegion());
-        registration->SetInitialTransformParameters(itkTransform->GetParameters());
-
-        // Scale the step size for each parameter.
-        OptimizerType::ScalesType optimizerScales( static_cast<unsigned int>(itkTransform->GetNumberOfParameters()) );
-        const double translationScale = 1.0 / 1000.0;
-        optimizerScales[0] = 1.0;
-        optimizerScales[1] = 1.0;
-        optimizerScales[2] = 1.0;
-        optimizerScales[3] = translationScale;
-        optimizerScales[4] = translationScale;
-        optimizerScales[5] = translationScale;
-        optimizer->SetScales( optimizerScales );
-        optimizer->SetMaximumStepLength( params.i_maxStep  );
-        optimizer->SetMinimumStepLength( params.i_minStep );
-        optimizer->SetNumberOfIterations( params.i_maxIters );
-
-        RegistrationObserver<OptimizerType>::Pointer observer = RegistrationObserver<OptimizerType>::New();
-        observer->setMaxIterations( params.i_maxIters );
-        optimizer->AddObserver( itk::IterationEvent(), observer );
-
-        registration->Update();
-
-        // Set the new transform if the registration wasn't canceled by the user.
-        if(!observer->forceStopped())
-        {
-            auto parameters = registration->GetLastTransformParameters();
-
-            itkTransform->SetParameters(parameters);
-
-            TransformType::Pointer finalTransform = TransformType::New();
-            finalTransform->SetCenter( itkTransform->GetCenter() );
-            finalTransform->SetParameters( parameters );
-            finalTransform->SetFixedParameters( itkTransform->GetFixedParameters() );
-
-            const ::itk::Matrix<double, 3, 3> rigidMat = finalTransform->GetMatrix();
-            const ::itk::Vector<double, 3> offset      = finalTransform->GetOffset();
-
-            // Convert ::itk::RigidTransform to f4s matrix.
-            for(std::uint8_t i = 0; i < 3; ++i)
-            {
-                params.o_trf->setCoefficient(i, 3, offset[i]);
-                for(std::uint8_t j = 0; j < 3; ++j)
-                {
-                    params.o_trf->setCoefficient(i, j, rigidMat(i, j));
-                }
-            }
-        }
+        // Cast to the desired pixel type.
+        auto castFilter = ::itk::CastImageFilter<InputImageType, OutputImageType>::New();
+        castFilter->SetInput(tmp);
+        castFilter->Update();
+        p.o_img = castFilter->GetOutput();
     }
 };
 
 //------------------------------------------------------------------------------
 
-struct RegistratorCaller
+static RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
 {
-    //------------------------------------------------------------------------------
+    typedef ItkImageCaster<float> FloatCasterType;
 
-    template<class TARGET_PIXELTYPE>
-    void operator() (RegistratorParameters& params)
-    {
-        const ::fwTools::DynamicType refType = params.i_reference->getPixelType();
+    typename FloatCasterType::Params p;
+    p.i_img = _img;
 
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Registrator<TARGET_PIXELTYPE> >::invoke(refType, params);
-    }
-};
+    const ::fwTools::DynamicType inType = _img->getPixelType();
+
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, FloatCasterType >::invoke(inType, p);
+
+    return p.o_img;
+}
 
 //------------------------------------------------------------------------------
 
@@ -229,26 +98,172 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           const ::fwData::TransformationMatrix3D::sptr& _trf,
                                           MetricType _metric,
                                           double _minStep,
-                                          double _maxStep,
                                           unsigned long _maxIterations)
 {
-    RegistratorParameters params;
-    params.i_target    = _target;
-    params.i_reference = _reference;
-    params.o_trf       = _trf;
-    params.i_metric    = _metric;
-    params.i_minStep   = _minStep;
-    params.i_maxStep   = _maxStep;
-    params.i_maxIters  = _maxIterations;
+    typedef double RealType; // Numeric type used for internal computations.
+    typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
 
-    // We don't handle int64, uint64 or double images to reduce compile times.
-    typedef ::boost::mpl::vector<
-            signed char, unsigned char,
-            signed short, unsigned short,
-            signed int, unsigned int, float > RegistrationType;
+    typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
+    typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
+        RegistrationMethodType;
 
-    const ::fwTools::DynamicType targetType = _target->getPixelType();
-    ::fwTools::Dispatcher< RegistrationType, RegistratorCaller>::invoke(targetType, params);
+    typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
+                                          RealType >::Pointer metric;
+
+    // Convert input images to float. Integer images aren't supported yet.
+    RegisteredImageType::Pointer target    = castToFloat(_target);
+    RegisteredImageType::Pointer reference = castToFloat(_reference);
+
+    // Choose a metric.
+    switch(_metric)
+    {
+        case MEAN_SQUARES:
+            metric =
+                ::itk::MeanSquaresImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
+                                                        RealType >::New();
+            break;
+        case NORMALIZED_CORRELATION:
+            metric =
+                ::itk::CorrelationImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
+                                                        RealType >::New();
+            break;
+        case MUTUAL_INFORMATION:
+        {
+            auto mutInfoMetric =
+                ::itk::MattesMutualInformationImageToImageMetricv4< RegisteredImageType, RegisteredImageType,
+                                                                    RegisteredImageType,
+                                                                    RealType >::New();
+            // TODO: find a strategy to compute the appropriate number of bins or let the user set it.
+            // More bins means better precision but longer evaluation.
+            mutInfoMetric->SetNumberOfHistogramBins(20);
+            metric = mutInfoMetric;
+        }
+
+        break;
+        default:
+            OSLM_FATAL("Unknown metric");
+    }
+
+    // Initialize transform. Center the reference image.
+    typedef typename ::itk::CenteredTransformInitializer< TransformType, RegisteredImageType, RegisteredImageType >
+        TransformInitializerType;
+
+    // This class initializes the transform by setting its center and translation.
+    // If our target and reference image don't change than this will always yield the same result.
+    typename TransformInitializerType::Pointer initializer = TransformInitializerType::New();
+
+    TransformType::Pointer itkTransform = TransformType::New();
+
+    ::itk::Matrix<RealType, 3, 3> m;
+    ::itk::Vector<RealType, 3> t;
+
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
+        t[i] = _trf->getCoefficient(i, 3);
+        for(std::uint8_t j = 0; j < 3; ++j)
+        {
+            m(i, j) = _trf->getCoefficient(i, j);
+        }
+    }
+
+    initializer->SetTransform(itkTransform);
+    initializer->SetFixedImage(target);
+    initializer->SetMovingImage(reference);
+
+    initializer->MomentsOn();
+    initializer->InitializeTransform();
+
+    // Setting the offset also recomputes the translation using the offset, rotation and center
+    // so the matrix needs to be set first.
+    itkTransform->SetMatrix(m);
+    itkTransform->SetOffset(t);
+
+    // Registration.
+    auto registrator = RegistrationMethodType::New();
+    auto optimizer   = OptimizerType::New();
+
+    registrator->SetMetric(metric);
+    registrator->SetOptimizer(optimizer);
+
+    OptimizerType::ScalesType optimizerScales(static_cast<unsigned int>(itkTransform->GetNumberOfParameters()));
+    const double translationScale = 1.0 / 1000.0;
+    optimizerScales[0] = 1.0;
+    optimizerScales[1] = 1.0;
+    optimizerScales[2] = 1.0;
+    optimizerScales[3] = translationScale;
+    optimizerScales[4] = translationScale;
+    optimizerScales[5] = translationScale;
+
+    optimizer->SetScales( optimizerScales );
+    optimizer->SetDoEstimateLearningRateOnce( true );
+    optimizer->SetDoEstimateLearningRateAtEachIteration( true );
+    optimizer->SetMinimumStepLength(_minStep);
+    optimizer->SetReturnBestParametersAndValue(true);
+    optimizer->SetNumberOfIterations(_maxIterations);
+
+    // The fixed image isn't tranformed, nearest neighbor interpolation is enough.
+    auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction< RegisteredImageType, RealType >::New();
+    auto movingInterpolator = ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType >::New();
+
+    metric->SetFixedInterpolator(fixedInterpolator.GetPointer());
+    metric->SetMovingInterpolator(movingInterpolator.GetPointer());
+
+    registrator->SetInitialTransform(itkTransform);
+    registrator->SetFixedImage(target);
+    registrator->SetMovingImage(reference);
+
+    // TODO: handle multi-resolution registration.
+    const unsigned int numberOfLevels = 1;
+
+    RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
+    shrinkFactorsPerLevel.SetSize( numberOfLevels );
+    shrinkFactorsPerLevel[0] = 1;
+    RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
+    smoothingSigmasPerLevel.SetSize( numberOfLevels );
+    smoothingSigmasPerLevel[0] = 0;
+    registrator->SetNumberOfLevels( numberOfLevels );
+    registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
+    registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
+
+    const bool hasGui = ::fwGui::isBackendLoaded();
+
+    RegistrationObserver<OptimizerType>::Pointer observer;
+
+    if(hasGui)
+    {
+        observer = RegistrationObserver<OptimizerType>::New();
+        observer->setMaxIterations( _maxIterations );
+        optimizer->AddObserver( ::itk::IterationEvent(), observer );
+    }
+
+    try
+    {
+        // Time for lift-off.
+        registrator->Update();
+    }
+    catch( ::itk::ExceptionObject& err )
+    {
+        OSLM_FATAL("Error while registering : " << err);
+    }
+
+    if(!hasGui || !observer->forceStopped())
+    {
+        // Get the last transform.
+        const TransformType* finalTransform = registrator->GetTransform();
+
+        const ::itk::Matrix<RealType, 3, 3> rigidMat = finalTransform->GetMatrix();
+        const ::itk::Vector<RealType, 3> offset      = finalTransform->GetOffset();
+
+        // Convert ::itk::RigidTransform to f4s matrix.
+        for(std::uint8_t i = 0; i < 3; ++i)
+        {
+            _trf->setCoefficient(i, 3, offset[i]);
+            for(std::uint8_t j = 0; j < 3; ++j)
+            {
+                _trf->setCoefficient(i, j, rigidMat(i, j));
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
