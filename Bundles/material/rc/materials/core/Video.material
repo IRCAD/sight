@@ -91,3 +91,45 @@ material VideoWithTF
         }
     }
 }
+
+fragment_program VideoWithTF_Int_FP glsl
+{
+    source Video_FP.glsl
+    attach TransferFunction_FP
+    preprocessor_defines TF=1,TF_INTEGER=1
+    default_params
+    {
+        param_named u_videoTexture int 0
+        param_named u_tfTexture int 1
+    }
+}
+
+material VideoWithTF_Int
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref VideoWithTF_VP
+            {
+            }
+
+            fragment_program_ref VideoWithTF_Int_FP
+            {
+            }
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit tf
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
