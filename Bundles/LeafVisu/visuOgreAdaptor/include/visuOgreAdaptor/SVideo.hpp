@@ -74,6 +74,9 @@ private:
     /// Slot: Updates the displayed transfer function
     void updateTF();
 
+    /// Slot: Move the video plane according to the optical center
+    void calibrate();
+
     /// Ogre texture used to store the fwImage
     ::Ogre::TexturePtr m_texture;
 
