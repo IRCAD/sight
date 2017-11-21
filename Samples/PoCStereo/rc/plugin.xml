@@ -1,0 +1,129 @@
+<plugin id="PoCStereo" version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgreAdaptor" />
+    <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>PoCStereo</id>
+        <desc>Stereo rendering PoC.</desc>
+        <config>
+
+            <object uid="modelSeries" type="::fwMedData::ModelSeries" />
+            <object uid="shift" type="::fwData::Integer" />
+
+            <service uid="mainWindow" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Ogre Stereo</name>
+                        <icon>PoCStereo-@PROJECT_VERSION@/ogre_stereo.ico</icon>
+                        <minSize width="1100" height="700" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="stereoScene" start="yes" />
+                    <view sid="parametersEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open model series..." shortcut="Ctrl+M" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openMesh" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="action_openMesh" type="::gui::action::SStarter" >
+                <start uid="meshReader" />
+            </service>
+
+            <service uid="action_quit" type="::gui::action::SQuit"  />
+
+            <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="modelSeries" />
+                <type mode="reader" />
+            </service>
+
+            <!-- Begin Generic Scene ***************************************** -->
+            <service uid="stereoScene" type="::fwRenderOgre::SRender" >
+                <scene overlay="true" fullscreen="true" >
+                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                    <layer id="default" depth="1" stereoMode="Stereo" />
+                    <adaptor uid="interactorAdaptor" />
+                    <adaptor uid="modelSeriesAdaptor" />
+                    <adaptor uid="compositorAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="default" style="Trackball" />
+            </service>
+
+            <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config layer="default" material="OrenNayar" />
+            </service>
+
+            <service uid="compositorAdaptor" type="::visuOgreAdaptor::SCompositorParameter" >
+                <inout key="parameter" uid="shift" />
+                <config layer="default" compositorName="Stereo" parameter="u_imageShift" shaderType="fragment" />
+            </service>
+
+            <!-- End Generic Scene ***************************************** -->
+            <!-- ******************************* Services ***************************************** -->
+            <service uid="parametersEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+                <parameters>
+                    <param type="int" name="Stereo shift" key="u_imageShift" min="-500" max="500" defaultValue="0" />
+                </parameters>
+            </service>
+
+            <connect>
+                <signal>parametersEditor/intChanged</signal>
+                <slot>compositorAdaptor/setIntParameter</slot>
+            </connect>
+
+            <start uid="mainWindow" />
+            <start uid="interactorAdaptor" />
+            <start uid="modelSeriesAdaptor" />
+            <start uid="compositorAdaptor" />
+
+        </config>
+    </extension>
+
+</plugin>
