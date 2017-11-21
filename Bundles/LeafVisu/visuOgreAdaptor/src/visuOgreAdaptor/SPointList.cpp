@@ -119,6 +119,11 @@ void SPointList::configuring()
     {
         this->setTransformId(this->getID() + "_TF");
     }
+
+    m_radius = config.get("radius", 1.f);
+
+    // Try to fit the scale used in VTK
+    m_radius *= 0.25f;
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +199,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     this->getRenderService()->makeCurrent();
 
     m_meshGeometry->updateMesh(_pointList);
+    m_meshGeometry->setSceneSizeFactor(m_radius);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph

@@ -149,6 +149,9 @@ private:
     ::fwRenderOgre::Mesh::sptr m_meshGeometry;
 
     ::fwData::TransformationMatrix3D::sptr m_transform;
+
+    /// Allows to scale the billboards
+    float m_radius { 1.f };
 };
 
 //------------------------------------------------------------------------------

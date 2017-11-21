@@ -116,7 +116,7 @@ void Material::updateOptionsMode(int _optionsMode)
 
                 if(gp && gp->_findNamedConstantDefinition("u_sceneSize"))
                 {
-                    gp->setNamedConstant("u_sceneSize", sceneSize);
+                    gp->setNamedConstant("u_sceneSize", sceneSize * m_sceneSizeFactor);
                 }
             }
         }

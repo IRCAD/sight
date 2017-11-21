@@ -79,6 +79,9 @@ public:
 
     FWRENDEROGRE_API void invalidateR2VB();
 
+    /// Set scene size factor
+    void setSceneSizeFactor(float sceneSizeFactor);
+
 private:
 
     /// Maximum size of a texture (TODO: get this from hardware instead)
@@ -121,6 +124,8 @@ private:
     ::Ogre::MeshPtr m_r2vbMesh;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
     std::map< ::fwData::Mesh::CellTypes, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
+    /// Factor used to modify normals length or billboards size
+    float m_sceneSizeFactor { 1.f };
 };
 
 //------------------------------------------------------------------------------
@@ -136,6 +141,15 @@ inline void Mesh::setDynamicVertices(bool _isDynamic)
 {
     m_isDynamicVertices = _isDynamic;
 }
+
+//------------------------------------------------------------------------------
+
+inline void Mesh::setSceneSizeFactor(float sceneSizeFactor)
+{
+    m_sceneSizeFactor = sceneSizeFactor;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace fwRenderOgre
 

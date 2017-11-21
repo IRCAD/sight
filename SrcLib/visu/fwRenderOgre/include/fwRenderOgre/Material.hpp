@@ -50,15 +50,19 @@ public:
     /// Update material color in fixed function pipeline
     FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr fw_material );
 
-    FWRENDEROGRE_API void setHasMeshNormal(bool hasMeshNormal);
-    FWRENDEROGRE_API void setHasVertexColor(bool hasMeshNormal);
-    FWRENDEROGRE_API void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
-    FWRENDEROGRE_API void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
+    void setHasMeshNormal(bool hasMeshNormal);
+    void setHasVertexColor(bool hasMeshNormal);
+    void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
+    void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
 
-    FWRENDEROGRE_API void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
+    void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
     /// Set the diffuse texture
     FWRENDEROGRE_API void setDiffuseTexture(const ::Ogre::TexturePtr& _texture);
+
+    /// Set scene size factor
+    void setSceneSizeFactor(float sceneSizeFactor);
+
 private:
 
     /// Remove a rendering pass in all techniques on the current material
@@ -89,6 +93,9 @@ private:
 
     /// Bounding box of the mesh
     ::Ogre::AxisAlignedBox m_meshBoundingBox;
+
+    /// Factor used to modify normals length or billboards size
+    float m_sceneSizeFactor { 1.f };
 
     /// Name of the material template
     std::string m_templateName;
@@ -129,6 +136,13 @@ inline void Material::setMeshBoundingBox(const Ogre::AxisAlignedBox& _bbox)
 {
     m_meshBoundingBox = _bbox;
 }
+//-----------------------------------------------------------------------------
+
+inline void Material::setSceneSizeFactor(float sceneSizeFactor)
+{
+    m_sceneSizeFactor = sceneSizeFactor;
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace fwRenderOgre

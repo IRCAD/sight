@@ -947,6 +947,7 @@ void Mesh::updateMaterial(const Material::uptr& _material, bool _isR2VB, const :
 {
     _material->setHasMeshNormal(m_hasNormal);
     _material->setMeshBoundingBox(_bbox);
+    _material->setSceneSizeFactor(m_sceneSizeFactor);
 
     // The r2vb pipeline outputs per-vertex color if we have per-primitive color
     // Thus for the rendering pipeline it is only viewed as per-vertex color
