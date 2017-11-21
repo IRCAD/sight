@@ -245,7 +245,7 @@ public:
     FWRENDEROGRE_API std::vector<SPTR(::fwRenderOgre::ILight)> getLightAdaptors() const;
 
     /// Compute bounding box of the scene.
-    ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
+    FWRENDEROGRE_API ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
 
     FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
