@@ -25,15 +25,12 @@ void main()
 
     vec2 shiftVec = vec2(shift, 0);
 
-    vec3 outColor;
     if(bool(isOdd ^ u_invertLines))
     {
-        outColor = texture(u_srcTextures0, uv + shiftVec).rgb;
+        fragColor = texture(u_srcTextures0, uv + shiftVec);
     }
     else
     {
-        outColor = texture(u_srcTextures1, uv).rgb;
+        fragColor = texture(u_srcTextures1, uv);
     }
-
-    fragColor = vec4(outColor, 1.0);
 }

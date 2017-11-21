@@ -2,9 +2,9 @@ compositor Stereo
 {
     technique
     {
-        texture rt_output target_width target_height PF_R8G8B8
-        texture rt0 target_width target_height PF_R8G8B8
-        texture rt1 target_width target_height PF_R8G8B8
+        texture rt_output target_width target_height PF_R8G8B8A8
+        texture rt0 target_width target_height PF_R8G8B8A8
+        texture rt1 target_width target_height PF_R8G8B8A8
 
         target rt0
         {
