@@ -22,12 +22,12 @@ in vec2 uv0;
 
 #ifdef R2VB
 
-out vec3 oNormal;
+layout(location = 0) out vec3 vNormal;
 #   ifdef VERTEX_COLOR
-out vec4 oColor;
+layout(location = 1) out vec4 vColor;
 #   endif // VERTEX_COLOR
 #   ifdef DIFFUSE_TEX
-out vec2 oTexCoord;
+layout(location = 2) out vec2 vTexCoord;
 #   endif // DIFFUSE_TEX
 
 #else
@@ -63,14 +63,14 @@ void main(void)
 {
 #ifdef R2VB
     gl_Position = position;
-    oNormal = normal;
+    vNormal = normal;
 
 #   ifdef VERTEX_COLOR
-    oColor = colour/255.f;
+    vColor = colour/255.f;
 #   endif // VERTEX_COLOR
 
 #   ifdef DIFFUSE_TEX
-    oTexCoord = uv0;
+    vTexCoord = uv0;
 #   endif // DIFFUSE_TEX
 
 #else
