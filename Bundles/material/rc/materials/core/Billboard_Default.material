@@ -29,6 +29,11 @@ geometry_program Default/Billboard_Depth_GP glsl
 {
     source Billboard_Default_GP.glsl
     preprocessor_defines DEPTH=1
+    default_params
+    {
+        param_named_auto u_proj projection_matrix
+        param_named u_sceneSize float 10.
+    }
 }
 
 
