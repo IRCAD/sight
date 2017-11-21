@@ -5,6 +5,7 @@
     <requirement id="visuOgreAdaptor" />
     <requirement id="visuOgreQt" />
     <requirement id="material" />
+    <requirement id="scene2D" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig">
@@ -13,6 +14,12 @@
         <config>
 
             <object uid="modelSeries" type="::fwMedData::ModelSeries" />
+            <object uid="image" type="::fwData::Image" />
+
+            <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="landmarks" type="::fwData::Landmarks" />
+            <object uid="TFPool" type="::fwData::Composite" />
+            <object uid="histogram" type="::fwData::Histogram" />
             <object uid="shift" type="::fwData::Integer" />
 
             <service uid="mainWindow" type="::gui::frame::SDefaultFrame" >
@@ -35,11 +42,15 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" />
+                        <view proportion="0" />
                         <view proportion="1" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="stereoScene" start="yes" />
+                    <view sid="tfm" start="yes" />
+                    <view wid="tfScene" />
                     <view sid="parametersEditor" start="yes" />
                 </registry>
             </service>
@@ -59,12 +70,14 @@
                 <gui>
                     <layout>
                         <menuItem name="Open model series..." shortcut="Ctrl+M" />
+                        <menuItem name="Open image..." shortcut="Ctrl+I" />
                         <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="action_openMesh" start="yes" />
+                    <menuItem sid="action_openImage" start="yes" />
                     <menuItem sid="action_quit" start="yes" />
                 </registry>
             </service>
@@ -73,10 +86,19 @@
                 <start uid="meshReader" />
             </service>
 
+            <service uid="action_openImage" type="::gui::action::SStarter" >
+                <start uid="imageReader" />
+            </service>
+
             <service uid="action_quit" type="::gui::action::SQuit"  />
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
                 <in key="target" uid="modelSeries" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="image" />
                 <type mode="reader" />
             </service>
 
@@ -87,17 +109,24 @@
                     <layer id="default" depth="1" stereoMode="Stereo" />
                     <adaptor uid="interactorAdaptor" />
                     <adaptor uid="modelSeriesAdaptor" />
+                    <adaptor uid="volumeAdaptor" />
                     <adaptor uid="compositorAdaptor" />
                 </scene>
             </service>
 
             <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Trackball" />
+                <config layer="default" style="VR" />
             </service>
 
             <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
                 <in key="model" uid="modelSeries" />
                 <config layer="default" material="OrenNayar" />
+            </service>
+
+            <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender" >
+                <inout key="image" uid="image" autoConnect="yes" />
+                <inout key="tf" uid="transferFunction" optional="yes" />
+                <config layer="default" mode="raytracing" widgets="no" preintegration="no" autoresetcamera="yes"/>
             </service>
 
             <service uid="compositorAdaptor" type="::visuOgreAdaptor::SCompositorParameter" >
@@ -107,10 +136,30 @@
 
             <!-- End Generic Scene ***************************************** -->
             <!-- ******************************* Services ***************************************** -->
+
+            <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
+                <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
+                <out key="tf" uid="transferFunction" />
+            </service>
+
+            <service uid="tfWidget" type="::fwServices::SConfigController">
+                <appConfig id="TransferFunctionWidget" />
+                <inout key="image" uid="image"/>
+                <inout key="histogram" uid="histogram"/>
+                <inout key="transferFunction" uid="transferFunction" />
+                <parameter replace="WID_PARENT" by="tfScene"/>
+            </service>
+
             <service uid="parametersEditor" type="::guiQt::editor::SParameters" autoConnect="no">
                 <parameters>
                     <param type="int" name="Stereo shift" key="u_imageShift" min="-500" max="500" defaultValue="0" />
                 </parameters>
+            </service>
+
+            <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+                <in key="image" uid="image" autoConnect="yes" />
+                <inout key="histogram" uid="histogram" />
+                <binsWidth>5.0</binsWidth>
             </service>
 
             <connect>
@@ -119,8 +168,12 @@
             </connect>
 
             <start uid="mainWindow" />
+            <start uid="tfWidget" />
+            <start uid="computeHistogram" />
+
             <start uid="interactorAdaptor" />
             <start uid="modelSeriesAdaptor" />
+            <start uid="volumeAdaptor" />
             <start uid="compositorAdaptor" />
 
         </config>

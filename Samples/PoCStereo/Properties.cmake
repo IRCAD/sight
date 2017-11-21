@@ -22,6 +22,8 @@ set( REQUIREMENTS
     material
     media
     preferences
+    scene2D
+    imageConfig
     ogreConfig
 )
 
