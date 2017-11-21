@@ -138,7 +138,7 @@ struct PTreeVisitor
                   [&](const ::boost::property_tree::ptree::value_type* s1,
                       const ::boost::property_tree::ptree::value_type* s2)
             {
-                const unsigned int n1 = std::stoul(s1->first),
+                const unsigned long n1 = std::stoul(s1->first),
                 n2 = std::stoul(s2->first);
                 return n1 <= n2;
             });
