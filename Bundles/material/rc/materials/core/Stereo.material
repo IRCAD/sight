@@ -7,6 +7,7 @@ fragment_program Stereo/Mix glsl
                 param_named u_invertLines int 0
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
+                param_named u_imageShift int 0
         }
 }
 
