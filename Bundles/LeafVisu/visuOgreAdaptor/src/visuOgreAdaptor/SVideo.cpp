@@ -86,6 +86,7 @@ void SVideo::stopping()
 {
     m_texture.reset();
     m_material.reset();
+    m_gpuTF.reset();
 }
 
 //------------------------------------------------------------------------------
