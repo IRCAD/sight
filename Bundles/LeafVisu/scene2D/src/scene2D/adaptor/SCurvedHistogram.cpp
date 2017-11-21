@@ -88,7 +88,7 @@ void SCurvedHistogram::starting()
 {
     // Init border style
     m_borderColor.setCosmetic( true );
-    m_borderColor.setWidthF( m_borderWidth );
+    m_borderColor.setWidthF( static_cast<qreal>(m_borderWidth) );
     m_borderColor.setStyle( Qt::SolidLine );
     m_borderColor.setJoinStyle( Qt::RoundJoin );
     m_borderColor.setCapStyle( Qt::RoundCap );
@@ -114,7 +114,7 @@ SCurvedHistogram::Points SCurvedHistogram::getControlPoints(const ::fwData::Hist
     // (testing...)
     for(size_t i = 0; i < nbValues; ++i)
     {
-        p.first  = (double)(histogramMin + i * binsWidth);
+        p.first  = static_cast<double>(histogramMin + i * binsWidth);
         p.second = histogramValues[i];
 
         controlPoints.push_back( p );
@@ -132,16 +132,17 @@ SCurvedHistogram::Points SCurvedHistogram::getBSplinePoints( const Points& _poin
 
     // Add again the first point with a higher value in order to prevent B-Spline algorithm from removing
     // the first value.
-    list.add_point(new point((float) _points[0].first, (float) _points[0].second * 2) );
+    list.add_point(new point(static_cast<float>( _points[0].first), static_cast<float>( _points[0].second * 2) ));
 
     // Add all the points
     for(const auto& pt : _points )
     {
-        list.add_point(new point((float)(pt.first), (float)(pt.second)) );
+        list.add_point(new point(static_cast<float>(pt.first), static_cast<float>(pt.second) ));
     }
 
     // Add again the last point
-    list.add_point(new point((float) _points.back().first, (float) _points.back().second / 2 ) );
+    list.add_point(new point(static_cast<float>( _points.back().first),
+                             static_cast<float>( _points.back().second / 2 ) ));
 
     // Commpute the points of the B-Spline with external code from AHO (to be integrated here later).
     cat_curve curve( list );
@@ -218,8 +219,8 @@ void SCurvedHistogram::computePointToPathLengthMapFromBSplinePoints(Points& _bSp
             //m_positionsToPathLength[ (int) p.first ] = m_painterPath->length();
 
             QPointF pt(p.first,  p.second);
-            len                                     += QLineF( prevPt, pt ).length();
-            m_positionsToPathLength[ (int) p.first ] = len;
+            len                                                   += QLineF( prevPt, pt ).length();
+            m_positionsToPathLength[ static_cast<int>( p.first ) ] = len;
 
             prevPt = pt;
         }
@@ -236,12 +237,12 @@ void SCurvedHistogram::updating()
 
     ::fwData::mt::ObjectReadLock lock(histogram);
 
+    m_layer = new QGraphicsItemGroup();
+
+    m_painterPath = new QPainterPath();
+
     if (!histogram->getValues().empty())
     {
-        m_layer = new QGraphicsItemGroup();
-
-        m_painterPath = new QPainterPath();
-
         Points controlPoints = this->getControlPoints( histogram );
         Points bSplinePoints = this->getBSplinePoints( controlPoints );
 
@@ -254,8 +255,8 @@ void SCurvedHistogram::updating()
         this->buildBSplineFromPoints( bSplinePoints );
 
         // Adjust the layer's position and zValue depending on the associated axis
-        m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-        m_layer->setZValue(m_zValue);
+        m_layer->setPos(static_cast<qreal>( m_xAxis->getOrigin() ), static_cast<qreal>( m_yAxis->getOrigin() ));
+        m_layer->setZValue(static_cast<qreal>( m_zValue ));
 
         // Add to the scene the unique item which gather the whole set of rectangle graphic items:
         this->getScene2DRender()->getScene()->addItem( m_layer );
@@ -281,9 +282,6 @@ void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
     QPainterPath path( QPointF(startPoint.x(), 0.0) );
     path.lineTo( startPoint );
 
-    const int maxLinesPerPath = 10;
-    int lineCount             = 0;
-
     previousPoint.first  = startPoint.x();
     previousPoint.second = startPoint.y();
 
@@ -296,7 +294,7 @@ void SCurvedHistogram::buildBSplineFromPoints(Points& _bSplinePoints )
     }
 
     // Close the path:
-    m_painterPath->lineTo( histogram->getMaxValue(), _bSplinePoints.back().second);
+    m_painterPath->lineTo( static_cast<qreal>( histogram->getMaxValue() ), _bSplinePoints.back().second);
 
     if( useBorderColor )
     {
@@ -438,9 +436,9 @@ void SCurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _even
     // Event coordinates in scene
     const ::fwRenderQt::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event.getCoord() );
 
-    const int histIndex = (int) sceneCoord.getX();
-    const int index     = histIndex - histogramMinValue;
-    const int nbValues  = (int)values.size() * histogramBinsWidth;
+    const int histIndex = static_cast<int>( sceneCoord.getX() );
+    const int index     = static_cast<const int>(histIndex - histogramMinValue);
+    const int nbValues  = static_cast<int>(values.size() * histogramBinsWidth);
 
     if(index >= 0 && index < nbValues && m_positionsToPathLength.find( histIndex ) != m_positionsToPathLength.end())
     {
@@ -449,7 +447,7 @@ void SCurvedHistogram::updateCurrentPoint(const ::fwRenderQt::data::Event& _even
         const QPointF qPoint = m_painterPath->pointAtPercent( percent );
 
         point->getRefCoord()[0] = sceneCoord.getX();
-        point->getRefCoord()[1] = qPoint.y() * m_scale;
+        point->getRefCoord()[1] = qPoint.y() * static_cast<double>(m_scale);
     }
 }
 
@@ -464,8 +462,8 @@ SCurvedHistogram::Points SCurvedHistogram::linearInterpolation( const Point _p1,
     {
         t = i / 100;
 
-        p.first  = _p1.first + ( _p2.first - _p1.first ) * t;
-        p.second = _p1.second + ( _p2.second - _p1.second ) * t;
+        p.first  = _p1.first + ( _p2.first - _p1.first ) * static_cast<double>(t);
+        p.second = _p1.second + ( _p2.second - _p1.second ) * static_cast<double>(t);
         points.push_back( p );
     }
 
@@ -500,14 +498,14 @@ void SCurvedHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
     if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelUp )
     {
         m_scale *= SCALE;
-        m_layer->setTransform(QTransform::fromScale(1, SCALE), true);
+        m_layer->setTransform(QTransform::fromScale(1, static_cast<qreal>(SCALE) ), true);
 
         updatePointedPos = true;
     }
     else if( _event.getType() == ::fwRenderQt::data::Event::MouseWheelDown )
     {
         m_scale /= SCALE;
-        m_layer->setTransform(QTransform::fromScale(1, 1 / SCALE), true);
+        m_layer->setTransform(QTransform::fromScale(1, 1 / static_cast<qreal>(SCALE) ), true);
 
         updatePointedPos = true;
     }
