@@ -494,7 +494,6 @@
         <service uid="setAutoRegistrationMetric" type="::guiQt::editor::SParameters">
             <parameters>
                 <param type="double" name="min step" key="minStep" defaultValue="0.0001" min="0.00001" max="1." />
-                <param type="double" name="max step" key="maxStep" defaultValue="0.3" min="0.01" max="5." />
                 <param type="int" name="iterations" key="maxIterations" defaultValue="200" min="1" max="1000" />
                 <param type="enum" name="Mode" key="metric" defaultValue="NormalizedCorrelation" values="MeanSquares,NormalizedCorrelation,MutualInformation" />
             </parameters>
@@ -555,7 +554,6 @@
             <in key="reference" uid="${referenceImageUid}" />
             <inout key="transform" uid="${transformUid}" />
             <minStep>0.0001</minStep>
-            <maxStep>0.3</maxStep>
             <maxIterations>200</maxIterations>
             <metric>NormalizedCorrelation</metric>
         </service>

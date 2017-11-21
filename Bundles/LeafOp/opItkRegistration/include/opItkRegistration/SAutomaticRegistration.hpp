@@ -31,10 +31,8 @@ namespace opItkRegistration
        <in key="reference" uid="..." />
        <inout key="transform" uid="..." />
        <minStep>0.0001</minStep>
-       <maxStep>0.2</maxStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
-       <legacyMode>off</legacyMode>
    </service>
    @endcode
  * @subsection Input Input
@@ -48,15 +46,12 @@ namespace opItkRegistration
  * @subsection Configuration Configuration
  * - \b minStep : smallest step that can be taken by the optimizer. A smaller step gives a more precise result but
  * will converge slower.
- * - \b maxStep : biggest step that can be taken by the optimizer. This value should be set according to
- * the distance approximately separating the two images. It affects the time needed to converge.
  * - \b maxIterations : the maximum number of steps allowed to the optimizer. The optimizer will stop beyond this point
  * even if it didn't find a suitable result.
  * - \b metric : the metric used to compare the two images. Possible values are :
  * MeanSquares : fastest metric, only works when matching images with the same intensity values.
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
- * - \b legacyMode (optional) (on|off) : use the legacy ITK framework (off by default).
  */
 class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::IOperator
 {
@@ -109,17 +104,11 @@ private:
     /// Smallest step that can be taken by the optimizer.
     double m_minStep;
 
-    /// Biggest step that can be taken by the optimizer.
-    double m_maxStep;
-
     /// Maximum number of iterations allowed.
     unsigned long m_maxIterations;
 
     /// Metric used by the optimizer.
     ::itkRegistrationOp::MetricType m_metric;
-
-    /// If true, use legacy registration instead of v4 registration.
-    bool m_legacyMode;
 };
 
 } // namespace opItkRegistration
