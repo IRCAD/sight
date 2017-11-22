@@ -100,9 +100,9 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
         matrixBi,
         matrixBj;
 
-        ::fwData::TransformationMatrix3D::sptr matrixAjTrans = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixAiTrans = ::fwData::TransformationMatrix3D::New();
         ::fwData::TransformationMatrix3D::sptr matrixA       = ::fwData::TransformationMatrix3D::New();
-        ::fwData::TransformationMatrix3D::sptr matrixBjTrans = ::fwData::TransformationMatrix3D::New();
+        ::fwData::TransformationMatrix3D::sptr matrixBiTrans = ::fwData::TransformationMatrix3D::New();
         ::fwData::TransformationMatrix3D::sptr matrixB       = ::fwData::TransformationMatrix3D::New();
 
         matrixAi = ::fwData::TransformationMatrix3D::dynamicCast(*it1);
@@ -110,27 +110,16 @@ void SHandEyeCalibration::computeRegistration(::fwCore::HiResClock::HiResClockTy
         matrixAj = ::fwData::TransformationMatrix3D::dynamicCast(*(it1 + 1));
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixAj);
 
-        /*
-           // Transpose the matrix
-           for(size_t i = 0; i < 4; ++i)
-           {
-            for(size_t j = 0; j < 4; ++j)
-            {
-                matrixAjTrans->setCoefficient(j,i, matrixAj->getCoefficient(i, j));
-            }
-           }
-         */
-
-        ::fwDataTools::TransformationMatrix3D::invert(matrixAj, matrixAjTrans);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrixAi, matrixAjTrans, matrixA);
+        ::fwDataTools::TransformationMatrix3D::invert(matrixAi, matrixAiTrans);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrixAj, matrixAiTrans, matrixA);
 
         matrixBi = ::fwData::TransformationMatrix3D::dynamicCast(*it2);
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBi);
         matrixBj = ::fwData::TransformationMatrix3D::dynamicCast(*(it2 + 1));
         SLM_ASSERT("This element of the vector is not a TransformationMatrix3D", matrixBj);
 
-        ::fwDataTools::TransformationMatrix3D::invert(matrixBj, matrixBjTrans);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrixBi, matrixBjTrans, matrixB);
+        ::fwDataTools::TransformationMatrix3D::invert(matrixBi, matrixBiTrans);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrixBj, matrixBiTrans, matrixB);
 
         m_handEyeApi->pushMatrix(matrixA, matrixB);
     }

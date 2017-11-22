@@ -174,11 +174,11 @@ void SOpenCVIntrinsic::updating()
                     }
                     mat3D->setCoefficient(i, 3, tmat.at< double >(static_cast<int>(i)));
                 }
-
-                ::fwDataTools::TransformationMatrix3D::invert(mat3D, mat3D);
+                //::fwDataTools::TransformationMatrix3D::invert(mat3D, mat3D);
                 poseCamera->getContainer().push_back(mat3D);
                 auto sig = poseCamera->signal< ::fwData::Vector::AddedObjectsSignalType >(
                     ::fwData::Vector::s_ADDED_OBJECTS_SIG);
+                sig->asyncEmit(poseCamera->getContainer());
             }
         }
 

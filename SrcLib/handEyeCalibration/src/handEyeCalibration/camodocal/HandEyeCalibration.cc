@@ -92,6 +92,7 @@ static Eigen::MatrixXd ScrewToStransposeBlockofT(
     )
 {
     Eigen::MatrixXd Stranspose(6,8);
+    Stranspose.setZero();
 
 
     typedef Eigen::Matrix<T, 3, 1> VecT;
@@ -194,8 +195,6 @@ DualQuaterniond
 HandEyeCalibration::estimateHandEyeScrewInitial(Eigen::MatrixXd& T,
                                                 bool planarMotion)
 {
-
-
     // dq(r1, t1) = dq * dq(r2, t2) * dq.inv
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(T, Eigen::ComputeFullU | Eigen::ComputeFullV);
 
@@ -254,7 +253,7 @@ HandEyeCalibration::estimateHandEyeScrewInitial(Eigen::MatrixXd& T,
         double discriminant = 4.0 * square(u1.dot(u2)) - 4.0 * (u1.dot(u1) * u2.dot(u2));
         if (discriminant == 0.0 && mVerbose)
         {
-//            std::cout << "# INFO: Noise-free case" << std::endl;
+            std::cout << "# INFO: Noise-free case" << std::endl;
         }
 
         lambda2 = sqrt(1.0 / t[idx]);
@@ -358,6 +357,7 @@ HandEyeCalibration::estimateHandEyeScrewRefine(DualQuaterniond& dq,
 
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::DENSE_QR;
+    options.function_tolerance = 1e-10;
     options.jacobi_scaling     = true;
     options.max_num_iterations = 500;
     options.logging_type = ceres::SILENT;
@@ -367,7 +367,7 @@ HandEyeCalibration::estimateHandEyeScrewRefine(DualQuaterniond& dq,
 
     if (mVerbose)
     {
-        std::cout << summary.BriefReport() << std::endl;
+        std::cout << summary.FullReport() << std::endl;
     }
 
     Eigen::Quaterniond q(p[0], p[1], p[2], p[3]);
