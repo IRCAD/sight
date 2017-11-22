@@ -83,8 +83,6 @@ protected:
     /// Ogre parent Transform sceneNode
     ::Ogre::SceneNode* m_parentTransformNode;
 
-    ::fwData::TransformationMatrix3D::sptr m_fwTransform;
-
 };
 
 } //namespace visuOgreAdaptor

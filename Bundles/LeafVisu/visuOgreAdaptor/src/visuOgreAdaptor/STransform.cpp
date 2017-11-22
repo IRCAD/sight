@@ -67,7 +67,7 @@ void STransform::starting()
 
     if(m_transformNode)
     {
-        this->updating();
+        this->updateFromOgre();
         return;
     }
 
@@ -98,16 +98,17 @@ void STransform::starting()
 
 void STransform::updateFromOgre()
 {
-    ::fwData::mt::ObjectWriteLock lock(m_fwTransform);
+    auto fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::mt::ObjectWriteLock lock(fwTransform);
     for(size_t lt = 0; lt < 4; lt++)
     {
         for (size_t ct = 0; ct < 4; ct++)
         {
-            m_fwTransform->setCoefficient(ct, lt, static_cast<double>(m_ogreTransform[ct][lt]));
+            fwTransform->setCoefficient(ct, lt, static_cast<double>(m_ogreTransform[ct][lt]));
         }
     }
 
-    auto sig = m_fwTransform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = fwTransform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -118,20 +119,20 @@ void STransform::updateFromOgre()
 
 void STransform::updating()
 {
-    m_fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
+    auto fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
 
     // Multithreaded lock
-    ::fwData::mt::ObjectReadLock lock(m_fwTransform);
-
-    for(size_t lt = 0; lt < 4; lt++)
     {
-        for(size_t ct = 0; ct < 4; ct++)
+        ::fwData::mt::ObjectReadLock lock(fwTransform);
+
+        for(size_t lt = 0; lt < 4; lt++)
         {
-            m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(m_fwTransform->getCoefficient(ct, lt));
+            for(size_t ct = 0; ct < 4; ct++)
+            {
+                m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(fwTransform->getCoefficient(ct, lt));
+            }
         }
     }
-
-    lock.unlock();
 
     // Decompose the matrix
     ::Ogre::Vector3 position;
