@@ -146,7 +146,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     const unsigned int numViewPoints = this->getLayer()->getNumberOfCameras();
 
     const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
-    const float hRatio = numViewPoints != 1 && numViewPoints != 2 ? 0.5f : 1.f;
+    const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
 
     for(unsigned int i = 0; i < numViewPoints; ++i)
     {
@@ -417,7 +417,7 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
     const auto numViewPoints = m_entryPointsTextures.size();
     const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
-    const float hRatio       = numViewPoints != 1 && numViewPoints != 2 ? 0.5f : 1.f;
+    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
 
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
