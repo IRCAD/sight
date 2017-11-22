@@ -113,6 +113,8 @@
                     <menuItem name="Next" icon="media-0.1/icons/Next.svg" />
                     <separator/>
                     <menuItem name="Chessboard size" icon="arMedia-0.1/icons/chessboard.svg" />
+                    <separator/>
+                    <menuItem name="Save Hand Eye calibration matrix" icon="media-0.1/icons/Export.svg" />
                 </layout>
             </gui>
             <registry>
@@ -123,7 +125,8 @@
                 <menuItem sid="actionPauseCamera" start="yes" />
                 <menuItem sid="actionPrevious" start="yes" />
                 <menuItem sid="actionNext" start="yes" />
-                <menuItem sid="action_chessBoardSize" start="yes" />
+                <menuItem sid="actionChessBoardSize" start="yes" />
+                <menuItem sid="actionExportHandEye" start="yes" />
             </registry>
         </service>
 
@@ -237,6 +240,33 @@
             </slots>
         </service>
 
+        <service uid="actionExportHandEye" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>handEyeMatrixWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionChessBoardSize" type="::uiPreferences::action::SPreferencesConfiguration">
+            <preference>
+                <type>number</type>
+                <name>Chessboard width</name>
+                <key>CHESSBOARD_WIDTH</key>
+                <default_value>7</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Chessboard height</name>
+                <key>CHESSBOARD_HEIGHT</key>
+                <default_value>4</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Chessboard square size (mm)</name>
+                <key>CHESSBOARD_SQUARE_SIZE</key>
+                <default_value>100</default_value>
+            </preference>
+        </service>
+
         <!-- *************************** End Actions *************************** -->
 
         <!-- *************************** Begin Services *************************** -->
@@ -342,27 +372,6 @@
             <red>Chessboard points are NOT visible</red>
         </service>
 
-        <service uid="action_chessBoardSize" type="::uiPreferences::action::SPreferencesConfiguration">
-            <preference>
-                <type>number</type>
-                <name>Chessboard width</name>
-                <key>CHESSBOARD_WIDTH</key>
-                <default_value>7</default_value>
-            </preference>
-            <preference>
-                <type>number</type>
-                <name>Chessboard height</name>
-                <key>CHESSBOARD_HEIGHT</key>
-                <default_value>4</default_value>
-            </preference>
-            <preference>
-                <type>number</type>
-                <name>Chessboard square size (mm)</name>
-                <key>CHESSBOARD_SQUARE_SIZE</key>
-                <default_value>100</default_value>
-            </preference>
-        </service>
-
         <service uid="pushMatrixSensor" type="::ctrlSelection::SManage">
            <inout key="object" uid="matrix0" />
            <inout key="vector" uid="matrixVectorSensor" />
@@ -375,6 +384,13 @@
             <out group="target">
                 <key uid="camera" />
             </out>
+        </service>
+
+        <service uid="handEyeMatrixWriter" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="handEyeMatrix" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
 
         <!-- *************************** End Services *************************** -->
@@ -478,7 +494,7 @@
         </connect>
 
         <connect>
-            <signal>action_chessBoardSize/parametersModified</signal>
+            <signal>actionChessBoardSize/parametersModified</signal>
             <slot>chessboardDetector/updateChessboardSize</slot>
         </connect>
 
