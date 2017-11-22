@@ -1,44 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/action/SDoNothing.hpp"
-
-#include <fwCore/base.hpp>
-
-#include <fwServices/macros.hpp>
-
-
+#include "gui/action/SDefaultButton.hpp"
 
 namespace gui
 {
 namespace action
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDefaultButton );
 
-
-SDoNothing::SDoNothing() noexcept
+SDefaultButton::SDefaultButton() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDoNothing::~SDoNothing() noexcept
+SDefaultButton::~SDefaultButton() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::configuring()
+void SDefaultButton::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::starting()
+void SDefaultButton::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -46,7 +39,7 @@ void SDoNothing::starting()
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::stopping()
+void SDefaultButton::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -54,16 +47,16 @@ void SDoNothing::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::updating()
+void SDefaultButton::updating()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDoNothing::info(std::ostream &_sstream )
+void SDefaultButton::info(std::ostream& _sstream )
 {
-    _sstream << "Nothing Action" << std::endl;
+    _sstream << "Default button" << std::endl;
 }
 
 }

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_SDONOTHING_HPP__
-#define __GUI_ACTION_SDONOTHING_HPP__
+#ifndef __GUI_ACTION_SDEFAULTBUTTON_HPP__
+#define __GUI_ACTION_SDEFAULTBUTTON_HPP__
 
 #include "gui/config.hpp"
 
@@ -19,24 +19,24 @@ namespace action
 {
 
 /**
- * @brief   This action does nothing.
+ * @brief  Defines the default action to have a simple action button.
  */
-class GUI_CLASS_API SDoNothing : public ::fwGui::IActionSrv
+class GUI_CLASS_API SDefaultButton : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDoNothing)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SDefaultButton)(::fwGui::IActionSrv) );
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SDoNothing() noexcept;
+    GUI_API SDefaultButton() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SDoNothing() noexcept;
+    GUI_API virtual ~SDefaultButton() noexcept;
 
 protected:
 
@@ -44,23 +44,14 @@ protected:
      * @{
      */
 
-    /**
-     * @brief This method is used to configure the action.
-     */
     GUI_API virtual void configuring() override;
 
     GUI_API virtual void starting() override;
 
     GUI_API virtual void stopping() override;
 
-    /**
-     * @brief Process the action. Do nothing.
-     */
     GUI_API virtual void updating() override;
 
-    /**
-     * @brief This method gives information about the class.
-     */
     GUI_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
@@ -70,4 +61,4 @@ protected:
 } // namespace action
 } // namespace gui
 
-#endif /*__GUI_ACTION_SDONOTHING_HPP__*/
+#endif /*__GUI_ACTION_SDEFAULTBUTTON_HPP__*/

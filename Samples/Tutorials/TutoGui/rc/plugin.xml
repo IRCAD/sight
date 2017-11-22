@@ -222,21 +222,21 @@
 
         <!-- ***************************************** Begin services declarations  ************************************ -->
 
-        <service uid="item1" type="::gui::action::SDoNothing" >
+        <service uid="item1" type="::gui::action::SDefaultButton" >
             <state active="true" />
         </service>
 
-        <service uid="item2" type="::gui::action::SDoNothing" >
+        <service uid="item2" type="::gui::action::SDefaultButton" >
             <state active="true" />
         </service>
 
-        <service uid="item3" type="::gui::action::SDoNothing" />
+        <service uid="item3" type="::gui::action::SDefaultButton" />
 
-        <service uid="item4" type="::gui::action::SDoNothing" >
+        <service uid="item4" type="::gui::action::SDefaultButton" >
             <state active="false" />
         </service>
 
-        <service uid="item5" type="::gui::action::SDoNothing" >
+        <service uid="item5" type="::gui::action::SDefaultButton" >
             <state active="true" />
         </service>
 
