@@ -316,7 +316,7 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
     this->deselectFace();
 
-    if(face != m_widgets.end())
+    if(this->getVisibility() && face != m_widgets.end())
     {
         ::fwRenderOgre::vr::IVolumeRenderer::CubeFace widgetFace = face->second.first;
         ::Ogre::SceneNode* widgetSceneNode                       = face->second.second;
