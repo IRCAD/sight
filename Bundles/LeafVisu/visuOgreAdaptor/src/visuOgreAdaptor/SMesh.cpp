@@ -18,6 +18,7 @@
 
 #include <fwDataTools/Mesh.hpp>
 
+#include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
@@ -156,6 +157,11 @@ void SMesh::starting()
 {
     this->initialize();
 
+    if (this->getTransformId().empty())
+    {
+        this->setTransformId(this->getID() + "_TF");
+    }
+
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(m_isDynamic);
     m_meshGeometry->setDynamicVertices(m_isDynamicVertices);
@@ -281,7 +287,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->createTransformService();
 
     if(m_useNewMaterialAdaptor)
     {
@@ -291,6 +296,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         this->updateXMLMaterialAdaptor();
     }
+    this->attachNode(m_entity);
 
     auto r2vbRenderables = m_meshGeometry->updateR2VB(_mesh, *sceneMgr,
                                                       m_materialAdaptor->getMaterialName(),
@@ -404,36 +410,6 @@ void SMesh::updateXMLMaterialAdaptor()
     }
 }
 
-//------------------------------------------------------------------------------
-
-void SMesh::createTransformService()
-{
-    // We need to create a transform service only once
-    if(m_transformService.expired())
-    {
-        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_INOUT);
-
-        // Create a transform and set it as a field of the mesh
-        auto fieldTransform = ::fwData::TransformationMatrix3D::New();
-        mesh->setField("TransformMatrix", fieldTransform);
-
-        auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
-        transformService->registerInOut(fieldTransform, "transform", true);
-
-        m_transformService = transformService;
-
-        transformService->setID(this->getID() + "_" + transformService->getID());
-        transformService->setRenderService( this->getRenderService() );
-        transformService->setLayerID(m_layerID);
-        transformService->setTransformId(this->getTransformId());
-        transformService->setParentTransformId(this->getParentTransformId());
-
-        transformService->start();
-
-        this->attachNode(m_entity);
-    }
-}
-
 //-----------------------------------------------------------------------------
 
 void SMesh::modifyVertices()
@@ -511,8 +487,15 @@ void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
     auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
-    ::Ogre::SceneNode* transNode = transformService->getSceneNode();
-    ::Ogre::SceneNode* node      = _node->getParentSceneNode();
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* transNode     =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+
+    if (transNode == nullptr)
+    {
+        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+    }
+    ::Ogre::SceneNode* node = _node->getParentSceneNode();
     if ((node != transNode) && transNode)
     {
         _node->detachFromParent();

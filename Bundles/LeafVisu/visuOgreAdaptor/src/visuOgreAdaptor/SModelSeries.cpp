@@ -123,9 +123,8 @@ void SModelSeries::updating()
 
         adaptor->setRenderService(this->getRenderService());
         adaptor->setLayerID(m_layerID);
-        adaptor->setTransformId(adaptor->getID() + "_TF");
+        adaptor->setTransformId(this->getTransformId());
         adaptor->setMaterialTemplateName(m_materialTemplateName);
-        adaptor->setParentTransformId(this->getTransformId());
         adaptor->setAutoResetCamera(m_autoResetCamera);
 
         adaptor->start();

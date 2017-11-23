@@ -16,6 +16,7 @@
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
+#include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
@@ -132,6 +133,11 @@ void SPointList::starting()
 {
     this->initialize();
 
+    if (this->getTransformId().empty())
+    {
+        this->setTransformId(this->getID() + "_TF");
+    }
+
     m_meshGeometry = ::std::make_shared< ::fwRenderOgre::Mesh>(this->getID());
     m_meshGeometry->setDynamic(true);
 
@@ -221,9 +227,9 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->createTransformService();
-
     this->updateMaterialAdaptor();
+
+    this->attachNode(m_entity);
 
     m_meshGeometry->setVisible(m_isVisible);
 
@@ -293,40 +299,21 @@ void SPointList::updateMaterialAdaptor()
     }
 }
 
-//------------------------------------------------------------------------------
-
-void SPointList::createTransformService()
-{
-    // We need to create a transform service only once
-    if(m_transformService.expired())
-    {
-        m_transform = ::fwData::TransformationMatrix3D::New();
-
-        auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
-        transformService->registerInOut(m_transform, "transform", true);
-
-        m_transformService = transformService;
-
-        transformService->setID(this->getID() + "_" + transformService->getID());
-        transformService->setRenderService( this->getRenderService() );
-        transformService->setLayerID(m_layerID);
-        transformService->setTransformId(this->getTransformId());
-        transformService->setParentTransformId(this->getParentTransformId());
-
-        transformService->start();
-
-        this->attachNode(m_entity);
-    }
-}
-
 //-----------------------------------------------------------------------------
 
 void SPointList::attachNode(::Ogre::MovableObject* _node)
 {
     auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
-    ::Ogre::SceneNode* transNode = transformService->getSceneNode();
-    ::Ogre::SceneNode* node      = _node->getParentSceneNode();
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* transNode     =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+
+    if (transNode == nullptr)
+    {
+        transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+    }
+    ::Ogre::SceneNode* node = _node->getParentSceneNode();
     if ((node != transNode) && transNode)
     {
         _node->detachFromParent();

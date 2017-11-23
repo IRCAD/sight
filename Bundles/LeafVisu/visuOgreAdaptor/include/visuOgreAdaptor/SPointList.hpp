@@ -120,9 +120,6 @@ private:
     /// With this method, SPointList is responsible for creating a SMaterial
     void updateMaterialAdaptor();
 
-    /// Creates a transform Service, and attaches it to a corresponding sceneNode in the Ogre scene.
-    void createTransformService();
-
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
@@ -147,8 +144,6 @@ private:
     bool m_isVisible;
 
     ::fwRenderOgre::Mesh::sptr m_meshGeometry;
-
-    ::fwData::TransformationMatrix3D::sptr m_transform;
 
     /// Allows to scale the billboards
     float m_radius { 1.f };

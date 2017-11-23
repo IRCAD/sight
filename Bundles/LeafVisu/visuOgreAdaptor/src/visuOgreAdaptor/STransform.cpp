@@ -65,12 +65,6 @@ void STransform::starting()
         m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
     }
 
-    if(m_transformNode)
-    {
-        this->updateFromOgre();
-        return;
-    }
-
     if (!m_parentTransformId.empty())
     {
         m_parentTransformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_parentTransformId, rootSceneNode);
@@ -90,7 +84,15 @@ void STransform::starting()
         }
     }
 
-    m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformId());
+    if (!m_transformNode)
+    {
+        m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformId());
+    }
+    else
+    {
+        m_transformNode->getParent()->removeChild(m_transformNode);
+        m_parentTransformNode->addChild(m_transformNode);
+    }
     this->updating();
 }
 

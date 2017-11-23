@@ -145,9 +145,6 @@ private:
     /// This method is called when a material adaptor has been configured in the XML scene
     void updateXMLMaterialAdaptor();
 
-    /// Creates a transform Service, and attaches it to a corresponding sceneNode in the Ogre scene.
-    void createTransformService();
-
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 

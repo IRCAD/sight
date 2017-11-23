@@ -96,7 +96,6 @@ void SReconstruction::createMeshService()
         meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
         meshAdaptor->setAutoResetCamera(m_autoResetCamera);
         meshAdaptor->setTransformId(this->getTransformId());
-        meshAdaptor->setParentTransformId(this->getParentTransformId());
         meshAdaptor->updateVisibility(reconstruction->getIsVisible());
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
