@@ -67,8 +67,7 @@ void SHandEyeEditor::updating()
 
     for(size_t i = 0; i < size1; ++i )
     {
-        QString countString;
-        countString = QString("%1. Matrix 1 and Matrix 2").arg(i);
+        const QString countString = QString("%1. Matrix 1 and Matrix 2").arg(i);
         m_capturesListWidget->addItem(countString);
     }
 }
@@ -77,15 +76,16 @@ void SHandEyeEditor::updating()
 
 void SHandEyeEditor::configuring()
 {
-    fwGui::IGuiContainerSrv::initialize();
+    ::fwGui::IGuiContainerSrv::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SHandEyeEditor::starting()
 {
-    fwGui::IGuiContainerSrv::create();
-    fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    ::fwGui::IGuiContainerSrv::create();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =
+        ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     // Creation of the Qt elements
 
@@ -142,15 +142,11 @@ void SHandEyeEditor::add()
 
         if (timestamp > m_lastTimestamp)
         {
-            ::fwCore::HiResClock::HiResClockType newerTimestamp =
-                std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+            const CSPTR(::arData::MatrixTL::BufferType) buffer1 = matrixTL1->getClosestBuffer(timestamp);
 
-            newerTimestamp  = std::min(timestamp, newerTimestamp);
-            m_lastTimestamp = newerTimestamp;
+            const CSPTR(::arData::MatrixTL::BufferType) buffer2 = matrixTL2->getClosestBuffer(timestamp);
 
-            const CSPTR(::arData::MatrixTL::BufferType) buffer1 = matrixTL1->getClosestBuffer(newerTimestamp);
-
-            const CSPTR(::arData::MatrixTL::BufferType) buffer2 = matrixTL2->getClosestBuffer(newerTimestamp);
+            m_lastTimestamp = timestamp;
 
             if(buffer1 && buffer2)
             {

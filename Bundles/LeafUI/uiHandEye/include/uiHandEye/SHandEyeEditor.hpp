@@ -30,10 +30,10 @@ namespace uiHandEye
  * 'addSlot' is called.
  *
  * @section slots slots
- * - \b AddSlotType(): Add new calibration points
- * - \b RemoveSlotType(): Remove calibration points
- * - \b ResetSlotType(): Reset currently acquiered calibration points
- * - \b GetSelectionSlotType(): Display a dialog with the current matrices
+ * - \b add(): Add new calibration points
+ * - \b remove(): Remove calibration points
+ * - \b reset(): Reset currently acquiered calibration points
+ * - \b getSelection(): Display a dialog with the current matrices
  *
  * @code{.xml}
     <service uid="..." type="::uiHandEye::SHandEyeEditor">
