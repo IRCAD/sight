@@ -26,7 +26,8 @@ namespace activities
  * ActivitySeries are created for each activity using the data produced by the previous activities. This activities are
  * stored in the current SeriesDB.
  *
- * @warning The first launched activity must be able to start without parameters.
+ * @warning The first launched activity must be able to start without parameters, or they must be supplied in the
+ *     `requirementOverrides` composite.
  *
  * @section Signal Signal
  * - \b activityCreated(::fwMedData::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
@@ -45,11 +46,21 @@ namespace activities
  * @code{.xml}
     <service  type="::activities::SActivitySequencer">
         <inout key="seriesDB" uid=""  autoConnect="yes" />
+        <in    key="requirementOverrides" uid="..." />
         <activity>...</activity>
         <activity>...</activity>
         <activity>...</activity>
     </service>
-        @endcode
+   @endcode
+ * @subsection In In
+ * - \b requirementOverrides [::fwData::Composite] (optional): provide some data that will be passed as activity
+ *   requirements. Can be used to supply required data that cannot be created by the activity, or to override
+ *   data that would normally be passed from an activity to the next.
+ *
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: used to store the ActivitySeries of the managed activities
+ *
+ * @subsection Configuration Configuration
  * - \b activity : id of the activities to launch. The first activity in the list is the first that will be launched.
  *
  * @todo listen the current activity data to notify when the next activity can be created
