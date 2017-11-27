@@ -656,7 +656,20 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
     // Unlock vertex data
     vbuf->unlock();
 
-    m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox( xMin, yMin, zMin, xMax, yMax, zMax) );
+    if(xMin < std::numeric_limits<PointValueType>::max() &&
+       yMin < std::numeric_limits<PointValueType>::max() &&
+       zMin < std::numeric_limits<PointValueType>::max() &&
+       xMax > std::numeric_limits<PointValueType>::lowest() &&
+       yMax > std::numeric_limits<PointValueType>::lowest() &&
+       zMax > std::numeric_limits<PointValueType>::lowest())
+    {
+        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox( xMin, yMin, zMin, xMax, yMax, zMax) );
+    }
+    else
+    {
+        // An extent was not found or is NaN
+        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+    }
     m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
                                                               ::Ogre::Math::Sqr(yMax - yMin) +
                                                               ::Ogre::Math::Sqr(zMax - zMin)) /2);
@@ -730,9 +743,22 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
     // Unlock vertex data
     vbuf->unlock();
 
-    ::Ogre::AxisAlignedBox bbox( static_cast<float>(xMin), static_cast<float>(yMin), static_cast<float>(zMin),
-                                 static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax));
-    m_ogreMesh->_setBounds( bbox );
+    if(xMin < std::numeric_limits<PointType>::max() &&
+       yMin < std::numeric_limits<PointType>::max() &&
+       zMin < std::numeric_limits<PointType>::max() &&
+       xMax > std::numeric_limits<PointType>::lowest() &&
+       yMax > std::numeric_limits<PointType>::lowest() &&
+       zMax > std::numeric_limits<PointType>::lowest())
+    {
+        m_ogreMesh->_setBounds(
+            ::Ogre::AxisAlignedBox(static_cast<float>(xMin), static_cast<float>(yMin), static_cast<float>(zMin),
+                                   static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax)) );
+    }
+    else
+    {
+        // An extent was not found or is NaN
+        m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
+    }
     m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(static_cast<float>(xMax - xMin)) +
                                                               ::Ogre::Math::Sqr(static_cast<float>(yMax - yMin)) +
                                                               ::Ogre::Math::Sqr(static_cast<float>(zMax - zMin)))* .5f);
