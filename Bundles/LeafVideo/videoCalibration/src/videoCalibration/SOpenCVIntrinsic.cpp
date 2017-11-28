@@ -9,7 +9,7 @@
 #include <arData/CalibrationInfo.hpp>
 #include <arData/Camera.hpp>
 
-#include <fwCom/Slot.hxx>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>

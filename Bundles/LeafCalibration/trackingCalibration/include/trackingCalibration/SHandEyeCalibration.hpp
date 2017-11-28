@@ -16,7 +16,10 @@
 namespace trackingCalibration
 {
 /**
- * @brief Service that will compute the Hand-Eye Calibration from two vectors of corresponding tracking matrices
+ * @brief Service that compute the Hand-Eye Calibration matrix X from two vectors of corresponding tracking matrices
+ *{Ai, Aj, ...} and {Bi, Bj, ...}
+ *
+ * @see https://github.com/jhu-lcsr/handeye_calib_camodocal
  *
  * @code{.xml}
     <service uid="..." type="::trackingCalibration::SHandEyeCalibration" >
@@ -25,12 +28,12 @@ namespace trackingCalibration
         <in key="matrixVector2" uid="..." />
     </service>
    @endcode
- * @subsection InOut InOut:
- * - \b matrix uid of the matrix
+ * @subsection InOut InOut
+ * - \b matrix [::fwData::TransformationMatrix3D]: Hand-Eye calibration matrix X
  *
- * @subsection Inputs Inputs:
- * - \b matrixVector1 uid of the matrix vector 1
- * - \b matrixVector2 uid of the matrix vector 2
+ * @subsection Input Input
+ * - \b matrixVector1 [::fwData::Vector]: vector of matrices corresponding to {Ai, Aj, ...} matrices
+ * - \b matrixVector2 [::fwData::Vector]: vector of matrices corresponding to {Bi, Bj, ...} matrices
  */
 class TRACKINGCALIBRATION_CLASS_API SHandEyeCalibration : public ::arServices::IRegisterer
 {

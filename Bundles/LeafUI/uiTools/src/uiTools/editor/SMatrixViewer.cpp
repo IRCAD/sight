@@ -8,8 +8,6 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
@@ -42,28 +40,24 @@ SMatrixViewer::SMatrixViewer() noexcept :
 
 SMatrixViewer::~SMatrixViewer() noexcept
 {
-
 }
 
 // ------------------------------------------------------------------------------
 
 void SMatrixViewer::configuring()
 {
-    fwGui::IGuiContainerSrv::initialize();
+    ::fwGui::IGuiContainerSrv::initialize();
 
-    ::fwRuntime::ConfigurationElement::sptr configCfg = m_configuration->findConfigurationElement("title");
-    if(configCfg)
-    {
-        m_title = configCfg->getValue();
-    }
+    m_title = this->getConfigTree().get<std::string>("title", "matrix");
 }
 
 // ------------------------------------------------------------------------------
 
 void SMatrixViewer::starting()
 {
-    fwGui::IGuiContainerSrv::create();
-    fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    ::fwGui::IGuiContainerSrv::create();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =
+        ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -74,9 +68,9 @@ void SMatrixViewer::starting()
 
     QGridLayout* gridLayout = new QGridLayout();
 
-    for (unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0; j < 4; ++j)
         {
             QLabel* label = new QLabel("");
             m_matrixLabels.push_back(label);
@@ -94,7 +88,6 @@ void SMatrixViewer::starting()
 
 void SMatrixViewer::stopping()
 {
-
     this->destroy();
 }
 
@@ -110,9 +103,9 @@ void SMatrixViewer::updating()
 void SMatrixViewer::updateFromMatrix()
 {
     auto matrix = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INPUT);
-    for (unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0; j < 4; ++j)
         {
             m_matrixLabels[i*4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
         }
@@ -123,9 +116,9 @@ void SMatrixViewer::updateFromMatrix()
 
 void SMatrixViewer::clearLabels()
 {
-    for (unsigned int i = 0; i < 4; ++i)
+    for(unsigned int i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j < 4; ++j)
+        for(unsigned int j = 0; j < 4; ++j)
         {
             m_matrixLabels[i*4 + j]->setText(QString(""));
         }

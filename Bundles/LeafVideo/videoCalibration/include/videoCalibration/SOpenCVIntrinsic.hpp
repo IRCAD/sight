@@ -10,9 +10,6 @@
 #include "videoCalibration/config.hpp"
 #include "videoCalibration/ICalibration.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 namespace videoCalibration
 {
 

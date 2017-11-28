@@ -92,7 +92,7 @@ void HandEyeApi::pushMatrix(const fwData::TransformationMatrix3D::csptr _m1,
 
 void HandEyeApi::initializeData()
 {
-    size_t nbMatrix = m_transfoList1.size();
+    const size_t nbMatrix = m_transfoList1.size();
     SLM_ASSERT("Size of transformation list should be the same", nbMatrix == m_transfoList2.size());
 
     m_rvecs1.reserve(nbMatrix);

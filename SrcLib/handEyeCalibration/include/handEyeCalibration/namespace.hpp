@@ -21,7 +21,7 @@ namespace handEyeCalibration
 namespace camodocal
 {
 
-} // namespace validator
+} // namespace camodocal
 
 #endif /* __HANDEYECALIBRATION_NAMESPACE_HPP__ */
 

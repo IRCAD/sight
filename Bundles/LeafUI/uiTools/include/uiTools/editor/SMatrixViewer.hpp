@@ -24,18 +24,22 @@ namespace editor
 {
 
 /**
- * @brief  This class defines a viewer for a fwData::TransformationMatrix3D.
+ * @brief  This class defines a viewer for a ::fwData::TransformationMatrix3D.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." impl="::uiTools::editor::SMatrixViewer" autoConnect="yes">
+    <service type="::uiTools::editor::SMatrixViewer">
+        <in key="matrix" uid="..." />
         <title>matrix name</title>
     </service>
    @endcode
 
- * @subsection Input Input:
- * - \\b matrix [::fwData::TransformationMatrix3D]: matrix to display.
+ * @subsection Input Input
+ * - \b matrix [::fwData::TransformationMatrix3D]: matrix to display
+ *
+ * @subsection Configuration Configuration
+ * - \b title (optional): defines the displayed title on top of the matrix viewer (default: matrix).
  */
 
 class UITOOLS_CLASS_API SMatrixViewer : public QObject,
@@ -60,33 +64,31 @@ public:
 
 protected:
 
-    /**
-     * @brief This method is used to configure the service parameters:
-     */
-
+    /// This method configure the title of the matrix viewer
     UITOOLS_API virtual void configuring() override;
 
-    ///This method launches the ::fwGui::IGuiContainerSrv::create method.
+    /// This method initilize the layout of the matrix viewer
     UITOOLS_API virtual void starting() override;
 
-    ///This method launches the ::fwGui::IGuiContainerSrv::destroy method.
+    /// Destroy the layout
     UITOOLS_API virtual void stopping() override;
 
-    /// Updates Slider value
+    /// Updates the matrix values to display
     UITOOLS_API virtual void updating() override;
 
 private:
 
-    /// Update the editor when the matrix changes
+    /// Update the view when the matrix changes
     void updateFromMatrix();
-    /// Clear datas
+
+    /// Clear matrix values
     void clearLabels();
 
-    QPointer< QLabel > m_description; ///< description of camera series
+    QPointer< QLabel > m_description; ///< Label of the matrix title
 
     QVector< QPointer< QLabel > > m_matrixLabels; ///< Labels for matrix's elements
 
-    std::string m_title; ///< name of the matrix (will be displayed)
+    std::string m_title; ///< Title of the matrix (will be displayed)
 };
 
 } //namespace editor

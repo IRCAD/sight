@@ -112,8 +112,8 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
         ::fwCore::HiResClock::HiResClockType lastTimestamp;
         lastTimestamp = std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-        size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
-        size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
+        const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
+        const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
 
         OSLM_ERROR_IF("Number of input and detection timelines are different.", numTimeline != numDetection);
 
