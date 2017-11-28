@@ -210,10 +210,10 @@ void Utils::destroyOgreRoot()
     ::Ogre::Image imageOgre;
 
     // If image is flipped, try to switch image
-    ::fwData::Image::SizeType imageSize = imageFw->getSize();
+    const ::fwData::Image::SizeType imageSize = imageFw->getSize();
 
-    uint32_t width  = static_cast<uint32_t>(imageSize[0]);
-    uint32_t height = 1, depth = 1;
+    const uint32_t width = static_cast<uint32_t>(imageSize[0]);
+    uint32_t height      = 1, depth = 1;
 
     if(imageSize.size() >= 2)
     {
@@ -225,7 +225,7 @@ void Utils::destroyOgreRoot()
         }
     }
 
-    ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
+    const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
 
     ::fwDataTools::helper::ImageGetter imageHelper(imageFw);
 
@@ -239,8 +239,8 @@ void Utils::destroyOgreRoot()
 // Only handles RGB for now, since fwData::Image only does so.
 ::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
 {
-    std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
-    size_t numberOfComponent = imageFw->getNumberOfComponents();
+    const std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
+    const size_t numberOfComponent = imageFw->getNumberOfComponents();
 
     if(numberOfComponent == 1)
     {
@@ -254,10 +254,16 @@ void Utils::destroyOgreRoot()
             // int16
             return ::Ogre::PF_L16;
         }
+        else if(pixelType == "unsigned short")
+        {
+            // uint16
+            return ::Ogre::PF_R16_UINT;
+        }
         else if (pixelType == "float")
         {
             return ::Ogre::PF_FLOAT32_R;
         }
+        FW_RAISE("Format '" + pixelType + "' not handled");
     }
 
     if(numberOfComponent == 2)
@@ -272,6 +278,7 @@ void Utils::destroyOgreRoot()
             // int16
             return ::Ogre::PF_R8G8_SNORM;
         }
+        FW_RAISE("Format '" + pixelType + "' not handled");
     }
 
     // PixelFormat in little endian
@@ -332,11 +339,11 @@ void Utils::destroyOgreRoot()
 void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
+    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
     if(imageIsValid)
     {
-        ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
+        const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
 
         // Conversion from fwData::Image to ::Ogre::Image
         ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(_image);
@@ -397,7 +404,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
 void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
 {
-    auto srcType = _image->getType();
+    const auto srcType = _image->getType();
 
     if(srcType == ::fwTools::Type::s_INT16)
     {

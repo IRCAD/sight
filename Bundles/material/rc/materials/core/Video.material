@@ -10,6 +10,10 @@ vertex_program Video_VP glsl
 fragment_program Video_FP glsl
 {
     source Video_FP.glsl
+    default_params
+    {
+        param_named u_videoTexture int 0
+    }
 }
 
 material Video
@@ -27,6 +31,104 @@ material Video
 
             fragment_program_ref Video_FP
             {
+            }
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+vertex_program VideoWithTF_VP glsl
+{
+    source Video_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program VideoWithTF_FP glsl
+{
+    source Video_FP.glsl
+    attach TransferFunction_FP
+    preprocessor_defines TF=1
+    default_params
+    {
+        param_named u_videoTexture int 0
+        param_named u_tfTexture int 1
+    }
+}
+
+material VideoWithTF
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref VideoWithTF_VP
+            {
+            }
+
+            fragment_program_ref VideoWithTF_FP
+            {
+            }
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit tf
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+fragment_program VideoWithTF_Int_FP glsl
+{
+    source Video_FP.glsl
+    attach TransferFunction_FP
+    preprocessor_defines TF=1,TF_INTEGER=1
+    default_params
+    {
+        param_named u_videoTexture int 0
+        param_named u_tfTexture int 1
+    }
+}
+
+material VideoWithTF_Int
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref VideoWithTF_VP
+            {
+            }
+
+            fragment_program_ref VideoWithTF_Int_FP
+            {
+            }
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit tf
+            {
+                tex_address_mode clamp
+                filtering bilinear
             }
         }
     }
