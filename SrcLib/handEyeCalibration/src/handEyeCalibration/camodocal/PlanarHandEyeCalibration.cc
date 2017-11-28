@@ -13,20 +13,18 @@
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES // This bypasses a compile error on Windows.
 
-#include <ceres/ceres.h>
-
-#include "handEyeCalibration/camodocal/PlanarHandEyeCalibration.h"
 #include "handEyeCalibration/camodocal/EigenUtils.h"
+#include "handEyeCalibration/camodocal/PlanarHandEyeCalibration.h"
 
+#include <complex>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <complex>
 
+#include <ceres/ceres.h>
 #include <Eigen/Eigen>
 #include <opencv2/core/eigen.hpp>
-
 
 namespace camodocal
 {
@@ -222,18 +220,18 @@ PlanarHandEyeCalibration::estimate(const std::vector<Eigen::Quaterniond,
 
     if (m_verbose)
     {
-        std::cout << "# INFO: Before refinement:" << std::endl;
-        std::cout << "H_12 = " << std::endl;
-        std::cout << H_12 << std::endl;
+        SLM_INFO("# INFO: Before refinement:");
+        SLM_INFO("H_12 = ");
+        SLM_INFO(H_12);
     }
 
     refineEstimate(H_12, quats1, tvecs1, quats2, tvecs2);
 
     if (m_verbose)
     {
-        std::cout << "# INFO: After refinement:" << std::endl;
-        std::cout << "H_12 = " << std::endl;
-        std::cout << H_12 << std::endl;
+        SLM_INFO("# INFO: After refinement:");
+        SLM_INFO("H_12 = ");
+        SLM_INFO(H_12);
     }
 
     return true;
@@ -277,7 +275,7 @@ PlanarHandEyeCalibration::estimateRyx(const std::vector<Eigen::Quaterniond,
                                 t2(0) * t2(1) + t2(2) * t2(3),
                                 s[0], s[1]))
     {
-        std::cout << "# ERROR: Quadratic equation cannot be solved due to negative determinant." << std::endl;
+        SLM_ERROR("# ERROR: Quadratic equation cannot be solved due to negative determinant.");
         return false;
     }
 
@@ -352,7 +350,7 @@ PlanarHandEyeCalibration::refineEstimate(Eigen::Matrix4d& H_12,
 
     if (m_verbose)
     {
-        std::cout << summary.BriefReport() << std::endl;
+        SLM_INFO(summary.BriefReport());
     }
 
     q = Eigen::Quaterniond(q_coeffs[0], q_coeffs[1], q_coeffs[2], q_coeffs[3]);
