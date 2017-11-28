@@ -14,14 +14,14 @@
 #ifndef __HANDEYECALIBRATION_CAMODOCAL_GPL_H__
 #define __HANDEYECALIBRATION_CAMODOCAL_GPL_H__
 
-#include "handEyeCalibration/config.hpp"
+#include <handEyeCalibration/config.hpp>
 
 #include <fwCore/spyLog.hpp>
 
 #include <algorithm>
 #define _USE_MATH_DEFINES
-#include <math.h>
 #include <cstdint>
+#include <math.h>
 
 #include <opencv2/core/core.hpp>
 
@@ -36,8 +36,8 @@ const T clamp(const T& v, const T& a, const T& b)
     return std::min(b, std::max(a, v));
 }
 
-HANDEYECALIBRATION_API double hypot3(double x, double y, double z);
-HANDEYECALIBRATION_API float hypot3f(float x, float y, float z);
+HANDEYECALIBRATION_API double hypot3(const double x, const double y, const double z);
+HANDEYECALIBRATION_API float hypot3f(const float x, const float y, const float z);
 
 //------------------------------------------------------------------------------
 
@@ -58,12 +58,12 @@ const T normalizeTheta(const T& theta)
     return normTheta;
 }
 
-HANDEYECALIBRATION_API double d2r(double deg);
-HANDEYECALIBRATION_API float d2r(float deg);
-HANDEYECALIBRATION_API double r2d(double rad);
-HANDEYECALIBRATION_API float r2d(float rad);
+HANDEYECALIBRATION_API double d2r(const double deg);
+HANDEYECALIBRATION_API float d2r(const float deg);
+HANDEYECALIBRATION_API double r2d(const double rad);
+HANDEYECALIBRATION_API float r2d(const float rad);
 
-HANDEYECALIBRATION_API double sinc(double theta);
+HANDEYECALIBRATION_API double sinc(const double theta);
 
 //------------------------------------------------------------------------------
 
@@ -113,30 +113,16 @@ HANDEYECALIBRATION_API unsigned long long timeInMicroseconds(void);
 
 HANDEYECALIBRATION_API double timeInSeconds(void);
 
-HANDEYECALIBRATION_API void colorDepthImage(cv::Mat& imgDepth,
-                                            cv::Mat& imgColoredDepth,
-                                            float minRange, float maxRange);
-
-HANDEYECALIBRATION_API bool colormap(const std::string& name, unsigned char idx,
-                                     float& r, float& g, float& b);
-
-HANDEYECALIBRATION_API std::vector<cv::Point2i> bresLine(int x0, int y0, int x1, int y1);
-HANDEYECALIBRATION_API std::vector<cv::Point2i> bresCircle(int x0, int y0, int r);
+HANDEYECALIBRATION_API std::vector<cv::Point2i> bresLine(int x0, int y0, const int x1, const int y1);
+HANDEYECALIBRATION_API std::vector<cv::Point2i> bresCircle(const int x0, const int y0, const int r);
 
 HANDEYECALIBRATION_API void fitCircle(const std::vector<cv::Point2d>& points,
                                       double& centerX, double& centerY, double& radius);
 
-HANDEYECALIBRATION_API std::vector<cv::Point2d> intersectCircles(double x1, double y1, double r1,
-                                                                 double x2, double y2, double r2);
+HANDEYECALIBRATION_API std::vector<cv::Point2d> intersectCircles(const double x1, const double y1, const double r1,
+                                                                 const double x2, const double y2, const double r2);
 
-HANDEYECALIBRATION_API void LLtoUTM(double latitude, double longitude,
-                                    double& utmNorthing, double& utmEasting,
-                                    std::string& utmZone);
-HANDEYECALIBRATION_API void UTMtoLL(double utmNorthing, double utmEasting,
-                                    const std::string& utmZone,
-                                    double& latitude, double& longitude);
-
-HANDEYECALIBRATION_API long int timestampDiff(uint64_t t1, uint64_t t2);
+HANDEYECALIBRATION_API long int timestampDiff(const uint64_t t1, const uint64_t t2);
 
 }
 

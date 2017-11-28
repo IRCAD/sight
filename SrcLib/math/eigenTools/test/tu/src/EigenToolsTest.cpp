@@ -6,7 +6,7 @@
 
 #include "EigenToolsTest.hpp"
 
-#include "eigenTools/helper.hpp"
+#include <eigenTools/helper.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 

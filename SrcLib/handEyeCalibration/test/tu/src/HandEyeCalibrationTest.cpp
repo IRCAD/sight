@@ -128,7 +128,7 @@ void HandEyeCalibrationTest::checkCalibration()
 
 void HandEyeCalibrationTest::checkMultipleCalibration()
 {
-    unsigned int nb_tests = 4;
+    const unsigned int nb_tests = 4;
     for(unsigned int i = 0; i < nb_tests; ++i)
     {
         checkCalibration();

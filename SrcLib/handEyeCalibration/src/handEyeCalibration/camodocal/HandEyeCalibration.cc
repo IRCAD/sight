@@ -13,15 +13,14 @@
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES // This bypasses a compile error on Windows.
 
-#include <ceres/ceres.h>
-
-#include "handEyeCalibration/camodocal/HandEyeCalibration.h"
 #include "handEyeCalibration/camodocal/DualQuaternion.h"
 #include "handEyeCalibration/camodocal/EigenUtils.h"
+#include "handEyeCalibration/camodocal/HandEyeCalibration.h"
+
+#include <boost/throw_exception.hpp>
+#include <ceres/ceres.h>
 
 #include <iostream>
-#include <boost/throw_exception.hpp>
-
 
 namespace camodocal
 {
@@ -175,8 +174,8 @@ HandEyeCalibration::estimateHandEyeScrew(const std::vector<Eigen::Vector3d,
     H_12 = dq.toMatrix();
     if (mVerbose)
     {
-        std::cout << "# INFO: Before refinement: H_12 = " << std::endl;
-        std::cout << H_12 << std::endl;
+        SLM_INFO("# INFO: Before refinement: H_12 = ");
+        SLM_INFO(H_12);
     }
 
     estimateHandEyeScrewRefine(dq, rvecs1, tvecs1, rvecs2, tvecs2);
@@ -184,8 +183,8 @@ HandEyeCalibration::estimateHandEyeScrew(const std::vector<Eigen::Vector3d,
     H_12 = dq.toMatrix();
     if (mVerbose)
     {
-        std::cout << "# INFO: After refinement: H_12 = " << std::endl;
-        std::cout << H_12 << std::endl;
+        SLM_INFO("# INFO: After refinement: H_12 = ");
+        SLM_INFO(H_12);
     }
 }
 
@@ -209,7 +208,7 @@ HandEyeCalibration::estimateHandEyeScrewInitial(Eigen::MatrixXd& T,
     {
         if (mVerbose)
         {
-            std::cout << "# INFO: No unique solution, returned an arbitrary one. " << std::endl;
+            SLM_INFO("# INFO: No unique solution, returned an arbitrary one. ");
         }
 
         v7 += v6;
@@ -253,7 +252,7 @@ HandEyeCalibration::estimateHandEyeScrewInitial(Eigen::MatrixXd& T,
         double discriminant = 4.0 * square(u1.dot(u2)) - 4.0 * (u1.dot(u1) * u2.dot(u2));
         if (discriminant == 0.0 && mVerbose)
         {
-            std::cout << "# INFO: Noise-free case" << std::endl;
+            SLM_INFO("# INFO: Noise-free case");
         }
 
         lambda2 = sqrt(1.0 / t[idx]);
@@ -367,7 +366,7 @@ HandEyeCalibration::estimateHandEyeScrewRefine(DualQuaterniond& dq,
 
     if (mVerbose)
     {
-        std::cout << summary.FullReport() << std::endl;
+        SLM_INFO(summary.FullReport());
     }
 
     Eigen::Quaterniond q(p[0], p[1], p[2], p[3]);
