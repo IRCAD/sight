@@ -980,6 +980,7 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     {
         if(cameraIdx == 1)
         {
+            // Kind of arbitrary. Should be configurable in the future.
             extrinsicTransform = ::Ogre::Matrix4(1, 0, 0, 5,
                                                  0, 1, 0, 0,
                                                  0, 0, 1, 0,

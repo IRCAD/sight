@@ -24,7 +24,6 @@ set( REQUIREMENTS
     preferences
     scene2D
     imageConfig
-    ogreConfig
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES PoCStereo)

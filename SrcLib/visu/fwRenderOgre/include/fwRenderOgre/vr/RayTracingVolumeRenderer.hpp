@@ -56,7 +56,6 @@ public:
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
-//                                              ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                               bool ambientOcclusion = false,
                                               bool colorBleeding = false,
                                               bool shadows = false,

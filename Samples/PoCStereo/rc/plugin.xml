@@ -63,11 +63,11 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menu_File" start="yes" />
+                    <menu sid="menuFile" start="yes" />
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open model series..." shortcut="Ctrl+M" />
@@ -77,21 +77,21 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="action_openMesh" start="yes" />
-                    <menuItem sid="action_openImage" start="yes" />
-                    <menuItem sid="action_quit" start="yes" />
+                    <menuItem sid="actionOpenMesh" start="yes" />
+                    <menuItem sid="actionOpenImage" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
 
-            <service uid="action_openMesh" type="::gui::action::SStarter" >
+            <service uid="actionOpenMesh" type="::gui::action::SStarter" >
                 <start uid="meshReader" />
             </service>
 
-            <service uid="action_openImage" type="::gui::action::SStarter" >
+            <service uid="actionOpenImage" type="::gui::action::SStarter" >
                 <start uid="imageReader" />
             </service>
 
-            <service uid="action_quit" type="::gui::action::SQuit"  />
+            <service uid="actionQuit" type="::gui::action::SQuit"  />
 
             <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
                 <in key="target" uid="modelSeries" />
@@ -122,7 +122,7 @@
 
             <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
                 <in key="model" uid="modelSeries" />
-                <config layer="default" material="OrenNayar" />
+                <config layer="default" material="Default" />
             </service>
 
             <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender" >
