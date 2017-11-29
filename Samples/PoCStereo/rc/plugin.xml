@@ -1,0 +1,202 @@
+<plugin id="PoCStereo" version="@PROJECT_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgreAdaptor" />
+    <requirement id="visuOgreQt" />
+    <requirement id="material" />
+    <requirement id="scene2D" />
+    <requirement id="preferences" />
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>PoCStereo</id>
+        <desc>Stereo rendering PoC.</desc>
+        <config>
+
+            <object uid="modelSeries" type="::fwMedData::ModelSeries" />
+            <object uid="image" type="::fwData::Image" />
+
+            <object uid="transferFunction" type="::fwData::TransferFunction" src="deferred" />
+            <object uid="landmarks" type="::fwData::Landmarks" />
+            <object uid="TFPool" type="::fwData::Composite" />
+            <object uid="histogram" type="::fwData::Histogram" />
+            <object uid="shift" type="::fwData::Integer" />
+            <object uid="invertLines" type="::fwData::Boolean" />
+
+            <service uid="mainWindow" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Ogre Stereo</name>
+                        <icon>PoCStereo-@PROJECT_VERSION@/ogre_stereo.ico</icon>
+                        <minSize width="1100" height="700" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="stereoScene" start="yes" />
+                    <view sid="tfm" start="yes" />
+                    <view wid="tfScene" />
+                    <view sid="parametersEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open model series..." shortcut="Ctrl+M" />
+                        <menuItem name="Open image..." shortcut="Ctrl+I" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionOpenMesh" start="yes" />
+                    <menuItem sid="actionOpenImage" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="actionOpenMesh" type="::gui::action::SStarter" >
+                <start uid="meshReader" />
+            </service>
+
+            <service uid="actionOpenImage" type="::gui::action::SStarter" >
+                <start uid="imageReader" />
+            </service>
+
+            <service uid="actionQuit" type="::gui::action::SQuit"  />
+
+            <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="modelSeries" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="image" />
+                <type mode="reader" />
+            </service>
+
+            <!-- Begin Generic Scene ***************************************** -->
+            <service uid="stereoScene" type="::fwRenderOgre::SRender" >
+                <scene overlay="true" fullscreen="true" >
+                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                    <layer id="default" depth="1" stereoMode="Stereo" />
+                    <adaptor uid="interactorAdaptor" />
+                    <adaptor uid="modelSeriesAdaptor" />
+                    <adaptor uid="volumeAdaptor" />
+                    <adaptor uid="imageShiftAdaptor" />
+                    <adaptor uid="invertLinesAdaptor" />
+                </scene>
+            </service>
+
+            <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="default" style="VR" />
+            </service>
+
+            <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
+                <in key="model" uid="modelSeries" />
+                <config layer="default" material="Default" />
+            </service>
+
+            <service uid="volumeAdaptor" type="::visuOgreAdaptor::SVolumeRender" >
+                <inout key="image" uid="image" autoConnect="yes" />
+                <inout key="tf" uid="transferFunction" optional="yes" />
+                <config layer="default" mode="raytracing" widgets="no" preintegration="no" autoresetcamera="yes"/>
+            </service>
+
+            <service uid="imageShiftAdaptor" type="::visuOgreAdaptor::SCompositorParameter" >
+                <inout key="parameter" uid="shift" />
+                <config layer="default" compositorName="Stereo" parameter="u_imageShift" shaderType="fragment" />
+            </service>
+
+            <service uid="invertLinesAdaptor" type="::visuOgreAdaptor::SCompositorParameter" >
+                <inout key="parameter" uid="invertLines" />
+                <config layer="default" compositorName="Stereo" parameter="u_invertLines" shaderType="fragment" />
+            </service>
+
+            <!-- End Generic Scene ***************************************** -->
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
+                <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
+                <out key="tf" uid="transferFunction" />
+            </service>
+
+            <service uid="tfWidget" type="::fwServices::SConfigController">
+                <appConfig id="TransferFunctionWidget" />
+                <inout key="image" uid="image"/>
+                <inout key="histogram" uid="histogram"/>
+                <inout key="transferFunction" uid="transferFunction" />
+                <parameter replace="WID_PARENT" by="tfScene"/>
+            </service>
+
+            <service uid="parametersEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+                <parameters>
+                    <param type="bool" name="Show cropping box" key="widgets" defaultValue="false" />
+                    <param type="bool" name="Invert lines" key="u_invertLines" defaultValue="false" />
+                    <param type="int" name="Stereo shift" key="u_imageShift" min="-150" max="150" defaultValue="0" />
+                </parameters>
+            </service>
+
+            <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+                <in key="image" uid="image" autoConnect="yes" />
+                <inout key="histogram" uid="histogram" />
+                <binsWidth>5.0</binsWidth>
+            </service>
+
+            <connect>
+                <signal>parametersEditor/intChanged</signal>
+                <slot>imageShiftAdaptor/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parametersEditor/boolChanged</signal>
+                <slot>invertLinesAdaptor/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parametersEditor/boolChanged</signal>
+                <slot>volumeAdaptor/setBoolParameter</slot>
+            </connect>
+
+            <start uid="mainWindow" />
+            <start uid="tfWidget" />
+            <start uid="computeHistogram" />
+
+            <start uid="interactorAdaptor" />
+            <start uid="modelSeriesAdaptor" />
+            <start uid="volumeAdaptor" />
+            <start uid="imageShiftAdaptor" />
+            <start uid="invertLinesAdaptor" />
+
+        </config>
+    </extension>
+
+</plugin>

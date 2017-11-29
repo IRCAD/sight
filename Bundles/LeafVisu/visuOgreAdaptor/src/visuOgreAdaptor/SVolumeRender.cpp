@@ -318,8 +318,6 @@ void SVolumeRender::starting()
     }
     else
     {
-        const auto stereoMode = layer->getStereoMode();
-
         m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
                                                                                   layer,
                                                                                   m_volumeSceneNode,
@@ -327,13 +325,8 @@ void SVolumeRender::starting()
                                                                                   m_maskTexture,
                                                                                   m_gpuTF,
                                                                                   m_preIntegrationTable,
-                                                                                  stereoMode,
                                                                                   m_ambientOcclusion,
                                                                                   m_colorBleeding);
-
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
-
-        OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
         // Initially focus on the image center.
         setFocalDistance(50);
@@ -750,7 +743,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType /*mode*/)
+void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
 {
     this->stopping();
     this->starting();
@@ -980,24 +973,6 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
-        }
-    }
-    else if(key == "stereoMode")
-    {
-        if(val == "None")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::NONE);
-        }
-        else if(val == "Autostereo(5)")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5);
-        }
-        else if(val == "Autostereo(8)")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8);
         }
     }
 }

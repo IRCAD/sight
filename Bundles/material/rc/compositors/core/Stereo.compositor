@@ -1,0 +1,52 @@
+compositor Stereo
+{
+    technique
+    {
+        texture rt_output target_width target_height PF_R8G8B8A8
+        texture rt0 target_width target_height_scaled 0.5 PF_R8G8B8A8
+        texture rt1 target_width target_height_scaled 0.5 PF_R8G8B8A8
+
+        target rt0
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/0
+
+            pass render_scene
+            {
+            }
+        }
+
+        target rt1
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/1
+
+            pass render_scene
+            {
+            }
+        }
+
+        // Mix pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                identifier 101
+                material Stereo
+                input 0 rt0
+                input 1 rt1
+            }
+        }
+    }
+}
