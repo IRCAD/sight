@@ -26,8 +26,7 @@ namespace uiHandEye
 {
 /**
  * @brief   SHandEyeEditor service is used to handle the calibration points acquisition.
- * This service takes two ::arData::matrixTL in inputs, and fill the two ::fwData::Vector of
- *::fwData::TransformationMatrix3D when the 'addSlot' is called.
+ * This service takes two matrixTL as inputs, and fills the two vector of matrix when the 'addSlot' is called.
  *
  * @see ::trackingCalibration::SHandEyeCalibration
  *
@@ -47,12 +46,16 @@ namespace uiHandEye
    @endcode
 
  * @subsection InOut InOut
- * - \b matrixVector1 [::fwData::Vector]: first vector filled with {Ai, Aj, ...} matrices when 'addSlot' is called
- * - \b matrixVector2 [::fwData::Vector]: second vector filled with {Bi, Bj, ...} matrices when 'addSlot' is called
+ * - \b matrixVector1 [::fwData::Vector]: first vector filled with {Ai, Aj, ...} matrix
+ *[::fwData::TransformationMatrix3D] when 'addSlot' is called
+ * - \b matrixVector2 [::fwData::Vector]: second vector filled with {Bi, Bj, ...} matrix
+ *[::fwData::TransformationMatrix3D] when 'addSlot' is called
  *
  * @subsection Input Input
  * - \b matrixTL1 [::arData::FrameTL]: the first matrixTL filled with {Ai, Aj, ...} matrices
+ *[::fwData::TransformationMatrix3D]
  * - \b matrixTL2 [::arData::FrameTL]: the second matrixTL filled with {Bi, Bj, ...} matrices
+ *[::fwData::TransformationMatrix3D]
  */
 class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,
                                            public ::gui::editor::IEditor

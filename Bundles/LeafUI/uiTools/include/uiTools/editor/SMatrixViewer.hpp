@@ -64,13 +64,13 @@ public:
 
 protected:
 
-    /// This method configure the title of the matrix viewer
+    /// Configures the title of the matrix viewer
     UITOOLS_API virtual void configuring() override;
 
-    /// This method initilize the layout of the matrix viewer
+    /// Initializes the layout of the matrix viewer
     UITOOLS_API virtual void starting() override;
 
-    /// Destroy the layout
+    /// Destroys the layout
     UITOOLS_API virtual void stopping() override;
 
     /// Updates the matrix values to display
@@ -78,17 +78,15 @@ protected:
 
 private:
 
-    /// Update the view when the matrix changes
+    /// Updates the view when the matrix changes
     void updateFromMatrix();
 
-    /// Clear matrix values
+    /// Clears matrix values
     void clearLabels();
 
-    QPointer< QLabel > m_description; ///< Label of the matrix title
+    std::string m_title; ///< Title of the matrix that will be displayed
 
     QVector< QPointer< QLabel > > m_matrixLabels; ///< Labels for matrix's elements
-
-    std::string m_title; ///< Title of the matrix (will be displayed)
 };
 
 } //namespace editor

@@ -62,9 +62,9 @@ void SMatrixViewer::starting()
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    m_description = new QLabel(QString::fromStdString(m_title));
+    QPointer< QLabel > description = new QLabel(QString::fromStdString(m_title));
 
-    mainLayout->addWidget(m_description);
+    mainLayout->addWidget(description);
 
     QGridLayout* gridLayout = new QGridLayout();
 
