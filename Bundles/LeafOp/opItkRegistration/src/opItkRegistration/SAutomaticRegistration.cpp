@@ -15,7 +15,6 @@
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
-#include <itkRegistrationOp/AutomaticRegistrationV4.hpp>
 
 namespace opItkRegistration
 {
@@ -48,10 +47,8 @@ void SAutomaticRegistration::configuring()
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
     m_minStep = config.get< double >("minStep", -1.);
-    m_maxStep = config.get< double >("maxStep", -1.);
 
     OSLM_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
-    OSLM_FATAL_IF("Invalid or missing maxStep.", m_maxStep <= 0);
 
     m_maxIterations = config.get< unsigned long >("maxIterations", 0);
 
@@ -59,13 +56,6 @@ void SAutomaticRegistration::configuring()
 
     const std::string metric = config.get< std::string >("metric", "");
     setMetric(metric);
-
-    const std::string legacyMode = config.get_optional< std::string >("legacyMode").get_value_or("off");
-
-    OSLM_FATAL_IF("Invalid legacyMode, must be 'on' or 'off'. Here : " << legacyMode,
-                  legacyMode != "on" && legacyMode != "off");
-
-    m_legacyMode = (legacyMode == "on");
 }
 
 //------------------------------------------------------------------------------
@@ -94,17 +84,8 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    if(m_legacyMode)
-    {
-        ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                                  m_maxStep, m_maxIterations);
-
-    }
-    else
-    {
-        ::itkRegistrationOp::AutomaticRegistrationV4::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                                    m_maxIterations);
-    }
+    ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
+                                                              m_maxIterations);
 
     m_sigComputed->asyncEmit();
 
@@ -156,12 +137,6 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     if(key == "minStep")
     {
         m_minStep = val;
-    }
-    else if(key == "maxStep")
-    {
-        m_maxStep = val;
-
-        OSLM_WARN_IF("'maxStep' is useless in non-legacy (v4) mode.", !m_legacyMode);
     }
     else
     {
