@@ -164,8 +164,14 @@ void SGrabberProxy::startCamera()
                 if(srvImpl != "::videoTools::SGrabberProxy")
                 {
                     SLM_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
-                    const auto objectsType = srvFactory->getServiceObjects(srvImpl);
-                    const auto config      = this->getConfigTree();
+                    auto objectsType  = srvFactory->getServiceObjects(srvImpl);
+                    const auto config = this->getConfigTree();
+
+                    objectsType.erase(std::remove_if(objectsType.begin(), objectsType.end(),
+                                                     [ & ](const std::string& _type)
+                        {
+                            return _type != "::arData::FrameTL";
+                        }), objectsType.end());
 
                     // 1. Filter against the objects types
                     size_t numTL   = 0;
@@ -193,10 +199,10 @@ void SGrabberProxy::startCamera()
                     // 2. Filter against the source type
                     if(sourceType != ::arData::Camera::UNKNOWN)
                     {
-                        const auto caps = srvFactory->getServiceCaps(srvImpl);
+                        const auto tags = srvFactory->getServiceTags(srvImpl);
 
                         const ::boost::char_separator<char> sep(",");
-                        const ::boost::tokenizer< ::boost::char_separator<char> > tokens(caps, sep);
+                        const ::boost::tokenizer< ::boost::char_separator<char> > tokens(tags, sep);
                         bool capsMatch = false;
                         for(const auto& token : tokens)
                         {

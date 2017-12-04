@@ -29,10 +29,6 @@ namespace videoQt
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoQt::SFrameGrabber, ::arData::FrameTL);
-
-//-----------------------------------------------------------------------------
-
 SFrameGrabber::SFrameGrabber() noexcept :
     m_loopVideo(false),
     m_videoPlayer(nullptr),

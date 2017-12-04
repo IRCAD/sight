@@ -27,7 +27,11 @@ namespace videoQt
 {
 
 /**
- * @brief   Defines the service which grab video frame.
+ * @brief   QtMultimedia player
+ *
+ * Defines the service which grab video frame.
+ *
+ * \b Tags: FILE,STREAM,DEVICE
  *
  * @section Signals Signals
  * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.

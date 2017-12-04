@@ -25,10 +25,6 @@ namespace videoOpenni
 
 // Despite this grabber inherits from ::arServices::IRGBDGrabber, we register it as ::arServices::IGrabber since it
 // is compatible with this interface. Indeed it is capable to output only the color frame.
-fwServicesRegisterMacro( ::arServices::IRGBDGrabber, ::videoOpenni::SScan);
-fwServicesRegisterObjectMacro( ::videoOpenni::SScan, ::arData::FrameTL );
-fwServicesRegisterObjectMacro( ::videoOpenni::SScan, ::arData::FrameTL );
-fwServicesRegisterObjectMacro( ::videoOpenni::SScan, ::arData::FrameTL );
 
 const ::fwCom::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
 

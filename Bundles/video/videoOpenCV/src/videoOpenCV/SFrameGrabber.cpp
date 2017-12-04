@@ -41,10 +41,6 @@ const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PREVIOUS_IMAGE_SLOT = "previo
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoOpenCV::SFrameGrabber, ::arData::FrameTL);
-
-// -----------------------------------------------------------------------------
-
 SFrameGrabber::SFrameGrabber() noexcept :
     m_loopVideo(false),
     m_isInitialized(false),

@@ -21,12 +21,15 @@ namespace videoOpenni
 {
 
 /**
- * @brief   This service grabs the depth, color, ir frames from a compatible RGBD camera (Kinect, Sense, etc...).
+ * @brief   Kinect or Sense camera
  *
+ * This service grabs the depth, color, ir frames from a compatible RGBD camera (Kinect, Sense, etc...).
  * The frames are pushed into the timelines that are configured.
  * According to the device, it may not be possible to grab all streams simultaneously. On the Sense and the Kinect for
  * instance, it is not possible to get the color and the IR streams
  * together.
+ *
+ * \b Tags: DEVICE
  *
  * @section Slots Slots
  * - \b startCamera(): Start capturing frames from the camera.
