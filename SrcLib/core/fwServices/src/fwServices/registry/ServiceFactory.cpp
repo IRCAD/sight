@@ -50,7 +50,7 @@ void ServiceFactory::parseBundleInformation()
         std::string service;
         std::vector<std::string> objects;
         std::string desc;
-        std::string caps;
+        std::string tags;
 
         for(ConfigurationType cfgElt :  cfgEltVec)
         {
@@ -71,9 +71,9 @@ void ServiceFactory::parseBundleInformation()
             {
                 desc = cfgElt->getValue();
             }
-            else if(elt == "caps")
+            else if(elt == "tags")
             {
-                caps = cfgElt->getValue();
+                tags = cfgElt->getValue();
             }
             else
             {
@@ -88,7 +88,7 @@ void ServiceFactory::parseBundleInformation()
         info.objectsSetFromBundle = !objects.empty();
         info.objectImpl           = std::move(objects);
         info.desc                 = desc;
-        info.caps                 = caps;
+        info.tags                 = tags;
         info.bundle               = cfgEltVec[0]->getBundle();
         SLM_ASSERT("Bundle not find.", info.bundle );
 
@@ -430,12 +430,12 @@ std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) co
 
 //-----------------------------------------------------------------------------
 
-std::string ServiceFactory::getServiceCaps(const std::string& srvImpl) const
+std::string ServiceFactory::getServiceTags(const std::string& srvImpl) const
 {
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
-    return iter->second.caps;
+    return iter->second.tags;
 }
 
 //-----------------------------------------------------------------------------

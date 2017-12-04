@@ -577,12 +577,18 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
+        set(REGISTER_SERVICES_SRC)
+        if(EXISTS "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp")
+            set(REGISTER_SERVICES_SRC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp")
+        endif()
         add_library(${FWPROJECT_NAME} ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
-            ${${FWPROJECT_NAME}_PCH_LIB})
+            ${${FWPROJECT_NAME}_PCH_LIB}
+            ${REGISTER_SERVICES_SRC}
+        )
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 

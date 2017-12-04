@@ -82,7 +82,7 @@ public:
     FWSERVICES_API std::string getServiceDescription(const std::string& srvImpl) const;
 
     /// return the service capabilities.
-    FWSERVICES_API std::string getServiceCaps(const std::string& srvImpl) const;
+    FWSERVICES_API std::string getServiceTags(const std::string& srvImpl) const;
 
     /// Check if the service with given object and implementation is valid
     FWSERVICES_API bool checkServiceValidity(const std::string& object, const std::string& srvImpl) const;
@@ -112,7 +112,7 @@ private:
         std::string serviceType;
         std::vector<std::string> objectImpl;
         std::string desc;
-        std::string caps;
+        std::string tags;
         std::shared_ptr< ::fwRuntime::Bundle > bundle;
         FactoryType factory;
         bool objectsSetFromBundle {false}; // True if the objects implementation are set from the bundle information

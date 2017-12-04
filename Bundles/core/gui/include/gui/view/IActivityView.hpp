@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_VIEW_IACTIVITYVIEW_HPP__
-#define __GUI_VIEW_IACTIVITYVIEW_HPP__
+#pragma once
 
 #include "gui/config.hpp"
 
@@ -56,7 +55,7 @@ class GUI_CLASS_API IActivityView : public ::fwGui::IGuiContainerSrv
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (IActivityView)(::fwGui::IGuiContainerSrv) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (IActivityView)(::fwGui::IGuiContainerSrv) )
 
     GUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
     GUI_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
@@ -116,5 +115,3 @@ protected:
 
 } // namespace view
 } // namespace gui
-
-#endif /*__GUI_VIEW_IACTIVITYVIEW_HPP__*/
