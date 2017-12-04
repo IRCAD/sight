@@ -396,7 +396,7 @@
         </service>
 
         <!-- Hand Eye -->
-        <service uid="matrixViewer" type="::uiData::SMatrixViewer" autoConnect="yes">
+        <service uid="matrixViewer" type="::uiTools::editor::SMatrixViewer" autoConnect="yes">
             <in key="matrix" uid="handEyeMatrix" />
             <title>Hand-Eye Matrix</title>
         </service>

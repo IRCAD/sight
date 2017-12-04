@@ -341,7 +341,7 @@ void SMatricesReader::pause()
 
 void SMatricesReader::readMatrices()
 {
-    if(m_tsMatricesCount + 1 < m_tsMatrices.size())
+    if(m_tsMatricesCount < m_tsMatrices.size())
     {
         const auto tStart = ::fwCore::HiResClock::getTimeInMilliSec();
         ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL>(s_MATRIXTL);
@@ -372,7 +372,7 @@ void SMatricesReader::readMatrices()
             matrixBuf->setElement(mat, i);
         }
 
-        if(m_useTimelapse)
+        if(m_useTimelapse && m_tsMatricesCount + 1 < m_tsMatrices.size())
         {
             const auto elapsedTime          = ::fwCore::HiResClock::getTimeInMilliSec() - tStart;
             const std::size_t currentMatrix = m_tsMatricesCount;
