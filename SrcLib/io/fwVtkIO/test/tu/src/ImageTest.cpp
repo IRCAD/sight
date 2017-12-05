@@ -24,8 +24,6 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/std/vector.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -44,49 +42,43 @@ namespace fwVtkIO
 namespace ut
 {
 
-using namespace boost::assign;
-
 static const double epsilon = 0.00001;
 
-static const ::fwData::Image::SizeType bostonTeapotSize       = list_of(256)(256)(178);
-static const ::fwData::Image::SpacingType bostonTeapotSpacing = list_of(1)(1)(1);
-static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2)(3.3);
+static const ::fwData::Image::SizeType bostonTeapotSize       = {{ 256, 256, 178 }};
+static const ::fwData::Image::SpacingType bostonTeapotSpacing = {{ 1, 1, 1 }};
+static const ::fwData::Image::OriginType bostonTeapotOrigin   = {{ 1.1, 2.2, 3.3 }};
 
 //------------------------------------------------------------------------------
 
-template< typename ExpSizeType, typename ExpSpacingType, typename ExpOriginType,
-          typename SizeType, typename SpacingType, typename OriginType>
+template< typename ExpSizeType, typename ExpSpacingType, typename ExpOriginType, typename ExpDimType,
+          typename SizeType, typename SpacingType, typename OriginType, typename DimType>
 void compareImageAttributes(const ExpSizeType& expSize,
                             const ExpSpacingType& expSpacing,
                             const ExpOriginType& expOrigin,
+                            ExpDimType expDim,
                             const SizeType& size,
                             const SpacingType& spacing,
-                            const OriginType& origin)
+                            const OriginType& origin,
+                            DimType dim)
 {
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[0]),
-                                  static_cast< ::fwData::Image::SpacingType::value_type >(spacing[0]), epsilon );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[1]),
-                                  static_cast< ::fwData::Image::SpacingType::value_type >(spacing[1]), epsilon );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[2]),
-                                  static_cast< ::fwData::Image::SpacingType::value_type >(spacing[2]), epsilon );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[0]),
-                                  static_cast< ::fwData::Image::OriginType::value_type >(origin[0]), epsilon );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[1]),
-                                  static_cast< ::fwData::Image::OriginType::value_type >(origin[1]), epsilon );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[2]),
-                                  static_cast< ::fwData::Image::OriginType::value_type >(origin[2]), epsilon );
+    CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(expDim),
+                          static_cast< size_t >(dim) );
 
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[0]),
-                          static_cast< ::fwData::Image::SizeType::value_type >(size[0]) );
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[1]),
-                          static_cast< ::fwData::Image::SizeType::value_type >(size[1]) );
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[2]),
-                          static_cast< ::fwData::Image::SizeType::value_type >(size[2]) );
+    for(size_t i = 0; i < static_cast< size_t >(dim); ++i)
+    {
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[i]),
+                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[i]), epsilon );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[i]),
+                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[i]), epsilon );
+        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[i]),
+                              static_cast< ::fwData::Image::SizeType::value_type >(size[i]) );
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void imageToVTKTest(const std::string& imgtype, const ::boost::assign_detail::generic_list<int>& vtktypes)
+void imageToVTKTest(const std::string& imgtype, const std::set<int>& vtktypes)
 {
     const size_t dim = 3;
     ::fwData::Image::SizeType size(dim);
@@ -114,10 +106,13 @@ void imageToVTKTest(const std::string& imgtype, const ::boost::assign_detail::ge
         size,
         spacing,
         origin,
+        image->getNumberOfDimensions(),
 
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
-        vtkImage->GetOrigin()
+        vtkImage->GetOrigin(),
+        vtkImage->GetDataDimension()
+
         );
 
     std::set<int> types = vtktypes;
@@ -158,14 +153,17 @@ void writerTest(const std::string& imagetype, const std::string& filename)
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + filename + "> of type <" + imagetype + "> Failed ",
                                   image->getType(), image2->getType() );
+
     compareImageAttributes(
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
+        image->getNumberOfDimensions(),
 
         image2->getSize(),
         image2->getSpacing(),
-        image2->getOrigin()
+        image2->getOrigin(),
+        image2->getNumberOfDimensions()
         );
 }
 
@@ -197,10 +195,12 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
         vtkImage->GetOrigin(),
+        vtkImage->GetDataDimension(),
 
         image->getSize(),
         image->getSpacing(),
-        image->getOrigin()
+        image->getOrigin(),
+        image->getNumberOfDimensions()
         );
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + imagename + "> Failed ", ::fwTools::Type(type), image->getType() );
@@ -238,10 +238,12 @@ void testVtkReader(std::string imagetype)
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
+        image->getNumberOfDimensions(),
 
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
-        vtkImage->GetOrigin()
+        vtkImage->GetOrigin(),
+        vtkImage->GetDataDimension()
         );
 }
 
@@ -264,20 +266,20 @@ void ImageTest::tearDown()
 
 void ImageTest::testImageToVtk()
 {
-    imageToVTKTest("int8", list_of(VTK_CHAR)(VTK_SIGNED_CHAR));
-    imageToVTKTest("uint8", list_of(VTK_UNSIGNED_CHAR));
+    imageToVTKTest("int8", { VTK_CHAR, VTK_SIGNED_CHAR });
+    imageToVTKTest("uint8", { VTK_UNSIGNED_CHAR});
 
-    imageToVTKTest("int16", list_of(VTK_SHORT));
-    imageToVTKTest("uint16", list_of(VTK_UNSIGNED_SHORT));
+    imageToVTKTest("int16", { VTK_SHORT });
+    imageToVTKTest("uint16", { VTK_UNSIGNED_SHORT });
 
-    imageToVTKTest("int32", list_of(VTK_INT));
-    imageToVTKTest("uint32", list_of(VTK_UNSIGNED_INT));
+    imageToVTKTest("int32", { VTK_INT });
+    imageToVTKTest("uint32", { VTK_UNSIGNED_INT });
 
-    // imageToVTKTest("int64" , list_of(VTK_LONG));
-    // imageToVTKTest("uint64", list_of(VTK_UNSIGNED_LONG));
+    // imageToVTKTest("int64" , { VTK_LONG));
+    // imageToVTKTest("uint64", { VTK_UNSIGNED_LONG));
 
-    imageToVTKTest("float", list_of(VTK_FLOAT));
-    imageToVTKTest("double", list_of(VTK_DOUBLE));
+    imageToVTKTest("float", { VTK_FLOAT });
+    imageToVTKTest("double", { VTK_DOUBLE });
 
 }
 
@@ -308,7 +310,7 @@ void ImageTest::testFromVtk()
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
 
     CPPUNIT_ASSERT(vtkImage);
-    vtkImage->SetDimensions(64, 64, 2);
+    vtkImage->SetDimensions(64, 64, 1);
     vtkImage->SetSpacing(1.0, 1.0, 0.0);
     int dataType = ::fwVtkIO::TypeTranslator::translate(::fwTools::Type::create(type));
     vtkImage->AllocateScalars(dataType, nbComponents);
@@ -323,10 +325,12 @@ void ImageTest::testFromVtk()
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
         vtkImage->GetOrigin(),
+        vtkImage->GetDataDimension(),
 
         image->getSize(),
         image->getSpacing(),
-        image->getOrigin()
+        image->getOrigin(),
+        image->getNumberOfDimensions()
         );
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + type + "> Failed ", ::fwTools::Type(type), image->getType() );
 
@@ -355,10 +359,12 @@ void ImageTest::mhdReaderTest()
         bostonTeapotSize,
         bostonTeapotSpacing,
         bostonTeapotOrigin,
+        bostonTeapotSize.size(),
 
         image->getSize(),
         image->getSpacing(),
-        image->getOrigin()
+        image->getOrigin(),
+        image->getNumberOfDimensions()
         );
 
 }
@@ -432,10 +438,12 @@ void ImageTest::vtiReaderTest()
         bostonTeapotSize,
         bostonTeapotSpacing,
         bostonTeapotOrigin,
+        bostonTeapotSize.size(),
 
         image->getSize(),
         image->getSpacing(),
-        image->getOrigin()
+        image->getOrigin(),
+        image->getNumberOfDimensions()
         );
 
 }
@@ -471,23 +479,20 @@ void ImageTest::vtkReaderTest()
     reader->setFile(imagePath);
     reader->read();
 
-    ::fwData::Image::SizeType vtkSize;
-    vtkSize += 230, 170, 58;
-
-    ::fwData::Image::SpacingType vtkSpacing;
-    vtkSpacing += 1.732, 1.732, 3.2;
-
-    ::fwData::Image::OriginType vtkOrigin;
-    vtkOrigin += 34.64, 86.6, 56;
+    ::fwData::Image::SizeType vtkSize {{ 230, 170, 58 }};
+    ::fwData::Image::SpacingType vtkSpacing {{ 1.732, 1.732, 3.2 }};
+    ::fwData::Image::OriginType vtkOrigin {{ 34.64, 86.6, 56 }};
 
     compareImageAttributes(
         vtkSize,
         vtkSpacing,
         vtkOrigin,
+        3,
 
         image->getSize(),
         image->getSpacing(),
-        image->getOrigin()
+        image->getOrigin(),
+        image->getNumberOfDimensions()
         );
 
     testVtkReader(std::string("int8"));
