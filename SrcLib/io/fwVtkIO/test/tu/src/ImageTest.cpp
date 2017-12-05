@@ -46,8 +46,7 @@ namespace ut
 
 using namespace boost::assign;
 
-static const double epsilon       = 0.00001;
-static const int nbDataTestValues = 1000;
+static const double epsilon = 0.00001;
 
 static const ::fwData::Image::SizeType bostonTeapotSize       = list_of(256)(256)(178);
 static const ::fwData::Image::SpacingType bostonTeapotSpacing = list_of(1)(1)(1);
@@ -205,7 +204,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
 //------------------------------------------------------------------------------
 
-void testVtkReader(std::string& imagetype)
+void testVtkReader(std::string imagetype)
 {
     const ::boost::filesystem::path testFile(::fwTest::Data::dir() / ("fw4spl/image/vtk/img-" + imagetype + ".vtk"));
 
