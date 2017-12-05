@@ -319,6 +319,9 @@ void SPointList::attachNode(::Ogre::MovableObject* _node)
         _node->detachFromParent();
         transNode->attachObject(_node);
     }
+
+    // Needed to recompute world bounding boxes of the scene node using its attached mesh bounds
+    transNode->_update(true, false);
 }
 
 //-----------------------------------------------------------------------------
