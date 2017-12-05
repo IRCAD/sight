@@ -52,28 +52,37 @@ static const ::fwData::Image::SizeType bostonTeapotSize       = list_of(256)(256
 static const ::fwData::Image::SpacingType bostonTeapotSpacing = list_of(1)(1)(1);
 static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2)(3.3);
 
-#define COMPARE_IMAGE_ATTRS_MACRO(expSize, expSpacing, expOrigin, size, spacing, origin)                               \
-    {                                                                                                                  \
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[0]),          \
-                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[0]), epsilon );  \
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[1]),          \
-                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[1]), epsilon );  \
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[2]),          \
-                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[2]), epsilon );  \
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[0]),            \
-                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[0]), epsilon );    \
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[1]),            \
-                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[1]), epsilon );    \
-        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[2]),            \
-                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[2]), epsilon );    \
-                                                                                                                       \
-        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[0]),                        \
-                              static_cast< ::fwData::Image::SizeType::value_type >(size[0]) );                         \
-        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[1]),                        \
-                              static_cast< ::fwData::Image::SizeType::value_type >(size[1]) );                         \
-        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[2]),                        \
-                              static_cast< ::fwData::Image::SizeType::value_type >(size[2]) );                         \
-    }
+//------------------------------------------------------------------------------
+
+template< typename ExpSizeType, typename ExpSpacingType, typename ExpOriginType,
+          typename SizeType, typename SpacingType, typename OriginType>
+void compareImageAttributes(const ExpSizeType& expSize,
+                            const ExpSpacingType& expSpacing,
+                            const ExpOriginType& expOrigin,
+                            const SizeType& size,
+                            const SpacingType& spacing,
+                            const OriginType& origin)
+{
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[0]),
+                                  static_cast< ::fwData::Image::SpacingType::value_type >(spacing[0]), epsilon );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[1]),
+                                  static_cast< ::fwData::Image::SpacingType::value_type >(spacing[1]), epsilon );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[2]),
+                                  static_cast< ::fwData::Image::SpacingType::value_type >(spacing[2]), epsilon );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[0]),
+                                  static_cast< ::fwData::Image::OriginType::value_type >(origin[0]), epsilon );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[1]),
+                                  static_cast< ::fwData::Image::OriginType::value_type >(origin[1]), epsilon );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[2]),
+                                  static_cast< ::fwData::Image::OriginType::value_type >(origin[2]), epsilon );
+
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[0]),
+                          static_cast< ::fwData::Image::SizeType::value_type >(size[0]) );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[1]),
+                          static_cast< ::fwData::Image::SizeType::value_type >(size[1]) );
+    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[2]),
+                          static_cast< ::fwData::Image::SizeType::value_type >(size[2]) );
+}
 
 //------------------------------------------------------------------------------
 
@@ -101,7 +110,7 @@ void imageToVTKTest(const std::string& imgtype, const ::boost::assign_detail::ge
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage(image, vtkImage);
 
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         size,
         spacing,
         origin,
@@ -149,7 +158,7 @@ void writerTest(const std::string& imagetype, const std::string& filename)
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" + filename + "> of type <" + imagetype + "> Failed ",
                                   image->getType(), image2->getType() );
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
@@ -184,7 +193,7 @@ void imageFromVTKTest(const std::string& imagename, const std::string& type)
 
     ::fwDataTools::helper::Image imageHelper(image);
 
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
         vtkImage->GetOrigin(),
@@ -225,7 +234,7 @@ void testVtkReader(std::string imagetype)
     CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "fw4spl/image/vtk/img-" + imagetype + ".vtk" "> Failed ",
                                   ::fwTools::Type(imagetype), image->getType());
 
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         image->getSize(),
         image->getSpacing(),
         image->getOrigin(),
@@ -310,7 +319,7 @@ void ImageTest::testFromVtk()
     ::fwDataTools::helper::Image imageHelper(image);
     CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents()),
                           static_cast< size_t >( image->getNumberOfComponents()) );
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         vtkImage->GetDimensions(),
         vtkImage->GetSpacing(),
         vtkImage->GetOrigin(),
@@ -342,7 +351,7 @@ void ImageTest::mhdReaderTest()
     reader->setFile(imagePath);
     reader->read();
 
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         bostonTeapotSize,
         bostonTeapotSpacing,
         bostonTeapotOrigin,
@@ -419,7 +428,7 @@ void ImageTest::vtiReaderTest()
     reader->setFile(imagePath);
     reader->read();
 
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         bostonTeapotSize,
         bostonTeapotSpacing,
         bostonTeapotOrigin,
@@ -471,7 +480,7 @@ void ImageTest::vtkReaderTest()
     ::fwData::Image::OriginType vtkOrigin;
     vtkOrigin += 34.64, 86.6, 56;
 
-    COMPARE_IMAGE_ATTRS_MACRO(
+    compareImageAttributes(
         vtkSize,
         vtkSpacing,
         vtkOrigin,
