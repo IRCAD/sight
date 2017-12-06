@@ -99,13 +99,11 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
-                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view sid="scenesView" start="yes" />
                 <view sid="editorsView" start="yes" />
-                <view sid="3dScene" start="yes" />
             </registry>
         </service>
 
@@ -348,37 +346,6 @@
             <parameter replace="changeBlendModeChannel" by="changeBlendModeChannel" />
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="3dScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene renderMode="auto">
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" background="#052833" />
-                <adaptor uid="transformAdpt" />
-                <adaptor uid="targetNegatoMPR" />
-                <adaptor uid="3DreferenceNegatoMPR" />
-            </scene>
-        </service>
-
-        <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="inverseFinalTransform" />
-            <config transform="registration" />
-        </service>
-
-        <service uid="targetNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${targetImageUid}" />
-            <inout key="tf" uid="targetTransferFunction" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" />
-        </service>
-
-        <service uid="3DreferenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="referenceTransferFunction" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" transform="registration" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
         <service uid="transformedTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
             <inout key="tfPool" uid="TFTransformedComposite" />
             <out key="tf" uid="transformedTransferFunction" />
@@ -598,11 +565,6 @@
         <start uid="tfWidget" />
         <start uid="transformedTFSelector" />
         <start uid="transformedWindowLevel" />
-
-        <!-- VTK scene '3dScene' -->
-        <start uid="transformAdpt" />
-        <start uid="targetNegatoMPR" />
-        <start uid="3DreferenceNegatoMPR" />
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
