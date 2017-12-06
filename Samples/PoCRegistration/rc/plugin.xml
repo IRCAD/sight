@@ -21,7 +21,7 @@
         <id>PoCRegistrationAppBase</id>
         <parameters>
             <param name="appName" value="PoCRegistration @PROJECT_VERSION@" />
-            <param name="appIconPath" value="PoCRegistration_@PROJECT_VERSION@/app.ico" />
+            <param name="appIconPath" value="PoCRegistration-@PROJECT_VERSION@/app.ico" />
             <param name="appVersion" value="@PROJECT_VERSION@" />
         </parameters>
     </extension>
