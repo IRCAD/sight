@@ -138,6 +138,9 @@ private:
     /// Create a new image adaptor
     void addImage(::fwData::Image::sptr img, ::fwData::TransferFunction::sptr tf, const ImageInfo& info);
 
+    ///SLOT: sets the top image's transparency. Transparency value must be in [0, 255].
+    void setTopImageTransparency(int transparency);
+
     typedef std::vector< ImageInfo > ImageInfoMap;
     /// Map containing the image displaying information
     ImageInfoMap m_imagesInfo;
