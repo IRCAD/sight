@@ -41,10 +41,10 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
                            ::fwData::PointList::sptr pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getPoints().size() == pointList2->getPoints().size() );
+               pointList1->getPoints().size() == pointList2->getCRefPoints().size() );
 
-    const ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
-    const ::fwData::PointList::PointListContainer points2 = pointList2->getPoints();
+    const ::fwData::PointList::PointListContainer points1 = pointList1->getCRefPoints();
+    const ::fwData::PointList::PointListContainer points2 = pointList2->getCRefPoints();
     const size_t size                                     = points1.size();
 
     ::fwData::Array::sptr outputArray = ::fwData::Array::New();
@@ -74,17 +74,12 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
                                     ::fwData::TransformationMatrix3D::csptr matrix2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getPoints().size() == pointList2->getPoints().size() );
+               pointList1->getPoints().size() == pointList2->getCRefPoints().size() );
 
-    ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
+    ::fwData::PointList::PointListContainer points1 = pointList1->getCRefPoints();
     ::fwData::PointList::PointListContainer points2 = pointList2->getRefPoints();
 
     const size_t size = points1.size();
-
-    // Initialize the two lists by transforming the points with their associated matrix
-    for(size_t i = 0; i < size; ++i)
-    {
-    }
 
     // Transform the point lists into list< ::glm::dvec3 >
     std::list< ::glm::dvec3 > list1;
@@ -92,17 +87,15 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
 
     for(size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::sptr pt1       = points1[i];
-        ::fwData::Point::sptr pt2       = points2[i];
-        ::fwData::Point::sptr ptOutput1 = ::fwData::Point::New();
-        ::fwData::Point::sptr ptOutput2 = ::fwData::Point::New();
+        ::fwData::Point::sptr pt1 = points1[i];
+        ::fwData::Point::sptr pt2 = points2[i];
 
         // Transform the current point with the input matrix
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, ptOutput1);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix2, pt2, ptOutput2);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, pt1);
+        ::fwDataTools::TransformationMatrix3D::multiply(matrix2, pt2, pt2);
 
-        ::fwData::Point::PointCoordArrayType tmp1 = ptOutput1->getCoord();
-        ::fwData::Point::PointCoordArrayType tmp2 = ptOutput2->getCoord();
+        ::fwData::Point::PointCoordArrayType tmp1 = pt1->getCoord();
+        ::fwData::Point::PointCoordArrayType tmp2 = pt2->getCoord();
 
         // Update the point in the Point list
         points1[i]->setCoord(tmp1);
@@ -124,7 +117,7 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
         for(; it2 != list2.end(); it2++)
         {
             ::glm::dvec3 point2 = *it2;
-            double distance = ::glm::distance(point1, point2);
+            const double distance = ::glm::distance(point1, point2);
             if(distance < distanceMin)
             {
                 distanceMin    = distance;
@@ -133,15 +126,15 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
         }
 
         ::fwData::Point::PointCoordArrayType pointCoord;
-        pointCoord[0] = (*itClosestPoint).x;
-        pointCoord[1] = (*itClosestPoint).y;
-        pointCoord[2] = (*itClosestPoint).z;
+        pointCoord[0] = itClosestPoint->x;
+        pointCoord[1] = itClosestPoint->y;
+        pointCoord[2] = itClosestPoint->z;
 
         ::fwData::Point::sptr pt = points2[index];
         pt->setCoord(pointCoord);
         ++index;
 
-        // Erased the already matched point
+        // Erase the already matched point
         list2.erase(itClosestPoint);
     }
 }

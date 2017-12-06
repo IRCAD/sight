@@ -47,7 +47,7 @@ void PointListTest::computeDistance()
 
     ::fwData::Point::sptr p;
 
-    // Simple test with parallel point lists
+    // Simple test with empty point lists
     {
         pl1 = ::fwData::PointList::New();
         pl2 = ::fwData::PointList::New();
@@ -92,7 +92,7 @@ void PointListTest::computeDistance()
         pl1 = ::fwData::PointList::New();
         pl2 = ::fwData::PointList::New();
 
-        // Build 2 pointlists:
+        // Build 2 point lists:
         // The first one with increasing x values
         // And the second one with inscreasing x values but shifted in y
         for(size_t i = 0; i < nbPoints; i++)
@@ -128,7 +128,7 @@ void PointListTest::associatePointLists()
 
     ::fwData::Point::sptr p;
 
-    // Simple test with parallel point lists
+    // Simple test with empty point lists
     {
         pl1 = ::fwData::PointList::New();
         pl2 = ::fwData::PointList::New();
@@ -143,7 +143,7 @@ void PointListTest::associatePointLists()
         pl1 = ::fwData::PointList::New();
         pl2 = ::fwData::PointList::New();
 
-        // Build 2 pointlists:
+        // Build 2 point lists:
         // The first one with increasing x values
         // And the second one with inscreasing x values but shifted in y
         for(size_t i = 0; i <= nbPoints; i++)
@@ -159,15 +159,15 @@ void PointListTest::associatePointLists()
         ::fwDataTools::helper::PointList::associatePointLists(pl1, ::fwData::TransformationMatrix3D::New(),
                                                               pl2, ::fwData::TransformationMatrix3D::New());
 
-        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
+        const ::fwData::PointList::PointListContainer points1 = pl1->getCRefPoints();
         ::fwData::PointList::PointListContainer points2 = pl2->getRefPoints();
 
         const size_t size = points1.size();
 
         for(size_t i = 0; i < size; ++i)
         {
-            ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-            ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+            ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
+            ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
