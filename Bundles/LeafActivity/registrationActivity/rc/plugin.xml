@@ -6,6 +6,7 @@
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
 
+    <xi:include href="configurations/SliceBlendView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/Registration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
