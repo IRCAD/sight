@@ -135,7 +135,7 @@ void SImagesBlend::configuring()
                 const ::fwServices::IService::ConfigType& specAssoc = v.second;
                 const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
                 const std::string tfalpha                           = attr.get("tfalpha", "no");
-                const double opacity                                = attr.get("tfalpha", 1.0);
+                const double opacity                                = attr.get("opacity", 1.0);
 
                 ImageInfo info;
                 info.m_imageOpacity = opacity;
