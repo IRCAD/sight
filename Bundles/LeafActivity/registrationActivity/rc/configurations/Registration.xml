@@ -113,12 +113,10 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="1" caption="Reference" />
-                    <view proportion="1" caption="Transformed on target" />
+                    <view proportion="1" caption="Manual registration" />
                 </layout>
             </gui>
             <registry>
-                <view sid="referenceScene" start="yes" />
                 <view wid="blendScene1" />
             </registry>
         </service>
@@ -127,17 +125,15 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="1" caption="Reference editor" />
-                    <view proportion="1" caption="Transformed editor" />
+                    <view proportion="1" caption="Blend editor" />
                 </layout>
             </gui>
             <registry>
-                <view sid="referenceViewEditor" start="yes" />
-                <view sid="targetViewEditor" start="yes" />
+                <view sid="blendEditor" start="yes" />
             </registry>
         </service>
 
-        <service uid="targetViewEditor" type="::gui::view::SDefaultView">
+        <service uid="blendEditor" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -147,12 +143,25 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="targetSceneEditor" />
-                <view sid="blendEditor" start="yes" />
+                <view sid="blendTransparencyAndModeEditor" start="yes" />
                 <view sid="checkerBoardCellSlider" start="yes" />
+                <view sid="windowLevelEditors" start="yes" />
             </registry>
         </service>
 
+        <service uid="blendTransparencyAndModeEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="transparencySlider" start="yes" />
+                <view sid="blendMode" start="yes" />
+            </registry>
+        </service>
 
         <service uid="transparencySlider" type="::guiQt::editor::SParameters">
             <parameters>
@@ -172,31 +181,28 @@
             </parameters>
         </service>
 
-        <service uid="blendEditor" type="::gui::view::SDefaultView">
+        <service uid="windowLevelEditors" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="1" />
-                    <view proportion="0" />
+                    <view proportion="1" caption="Reference editor"/>
+                    <view proportion="1" caption="Target editor"/>
                 </layout>
             </gui>
             <registry>
-                <view sid="transparencySlider" start="yes" />
-                <view sid="blendMode" start="yes" />
+                <view sid="targetWindowLevel" start="yes" />
+                <view sid="referenceWindowLevel" start="yes" />
             </registry>
         </service>
 
-        <service uid="referenceViewEditor" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <spacer/>
-                </layout>
-            </gui>
-            <registry>
-                <view wid="referenceSceneEditor" />
-            </registry>
+        <service uid="targetWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <inout key="tf" uid="targetTransferFunction" />
+        </service>
+
+        <service uid="referenceWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${referenceImageUid}" />
+            <inout key="tf" uid="referenceTransferFunction" />
         </service>
 
         <service uid="ParamView" type="::gui::view::SDefaultView">
@@ -329,42 +335,8 @@
             <inout key="landmarks" uid="targetPL" />
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene renderMode="auto">
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" background="#052833" />
-                <adaptor uid="referenceNegatoMPR" />
-                <adaptor uid="referenceInteractorStyle" />
-                <adaptor uid="referencePickerInteractor" />
-                <adaptor uid="referencePointListAdaptor" />
-            </scene>
-        </service>
-
-        <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="referenceTransferFunction" />
-            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
-        </service>
-
-        <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
-        </service>
-
-        <service uid="referencePointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
-            <inout key="pointList" uid="referencePL" />
-            <config renderer="default" picker="picker" color="#550066" radius="10" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
-        <service uid="sliceBlendView1" type="::fwServices::SConfigController" >
-            <appConfig id="SliceBlendView" />
+        <service uid="manualRegistration" type="::fwServices::SConfigController" >
+            <appConfig id="ManualRegistrationView" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
             <inout key="transformUid" uid="${transformUid}" />
@@ -374,7 +346,6 @@
             <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>
             <parameter replace="modifyCheckerboardDivisionsChannel" by="modifyCheckerboardDivisionsChannel" />
             <parameter replace="changeBlendModeChannel" by="changeBlendModeChannel" />
-            <parameter replace="orientation" by="axial" />
         </service>
 
         <!-- *************************** Begin generic scene *************************** -->
@@ -407,20 +378,6 @@
         </service>
 
         <!-- *************************** End generic scene *************************** -->
-
-        <service uid="referenceImageManager" type="::fwServices::SConfigController">
-            <appConfig id="ImageManager" />
-            <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="transferFunction" uid="referenceTransferFunction" />
-        </service>
-
-        <service uid="targetImageManager" type="::fwServices::SConfigController">
-            <appConfig id="ImageManager" />
-            <parameter replace="WID_PARENT" uid="targetSceneEditor" />
-            <inout key="image" uid="${targetImageUid}" />
-            <inout key="transferFunction" uid="targetTransferFunction" />
-        </service>
 
         <service uid="transformedTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
             <inout key="tfPool" uid="TFTransformedComposite" />
@@ -623,8 +580,6 @@
 
         <start uid="mainView" />
         <start uid="medicalImageTargetSrv" />
-        <start uid="referenceImageManager" />
-        <start uid="targetImageManager" />
         <start uid="computetransformedHistogram" />
         <start uid="referenceLandmarkManager" />
         <start uid="targetLandmarkManager" />
@@ -639,14 +594,7 @@
         <start uid="flipConcat" />
         <start uid="resetIdentity" />
         <start uid="inverseMat" />
-
-        <!-- VTK scene 'referenceScene' -->
-        <start uid="referenceNegatoMPR" />
-        <start uid="referenceInteractorStyle" />
-        <start uid="referencePickerInteractor" />
-        <start uid="referencePointListAdaptor" />
-
-        <start uid="sliceBlendView1" />
+        <start uid="manualRegistration" />
         <start uid="tfWidget" />
         <start uid="transformedTFSelector" />
         <start uid="transformedWindowLevel" />
