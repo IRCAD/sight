@@ -71,7 +71,7 @@ public:
     FWRENDEROGRE_API void clearMesh(::Ogre::SceneManager& _sceneMgr);
 
     FWRENDEROGRE_API void updateMaterial(const ::fwRenderOgre::Material::uptr& _material, bool _isR2VB,
-                                         const ::Ogre::AxisAlignedBox& _bbox);
+                                         const ::Ogre::AxisAlignedBox& _bbox) const;
 
     FWRENDEROGRE_API bool hasColorLayerChanged(const ::fwData::Mesh::csptr& _mesh);
 

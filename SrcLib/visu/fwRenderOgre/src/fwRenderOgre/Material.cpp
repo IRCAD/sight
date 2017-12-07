@@ -36,7 +36,7 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         _name, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName);
+    const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName);
 
     SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 
@@ -60,8 +60,8 @@ void Material::updateOptionsMode(int _optionsMode)
     // First remove the normals pass if there is already one
     this->removePass(s_NORMALS_PASS);
 
-    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
-    const ::Ogre::Real sceneSize                  = m_meshBoundingBox.getSize().length();
+    const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
+    const ::Ogre::Real sceneSize                   = m_meshBoundingBox.getSize().length();
 
     if(_optionsMode != ::fwData::Material::STANDARD)
     {
@@ -107,7 +107,7 @@ void Material::updateOptionsMode(int _optionsMode)
         for(const auto currentTechnique : techniques)
         {
             // We need the first pass of the current technique in order to copy its rendering states in the normals pass
-            ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
+            const ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
             SLM_ASSERT("Pass is null", firstPass);
 
             if(firstPass->hasGeometryProgram())
@@ -136,7 +136,7 @@ void Material::updatePolygonMode(int _polygonMode)
     // First remove a previous normal pass if it exists
     this->removePass(s_EDGE_PASS);
 
-    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
     if(_polygonMode == ::fwData::Material::EDGE)
     {
@@ -176,9 +176,9 @@ void Material::updatePolygonMode(int _polygonMode)
         {
             SLM_ASSERT("Technique is not set", tech);
 
-            ::Ogre::Technique::Passes passIt = tech->getPasses();
+            const ::Ogre::Technique::Passes& passes = tech->getPasses();
 
-            for(const auto ogrePass : passIt)
+            for(const auto ogrePass : passes)
             {
                 switch( _polygonMode )
                 {
@@ -212,26 +212,26 @@ void Material::updatePolygonMode(int _polygonMode)
 
 void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDiffuseTexture, bool _useTextureAlpha )
 {
-    ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(_shadingMode);
+    const ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(_shadingMode);
 
-    ::Ogre::String permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, _hasDiffuseTexture,
-                                                                                 m_hasVertexColor);
-    ::Ogre::String r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
-                                                                                            _hasDiffuseTexture,
-                                                                                            m_hasVertexColor,
-                                                                                            m_hasPrimitiveColor);
+    const ::Ogre::String permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, _hasDiffuseTexture,
+                                                                                       m_hasVertexColor);
+    const ::Ogre::String r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
+                                                                                                  _hasDiffuseTexture,
+                                                                                                  m_hasVertexColor,
+                                                                                                  m_hasPrimitiveColor);
 
     this->cleanTransparencyTechniques();
 
     // Iterate through each technique found in the material and switch the shading mode
-    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
     for(const auto tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::Technique::Passes passIt = tech->getPasses();
+        const ::Ogre::Technique::Passes& passes = tech->getPasses();
 
-        for(const auto ogrePass : passIt)
+        for(const auto ogrePass : passes)
         {
             // Nothing to do for edge and normal passes
             if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
@@ -256,7 +256,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                     SLM_ASSERT("Texture should have been created before in SMesh", !result.second);
 
-                    ::Ogre::TexturePtr tex = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( result.first );
+                    const ::Ogre::TexturePtr tex = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( result.first );
 
                     const std::string texUnitName = "PerPrimitiveColor";
                     ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
@@ -280,8 +280,8 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                     }
 
                     // Set size outside the scope of texture creation because the size could vary
-                    ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
-                                         static_cast<float>(tex->getHeight() - 1));
+                    const ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
+                                               static_cast<float>(tex->getHeight() - 1));
                     ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
                 }
             }
@@ -332,19 +332,19 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
 //------------------------------------------------------------------------------
 
-void Material::updateRGBAMode(fwData::Material::sptr fw_material)
+void Material::updateRGBAMode(fwData::Material::sptr _f4sMaterial)
 {
     //Set up Material colors
-    ::fwData::Color::sptr f4sAmbient = fw_material->ambient();
-    ::fwData::Color::sptr f4sDiffuse = fw_material->diffuse();
+    ::fwData::Color::csptr f4sAmbient = _f4sMaterial->ambient();
+    ::fwData::Color::csptr f4sDiffuse = _f4sMaterial->diffuse();
 
-    ::Ogre::ColourValue ambient(f4sAmbient->red(), f4sAmbient->green(), f4sAmbient->blue(), f4sAmbient->alpha());
+    const ::Ogre::ColourValue ambient(f4sAmbient->red(), f4sAmbient->green(), f4sAmbient->blue(), f4sAmbient->alpha());
     m_material->setAmbient(ambient);
 
-    ::Ogre::ColourValue diffuse(f4sDiffuse->red(), f4sDiffuse->green(), f4sDiffuse->blue(), f4sDiffuse->alpha());
+    const ::Ogre::ColourValue diffuse(f4sDiffuse->red(), f4sDiffuse->green(), f4sDiffuse->blue(), f4sDiffuse->alpha());
     m_material->setDiffuse(diffuse);
 
-    ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
+    const ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
     m_material->setSpecular( specular );
     m_material->setShininess( 25 );
 }
@@ -355,7 +355,7 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
 {
     this->cleanTransparencyTechniques();
 
-    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
     for(const auto technique : techniques)
     {
@@ -394,16 +394,16 @@ void Material::removePass(const std::string& _name)
 {
     SLM_ASSERT("Material is not set", m_material);
 
-    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
     for(const auto technique : techniques)
     {
         SLM_ASSERT("Technique is not set", technique);
 
-        ::Ogre::Technique::Passes passIt = technique->getPasses();
+        const ::Ogre::Technique::Passes& passes = technique->getPasses();
         std::vector< ::Ogre::Pass* > removePassVector;
 
         // Collect the passes to remove
-        for(const auto ogrePass : passIt)
+        for(const auto ogrePass : passes)
         {
             if(ogrePass->getName() == _name)
             {
@@ -426,7 +426,7 @@ void Material::cleanTransparencyTechniques()
 {
     SLM_ASSERT("Material is not set", m_material);
 
-    const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
     std::vector< unsigned short > removeTechniqueVector;
 

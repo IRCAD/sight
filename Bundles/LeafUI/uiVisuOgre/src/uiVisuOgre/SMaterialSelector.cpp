@@ -172,15 +172,15 @@ void SMaterialSelector::onReloadMaterial()
 
     material->reload();
 
-    const ::Ogre::Material::Techniques techniques = material->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = material->getTechniques();
 
     for(const auto tech : techniques)
     {
         SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::Technique::Passes passIt = tech->getPasses();
+        const ::Ogre::Technique::Passes& passes = tech->getPasses();
 
-        for(const auto pass : passIt)
+        for(const auto pass : passes)
         {
             SLM_ASSERT("No pass found", pass);
 

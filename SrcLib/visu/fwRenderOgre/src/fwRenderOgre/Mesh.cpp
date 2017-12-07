@@ -692,8 +692,7 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
     void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with ::fwData::Mesh
-
-    size_t uiStrideFloat = 3;
+    const size_t uiStrideFloat = 3;
 
     typedef ::fwData::Point::PointCoordType PointType;
 
@@ -969,7 +968,7 @@ void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
 
 //------------------------------------------------------------------------------
 
-void Mesh::updateMaterial(const Material::uptr& _material, bool _isR2VB, const ::Ogre::AxisAlignedBox& _bbox)
+void Mesh::updateMaterial(const Material::uptr& _material, bool _isR2VB, const ::Ogre::AxisAlignedBox& _bbox) const
 {
     _material->setHasMeshNormal(m_hasNormal);
     _material->setMeshBoundingBox(_bbox);

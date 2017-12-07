@@ -106,7 +106,7 @@ void Plane::initializeMaterial()
     // is null when we call this method on the first time (from doStart() for instance)
     m_texMaterial->touch();
 
-    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
@@ -309,7 +309,7 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 {
-    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
@@ -331,7 +331,7 @@ void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 
 void Plane::switchThresholding(bool _threshold)
 {
-    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
@@ -418,7 +418,7 @@ void Plane::setEntityOpacity(float _f)
 
 void Plane::changeSlice(float sliceIndex)
 {
-    const ::Ogre::Material::Techniques techniques = m_texMaterial->getTechniques();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(const auto tech : techniques)
     {
