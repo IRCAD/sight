@@ -15,12 +15,9 @@
         <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="targetSlice" type="::fwData::Image" />
-        <object uid="transformedSlice" type="::fwData::Image" />
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
-        <object uid="inverseFinalTransform" type="::fwData::TransformationMatrix3D" />
 
         <!-- Transfer Functions -->
         <object uid="TFTransformedComposite" type="::fwData::Composite" />
@@ -75,8 +72,6 @@
         <object uid="centerTransformTarget" type="::fwData::TransformationMatrix3D" />
         <object uid="centerTransformReference" type="::fwData::TransformationMatrix3D" />
         <object uid="flipTransform" type="::fwData::TransformationMatrix3D" />
-        <object uid="identity" type="::fwData::TransformationMatrix3D" />
-
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -225,7 +220,6 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
-                    <view proportion="0" />
                     <spacer/>
                     <view proportion="0" />
                     <view proportion="0" />
@@ -233,7 +227,6 @@
             </gui>
             <registry>
                 <view sid="ResetRegistration" start="yes" />
-                <view sid="computeCenter" start="yes" />
                 <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
             </registry>
@@ -445,18 +438,6 @@
             <inout key="output" uid="${transformUid}" />
         </service>
 
-        <service uid="inverseMat" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="${transformUid}" inverse="true" autoConnect="yes" />
-            </in>
-            <inout key="output" uid="inverseFinalTransform" />
-        </service>
-
-        <service uid="resetIdentity" type="::ctrlCamp::SCopy">
-            <in key="source" uid="identity" />
-            <inout key="target" uid="${transformUid}" />
-        </service>
-
         <service uid="copyFlipAxial" type="::ctrlCamp::SCopy">
             <in key="source" uid="flipAxialMatrix" />
             <inout key="target" uid="flipTransform" />
@@ -472,22 +453,21 @@
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="flipConcat" type="::maths::SConcatenateMatrices">
+        <service uid="flipAndAlignConcat" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="centerTransformReference" autoConnect="yes" />
+                <!-- Flip reference -->
+                <key uid="centerTransformReference" />
                 <key uid="flipTransform" autoConnect="yes" />
                 <key uid="centerTransformReference" inverse="true" />
+                <!-- Align reference and target image centers -->
+                <key uid="centerTransformTarget" inverse="true" />
+                <key uid="centerTransformReference" />
             </in>
             <inout key="output" uid="${transformUid}" />
         </service>
 
         <connect>
             <signal>ResetRegistration/clicked</signal>
-            <slot>resetIdentity/update</slot>
-        </connect>
-
-        <connect>
-            <signal>computeCenter/clicked</signal>
             <slot>alignCenter/update</slot>
         </connect>
 
@@ -558,9 +538,7 @@
         <start uid="computeCenterTarget" />
         <start uid="computeCenterReference" />
         <start uid="alignCenter" />
-        <start uid="flipConcat" />
-        <start uid="resetIdentity" />
-        <start uid="inverseMat" />
+        <start uid="flipAndAlignConcat" />
         <start uid="manualRegistration" />
         <start uid="tfWidget" />
         <start uid="transformedTFSelector" />
@@ -568,5 +546,6 @@
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
+
     </config>
 </extension>
