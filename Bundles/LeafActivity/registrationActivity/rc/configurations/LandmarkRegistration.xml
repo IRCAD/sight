@@ -1,0 +1,313 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>LandmarkRegistration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="targetImageUid" />
+        <param name="referenceImageUid" />
+        <param name="transformUid" />
+        <param name="targetTransferFunction" />
+        <param name="transformedTransferFunction" />
+        <param name="modifyTransparencyChannel" />
+        <param name="modifyCheckerboardDivisionsChannel" />
+        <param name="changeBlendModeChannel" />
+    </parameters>
+    <config>
+        <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
+
+        <object uid="${targetTransferFunction}" type="::fwData::TransferFunction" src="ref" />
+        <object uid="${transformedTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
+
+        <object uid="referencePL" type="::fwData::PointList" />
+        <object uid="targetPL" type="::fwData::PointList" />
+
+        <object uid="transformedImage" type="::fwData::Image" />
+        <object uid="emptyImage" type="::fwData::Image" />
+
+        <service uid="landmarkRegistrationView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="registrationScenes" start="yes" />
+                <view sid="editors" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="editors" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="landmarkRegEditor" start="yes" />
+                <view wid="blendEditor" />
+            </registry>
+        </service>
+
+        <service uid="landmarkRegEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <spacer proportion="1" />
+                    <view proportion="0" />
+                    <spacer proportion="1" />
+                    <view proportion="0" />
+                    <spacer proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="applyLandmarkRegistration" start="yes" />
+                <view sid="resetLandmarks" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="applyLandmarkRegistration" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Apply</text>
+            </config>
+        </service>
+
+        <service uid="resetLandmarks" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Reset</text>
+            </config>
+        </service>
+
+        <service uid="registrationScenes" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="referenceSceneView" start="yes" />
+                <view sid="mixedSceneView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="referenceSceneView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="referenceScene" start="yes" />
+                <view sid="referenceSliceSelector" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="referenceSliceSelector" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${referenceImageUid}" />
+            <sliceIndex>axial</sliceIndex>
+        </service>
+
+        <service uid="mixedSceneView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="targetAndBlendScene" start="yes" />
+                <view sid="targetSliceSelector" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="targetSliceSelector" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <sliceIndex>axial</sliceIndex>
+        </service>
+
+        <service uid="blendEditor" type="::fwServices::SConfigController" >
+            <appConfig id="BlendEditor" />
+            <parameter replace="WID_PARENT" by="blendEditor" />
+            <parameter replace="modifyTransparencyChannel" by="${modifyTransparencyChannel}"/>
+            <parameter replace="modifyCheckerboardDivisionsChannel" by="${modifyCheckerboardDivisionsChannel}" />
+            <parameter replace="changeBlendModeChannel" by="${changeBlendModeChannel}" />
+        </service>
+
+        <!-- Landmark handling services -->
+        <service uid="referenceLandmarkManager" type="::uiMeasurement::SManageLandmark">
+            <inout key="landmarks" uid="referencePL" />
+        </service>
+
+        <service uid="targetLandmarkManager" type="::uiMeasurement::SManageLandmark">
+            <inout key="landmarks" uid="targetPL" />
+        </service>
+
+        <service uid="landmarkRegistration" type="::basicRegistration::SPointListRegistration">
+            <inout key="registeredPL" uid="targetPL" />
+            <inout key="referencePL" uid="referencePL" />
+            <inout key="output" uid="${transformUid}" />
+        </service>
+
+        <service uid="resampler" type="::opItkRegistration::SResampler">
+            <in key="imageIn" uid="${referenceImageUid}" />
+            <in key="transform" uid="${transformUid}" />
+            <in key="target" uid="${targetImageUid}" />
+            <inout key="imageOut" uid="transformedImage" />
+        </service>
+
+        <service uid="resetTransformedImage" type="::ctrlCamp::SCopy">
+            <in key="source" uid="emptyImage" />
+            <inout key="target" uid="transformedImage" />
+        </service>
+
+        <!-- -->
+        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <scene renderMode="auto">
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="#052833" />
+                <adaptor uid="referenceNegato" />
+                <adaptor uid="referenceInteractorStyle" />
+                <adaptor uid="referencePickerInteractor" />
+                <adaptor uid="referencePointListAdaptor" />
+            </scene>
+        </service>
+
+        <service uid="referenceNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${referenceImageUid}" />
+            <inout key="tf" uid="${transformedTransferFunction}" optional="yes" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
+        </service>
+
+        <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" abortOnPick="false" />
+        </service>
+
+        <service uid="referencePointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+            <inout key="pointList" uid="referencePL" />
+            <config renderer="default" picker="picker" color="#550066" radius="10" />
+        </service>
+
+        <!-- Target and blend scene -->
+        <service uid="targetAndBlendScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <scene renderMode="auto">
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="#052833" />
+                <vtkObject id="imageBlend" class="vtkImageBlend" />
+                <vtkObject id="imageCheckerboard" class="vtkImageCheckerboard" />
+                <adaptor uid="mixedNegatoMPR" />
+                <adaptor uid="mixedInteractorStyle" />
+                <adaptor uid="targetTransformedBlendAdaptor" />
+                <adaptor uid="targetPickerInteractor" />
+                <adaptor uid="targetPointListAdaptor" />
+            </scene>
+        </service>
+
+        <service uid="mixedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
+        </service>
+
+        <service uid="mixedInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <!-- Adaptor to show background and front image merge in the same view. -->
+        <service uid="targetTransformedBlendAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+            <inout group="image" autoConnect="yes">
+                <key uid="${targetImageUid}" tfalpha="no" />
+                <key uid="transformedImage" tfalpha="no" />
+            </inout>
+            <inout group="tf">
+            <key uid="${targetTransferFunction}" />
+            <key uid="${transformedTransferFunction}" />
+            </inout>
+            <config vtkimageregister="imageBlend" checkerboardDivision="10" />
+        </service>
+
+        <service uid="targetPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
+        </service>
+
+        <service uid="targetPointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+            <inout key="pointList" uid="targetPL" />
+            <config renderer="default" picker="picker" color="#550066" radius="10" />
+        </service>
+
+        <!-- Connect blend adaptor to blend editor -->
+        <connect channel="${modifyTransparencyChannel}" >
+            <slot>targetTransformedBlendAdaptor/setTopImageTransparency</slot>
+        </connect>
+
+        <connect channel="${modifyCheckerboardDivisionsChannel}" >
+            <slot>targetTransformedBlendAdaptor/changeCheckerboardDivision</slot>
+        </connect>
+
+        <connect channel="${changeBlendModeChannel}">
+            <slot>targetTransformedBlendAdaptor/changeMode</slot>
+            <slot>mixedNegatoMPR/changeImageSource</slot>
+        </connect>
+
+        <connect>
+            <signal>referencePickerInteractor/picked</signal>
+            <slot>referenceLandmarkManager/createLandmark</slot>
+        </connect>
+
+        <connect>
+            <signal>targetPickerInteractor/picked</signal>
+            <slot>targetLandmarkManager/createLandmark</slot>
+        </connect>
+
+        <connect>
+            <signal>applyLandmarkRegistration/clicked</signal>
+            <slot>landmarkRegistration/update</slot>
+            <slot>resampler/update</slot>
+        </connect>
+
+        <connect>
+            <signal>resetLandmarks/clicked</signal>
+            <slot>resetTransformedImage/update</slot>
+            <slot>referenceLandmarkManager/clearPointlist</slot>
+            <slot>targetLandmarkManager/clearPointlist</slot>
+        </connect>
+
+        <start uid="landmarkRegistrationView" />
+        <start uid="blendEditor" />
+        <start uid="referenceLandmarkManager" />
+        <start uid="targetLandmarkManager" />
+        <start uid="landmarkRegistration" />
+        <start uid="resampler" />
+        <start uid="resetTransformedImage" />
+
+        <!-- Reference scene adaptors -->
+        <start uid="referenceNegato" />
+        <start uid="referenceInteractorStyle" />
+        <start uid="referencePickerInteractor" />
+        <start uid="referencePointListAdaptor" />
+
+        <!-- Mixed scene adaptors -->
+        <start uid="mixedNegatoMPR" />
+        <start uid="mixedInteractorStyle" />
+        <start uid="targetTransformedBlendAdaptor" />
+        <start uid="targetPickerInteractor" />
+        <start uid="targetPointListAdaptor" />
+
+    </config>
+</extension>
+
+

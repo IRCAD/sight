@@ -23,13 +23,27 @@
         <service uid="manualRegistrationView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="blendNegatoViews" start="yes" />
+                <view wid="blendEditor" />
+            </registry>
+        </service>
+
+        <service uid="blendNegatoViews" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="1" />
                 </layout>
             </gui>
             <registry>
-                <parent wid="${WID_PARENT}" />
                 <view wid="mainBlendView" />
                 <view sid="secondaryBlendViews" start="yes" />
             </registry>
@@ -91,10 +105,19 @@
             <parameter replace="orientation" by="frontal" />
         </service>
 
+        <service uid="blendEditor" type="::fwServices::SConfigController" >
+            <appConfig id="BlendEditor" />
+            <parameter replace="WID_PARENT" by="blendEditor" />
+            <parameter replace="modifyTransparencyChannel" by="${modifyTransparencyChannel}"/>
+            <parameter replace="modifyCheckerboardDivisionsChannel" by="${modifyCheckerboardDivisionsChannel}" />
+            <parameter replace="changeBlendModeChannel" by="${changeBlendModeChannel}" />
+        </service>
+
         <start uid="manualRegistrationView" />
         <start uid="mainBlendView" />
         <start uid="blendView2" />
         <start uid="blendView3" />
+        <start uid="blendEditor" />
 
-    </config>
-</extension>
+        </config>
+    </extension>
