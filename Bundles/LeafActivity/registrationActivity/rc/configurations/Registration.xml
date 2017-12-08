@@ -150,6 +150,7 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
+                    <view proportion="0" caption="Import/Export registration" />
                     <view proportion="0" />
                     <spacer/>
                     <view proportion="0" />
@@ -157,10 +158,56 @@
                 </layout>
             </gui>
             <registry>
+                <view sid="importExportButtons" start="yes" />
                 <view sid="ResetRegistration" start="yes" />
                 <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
             </registry>
+        </service>
+
+        <service uid="importExportButtons" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <spacer proportion="1" />
+                    <view proportion="0" />
+                    <spacer proportion="1" />
+                    <view proportion="0" />
+                    <spacer proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="importTransformButton" start="yes" />
+                <view sid="exportTransformButton" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="importTransformButton" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Import</text>
+            </config>
+        </service>
+
+        <service uid="exportTransformButton" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Export</text>
+            </config>
+        </service>
+
+        <service uid="importTransform" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="${transformUid}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+        </service>
+
+        <service uid="exportTransform" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="${transformUid}" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
 
         <service uid="manualRegistrationView" type="::gui::view::SDefaultView">
@@ -369,6 +416,16 @@
         </connect>
 
         <connect>
+            <signal>importTransformButton/clicked</signal>
+            <slot>importTransform/update</slot>
+        </connect>
+
+        <connect>
+            <signal>exportTransformButton/clicked</signal>
+            <slot>exportTransform/update</slot>
+        </connect>
+
+        <connect>
             <signal>setAutoRegistrationMetric/enumChanged</signal>
             <slot>automaticRegistration/setEnumParameter</slot>
         </connect>
@@ -405,6 +462,8 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
+        <start uid="importTransform" />
+        <start uid="exportTransform" />
         <start uid="medicalImageTargetSrv" />
         <start uid="computeReferenceHistogram" />
         <start uid="automaticRegistration" />
