@@ -16,24 +16,16 @@
         <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
         <object uid="Histogram" type="::fwData::Histogram" />
-<!--        <object uid="referencePL" type="::fwData::PointList" />
-        <object uid="targetPL" type="::fwData::PointList" />-->
 
         <!-- Transfer Functions -->
-        <object uid="TFTransformedComposite" type="::fwData::Composite" />
-        <object uid="referenceTransferFunction" type="::fwData::TransferFunction">
-            <colors isClamped="false">
-                <step color="#00000000" value="-1024" />
-                <step color="#ffffffff" value="1024" />
-            </colors>
-        </object>
+        <object uid="referenceTFComposite" type="::fwData::Composite" />
         <object uid="targetTransferFunction" type="::fwData::TransferFunction">
             <colors isClamped="false">
                 <step color="#00000000" value="-1024" />
                 <step color="#ffffffff" value="1024" />
             </colors>
         </object>
-        <object uid="transformedTransferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="referenceTransferFunction" type="::fwData::TransferFunction" src="deferred" />
 
         <!-- Matrices -->
         <object uid="flipSagittalMatrix" type="::fwData::TransformationMatrix3D">
@@ -99,14 +91,12 @@
             <registry>
                 <view sid="scenesView" start="yes" />
                 <view sid="windowLevelEditors" start="yes" />
-<!--                <view sid="editorsView" start="yes" />-->
             </registry>
         </service>
 
         <service uid="scenesView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::TabLayoutManager">
-<!--                    <orientation value="horizontal" />-->
                     <view caption="Manual" />
                     <view caption="Landmark" />
                 </layout>
@@ -117,66 +107,6 @@
             </registry>
         </service>
 
-<!--        <service uid="editorsView" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" caption="Blend editor" />
-                </layout>
-            </gui>
-            <registry>
-                <view wid="blendEditor" start="yes" />
-            </registry>
-        </service>-->
-
-<!--        <service uid="blendEditor" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="blendTransparencyAndModeEditor" start="yes" />
-                <view sid="checkerBoardCellSlider" start="yes" />
-                <view sid="windowLevelEditors" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="blendTransparencyAndModeEditor" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="transparencySlider" start="yes" />
-                <view sid="blendMode" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="transparencySlider" type="::guiQt::editor::SParameters">
-            <parameters>
-                <param type="int" name="Transparency" key="transparency" defaultValue="128" min="0" max="255" />
-            </parameters>
-        </service>
-
-        <service uid="blendMode" type="::guiQt::editor::SParameters">
-            <parameters>
-                <param type="enum" name="Blend mode:" key="ImageSource" defaultValue="BLEND" values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" />
-            </parameters>
-        </service>
-
-        <service uid="checkerBoardCellSlider" type="::guiQt::editor::SParameters">
-            <parameters>
-                <param type="int" name="Checkerboard # of cells" key="checkerBoardSlider" defaultValue="10" min="0" max="100" />
-            </parameters>
-        </service>-->
-
         <service uid="windowLevelEditors" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -186,8 +116,8 @@
                 </layout>
             </gui>
             <registry>
+                <view sid="referenceWindowLevel" />
                 <view sid="targetWindowLevel" start="yes" />
-                <view sid="referenceWindowLevel" start="yes" />
             </registry>
         </service>
 
@@ -274,9 +204,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="transformedTFSelector" start="no" />
+                <view sid="referenceTFSelector" start="no" />
                 <view wid="tfWidgetView" />
-                <view sid="transformedWindowLevel" start="no" />
             </registry>
         </service>
 
@@ -284,7 +213,7 @@
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${referenceImageUid}"/>
             <inout key="histogram" uid="Histogram"/>
-            <inout key="transferFunction" uid="transformedTransferFunction" />
+            <inout key="transferFunction" uid="referenceTransferFunction" />
             <parameter replace="WID_PARENT" by="tfWidgetView"/>
         </service>
 
@@ -306,25 +235,14 @@
             <inout key="image" uid="${targetImageUid}" />
         </service>
 
-<!--        <service uid="referenceLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <inout key="landmarks" uid="referencePL" />
-        </service>
-
-        <service uid="targetLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <inout key="landmarks" uid="targetPL" />
-        </service>-->
-
         <service uid="manualRegistration" type="::fwServices::SConfigController" >
             <appConfig id="ManualRegistrationView" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
             <inout key="transformUid" uid="${transformUid}" />
             <inout key="targetTransferFunction" uid="targetTransferFunction" />
-            <inout key="transformedTransferFunction" uid="transformedTransferFunction" optional="yes" />
+            <inout key="referenceTransferFunction" uid="referenceTransferFunction" optional="yes" />
             <parameter replace="WID_PARENT" by="manualScene" />
-            <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>
-            <parameter replace="modifyCheckerboardDivisionsChannel" by="modifyCheckerboardDivisionsChannel" />
-            <parameter replace="changeBlendModeChannel" by="changeBlendModeChannel" />
         </service>
 
         <service uid="landmarkRegistration" type="::fwServices::SConfigController" >
@@ -333,25 +251,16 @@
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
             <inout key="transformUid" uid="${transformUid}" />
             <inout key="targetTransferFunction" uid="targetTransferFunction" />
-            <inout key="transformedTransferFunction" uid="transformedTransferFunction" optional="yes" />
+            <inout key="referenceTransferFunction" uid="referenceTransferFunction" optional="yes" />
             <parameter replace="WID_PARENT" by="landmarkScene" />
-            <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>
-            <parameter replace="modifyCheckerboardDivisionsChannel" by="modifyCheckerboardDivisionsChannel" />
-            <parameter replace="changeBlendModeChannel" by="changeBlendModeChannel" />
         </service>
 
-        <service uid="transformedTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
-            <inout key="tfPool" uid="TFTransformedComposite" />
-            <out key="tf" uid="transformedTransferFunction" />
+        <service uid="referenceTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
+            <inout key="tfPool" uid="referenceTFComposite" />
+            <out key="tf" uid="referenceTransferFunction" />
         </service>
 
-        <service uid="transformedWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="transformedTransferFunction" />
-            <config autoWindowing="yes" enableSquareTF="no" />
-        </service>
-
-        <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeReferenceHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${referenceImageUid}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
@@ -494,23 +403,10 @@
             <slot>copyFlipAxial/update</slot>
         </connect>
 
-<!--        <connect channel="modifyTransparencyChannel" >
-            <signal>transparencySlider/intChanged</signal>
-        </connect>
-
-        <connect channel="modifyCheckerboardDivisionsChannel" >
-            <signal>checkerBoardCellSlider/intChanged</signal>
-        </connect>
-
-        <connect channel="changeBlendModeChannel">
-            <signal>blendMode/enumChanged</signal>
-        </connect>-->
-
         <!-- START AND STOP SERVICES -->
-
         <start uid="mainView" />
         <start uid="medicalImageTargetSrv" />
-        <start uid="computetransformedHistogram" />
+        <start uid="computeReferenceHistogram" />
         <start uid="automaticRegistration" />
         <start uid="copyFlipSagittal" />
         <start uid="copyFlipFrontal" />
@@ -522,8 +418,8 @@
         <start uid="manualRegistration" />
         <start uid="landmarkRegistration" />
         <start uid="tfWidget" />
-        <start uid="transformedTFSelector" />
-        <start uid="transformedWindowLevel" />
+        <start uid="referenceTFSelector" />
+        <start uid="referenceWindowLevel" />
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />

@@ -6,10 +6,7 @@
         <param name="referenceImageUid" />
         <param name="transformUid" />
         <param name="targetTransferFunction" />
-        <param name="transformedTransferFunction" />
-        <param name="modifyTransparencyChannel" />
-        <param name="modifyCheckerboardDivisionsChannel" />
-        <param name="changeBlendModeChannel" />
+        <param name="referenceTransferFunction" />
     </parameters>
     <config>
         <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
@@ -17,7 +14,7 @@
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
 
         <object uid="${targetTransferFunction}" type="::fwData::TransferFunction" src="ref" />
-        <object uid="${transformedTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${referenceTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
 
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
@@ -140,9 +137,9 @@
         <service uid="blendEditor" type="::fwServices::SConfigController" >
             <appConfig id="BlendEditor" />
             <parameter replace="WID_PARENT" by="blendEditor" />
-            <parameter replace="modifyTransparencyChannel" by="${modifyTransparencyChannel}"/>
-            <parameter replace="modifyCheckerboardDivisionsChannel" by="${modifyCheckerboardDivisionsChannel}" />
-            <parameter replace="changeBlendModeChannel" by="${changeBlendModeChannel}" />
+            <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>
+            <parameter replace="modifyCheckerboardDivisionsChannel" by="modifyCheckerboardDivisionsChannel" />
+            <parameter replace="changeBlendModeChannel" by="changeBlendModeChannel" />
         </service>
 
         <!-- Landmark handling services -->
@@ -186,7 +183,7 @@
 
         <service uid="referenceNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="${transformedTransferFunction}" optional="yes" />
+            <inout key="tf" uid="${referenceTransferFunction}" optional="yes" />
             <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
         </service>
 
@@ -235,7 +232,7 @@
             </inout>
             <inout group="tf">
             <key uid="${targetTransferFunction}" />
-            <key uid="${transformedTransferFunction}" />
+            <key uid="${referenceTransferFunction}" />
             </inout>
             <config vtkimageregister="imageBlend" checkerboardDivision="10" />
         </service>
@@ -250,15 +247,15 @@
         </service>
 
         <!-- Connect blend adaptor to blend editor -->
-        <connect channel="${modifyTransparencyChannel}" >
+        <connect channel="modifyTransparencyChannel" >
             <slot>targetTransformedBlendAdaptor/setTopImageTransparency</slot>
         </connect>
 
-        <connect channel="${modifyCheckerboardDivisionsChannel}" >
+        <connect channel="modifyCheckerboardDivisionsChannel" >
             <slot>targetTransformedBlendAdaptor/changeCheckerboardDivision</slot>
         </connect>
 
-        <connect channel="${changeBlendModeChannel}">
+        <connect channel="changeBlendModeChannel">
             <slot>targetTransformedBlendAdaptor/changeMode</slot>
             <slot>mixedNegatoMPR/changeImageSource</slot>
         </connect>

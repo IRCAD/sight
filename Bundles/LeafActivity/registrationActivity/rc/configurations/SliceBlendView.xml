@@ -6,7 +6,7 @@
         <param name="referenceImageUid" />
         <param name="transformUid" />
         <param name="targetTransferFunction" />
-        <param name="transformedTransferFunction" />
+        <param name="referenceTransferFunction" />
         <param name="modifyTransparencyChannel" />
         <param name="modifyCheckerboardDivisionsChannel" />
         <param name="changeBlendModeChannel" />
@@ -19,7 +19,7 @@
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
 
         <object uid="${targetTransferFunction}" type="::fwData::TransferFunction" src="ref" />
-        <object uid="${transformedTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="${referenceTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
 
         <object uid="targetSlice" type="::fwData::Image" />
         <object uid="transformedSlice" type="::fwData::Image" />
@@ -88,7 +88,7 @@
             </inout>
             <inout group="tf">
                 <key uid="${targetTransferFunction}" />
-                <key uid="${transformedTransferFunction}" />
+                <key uid="${referenceTransferFunction}" />
             </inout>
             <config vtkimageregister="imageBlend" />
         </service>
