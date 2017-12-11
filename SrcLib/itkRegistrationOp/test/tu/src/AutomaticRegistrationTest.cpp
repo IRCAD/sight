@@ -251,7 +251,7 @@ void AutomaticRegistrationTest::multiresolutionRotationTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::csptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage<std::uint16_t, 3>();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 

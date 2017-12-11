@@ -6,6 +6,8 @@
 
 #include "itkRegistrationOp/AutomaticRegistration.hpp"
 
+#include "itkRegistrationOp/ItkImageCaster.hpp"
+
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/helper/Transform.hpp>
@@ -34,6 +36,8 @@
 
 namespace itkRegistrationOp
 {
+
+typedef typename ::itk::Image< float, 3 > RegisteredImageType;
 
 //------------------------------------------------------------------------------
 
@@ -114,7 +118,7 @@ struct ItkImageCaster
 
 //------------------------------------------------------------------------------
 
-static AutomaticRegistration::RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
+static RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
 {
     typedef ItkImageCaster<float> FloatCasterType;
 
@@ -198,7 +202,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     // Registration.
     m_registrator = RegistrationMethodType::New();
-    auto optimizer = OptimizerType::New();
+    auto optimizer   = OptimizerType::New();
 
     m_registrator->SetMetric(metric);
     m_registrator->SetOptimizer(optimizer);
@@ -230,9 +234,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     const std::uint8_t numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
 
     RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
-    shrinkFactorsPerLevel.SetSize( numberOfLevels);
+    shrinkFactorsPerLevel.SetSize( numberOfLevels );
     RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
-    smoothingSigmasPerLevel.SetSize(numberOfLevels);
+    smoothingSigmasPerLevel.SetSize( numberOfLevels );
 
     // For each stages, we set the shrink factor and smoothing Sigma
     for( std::uint8_t i = 0; i < numberOfLevels; ++i  )
@@ -281,7 +285,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     m_optimizer = nullptr;
 
-    // Get the last transform.
+        // Get the last transform.
     const TransformType* finalTransform = m_registrator->GetTransform();
 
     convertToF4sMatrix(finalTransform, _trf);
@@ -363,12 +367,12 @@ void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::Tran
     const ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
     const ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
 
-    // Convert ::itk::RigidTransform to f4s matrix.
-    for(std::uint8_t i = 0; i < 3; ++i)
-    {
-        _f4sMat->setCoefficient(i, 3, offset[i]);
-        for(std::uint8_t j = 0; j < 3; ++j)
+        // Convert ::itk::RigidTransform to f4s matrix.
+        for(std::uint8_t i = 0; i < 3; ++i)
         {
+        _f4sMat->setCoefficient(i, 3, offset[i]);
+            for(std::uint8_t j = 0; j < 3; ++j)
+            {
             _f4sMat->setCoefficient(i, j, rigidMat(i, j));
         }
     }

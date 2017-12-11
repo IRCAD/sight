@@ -23,6 +23,7 @@
 
 #include <fwTest/generator/Image.hpp>
 
+#include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/ImageWriter.hpp>
 
 #include <glm/gtc/matrix_access.hpp>
@@ -65,7 +66,7 @@ void FastRegistrationTest::identityTest()
     ::fwData::Image::sptr reference = ::fwData::Image::New();
     reference->deepCopy(target);
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    itkReg::FastRegistration::registerImage(target, reference, mat, itkReg::NORMALIZED_CORRELATION);
+    itkReg::FastRegistration<float>::registerImage(target, reference, mat);
 
     for(size_t i = 0; i < 4; ++i)
     {
@@ -88,9 +89,22 @@ void FastRegistrationTest::identityTest()
 
 void FastRegistrationTest::translateTransformTest()
 {
-    ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
-
+    ::fwData::Image::csptr target   = createSphereImage< ::std::uint16_t, 3>();
     ::fwData::Image::sptr reference = ::fwData::Image::New();
+
+    //::fwData::Image::sptr target = ::fwData::Image::New();
+    //{
+    //auto reader = ::fwVtkIO::ImageReader::New();
+    //reader->setObject(target);
+    //reader->setFile("C:\\Workspace\\2Robin\\ct7_centered_flipY.vtk");
+    //reader->read();
+    //}
+    //{
+    //auto reader = ::fwVtkIO::ImageReader::New();
+    //reader->setObject(reference);
+    //reader->setFile("C:\\Workspace\\2Robin\\cbct1_notools.vtk");
+    //reader->read();
+    //}
 
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
     //set a translation
@@ -102,7 +116,7 @@ void FastRegistrationTest::translateTransformTest()
 
     ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
 
-    itkReg::FastRegistration::registerImage(target, reference, initTrf, itkReg::NORMALIZED_CORRELATION, 0.000001, 500);
+    itkReg::FastRegistration<float>::registerImage(target, reference, initTrf);
 
     for(size_t i = 0; i < 3; ++i)
     {
