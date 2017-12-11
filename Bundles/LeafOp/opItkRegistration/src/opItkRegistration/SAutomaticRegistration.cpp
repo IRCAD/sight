@@ -55,14 +55,18 @@ void SAutomaticRegistration::configuring()
     OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("metric", "");
-    setMetric(metric);
+    this->setMetric(metric);
+
+    // By default, no multi-resolution
+    m_multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
+
+    m_samplingPercentage = config.get< double >("samplingPercentage", 1.);
 }
 
 //------------------------------------------------------------------------------
 
 void SAutomaticRegistration::starting()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +88,24 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
+    // Create a copy of m_multiResolutionParameters without empty values
+    ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType
+        multiResolutionParameters(m_multiResolutionParameters.size());
+
+    typedef ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
+
+    std::remove_copy_if(m_multiResolutionParameters.begin(),
+                        m_multiResolutionParameters.end(),
+                        multiResolutionParameters.begin(),
+                        [](const ParamPairType& v){return v.first == 0; });
+
+    ::itkRegistrationOp::AutomaticRegistration::registerImage(target,
+                                                              reference,
+                                                              transform,
+                                                              m_metric,
+                                                              multiResolutionParameters,
+                                                              m_samplingPercentage,
+                                                              m_minStep,
                                                               m_maxIterations);
 
     m_sigComputed->asyncEmit();
@@ -99,7 +120,6 @@ void SAutomaticRegistration::updating()
 
 void SAutomaticRegistration::stopping()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -138,6 +158,15 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     {
         m_minStep = val;
     }
+    else if(key.find("sigma_") != std::string::npos )
+    {
+        const unsigned long level = this->extractLevelFromParameterName(key);
+        m_multiResolutionParameters[level].second = val;
+    }
+    else if( key == "samplingPercentage" )
+    {
+        m_samplingPercentage = val;
+    }
     else
     {
         OSLM_FATAL("Unknown key : " << key);
@@ -153,6 +182,30 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
         OSLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
         m_maxIterations = static_cast<unsigned long>(val);
     }
+    else if(key.find("shrink_") != std::string::npos )
+    {
+        const unsigned long level = this->extractLevelFromParameterName(key);
+        m_multiResolutionParameters[level].first = ::itk::SizeValueType(val);
+    }
+    else
+    {
+        OSLM_FATAL("Unknown key : " << key);
+    }
+}
+
+//------------------------------------------------------------------------------
+unsigned long SAutomaticRegistration::extractLevelFromParameterName(const std::string& name)
+{
+    // find the level
+    const std::string levelSuffix = name.substr(name.find("_"));
+    const unsigned long level     = std::stoul(levelSuffix);
+
+    if(level >= m_multiResolutionParameters.size())
+    {
+        m_multiResolutionParameters.resize(level + 1, std::make_pair(0, 0.0));
+    }
+
+    return level;
 }
 
 //------------------------------------------------------------------------------

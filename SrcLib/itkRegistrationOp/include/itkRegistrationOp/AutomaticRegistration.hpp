@@ -13,6 +13,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <itkIntTypes.h>
+
 namespace itkRegistrationOp
 {
 
@@ -22,6 +24,10 @@ namespace itkRegistrationOp
 class ITKREGISTRATIONOP_CLASS_API AutomaticRegistration
 {
 public:
+    typedef double RealType; // Numeric type used for internal computations.
+
+    // Shrink factors per level and smoothing sigmas per level
+    typedef std::vector< std::pair< ::itk::SizeValueType, RealType > > MultiResolutionParametersType;
 
     /**
      * @brief find a rigid transform matching the reference image with the target image.
@@ -36,6 +42,8 @@ public:
                                                     const ::fwData::Image::csptr& _reference,
                                                     const ::fwData::TransformationMatrix3D::sptr& _trf,
                                                     MetricType _metric,
+                                                    const MultiResolutionParametersType& _multiResolutionParameters,
+                                                    RealType _samplingPercentage = 1.0,
                                                     double _minStep = 0.0001,
                                                     unsigned long _maxIterations = 200);
 };

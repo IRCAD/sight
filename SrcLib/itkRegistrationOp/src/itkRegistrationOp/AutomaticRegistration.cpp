@@ -97,10 +97,12 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           const ::fwData::Image::csptr& _reference,
                                           const ::fwData::TransformationMatrix3D::sptr& _trf,
                                           MetricType _metric,
+                                          const MultiResolutionParametersType& _multiResolutionParameters,
+                                          RealType _samplingPercentage,
                                           double _minStep,
-                                          unsigned long _maxIterations)
+                                          unsigned long _maxIterations
+                                          )
 {
-    typedef double RealType; // Numeric type used for internal computations.
     typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
 
     typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
@@ -208,22 +210,31 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     metric->SetFixedInterpolator(fixedInterpolator.GetPointer());
     metric->SetMovingInterpolator(movingInterpolator.GetPointer());
 
+    // Number of registration stages
+    SLM_ASSERT("255 is the maximum number of steps.", _multiResolutionParameters.size() < 256);
+    const std::uint8_t numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
+
+    RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
+    shrinkFactorsPerLevel.SetSize( numberOfLevels);
+    RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
+    smoothingSigmasPerLevel.SetSize(numberOfLevels);
+
+    // For each stages, we set the shrink factor and smoothing Sigma
+    for( std::uint8_t i = 0; i < numberOfLevels; ++i  )
+    {
+        const auto& stageParameters = _multiResolutionParameters[i];
+        shrinkFactorsPerLevel[i]   = stageParameters.first;
+        smoothingSigmasPerLevel[i] = stageParameters.second;
+    }
+
     registrator->SetInitialTransform(itkTransform);
     registrator->SetFixedImage(target);
     registrator->SetMovingImage(reference);
-
-    // TODO: handle multi-resolution registration.
-    const unsigned int numberOfLevels = 1;
-
-    RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
-    shrinkFactorsPerLevel.SetSize( numberOfLevels );
-    shrinkFactorsPerLevel[0] = 1;
-    RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
-    smoothingSigmasPerLevel.SetSize( numberOfLevels );
-    smoothingSigmasPerLevel[0] = 0;
-    registrator->SetNumberOfLevels( numberOfLevels );
+    registrator->SetMetricSamplingPercentage(_samplingPercentage);
+    registrator->SetNumberOfLevels(::itk::SizeValueType(numberOfLevels));
     registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
     registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
+    registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
     const bool hasGui = ::fwGui::isBackendLoaded();
 

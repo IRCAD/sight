@@ -101,6 +101,10 @@ private:
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
     void setMetric(const std::string& metricName);
 
+    /// Extract the level at the end of the parameter name.
+    /// Create the level if it doesn't exist
+    unsigned long extractLevelFromParameterName(const std::string& name );
+
     /// Smallest step that can be taken by the optimizer.
     double m_minStep;
 
@@ -109,6 +113,12 @@ private:
 
     /// Metric used by the optimizer.
     ::itkRegistrationOp::MetricType m_metric;
+
+    /// Shrink factors per level and smoothing sigmas per level.
+    ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType m_multiResolutionParameters;
+
+    /// Percentage of samples used for registration.
+    ::itkRegistrationOp::AutomaticRegistration::RealType m_samplingPercentage;
 };
 
 } // namespace opItkRegistration

@@ -155,13 +155,29 @@
                     <spacer/>
                     <view proportion="0" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <view sid="importExportButtons" start="yes" />
                 <view sid="ResetRegistration" start="yes" />
                 <view sid="setAutoRegistrationMetric" start="yes" />
+                <view sid="multiResolutionView" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiResolutionView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" caption="Shrink" />
+                    <view proportion="0" caption="Sigma" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="multiResolutionShrinks" start="yes" />
+                <view sid="multiResolutionSigmas" start="yes" />
             </registry>
         </service>
 
@@ -331,6 +347,25 @@
                 <param type="double" name="min step" key="minStep" defaultValue="0.0001" min="0.00001" max="1." />
                 <param type="int" name="iterations" key="maxIterations" defaultValue="200" min="1" max="1000" />
                 <param type="enum" name="Mode" key="metric" defaultValue="NormalizedCorrelation" values="MeanSquares,NormalizedCorrelation,MutualInformation" />
+                <param type="double" name="Sampling percentage" key="samplingPercentage" defaultValue="1.0" min="0.00001" max="1." />
+            </parameters>
+        </service>
+
+        <service uid="multiResolutionShrinks" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="int" name="" key="shrink_0" defaultValue="1" min="0" max="8" widget="spin" />
+                <param type="int" name="" key="shrink_1" defaultValue="0" min="0" max="8" widget="spin"/>
+                <param type="int" name="" key="shrink_2" defaultValue="0" min="0" max="8" widget="spin"/>
+                <param type="int" name="" key="shrink_3" defaultValue="0" min="0" max="8" widget="spin"/>
+            </parameters>
+        </service>
+
+        <service uid="multiResolutionSigmas" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="double" name="" key="sigma_0" defaultValue="0" min="0" max="10"/>
+                <param type="double" name="" key="sigma_1" defaultValue="0" min="0" max="10"/>
+                <param type="double" name="" key="sigma_2" defaultValue="0" min="0" max="10"/>
+                <param type="double" name="" key="sigma_3" defaultValue="0" min="0" max="10"/>
             </parameters>
         </service>
 
@@ -432,11 +467,13 @@
 
         <connect>
             <signal>setAutoRegistrationMetric/doubleChanged</signal>
+            <signal>multiResolutionSigmas/doubleChanged</signal>
             <slot>automaticRegistration/setDoubleParameter</slot>
         </connect>
 
         <connect>
             <signal>setAutoRegistrationMetric/intChanged</signal>
+            <signal>multiResolutionShrinks/intChanged</signal>
             <slot>automaticRegistration/setIntParameter</slot>
         </connect>
 
