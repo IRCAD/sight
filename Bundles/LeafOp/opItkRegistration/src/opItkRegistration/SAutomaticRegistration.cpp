@@ -12,10 +12,11 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
-#include <itkRegistrationOp/RegistrationObserver.hxx>
 
 namespace opItkRegistration
 {
@@ -100,24 +101,32 @@ void SAutomaticRegistration::updating()
                         multiResolutionParameters.begin(),
                         [](const ParamPairType& v){return v.first == 0; });
 
-    ::itkRegistrationOp::RegistrationObserver::Pointer observer = ::itkRegistrationOp::RegistrationObserver::New();
-    observer->setMaxIterations(m_maxIterations);
+    ::itkRegistrationOp::AutomaticRegistration registrator;
 
-    ::itkRegistrationOp::AutomaticRegistration::registerImage(target,
-                                                              reference,
-                                                              transform,
-                                                              m_metric,
-                                                              multiResolutionParameters,
-                                                              m_samplingPercentage,
-                                                              m_minStep,
-                                                              m_maxIterations,
-                                                              ::itk::Command::Pointer(observer.GetPointer()));
+    ::fwGui::dialog::ProgressDialog dialog("Automatic Registration", "Registring, please be patient.");
 
-    m_sigComputed->asyncEmit();
+    dialog.setCancelCallback([&registrator]()
+        {
+            registrator.stopRegistration();
+        });
 
     auto transfoModifiedSig = transform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
                                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
 
+    ::itkRegistrationOp::AutomaticRegistration::IterationCallbackType iterationCallback =
+        [this, &dialog, &transform, &transfoModifiedSig](unsigned int _itNum)
+        {
+            std::string msg = "Number of iterations : " + std::to_string(_itNum);
+            dialog(static_cast<float>(_itNum)/static_cast<float>(m_maxIterations), msg);
+            dialog.setMessage(msg);
+
+            transfoModifiedSig->asyncEmit();
+        };
+
+    registrator.registerImage(target, reference, transform, m_metric, multiResolutionParameters,
+                              m_samplingPercentage, m_minStep, m_maxIterations, iterationCallback);
+
+    m_sigComputed->asyncEmit();
     transfoModifiedSig->asyncEmit();
 }
 

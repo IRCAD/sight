@@ -8,9 +8,6 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include <fwGui/backend.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-
 #include <fwItkIO/helper/Transform.hpp>
 #include <fwItkIO/itk.hpp>
 
@@ -26,6 +23,7 @@
 
 #include <itkCastImageFilter.h>
 #include <itkCenteredTransformInitializer.h>
+#include <itkCommand.h>
 #include <itkCorrelationImageToImageMetricv4.h>
 #include <itkImage.h>
 #include <itkImageRegistrationMethodv4.h>
@@ -34,12 +32,59 @@
 #include <itkMattesMutualInformationImageToImageMetricv4.h>
 #include <itkMeanSquaresImageToImageMetricv4.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkVersorRigid3DTransform.h>
+
+#include <functional>
 
 namespace itkRegistrationOp
 {
 
 typedef typename ::itk::Image< float, 3 > RegisteredImageType;
+
+//------------------------------------------------------------------------------
+
+class RegistrationObserver : public ::itk::Command
+{
+public:
+    typedef  RegistrationObserver Self;
+    typedef ::itk::Command Superclass;
+    typedef ::itk::SmartPointer<Self>   Pointer;
+    itkNewMacro( Self )
+
+    /// Command to be executed. Updates the progress bar.
+    void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
+    {
+        const itk::Object* constCaller = caller;
+        Execute( constCaller, event);
+    }
+
+    /// Const overload of the above method.
+    void Execute(const ::itk::Object*, const ::itk::EventObject& event) override
+    {
+        {
+            if( ::itk::IterationEvent().CheckEvent( &event ) )
+            {
+                m_iterationCallback();
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setCallback(std::function<void()> _callback)
+    {
+        m_iterationCallback = _callback;
+    }
+
+private:
+
+    /// Constructor, initializes progress dialog and sets the user cancel callback.
+    RegistrationObserver()
+    {
+    }
+
+    std::function<void()> m_iterationCallback;
+
+};
 
 //------------------------------------------------------------------------------
 
@@ -98,9 +143,8 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           RealType _samplingPercentage,
                                           double _minStep,
                                           unsigned long _maxIterations,
-                                          ::itk::Command::Pointer _iterationCallback)
+                                          IterationCallbackType _callback)
 {
-    typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
     typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
         RegistrationMethodType;
 
@@ -192,7 +236,6 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     optimizerScales[5] = translationScale;
 
     optimizer->SetScales( optimizerScales );
-    optimizer->SetDoEstimateLearningRateOnce( true );
     optimizer->SetDoEstimateLearningRateAtEachIteration( true );
     optimizer->SetMinimumStepLength(_minStep);
     optimizer->SetReturnBestParametersAndValue(true);
@@ -231,10 +274,31 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
     registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
-    if(_iterationCallback)
+    RegistrationObserver::Pointer observer = RegistrationObserver::New();
+
+    if(_callback)
     {
-        optimizer->AddObserver( ::itk::IterationEvent(), _iterationCallback );
+        auto iterationCallback = [this, &registrator, &_callback, &_trf]()
+                                 {
+                                     const unsigned int itNum =
+                                         static_cast<unsigned int>(m_optimizer->GetCurrentIteration()) + 1;
+
+                                     OSLM_DEBUG("Number of iterations : " << itNum);
+                                     OSLM_DEBUG("Current value : " << m_optimizer->GetValue());
+                                     OSLM_DEBUG("Current parameters : " << m_optimizer->GetCurrentPosition() );
+
+                                     const TransformType* transform = registrator->GetTransform();
+
+                                     convertToF4sMatrix(transform, _trf);
+
+                                     _callback(itNum);
+                                 };
+
+        observer->setCallback(iterationCallback);
+        optimizer->AddObserver( ::itk::IterationEvent(), observer );
     }
+
+    m_optimizer = optimizer;
 
     try
     {
@@ -246,19 +310,39 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
         OSLM_FATAL("Error while registering : " << err);
     }
 
+    m_optimizer = nullptr;
+
     // Get the last transform.
     const TransformType* finalTransform = registrator->GetTransform();
 
-    const ::itk::Matrix<RealType, 3, 3> rigidMat = finalTransform->GetMatrix();
-    const ::itk::Vector<RealType, 3> offset      = finalTransform->GetOffset();
+    convertToF4sMatrix(finalTransform, _trf);
+}
+
+//------------------------------------------------------------------------------
+
+void AutomaticRegistration::stopRegistration()
+{
+    if(m_optimizer)
+    {
+        m_optimizer->StopOptimization();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::TransformType* _itkMat,
+                                               const fwData::TransformationMatrix3D::sptr& _f4sMat)
+{
+    const ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
+    const ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
 
     // Convert ::itk::RigidTransform to f4s matrix.
     for(std::uint8_t i = 0; i < 3; ++i)
     {
-        _trf->setCoefficient(i, 3, offset[i]);
+        _f4sMat->setCoefficient(i, 3, offset[i]);
         for(std::uint8_t j = 0; j < 3; ++j)
         {
-            _trf->setCoefficient(i, j, rigidMat(i, j));
+            _f4sMat->setCoefficient(i, j, rigidMat(i, j));
         }
     }
 }

@@ -142,11 +142,11 @@ void AutomaticRegistrationTest::identityTest()
     ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType multiResolutionParameters;
     multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
 
-    ::itkRegistrationOp::AutomaticRegistration::registerImage(target,
-                                                              reference,
-                                                              mat,
-                                                              ::itkRegistrationOp::NORMALIZED_CORRELATION,
-                                                              multiResolutionParameters);
+    ::itkRegistrationOp::AutomaticRegistration().registerImage(target,
+                                                               reference,
+                                                               mat,
+                                                               ::itkRegistrationOp::NORMALIZED_CORRELATION,
+                                                               multiResolutionParameters);
 
     for(size_t i = 0; i < 4; ++i)
     {
@@ -193,14 +193,14 @@ void AutomaticRegistrationTest::rigidTransformTest()
     ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType multiResolutionParameters;
     multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
 
-    itkReg::AutomaticRegistration::registerImage(target,
-                                                 reference,
-                                                 initTrf,
-                                                 itkReg::MEAN_SQUARES,
-                                                 multiResolutionParameters,
-                                                 1.0,
-                                                 0.0001,
-                                                 1000);
+    itkReg::AutomaticRegistration().registerImage(target,
+                                                  reference,
+                                                  initTrf,
+                                                  itkReg::MEAN_SQUARES,
+                                                  multiResolutionParameters,
+                                                  1.0,
+                                                  0.0001,
+                                                  1000);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
     const ::glm::dmat4 id  = res * rigidTrf;
@@ -239,14 +239,14 @@ void AutomaticRegistrationTest::translateTransformTest()
     ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType multiResolutionParameters;
     multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
 
-    itkReg::AutomaticRegistration::registerImage(target,
-                                                 reference,
-                                                 initTrf,
-                                                 itkReg::NORMALIZED_CORRELATION,
-                                                 multiResolutionParameters,
-                                                 1.0,
-                                                 0.000001,
-                                                 500);
+    itkReg::AutomaticRegistration().registerImage(target,
+                                                  reference,
+                                                  initTrf,
+                                                  itkReg::NORMALIZED_CORRELATION,
+                                                  multiResolutionParameters,
+                                                  1.0,
+                                                  0.000001,
+                                                  500);
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -283,14 +283,14 @@ void AutomaticRegistrationTest::rotationTransformTest()
     ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType multiResolutionParameters;
     multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
 
-    itkReg::AutomaticRegistration::registerImage(target,
-                                                 reference,
-                                                 initTrf,
-                                                 itkReg::MEAN_SQUARES,
-                                                 multiResolutionParameters,
-                                                 1.0,
-                                                 0.000001,
-                                                 1500);
+    itkReg::AutomaticRegistration().registerImage(target,
+                                                  reference,
+                                                  initTrf,
+                                                  itkReg::MEAN_SQUARES,
+                                                  multiResolutionParameters,
+                                                  1.0,
+                                                  0.000001,
+                                                  1500);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
     const ::glm::dmat4 id  = res * rot;
@@ -332,14 +332,14 @@ void AutomaticRegistrationTest::multiresolutionRotationTransformTest()
     multiResolutionParameters.push_back( std::make_pair( 2, 2.0 ));
     multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
 
-    itkReg::AutomaticRegistration::registerImage(target,
-                                                 reference,
-                                                 initTrf,
-                                                 itkReg::MEAN_SQUARES,
-                                                 multiResolutionParameters,
-                                                 1.0,
-                                                 0.000001,
-                                                 1500);
+    itkReg::AutomaticRegistration().registerImage(target,
+                                                  reference,
+                                                  initTrf,
+                                                  itkReg::MEAN_SQUARES,
+                                                  multiResolutionParameters,
+                                                  1.0,
+                                                  0.000001,
+                                                  1500);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
     const ::glm::dmat4 id  = res * rot;

@@ -13,9 +13,9 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <itkCommand.h>
 #include <itkIntTypes.h>
 #include <itkRegularStepGradientDescentOptimizerv4.h>
+#include <itkVersorRigid3DTransform.h>
 
 namespace itkRegistrationOp
 {
@@ -26,14 +26,13 @@ namespace itkRegistrationOp
 class ITKREGISTRATIONOP_CLASS_API AutomaticRegistration
 {
 public:
-
     /// Numeric type used for internal computations.
     typedef double RealType;
 
-    typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
-
     /// Shrink factors per level and smoothing sigmas per level
     typedef std::vector< std::pair< ::itk::SizeValueType, RealType > > MultiResolutionParametersType;
+
+    typedef std::function< void (unsigned int) > IterationCallbackType;
 
     /**
      * @brief find a rigid transform matching the reference image with the target image.
@@ -45,17 +44,27 @@ public:
      * @param[in] _samplingPercentage the percentage of sample to use for registration
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
-     * @param[in] _iterationCallback listener called after each optimization step
      */
-    static ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
-                                                    const ::fwData::Image::csptr& _reference,
-                                                    const ::fwData::TransformationMatrix3D::sptr& _trf,
-                                                    MetricType _metric,
-                                                    const MultiResolutionParametersType& _multiResolutionParameters,
-                                                    RealType _samplingPercentage = 1.0,
-                                                    double _minStep = 0.0001,
-                                                    unsigned long _maxIterations = 200,
-                                                    ::itk::Command::Pointer _iterationCallback = nullptr);
+    ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
+                                             const ::fwData::Image::csptr& _reference,
+                                             const ::fwData::TransformationMatrix3D::sptr& _trf,
+                                             MetricType _metric,
+                                             const MultiResolutionParametersType& _multiResolutionParameters,
+                                             RealType _samplingPercentage = 1.0,
+                                             double _minStep = 0.0001,
+                                             unsigned long _maxIterations = 200,
+                                             IterationCallbackType _callback = nullptr);
+
+    ITKREGISTRATIONOP_API void stopRegistration();
+
+private:
+
+    typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
+    typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
+
+    OptimizerType::Pointer m_optimizer;
+
+    static void convertToF4sMatrix(const TransformType* _itkMat, const ::fwData::TransformationMatrix3D::sptr& _f4sMat);
 };
 
 } // itkRegistrationOp
