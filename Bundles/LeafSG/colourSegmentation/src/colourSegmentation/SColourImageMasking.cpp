@@ -181,7 +181,7 @@ void SColourImageMasking::updating()
 
         ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
-	maskCV = (maskCV > 0);
+        maskCV = (maskCV > 0);
 
         //convert the ::arData::FrameTL videoTL to an OpenCV image
         const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
