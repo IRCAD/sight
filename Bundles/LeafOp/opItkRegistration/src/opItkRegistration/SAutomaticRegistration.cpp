@@ -18,6 +18,9 @@
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
 
+#include <chrono>
+#include <fstream>
+
 namespace opItkRegistration
 {
 
@@ -63,6 +66,8 @@ void SAutomaticRegistration::configuring()
     m_multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
 
     m_samplingPercentage = config.get< double >("samplingPercentage", 1.);
+
+    m_log = config.get< bool >("log", false);
 }
 
 //------------------------------------------------------------------------------
@@ -110,15 +115,64 @@ void SAutomaticRegistration::updating()
             registrator.stopRegistration();
         });
 
+    std::fstream regLog;
+
+    if(m_log)
+    {
+        regLog.open("toto.csv", std::ios_base::out);
+        regLog << "'Timestamp',"
+               << "'Current level',"
+               << "'Current iteration',"
+               << "'Shrink',"
+               << "'Sigma',"
+               << "'Current metric value',"
+               << "'Current parameters',"
+               << "'Relaxation factor',"
+               << "'Learning rate',"
+               << "'Gradient magnitude tolerance',"
+               << "'Minimum step size',"
+               << "'Maximum number of iterations',"
+               << "'Sampling rate',"
+               << "'Number of levels'"
+               << std::endl;
+    }
+
     auto transfoModifiedSig = transform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
                                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
+
     ::itkRegistrationOp::AutomaticRegistration::IterationCallbackType iterationCallback =
-        [this, &dialog, &transform, &transfoModifiedSig](unsigned int _itNum)
+        [this, &dialog, &multiResolutionParameters, &transfoModifiedSig, &registrator, &regStartTime, &regLog]
+            (unsigned int _itNum, unsigned int _currentLevel)
         {
             std::string msg = "Number of iterations : " + std::to_string(_itNum);
             dialog(static_cast<float>(_itNum)/static_cast<float>(m_maxIterations), msg);
             dialog.setMessage(msg);
+
+            if(m_log)
+            {
+                const std::chrono::time_point<std::chrono::high_resolution_clock> now =
+                    std::chrono::high_resolution_clock::now();
+
+                const auto duration = now - regStartTime;
+
+                regLog << "'" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "',"
+                       << "'" << _currentLevel << "',"
+                       << "'" << _itNum << "',"
+                       << "'" << multiResolutionParameters[_currentLevel].first << "',"
+                       << "'" << multiResolutionParameters[_currentLevel].second << "',"
+                       << "'" << registrator.getCurrentMetricValue() << "',"
+                       << "'" << registrator.getCurrentParameters() << "',"
+                       << "'" << registrator.getRelaxationFactor() << "',"
+                       << "'" << registrator.getLearningRate() << "',"
+                       << "'" << registrator.getGradientMagnitudeTolerance() << "',"
+                       << "'" << m_minStep << "',"
+                       << "'" << m_maxIterations << "',"
+                       << "'" << m_samplingPercentage << "',"
+                       << "'" << multiResolutionParameters.size() << "'"
+                       << std::endl;
+            }
 
             transfoModifiedSig->asyncEmit();
         };

@@ -33,6 +33,7 @@ namespace opItkRegistration
        <minStep>0.0001</minStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
+       <log>false</log>
    </service>
    @endcode
  * @subsection Input Input
@@ -50,6 +51,8 @@ namespace opItkRegistration
  * even if it didn't find a suitable result.
  * - \b metric : the metric used to compare the two images. Possible values are :
  * MeanSquares : fastest metric, only works when matching images with the same intensity values.
+ * - \b log (optional, defaul=false): enable/disable logging, outputs stats in a CSV file at each registration step.
+ *
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
@@ -110,6 +113,9 @@ private:
 
     /// Maximum number of iterations allowed.
     unsigned long m_maxIterations;
+
+    /// Flag enabling the registration log.
+    bool m_log = { false };
 
     /// Metric used by the optimizer.
     ::itkRegistrationOp::MetricType m_metric;

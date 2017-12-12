@@ -33,8 +33,6 @@
 #include <itkMeanSquaresImageToImageMetricv4.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
 
-#include <functional>
-
 namespace itkRegistrationOp
 {
 
@@ -283,15 +281,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                      const unsigned int itNum =
                                          static_cast<unsigned int>(m_optimizer->GetCurrentIteration()) + 1;
 
-                                     OSLM_DEBUG("Number of iterations : " << itNum);
-                                     OSLM_DEBUG("Current value : " << m_optimizer->GetValue());
-                                     OSLM_DEBUG("Current parameters : " << m_optimizer->GetCurrentPosition() );
+                                     convertToF4sMatrix(registrator->GetTransform(), _trf);
 
-                                     const TransformType* transform = registrator->GetTransform();
-
-                                     convertToF4sMatrix(transform, _trf);
-
-                                     _callback(itNum);
+                                     _callback(itNum, registrator->GetCurrentLevel());
                                  };
 
         observer->setCallback(iterationCallback);
@@ -326,6 +318,46 @@ void AutomaticRegistration::stopRegistration()
     {
         m_optimizer->StopOptimization();
     }
+}
+
+//------------------------------------------------------------------------------
+
+AutomaticRegistration::RealType AutomaticRegistration::getCurrentMetricValue() const
+{
+    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    return m_optimizer->GetCurrentMetricValue();
+}
+
+//------------------------------------------------------------------------------
+
+AutomaticRegistration::OptimizerType::ParametersType AutomaticRegistration::getCurrentParameters() const
+{
+    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    return m_optimizer->GetCurrentPosition();
+}
+
+//------------------------------------------------------------------------------
+
+AutomaticRegistration::RealType AutomaticRegistration::getRelaxationFactor() const
+{
+    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    return m_optimizer->GetRelaxationFactor();
+}
+
+//------------------------------------------------------------------------------
+
+AutomaticRegistration::RealType AutomaticRegistration::getLearningRate() const
+{
+    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    return m_optimizer->GetLearningRate();
+}
+
+//------------------------------------------------------------------------------
+
+AutomaticRegistration::RealType AutomaticRegistration::getGradientMagnitudeTolerance() const
+{
+    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    return m_optimizer->GetGradientMagnitudeTolerance();
 }
 
 //------------------------------------------------------------------------------

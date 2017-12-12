@@ -397,6 +397,7 @@
             <minStep>0.0001</minStep>
             <maxIterations>200</maxIterations>
             <metric>NormalizedCorrelation</metric>
+            <log>true</log>
         </service>
 
         <service uid="computeCenterTarget" type="::opItkRegistration::SImageCenter">
