@@ -1,5 +1,7 @@
 #version 410
 
+uniform vec4 u_diffuse;
+
 // Uniforms
 #ifdef DIFFUSE_TEX
 uniform int u_useTextureAlpha;
@@ -51,4 +53,23 @@ vec4 getFragmentColor()
 #endif // DIFFUSE_TEX
 
     return colorOut;
+}
+
+// Compute alpha channel
+float getFragmentAlpha()
+{
+    float alpha = u_diffuse.a * inColor.a;
+
+#ifdef DIFFUSE_TEX
+    vec4 colorTex = texture(u_texture, inTexCoord);
+
+    if(u_useTextureAlpha == 0)
+    {
+        colorTex.a = 1.0;
+    }
+
+    alpha *= colorTex.a;
+#endif // DIFFUSE_TEX
+
+    return alpha;
 }

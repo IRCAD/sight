@@ -155,16 +155,21 @@ MaterialMgrListener::~MaterialMgrListener()
     else if(_schemeName == "WeightedBlended/occlusionMap" ||
             _schemeName == "HybridTransparency/occlusionMap")
     {
-        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
+            // replace fragment program and build it if needed
+            auto fpName  = pass->getFragmentProgramName();
+            auto newName =
+                ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(fpName, algoName+ "/occlusionMap");
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            pass->setFragmentProgram(newName);
+
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBT_REPLACE);
-
-            pass->setFragmentProgram(algoName + "/occlusionMap_FP");
         }
     }
     else if(_schemeName == "WeightedBlended/weightBlend" ||
@@ -215,16 +220,25 @@ MaterialMgrListener::~MaterialMgrListener()
     else if(_schemeName == "WeightedBlended/transmittanceBlend"||
             _schemeName == "HybridTransparency/transmittanceBlend")
     {
-        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
         const ::Ogre::Technique::Passes& passes = newTech->getPasses();
         for(const auto pass : passes)
         {
-            pass->setFragmentProgram(algoName + "/transmittanceBlend_FP");
+            // replace fragment program and build it if needed
+            auto fpName  = pass->getFragmentProgramName();
+            auto newName = ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(fpName,
+                                                                                      algoName+ "/transmittanceBlend");
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            pass->setFragmentProgram(newName);
+
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBF_ZERO, ::Ogre::SBF_ONE_MINUS_SOURCE_COLOUR);
+
+            auto numTexUnit = pass->getNumTextureUnitStates();
+            auto params     = pass->getFragmentProgramParameters();
 
             if(algoName == "HybridTransparency")
             {
@@ -233,12 +247,18 @@ MaterialMgrListener::~MaterialMgrListener()
                 texState->setTextureFiltering(::Ogre::TFO_NONE);
                 texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 texState->setCompositorReference(algoName, "pingBuffer", 1);
+                params->setNamedConstant("u_frontDepthBuffer", numTexUnit++);
             }
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
             texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             texState->setCompositorReference(algoName, "occlusion", 0);
+
+            params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
+            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
     else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false) )
@@ -370,14 +390,38 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
         }
         else
         {
-            sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
-            parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
-            parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
+            if(_algoPassName == "transmittanceBlend" )
+            {
+                sourceFileName = "WeightedBlended_Transmittance_Blend_FP.glsl";
+                parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+                parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
+            }
+            else if (_algoPassName == "occlusionMap")
+            {
+                sourceFileName = "WeightedBlended_Occlusion_Map_FP.glsl";
+            }
+            else
+            {
+                sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
+                parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+                parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
+            }
         }
     }
     else if(_algoName == "WeightedBlended")
     {
-        sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
+        if(_algoPassName == "transmittanceBlend" )
+        {
+            sourceFileName = "WeightedBlended_Transmittance_Blend_FP.glsl";
+        }
+        else if (_algoPassName == "occlusionMap")
+        {
+            sourceFileName = "WeightedBlended_Occlusion_Map_FP.glsl";
+        }
+        else
+        {
+            sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
+        }
     }
     else if(_algoName == "CelShadingDepthPeeling")
     {

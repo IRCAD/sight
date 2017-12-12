@@ -9,3 +9,8 @@ vec4 getFragmentColor()
 {
     return oColor * texture(u_texture, oTexCoord);
 }
+
+float getFragmentAlpha()
+{
+    return oColor.a * texture(u_texture, oTexCoord).a;
+}
