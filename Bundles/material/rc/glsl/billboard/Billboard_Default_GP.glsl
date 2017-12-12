@@ -6,8 +6,11 @@ layout(triangle_strip, max_vertices = 4) out;
 
 uniform vec4 u_diffuse;
 
-uniform float u_sceneSize;
+uniform float u_billboardSize;
 uniform mat4 u_proj;
+uniform vec3 u_cameraPos;
+uniform float u_vpWidth;
+uniform float u_vpHeight;
 
 #ifndef DEPTH
 out vec4 oColor;
@@ -16,12 +19,20 @@ out vec2 oTexCoord;
 
 void main()
 {
-    float size = u_sceneSize * .01;
-    vec4 P = gl_in[0].gl_Position;
-    P.z += 0.01;
+    // Compute the size and adjust the ratio to be 1:1
+    vec2 size = vec2(1., u_vpWidth/u_vpHeight) * 0.1 * u_billboardSize;
 
-    vec2 va = P.xy + vec2(-0.5, -0.5) * size;
-    gl_Position = u_proj * vec4(va, P.zw);
+    vec4 P = gl_in[0].gl_Position;
+
+    // Offset slightly the billboard to avoid z-fight when clicking points on meshes
+    P.w += .01f;
+    P = u_proj * P;
+
+    // Switch to screen-space coordinates, easier since we want a fixed size in pixels
+    P /= P.w;
+
+    vec2 va = P.xy + vec2(-1., -1.) * size;
+    gl_Position = vec4(va, P.zw);
 
 #ifndef DEPTH
     oColor = u_diffuse;
@@ -30,8 +41,8 @@ void main()
 
     EmitVertex();
 
-    vec2 vb = P.xy + vec2(-0.5, 0.5) * size;
-    gl_Position = u_proj * vec4(vb, P.zw);
+    vec2 vb = P.xy + vec2(-1., 1.) * size;
+    gl_Position = vec4(vb, P.zw);
 
 #ifndef DEPTH
     oColor = u_diffuse;
@@ -40,8 +51,8 @@ void main()
 
     EmitVertex();
 
-    vec2 vd = P.xy + vec2(0.5, -0.5) * size;
-    gl_Position = u_proj * vec4(vd, P.zw);
+    vec2 vd = P.xy + vec2(1., -1.) * size;
+    gl_Position = vec4(vd, P.zw);
 
 #ifndef DEPTH
     oColor = u_diffuse;
@@ -50,8 +61,8 @@ void main()
 
     EmitVertex();
 
-    vec2 vc = P.xy + vec2(0.5, 0.5) * size;
-    gl_Position = u_proj * vec4(vc, P.zw);
+    vec2 vc = P.xy + vec2(1., 1.) * size;
+    gl_Position = vec4(vc, P.zw);
 
 #ifndef DEPTH
     oColor = u_diffuse;

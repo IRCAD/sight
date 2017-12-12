@@ -70,17 +70,13 @@ public:
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
     FWRENDEROGRE_API void clearMesh(::Ogre::SceneManager& _sceneMgr);
 
-    FWRENDEROGRE_API void updateMaterial(const ::fwRenderOgre::Material::uptr& _material, bool _isR2VB,
-                                         const ::Ogre::AxisAlignedBox& _bbox) const;
+    FWRENDEROGRE_API void updateMaterial(::fwRenderOgre::Material* _material, bool _isR2VB) const;
 
     FWRENDEROGRE_API bool hasColorLayerChanged(const ::fwData::Mesh::csptr& _mesh);
 
     FWRENDEROGRE_API ::Ogre::Entity* createEntity(::Ogre::SceneManager& _sceneMgr);
 
     FWRENDEROGRE_API void invalidateR2VB();
-
-    /// Set scene size factor
-    void setSceneSizeFactor(float sceneSizeFactor);
 
 private:
 
@@ -105,6 +101,13 @@ private:
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
 
+    /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
+    ::Ogre::Entity* m_r2vbEntity { nullptr };
+    /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
+    ::Ogre::MeshPtr m_r2vbMesh;
+    /// List of r2vb objects - these objects triggers the r2vb process and render the output data
+    std::map< ::fwData::Mesh::CellTypes, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
+
     /// Defines if there is a normal layer
     bool m_hasNormal { false };
     /// Defines if there is a vertex color layer
@@ -117,15 +120,6 @@ private:
     bool m_isDynamic { false };
     /// defines if the vertices change dynamically, defined in m_configuration
     bool m_isDynamicVertices { false };
-
-    /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
-    ::Ogre::Entity* m_r2vbEntity { nullptr };
-    /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
-    ::Ogre::MeshPtr m_r2vbMesh;
-    /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::map< ::fwData::Mesh::CellTypes, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
-    /// Factor used to modify normals length or billboards size
-    float m_sceneSizeFactor { 1.f };
 };
 
 //------------------------------------------------------------------------------
@@ -140,13 +134,6 @@ inline void Mesh::setDynamic(bool _isDynamic)
 inline void Mesh::setDynamicVertices(bool _isDynamic)
 {
     m_isDynamicVertices = _isDynamic;
-}
-
-//------------------------------------------------------------------------------
-
-inline void Mesh::setSceneSizeFactor(float sceneSizeFactor)
-{
-    m_sceneSizeFactor = sceneSizeFactor;
 }
 
 //------------------------------------------------------------------------------

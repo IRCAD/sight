@@ -968,11 +968,12 @@ void Mesh::clearMesh(::Ogre::SceneManager& _sceneMgr)
 
 //------------------------------------------------------------------------------
 
-void Mesh::updateMaterial(const Material::uptr& _material, bool _isR2VB, const ::Ogre::AxisAlignedBox& _bbox) const
+void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
 {
+    auto bbox = m_ogreMesh->getBounds();
+    _material->setMeshSize(bbox.getSize().length());
+
     _material->setHasMeshNormal(m_hasNormal);
-    _material->setMeshBoundingBox(_bbox);
-    _material->setSceneSizeFactor(m_sceneSizeFactor);
 
     // The r2vb pipeline outputs per-vertex color if we have per-primitive color
     // Thus for the rendering pipeline it is only viewed as per-vertex color

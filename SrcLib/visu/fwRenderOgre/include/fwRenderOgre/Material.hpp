@@ -50,18 +50,16 @@ public:
     /// Update material color in fixed function pipeline
     FWRENDEROGRE_API void updateRGBAMode( ::fwData::Material::sptr _f4sMaterial );
 
-    void setHasMeshNormal(bool hasMeshNormal);
-    void setHasVertexColor(bool hasMeshNormal);
-    void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
+    void setHasMeshNormal(bool _hasMeshNormal);
+    void setHasVertexColor(bool _hasMeshNormal);
+    void setHasPrimitiveColor(bool _hasMeshNormal, const std::string& _textureName);
     void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
 
-    void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
+    /// Sets the size of the mesh. This is used either to adjust the size of normals or to expand billboards
+    void setMeshSize(const float _size);
 
     /// Set the diffuse texture
     FWRENDEROGRE_API void setDiffuseTexture(const ::Ogre::TexturePtr& _texture);
-
-    /// Set scene size factor
-    void setSceneSizeFactor(float sceneSizeFactor);
 
 private:
 
@@ -77,25 +75,22 @@ private:
     ::Ogre::MaterialPtr m_material;
 
     /// Defines if the associated mesh has a normal layer
-    bool m_hasMeshNormal;
+    bool m_hasMeshNormal { true };
 
     /// Defines if the associated mesh has a a per vertex color layer
-    bool m_hasVertexColor;
+    bool m_hasVertexColor { false };
 
     /// Defines if the associated mesh has a a per primitive color layer
-    bool m_hasPrimitiveColor;
+    bool m_hasPrimitiveColor { false };
 
     /// Primitive type of the associated mesh
-    ::fwData::Mesh::CellTypesEnum m_primitiveType;
+    ::fwData::Mesh::CellTypesEnum m_primitiveType { ::fwData::Mesh::TRIANGLE };
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
 
-    /// Bounding box of the mesh
-    ::Ogre::AxisAlignedBox m_meshBoundingBox;
-
-    /// Factor used to modify normals length or billboards size
-    float m_sceneSizeFactor { 1.f };
+    /// Size of the mesh, used either to adjust the size of normals or to expand billboards
+    ::Ogre::Real m_meshSize { 1.f };
 
     /// Name of the material template
     std::string m_templateName;
@@ -132,15 +127,9 @@ inline void Material::setPrimitiveType(::fwData::Mesh::CellTypesEnum _type)
 
 //------------------------------------------------------------------------------
 
-inline void Material::setMeshBoundingBox(const Ogre::AxisAlignedBox& _bbox)
+inline void Material::setMeshSize(const float _size)
 {
-    m_meshBoundingBox = _bbox;
-}
-//-----------------------------------------------------------------------------
-
-inline void Material::setSceneSizeFactor(float sceneSizeFactor)
-{
-    m_sceneSizeFactor = sceneSizeFactor;
+    m_meshSize = _size;
 }
 
 //------------------------------------------------------------------------------

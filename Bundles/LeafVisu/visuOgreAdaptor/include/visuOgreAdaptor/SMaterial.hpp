@@ -106,8 +106,6 @@ public:
     /// Set material template name
     void setMaterialTemplateName(const std::string& materialName);
 
-    void setMeshAttributes(const ::fwRenderOgre::Mesh::sptr& _mesh);
-
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
 
@@ -115,6 +113,9 @@ public:
     void setShadingMode(const std::string& _shadingMode);
 
     void setR2VBObject(::fwRenderOgre::R2VBRenderable* _r2vbObject);
+
+    // Return the internal material code
+    fwRenderOgre::Material* getMaterialFw() const;
 
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -179,20 +180,12 @@ private:
     int m_lightsNumber;
 
     ::fwRenderOgre::Material::uptr m_materialFw;
-    ::fwRenderOgre::Mesh::wptr m_meshFw;
     ::fwRenderOgre::R2VBRenderable* m_r2vbObject { nullptr };
 };
 
 //------------------------------------------------------------------------------
 // Inline functions
 //------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-
-inline void SMaterial::setMeshAttributes(const fwRenderOgre::Mesh::sptr& _mesh)
-{
-    m_meshFw = _mesh;
-}
 
 //------------------------------------------------------------------------------
 
@@ -241,6 +234,13 @@ inline void SMaterial::setShadingMode(const std::string& _shadingMode)
 inline void SMaterial::setR2VBObject(::fwRenderOgre::R2VBRenderable* _r2vbObject)
 {
     m_r2vbObject = _r2vbObject;
+}
+
+//------------------------------------------------------------------------------
+
+inline ::fwRenderOgre::Material* SMaterial::getMaterialFw() const
+{
+    return m_materialFw.get();
 }
 
 //------------------------------------------------------------------------------

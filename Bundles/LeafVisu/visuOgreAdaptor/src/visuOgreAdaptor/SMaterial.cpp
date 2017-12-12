@@ -24,6 +24,8 @@
 #include <fwRenderOgre/Material.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
+#include <fwRuntime/Convert.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
@@ -116,6 +118,7 @@ void SMaterial::createShaderParameterAdaptors()
         }
     }
 }
+
 //------------------------------------------------------------------------------
 
 void SMaterial::setTextureName(const std::string& textureName)
@@ -242,7 +245,12 @@ void SMaterial::starting()
         this->createTextureAdaptor();
     }
 
-    this->updating();
+    const auto configTree = ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
+
+    if(configTree.find("config") != configTree.not_found())
+    {
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -266,9 +274,6 @@ void SMaterial::updating()
 {
     ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
-    auto bbox = this->getLayer()->computeWorldBoundingBox();
-
-    m_meshFw.lock()->updateMaterial(m_materialFw, m_r2vbObject != nullptr, bbox);
     if(m_r2vbObject)
     {
         m_materialFw->setPrimitiveType(m_r2vbObject->getInputPrimitiveType());

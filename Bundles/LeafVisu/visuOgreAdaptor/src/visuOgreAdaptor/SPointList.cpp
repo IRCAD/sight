@@ -205,7 +205,6 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     this->getRenderService()->makeCurrent();
 
     m_meshGeometry->updateMesh(_pointList);
-    m_meshGeometry->setSceneSizeFactor(m_radius);
 
     //------------------------------------------
     // Create entity and attach it in the scene graph
@@ -259,7 +258,6 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
     const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
-    materialAdaptor->setMeshAttributes(m_meshGeometry);
 
     return materialAdaptor;
 }
@@ -275,6 +273,10 @@ void SPointList::updateMaterialAdaptor()
             m_materialAdaptor = this->createMaterialService();
             m_materialAdaptor->start();
 
+            auto materialFw = m_materialAdaptor->getMaterialFw();
+            m_meshGeometry->updateMaterial(materialFw, false);
+            materialFw->setMeshSize(m_radius);
+
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
 
             if(!m_textureName.empty())
@@ -287,14 +289,21 @@ void SPointList::updateMaterialAdaptor()
                     "sprite");
                 texUnitState->setTexture(texture);
             }
+            m_materialAdaptor->update();
         }
     }
     else if(m_materialAdaptor->getObject< ::fwData::Material >() != m_material)
     {
+        auto materialFw = m_materialAdaptor->getMaterialFw();
+        m_meshGeometry->updateMaterial(materialFw, false);
+        materialFw->setMeshSize(m_radius);
         m_materialAdaptor->swap(m_material);
     }
     else
     {
+        auto materialFw = m_materialAdaptor->getMaterialFw();
+        m_meshGeometry->updateMaterial(materialFw, false);
+        materialFw->setMeshSize(m_radius);
         m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
 }

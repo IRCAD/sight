@@ -46,7 +46,7 @@ namespace visuOgreAdaptor
     <service uid="..." type="::visuOgreAdaptor::SPointList" >
         <in key="pointList" uid="..." />
         <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureName="texAdaptorUID" />
+                textureName="texAdaptorUID" radius="2.4" />
     </service>
    @endcode
  * @subsection In-Out In-Out
@@ -65,6 +65,7 @@ namespace visuOgreAdaptor
  * template, the texture adaptor and the shading mode) :
  *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
  *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
+ *  - \b radius (optional) : billboard radius.
  */
 class VISUOGREADAPTOR_CLASS_API SPointList : public ::fwRenderOgre::IAdaptor,
                                              public ::fwRenderOgre::ITransformable

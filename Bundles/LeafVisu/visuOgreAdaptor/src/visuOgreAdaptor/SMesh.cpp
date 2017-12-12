@@ -308,6 +308,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
         if(adaptor)
         {
             auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
+            m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
             // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
             r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
@@ -319,6 +320,9 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
             auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(adaptor);
             r2vbMtlAdaptor->setR2VBObject(renderable);
             r2vbMtlAdaptor->start();
+            m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
+            r2vbMtlAdaptor->update();
+
             renderable->setRenderToBufferMaterial(r2vbMtlAdaptor->getMaterialName());
             renderable->m_materialAdaptor = r2vbMtlAdaptor;
         }
@@ -354,7 +358,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
 
     materialAdaptor->setMaterialName(mtlName);
-    materialAdaptor->setMeshAttributes(m_meshGeometry);
     materialAdaptor->setTextureName(m_textureName);
     materialAdaptor->setShadingMode(m_shadingMode);
 
@@ -372,15 +375,20 @@ void SMesh::updateNewMaterialAdaptor()
             m_materialAdaptor = this->createMaterialService();
             m_materialAdaptor->start();
 
+            m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
+            m_materialAdaptor->update();
+
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
     }
     else if(m_materialAdaptor->getObject< ::fwData::Material >() != m_material)
     {
+        m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->swap(m_material);
     }
     else
     {
+        m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
 }
@@ -400,12 +408,14 @@ void SMesh::updateXMLMaterialAdaptor()
         if(m_entity)
         {
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
+            m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
 
             m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
     else if(m_materialAdaptor->getObject< ::fwData::Material >() != m_material)
     {
+        m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
         m_materialAdaptor->swap(m_material);
     }
 }

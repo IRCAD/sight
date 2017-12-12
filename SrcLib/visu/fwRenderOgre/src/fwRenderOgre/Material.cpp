@@ -26,11 +26,6 @@ const std::string Material::DEFAULT_MATERIAL_TEMPLATE_NAME = "Default";
 //------------------------------------------------------------------------------
 
 Material::Material(const std::string& _name, const std::string& _templateName) :
-    m_hasMeshNormal(true),
-    m_hasVertexColor(false),
-    m_hasPrimitiveColor(false),
-    m_primitiveType(::fwData::Mesh::TRIANGLE),
-    m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
     m_templateName(_templateName)
 {
     m_material = ::Ogre::MaterialManager::getSingleton().create(
@@ -61,7 +56,6 @@ void Material::updateOptionsMode(int _optionsMode)
     this->removePass(s_NORMALS_PASS);
 
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
-    const ::Ogre::Real sceneSize                   = m_meshBoundingBox.getSize().length();
 
     if(_optionsMode != ::fwData::Material::STANDARD)
     {
@@ -98,7 +92,7 @@ void Material::updateOptionsMode(int _optionsMode)
                 }
 
                 // Updates the normal length according to the bounding box's size
-                normalsPass->getGeometryProgramParameters()->setNamedConstant("u_sceneSize", sceneSize);
+                normalsPass->getGeometryProgramParameters()->setNamedConstant("u_sceneSize", m_meshSize);
             }
         }
     }
@@ -114,9 +108,9 @@ void Material::updateOptionsMode(int _optionsMode)
             {
                 ::Ogre::GpuProgramParametersSharedPtr gp = firstPass->getGeometryProgramParameters();
 
-                if(gp && gp->_findNamedConstantDefinition("u_sceneSize"))
+                if(gp && gp->_findNamedConstantDefinition("u_billboardSize"))
                 {
-                    gp->setNamedConstant("u_sceneSize", sceneSize * m_sceneSizeFactor);
+                    gp->setNamedConstant("u_billboardSize", m_meshSize);
                 }
             }
         }
