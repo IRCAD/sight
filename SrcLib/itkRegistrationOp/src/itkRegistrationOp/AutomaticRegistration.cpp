@@ -6,8 +6,6 @@
 
 #include "itkRegistrationOp/AutomaticRegistration.hpp"
 
-#include "itkRegistrationOp/RegistrationObserver.hxx"
-
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGui/backend.hpp>
@@ -36,7 +34,6 @@
 #include <itkMattesMutualInformationImageToImageMetricv4.h>
 #include <itkMeanSquaresImageToImageMetricv4.h>
 #include <itkNearestNeighborInterpolateImageFunction.h>
-#include <itkRegularStepGradientDescentOptimizerv4.h>
 #include <itkVersorRigid3DTransform.h>
 
 namespace itkRegistrationOp
@@ -100,11 +97,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           const MultiResolutionParametersType& _multiResolutionParameters,
                                           RealType _samplingPercentage,
                                           double _minStep,
-                                          unsigned long _maxIterations
-                                          )
+                                          unsigned long _maxIterations,
+                                          ::itk::Command::Pointer _iterationCallback)
 {
-    typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
-
     typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
     typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
         RegistrationMethodType;
@@ -236,15 +231,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
     registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
-    const bool hasGui = ::fwGui::isBackendLoaded();
-
-    RegistrationObserver<OptimizerType>::Pointer observer;
-
-    if(hasGui)
+    if(_iterationCallback)
     {
-        observer = RegistrationObserver<OptimizerType>::New();
-        observer->setMaxIterations( _maxIterations );
-        optimizer->AddObserver( ::itk::IterationEvent(), observer );
+        optimizer->AddObserver( ::itk::IterationEvent(), _iterationCallback );
     }
 
     try
@@ -257,22 +246,19 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
         OSLM_FATAL("Error while registering : " << err);
     }
 
-    if(!hasGui || !observer->forceStopped())
+    // Get the last transform.
+    const TransformType* finalTransform = registrator->GetTransform();
+
+    const ::itk::Matrix<RealType, 3, 3> rigidMat = finalTransform->GetMatrix();
+    const ::itk::Vector<RealType, 3> offset      = finalTransform->GetOffset();
+
+    // Convert ::itk::RigidTransform to f4s matrix.
+    for(std::uint8_t i = 0; i < 3; ++i)
     {
-        // Get the last transform.
-        const TransformType* finalTransform = registrator->GetTransform();
-
-        const ::itk::Matrix<RealType, 3, 3> rigidMat = finalTransform->GetMatrix();
-        const ::itk::Vector<RealType, 3> offset      = finalTransform->GetOffset();
-
-        // Convert ::itk::RigidTransform to f4s matrix.
-        for(std::uint8_t i = 0; i < 3; ++i)
+        _trf->setCoefficient(i, 3, offset[i]);
+        for(std::uint8_t j = 0; j < 3; ++j)
         {
-            _trf->setCoefficient(i, 3, offset[i]);
-            for(std::uint8_t j = 0; j < 3; ++j)
-            {
-                _trf->setCoefficient(i, j, rigidMat(i, j));
-            }
+            _trf->setCoefficient(i, j, rigidMat(i, j));
         }
     }
 }

@@ -15,6 +15,7 @@
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+#include <itkRegistrationOp/RegistrationObserver.hxx>
 
 namespace opItkRegistration
 {
@@ -99,6 +100,9 @@ void SAutomaticRegistration::updating()
                         multiResolutionParameters.begin(),
                         [](const ParamPairType& v){return v.first == 0; });
 
+    ::itkRegistrationOp::RegistrationObserver::Pointer observer = ::itkRegistrationOp::RegistrationObserver::New();
+    observer->setMaxIterations(m_maxIterations);
+
     ::itkRegistrationOp::AutomaticRegistration::registerImage(target,
                                                               reference,
                                                               transform,
@@ -106,7 +110,8 @@ void SAutomaticRegistration::updating()
                                                               multiResolutionParameters,
                                                               m_samplingPercentage,
                                                               m_minStep,
-                                                              m_maxIterations);
+                                                              m_maxIterations,
+                                                              ::itk::Command::Pointer(observer.GetPointer()));
 
     m_sigComputed->asyncEmit();
 

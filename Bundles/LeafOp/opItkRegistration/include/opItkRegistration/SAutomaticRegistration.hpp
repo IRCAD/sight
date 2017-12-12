@@ -57,7 +57,7 @@ class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAutomaticRegistration)(::fwServices::IOperator) );
+    fwCoreServiceClassDefinitionsMacro( (SAutomaticRegistration)(::fwServices::IOperator) )
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SAutomaticRegistration();

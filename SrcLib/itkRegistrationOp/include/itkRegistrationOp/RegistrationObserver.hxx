@@ -7,21 +7,25 @@
 #ifndef __ITKREGISTRATIONOP_REGISTRATIONOBSERVER_HXX__
 #define __ITKREGISTRATIONOP_REGISTRATIONOBSERVER_HXX__
 
+#include <itkRegistrationOp/AutomaticRegistration.hpp>
+
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <itkCommand.h>
 
+namespace itkRegistrationOp
+{
+
 /**
  * @brief Observer reporting registration progress.
  */
-template< typename OptimizerType >
 class RegistrationObserver : public ::itk::Command
 {
 public:
     typedef  RegistrationObserver Self;
     typedef ::itk::Command Superclass;
     typedef ::itk::SmartPointer<Self>   Pointer;
-    itkNewMacro( Self );
+    itkNewMacro( Self )
 
     /// Command to be executed. Updates the progress bar.
     void Execute(::itk::Object* caller, const ::itk::EventObject& event) override;
@@ -31,9 +35,6 @@ public:
 
     /// Set the maximum number of steps allowed to the optimizer.
     inline void setMaxIterations(unsigned long maxIters);
-
-    /// True if optimization canceled on user request.
-    inline bool forceStopped() const;
 
 private:
 
@@ -52,13 +53,12 @@ private:
 
 //------------------------------------------------------------------------------
 
-template<typename OptimizerType>
-void RegistrationObserver<OptimizerType>::Execute(itk::Object* caller, const itk::EventObject& event)
+void RegistrationObserver::Execute(itk::Object* caller, const itk::EventObject& event)
 {
     {
         if(m_stop)
         {
-            OptimizerType* optimizer = dynamic_cast< OptimizerType* >( caller );
+            auto optimizer = dynamic_cast< AutomaticRegistration::OptimizerType* >( caller );
 
             optimizer->StopOptimization();
         }
@@ -69,13 +69,12 @@ void RegistrationObserver<OptimizerType>::Execute(itk::Object* caller, const itk
 
 //------------------------------------------------------------------------------
 
-template<typename OptimizerType>
-void RegistrationObserver<OptimizerType>::Execute(const itk::Object* object, const itk::EventObject& event)
+void RegistrationObserver::Execute(const itk::Object* object, const itk::EventObject& event)
 {
     {
         if( ::itk::IterationEvent().CheckEvent( &event ) )
         {
-            const OptimizerType* optimizer = dynamic_cast< const OptimizerType* >( object );
+            const auto optimizer = dynamic_cast< const AutomaticRegistration::OptimizerType* >( object );
 
             const unsigned int itNum = static_cast<unsigned int>(optimizer->GetCurrentIteration()) + 1;
 
@@ -92,32 +91,24 @@ void RegistrationObserver<OptimizerType>::Execute(const itk::Object* object, con
 
 //------------------------------------------------------------------------------
 
-template<typename OptimizerType>
-void RegistrationObserver<OptimizerType>::setMaxIterations(unsigned long maxIters)
+void RegistrationObserver::setMaxIterations(unsigned long maxIters)
 {
     m_maxIters = maxIters;
 }
 
 //------------------------------------------------------------------------------
 
-template<typename OptimizerType>
-bool RegistrationObserver<OptimizerType>::forceStopped() const
-{
-    return m_stop;
-}
-
-//------------------------------------------------------------------------------
-
-template<typename OptimizerType>
-RegistrationObserver<OptimizerType>::RegistrationObserver() :
+RegistrationObserver::RegistrationObserver() :
     m_dialog("Automatic Registration", "Registring, please be patient."),
     m_stop(false)
 {
     m_dialog.setCancelCallback([this]()
-    {
-        this->m_stop = true;
-    });
+        {
+            this->m_stop = true;
+        });
 }
+
+} // itkRegistrationOp
 
 #endif // __ITKREGISTRATIONOP_REGISTRATIONOBSERVER_HXX__
 

@@ -13,7 +13,9 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <itkCommand.h>
 #include <itkIntTypes.h>
+#include <itkRegularStepGradientDescentOptimizerv4.h>
 
 namespace itkRegistrationOp
 {
@@ -24,9 +26,13 @@ namespace itkRegistrationOp
 class ITKREGISTRATIONOP_CLASS_API AutomaticRegistration
 {
 public:
-    typedef double RealType; // Numeric type used for internal computations.
 
-    // Shrink factors per level and smoothing sigmas per level
+    /// Numeric type used for internal computations.
+    typedef double RealType;
+
+    typedef typename ::itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
+
+    /// Shrink factors per level and smoothing sigmas per level
     typedef std::vector< std::pair< ::itk::SizeValueType, RealType > > MultiResolutionParametersType;
 
     /**
@@ -35,8 +41,11 @@ public:
      * @param[in] _reference reference, i.e. the image that will be transformed into the target.
      * @param[out] _trf the resulting rigid transform.
      * @param[in] _metric the metric to be used for registration.
+     * @param[in] _multiResolutionParameters Shrink factors per level and smoothing sigmas per level
+     * @param[in] _samplingPercentage the percentage of sample to use for registration
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
+     * @param[in] _iterationCallback listener called after each optimization step
      */
     static ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
                                                     const ::fwData::Image::csptr& _reference,
@@ -45,7 +54,8 @@ public:
                                                     const MultiResolutionParametersType& _multiResolutionParameters,
                                                     RealType _samplingPercentage = 1.0,
                                                     double _minStep = 0.0001,
-                                                    unsigned long _maxIterations = 200);
+                                                    unsigned long _maxIterations = 200,
+                                                    ::itk::Command::Pointer _iterationCallback = nullptr);
 };
 
 } // itkRegistrationOp
