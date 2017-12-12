@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __ITKREGISTRATIONOP_UT_HELPER_HPP__
 #define __ITKREGISTRATIONOP_UT_HELPER_HPP__
 
@@ -7,15 +13,20 @@
 #include <itkImage.h>
 #include <itkSpatialObjectToImageFilter.h>
 
-//------------------------------------------------------------------------------
-
 template <class P, size_t N>
+/**
+ * @brief Create a binary test image of 100x100x100 size containing an ellipsoid in the center.
+ *
+ * @tparam P Pixel type
+ * @tparam N Number of channels
+ */
 ::fwData::Image::sptr createSphereImage()
 {
     using ImageType                      = ::itk::Image<P, N>;
     using EllipseType                    = ::itk::EllipseSpatialObject< N >;
     using SpatialObjectToImageFilterType = ::itk::SpatialObjectToImageFilter< EllipseType, ImageType >;
     using TransformType                  = EllipseType::TransformType;
+    static_assert(std::is_arithmetic<P>::value, "P type must be numeric");
 
     ImageType::Pointer image                            = ImageType::New();
     SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
@@ -49,7 +60,7 @@ template <class P, size_t N>
 
     imageFilter->SetInput(ellipse);
 
-    ellipse->SetDefaultInsideValue(255);
+    ellipse->SetDefaultInsideValue(std::numeric_limits<P>::max());
     ellipse->SetDefaultOutsideValue(0);
     imageFilter->SetUseObjectValue( true );
     imageFilter->SetOutsideValue( 0 );

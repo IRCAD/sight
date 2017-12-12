@@ -20,6 +20,7 @@ class FastRegistrationTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( FastRegistrationTest );
 CPPUNIT_TEST( identityTest );
 CPPUNIT_TEST( translateTransformTest );
+CPPUNIT_TEST( translateTransformWithScalesTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -28,6 +29,7 @@ public:
 
     void identityTest();
     void translateTransformTest();
+    void translateTransformWithScalesTest();
 };
 
 } //namespace ut

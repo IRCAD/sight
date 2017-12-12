@@ -9,9 +9,6 @@ set( DEPENDENCIES
     fwCore
     fwDataTools
     fwGui
-    cvIO
-
-    fwVtkIO
 )
 set( REQUIREMENTS)
 
