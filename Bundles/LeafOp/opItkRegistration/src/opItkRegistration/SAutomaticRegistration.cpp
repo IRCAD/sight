@@ -202,7 +202,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
 unsigned long SAutomaticRegistration::extractLevelFromParameterName(const std::string& name)
 {
     // find the level
-    const std::string levelSuffix = name.substr(name.find("_"));
+    const std::string levelSuffix = name.substr(name.find("_")+1);
     const unsigned long level     = std::stoul(levelSuffix);
 
     if(level >= m_multiResolutionParameters.size())

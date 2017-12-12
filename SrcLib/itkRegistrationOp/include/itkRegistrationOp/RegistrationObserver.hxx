@@ -34,7 +34,7 @@ public:
     void Execute(const ::itk::Object* object, const ::itk::EventObject& event) override;
 
     /// Set the maximum number of steps allowed to the optimizer.
-    inline void setMaxIterations(unsigned long maxIters);
+    inline void setMaxIterations(unsigned long _maxIters);
 
 private:
 
@@ -63,7 +63,8 @@ void RegistrationObserver::Execute(itk::Object* caller, const itk::EventObject& 
             optimizer->StopOptimization();
         }
 
-        Execute( (const itk::Object*)caller, event);
+        const itk::Object* constCaller = caller;
+        Execute( constCaller, event);
     }
 }
 
@@ -91,9 +92,9 @@ void RegistrationObserver::Execute(const itk::Object* object, const itk::EventOb
 
 //------------------------------------------------------------------------------
 
-void RegistrationObserver::setMaxIterations(unsigned long maxIters)
+void RegistrationObserver::setMaxIterations(unsigned long _maxIters)
 {
-    m_maxIters = maxIters;
+    m_maxIters = _maxIters;
 }
 
 //------------------------------------------------------------------------------
