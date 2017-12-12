@@ -10,9 +10,6 @@
 #include "videoCalibration/config.hpp"
 #include "videoCalibration/ICalibration.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 namespace videoCalibration
 {
 
@@ -28,6 +25,7 @@ namespace videoCalibration
         <service type="::videoCalibration::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
+            <inout key="poseVector" uid="..." />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
        </service>
    @endcode
@@ -35,6 +33,7 @@ namespace videoCalibration
  * - \b calibrationInfo [::arData::CalibrationInfo]: Data used to compute the calibration.
  * @subsection In-Out In-Out:
  * - \b camera [::arData::Camera]: Output calibration.
+ * - \b poseVector [::fwData::Vector] (optional): Camera calibration pose vector
  * @subsection Configuration Configuration:
  * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
  */

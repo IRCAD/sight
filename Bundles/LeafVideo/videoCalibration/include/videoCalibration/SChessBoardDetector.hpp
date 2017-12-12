@@ -53,13 +53,18 @@ namespace videoCalibration
                 <key uid="..." />
                 <key uid="..." />
             </inout>
+            <inout group="detection">
+                <key uid="..." />
+                <key uid="..." />
+            </inout>
            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
        </service>
    @endcode
  * @subsection Input Input:
  * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the chessboard.
  * @subsection In-Out In-Out:
- * - \b key2 [::arData::CalibrationInfo]: calibration object where to store the detected images.
+ * - \b calInfo [::arData::CalibrationInfo]: calibration object where to store the detected images.
+ * - \b detection [::arData::FrameTL] (optional): timelines filled with images on which detected chessboard are drawn
  * @subsection Configuration Configuration:
  * - \b board : preference key to retrieve the number of squares of the board in width and height.
  */
@@ -129,14 +134,17 @@ private:
 
     /**
      * @brief Detect chessboard points
-     * @param image the frame displaying the chessboard
+     * @param tl the timeline containing frames displaying the chessboard
+     * @param timestamp time corresponding to the frame to process in the timeline
      * @param xDim the number of chessboard squares horizontally
      * @param yDim the number of chessboard squares vertically
+     * @param tlDetection the optional result timeline filled with processed frames
      * @return The list of chessboard points or NULL if no points are detected
      */
     static SPTR(::fwData::PointList) detectChessboard(::arData::FrameTL::csptr tl,
                                                       ::fwCore::HiResClock::HiResClockType timestamp,
-                                                      size_t xDim, size_t yDim);
+                                                      size_t xDim, size_t yDim,
+                                                      ::arData::FrameTL::sptr tlDetection = 0);
 
     /**
      * @brief Creates an image from frame timeline
