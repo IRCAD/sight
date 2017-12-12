@@ -100,6 +100,10 @@ void SPointList::configuring()
         m_autoResetCamera = config.get<std::string>("autoresetcamera") == "yes";
     }
 
+    if(config.get("fixedSize", false))
+    {
+        m_materialTemplateName = "Billboard_FixedSize";
+    }
     // An existing Ogre material will be used for this mesh
     if( config.count("materialTemplate"))
     {
@@ -122,9 +126,6 @@ void SPointList::configuring()
     }
 
     m_radius = config.get("radius", 1.f);
-
-    // Try to fit the scale used in VTK
-    m_radius *= 0.25f;
 }
 
 //-----------------------------------------------------------------------------

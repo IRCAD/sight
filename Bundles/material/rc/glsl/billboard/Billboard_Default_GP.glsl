@@ -20,7 +20,10 @@ out vec2 oTexCoord;
 void main()
 {
     // Compute the size and adjust the ratio to be 1:1
-    vec2 size = vec2(1., u_vpWidth/u_vpHeight) * 0.1 * u_billboardSize;
+    vec2 size = vec2(1., u_vpWidth/u_vpHeight) * u_billboardSize;
+#ifdef FIXED_SIZE
+    size *= 0.01;
+#endif
 
     vec4 P = gl_in[0].gl_Position;
 
@@ -28,8 +31,10 @@ void main()
     P.w += .01f;
     P = u_proj * P;
 
+#ifdef FIXED_SIZE
     // Switch to screen-space coordinates, easier since we want a fixed size in pixels
     P /= P.w;
+#endif
 
     vec2 va = P.xy + vec2(-1., -1.) * size;
     gl_Position = vec4(va, P.zw);
