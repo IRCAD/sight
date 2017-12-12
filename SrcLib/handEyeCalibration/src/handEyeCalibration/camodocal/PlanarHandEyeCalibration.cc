@@ -222,7 +222,7 @@ PlanarHandEyeCalibration::estimate(const std::vector<Eigen::Quaterniond,
     {
         SLM_INFO("# INFO: Before refinement:");
         SLM_INFO("H_12 = ");
-        SLM_INFO(H_12);
+        OSLM_INFO(H_12);
     }
 
     refineEstimate(H_12, quats1, tvecs1, quats2, tvecs2);
@@ -231,7 +231,7 @@ PlanarHandEyeCalibration::estimate(const std::vector<Eigen::Quaterniond,
     {
         SLM_INFO("# INFO: After refinement:");
         SLM_INFO("H_12 = ");
-        SLM_INFO(H_12);
+        OSLM_INFO(H_12);
     }
 
     return true;

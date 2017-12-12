@@ -175,7 +175,8 @@ HandEyeCalibration::estimateHandEyeScrew(const std::vector<Eigen::Vector3d,
     if (mVerbose)
     {
         SLM_INFO("# INFO: Before refinement: H_12 = ");
-        SLM_INFO(H_12);
+        Eigen::IOFormat HeavyFmt(Eigen::FullPrecision, 0, ", ", ";\n", "[", "]", "[", "]");
+        OSLM_INFO(H_12);
     }
 
     estimateHandEyeScrewRefine(dq, rvecs1, tvecs1, rvecs2, tvecs2);
@@ -184,7 +185,7 @@ HandEyeCalibration::estimateHandEyeScrew(const std::vector<Eigen::Vector3d,
     if (mVerbose)
     {
         SLM_INFO("# INFO: After refinement: H_12 = ");
-        SLM_INFO(H_12);
+        OSLM_INFO(H_12);
     }
 }
 
