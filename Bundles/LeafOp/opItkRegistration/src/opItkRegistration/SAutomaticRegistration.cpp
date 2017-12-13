@@ -141,13 +141,18 @@ void SAutomaticRegistration::updating()
                                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
 
     std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
+    size_t i = 0;
 
     ::itkRegistrationOp::AutomaticRegistration::IterationCallbackType iterationCallback =
-        [this, &dialog, &multiResolutionParameters, &transfoModifiedSig, &registrator, &regStartTime, &regLog]
-            (unsigned int _itNum, unsigned int _currentLevel)
+        [this, &dialog, &multiResolutionParameters, &transfoModifiedSig, &registrator, &regStartTime, &regLog, &i]()
         {
-            std::string msg = "Number of iterations : " + std::to_string(_itNum);
-            dialog(static_cast<float>(_itNum)/static_cast<float>(m_maxIterations), msg);
+            const ::itk::SizeValueType currentIteration = registrator.getCurrentIteration();
+            const ::itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
+
+            float progress = float(i++)/float(m_maxIterations * multiResolutionParameters.size());
+
+            std::string msg = "Number of iterations : " + std::to_string(i);
+            dialog(progress, msg);
             dialog.setMessage(msg);
 
             if(m_log)
@@ -158,10 +163,10 @@ void SAutomaticRegistration::updating()
                 const auto duration = now - regStartTime;
 
                 regLog << "'" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "',"
-                       << "'" << _currentLevel << "',"
-                       << "'" << _itNum << "',"
-                       << "'" << multiResolutionParameters[_currentLevel].first << "',"
-                       << "'" << multiResolutionParameters[_currentLevel].second << "',"
+                       << "'" << currentLevel << "',"
+                       << "'" << currentIteration << "',"
+                       << "'" << multiResolutionParameters[currentLevel].first << "',"
+                       << "'" << multiResolutionParameters[currentLevel].second << "',"
                        << "'" << registrator.getCurrentMetricValue() << "',"
                        << "'" << registrator.getCurrentParameters() << "',"
                        << "'" << registrator.getRelaxationFactor() << "',"
@@ -172,6 +177,8 @@ void SAutomaticRegistration::updating()
                        << "'" << m_samplingPercentage << "',"
                        << "'" << multiResolutionParameters.size() << "'"
                        << std::endl;
+
+                regLog.flush(); // Flush, just to be sure.
             }
 
             transfoModifiedSig->asyncEmit();

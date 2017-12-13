@@ -26,7 +26,6 @@
 #include <itkCommand.h>
 #include <itkCorrelationImageToImageMetricv4.h>
 #include <itkImage.h>
-#include <itkImageRegistrationMethodv4.h>
 #include <itkImageToImageMetricv4.h>
 #include <itkLinearInterpolateImageFunction.h>
 #include <itkMattesMutualInformationImageToImageMetricv4.h>
@@ -35,8 +34,6 @@
 
 namespace itkRegistrationOp
 {
-
-typedef typename ::itk::Image< float, 3 > RegisteredImageType;
 
 //------------------------------------------------------------------------------
 
@@ -117,7 +114,7 @@ struct ItkImageCaster
 
 //------------------------------------------------------------------------------
 
-static RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
+static AutomaticRegistration::RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
 {
     typedef ItkImageCaster<float> FloatCasterType;
 
@@ -143,9 +140,6 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           unsigned long _maxIterations,
                                           IterationCallbackType _callback)
 {
-    typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
-        RegistrationMethodType;
-
     typename ::itk::ImageToImageMetricv4< RegisteredImageType, RegisteredImageType, RegisteredImageType,
                                           RealType >::Pointer metric;
 
@@ -218,11 +212,11 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     itkTransform->SetOffset(t);
 
     // Registration.
-    auto registrator = RegistrationMethodType::New();
-    auto optimizer   = OptimizerType::New();
+    m_registrator = RegistrationMethodType::New();
+    auto optimizer = OptimizerType::New();
 
-    registrator->SetMetric(metric);
-    registrator->SetOptimizer(optimizer);
+    m_registrator->SetMetric(metric);
+    m_registrator->SetOptimizer(optimizer);
 
     OptimizerType::ScalesType optimizerScales(static_cast<unsigned int>(itkTransform->GetNumberOfParameters()));
     const double translationScale = 1.0 / 1000.0;
@@ -263,27 +257,24 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
         smoothingSigmasPerLevel[i] = stageParameters.second;
     }
 
-    registrator->SetInitialTransform(itkTransform);
-    registrator->SetFixedImage(target);
-    registrator->SetMovingImage(reference);
-    registrator->SetMetricSamplingPercentage(_samplingPercentage);
-    registrator->SetNumberOfLevels(::itk::SizeValueType(numberOfLevels));
-    registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
-    registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
-    registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
+    m_registrator->SetInitialTransform(itkTransform);
+    m_registrator->SetFixedImage(target);
+    m_registrator->SetMovingImage(reference);
+    m_registrator->SetMetricSamplingPercentage(_samplingPercentage);
+    m_registrator->SetNumberOfLevels(::itk::SizeValueType(numberOfLevels));
+    m_registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
+    m_registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
+    m_registrator->SetSmoothingSigmasAreSpecifiedInPhysicalUnits(true);
 
     RegistrationObserver::Pointer observer = RegistrationObserver::New();
 
     if(_callback)
     {
-        auto iterationCallback = [this, &registrator, &_callback, &_trf]()
+        auto iterationCallback = [this, &_callback, &_trf]()
                                  {
-                                     const unsigned int itNum =
-                                         static_cast<unsigned int>(m_optimizer->GetCurrentIteration()) + 1;
+                                     convertToF4sMatrix(m_registrator->GetTransform(), _trf);
 
-                                     convertToF4sMatrix(registrator->GetTransform(), _trf);
-
-                                     _callback(itNum, registrator->GetCurrentLevel());
+                                     _callback();
                                  };
 
         observer->setCallback(iterationCallback);
@@ -295,7 +286,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     try
     {
         // Time for lift-off.
-        registrator->Update();
+        m_registrator->Update();
     }
     catch( ::itk::ExceptionObject& err )
     {
@@ -305,7 +296,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     m_optimizer = nullptr;
 
     // Get the last transform.
-    const TransformType* finalTransform = registrator->GetTransform();
+    const TransformType* finalTransform = m_registrator->GetTransform();
 
     convertToF4sMatrix(finalTransform, _trf);
 }
@@ -316,6 +307,8 @@ void AutomaticRegistration::stopRegistration()
 {
     if(m_optimizer)
     {
+        // Stop registration by removing all levels.
+        m_registrator->SetNumberOfLevels(0);
         m_optimizer->StopOptimization();
     }
 }
@@ -330,7 +323,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getCurrentMetricValue() c
 
 //------------------------------------------------------------------------------
 
-AutomaticRegistration::OptimizerType::ParametersType AutomaticRegistration::getCurrentParameters() const
+const AutomaticRegistration::OptimizerType::ParametersType& AutomaticRegistration::getCurrentParameters() const
 {
     OSLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentPosition();
@@ -358,6 +351,22 @@ AutomaticRegistration::RealType AutomaticRegistration::getGradientMagnitudeToler
 {
     OSLM_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetGradientMagnitudeTolerance();
+}
+
+//------------------------------------------------------------------------------
+
+itk::SizeValueType AutomaticRegistration::getCurrentIteration() const
+{
+    OSLM_ASSERT("No optimization process running.", m_optimizer);
+    return m_optimizer->GetCurrentIteration();
+}
+
+//------------------------------------------------------------------------------
+
+itk::SizeValueType itkRegistrationOp::AutomaticRegistration::getCurrentLevel() const
+{
+    OSLM_ASSERT("No registration process running.", m_registrator);
+    return m_registrator->GetCurrentLevel();
 }
 
 //------------------------------------------------------------------------------
