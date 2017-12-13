@@ -531,6 +531,7 @@
         <start uid="pushMatrixSensor" />
         <start uid="computeRegistration" />
         <start uid="cameraSelector" />
+        <start uid="handEyeMatrixWriter" />
         <!-- VTK scene 'frameView' -->
         <start uid="videoAdpt" />
         <!-- VTK scene 'chessboardDetectionView' -->
