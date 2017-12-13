@@ -20,6 +20,7 @@
 
 #include <chrono>
 #include <fstream>
+#include <iomanip>
 
 namespace opItkRegistration
 {
@@ -119,7 +120,11 @@ void SAutomaticRegistration::updating()
 
     if(m_log)
     {
-        regLog.open("toto.csv", std::ios_base::out);
+        std::stringstream fileNameStream;
+        const std::time_t systemTime = std::time(nullptr);
+        fileNameStream << "registration_" << std::put_time(std::localtime(&systemTime), "%Y-%m-%d_%H-%M-%S") << ".csv";
+
+        regLog.open(fileNameStream.str(), std::ios_base::out);
         regLog << "'Timestamp',"
                << "'Current level',"
                << "'Current iteration',"
