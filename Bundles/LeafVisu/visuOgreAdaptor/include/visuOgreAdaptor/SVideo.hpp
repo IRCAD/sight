@@ -23,14 +23,14 @@ namespace visuOgreAdaptor
  *
  * @code{.xml}
         <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
-            <in key="frame" uid="..." />
+            <in key="image" uid="..." />
             <in key="camera" uid="..." />
             <in key="tf" uid="..." optional="yes" />
             <config renderer="default" reversed="true" />
         </service>
    @endcode
  * @subsection Input Input:
- * - \b frame [::fwData::Image]: frame displayed.
+ * - \b image [::fwData::Image]: frame displayed.
  * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
  * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
  * @subsection Configuration Configuration:
@@ -73,6 +73,9 @@ private:
 
     /// Slot: Updates the displayed transfer function
     void updateTF();
+
+    /// Slot: Move the video plane according to the optical center
+    void calibrate();
 
     /// Ogre texture used to store the fwImage
     ::Ogre::TexturePtr m_texture;

@@ -235,7 +235,7 @@ void SRender::configureLayer(const ConfigType& _cfg )
                              stereoMode == "Stereo" ? ::fwRenderOgre::Layer::StereoModeType::STEREO :
                              ::fwRenderOgre::Layer::StereoModeType::NONE);
 
-    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
+    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")

@@ -136,8 +136,8 @@ void IParameter::updating()
     }
     if(m_techniqueName.empty())
     {
-        bool bSet                                     = false;
-        const ::Ogre::Material::Techniques techniques = m_material->getTechniques();
+        bool bSet                                      = false;
+        const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
         for(const auto tech : techniques)
         {

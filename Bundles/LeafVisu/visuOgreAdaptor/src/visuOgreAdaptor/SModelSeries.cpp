@@ -21,6 +21,8 @@
 
 #include <fwMedData/ModelSeries.hpp>
 
+#include <fwRenderOgre/Material.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -30,8 +32,11 @@ namespace visuOgreAdaptor
 {
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_RECONSTRUCTION_SLOT    = "addReconstruction";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_RECONSTRUCTION_SLOT = "removeReconstruction";
+// Private slots
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
+
+// Public slot
+const ::fwCom::Slots::SlotKeyType SModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
 static const std::string s_MODEL_INPUT = "model";
 
@@ -39,12 +44,12 @@ static const std::string s_MODEL_INPUT = "model";
 
 SModelSeries::SModelSeries() noexcept :
     m_autoResetCamera(true),
-    m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
+    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_isDynamic(false),
     m_isDynamicVertices(false)
 {
-    newSlot(s_ADD_RECONSTRUCTION_SLOT, &SModelSeries::addReconstruction, this);
-    newSlot(s_REMOVE_RECONSTRUCTION_SLOT, &SModelSeries::removeReconstruction, this);
+    newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
+    newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeries::showReconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -118,9 +123,8 @@ void SModelSeries::updating()
 
         adaptor->setRenderService(this->getRenderService());
         adaptor->setLayerID(m_layerID);
-        adaptor->setTransformId(adaptor->getID() + "_TF");
+        adaptor->setTransformId(this->getTransformId());
         adaptor->setMaterialTemplateName(m_materialTemplateName);
-        adaptor->setParentTransformId(this->getTransformId());
         adaptor->setAutoResetCamera(m_autoResetCamera);
 
         adaptor->start();
@@ -141,16 +145,29 @@ void SModelSeries::stopping()
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::addReconstruction()
+void SModelSeries::showReconstructions(bool _show)
 {
-    this->updating();
+    auto adaptors = this->getRegisteredServices();
+    for(auto adaptor : adaptors)
+    {
+        auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
+        recAdaptor->setForceHide(!_show);
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::removeReconstruction()
+void SModelSeries::showReconstructionsOnFieldChanged()
 {
-    this->stopping();
+    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
+    const bool showRec     = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
+
+    auto adaptors = this->getRegisteredServices();
+    for(auto adaptor : adaptors)
+    {
+        auto recAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(adaptor.lock());
+        recAdaptor->setForceHide(!showRec);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -159,9 +176,11 @@ void SModelSeries::removeReconstruction()
 {
     ::fwServices::IService::KeyConnectionsMap connections;
     connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTION_SLOT);
-    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG,
-                      s_REMOVE_RECONSTRUCTION_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
+    connections.push( s_MODEL_INPUT, ::fwMedData::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT );
     return connections;
 }
 

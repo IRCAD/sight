@@ -2,7 +2,4 @@
     
     <library name="material" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
-
 </plugin>

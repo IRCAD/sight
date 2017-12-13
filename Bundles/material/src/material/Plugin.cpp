@@ -11,8 +11,6 @@
 #include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/macros.hpp>
-
 namespace material
 {
 

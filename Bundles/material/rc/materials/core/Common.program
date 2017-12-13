@@ -58,7 +58,7 @@ geometry_program VerticesNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
         param_named u_normalColor float4 1. 0. 0. 1.
     }
 }
@@ -72,7 +72,7 @@ geometry_program CellsNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
         param_named u_normalColor float4 1. 1. 0. 1.
     }
 }
@@ -86,7 +86,7 @@ geometry_program DepthPeeling/depthMap/VerticesNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
+        param_named u_sceneSize float 10.
     }
 }
 
@@ -99,60 +99,7 @@ geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named u_normalLength float 10.
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program HybridTransparency/transmittanceBlend_FP glsl
-{
-    source WeightedBlended_Transmittance_Blend_FP.glsl
-    preprocessor_defines HYBRID=1
-    attach DepthPeelingCommon_FP
-    default_params
-    {
-        param_named u_frontDepthBuffer int 0
-        param_named u_occlusionDepthBuffer int 1
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
-//------------------------------------------------------------------
-
-fragment_program HybridTransparency/occlusionMap_FP glsl
-{
-    source HybridTransparency_Occlusion_Map_FP.glsl
-    default_params
-    {
-        param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
-//------------------------------------------------------------------
-
-fragment_program WeightedBlended/occlusionMap_FP glsl
-{
-    source WeightedBlended_Occlusion_Map_FP.glsl
-    default_params
-    {
-        param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
-//------------------------------------------------------------------
-
-fragment_program WeightedBlended/transmittanceBlend_FP glsl
-{
-    source WeightedBlended_Transmittance_Blend_FP.glsl
-    default_params
-    {
-        param_named u_occlusionDepthBuffer int 0
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_sceneSize float 10.
     }
 }
 

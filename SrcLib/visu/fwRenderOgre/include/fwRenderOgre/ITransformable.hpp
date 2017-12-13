@@ -17,7 +17,7 @@ namespace fwRenderOgre
 {
 
 /**
- * @brief Must be inherited by all class containing a transformation matrix
+ * @brief Must be inherited by all classes containing a transformation matrix
  */
 class FWRENDEROGRE_CLASS_API ITransformable
 {
@@ -30,9 +30,9 @@ public:
 
     /**
      * @brief Set the Ogre identifier of the transform in the scene manager.
-     * @param newUID The new transform service Id
+     * @param newId The new transform service Id
      */
-    FWRENDEROGRE_API virtual void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
+    FWRENDEROGRE_API void setTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
 
     /**
      * @brief getParentTransformUID
@@ -42,9 +42,9 @@ public:
 
     /**
      * @brief setParentTransformId
-     * @param newUID This new parent transform service UID
+     * @param newId This new parent transform service UID
      */
-    FWRENDEROGRE_API virtual void setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
+    FWRENDEROGRE_API void setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId);
 
 protected:
     /// Ogre transformation of this service

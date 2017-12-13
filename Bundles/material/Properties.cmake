@@ -6,7 +6,6 @@ set( START ON )
 set( DEPENDENCIES
     fwCore
     fwRuntime
-    fwServices
     fwRenderOgre
 )
 set( REQUIREMENTS  )

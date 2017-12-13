@@ -13,6 +13,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwRenderOgre/Material.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -30,7 +32,7 @@ static const std::string s_RECONSTRUCTION_INPUT = "reconstruction";
 
 SReconstruction::SReconstruction() noexcept :
     m_autoResetCamera(true),
-    m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
+    m_materialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_isDynamic(false),
     m_isDynamicVertices(false)
 {
@@ -94,7 +96,6 @@ void SReconstruction::createMeshService()
         meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
         meshAdaptor->setAutoResetCamera(m_autoResetCamera);
         meshAdaptor->setTransformId(this->getTransformId());
-        meshAdaptor->setParentTransformId(this->getParentTransformId());
         meshAdaptor->updateVisibility(reconstruction->getIsVisible());
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
@@ -114,16 +115,18 @@ void SReconstruction::updating()
 {
     if (!m_meshAdaptor.expired())
     {
+        auto reconstruction = this->getInput< ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
-        // Retrieves the associated f4s reconstruction object
-        ::fwData::Reconstruction::csptr reconstruction = this->getInput< ::fwData::Reconstruction >(
-            s_RECONSTRUCTION_INPUT);
-
-        // Updates the mesh adaptor according to the reconstruction
-        meshAdaptor->setMaterial(reconstruction->getMaterial());
-        meshAdaptor->swap(reconstruction->getMesh());
-        meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+        // Do nothing if the mesh is identical
+        auto mesh = ::fwServices::OSR::getRegistered("mesh", ::fwServices::IService::AccessType::INOUT, meshAdaptor);
+        if(mesh != reconstruction->getMesh())
+        {
+            // Updates the mesh adaptor according to the reconstruction
+            meshAdaptor->setMaterial(reconstruction->getMaterial());
+            meshAdaptor->swap(reconstruction->getMesh());
+            meshAdaptor->updateVisibility(reconstruction->getIsVisible());
+        }
     }
     else
     {

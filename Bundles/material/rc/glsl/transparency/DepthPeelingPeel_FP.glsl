@@ -38,15 +38,15 @@ void main()
             frontDepthBuffer = 0.;
         }
 
+        vec4 colorOut = getFragmentColor();
+
         // Disallow repetition of last passes
         // Check if current fragment is the nearest from last front peel by depth comparaison
         // if (yes), draws fragment as current nearest peel
-        if(currentDepth <= frontDepthBuffer || u_diffuse.a == 0.)
+        if(currentDepth <= frontDepthBuffer || colorOut.a == 0.)
         {
             discard;
         }
-
-        vec4 colorOut = getFragmentColor();
 
         colorOut.rgb *= colorOut.a;
 
