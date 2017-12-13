@@ -134,6 +134,9 @@ void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
     if (m_isRecording)
     {
         ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::io::s_DATA_KEY);
+        // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
+        // between frames and timestamps.
+        // TODO: experiment with queuing frames and writing them from a worker thread.
         const auto sig = frameTL->signal< ::arData::FrameTL::ObjectPushedSignalType>(
             ::arData::FrameTL::s_OBJECT_PUSHED_SIG);
         ::fwCom::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
