@@ -63,8 +63,34 @@ void SAutomaticRegistration::configuring()
     const std::string metric = config.get< std::string >("metric", "");
     this->setMetric(metric);
 
-    // By default, no multi-resolution
-    m_multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
+    const std::string shrinkList = config.get< std::string >("levels", "");
+    std::string sigmaShrinkPair;
+
+    std::istringstream shrinksStream(shrinkList);
+    while(std::getline(shrinksStream, sigmaShrinkPair, ';'))
+    {
+        std::istringstream sigmaShrinkStream(sigmaShrinkPair);
+        std::vector<std::string> parameters;
+        std::string token;
+
+        while(std::getline(sigmaShrinkStream, token, ':'))
+        {
+            parameters.push_back(token);
+        }
+
+        SLM_ASSERT("There must be two parameters: shrink and sigma.", parameters.size() == 2);
+
+        const unsigned long shrink = std::stoul(parameters[0]);
+        const double sigma         = std::stod(parameters[1]);
+
+        m_multiResolutionParameters.push_back(std::make_pair(shrink, sigma));
+    }
+
+    if(m_multiResolutionParameters.empty())
+    {
+        // By default, no multi-resolution
+        m_multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
+    }
 
     m_samplingPercentage = config.get< double >("samplingPercentage", 1.);
 
@@ -154,9 +180,10 @@ void SAutomaticRegistration::updating()
             const ::itk::SizeValueType currentIteration = registrator.getCurrentIteration();
             const ::itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
 
-            float progress = float(i++)/float(m_maxIterations * multiResolutionParameters.size());
+            const float progress = float(i++)/float(m_maxIterations * multiResolutionParameters.size());
 
-            std::string msg = "Number of iterations : " + std::to_string(i);
+            std::string msg = "Number of iterations : " + std::to_string(i) + " Current level : "
+                              + std::to_string(currentLevel);
             dialog(progress, msg);
             dialog.setMessage(msg);
 

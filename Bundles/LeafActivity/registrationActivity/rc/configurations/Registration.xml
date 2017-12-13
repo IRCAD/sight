@@ -353,17 +353,17 @@
 
         <service uid="multiResolutionShrinks" type="::guiQt::editor::SParameters">
             <parameters>
-                <param type="int" name="" key="shrink_0" defaultValue="1" min="0" max="8" widget="spin" />
-                <param type="int" name="" key="shrink_1" defaultValue="0" min="0" max="8" widget="spin"/>
-                <param type="int" name="" key="shrink_2" defaultValue="0" min="0" max="8" widget="spin"/>
+                <param type="int" name="" key="shrink_0" defaultValue="4" min="0" max="8" widget="spin" />
+                <param type="int" name="" key="shrink_1" defaultValue="2" min="0" max="8" widget="spin"/>
+                <param type="int" name="" key="shrink_2" defaultValue="1" min="0" max="8" widget="spin"/>
                 <param type="int" name="" key="shrink_3" defaultValue="0" min="0" max="8" widget="spin"/>
             </parameters>
         </service>
 
         <service uid="multiResolutionSigmas" type="::guiQt::editor::SParameters">
             <parameters>
-                <param type="double" name="" key="sigma_0" defaultValue="0" min="0" max="10"/>
-                <param type="double" name="" key="sigma_1" defaultValue="0" min="0" max="10"/>
+                <param type="double" name="" key="sigma_0" defaultValue="1.75" min="0" max="10"/>
+                <param type="double" name="" key="sigma_1" defaultValue="1" min="0" max="10"/>
                 <param type="double" name="" key="sigma_2" defaultValue="0" min="0" max="10"/>
                 <param type="double" name="" key="sigma_3" defaultValue="0" min="0" max="10"/>
             </parameters>
@@ -397,6 +397,7 @@
             <minStep>0.0001</minStep>
             <maxIterations>200</maxIterations>
             <metric>NormalizedCorrelation</metric>
+            <levels>4:1.75;2:1;1:0</levels>
             <log>true</log>
         </service>
 

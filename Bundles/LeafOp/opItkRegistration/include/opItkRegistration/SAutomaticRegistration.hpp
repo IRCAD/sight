@@ -33,6 +33,7 @@ namespace opItkRegistration
        <minStep>0.0001</minStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
+       <levels>4:10;2:6;1:0</levels>
        <log>false</log>
    </service>
    @endcode
@@ -51,6 +52,8 @@ namespace opItkRegistration
  * even if it didn't find a suitable result.
  * - \b metric : the metric used to compare the two images. Possible values are :
  * MeanSquares : fastest metric, only works when matching images with the same intensity values.
+ * - \b levels (optional, default=1:0): multi-resolution levels seperated by semicolons
+ * with their parameters separated by colons.
  * - \b log (optional, defaul=false): enable/disable logging, outputs stats in a CSV file at each registration step.
  *
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.

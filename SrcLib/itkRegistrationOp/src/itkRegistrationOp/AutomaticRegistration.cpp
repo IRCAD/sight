@@ -177,14 +177,6 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
             OSLM_FATAL("Unknown metric");
     }
 
-    // Initialize transform. Center the reference image.
-    typedef typename ::itk::CenteredTransformInitializer< TransformType, RegisteredImageType, RegisteredImageType >
-        TransformInitializerType;
-
-    // This class initializes the transform by setting its center and translation.
-    // If our target and reference image don't change than this will always yield the same result.
-    typename TransformInitializerType::Pointer initializer = TransformInitializerType::New();
-
     TransformType::Pointer itkTransform = TransformType::New();
 
     ::itk::Matrix<RealType, 3, 3> m;
@@ -198,13 +190,6 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
             m(i, j) = _trf->getCoefficient(i, j);
         }
     }
-
-    initializer->SetTransform(itkTransform);
-    initializer->SetFixedImage(target);
-    initializer->SetMovingImage(reference);
-
-    initializer->MomentsOn();
-    initializer->InitializeTransform();
 
     // Setting the offset also recomputes the translation using the offset, rotation and center
     // so the matrix needs to be set first.
@@ -290,7 +275,8 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     }
     catch( ::itk::ExceptionObject& err )
     {
-        OSLM_FATAL("Error while registering : " << err);
+        OSLM_ERROR("Error while registering : " << err);
+        return;
     }
 
     m_optimizer = nullptr;
