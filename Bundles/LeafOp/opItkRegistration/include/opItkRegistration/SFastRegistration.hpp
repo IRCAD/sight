@@ -47,7 +47,7 @@ namespace opItkRegistration
  * @todo Remove the need for a `flipTransform` parameter and resample the source image properly based on the `transform`
  * matrix.
  */
-OPITKREGISTRATION_CLASS_API class SFastRegistration : public ::arServices::IRegisterer
+class OPITKREGISTRATION_CLASS_API SFastRegistration : public ::arServices::IRegisterer
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SFastRegistration)(::arServices::IRegisterer));

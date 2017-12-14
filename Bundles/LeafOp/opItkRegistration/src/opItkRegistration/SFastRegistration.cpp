@@ -70,7 +70,7 @@ void SFastRegistration::updating()
     SLM_ASSERT("Missing required inout 'flipTransform'", flipTransform);
 
     std::array<bool, 3> flipAxes;
-    for(int i = 0; i != 3; ++i)
+    for(std::uint8_t i = 0; i != 3; ++i)
     {
         flipAxes[i] = flipTransform->getCoefficient(i, i) < 0.;
     }
@@ -93,7 +93,7 @@ void SFastRegistration::updating()
 
     ::fwData::mt::ObjectWriteLock trfLock(transform);
     ::fwDataTools::TransformationMatrix3D::identity(transform);
-    for(int i = 0; i != 3; ++i)
+    for(std::uint8_t i = 0; i != 3; ++i)
     {
         transform->setCoefficient(i, 3, params.transform[i]);
     }
@@ -105,7 +105,7 @@ void SFastRegistration::updating()
 
 //------------------------------------------------------------------------------
 
-void SFastRegistration::computeRegistration(::fwCore::HiResClock::HiResClockType _)
+void SFastRegistration::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
     this->updating();
 }

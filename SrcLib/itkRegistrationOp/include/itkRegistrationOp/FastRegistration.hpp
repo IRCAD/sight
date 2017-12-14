@@ -27,6 +27,9 @@
 namespace itkRegistrationOp
 {
 
+template <class PIX>
+class FastRegistration;
+
 struct RegistrationDispatch {
     struct Parameters {
         ::fwData::Image::csptr source;
@@ -37,7 +40,7 @@ struct RegistrationDispatch {
 
     //------------------------------------------------------------------------------
 
-    template<class PIXELTYPE>
+    template<typename PIXELTYPE>
     void operator()(Parameters& params)
     {
         params.transform =
@@ -52,8 +55,8 @@ struct RegistrationDispatch {
  *
  * @tparam PIX Subpixel type of the images.
  */
-template <class PIX>
-class ITKREGISTRATIONOP_CLASS_API FastRegistration
+template <typename PIX>
+class FastRegistration
 {
 public:
 
@@ -64,17 +67,16 @@ public:
      *
      * @return The real world coordinates translation which transforms the source to the target image.
      */
-    static ITKREGISTRATIONOP_CLASS_API std::array<double, 3> registerImage(const ::fwData::Image::csptr& _target,
-                                                                           const ::fwData::Image::csptr& _source,
-                                                                           std::array<bool, 3> flipAxes = {false, false,
-                                                                                                           false});
+    static std::array<double, 3> registerImage(const ::fwData::Image::csptr& _target,
+                                               const ::fwData::Image::csptr& _source,
+                                               std::array<bool, 3> flipAxes = {{false, false, false}});
 
 private:
     enum class Direction : unsigned int { X = 0, Y = 1, Z = 2 };
 
-    using Image3DType    = ::itk::Image<typename PIX, 3>;
+    using Image3DType    = ::itk::Image<PIX, 3>;
     using Image2DType    = ::itk::Image<float, 2>;
-    using Image3DPtrType = typename ::itk::Image<typename PIX, 3>::Pointer;
+    using Image3DPtrType = typename ::itk::Image<PIX, 3>::Pointer;
     using Image2DPtrType = typename ::itk::Image<float, 2>::Pointer;
 
     using MIPFilterType           = ::itk::MaximumProjectionImageFilter<Image3DType, Image2DType>;
@@ -151,12 +153,12 @@ FastRegistration<PIX>::resampleSourceToTarget(Image2DPtrType const& source, Imag
     auto targetSpacing = target->GetSpacing();
     auto sourceSpacing = source->GetSpacing();
     auto sourceSize    = source->GetBufferedRegion().GetSize();
-    auto newSize       = Image2DType::SizeType {
+    auto newSize       = Image2DType::SizeType {{
         static_cast<Image2DType::SizeValueType>(std::ceil(static_cast<double>(sourceSize[0]) / targetSpacing[0] *
                                                           sourceSpacing[0])),
         static_cast<Image2DType::SizeValueType>(std::ceil(static_cast<double>(sourceSize[1]) / targetSpacing[1] *
                                                           sourceSpacing[1]))
-    };
+    }};
 
     auto transform    = ::itk::IdentityTransform<double, 2>::New();
     auto interpolator = ::itk::LinearInterpolateImageFunction<Image2DType, double>::New();
@@ -190,9 +192,9 @@ FastRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Image2DPtr
     auto correlation = CorrelationFilterType::New();
     correlation->SetFixedImage(img);
     correlation->SetMovingImage(_template);
-    correlation->SetRequiredFractionOfOverlappingPixels(0.2);
+    correlation->SetRequiredFractionOfOverlappingPixels(0.2f);
     correlation->Update();
-    auto correlationMap       = correlation->GetOutput();
+
     auto maxCorrelationFinder = MinMaxCalculatorType::New();
     maxCorrelationFinder->SetImage(correlation->GetOutput());
     maxCorrelationFinder->Compute();
