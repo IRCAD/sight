@@ -30,6 +30,10 @@ namespace itkRegistrationOp
 template <class PIX>
 class FastRegistration;
 
+/**
+ * @brief Helper type containing the parameters and return values from FastRegistration::registerImage() for use with
+ * the Dispatcher.
+ */
 struct RegistrationDispatch {
     struct Parameters {
         ::fwData::Image::csptr source;
@@ -86,8 +90,21 @@ private:
     using FlipFilterType          = ::itk::FlipImageFilter<Image3DType>;
     using MinMaxCalculatorType    = ::itk::MinimumMaximumImageCalculator<Image2DType>;
 
+    /**
+     * @brief Compute the maximum intensity projection (MIP) of an image along the specified axis.
+     */
     static Image2DPtrType computeMIP(Image3DPtrType const& img, Direction d);
+
+    /**
+     * @brief Resample the source image to have the same spacing as the target image.
+     */
     static Image2DPtrType resampleSourceToTarget(Image2DPtrType const& source, Image2DPtrType const& target);
+
+    /**
+     * @brief Perform the template matching.
+     *
+     * @return Translation from the template to the target.
+     */
     static typename Image2DType::PointType matchTemplate(Image2DPtrType const& _template, Image2DPtrType const& img);
 };
 
@@ -157,11 +174,14 @@ FastRegistration<PIX>::resampleSourceToTarget(Image2DPtrType const& source, Imag
     auto sourceSpacing = source->GetSpacing();
     auto sourceSize    = source->GetBufferedRegion().GetSize();
     auto newSize       = Image2DType::SizeType {{
-        static_cast<Image2DType::SizeValueType>(std::ceil(static_cast<double>(sourceSize[0]) / targetSpacing[0] *
-                                                          sourceSpacing[0])),
-        static_cast<Image2DType::SizeValueType>(std::ceil(static_cast<double>(sourceSize[1]) / targetSpacing[1] *
-                                                          sourceSpacing[1]))
-    }};
+                                                    // Hello, my name is Sheldon and I'm here to destroy your formatting
+                                                    static_cast<Image2DType::SizeValueType>(
+                                                        std::ceil(static_cast<double>(sourceSize[0]) /
+                                                                  targetSpacing[0] * sourceSpacing[0])),
+                                                    static_cast<Image2DType::SizeValueType>(
+                                                        std::ceil(static_cast<double>(sourceSize[1]) /
+                                                                  targetSpacing[1] * sourceSpacing[1]))
+                                                }};
 
     auto transform    = ::itk::IdentityTransform<double, 2>::New();
     auto interpolator = ::itk::LinearInterpolateImageFunction<Image2DType, double>::New();
@@ -192,18 +212,20 @@ FastRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Image2DPtr
     img->SetOrigin(origin);
     auto templateSize = _template->GetLargestPossibleRegion().GetSize();
 
+    // Compute normalized correlation between both images.
     auto correlation = CorrelationFilterType::New();
     correlation->SetFixedImage(img);
     correlation->SetMovingImage(_template);
     correlation->SetRequiredFractionOfOverlappingPixels(0.2f);
     correlation->Update();
 
+    // Find the position with the best correlation.
     auto maxCorrelationFinder = MinMaxCalculatorType::New();
     maxCorrelationFinder->SetImage(correlation->GetOutput());
     maxCorrelationFinder->Compute();
     auto maxIdx = maxCorrelationFinder->GetIndexOfMaximum();
 
-    // Go from pixel coordinated to physical coordinates
+    // Go from pixel coordinates back to physical coordinates
     auto spacing = img->GetSpacing();
     maxIdx[0] -= (templateSize[0] - 1);
     maxIdx[1] -= (templateSize[1] - 1);

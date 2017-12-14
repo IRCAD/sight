@@ -110,6 +110,7 @@ void FastRegistrationTest::translateTransformWithScalesTest()
 {
     using ImageType = ::itk::Image< std::uint16_t, 3>;
 
+    // Create the target image
     auto targetSpacing = ImageType::SpacingType(1.);
     targetSpacing[1]                = 1.3;
     ::fwData::Image::sptr target    = createSphereImage< ::std::uint16_t, 3>(targetSpacing);
@@ -132,24 +133,6 @@ void FastRegistrationTest::translateTransformWithScalesTest()
         referenceOrigin[2] - targetOrigin[2] - vTrans[2]
     };
     auto itkReference = ::fwItkIO::itkImageFactory<ImageType>(reference, false);
-
-    // Extract a part of the image containing the ellipsoid
-    //ImageType::RegionType subRegion;
-    //subRegion.SetIndex(0, 20);
-    //subRegion.SetIndex(1, 20);
-    //subRegion.SetIndex(2, 20);
-    //subRegion.SetSize(0, 60);
-    //subRegion.SetSize(1, 60);
-    //subRegion.SetSize(2, 60);
-    //auto extract = ::itk::RegionOfInterestImageFilter<ImageType, ImageType>::New();
-    //extract->SetInput(itkReference);
-    //extract->SetRegionOfInterest(subRegion);
-    //extract->Update();
-    //auto extracted       = extract->GetOutput();
-    //auto extractedOrigin = extracted->GetOrigin();
-    //expected[0] += (extractedOrigin[0] - referenceOrigin[0]);
-    //expected[1] += (extractedOrigin[1] - referenceOrigin[1]);
-    //expected[2] += (extractedOrigin[2] - referenceOrigin[2]);
 
     // Resample the image to get a different spacing
     ImageType::SizeType newSize;

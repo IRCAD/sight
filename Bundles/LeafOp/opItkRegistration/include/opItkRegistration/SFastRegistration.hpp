@@ -42,7 +42,7 @@ namespace opItkRegistration
  * @subsection In-Out In-Out
  * - \b transform [::fwData::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
- * @note The initial registration in currently not applied, and the output consists purely of translation.
+ * @note The initial registration is currently not applied, and the output consists purely of translation.
  *
  * @todo Remove the need for a `flipTransform` parameter and resample the source image properly based on the `transform`
  * matrix.
