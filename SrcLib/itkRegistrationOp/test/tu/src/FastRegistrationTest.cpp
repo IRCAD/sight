@@ -23,6 +23,10 @@
 
 #include <fwTest/generator/Image.hpp>
 
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
@@ -61,11 +65,16 @@ void FastRegistrationTest::identityTest()
     ::fwData::Image::csptr target              = createSphereImage< ::std::uint16_t, 3>();
     ::fwData::Image::sptr reference            = ::fwData::Object::copy(target);
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
-    auto trans = itkReg::FastRegistration<float>::registerImage(target, reference);
+
+    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    params.source               = reference;
+    params.target               = target;
+    ::fwTools::DynamicType type = target->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
 
     for(size_t i = 0; i != 3; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Translation value is not equal to '0' ", 0., trans[i], 1e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Translation value is not equal to '0' ", 0., params.transform[i], 1e-8);
     }
 }
 
@@ -83,11 +92,15 @@ void FastRegistrationTest::translateTransformTest()
     itkReg::Resampler::resample(target, reference, transform);
 
     std::array<float, 3> expected { -4., -12., -7. };
-    auto actual = itkReg::FastRegistration<float>::registerImage(target, reference);
+    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    params.source               = reference;
+    params.target               = target;
+    ::fwTools::DynamicType type = target->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
-                                             expected[i], actual[i], 1e-2);
+                                             expected[i], params.transform[i], 1e-2);
     }
 }
 
@@ -97,56 +110,73 @@ void FastRegistrationTest::translateTransformWithScalesTest()
 {
     using ImageType = ::itk::Image< std::uint16_t, 3>;
 
-    ::fwData::Image::sptr target    = createSphereImage< ::std::uint16_t, 3>();
+    auto targetSpacing = ImageType::SpacingType(1.);
+    targetSpacing[1]                = 1.3;
+    ::fwData::Image::sptr target    = createSphereImage< ::std::uint16_t, 3>(targetSpacing);
     ::fwData::Image::sptr reference = ::fwData::Image::New();
-    target->setOrigin({ 0., 0., 0. });
-    target->setSpacing({ 1., 1., 1. });
+    target->setOrigin({ 107., 50., -30. });
 
     // Translate the image a bit
+    std::array<double, 3> vTrans {{ 4., 19., 7. }};
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
-    transform->setCoefficient(0, 3, 4.);
-    transform->setCoefficient(1, 3, 12.);
-    transform->setCoefficient(2, 3, 7.);
+    transform->setCoefficient(0, 3, vTrans[0]);
+    transform->setCoefficient(1, 3, vTrans[1]);
+    transform->setCoefficient(2, 3, vTrans[2]);
     itkReg::Resampler::resample(target, reference, transform);
+    auto referenceOrigin = std::vector<double> {{ 20., 10., 35. }},
+         targetOrigin    = target->getOrigin();
+    reference->setOrigin(referenceOrigin);
+    std::array<float, 3> expected {
+        referenceOrigin[0] - targetOrigin[0] - vTrans[0],
+        referenceOrigin[1] - targetOrigin[1] - vTrans[1],
+        referenceOrigin[2] - targetOrigin[2] - vTrans[2]
+    };
     auto itkReference = ::fwItkIO::itkImageFactory<ImageType>(reference, false);
-    std::array<float, 3> expected { -4., -12., -7. };
 
     // Extract a part of the image containing the ellipsoid
-    ImageType::RegionType subRegion;
-    subRegion.SetIndex(0, 20);
-    subRegion.SetIndex(1, 20);
-    subRegion.SetIndex(2, 20);
-    subRegion.SetSize(0, 60);
-    subRegion.SetSize(1, 60);
-    subRegion.SetSize(2, 60);
-    auto extract = ::itk::RegionOfInterestImageFilter<ImageType, ImageType>::New();
-    extract->SetInput(itkReference);
-    extract->SetRegionOfInterest(subRegion);
-    extract->Update();
-    auto extracted       = extract->GetOutput();
-    auto extractedOrigin = extracted->GetOrigin();
-    expected[0] -= extractedOrigin[0];
-    expected[1] -= extractedOrigin[1];
-    expected[2] -= extractedOrigin[2];
+    //ImageType::RegionType subRegion;
+    //subRegion.SetIndex(0, 20);
+    //subRegion.SetIndex(1, 20);
+    //subRegion.SetIndex(2, 20);
+    //subRegion.SetSize(0, 60);
+    //subRegion.SetSize(1, 60);
+    //subRegion.SetSize(2, 60);
+    //auto extract = ::itk::RegionOfInterestImageFilter<ImageType, ImageType>::New();
+    //extract->SetInput(itkReference);
+    //extract->SetRegionOfInterest(subRegion);
+    //extract->Update();
+    //auto extracted       = extract->GetOutput();
+    //auto extractedOrigin = extracted->GetOrigin();
+    //expected[0] += (extractedOrigin[0] - referenceOrigin[0]);
+    //expected[1] += (extractedOrigin[1] - referenceOrigin[1]);
+    //expected[2] += (extractedOrigin[2] - referenceOrigin[2]);
 
     // Resample the image to get a different spacing
     ImageType::SizeType newSize;
     ImageType::SpacingType newSpacing(2.);
-    newSize.Fill(30);
+    for(int i = 0; i != 3; ++i)
+    {
+        newSize[i] = (targetSpacing[i] / newSpacing[i]) * target->getSize()[i];
+    }
     auto resample = ::itk::ResampleImageFilter<ImageType, ImageType>::New();
-    resample->SetInput(extracted);
+    resample->SetInput(itkReference);
     resample->SetSize(newSize);
     resample->SetOutputSpacing(newSpacing);
-    resample->SetOutputOrigin(extractedOrigin);
+    resample->SetOutputOrigin(itkReference->GetOrigin());
     resample->Update();
     auto resampled             = resample->GetOutput();
     auto resampledF4sReference = ::fwItkIO::dataImageFactory<ImageType>(resampled, true);
 
-    auto actual = itkReg::FastRegistration<float>::registerImage(target, resampledF4sReference);
+    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    params.source               = resampledF4sReference;
+    params.target               = target;
+    params.flipAxes             = {false, false, false};
+    ::fwTools::DynamicType type = target->getPixelType();
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
-                                             expected[i], actual[i], 1e-2);
+                                             expected[i], params.transform[i], targetSpacing[i]);
     }
 }
 

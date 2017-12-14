@@ -20,7 +20,7 @@ template <class P, size_t N>
  * @tparam P Pixel type
  * @tparam N Number of channels
  */
-::fwData::Image::sptr createSphereImage()
+::fwData::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
 {
     using ImageType                      = ::itk::Image<P, N>;
     using EllipseType                    = ::itk::EllipseSpatialObject< N >;
@@ -34,8 +34,6 @@ template <class P, size_t N>
     ImageType::SizeType size = { 100, 100, 100 };
     imageFilter->SetSize( size );
 
-    ImageType::SpacingType spacing;
-    spacing.Fill(1);
     imageFilter->SetSpacing(spacing);
 
     EllipseType::Pointer ellipse = EllipseType::New();

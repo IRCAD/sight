@@ -15,6 +15,9 @@
         <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
+        <object uid="editableMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="flipAroundCenterTransform" type="::fwData::TransformationMatrix3D" />
         <object uid="Histogram" type="::fwData::Histogram" />
 
         <!-- Transfer Functions -->
@@ -43,8 +46,8 @@
             <matrix>
                 <![CDATA[
                    -1      0      0     0
-                    0      1      0     0
-                    0      0     -1     0
+                    0     -1      0     0
+                    0      0      1     0
                     0      0      0     1
                 ]]>
             </matrix>
@@ -54,8 +57,8 @@
             <matrix>
                 <![CDATA[
                     -1      0     0     0
-                     0     -1     0     0
-                     0      0     1     0
+                     0      1     0     0
+                     0      0    -1     0
                      0      0     0     1
                 ]]>
             </matrix>
@@ -152,6 +155,7 @@
                     <orientation value="vertical" />
                     <view proportion="0" caption="Import/Export registration" />
                     <view proportion="0" />
+                    <view proportion="0" />
                     <spacer/>
                     <view proportion="0" />
                     <view proportion="0" />
@@ -160,7 +164,8 @@
             </gui>
             <registry>
                 <view sid="importExportButtons" start="yes" />
-                <view sid="ResetRegistration" start="yes" />
+                <view sid="actionCenteredRegistration" start="yes" />
+                <view sid="actionFastRegistration" start="yes" />
                 <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="multiResolutionView" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
@@ -287,10 +292,17 @@
             </config>
         </service>
 
-        <service uid="ResetRegistration" type="::guiQt::editor::SSignalButton">
+        <service uid="actionFastRegistration" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
-                <text>Reset registration</text>
+                <text>Template registration</text>
+            </config>
+        </service>
+
+        <service uid="actionCenteredRegistration" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Centered registration</text>
             </config>
         </service>
 
@@ -330,9 +342,17 @@
         </service>
 
         <service uid="transformEditor" type="::uiVisuQt::STransformEditor" >
-            <inout key="matrix" uid="${transformUid}" autoConnect="yes" />
+            <inout key="matrix" uid="editableMatrix" autoConnect="yes" />
             <translation enabled="yes" min="-1500" max="1500" />
             <rotation enabled="no" />
+        </service>
+
+        <service uid="applyEditableTransform" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="flipAroundCenterTransform" autoConnect="yes" />
+                <key uid="editableMatrix" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="${transformUid}" />
         </service>
 
         <service uid="applyAutomaticTransform" type="::guiQt::editor::SSignalButton">
@@ -401,6 +421,13 @@
             <log>true</log>
         </service>
 
+        <service uid="fastRegistration" type="::opItkRegistration::SFastRegistration">
+            <in key="source" uid="${referenceImageUid}"/>
+            <in key="target" uid="${targetImageUid}"/>
+            <in key="flipTransform" uid="flipTransform"/>
+            <inout key="transform" uid="registrationMatrix"/>
+        </service>
+
         <service uid="computeCenterTarget" type="::opItkRegistration::SImageCenter">
             <in key="image" uid="${targetImageUid}" />
             <inout key="transform" uid="centerTransformTarget" />
@@ -434,22 +461,33 @@
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="flipAndAlignConcat" type="::maths::SConcatenateMatrices">
+        <service uid="concatenateTransforms" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <!-- Flip reference -->
+                <key uid="registrationMatrix" autoConnect="yes" />
+                <key uid="flipAroundCenterTransform" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="${transformUid}" />
+        </service>
+
+        <service uid="flipAroundCenter" type="::maths::SConcatenateMatrices">
             <in group="matrix">
                 <!-- Flip reference -->
                 <key uid="centerTransformReference" />
                 <key uid="flipTransform" autoConnect="yes" />
                 <key uid="centerTransformReference" inverse="true" />
-                <!-- Align reference and target image centers -->
-                <key uid="centerTransformTarget" inverse="true" />
-                <key uid="centerTransformReference" />
             </in>
-            <inout key="output" uid="${transformUid}" />
+            <inout key="output" uid="flipAroundCenterTransform" />
         </service>
 
         <connect>
-            <signal>ResetRegistration/clicked</signal>
+            <signal>actionCenteredRegistration/clicked</signal>
             <slot>alignCenter/update</slot>
+        </connect>
+
+        <connect>
+            <signal>actionFastRegistration/clicked</signal>
+            <slot>fastRegistration/update</slot>
         </connect>
 
         <connect>
@@ -512,12 +550,15 @@
         <start uid="computeCenterTarget" />
         <start uid="computeCenterReference" />
         <start uid="alignCenter" />
-        <start uid="flipAndAlignConcat" />
+        <start uid="flipAroundCenter" />
         <start uid="manualRegistration" />
         <start uid="landmarkRegistration" />
         <start uid="tfWidget" />
         <start uid="referenceTFSelector" />
         <start uid="referenceWindowLevel" />
+        <start uid="fastRegistration" />
+        <start uid="applyEditableTransform" />
+        <start uid="concatenateTransforms" />
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
