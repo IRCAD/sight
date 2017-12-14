@@ -68,27 +68,29 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
 //------------------------------------------------------------------------------
 
-void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
-                                    ::fwData::TransformationMatrix3D::csptr matrix1,
-                                    ::fwData::PointList::sptr pointList2,
-                                    ::fwData::TransformationMatrix3D::csptr matrix2)
+void PointList::associate(const ::fwData::PointList::sptr& pointList1,
+                          const ::fwData::TransformationMatrix3D::csptr& matrix1,
+                          ::fwData::PointList::sptr pointList2,
+                          const ::fwData::TransformationMatrix3D::csptr& matrix2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getPoints().size() == pointList2->getCRefPoints().size() );
+               pointList1->getCRefPoints().size() == pointList2->getCRefPoints().size() );
 
-    ::fwData::PointList::PointListContainer points1 = pointList1->getCRefPoints();
+    ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
     ::fwData::PointList::PointListContainer points2 = pointList2->getRefPoints();
 
     const size_t size = points1.size();
 
-    // Transform the point lists into list< ::glm::dvec3 >
-    std::list< ::glm::dvec3 > list1;
+    // Transform first point list into vector< ::glm::dvec3 > (no erase is performed)
+    std::vector< ::glm::dvec3 > vec1;
+    vec1.resize(size);
+    //and second one into a list (since we will erase associated points)
     std::list< ::glm::dvec3 > list2;
 
     for(size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::sptr pt1 = points1[i];
-        ::fwData::Point::sptr pt2 = points2[i];
+        ::fwData::Point::sptr& pt1 = points1[i];
+        ::fwData::Point::sptr& pt2 = points2[i];
 
         // Transform the current point with the input matrix
         ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, pt1);
@@ -101,13 +103,14 @@ void PointList::associatePointLists(const ::fwData::PointList::sptr pointList1,
         points1[i]->setCoord(tmp1);
         points2[i]->setCoord(tmp2);
 
-        // Add the point to a list< ::glm::dvec3
-        list1.push_back(::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]));
+        // Add the point to vector/list
+        vec1[i] = ::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]);
         list2.push_back(::glm::dvec3( tmp2[0], tmp2[1], tmp2[2]));
+
     }
 
     size_t index = 0;
-    for(auto point1 : list1)
+    for(auto point1 : vec1)
     {
         // Identify the closest point
         double distanceMin = std::numeric_limits<double>::max();

@@ -32,19 +32,29 @@ public:
     /// Destructor. Does nothing.
     FWDATATOOLS_API ~PointList();
 
-    /// Computes the point-to-point distance between 2 pointlists
-    /// Return an array of the size of one the pointlists (they must have the same size)
+    /**
+     * @brief Computes the point-to-point distance between 2 pointlists
+     * @param pointList1 [::fwData::PointList]: first point list
+     * @param pointList2 [::fwData::PointList]: second point list
+     * @return array of the size of one the pointlists (they must have the same size)
+     */
     FWDATATOOLS_API static ::fwData::Array::sptr
     computeDistance(::fwData::PointList::sptr pointList1, ::fwData::PointList::sptr pointList2);
 
-    /// Associate 2 point lists
-    /// Take 2 point lists as input and re-order the second one, so that the points at the
-    /// same index on both lists are the closest to each other
-    /// The points in each point lists will be transformed by the associated matrix
-    FWDATATOOLS_API static void associatePointLists(const ::fwData::PointList::sptr pointList1,
-                                                    ::fwData::TransformationMatrix3D::csptr matrix1,
-                                                    ::fwData::PointList::sptr pointList2,
-                                                    ::fwData::TransformationMatrix3D::csptr matrix2);
+    /**
+     * @brief Associate 2 pointLists:
+     * Take 2 pointLists as input and re-order the second one, so that the points at the
+     * same index on both lists are the closest to each other
+     * The points in each point lists will be transformed by the associated matrix
+     * @param pointList1 [::fwData::PointList]: first pointlist
+     * @param matrix1 [::fwData::TransformationMatrix3D]: transformation to apply to each points in pointlist1
+     * @param pointList2 [::fwData::PointList]: pointlist that will be re-ordered
+     * @param matrix2 [::fwData::TransformationMatrix3D]: transformation to apply to each points in pointlist2
+     */
+    FWDATATOOLS_API static void associate(const ::fwData::PointList::sptr& pointList1,
+                                          const ::fwData::TransformationMatrix3D::csptr&  matrix1,
+                                          ::fwData::PointList::sptr pointList2,
+                                          const ::fwData::TransformationMatrix3D::csptr& matrix2);
 
 };
 

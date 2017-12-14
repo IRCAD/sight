@@ -134,7 +134,7 @@ void PointListTest::associatePointLists()
         pl2 = ::fwData::PointList::New();
 
         // Associate empty point lists
-        ::fwDataTools::helper::PointList::associatePointLists(pl1, ::fwData::TransformationMatrix3D::New(),
+        ::fwDataTools::helper::PointList::associate(pl1, ::fwData::TransformationMatrix3D::New(),
                                                               pl2, ::fwData::TransformationMatrix3D::New());
     }
 
@@ -156,7 +156,7 @@ void PointListTest::associatePointLists()
         }
 
         // Associate the point lists
-        ::fwDataTools::helper::PointList::associatePointLists(pl1, ::fwData::TransformationMatrix3D::New(),
+        ::fwDataTools::helper::PointList::associate(pl1, ::fwData::TransformationMatrix3D::New(),
                                                               pl2, ::fwData::TransformationMatrix3D::New());
 
         const ::fwData::PointList::PointListContainer points1 = pl1->getCRefPoints();
