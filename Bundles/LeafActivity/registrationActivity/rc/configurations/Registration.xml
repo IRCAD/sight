@@ -18,6 +18,7 @@
         <object uid="editableMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="flipAroundCenterTransform" type="::fwData::TransformationMatrix3D" />
+        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="Histogram" type="::fwData::Histogram" />
 
         <!-- Transfer Functions -->
@@ -347,14 +348,6 @@
             <rotation enabled="no" />
         </service>
 
-        <service uid="applyEditableTransform" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="flipAroundCenterTransform" autoConnect="yes" />
-                <key uid="editableMatrix" autoConnect="yes" />
-            </in>
-            <inout key="output" uid="${transformUid}" />
-        </service>
-
         <service uid="applyAutomaticTransform" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
@@ -443,7 +436,7 @@
                 <key uid="centerTransformTarget" inverse="true" />
                 <key uid="centerTransformReference" />
             </in>
-            <inout key="output" uid="${transformUid}" />
+            <inout key="output" uid="registrationMatrix" />
         </service>
 
         <service uid="copyFlipAxial" type="::ctrlCamp::SCopy">
@@ -461,11 +454,17 @@
             <inout key="target" uid="flipTransform" />
         </service>
 
+        <service uid="resetFlip" type="::ctrlCamp::SCopy">
+            <in key="source" uid="identityMatrix" />
+            <inout key="target" uid="flipTransform" />
+        </service>
+
         <service uid="concatenateTransforms" type="::maths::SConcatenateMatrices">
             <in group="matrix">
                 <!-- Flip reference -->
-                <key uid="registrationMatrix" autoConnect="yes" />
                 <key uid="flipAroundCenterTransform" autoConnect="yes" />
+                <key uid="registrationMatrix" autoConnect="yes" />
+                <key uid="editableMatrix" autoConnect="yes" />
             </in>
             <inout key="output" uid="${transformUid}" />
         </service>
@@ -482,6 +481,7 @@
 
         <connect>
             <signal>actionCenteredRegistration/clicked</signal>
+            <slot>resetFlip/update</slot>
             <slot>alignCenter/update</slot>
         </connect>
 
@@ -557,11 +557,12 @@
         <start uid="referenceTFSelector" />
         <start uid="referenceWindowLevel" />
         <start uid="fastRegistration" />
-        <start uid="applyEditableTransform" />
         <start uid="concatenateTransforms" />
+        <start uid="resetFlip" />
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
+        <update uid="alignCenter" />
 
     </config>
 </extension>

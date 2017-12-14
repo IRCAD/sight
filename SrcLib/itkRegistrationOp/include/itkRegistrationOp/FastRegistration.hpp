@@ -118,6 +118,9 @@ std::array<double, 3> FastRegistration<PIX>::registerImage(const ::fwData::Image
     flip->Update();
     auto flippedSource = flip->GetOutput();
 
+    // The flip moves the origin, we reset it to its previous location
+    flippedSource->SetOrigin(source->GetOrigin());
+
     auto targetMipX       = computeMIP(target, Direction::X);
     auto targetMipY       = computeMIP(target, Direction::Y);
     auto sourceMipX       = computeMIP(flippedSource, Direction::X);
