@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,8 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -78,35 +78,51 @@ void SMatrixTLSynchronizer::synchronize()
     {
         std::stringstream matrixPrint;
 
-        for (size_t i = 0; i< this->getKeyGroupSize(s_MATRICES_INOUT); ++i)
+        for (size_t i = 0; i < this->getKeyGroupSize(s_MATRICES_INOUT); ++i)
         {
-            unsigned int index = static_cast< unsigned int >(i);
-            if(buffer->isPresent(index))
+            auto matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, i);
             {
-                const float* values = buffer->getElement(index);
 
-                auto matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, i);
+                OSLM_ASSERT("Matrix['" << i << "] not found.", matrix);
+                ::fwData::mt::ObjectWriteLock lock(matrix);
+                unsigned int index = static_cast< unsigned int >(i);
+
+                if(buffer->isPresent(index))
                 {
-                    ::fwData::mt::ObjectWriteLock lock(matrix);
+                    const float* values = buffer->getElement(index);
 
-                    OSLM_ASSERT("Matrix['" << i << "] not found.", matrix);
                     matrixPrint << std::endl << "Matrix[" << i << "]" << std::endl;
 
                     for(unsigned int i = 0; i < 4; ++i)
                     {
                         for(unsigned int j = 0; j < 4; ++j)
                         {
-                            matrix->setCoefficient(i,j,values[i*4+j]);
+                            matrix->setCoefficient(i, j, values[i*4+j]);
                             matrixPrint << values[i*4+j] << " ; ";
 
                         }
                         matrixPrint << std::endl;
                     }
                 }
-                auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
-                    ::fwData::Object::s_MODIFIED_SIG);
-                sig->asyncEmit();
+                else
+                {
+                    matrixPrint << std::endl << "Matrix[" << i << "]" << std::endl;
+
+                    for(unsigned int i = 0; i < 4; ++i)
+                    {
+                        for(unsigned int j = 0; j < 4; ++j)
+                        {
+                            matrix->setCoefficient(i, j, ::std::numeric_limits<double>::quiet_NaN());
+                            matrixPrint << ::std::numeric_limits<double>::quiet_NaN() << " ; ";
+
+                        }
+                        matrixPrint << std::endl;
+                    }
+                }
             }
+            auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
+                ::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
         }
 
         OSLM_DEBUG( std::endl <<matrixPrint.str());
