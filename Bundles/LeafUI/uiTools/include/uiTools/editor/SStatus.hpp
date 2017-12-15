@@ -34,32 +34,44 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." impl="::uiTools::editor::SStatus">
+   <service uid="..." type="::uiTools::editor::SStatus">
        <form>square|circle</form>
+       <count>1</count>
+       <layout>horizontal|vertical</layout>
        <size>
            <width>20</width>
            <height>20</height>
        </size>
-       <labelStatus>SCP Server</labelStatus>
+       <labels>
+            <labelStatus>SCP Server</labelStatus>
+            <labelStatus>TCP Server</labelStatus>
+       </labels>
        <red>Stopped</red>
        <green>Tracking</green>
        <orange>Started</orange>
    </service>
    @endcode
- * - \b form (optionnal, 'square' by default) : the form of the indicator
- * - \b size (optionnal) : the size of the indicator
- *   - \b width (optionnal, 20 by default) : the width of the indicator
- *   - \b height (optionnal, 20 by default) : the height of the indicator
- * - \b labelStatus (optionnal) : the description associated to the indicator
- * - \b red (optionnal) : the description associated to the red status
- * - \b green (optionnal) : the description associated to the green status
- * - \b orange (optionnal) : the description associated to the orange status
+ * - \b form (optionnal, 'square' by default): the form of the indicator
+ * - \b count (optionnal, '1' by default): the number of status
+ * - \b layout(optionnal, 'horizontal' by default): orientation of the layout
+ * - \b size (optionnal): the size of the indicator
+ *   - \b width (optionnal, 20 by default): the width of the indicator
+ *   - \b height (optionnal, 20 by default): the height of the indicator
+ * - \b labels (optionnal): the description associated to the indicators
+ *   - \b labelStatus (optionnal): the description associated to the indicator
+ * - \b red (optionnal): the description associated to the red status
+ * - \b green (optionnal): the description associated to the green status
+ * - \b orange (optionnal): the description associated to the orange status
  *
  * @section Slots Slots
- * - \b changeToGreen()      : This slot allows to change the indicator color to green.
- * - \b changeToRed()        : This slot allows to change the indicator color to red.
- * - \b changeToOrange()     : This slot allows to change the indicator color to orange.
- * - \b toggleGreenRed(bool) : This slot allows to change the indicator color to green or red.
+ * - \b changeToGreen(): This slot allows to change the indicator color to green.
+ * - \b changeToRed(): This slot allows to change the indicator color to red.
+ * - \b changeToOrange(): This slot allows to change the indicator color to orange.
+ * - \b toggleGreenRed(bool): This slot allows to change the indicator color to green or red.
+ * - \b intChangeToGreen(int): This slot allows to change the indicator color to green for the ith status.
+ * - \b intChangeToRed(int): This slot allows to change the indicator color to red for the ith status.
+ * - \b intChangeToOrange(int): This slot allows to change the indicator color to orange for the ith status.
+ * - \b intToggleGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith status.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
                                   public ::gui::editor::IEditor
@@ -89,7 +101,19 @@ public:
     typedef ::fwCom::Slot<void ()> ChangeToOrangeSlotType;
 
     UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED_SLOT;
-    typedef ::fwCom::Slot< void ( bool ) > ToggleGreenRedSlotType;
+    typedef ::fwCom::Slot< void (const bool) > ToggleGreenRedSlotType;
+
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_CHANGE_TO_GREEN_SLOT;
+    typedef ::fwCom::Slot<void (const int)> IntChangeToGreenSlotType;
+
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_CHANGE_TO_RED_SLOT;
+    typedef ::fwCom::Slot<void (const int)> IntChangeToRedSlotType;
+
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_CHANGE_TO_ORANGE_SLOT;
+    typedef ::fwCom::Slot<void (const int)> IntChangeToOrangeSlotType;
+
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_TOGGLE_GREEN_RED_SLOT;
+    typedef ::fwCom::Slot< void (const int, const bool) > IntToggleGreenRedSlotType;
     /** @} */
 
 protected:
@@ -128,12 +152,27 @@ protected:
     void changeToOrange();
 
     /// SLOT : change label color (true = green, false = red)
-    void toggleGreenRed(bool green);
+    void toggleGreenRed(const bool green);
+
+    /// SLOT : change ith label color
+    void intChangeToGreen(const int index);
+
+    /// SLOT : change ith label color
+    void intChangeToRed(const int index);
+
+    /// SLOT : change ith label color
+    void intChangeToOrange(const int index);
+
+    /// SLOT : change ith label color (true = green, false = red)
+    void intToggleGreenRed(const int index, const bool green);
 
 private:
 
-    QPointer< QLabel > m_indicator;
-    QPointer< QLabel > m_labelStatus;
+    /// Number of status
+    size_t m_count;
+
+    QVector< QPointer< QLabel > > m_indicator;
+    QVector< QPointer< QLabel > > m_labelStatus;
 
     /// Slot to call changeToGreen()
     ChangeToGreenSlotType::sptr m_slotChangeToGreen;
@@ -144,12 +183,25 @@ private:
     /// Slot to call changeToOrange()
     ChangeToOrangeSlotType::sptr m_slotChangeToOrange;
 
-    /// Slot to call changeToGreenRed()
+    /// Slot to call toggleGreenRed(bool)
     ToggleGreenRedSlotType::sptr m_slotToggleGreenRed;
+
+    /// Slot to call intChangeToGreen(int)
+    IntChangeToGreenSlotType::sptr m_slotIntChangeToGreen;
+
+    /// Slot to call intChangeToRed(int)
+    IntChangeToRedSlotType::sptr m_slotIntChangeToRed;
+
+    /// Slot to call intChangeToOrange(int)
+    IntChangeToOrangeSlotType::sptr m_slotIntChangeToOrange;
+
+    /// Slot to call intToggleGreenRed(int,bool)
+    IntToggleGreenRedSlotType::sptr m_slotIntToggleGreenRed;
 
     std::string m_greenTooltip; ///< Tooltip for green status
     std::string m_redTooltip; ///< Tooltip for red status
     std::string m_orangeTooltip; ///< Tooltip for orange status
+    std::string m_layout; ///< Layout orientation
 
     bool m_isCircular; ///< label is a circle if true (else it's a square)
 
