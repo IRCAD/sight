@@ -143,7 +143,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
 
         compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", true);
 
-        m_currentSliceDepth = static_cast<float>(sliceIndex) / depth;
+        m_currentSliceDepth = static_cast<float>(sliceIndex / depth);
 
         m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->update(false);
 

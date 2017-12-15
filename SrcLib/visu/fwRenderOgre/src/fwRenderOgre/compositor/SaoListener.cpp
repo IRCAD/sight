@@ -82,8 +82,8 @@ void SaoListener::notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialP
 
         const ::Ogre::Matrix4& proj = m_viewport->getCamera()->getProjectionMatrix();
 
-        const ::Ogre::Vector4 projInfo( -2.f / (static_cast<float>(mip0.get()->getWidth() * proj[0][0])),
-                                        -2.f / (static_cast<float>(mip0.get()->getHeight() * proj[1][1])),
+        const ::Ogre::Vector4 projInfo( -2.f / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
+                                        -2.f / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
                                         (1.f - proj[0][2]) / proj[0][0],
                                         (1.f + proj[1][2]) / proj[1][1]);
         fragmentParams->setNamedConstant("eu_projInfo", projInfo);

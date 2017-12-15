@@ -120,7 +120,7 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
         for(k = lIntensityValue; k < rIntensityValue; ++k)
         {
             // texture --> intensity
-            ::fwData::TransferFunction::TFValueType value = k - halfTextureSize;
+            ::fwData::TransferFunction::TFValueType value = static_cast<double>(k) - halfTextureSize;
 
             // intensity --> transfer function
             value = (value - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;

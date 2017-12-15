@@ -145,7 +145,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     const unsigned int numViewPoints = this->getLayer()->getNumberOfCameras();
 
-    const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
+    const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
     const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
 
     for(unsigned int i = 0; i < numViewPoints; ++i)
@@ -155,9 +155,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
                                             static_cast<unsigned int>(m_camera->getViewport()->getActualWidth() *
-                                                                      wRatio),
+                                                                      static_cast< int >(wRatio)),
                                             static_cast<unsigned int>(m_camera->getViewport()->getActualHeight() *
-                                                                      hRatio),
+                                                                      static_cast< int >(hRatio)),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_GR,
@@ -416,15 +416,15 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
     const auto numViewPoints = m_entryPointsTextures.size();
-    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / numViewPoints : 1.f;
+    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
     const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
 
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
         entryPtsTexture->freeInternalResources();
 
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w * wRatio));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h * hRatio));
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w * static_cast< int >(wRatio)));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h * static_cast< int >(hRatio)));
 
         entryPtsTexture->createInternalResources();
 
