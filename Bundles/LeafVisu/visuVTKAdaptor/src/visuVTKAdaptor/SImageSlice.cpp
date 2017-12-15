@@ -101,6 +101,8 @@ void SImageSlice::updating()
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("Missing image", image);
+    SLM_ASSERT("Input image must be three-dimensional. vtkImageActor does not handle 2D images.",
+               image->getNumberOfDimensions() == 3);
 
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     if (imageIsValid)

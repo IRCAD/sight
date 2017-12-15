@@ -703,8 +703,7 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
 
     handle->On();
 
-    // We don't want to add m_representation to the renderer, m_handle
-    // is already managing that.
+    // We don't want to add pointRep to the renderer, handle is already managing that.
     this->registerProp(pointRep);
 
     // create label
