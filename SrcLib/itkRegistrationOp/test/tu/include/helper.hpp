@@ -9,6 +9,9 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwItkIO/itk.hpp>
+#include <fwItkIO/itk.hxx>
+
 #include <itkEllipseSpatialObject.h>
 #include <itkImage.h>
 #include <itkSpatialObjectToImageFilter.h>
@@ -25,29 +28,29 @@ template <class P, size_t N>
     using ImageType                      = ::itk::Image<P, N>;
     using EllipseType                    = ::itk::EllipseSpatialObject< N >;
     using SpatialObjectToImageFilterType = ::itk::SpatialObjectToImageFilter< EllipseType, ImageType >;
-    using TransformType                  = EllipseType::TransformType;
+    using TransformType                  = typename EllipseType::TransformType;
     static_assert(std::is_arithmetic<P>::value, "P type must be numeric");
 
-    ImageType::Pointer image                            = ImageType::New();
-    SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
+    typename ImageType::Pointer image                            = ImageType::New();
+    typename SpatialObjectToImageFilterType::Pointer imageFilter = SpatialObjectToImageFilterType::New();
 
-    ImageType::SizeType size = { 100, 100, 100 };
+    typename ImageType::SizeType size = { 100, 100, 100 };
     imageFilter->SetSize( size );
 
     imageFilter->SetSpacing(spacing);
 
-    EllipseType::Pointer ellipse = EllipseType::New();
-    EllipseType::ArrayType radiusArray;
+    typename EllipseType::Pointer ellipse = EllipseType::New();
+    typename EllipseType::ArrayType radiusArray;
     radiusArray[0] = 10;
     radiusArray[1] = 15;
     radiusArray[2] = 20;
     ellipse->SetRadius(radiusArray);
 
-    TransformType::Pointer transform = TransformType::New();
+    typename TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
 
-    TransformType::OutputVectorType translation;
-    TransformType::CenterType center;
+    typename TransformType::OutputVectorType translation;
+    typename TransformType::CenterType center;
 
     translation[ 0 ] = 50;
     translation[ 1 ] = 50;
