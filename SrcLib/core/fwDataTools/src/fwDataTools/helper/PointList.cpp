@@ -83,7 +83,7 @@ void PointList::associate(const ::fwData::PointList::sptr& pointList1,
 
     // Transform first point list into vector< ::glm::dvec3 > (no erase is performed)
     std::vector< ::glm::dvec3 > vec1;
-    vec1.resize(size);
+    vec1.reserve(size);
     //and second one into a list (since we will erase associated points)
     std::list< ::glm::dvec3 > list2;
 
@@ -104,7 +104,7 @@ void PointList::associate(const ::fwData::PointList::sptr& pointList1,
         points2[i]->setCoord(tmp2);
 
         // Add the point to vector/list
-        vec1[i] = ::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]);
+        vec1.push_back( ::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]));
         list2.push_back(::glm::dvec3( tmp2[0], tmp2[1], tmp2[2]));
 
     }
@@ -143,6 +143,7 @@ void PointList::associate(const ::fwData::PointList::sptr& pointList1,
 }
 
 //-----------------------------------------------------------------------------
+
 
 } // namespace helper
 } // namespace fwDataTools
