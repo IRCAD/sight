@@ -37,6 +37,10 @@ namespace syncTimeline
 /**
  * @brief   SMatrixTLSynchronizer service synchronizes tracking matrices.
  *
+ * @section Signals Signals
+ * - \b matrixSynchronized(): Emitted when the  matrix is synchronized
+ * - \b matrixUnsynchronized(): Emitted when the matrix is not present in the buffer and can not be syncronized
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -63,6 +67,9 @@ class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public ::arServices::ISynch
 public:
 
     fwCoreServiceClassDefinitionsMacro((SMatrixTLSynchronizer)(::arServices::ISynchronizer));
+
+    typedef ::fwCom::Signal< void (int) > MatrixSynchronizedSignalType;
+    typedef ::fwCom::Signal< void (int) > MatrixUnsynchronizedSignalType;
 
     /**
      * @brief Constructor.
