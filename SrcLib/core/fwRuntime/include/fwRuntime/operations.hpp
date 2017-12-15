@@ -98,7 +98,7 @@ T* createExecutableInstance(
 
     // Creates the executable instance.
     Runtime* rntm( Runtime::getDefault()                         );
-    std::auto_ptr< IExecutable >    executable( rntm->createExecutableInstance(type, element) );
+    std::unique_ptr< IExecutable > executable( rntm->createExecutableInstance(type, element) );
 
     // Converts the executable instance to the right type.
     T* result = dynamic_cast<T*>( executable.get() );
