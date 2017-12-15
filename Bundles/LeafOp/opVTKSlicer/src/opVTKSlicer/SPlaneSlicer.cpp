@@ -91,6 +91,16 @@ void SPlaneSlicer::updating()
 
     ::fwVtkIO::fromVTKImage(m_reslicer->GetOutput(), slice);
 
+    // HACK: Make output slice three-dimensional.
+    // We need to do so in order to visualize it with ::visuVTKAdaptor::SImageSlice.
+    // This is because the adaptor uses a vtkImageActor which doesn't handle 2d images.
+    auto size = slice->getSize();
+    slice->setSize({{size[0], size[1], 1}});
+    auto spacing = slice->getSpacing();
+    slice->setSpacing({{spacing[0], spacing[1], 0 }});
+    auto origin = slice->getOrigin();
+    slice->setOrigin({{origin[0], origin[1], 0}});
+
     auto sig = slice->signal< ::fwData::Image::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
 
     sig->asyncEmit();

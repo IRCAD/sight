@@ -15,31 +15,19 @@
         <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
         <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="targetSlice" type="::fwData::Image" />
-        <object uid="transformedSlice" type="::fwData::Image" />
         <object uid="Histogram" type="::fwData::Histogram" />
-        <object uid="referencePL" type="::fwData::PointList" />
-        <object uid="targetPL" type="::fwData::PointList" />
-        <object uid="inverseFinalTransform" type="::fwData::TransformationMatrix3D" />
 
         <!-- Transfer Functions -->
-        <object uid="TFTransformedComposite" type="::fwData::Composite" />
-        <object uid="referenceTransferFunction" type="::fwData::TransferFunction">
-            <colors isClamped="false">
-                <step color="#00000000" value="-1024" />
-                <step color="#ffffffff" value="1024" />
-            </colors>
-        </object>
+        <object uid="referenceTFComposite" type="::fwData::Composite" />
         <object uid="targetTransferFunction" type="::fwData::TransferFunction">
             <colors isClamped="false">
                 <step color="#00000000" value="-1024" />
                 <step color="#ffffffff" value="1024" />
             </colors>
         </object>
-        <object uid="transformedTransferFunction" type="::fwData::TransferFunction" src="deferred" />
+        <object uid="referenceTransferFunction" type="::fwData::TransferFunction" src="deferred" />
 
         <!-- Matrices -->
-        <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="flipSagittalMatrix" type="::fwData::TransformationMatrix3D">
             <matrix>
                 <![CDATA[
@@ -76,8 +64,6 @@
         <object uid="centerTransformTarget" type="::fwData::TransformationMatrix3D" />
         <object uid="centerTransformReference" type="::fwData::TransformationMatrix3D" />
         <object uid="flipTransform" type="::fwData::TransformationMatrix3D" />
-        <object uid="identity" type="::fwData::TransformationMatrix3D" />
-
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -100,111 +86,61 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
-                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view sid="scenesView" start="yes" />
-                <view sid="editorsView" start="yes" />
-                <view sid="3dScene" start="yes" />
+                <view sid="windowLevelEditors" start="yes" />
             </registry>
         </service>
 
         <service uid="scenesView" type="::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" caption="Reference" />
-                    <view proportion="1" caption="Transformed on target" />
+                <layout type="::fwGui::TabLayoutManager">
+                    <view caption="Manual" />
+                    <view caption="Landmark" />
                 </layout>
             </gui>
             <registry>
-                <view sid="referenceScene" start="yes" />
-                <view sid="blendScene" start="yes" />
+                <view wid="manualScene" />
+                <view wid="landmarkScene" />
             </registry>
         </service>
 
-        <service uid="editorsView" type="::gui::view::SDefaultView">
+        <service uid="windowLevelEditors" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="1" caption="Reference editor" />
-                    <view proportion="1" caption="Transformed editor" />
+                    <view proportion="1" caption="Reference editor"/>
+                    <view proportion="1" caption="Target editor"/>
                 </layout>
             </gui>
             <registry>
-                <view sid="referenceViewEditor" start="yes" />
-                <view sid="targetViewEditor" start="yes" />
+                <view sid="referenceWindowLevel" />
+                <view sid="targetWindowLevel" start="yes" />
             </registry>
         </service>
 
-        <service uid="targetViewEditor" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view wid="targetSceneEditor" />
-                <view sid="blendEditor" start="yes" />
-                <view sid="checkerBoardCellSlider" start="yes" />
-            </registry>
+        <service uid="targetWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <inout key="tf" uid="targetTransferFunction" />
         </service>
 
-        <service uid="blendMode" type="::guiQt::editor::SParameters">
-            <parameters>
-                <param type="enum" name="Blend mode:" key="ImageSource" defaultValue="BLEND" values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" />
-            </parameters>
-        </service>
-
-        <service uid="checkerBoardCellSlider" type="::guiQt::editor::SParameters">
-            <parameters>
-                <param type="int" name="Checkerboard # of cells" key="checkerBoardSlider" defaultValue="10" min="0" max="100" />
-            </parameters>
-        </service>
-
-        <service uid="blendEditor" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="transformedTransparencySlider" start="yes" />
-                <view sid="blendMode" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="referenceViewEditor" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <spacer/>
-                </layout>
-            </gui>
-            <registry>
-                <view wid="referenceSceneEditor" />
-            </registry>
+        <service uid="referenceWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${referenceImageUid}" />
+            <inout key="tf" uid="referenceTransferFunction" />
         </service>
 
         <service uid="ParamView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::TabLayoutManager">
                     <view caption="Automatic" />
-                    <view caption="Landmark" />
                     <view caption="Manual" />
                     <view caption="Transfer function" />
                 </layout>
             </gui>
             <registry>
                 <view sid="automaticRegistrationView" start="yes" />
-                <view sid="LandmarkRegistrationView" start="yes" />
                 <view sid="manualRegistrationView" start="yes" />
                 <view sid="TFView" start="yes" />
             </registry>
@@ -214,7 +150,7 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="0" />
+                    <view proportion="0" caption="Import/Export registration" />
                     <view proportion="0" />
                     <spacer/>
                     <view proportion="0" />
@@ -222,24 +158,56 @@
                 </layout>
             </gui>
             <registry>
+                <view sid="importExportButtons" start="yes" />
                 <view sid="ResetRegistration" start="yes" />
-                <view sid="computeCenter" start="yes" />
                 <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
             </registry>
         </service>
 
-        <service uid="LandmarkRegistrationView" type="::gui::view::SDefaultView">
+        <service uid="importExportButtons" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <spacer/>
+                    <orientation value="horizontal" />
+                    <spacer proportion="1" />
                     <view proportion="0" />
+                    <spacer proportion="1" />
+                    <view proportion="0" />
+                    <spacer proportion="1" />
                 </layout>
             </gui>
             <registry>
-                <view sid="applyLandmarkTransform" start="yes" />
+                <view sid="importTransformButton" start="yes" />
+                <view sid="exportTransformButton" start="yes" />
             </registry>
+        </service>
+
+        <service uid="importTransformButton" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Import</text>
+            </config>
+        </service>
+
+        <service uid="exportTransformButton" type="::guiQt::editor::SSignalButton">
+            <config>
+                <checkable>false</checkable>
+                <text>Export</text>
+            </config>
+        </service>
+
+        <service uid="importTransform" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="${transformUid}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+        </service>
+
+        <service uid="exportTransform" type="::uiIO::editor::SIOSelector" >
+            <inout key="target" uid="${transformUid}" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
 
         <service uid="manualRegistrationView" type="::gui::view::SDefaultView">
@@ -283,9 +251,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="transformedTFSelector" start="no" />
+                <view sid="referenceTFSelector" start="no" />
                 <view wid="tfWidgetView" />
-                <view sid="transformedWindowLevel" start="no" />
             </registry>
         </service>
 
@@ -293,7 +260,7 @@
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${referenceImageUid}"/>
             <inout key="histogram" uid="Histogram"/>
-            <inout key="transferFunction" uid="transformedTransferFunction" />
+            <inout key="transferFunction" uid="referenceTransferFunction" />
             <parameter replace="WID_PARENT" by="tfWidgetView"/>
         </service>
 
@@ -315,164 +282,32 @@
             <inout key="image" uid="${targetImageUid}" />
         </service>
 
-        <service uid="referenceLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <inout key="landmarks" uid="referencePL" />
+        <service uid="manualRegistration" type="::fwServices::SConfigController" >
+            <appConfig id="ManualRegistrationView" />
+            <inout key="targetImageUid" uid="${targetImageUid}" />
+            <inout key="referenceImageUid" uid="${referenceImageUid}" />
+            <inout key="transformUid" uid="${transformUid}" />
+            <inout key="targetTransferFunction" uid="targetTransferFunction" />
+            <inout key="referenceTransferFunction" uid="referenceTransferFunction" optional="yes" />
+            <parameter replace="WID_PARENT" by="manualScene" />
         </service>
 
-        <service uid="targetLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <inout key="landmarks" uid="targetPL" />
+        <service uid="landmarkRegistration" type="::fwServices::SConfigController" >
+            <appConfig id="LandmarkRegistration" />
+            <inout key="targetImageUid" uid="${targetImageUid}" />
+            <inout key="referenceImageUid" uid="${referenceImageUid}" />
+            <inout key="transformUid" uid="${transformUid}" />
+            <inout key="targetTransferFunction" uid="targetTransferFunction" />
+            <inout key="referenceTransferFunction" uid="referenceTransferFunction" optional="yes" />
+            <parameter replace="WID_PARENT" by="landmarkScene" />
         </service>
 
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene renderMode="auto">
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" background="#052833" />
-                <adaptor uid="referenceNegatoMPR" />
-                <adaptor uid="referenceInteractorStyle" />
-                <adaptor uid="referencePickerInteractor" />
-                <adaptor uid="referencePointListAdaptor" />
-            </scene>
+        <service uid="referenceTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
+            <inout key="tfPool" uid="referenceTFComposite" />
+            <out key="tf" uid="referenceTransferFunction" />
         </service>
 
-        <service uid="referenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="referenceTransferFunction" />
-            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
-        </service>
-
-        <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
-        </service>
-
-        <service uid="referencePointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
-            <inout key="pointList" uid="referencePL" />
-            <config renderer="default" picker="picker" color="#550066" radius="10" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="blendScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene renderMode="auto">
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <vtkObject id="imageBlend" class="vtkImageBlend" />
-                <vtkObject id="imageCheckerboard" class="vtkImageCheckerboard" />
-                <renderer id="default" background="#052833" />
-                <adaptor uid="blendNegatoMPR" />
-                <adaptor uid="blendInteractorStyle" />
-                <adaptor uid="blendPickerInteractor" />
-                <adaptor uid="slicerImageAdaptor" />
-                <adaptor uid="2DWheel" />
-                <adaptor uid="transformFromWheel" />
-            </scene>
-        </service>
-
-        <service uid="blendNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="targetSlice" />
-            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
-        </service>
-
-        <service uid="blendInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
-            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP;MOUSE_MOVE;MOUSE_LEFT_DOWN" abortOnPick="true" />
-        </service>
-
-        <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
-            <config renderer="default" />
-        </service>
-
-        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
-            <inout key="transform" uid="${transformUid}" />
-            <config renderer="default" picker="picker" mode="2d" orientation="axial" />
-        </service>
-
-        <!-- Adaptor to show background and front image merge in the same view. -->
-        <service uid="slicerImageAdaptor" type="::visuVTKAdaptor::SImagesBlend">
-            <inout group="image" autoConnect="yes">
-                <key uid="targetSlice" tfalpha="no" />
-                <key uid="transformedSlice" tfalpha="no" />
-            </inout>
-            <inout group="tf" optional="yes">
-                <key uid="targetTransferFunction" />
-                <key uid="transformedTransferFunction" />
-            </inout>
-            <config vtkimageregister="imageBlend" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
-        <!-- *************************** Begin generic scene *************************** -->
-
-        <service uid="3dScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <scene renderMode="auto">
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" background="#052833" />
-                <adaptor uid="transformAdpt" />
-                <adaptor uid="targetNegatoMPR" />
-                <adaptor uid="3DreferenceNegatoMPR" />
-            </scene>
-        </service>
-
-        <service uid="transformAdpt" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="inverseFinalTransform" />
-            <config transform="registration" />
-        </service>
-
-        <service uid="targetNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${targetImageUid}" />
-            <inout key="tf" uid="targetTransferFunction" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" />
-        </service>
-
-        <service uid="3DreferenceNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="referenceTransferFunction" />
-            <config renderer="default" picker="picker" mode="3d" slices="3" sliceIndex="axial" transform="registration" />
-        </service>
-
-        <!-- *************************** End generic scene *************************** -->
-
-        <service uid="referenceImageManager" type="::fwServices::SConfigController">
-            <appConfig id="ImageManager" />
-            <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="transferFunction" uid="referenceTransferFunction" />
-        </service>
-
-        <service uid="targetImageManager" type="::fwServices::SConfigController">
-            <appConfig id="ImageManager" />
-            <parameter replace="WID_PARENT" uid="targetSceneEditor" />
-            <inout key="image" uid="${targetImageUid}" />
-            <inout key="transferFunction" uid="targetTransferFunction" />
-        </service>
-
-        <service uid="transformedTransparencySlider" type="::uiImageQt::ImageTransparency" autoConnect="yes">
-            <inout key="image" uid="transformedSlice" />
-            <shortcut value="V" />
-        </service>
-
-        <service uid="transformedTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
-            <inout key="tfPool" uid="TFTransformedComposite" />
-            <out key="tf" uid="transformedTransferFunction" />
-        </service>
-
-        <service uid="transformedWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
-            <inout key="image" uid="${referenceImageUid}" />
-            <inout key="tf" uid="transformedTransferFunction" />
-            <config autoWindowing="yes" enableSquareTF="no" />
-        </service>
-
-        <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeReferenceHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${referenceImageUid}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
@@ -499,29 +334,6 @@
             </parameters>
         </service>
 
-        <service uid="targetPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
-            <in key="image" uid="${targetImageUid}" />
-            <in key="imageExtent" uid="${targetImageUid}" />
-            <in key="axes" uid="identityMatrix" />
-            <inout key="slice" uid="targetSlice" />
-            <config orientation="axial" />
-        </service>
-
-        <service uid="transformedPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
-            <in key="image" uid="${referenceImageUid}" />
-            <in key="imageExtent" uid="${targetImageUid}" />
-            <in key="axes" uid="${transformUid}" />
-            <inout key="slice" uid="transformedSlice" />
-            <config orientation="axial" />
-        </service>
-
-        <service uid="applyLandmarkTransform" type="::guiQt::editor::SSignalButton">
-            <config>
-                <checkable>false</checkable>
-                <text>Apply</text>
-            </config>
-        </service>
-
         <service uid="flipSagittalButton" type="::guiQt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
@@ -541,12 +353,6 @@
                 <checkable>false</checkable>
                 <text>Axial</text>
             </config>
-        </service>
-
-        <service uid="landmarkRegistration" type="::basicRegistration::SPointListRegistration">
-            <inout key="registeredPL" uid="targetPL" />
-            <inout key="referencePL" uid="referencePL" />
-            <inout key="output" uid="${transformUid}" />
         </service>
 
         <service uid="automaticRegistration" type="::opItkRegistration::SAutomaticRegistration" worker="REGISTRATION_WORKER">
@@ -576,18 +382,6 @@
             <inout key="output" uid="${transformUid}" />
         </service>
 
-        <service uid="inverseMat" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="${transformUid}" inverse="true" autoConnect="yes" />
-            </in>
-            <inout key="output" uid="inverseFinalTransform" />
-        </service>
-
-        <service uid="resetIdentity" type="::ctrlCamp::SCopy">
-            <in key="source" uid="identity" />
-            <inout key="target" uid="${transformUid}" />
-        </service>
-
         <service uid="copyFlipAxial" type="::ctrlCamp::SCopy">
             <in key="source" uid="flipAxialMatrix" />
             <inout key="target" uid="flipTransform" />
@@ -603,28 +397,32 @@
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="flipConcat" type="::maths::SConcatenateMatrices">
+        <service uid="flipAndAlignConcat" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="centerTransformReference" autoConnect="yes" />
+                <!-- Flip reference -->
+                <key uid="centerTransformReference" />
                 <key uid="flipTransform" autoConnect="yes" />
                 <key uid="centerTransformReference" inverse="true" />
+                <!-- Align reference and target image centers -->
+                <key uid="centerTransformTarget" inverse="true" />
+                <key uid="centerTransformReference" />
             </in>
             <inout key="output" uid="${transformUid}" />
         </service>
 
         <connect>
             <signal>ResetRegistration/clicked</signal>
-            <slot>resetIdentity/update</slot>
-        </connect>
-
-        <connect>
-            <signal>computeCenter/clicked</signal>
             <slot>alignCenter/update</slot>
         </connect>
 
         <connect>
-            <signal>applyLandmarkTransform/clicked</signal>
-            <slot>landmarkRegistration/update</slot>
+            <signal>importTransformButton/clicked</signal>
+            <slot>importTransform/update</slot>
+        </connect>
+
+        <connect>
+            <signal>exportTransformButton/clicked</signal>
+            <slot>exportTransform/update</slot>
         </connect>
 
         <connect>
@@ -662,51 +460,12 @@
             <slot>copyFlipAxial/update</slot>
         </connect>
 
-        <connect>
-            <signal>checkerBoardCellSlider/intChanged</signal>
-            <slot>slicerImageAdaptor/changeCheckerboardDivision</slot>
-        </connect>
-
-        <connect>
-            <signal>referencePickerInteractor/picked</signal>
-            <slot>referenceLandmarkManager/createLandmark</slot>
-        </connect>
-
-        <connect>
-            <signal>blendMode/enumChanged</signal>
-            <slot>slicerImageAdaptor/changeMode</slot>
-        </connect>
-
-        <connect>
-            <signal>blendMode/enumChanged</signal>
-            <slot>blendNegatoMPR/changeImageSource</slot>
-        </connect>
-
-        <connect>
-            <signal>2DWheel/wheelUpdated</signal>
-            <slot>transformFromWheel/rotateTransform</slot>
-        </connect>
-
-        <connect>
-            <signal>blendPickerInteractor/picked</signal>
-            <slot>transformFromWheel/translateTransform</slot>
-        </connect>
-
-        <connect>
-            <signal>${targetImageUid}/sliceTypeModified</signal>
-            <slot>transformFromWheel/updateSliceType</slot>
-        </connect>
-
         <!-- START AND STOP SERVICES -->
-
         <start uid="mainView" />
+        <start uid="importTransform" />
+        <start uid="exportTransform" />
         <start uid="medicalImageTargetSrv" />
-        <start uid="referenceImageManager" />
-        <start uid="targetImageManager" />
-        <start uid="computetransformedHistogram" />
-        <start uid="referenceLandmarkManager" />
-        <start uid="targetLandmarkManager" />
-        <start uid="landmarkRegistration" />
+        <start uid="computeReferenceHistogram" />
         <start uid="automaticRegistration" />
         <start uid="copyFlipSagittal" />
         <start uid="copyFlipFrontal" />
@@ -714,31 +473,15 @@
         <start uid="computeCenterTarget" />
         <start uid="computeCenterReference" />
         <start uid="alignCenter" />
-        <start uid="flipConcat" />
-        <start uid="resetIdentity" />
-        <start uid="inverseMat" />
+        <start uid="flipAndAlignConcat" />
+        <start uid="manualRegistration" />
+        <start uid="landmarkRegistration" />
         <start uid="tfWidget" />
-        <start uid="transformedTFSelector" />
-        <start uid="transformedWindowLevel" />
-        <start uid="targetPlaneSlice" />
-        <start uid="transformedPlaneSlice" />
-        <!-- VTK scene 'referenceScene' -->
-        <start uid="referenceNegatoMPR" />
-        <start uid="referenceInteractorStyle" />
-        <start uid="referencePickerInteractor" />
-        <start uid="referencePointListAdaptor" />
-        <!-- VTK scene 'blendScene' -->
-        <start uid="blendNegatoMPR" />
-        <start uid="blendInteractorStyle" />
-        <start uid="blendPickerInteractor" />
-        <start uid="slicerImageAdaptor" />
-        <start uid="2DWheel" />
-        <start uid="transformFromWheel" />
-        <!-- VTK scene '3dScene' -->
-        <start uid="transformAdpt" />
-        <start uid="targetNegatoMPR" />
-        <start uid="3DreferenceNegatoMPR" />
+        <start uid="referenceTFSelector" />
+        <start uid="referenceWindowLevel" />
+
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
+
     </config>
 </extension>

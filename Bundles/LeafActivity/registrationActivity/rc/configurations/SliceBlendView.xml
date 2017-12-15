@@ -1,0 +1,158 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>SliceBlendView</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="targetImageUid" />
+        <param name="referenceImageUid" />
+        <param name="transformUid" />
+        <param name="targetTransferFunction" />
+        <param name="referenceTransferFunction" />
+        <param name="modifyTransparencyChannel" />
+        <param name="modifyCheckerboardDivisionsChannel" />
+        <param name="changeBlendModeChannel" />
+        <param name="orientation" />
+    </parameters>
+    <config>
+
+        <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
+
+        <object uid="${targetTransferFunction}" type="::fwData::TransferFunction" src="ref" />
+        <object uid="${referenceTransferFunction}" type="::fwData::TransferFunction" src="deferred" />
+
+        <object uid="targetSlice" type="::fwData::Image" />
+        <object uid="transformedSlice" type="::fwData::Image" />
+
+        <object uid="identity" type="::fwData::TransformationMatrix3D" />
+
+        <service uid="blendSceneView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="blendScene" start="yes" />
+                <view sid="negatoSliceSelector" start="yes" />
+            </registry>
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="blendScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <scene renderMode="auto">
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <vtkObject id="imageBlend" class="vtkImageBlend" />
+                <vtkObject id="imageCheckerboard" class="vtkImageCheckerboard" />
+                <renderer id="default" background="#052833" />
+                <adaptor uid="blendNegatoMPR" />
+                <adaptor uid="blendInteractorStyle" />
+                <adaptor uid="blendPickerInteractor" />
+                <adaptor uid="slicerImageAdaptor" />
+                <adaptor uid="2DWheel" />
+                <adaptor uid="transformFromWheel" />
+            </scene>
+        </service>
+
+        <service uid="blendNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+            <inout key="image" uid="targetSlice" />
+            <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
+        </service>
+
+        <service uid="blendInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+            <config renderer="default" style="InteractorStyle2DForNegato" />
+        </service>
+
+        <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+            <config renderer="default" picker="picker" event="MOUSE_LEFT_UP;MOUSE_MOVE;MOUSE_LEFT_DOWN" abortOnPick="true" />
+        </service>
+
+        <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
+            <config renderer="default" />
+        </service>
+
+        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
+            <inout key="transform" uid="${transformUid}" />
+            <config renderer="default" picker="picker" mode="2d" orientation="${orientation}" />
+        </service>
+
+        <!-- Adaptor to show background and front image merge in the same view. -->
+        <service uid="slicerImageAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+            <inout group="image" autoConnect="yes">
+                <key uid="targetSlice" tfalpha="no" />
+                <key uid="transformedSlice" tfalpha="no" opacity="0.5"/>
+            </inout>
+            <inout group="tf">
+                <key uid="${targetTransferFunction}" />
+                <key uid="${referenceTransferFunction}" />
+            </inout>
+            <config vtkimageregister="imageBlend" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="targetPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
+            <in key="image" uid="${targetImageUid}" />
+            <in key="imageExtent" uid="${targetImageUid}" />
+            <in key="axes" uid="identity" />
+            <inout key="slice" uid="targetSlice" />
+            <config orientation="${orientation}" />
+        </service>
+
+        <service uid="transformedPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
+            <in key="image" uid="${referenceImageUid}" />
+            <in key="imageExtent" uid="${targetImageUid}" />
+            <in key="axes" uid="${transformUid}" />
+            <inout key="slice" uid="transformedSlice" />
+            <config orientation="${orientation}" />
+        </service>
+
+        <service uid="negatoSliceSelector" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${targetImageUid}" />
+            <sliceIndex>${orientation}</sliceIndex>
+        </service>
+
+        <connect>
+            <signal>2DWheel/wheelUpdated</signal>
+            <slot>transformFromWheel/rotateTransform</slot>
+        </connect>
+
+        <connect>
+            <signal>blendPickerInteractor/picked</signal>
+            <slot>transformFromWheel/translateTransform</slot>
+        </connect>
+
+        <connect>
+            <signal>${targetImageUid}/sliceTypeModified</signal>
+            <slot>transformFromWheel/updateSliceType</slot>
+        </connect>
+
+        <connect channel="${modifyTransparencyChannel}" >
+            <slot>slicerImageAdaptor/setTopImageTransparency</slot>
+        </connect>
+
+        <connect channel="${modifyCheckerboardDivisionsChannel}" >
+            <slot>slicerImageAdaptor/changeCheckerboardDivision</slot>
+        </connect>
+
+        <connect channel="${changeBlendModeChannel}">
+            <slot>slicerImageAdaptor/changeMode</slot>
+            <slot>blendNegatoMPR/changeImageSource</slot>
+        </connect>
+
+        <start uid="targetPlaneSlice" />
+        <start uid="transformedPlaneSlice" />
+        <start uid="blendSceneView" />
+        <start uid="slicerImageAdaptor" />
+        <start uid="blendNegatoMPR" />
+        <start uid="blendInteractorStyle" />
+        <start uid="blendPickerInteractor" />
+        <start uid="2DWheel" />
+        <start uid="transformFromWheel" />
+
+    </config>
+</extension>
