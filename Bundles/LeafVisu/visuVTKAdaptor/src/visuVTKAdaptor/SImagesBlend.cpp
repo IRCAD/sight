@@ -46,9 +46,9 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesBlend
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
-const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
-const ::fwCom::Slots::SlotKeyType s_SET_TOP_IMAGE_TRANSPARENCY_SLOT                 = "setTopImageTransparency";
+const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT                  = "changeMode";
+const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
+const ::fwCom::Slots::SlotKeyType s_SET_TOP_IMAGE_TRANSPARENCY_SLOT   = "setTopImageTransparency";
 
 static const ::fwServices::IService::KeyType s_IMAGE_GROUP = "image";
 static const ::fwServices::IService::KeyType s_TF_GROUP    = "tf";
@@ -395,6 +395,7 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunctio
 void SImagesBlend::setTopImageTransparency(int transparency)
 {
     SLM_ASSERT("The image group is empty. Have you started the service?", m_imagesInfo.size() > 0);
+    SLM_ERROR_IF("Transparency must be in [0, 255].", transparency < 0 || transparency > 255);
     auto topImageInfo = m_imagesInfo.rbegin();
 
     topImageInfo->m_imageOpacity = 1. - (double(transparency) / 255.);

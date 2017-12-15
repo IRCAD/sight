@@ -67,6 +67,7 @@ namespace visuVTKAdaptor
  *    - \b picker (mandatory): identifier of the picker
  *    - \b vtkimageregister (mandatory): VTK object name for default blending algorithm.
  *    - \b checkerboardDivision (optional): Number of division in checkerboard mode.
+ *    - \b setTopImageTransparency(int): sets the transparency (inside the [0, 255] range) of the image blended on top.
  */
 class VISUVTKADAPTOR_CLASS_API SImagesBlend : public ::fwRenderVTK::IAdaptor
 {
@@ -74,9 +75,6 @@ class VISUVTKADAPTOR_CLASS_API SImagesBlend : public ::fwRenderVTK::IAdaptor
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SImagesBlend)(::fwRenderVTK::IAdaptor) );
-
-    VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT;
-    VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT;
 
     VISUVTKADAPTOR_API SImagesBlend() noexcept;
 
