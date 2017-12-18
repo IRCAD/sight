@@ -135,7 +135,7 @@ void SAutomaticRegistration::updating()
 
     ::itkRegistrationOp::AutomaticRegistration registrator;
 
-    ::fwGui::dialog::ProgressDialog dialog("Automatic Registration", "Registring, please be patient.");
+    ::fwGui::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
 
     dialog.setCancelCallback([&registrator]()
         {
@@ -175,7 +175,7 @@ void SAutomaticRegistration::updating()
     size_t i = 0;
 
     ::itkRegistrationOp::AutomaticRegistration::IterationCallbackType iterationCallback =
-        [this, &dialog, &multiResolutionParameters, &transfoModifiedSig, &registrator, &regStartTime, &regLog, &i]()
+        [&]()
         {
             const ::itk::SizeValueType currentIteration = registrator.getCurrentIteration();
             const ::itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
