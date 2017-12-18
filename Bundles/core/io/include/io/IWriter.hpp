@@ -20,6 +20,10 @@ namespace io
 /**
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
+ * @section Slots Slots
+ * - \b setFileFolder(const ::boost::filesystem::path&) : Sets the folder when a path is configured in FILE or
+ * FILES mode
+ *
  * This class represents the base interface for writer services.
  * Use the base service methods :
  * @li The service is configured with methods setConfiguration(cfg) and configure()
@@ -31,7 +35,14 @@ class IO_CLASS_API IWriter : public fwServices::IService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (IWriter)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IWriter)(::fwServices::IService) )
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    IO_API static const ::fwCom::Slots::SlotKeyType s_SET_FILE_FOLDER;
+    /// @}
 
     /**
      * @brief Configure the image path (by default does nothing).
@@ -52,35 +63,35 @@ public:
     IO_API virtual ::io::IOPathType getIOPathType() const;
 
     /**
-     * @brief Returns the file path setted by user or setted during service configuration
+     * @brief Returns the file path set by the user or set during service configuration
      * @pre exception if a file path is not defined  ( m_locations.empty() )
-     * @pre exception if service not supported FILE management
+     * @pre exception if service does not support FILE mode
      */
     IO_API const ::boost::filesystem::path& getFile() const;
 
     /**
      * @brief Sets file path
-     * @pre exception if service not supported FILE management
+     * @pre exception if service does not support FILE mode
      */
     IO_API void setFile(const ::boost::filesystem::path& file);
 
     /**
-     * @brief Returns file paths setted by user or setted during service configuration
+     * @brief Returns file paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
-     * @pre exception if service not supported FILES management
+     * @pre exception if service does not support FILES mode
      */
     IO_API const ::io::LocationsType& getFiles() const;
 
     /**
      * @brief Sets file paths
-     * @pre exception if service not supported FILES management
+     * @pre exception if service does not support FILES mode
      */
     IO_API void setFiles(const ::io::LocationsType& files);
 
     /**
-     * @brief Returns folder path setted by user or setted during service configuration
+     * @brief Returns folder path set by the user or set during service configuration
      * @pre exception if a folder path is not defined ( m_locations.empty() )
-     * @pre exception if service not supported FOLDER management
+     * @pre exception if service does not support FOLDER mode
      */
     IO_API const ::boost::filesystem::path& getFolder() const;
 
@@ -90,16 +101,24 @@ public:
     IO_API void clearLocations();
 
     /**
-     * @brief Returns file/files/folder paths setted by user or setted during service configuration
+     * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
     IO_API const ::io::LocationsType& getLocations() const;
 
     /**
      * @brief Sets folder path
-     * @pre exception if service not supported FOLDER management
+     * @pre exception if service does not support FOLDER mode
      */
     IO_API void setFolder(const ::boost::filesystem::path& folder);
+
+    /**
+     * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
+     * This is ignored if a path is not configured
+     *
+     * @pre exception if service does not support FILE or FILES mode
+     */
+    IO_API void setFileFolder(::boost::filesystem::path folder);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     IO_API bool hasLocationDefined() const;
