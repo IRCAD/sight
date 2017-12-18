@@ -170,18 +170,12 @@ template <class PIX>
 typename FastRegistration<PIX>::Image2DPtrType
 FastRegistration<PIX>::resampleSourceToTarget(Image2DPtrType const& source, Image2DPtrType const& target)
 {
-    auto targetSpacing = target->GetSpacing();
-    auto sourceSpacing = source->GetSpacing();
-    auto sourceSize    = source->GetBufferedRegion().GetSize();
-    auto newSize       = Image2DType::SizeType {{
-                                                    // Hello, my name is Sheldon and I'm here to destroy your formatting
-                                                    static_cast<Image2DType::SizeValueType>(
-                                                        std::ceil(static_cast<double>(sourceSize[0]) /
-                                                                  targetSpacing[0] * sourceSpacing[0])),
-                                                    static_cast<Image2DType::SizeValueType>(
-                                                        std::ceil(static_cast<double>(sourceSize[1]) /
-                                                                  targetSpacing[1] * sourceSpacing[1]))
-                                                }};
+    auto tSpacing                       = target->GetSpacing();
+    auto sSpacing                       = source->GetSpacing();
+    auto sSize                          = source->GetBufferedRegion().GetSize();
+    Image2DType::SizeValueType newSizeX = std::ceil(static_cast<double>(sSize[0]) / tSpacing[0] * sSpacing[0]),
+                               newSizeY = std::ceil(static_cast<double>(sSize[1]) / tSpacing[1] * sSpacing[1]);
+    auto newSize                        = Image2DType::SizeType {{ newSizeX, newSizeY }};
 
     auto transform    = ::itk::IdentityTransform<double, 2>::New();
     auto interpolator = ::itk::LinearInterpolateImageFunction<Image2DType, double>::New();
@@ -189,7 +183,7 @@ FastRegistration<PIX>::resampleSourceToTarget(Image2DPtrType const& source, Imag
     resampler->SetInput(source);
     resampler->SetTransform(transform);
     resampler->SetInterpolator(interpolator);
-    resampler->SetOutputSpacing(targetSpacing);
+    resampler->SetOutputSpacing(tSpacing);
     resampler->SetOutputOrigin(source->GetOrigin());
     resampler->SetSize(newSize);
     resampler->Update();

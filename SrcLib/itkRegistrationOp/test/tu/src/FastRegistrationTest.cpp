@@ -69,6 +69,7 @@ void FastRegistrationTest::identityTest()
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.source               = reference;
     params.target               = target;
+    params.flipAxes             = {{false, false, false}};
     ::fwTools::DynamicType type = target->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
 
@@ -95,6 +96,7 @@ void FastRegistrationTest::translateTransformTest()
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.source               = reference;
     params.target               = target;
+    params.flipAxes             = {{false, false, false}};
     ::fwTools::DynamicType type = target->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
