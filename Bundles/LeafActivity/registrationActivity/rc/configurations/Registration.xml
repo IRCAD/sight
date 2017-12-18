@@ -47,8 +47,8 @@
             <matrix>
                 <![CDATA[
                    -1      0      0     0
-                    0     -1      0     0
-                    0      0      1     0
+                    0      1      0     0
+                    0      0     -1     0
                     0      0      0     1
                 ]]>
             </matrix>
@@ -58,7 +58,7 @@
             <matrix>
                 <![CDATA[
                     -1      0     0     0
-                     0      1     0     0
+                     0     -1     0     0
                      0      0    -1     0
                      0      0     0     1
                 ]]>
@@ -414,7 +414,7 @@
             <log>true</log>
         </service>
 
-        <service uid="fastRegistration" type="::opItkRegistration::SFastRegistration">
+        <service uid="fastRegistration" type="::opItkRegistration::SFastRegistration" worker="fastRegistrationWorker">
             <in key="source" uid="${referenceImageUid}"/>
             <in key="target" uid="${targetImageUid}"/>
             <in key="flipTransform" uid="flipTransform"/>

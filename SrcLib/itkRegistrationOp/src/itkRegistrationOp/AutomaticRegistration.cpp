@@ -202,7 +202,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     // Registration.
     m_registrator = RegistrationMethodType::New();
-    auto optimizer   = OptimizerType::New();
+    auto optimizer = OptimizerType::New();
 
     m_registrator->SetMetric(metric);
     m_registrator->SetOptimizer(optimizer);
@@ -285,7 +285,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     m_optimizer = nullptr;
 
-        // Get the last transform.
+    // Get the last transform.
     const TransformType* finalTransform = m_registrator->GetTransform();
 
     convertToF4sMatrix(finalTransform, _trf);
@@ -367,12 +367,12 @@ void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::Tran
     const ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
     const ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();
 
-        // Convert ::itk::RigidTransform to f4s matrix.
-        for(std::uint8_t i = 0; i < 3; ++i)
-        {
+    // Convert ::itk::RigidTransform to f4s matrix.
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
         _f4sMat->setCoefficient(i, 3, offset[i]);
-            for(std::uint8_t j = 0; j < 3; ++j)
-            {
+        for(std::uint8_t j = 0; j < 3; ++j)
+        {
             _f4sMat->setCoefficient(i, j, rigidMat(i, j));
         }
     }
