@@ -80,6 +80,12 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
                     break;
+                case VTK_POLY_VERTEX:
+                    for(vtkIdType i = 0; i < idList->GetNumberOfIds(); ++i)
+                    {
+                        meshHelper.insertNextCell( idList->GetId(i));
+                    }
+                    break;
                 default:
                     FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
