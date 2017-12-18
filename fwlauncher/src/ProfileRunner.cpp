@@ -101,7 +101,7 @@ std::pair<std::string, std::string> parsePns(const std::string& s)
 /// std::transform
 PathType absolute( const PathType& path )
 {
-    return fs::absolute(path);
+    return fs::absolute(path).normalize();
 }
 
 //-----------------------------------------------------------------------------
@@ -125,14 +125,17 @@ int main(int argc, char* argv[])
     PathType profileFile;
     ::fwRuntime::profile::Profile::ParamsContainer profileArgs;
 
+    // Launcher options
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1, std::string(BUNDLE_RC_PREFIX) + "/")),
+        ("bundle-path,B", po::value(&bundlePaths)->default_value
+            (PathListType(1, (::fwRuntime::Runtime::getDefault()->getWorkingPath() / BUNDLE_RC_PREFIX).string())),
         "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 
+    // Log options
     bool consoleLog = CONSOLE_LOG;
     bool fileLog    = FILE_LOG;
     std::string logFile;
@@ -157,6 +160,7 @@ int main(int argc, char* argv[])
         ("log-fatal", po::value(&logLevel)->implicit_value(SpyLogger::SL_FATAL)->zero_tokens(), "Set loglevel to fatal")
     ;
 
+    // Hidden options
     po::options_description hidden("Hidden options");
     hidden.add_options()
 #ifdef __MACOSX__
@@ -167,12 +171,14 @@ int main(int argc, char* argv[])
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
     ;
 
+    // Set options
     po::options_description cmdline_options;
     cmdline_options.add(options).add(logOptions).add(hidden);
 
     po::positional_options_description p;
     p.add("profile", 1).add("profile-args", -1);
 
+    // Get options
     po::variables_map vm;
 
     try
@@ -193,6 +199,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // If help
     if (vm.count("help"))
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
@@ -201,6 +208,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    // Log file
     SpyLogger& logger = fwCore::log::SpyLogger::getSpyLogger();
 
     if(consoleLog)
@@ -268,19 +276,36 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    OSLM_INFO_IF( "Bundle paths are: " << bundlePaths << std::endl, vm.count("bundle-path") );
-    OSLM_INFO_IF( "Profile: " << profileFile << std::endl, vm.count("profile"));
-    OSLM_INFO_IF( "Profile-args: " << profileArgs << std::endl, vm.count("profile-args") );
+    OSLM_INFO_IF( "Runtime working directory: " << rwd << " => " << ::absolute(rwd), vm.count("rwd") );
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        OSLM_INFO_IF( "Bundle paths are: " << bundlePath.string() << " => " << ::absolute(bundlePath),
+                      vm.count("bundle-path") );
+    }
+    OSLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
+    OSLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
 
-    std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), absolute );
-    profileFile = fs::absolute(profileFile);
+    // Check if path exist
+    OSLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
+                       rwd), !::boost::filesystem::exists(rwd.string()) );
+    for(const fs::path& bundlePath :  bundlePaths )
+    {
+        OSLM_FATAL_IF( "Bundle paths doesn't exist: " << bundlePath.string() << " => " << ::absolute(
+                           bundlePath), !::boost::filesystem::exists(bundlePath.string()) );
+    }
+    OSLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
+                       profileFile), !::boost::filesystem::exists(profileFile.string()));
+
+    std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), ::absolute );
+    profileFile = ::absolute(profileFile);
+    rwd         = ::absolute(rwd);
 
 #ifdef _WIN32
-    const bool isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
+    const bool isChdirOk = static_cast<bool>(SetCurrentDirectory(rwd.string().c_str()) != 0);
 #else
     const bool isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
 #endif // _WIN32
-    OSLM_ERROR_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
+    OSLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
     for(const fs::path& bundlePath :  bundlePaths )
     {
