@@ -33,6 +33,8 @@ namespace opItkRegistration
        <minStep>0.0001</minStep>
        <maxIterations>500</maxIterations>
        <metric>MeanSquare</metric>
+       <levels>4:10;2:6;1:0</levels>
+       <log>false</log>
    </service>
    @endcode
  * @subsection Input Input
@@ -50,6 +52,10 @@ namespace opItkRegistration
  * even if it didn't find a suitable result.
  * - \b metric : the metric used to compare the two images. Possible values are :
  * MeanSquares : fastest metric, only works when matching images with the same intensity values.
+ * - \b levels (optional, default=1:0): multi-resolution levels seperated by semicolons
+ * with their parameters separated by colons.
+ * - \b log (optional, defaul=false): enable/disable logging, outputs stats in a CSV file at each registration step.
+ *
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
@@ -57,7 +63,7 @@ class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAutomaticRegistration)(::fwServices::IOperator) );
+    fwCoreServiceClassDefinitionsMacro( (SAutomaticRegistration)(::fwServices::IOperator) )
 
     /// Constructor, does nothing.
     OPITKREGISTRATION_API SAutomaticRegistration();
@@ -101,14 +107,27 @@ private:
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
     void setMetric(const std::string& metricName);
 
+    /// Extract the level at the end of the parameter name.
+    /// Create the level if it doesn't exist
+    unsigned long extractLevelFromParameterName(const std::string& name );
+
     /// Smallest step that can be taken by the optimizer.
     double m_minStep;
 
     /// Maximum number of iterations allowed.
     unsigned long m_maxIterations;
 
+    /// Flag enabling the registration log.
+    bool m_log = { false };
+
     /// Metric used by the optimizer.
     ::itkRegistrationOp::MetricType m_metric;
+
+    /// Shrink factors per level and smoothing sigmas per level.
+    ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType m_multiResolutionParameters;
+
+    /// Percentage of samples used for registration.
+    ::itkRegistrationOp::AutomaticRegistration::RealType m_samplingPercentage;
 };
 
 } // namespace opItkRegistration

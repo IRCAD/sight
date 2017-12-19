@@ -12,9 +12,15 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
+
+#include <chrono>
+#include <fstream>
+#include <iomanip>
 
 namespace opItkRegistration
 {
@@ -55,14 +61,46 @@ void SAutomaticRegistration::configuring()
     OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("metric", "");
-    setMetric(metric);
+    this->setMetric(metric);
+
+    const std::string shrinkList = config.get< std::string >("levels", "");
+    std::string sigmaShrinkPair;
+
+    std::istringstream shrinksStream(shrinkList);
+    while(std::getline(shrinksStream, sigmaShrinkPair, ';'))
+    {
+        std::istringstream sigmaShrinkStream(sigmaShrinkPair);
+        std::vector<std::string> parameters;
+        std::string token;
+
+        while(std::getline(sigmaShrinkStream, token, ':'))
+        {
+            parameters.push_back(token);
+        }
+
+        SLM_ASSERT("There must be two parameters: shrink and sigma.", parameters.size() == 2);
+
+        const unsigned long shrink = std::stoul(parameters[0]);
+        const double sigma         = std::stod(parameters[1]);
+
+        m_multiResolutionParameters.push_back(std::make_pair(shrink, sigma));
+    }
+
+    if(m_multiResolutionParameters.empty())
+    {
+        // By default, no multi-resolution
+        m_multiResolutionParameters.push_back( std::make_pair( 1, 0.0 ));
+    }
+
+    m_samplingPercentage = config.get< double >("samplingPercentage", 1.);
+
+    m_log = config.get< bool >("log", false);
 }
 
 //------------------------------------------------------------------------------
 
 void SAutomaticRegistration::starting()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -84,14 +122,104 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'reference' found !", reference);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::AutomaticRegistration::registerImage(target, reference, transform, m_metric, m_minStep,
-                                                              m_maxIterations);
+    // Create a copy of m_multiResolutionParameters without empty values
+    ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType
+        multiResolutionParameters(m_multiResolutionParameters.size());
 
-    m_sigComputed->asyncEmit();
+    typedef ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
+
+    std::remove_copy_if(m_multiResolutionParameters.begin(),
+                        m_multiResolutionParameters.end(),
+                        multiResolutionParameters.begin(),
+                        [](const ParamPairType& v){return v.first == 0; });
+
+    ::itkRegistrationOp::AutomaticRegistration registrator;
+
+    ::fwGui::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
+
+    dialog.setCancelCallback([&registrator]()
+        {
+            registrator.stopRegistration();
+        });
+
+    std::fstream regLog;
+
+    if(m_log)
+    {
+        std::stringstream fileNameStream;
+        const std::time_t systemTime = std::time(nullptr);
+        fileNameStream << "registration_" << std::put_time(std::localtime(&systemTime), "%Y-%m-%d_%H-%M-%S") << ".csv";
+
+        regLog.open(fileNameStream.str(), std::ios_base::out);
+        regLog << "'Timestamp',"
+               << "'Current level',"
+               << "'Current iteration',"
+               << "'Shrink',"
+               << "'Sigma',"
+               << "'Current metric value',"
+               << "'Current parameters',"
+               << "'Relaxation factor',"
+               << "'Learning rate',"
+               << "'Gradient magnitude tolerance',"
+               << "'Minimum step size',"
+               << "'Maximum number of iterations',"
+               << "'Sampling rate',"
+               << "'Number of levels'"
+               << std::endl;
+    }
 
     auto transfoModifiedSig = transform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
                                   (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
+    size_t i = 0;
+
+    ::itkRegistrationOp::AutomaticRegistration::IterationCallbackType iterationCallback =
+        [&]()
+        {
+            const ::itk::SizeValueType currentIteration = registrator.getCurrentIteration();
+            const ::itk::SizeValueType currentLevel     = registrator.getCurrentLevel();
+
+            const float progress = float(i++)/float(m_maxIterations * multiResolutionParameters.size());
+
+            std::string msg = "Number of iterations : " + std::to_string(i) + " Current level : "
+                              + std::to_string(currentLevel);
+            dialog(progress, msg);
+            dialog.setMessage(msg);
+
+            if(m_log)
+            {
+                const std::chrono::time_point<std::chrono::high_resolution_clock> now =
+                    std::chrono::high_resolution_clock::now();
+
+                const auto duration = now - regStartTime;
+
+                regLog << "'" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "',"
+                       << "'" << currentLevel << "',"
+                       << "'" << currentIteration << "',"
+                       << "'" << multiResolutionParameters[currentLevel].first << "',"
+                       << "'" << multiResolutionParameters[currentLevel].second << "',"
+                       << "'" << registrator.getCurrentMetricValue() << "',"
+                       << "'" << registrator.getCurrentParameters() << "',"
+                       << "'" << registrator.getRelaxationFactor() << "',"
+                       << "'" << registrator.getLearningRate() << "',"
+                       << "'" << registrator.getGradientMagnitudeTolerance() << "',"
+                       << "'" << m_minStep << "',"
+                       << "'" << m_maxIterations << "',"
+                       << "'" << m_samplingPercentage << "',"
+                       << "'" << multiResolutionParameters.size() << "'"
+                       << std::endl;
+
+                regLog.flush(); // Flush, just to be sure.
+            }
+
+            transfoModifiedSig->asyncEmit();
+        };
+
+    registrator.registerImage(target, reference, transform, m_metric, multiResolutionParameters,
+                              m_samplingPercentage, m_minStep, m_maxIterations, iterationCallback);
+
+    m_sigComputed->asyncEmit();
     transfoModifiedSig->asyncEmit();
 }
 
@@ -99,7 +227,6 @@ void SAutomaticRegistration::updating()
 
 void SAutomaticRegistration::stopping()
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -138,6 +265,15 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     {
         m_minStep = val;
     }
+    else if(key.find("sigma_") != std::string::npos )
+    {
+        const unsigned long level = this->extractLevelFromParameterName(key);
+        m_multiResolutionParameters[level].second = val;
+    }
+    else if( key == "samplingPercentage" )
+    {
+        m_samplingPercentage = val;
+    }
     else
     {
         OSLM_FATAL("Unknown key : " << key);
@@ -153,6 +289,30 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
         OSLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
         m_maxIterations = static_cast<unsigned long>(val);
     }
+    else if(key.find("shrink_") != std::string::npos )
+    {
+        const unsigned long level = this->extractLevelFromParameterName(key);
+        m_multiResolutionParameters[level].first = ::itk::SizeValueType(val);
+    }
+    else
+    {
+        OSLM_FATAL("Unknown key : " << key);
+    }
+}
+
+//------------------------------------------------------------------------------
+unsigned long SAutomaticRegistration::extractLevelFromParameterName(const std::string& name)
+{
+    // find the level
+    const std::string levelSuffix = name.substr(name.find("_")+1);
+    const unsigned long level     = std::stoul(levelSuffix);
+
+    if(level >= m_multiResolutionParameters.size())
+    {
+        m_multiResolutionParameters.resize(level + 1, std::make_pair(0, 0.0));
+    }
+
+    return level;
 }
 
 //------------------------------------------------------------------------------

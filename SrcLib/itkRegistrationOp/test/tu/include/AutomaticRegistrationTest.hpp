@@ -22,6 +22,7 @@ CPPUNIT_TEST( identityTest );
 CPPUNIT_TEST( rigidTransformTest );
 CPPUNIT_TEST( translateTransformTest );
 CPPUNIT_TEST( rotationTransformTest );
+CPPUNIT_TEST( multiresolutionRotationTransformTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -32,6 +33,7 @@ public:
     void rigidTransformTest();
     void translateTransformTest();
     void rotationTransformTest();
+    void multiresolutionRotationTransformTest();
 
 };
 
