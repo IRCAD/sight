@@ -6,8 +6,6 @@
 
 #include "opItkRegistration/SFastRegistration.hpp"
 
-#include <fwCore/macros.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
@@ -15,6 +13,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
