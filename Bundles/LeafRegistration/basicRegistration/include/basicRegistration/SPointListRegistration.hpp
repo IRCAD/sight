@@ -31,12 +31,16 @@ namespace basicRegistration
            <inout key="registeredPL" uid="..." />
            <inout key="referencePL" uid="..." />
            <inout key="output" uid="..." />
+           <config mode="similarity" />
        </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b registeredPL [::fwData::PointList]: List containing the points to register.
  * - \b referencePL [::fwData::PointList]: List containing the reference points to match with the points to register.
  * - \b output [::fwData::TransformationMatrix3D]: Transformation matrix between the source and target points.
+ *
+ * @subsection Configuration Configuration
+ * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
 class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IController
