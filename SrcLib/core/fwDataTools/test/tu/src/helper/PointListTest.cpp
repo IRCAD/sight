@@ -135,7 +135,7 @@ void PointListTest::associatePointLists()
 
         // Associate empty point lists
         ::fwDataTools::helper::PointList::associate(pl1, ::fwData::TransformationMatrix3D::New(),
-                                                              pl2, ::fwData::TransformationMatrix3D::New());
+                                                    pl2, ::fwData::TransformationMatrix3D::New());
     }
 
     // Simple test with parallel point lists
@@ -157,7 +157,7 @@ void PointListTest::associatePointLists()
 
         // Associate the point lists
         ::fwDataTools::helper::PointList::associate(pl1, ::fwData::TransformationMatrix3D::New(),
-                                                              pl2, ::fwData::TransformationMatrix3D::New());
+                                                    pl2, ::fwData::TransformationMatrix3D::New());
 
         const ::fwData::PointList::PointListContainer points1 = pl1->getCRefPoints();
         ::fwData::PointList::PointListContainer points2 = pl2->getRefPoints();
