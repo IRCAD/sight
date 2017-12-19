@@ -56,11 +56,11 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
     for (size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
-        ::glm::dvec3 pt1                          = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
-        ::glm::dvec3 pt2                          = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
-        distanceArray[i]                          = ::glm::distance(pt1, pt2);
+        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        const ::glm::dvec3 pt1                          = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
+        const ::glm::dvec3 pt2                          = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
+        distanceArray[i] = ::glm::distance(pt1, pt2);
     }
 
     return outputArray;
@@ -96,8 +96,8 @@ void PointList::associate(const ::fwData::PointList::sptr& pointList1,
         ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, pt1);
         ::fwDataTools::TransformationMatrix3D::multiply(matrix2, pt2, pt2);
 
-        ::fwData::Point::PointCoordArrayType tmp1 = pt1->getCoord();
-        ::fwData::Point::PointCoordArrayType tmp2 = pt2->getCoord();
+        const ::fwData::Point::PointCoordArrayType tmp1 = pt1->getCoord();
+        const ::fwData::Point::PointCoordArrayType tmp2 = pt2->getCoord();
 
         // Update the point in the Point list
         points1[i]->setCoord(tmp1);
@@ -119,8 +119,8 @@ void PointList::associate(const ::fwData::PointList::sptr& pointList1,
         std::list< ::glm::dvec3 >::iterator it2 = list2.begin();
         for(; it2 != list2.end(); it2++)
         {
-            ::glm::dvec3 point2 = *it2;
-            const double distance = ::glm::distance(point1, point2);
+            const ::glm::dvec3 point2 = *it2;
+            const double distance     = ::glm::distance(point1, point2);
             if(distance < distanceMin)
             {
                 distanceMin    = distance;
@@ -143,7 +143,6 @@ void PointList::associate(const ::fwData::PointList::sptr& pointList1,
 }
 
 //-----------------------------------------------------------------------------
-
 
 } // namespace helper
 } // namespace fwDataTools
