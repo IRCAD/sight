@@ -87,7 +87,7 @@ void Plane::initializeMaterial()
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    int orientationIndex;
+    int orientationIndex = 0;
 
     switch (m_orientation)
     {
@@ -120,7 +120,7 @@ void Plane::initializeMaterial()
             SLM_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
-            ::Ogre::TextureFilterOptions filterType;
+            ::Ogre::TextureFilterOptions filterType = ::Ogre::TFO_NONE;
             switch(m_filtering)
             {
                 case FilteringEnumType::NONE:
@@ -360,7 +360,7 @@ void Plane::moveToOriginPosition()
 
 double Plane::getSliceWorldPosition() const
 {
-    ::Ogre::Real position;
+    ::Ogre::Real position = 0.f;
 
     switch(m_orientation)
     {
@@ -449,7 +449,7 @@ void Plane::changeSlice(float sliceIndex)
     ::Ogre::Real tex_height = static_cast< ::Ogre::Real >( m_texture->getHeight() );
     ::Ogre::Real tex_depth  = static_cast< ::Ogre::Real >( m_texture->getDepth() );
 
-    ::Ogre::MovablePlane* plane;
+    ::Ogre::MovablePlane* plane = nullptr;
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:

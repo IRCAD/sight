@@ -198,7 +198,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string method)
         isSupported = true;
     }
 
-    SLM_ASSERT("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", isSupported);
+    SLM_FATAL_IF("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", !isSupported);
     m_idvrMethod = method;
 
     this->createMaterialAndIDVRTechnique();

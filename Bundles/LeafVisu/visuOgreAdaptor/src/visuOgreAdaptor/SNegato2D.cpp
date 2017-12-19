@@ -225,7 +225,7 @@ void SNegato2D::newImage()
 
 void SNegato2D::changeSliceType(int /*_from*/, int _to)
 {
-    OrientationMode newOrientationMode;
+    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
 
     switch (_to)
     {
