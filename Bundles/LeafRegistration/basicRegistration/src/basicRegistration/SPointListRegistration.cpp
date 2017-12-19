@@ -81,36 +81,57 @@ void SPointListRegistration::updating()
         vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
-        // Match each point in both list according to the label
-        for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
+        const auto& firstPoint = referencePL->getCRefPoints()[0];
+
+        // If the points have labels ...
+        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
         {
-            const std::string& labelRef =
-                pointRef->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
-
-            for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
+            // ... Then match them according to that label.
+            for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
             {
-                const std::string& labelReg =
-                    pointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
+                const std::string& labelRef =
+                    pointRef->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
-                if(labelRef == labelReg)
+                for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
                 {
-                    auto coord = pointRef->getRefCoord();
-                    sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                    const std::string& labelReg =
+                        pointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
-                    OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
-                                   ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                    OSLM_TRACE(
-                        "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
-                        pointRef->getCoord()[2] );
+                    if(labelRef == labelReg)
+                    {
+                        auto coord = pointRef->getRefCoord();
+                        sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                    coord = pointReg->getRefCoord();
-                    targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
-                    OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
-                                   ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                    OSLM_TRACE(
-                        "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
-                        pointReg->getCoord()[2] );
+                        OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
+                                       ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
+                        OSLM_TRACE(
+                            "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
+                            pointRef->getCoord()[2] );
+
+                        coord = pointReg->getRefCoord();
+                        targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                        OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
+                                       ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
+                        OSLM_TRACE(
+                            "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
+                            pointReg->getCoord()[2] );
+                    }
                 }
+            }
+        }
+        else
+        {
+            // ... Else match them according to their order.
+            for(const auto& refPoint : referencePL->getCRefPoints())
+            {
+                const auto& coords = refPoint->getRefCoord();
+                sourcePts->InsertNextPoint(coords[0], coords[1], coords[2]);
+            }
+
+            for(const auto& regPoint : registeredPL->getCRefPoints())
+            {
+                const auto& coords = regPoint->getRefCoord();
+                targetPts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
         }
 
@@ -139,7 +160,7 @@ void SPointListRegistration::updating()
         {
             for(size_t c = 0; c < 4; ++c)
             {
-                matrix->setCoefficient(l, c, m->GetElement(l, c));
+                matrix->setCoefficient(l, c, m->GetElement(int(l), int(c)));
             }
         }
 
@@ -198,7 +219,7 @@ void SPointListRegistration::swapping()
 
 //----------------------------------------------------------------------------
 
-void SPointListRegistration::changeMode(std::string _value, std::string _key)
+void SPointListRegistration::changeMode(std::string _value, std::string)
 {
     if(_value == "RIGID")
     {

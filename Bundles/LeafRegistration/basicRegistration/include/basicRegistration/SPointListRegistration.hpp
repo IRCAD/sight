@@ -18,7 +18,7 @@ namespace basicRegistration
 
 /**
  * @brief   Register a point list against a reference point list. Each point in the list to register is matched
- *          with a point in the reference list according to its label.
+ *          with a point in the reference list according to their order or to their labels if they have any.
  *          The output is a transformation matrix.
  * @section Signals Signals
  * - \b errorComputed(double): emitted when registration error is computed.
