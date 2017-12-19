@@ -6,6 +6,8 @@
 
 #include "opItkRegistration/SFastRegistration.hpp"
 
+#include <fwCore/macros.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
