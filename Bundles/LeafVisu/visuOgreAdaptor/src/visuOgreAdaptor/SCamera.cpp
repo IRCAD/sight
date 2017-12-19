@@ -224,7 +224,7 @@ void SCamera::calibrate()
 
         m_camera->setFOVy(
             ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
-                                                       atan(static_cast< double >(m_calibration->getHeight() / 2.0) /
+                                                       atan(static_cast< double >(m_calibration->getHeight() / 2) /
                                                             fy))));
         this->updating();
     }

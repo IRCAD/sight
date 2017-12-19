@@ -61,7 +61,7 @@ class SummedAreaTableCompositorListener : public ::Ogre::CompositorInstance::Lis
 {
 public:
 
-    SummedAreaTableCompositorListener(int& readOffset, int& passOrientation, int& currentSliceIndex) :
+    SummedAreaTableCompositorListener(int& readOffset, int& passOrientation, size_t& currentSliceIndex) :
         m_readOffset(readOffset),
         m_passOrientation(passOrientation),
         m_currentSliceIndex(currentSliceIndex)
@@ -78,7 +78,7 @@ public:
 
         satPassParams->setNamedConstant("u_readOffset", m_readOffset);
         satPassParams->setNamedConstant("u_passOrientation", m_passOrientation);
-        satPassParams->setNamedConstant("u_sliceIndex", m_currentSliceIndex);
+        satPassParams->setNamedConstant("u_sliceIndex", static_cast<int>(m_currentSliceIndex));
     }
 
 private:
@@ -86,7 +86,7 @@ private:
 
     int& m_passOrientation;
 
-    int& m_currentSliceIndex;
+    size_t& m_currentSliceIndex;
 };
 
 //-----------------------------------------------------------------------------
@@ -134,16 +134,16 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     satInitPass->getFragmentProgramParameters()->setNamedConstant("u_sampleDistance", _sampleDistance);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    const int depth = static_cast<int>(m_satSize[2]);
+    const size_t depth = m_satSize[2];
 
     // Copy our original image to the source buffer.
-    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
     {
         ::Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
 
         compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", true);
 
-        m_currentSliceDepth = static_cast<float>(sliceIndex) / depth;
+        m_currentSliceDepth = static_cast<float>(sliceIndex / depth);
 
         m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->update(false);
 
@@ -151,7 +151,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     }
 
     // Enable SAT compositor.
-    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
     {
         ::Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
 
@@ -190,7 +190,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     }
 
     // Disable SAT compositor.
-    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
     {
         ::Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
 
@@ -214,11 +214,11 @@ void SummedAreaTable::updateSatFromTexture(::Ogre::TexturePtr _imgTexture)
         static_cast<size_t>(_imgTexture->getDepth())
     };
 
-    int width  = static_cast<int>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
-    int height = static_cast<int>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
-    int depth  = static_cast<int>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
+    const size_t width  = static_cast<size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
+    const size_t height = static_cast<size_t>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
+    const size_t depth  = static_cast<size_t>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
 
-    m_satSize = { static_cast<size_t>(width), static_cast<size_t>(height), static_cast<size_t>(depth) };
+    m_satSize = { width, height, depth };
 
     this->initializeSAT();
 }
@@ -229,11 +229,11 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 {
     m_satSizeRatio = _sizeRatio;
 
-    int width  = static_cast<int>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
-    int height = static_cast<int>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
-    int depth  = static_cast<int>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
+    const size_t width  = static_cast<size_t>(static_cast<float>(m_currentImageSize[0]) * m_satSizeRatio);
+    const size_t height = static_cast<size_t>(static_cast<float>(m_currentImageSize[1]) * m_satSizeRatio);
+    const size_t depth  = static_cast<size_t>(static_cast<float>(m_currentImageSize[2]) * m_satSizeRatio);
 
-    m_satSize = { static_cast<size_t>(width), static_cast<size_t>(height), static_cast<size_t>(depth) };
+    m_satSize = { width, height, depth };
 
     this->initializeSAT();
 }
@@ -287,7 +287,7 @@ void SummedAreaTable::initializeSAT()
         m_dummyCamera = m_sceneManager->createCamera(m_parentId + "_SummedAreaTable_DummyCamera");
     }
 
-    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
     {
         // Init source buffer
         ::Ogre::RenderTarget* renderTarget = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
