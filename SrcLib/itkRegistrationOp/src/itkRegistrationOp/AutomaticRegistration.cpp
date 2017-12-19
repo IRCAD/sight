@@ -6,6 +6,8 @@
 
 #include "itkRegistrationOp/AutomaticRegistration.hpp"
 
+#include "itkRegistrationOp/ItkImageCaster.hpp"
+
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/helper/Transform.hpp>
@@ -34,6 +36,8 @@
 
 namespace itkRegistrationOp
 {
+
+typedef typename ::itk::Image< float, 3 > RegisteredImageType;
 
 //------------------------------------------------------------------------------
 
@@ -114,7 +118,7 @@ struct ItkImageCaster
 
 //------------------------------------------------------------------------------
 
-static AutomaticRegistration::RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
+static RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
 {
     typedef ItkImageCaster<float> FloatCasterType;
 
@@ -230,9 +234,9 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     const std::uint8_t numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
 
     RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
-    shrinkFactorsPerLevel.SetSize( numberOfLevels);
+    shrinkFactorsPerLevel.SetSize( numberOfLevels );
     RegistrationMethodType::SmoothingSigmasArrayType smoothingSigmasPerLevel;
-    smoothingSigmasPerLevel.SetSize(numberOfLevels);
+    smoothingSigmasPerLevel.SetSize( numberOfLevels );
 
     // For each stages, we set the shrink factor and smoothing Sigma
     for( std::uint8_t i = 0; i < numberOfLevels; ++i  )

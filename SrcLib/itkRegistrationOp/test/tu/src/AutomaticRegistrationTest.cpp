@@ -6,6 +6,8 @@
 
 #include "AutomaticRegistrationTest.hpp"
 
+#include "helper.hpp"
+
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
 #include <itkRegistrationOp/Metric.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
@@ -41,68 +43,6 @@ namespace ut
 {
 
 typedef ::itk::Image< std::int16_t, 3> ImageType;
-
-//------------------------------------------------------------------------------
-
-::fwData::Image::sptr createSphereImage()
-{
-    ImageType::Pointer image = ImageType::New();
-    typedef itk::EllipseSpatialObject< 3 >   EllipseType;
-
-    typedef itk::SpatialObjectToImageFilter<
-            EllipseType, ImageType >   SpatialObjectToImageFilterType;
-
-    SpatialObjectToImageFilterType::Pointer imageFilter =
-        SpatialObjectToImageFilterType::New();
-
-    ImageType::SizeType size;
-    size[ 0 ] = 100;
-    size[ 1 ] = 100;
-    size[ 2 ] = 100;
-
-    imageFilter->SetSize( size );
-
-    ImageType::SpacingType spacing;
-    spacing.Fill(1);
-    imageFilter->SetSpacing(spacing);
-
-    EllipseType::Pointer ellipse = EllipseType::New();
-    EllipseType::ArrayType radiusArray;
-    radiusArray[0] = 10;
-    radiusArray[1] = 15;
-    radiusArray[2] = 20;
-    ellipse->SetRadius(radiusArray);
-
-    typedef EllipseType::TransformType TransformType;
-    TransformType::Pointer transform = TransformType::New();
-    transform->SetIdentity();
-
-    TransformType::OutputVectorType translation;
-    TransformType::CenterType center;
-
-    translation[ 0 ] = 50;
-    translation[ 1 ] = 50;
-    translation[ 2 ] = 50;
-    transform->Translate( translation, false );
-
-    ellipse->SetObjectToParentTransform( transform );
-
-    imageFilter->SetInput(ellipse);
-
-    ellipse->SetDefaultInsideValue(255);
-    ellipse->SetDefaultOutsideValue(0);
-    imageFilter->SetUseObjectValue( true );
-    imageFilter->SetOutsideValue( 0 );
-
-    imageFilter->Update();
-
-    image->Graft(imageFilter->GetOutput());
-
-    ::fwData::Image::sptr outputImage = ::fwData::Image::New();
-    ::fwItkIO::itkImageToFwDataImage(image, outputImage);
-
-    return outputImage;
-}
 
 //------------------------------------------------------------------------------
 
@@ -173,7 +113,7 @@ void AutomaticRegistrationTest::rigidTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::csptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
@@ -222,7 +162,7 @@ void AutomaticRegistrationTest::translateTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::csptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
@@ -264,7 +204,7 @@ void AutomaticRegistrationTest::rotationTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::csptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage< ::std::uint16_t, 3>();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
@@ -311,7 +251,7 @@ void AutomaticRegistrationTest::multiresolutionRotationTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::csptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage<std::uint16_t, 3>();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
