@@ -15,6 +15,10 @@
 namespace io
 {
 
+// Public slot
+const ::fwCom::Slots::SlotKeyType IWriter::s_SET_FILE_FOLDER = "setFileFolder";
+
+// Private slot
 static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
@@ -22,6 +26,7 @@ static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIH
 IWriter::IWriter() noexcept
 {
     newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
+    newSlot(s_SET_FILE_FOLDER, &IWriter::setFileFolder, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,6 +86,20 @@ void IWriter::setFolder(const ::boost::filesystem::path& folder)
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
     m_locations.clear();
     m_locations.push_back(folder);
+}
+
+//-----------------------------------------------------------------------------
+
+void IWriter::setFileFolder(boost::filesystem::path folder)
+{
+    FW_RAISE_IF("This reader doesn't manage file or files",
+                !(this->getIOPathType() & ::io::FILE) && !(this->getIOPathType() & ::io::FILES));
+
+    for(auto& file : m_locations)
+    {
+        file = file.filename();
+        file = folder / file;
+    }
 }
 
 //-----------------------------------------------------------------------------

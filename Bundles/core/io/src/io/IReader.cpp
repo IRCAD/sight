@@ -17,6 +17,10 @@ using fwRuntime::ConfigurationElementContainer;
 namespace io
 {
 
+// Public slot
+const ::fwCom::Slots::SlotKeyType IReader::s_SET_FILE_FOLDER = "setFileFolder";
+
+// Private slot
 static const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT   = "readFolder";
 static const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT     = "readFile";
 static const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT    = "readFiles";
@@ -30,6 +34,7 @@ IReader::IReader() noexcept
     newSlot(s_READ_FILE_SLOT, &IReader::readFile, this);
     newSlot(s_READ_FILES_SLOT, &IReader::readFiles, this);
     newSlot(s_CONFIGURE_WITH_IHM, &IReader::configureWithIHM, this);
+    newSlot(s_SET_FILE_FOLDER, &IReader::setFileFolder, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,6 +108,20 @@ void IReader::setFolder(const ::boost::filesystem::path& folder)
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
     m_locations.clear();
     m_locations.push_back(folder);
+}
+
+//-----------------------------------------------------------------------------
+
+void IReader::setFileFolder(boost::filesystem::path folder)
+{
+    FW_RAISE_IF("This reader doesn't manage file or files",
+                !(this->getIOPathType() & ::io::FILE) && !(this->getIOPathType() & ::io::FILES));
+
+    for(auto& file : m_locations)
+    {
+        file = file.filename();
+        file = folder / file;
+    }
 }
 
 //-----------------------------------------------------------------------------
