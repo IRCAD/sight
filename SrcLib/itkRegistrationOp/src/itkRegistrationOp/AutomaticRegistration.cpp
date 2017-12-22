@@ -268,14 +268,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     if(_callback)
     {
-        auto iterationCallback = [this, &_callback, &_trf]()
-                                 {
-                                     convertToF4sMatrix(m_registrator->GetTransform(), _trf);
-
-                                     _callback();
-                                 };
-
-        observer->setCallback(iterationCallback);
+        observer->setCallback(_callback);
         optimizer->AddObserver( ::itk::IterationEvent(), observer );
     }
 
@@ -366,6 +359,15 @@ itk::SizeValueType itkRegistrationOp::AutomaticRegistration::getCurrentLevel() c
 {
     OSLM_ASSERT("No registration process running.", m_registrator);
     return m_registrator->GetCurrentLevel();
+}
+
+//------------------------------------------------------------------------------
+
+void AutomaticRegistration::getCurrentMatrix(const ::fwData::TransformationMatrix3D::sptr& _trf) const
+{
+    OSLM_ASSERT("No registration process running.", m_registrator);
+    auto itkMatrix = m_registrator->GetTransform();
+    convertToF4sMatrix(itkMatrix, _trf);
 }
 
 //------------------------------------------------------------------------------
