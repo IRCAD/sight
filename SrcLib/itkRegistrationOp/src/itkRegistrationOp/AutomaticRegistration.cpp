@@ -183,6 +183,14 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     TransformType::Pointer itkTransform = TransformType::New();
 
+    const RegisteredImageType::SizeType targetSize = target->GetLargestPossibleRegion().GetSize();
+    ::itk::Vector<RealType, 3> targetCenter;
+
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
+        targetCenter[i] = RealType(targetSize[i]/2 - 1);
+    }
+
     ::itk::Matrix<RealType, 3, 3> m;
     ::itk::Vector<RealType, 3> t;
 
@@ -195,6 +203,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
         }
     }
 
+    itkTransform->SetCenter(targetCenter);
     // Setting the offset also recomputes the translation using the offset, rotation and center
     // so the matrix needs to be set first.
     itkTransform->SetMatrix(m);
