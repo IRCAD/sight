@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -87,53 +87,6 @@ private:
 
 //------------------------------------------------------------------------------
 
-template < typename OUTPUT_PIXELTYPE >
-struct ItkImageCaster
-{
-    typedef typename ::itk::Image<OUTPUT_PIXELTYPE, 3> OutputImageType;
-
-    struct Params
-    {
-        ::fwData::Image::csptr i_img;
-        typename OutputImageType::Pointer o_img;
-    };
-
-    //------------------------------------------------------------------------------
-
-    template< typename INPUT_PIXELTYPE >
-    void operator()(Params& p)
-    {
-        typedef typename ::itk::Image<INPUT_PIXELTYPE, 3> InputImageType;
-
-        // Convert to ITK.
-        typename InputImageType::Pointer tmp = ::fwItkIO::itkImageFactory< InputImageType >(p.i_img);
-
-        // Cast to the desired pixel type.
-        auto castFilter = ::itk::CastImageFilter<InputImageType, OutputImageType>::New();
-        castFilter->SetInput(tmp);
-        castFilter->Update();
-        p.o_img = castFilter->GetOutput();
-    }
-};
-
-//------------------------------------------------------------------------------
-
-static RegisteredImageType::Pointer castToFloat(const ::fwData::Image::csptr& _img)
-{
-    typedef ItkImageCaster<float> FloatCasterType;
-
-    typename FloatCasterType::Params p;
-    p.i_img = _img;
-
-    const ::fwTools::DynamicType inType = _img->getPixelType();
-
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, FloatCasterType >::invoke(inType, p);
-
-    return p.o_img;
-}
-
-//------------------------------------------------------------------------------
-
 void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           const ::fwData::Image::csptr& _reference,
                                           const ::fwData::TransformationMatrix3D::sptr& _trf,
@@ -148,8 +101,8 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           RealType >::Pointer metric;
 
     // Convert input images to float. Integer images aren't supported yet.
-    RegisteredImageType::Pointer target    = castToFloat(_target);
-    RegisteredImageType::Pointer reference = castToFloat(_reference);
+    RegisteredImageType::Pointer target    = castTo<float>(_target);
+    RegisteredImageType::Pointer reference = castTo<float>(_reference);
 
     // Choose a metric.
     switch(_metric)
