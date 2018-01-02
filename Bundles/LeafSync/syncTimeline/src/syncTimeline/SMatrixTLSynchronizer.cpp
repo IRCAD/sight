@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -84,26 +84,26 @@ void SMatrixTLSynchronizer::synchronize()
     {
         std::stringstream matrixPrint;
 
-        for (size_t i = 0; i < this->getKeyGroupSize(s_MATRICES_INOUT); ++i)
+        for(size_t matrixIndex = 0; matrixIndex < this->getKeyGroupSize(s_MATRICES_INOUT); ++matrixIndex)
         {
-            unsigned int index = static_cast< unsigned int >(i);
+            const unsigned int index = static_cast< unsigned int >(matrixIndex);
 
             if(buffer->isPresent(index))
             {
                 const float* values = buffer->getElement(index);
-                auto matrix         = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, i);
+                auto matrix         = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, matrixIndex);
 
                 {
                     ::fwData::mt::ObjectWriteLock lock(matrix);
-                    OSLM_ASSERT("Matrix['" << i << "] not found.", matrix);
+                    OSLM_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
 
-                    matrixPrint << std::endl << "Matrix[" << i << "]" << std::endl;
+                    matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
 
-                    for(unsigned int i = 0; i < 4; ++i)
+                    for(std::uint8_t i = 0; i < 4; ++i)
                     {
-                        for(unsigned int j = 0; j < 4; ++j)
+                        for(std::uint8_t j = 0; j < 4; ++j)
                         {
-                            matrix->setCoefficient(i, j, values[i*4+j]);
+                            matrix->setCoefficient(i, j, static_cast<double>(values[i*4+j]));
                             matrixPrint << values[i*4+j] << " ; ";
 
                         }

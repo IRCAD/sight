@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiTools/editor/SStatus.hpp"
 
+#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
@@ -35,14 +36,14 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SStatus, ::fwData::Object );
 
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT      = "changeToGreen";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
-const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
-const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
-const ::fwCom::Slots::SlotKeyType SStatus::s_INT_CHANGE_TO_GREEN_SLOT  = "intChangeToGreen";
-const ::fwCom::Slots::SlotKeyType SStatus::s_INT_CHANGE_TO_RED_SLOT    = "intChangeToRed";
-const ::fwCom::Slots::SlotKeyType SStatus::s_INT_CHANGE_TO_ORANGE_SLOT = "intChangeToOrange";
-const ::fwCom::Slots::SlotKeyType SStatus::s_INT_TOGGLE_GREEN_RED_SLOT = "intToggleGreenRed";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN           = "changeToGreen";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED             = "changeToRed";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE          = "changeToOrange";
+static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED          = "toggleGreenRed";
+static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_GREEN  = "positionChangeToGreen";
+static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_RED    = "positionChangeToRed";
+static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_ORANGE = "positionChangeToOrange";
+static const ::fwCom::Slots::SlotKeyType s_POSITION_TOGGLE_GREEN_RED = "positionToggleGreenRed";
 
 //-----------------------------------------------------------------------------
 
@@ -51,27 +52,14 @@ SStatus::SStatus() noexcept :
     m_width(20),
     m_height(20)
 {
-    m_slotChangeToGreen     = ::fwCom::newSlot( &SStatus::changeToGreen,  this );
-    m_slotChangeToRed       = ::fwCom::newSlot( &SStatus::changeToRed,    this );
-    m_slotChangeToOrange    = ::fwCom::newSlot( &SStatus::changeToOrange, this );
-    m_slotToggleGreenRed    = ::fwCom::newSlot( &SStatus::toggleGreenRed, this );
-    m_slotIntChangeToRed    = ::fwCom::newSlot( &SStatus::intChangeToRed,    this );
-    m_slotIntChangeToGreen  = ::fwCom::newSlot( &SStatus::intChangeToGreen,  this );
-    m_slotIntChangeToOrange = ::fwCom::newSlot( &SStatus::intChangeToOrange, this );
-    m_slotIntToggleGreenRed = ::fwCom::newSlot( &SStatus::intToggleGreenRed, this );
-
-    ::fwCom::HasSlots::m_slots
-        ( s_CHANGE_TO_GREEN_SLOT, m_slotChangeToGreen   )
-        ( s_CHANGE_TO_RED_SLOT, m_slotChangeToRed    )
-        ( s_CHANGE_TO_ORANGE_SLOT, m_slotChangeToOrange    )
-        ( s_TOGGLE_GREEN_RED_SLOT, m_slotToggleGreenRed )
-        ( s_INT_CHANGE_TO_GREEN_SLOT, m_slotIntChangeToGreen   )
-        ( s_INT_CHANGE_TO_RED_SLOT, m_slotIntChangeToRed    )
-        ( s_INT_CHANGE_TO_ORANGE_SLOT, m_slotIntChangeToOrange    )
-        ( s_INT_TOGGLE_GREEN_RED_SLOT, m_slotIntToggleGreenRed )
-    ;
-
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
+    newSlot(s_CHANGE_TO_GREEN, &SStatus::changeToGreen, this);
+    newSlot(s_CHANGE_TO_RED, &SStatus::changeToRed, this);
+    newSlot(s_CHANGE_TO_ORANGE, &SStatus::changeToOrange, this);
+    newSlot(s_TOGGLE_GREEN_RED, &SStatus::toggleGreenRed, this);
+    newSlot(s_POSITION_CHANGE_TO_GREEN, &SStatus::positionChangeToGreen, this);
+    newSlot(s_POSITION_CHANGE_TO_RED, &SStatus::positionChangeToRed, this);
+    newSlot(s_POSITION_CHANGE_TO_ORANGE, &SStatus::positionChangeToOrange, this);
+    newSlot(s_POSITION_TOGGLE_GREEN_RED, &SStatus::positionToggleGreenRed, this);
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +98,7 @@ void SStatus::starting()
     qtContainer->setLayout(layout);
     for(int i = 0; i < m_count; ++i)
     {
-        this->intChangeToRed(i);
+        this->positionChangeToRed(i);
     }
 }
 
@@ -226,7 +214,7 @@ void SStatus::toggleGreenRed(const bool green)
 
 //------------------------------------------------------------------------------
 
-void SStatus::intChangeToGreen(const int index)
+void SStatus::positionChangeToGreen(const int index)
 {
     OSLM_FATAL_IF(
         "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
@@ -238,9 +226,8 @@ void SStatus::intChangeToGreen(const int index)
 
 //------------------------------------------------------------------------------
 
-void SStatus::intChangeToRed(const int index)
+void SStatus::positionChangeToRed(const int index)
 {
-    OSLM_ERROR(" change du red cool");
     OSLM_FATAL_IF(
         "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
         index < 0 || index >= m_count);
@@ -251,7 +238,7 @@ void SStatus::intChangeToRed(const int index)
 
 //------------------------------------------------------------------------------
 
-void SStatus::intChangeToOrange(const int index)
+void SStatus::positionChangeToOrange(const int index)
 {
     OSLM_FATAL_IF(
         "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",
@@ -263,7 +250,7 @@ void SStatus::intChangeToOrange(const int index)
 
 //------------------------------------------------------------------------------
 
-void SStatus::intToggleGreenRed(const int index, const bool green)
+void SStatus::positionToggleGreenRed(const int index, const bool green)
 {
     OSLM_FATAL_IF(
         "Index("<<index <<") must be in vector range [0:" <<m_indicator.size()-1 <<"]",

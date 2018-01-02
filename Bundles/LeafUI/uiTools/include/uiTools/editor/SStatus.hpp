@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,27 +51,32 @@ namespace editor
        <orange>Started</orange>
    </service>
    @endcode
- * - \b form (optionnal, 'square' by default): the form of the indicator
- * - \b count (optionnal, '1' by default): the number of status
- * - \b layout(optionnal, 'horizontal' by default): orientation of the layout
- * - \b size (optionnal): the size of the indicator
- *   - \b width (optionnal, 20 by default): the width of the indicator
- *   - \b height (optionnal, 20 by default): the height of the indicator
- * - \b labels (optionnal): the description associated to the indicators
- *   - \b labelStatus (optionnal): the description associated to the indicator
- * - \b red (optionnal): the description associated to the red status
- * - \b green (optionnal): the description associated to the green status
- * - \b orange (optionnal): the description associated to the orange status
+ * - \b form (optional, 'square' by default): the form of the indicator
+ * - \b count (optional, '1' by default): the number of status
+ * - \b layout(optional, 'horizontal' by default): orientation of the layout
+ * - \b size (optional): the size of the indicator
+ *   - \b width (optional, 20 by default): the width of the indicator
+ *   - \b height (optional, 20 by default): the height of the indicator
+ * - \b labels (optional): the description associated to the indicators
+ *   - \b labelStatus (optional): the description associated to the indicator
+ * - \b red (optional): the description associated to the red status
+ * - \b green (optional): the description associated to the green status
+ * - \b orange (optional): the description associated to the orange status
  *
  * @section Slots Slots
- * - \b changeToGreen(): This slot allows to change the indicator color to green.
- * - \b changeToRed(): This slot allows to change the indicator color to red.
- * - \b changeToOrange(): This slot allows to change the indicator color to orange.
- * - \b toggleGreenRed(bool): This slot allows to change the indicator color to green or red.
- * - \b intChangeToGreen(int): This slot allows to change the indicator color to green for the ith status.
- * - \b intChangeToRed(int): This slot allows to change the indicator color to red for the ith status.
- * - \b intChangeToOrange(int): This slot allows to change the indicator color to orange for the ith status.
- * - \b intToggleGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith status.
+ * - \b changeToGreen(): This slot allows to change the indicator color to green. If there is more than one status, it
+ * only changes the first one.
+ * - \b changeToRed(): This slot allows to change the indicator color to red. If there is more than one status, it only
+ * changes the first one.
+ * - \b changeToOrange(): This slot allows to change the indicator color to orange. If there is more than one status, it
+ * only changes the first one.
+ * - \b toggleGreenRed(bool): This slot allows to change the indicator color to green or red. If there is more than one
+ * status, it only toggles the first one.
+ * - \b positionChangeToGreen(int): This slot allows to change the indicator color to green for the ith status.
+ * - \b positionChangeToRed(int): This slot allows to change the indicator color to red for the ith status.
+ * - \b positionChangeToOrange(int): This slot allows to change the indicator color to orange for the ith status.
+ * - \b positionToggleGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith
+ * status.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
                                   public ::gui::editor::IEditor
@@ -86,35 +91,6 @@ public:
 
     /// Destructor. Do nothing.
     UITOOLS_API virtual ~SStatus() noexcept;
-
-    /**
-     * @name Slots API
-     *@{
-     */
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN_SLOT;
-    typedef ::fwCom::Slot<void ()> ChangeToGreenSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED_SLOT;
-    typedef ::fwCom::Slot<void ()> ChangeToRedSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE_SLOT;
-    typedef ::fwCom::Slot<void ()> ChangeToOrangeSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED_SLOT;
-    typedef ::fwCom::Slot< void (const bool) > ToggleGreenRedSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_CHANGE_TO_GREEN_SLOT;
-    typedef ::fwCom::Slot<void (const int)> IntChangeToGreenSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_CHANGE_TO_RED_SLOT;
-    typedef ::fwCom::Slot<void (const int)> IntChangeToRedSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_CHANGE_TO_ORANGE_SLOT;
-    typedef ::fwCom::Slot<void (const int)> IntChangeToOrangeSlotType;
-
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_INT_TOGGLE_GREEN_RED_SLOT;
-    typedef ::fwCom::Slot< void (const int, const bool) > IntToggleGreenRedSlotType;
-    /** @} */
 
 protected:
 
@@ -155,16 +131,16 @@ protected:
     void toggleGreenRed(const bool green);
 
     /// SLOT : change ith label color
-    void intChangeToGreen(const int index);
+    void positionChangeToGreen(const int index);
 
     /// SLOT : change ith label color
-    void intChangeToRed(const int index);
+    void positionChangeToRed(const int index);
 
     /// SLOT : change ith label color
-    void intChangeToOrange(const int index);
+    void positionChangeToOrange(const int index);
 
     /// SLOT : change ith label color (true = green, false = red)
-    void intToggleGreenRed(const int index, const bool green);
+    void positionToggleGreenRed(const int index, const bool green);
 
 private:
 
@@ -173,30 +149,6 @@ private:
 
     QVector< QPointer< QLabel > > m_indicator;
     QVector< QPointer< QLabel > > m_labelStatus;
-
-    /// Slot to call changeToGreen()
-    ChangeToGreenSlotType::sptr m_slotChangeToGreen;
-
-    /// Slot to call changeToRed()
-    ChangeToRedSlotType::sptr m_slotChangeToRed;
-
-    /// Slot to call changeToOrange()
-    ChangeToOrangeSlotType::sptr m_slotChangeToOrange;
-
-    /// Slot to call toggleGreenRed(bool)
-    ToggleGreenRedSlotType::sptr m_slotToggleGreenRed;
-
-    /// Slot to call intChangeToGreen(int)
-    IntChangeToGreenSlotType::sptr m_slotIntChangeToGreen;
-
-    /// Slot to call intChangeToRed(int)
-    IntChangeToRedSlotType::sptr m_slotIntChangeToRed;
-
-    /// Slot to call intChangeToOrange(int)
-    IntChangeToOrangeSlotType::sptr m_slotIntChangeToOrange;
-
-    /// Slot to call intToggleGreenRed(int,bool)
-    IntToggleGreenRedSlotType::sptr m_slotIntToggleGreenRed;
 
     std::string m_greenTooltip; ///< Tooltip for green status
     std::string m_redTooltip; ///< Tooltip for red status
@@ -207,7 +159,6 @@ private:
 
     size_t m_width; ///< width of idicator
     size_t m_height; ///< height of idicator
-
 };
 
 } // namespace editor
