@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace basicRegistration
  * @section Signals Signals
  * - \b errorComputed(double): emitted when registration error is computed.
  * @section Slots Slots
- * - \b changeMode(std::string, std::string): called when registration mode is changed.
+ * - \b changeMode(std::string): called when registration mode is changed.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
@@ -97,7 +97,7 @@ protected:
 private:
 
     ///SLOT: changeMode
-    void changeMode(std::string _value, std::string _key);
+    void changeMode(std::string _value);
 
     /// Key source point list
     std::string m_registeredPointsKey;
