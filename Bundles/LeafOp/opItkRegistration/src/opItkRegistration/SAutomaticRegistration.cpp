@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -158,6 +158,7 @@ void SAutomaticRegistration::updating()
                << "'Sigma',"
                << "'Current metric value',"
                << "'Current parameters',"
+               << "'Current transform',"
                << "'Relaxation factor',"
                << "'Learning rate',"
                << "'Gradient magnitude tolerance',"
@@ -187,8 +188,22 @@ void SAutomaticRegistration::updating()
             dialog(progress, msg);
             dialog.setMessage(msg);
 
+            registrator.getCurrentMatrix(transform);
+
             if(m_log)
             {
+                std::stringstream transformStream;
+
+                for(std::uint8_t i = 0; i < 16; ++i)
+                {
+                    transformStream << transform->getRefCoefficients()[i];
+
+                    if(i != 15)
+                    {
+                        transformStream << ";";
+                    }
+                }
+
                 const std::chrono::time_point<std::chrono::high_resolution_clock> now =
                     std::chrono::high_resolution_clock::now();
 
@@ -201,6 +216,7 @@ void SAutomaticRegistration::updating()
                        << "'" << multiResolutionParameters[currentLevel].second << "',"
                        << "'" << registrator.getCurrentMetricValue() << "',"
                        << "'" << registrator.getCurrentParameters() << "',"
+                       << "'" << transformStream.str() << "',"
                        << "'" << registrator.getRelaxationFactor() << "',"
                        << "'" << registrator.getLearningRate() << "',"
                        << "'" << registrator.getGradientMagnitudeTolerance() << "',"

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,15 +85,18 @@ public:
     /// Current multi-resolution level.
     ITKREGISTRATIONOP_API ::itk::SizeValueType getCurrentLevel() const;
 
+    /// Current registration result.
+    ITKREGISTRATIONOP_API void getCurrentMatrix(const ::fwData::TransformationMatrix3D::sptr& _trf) const;
+
 private:
     typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
 
     typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
         RegistrationMethodType;
 
-    OptimizerType::Pointer m_optimizer;
+    OptimizerType::Pointer m_optimizer { nullptr };
 
-    RegistrationMethodType::Pointer m_registrator;
+    RegistrationMethodType::Pointer m_registrator { nullptr };
 
     static void convertToF4sMatrix(const TransformType* _itkMat, const ::fwData::TransformationMatrix3D::sptr& _f4sMat);
 };
