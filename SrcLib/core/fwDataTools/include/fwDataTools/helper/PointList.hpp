@@ -51,7 +51,7 @@ public:
      * @param pointList2 [::fwData::PointList]: pointlist that will be re-ordered
      * @param matrix2 [::fwData::TransformationMatrix3D]: transformation to apply to each points in pointlist2
      */
-    FWDATATOOLS_API static void associate(const ::fwData::PointList::sptr& pointList1,
+    FWDATATOOLS_API static void associate(const ::fwData::PointList::csptr& pointList1,
                                           const ::fwData::TransformationMatrix3D::csptr&  matrix1,
                                           ::fwData::PointList::sptr pointList2,
                                           const ::fwData::TransformationMatrix3D::csptr& matrix2);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,7 +94,7 @@ void PointListTest::computeDistance()
 
         // Build 2 point lists:
         // The first one with increasing x values
-        // And the second one with inscreasing x values but shifted in y
+        // And the second one with increasing x values but shifted in y
         for(size_t i = 0; i < nbPoints; i++)
         {
             p = ::fwData::Point::New(static_cast<float>(i), 0.0f, 0.0f);
