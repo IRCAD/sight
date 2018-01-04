@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,6 +51,27 @@ SPointListRegistration::~SPointListRegistration()
 
 void SPointListRegistration::configuring()
 {
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+
+    const std::string mode = config.get< std::string >("mode", "rigid");
+
+    if(mode == "rigid")
+    {
+        m_registrationMode = RIGID;
+    }
+    else if(mode == "similarity")
+    {
+        m_registrationMode = SIMILARITY;
+    }
+    else if(mode == "affine")
+    {
+        m_registrationMode = AFFINE;
+    }
+    else
+    {
+        SLM_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
+                  " Defaulting to 'rigid'.")
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -81,36 +102,57 @@ void SPointListRegistration::updating()
         vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
-        // Match each point in both list according to the label
-        for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
+        const auto& firstPoint = referencePL->getCRefPoints()[0];
+
+        // If the points have labels ...
+        if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
         {
-            const std::string& labelRef =
-                pointRef->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
-
-            for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
+            // ... Then match them according to that label.
+            for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
             {
-                const std::string& labelReg =
-                    pointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
+                const std::string& labelRef =
+                    pointRef->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
-                if(labelRef == labelReg)
+                for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
                 {
-                    auto coord = pointRef->getRefCoord();
-                    sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                    const std::string& labelReg =
+                        pointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
-                    OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
-                                   ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                    OSLM_TRACE(
-                        "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
-                        pointRef->getCoord()[2] );
+                    if(labelRef == labelReg)
+                    {
+                        auto coord = pointRef->getRefCoord();
+                        sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                    coord = pointReg->getRefCoord();
-                    targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
-                    OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
-                                   ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                    OSLM_TRACE(
-                        "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
-                        pointReg->getCoord()[2] );
+                        OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
+                                       ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
+                        OSLM_TRACE(
+                            "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
+                            pointRef->getCoord()[2] );
+
+                        coord = pointReg->getRefCoord();
+                        targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                        OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
+                                       ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
+                        OSLM_TRACE(
+                            "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
+                            pointReg->getCoord()[2] );
+                    }
                 }
+            }
+        }
+        else
+        {
+            // ... Else match them according to their order.
+            for(const auto& refPoint : referencePL->getCRefPoints())
+            {
+                const auto& coords = refPoint->getRefCoord();
+                sourcePts->InsertNextPoint(coords[0], coords[1], coords[2]);
+            }
+
+            for(const auto& regPoint : registeredPL->getCRefPoints())
+            {
+                const auto& coords = regPoint->getRefCoord();
+                targetPts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
         }
 
@@ -135,9 +177,9 @@ void SPointListRegistration::updating()
         // Get the resulting transformation matrix (this matrix takes the source points to the target points)
         vtkSmartPointer<vtkMatrix4x4> m = landmarkTransform->GetMatrix();
         m->Invert();
-        for(size_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0; l < 4; ++l)
         {
-            for(size_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0; c < 4; ++c)
             {
                 matrix->setCoefficient(l, c, m->GetElement(l, c));
             }
@@ -198,7 +240,7 @@ void SPointListRegistration::swapping()
 
 //----------------------------------------------------------------------------
 
-void SPointListRegistration::changeMode(std::string _value, std::string _key)
+void SPointListRegistration::changeMode(std::string _value)
 {
     if(_value == "RIGID")
     {

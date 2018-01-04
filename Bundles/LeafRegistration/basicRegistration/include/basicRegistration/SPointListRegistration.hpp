@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,12 @@ namespace basicRegistration
 
 /**
  * @brief   Register a point list against a reference point list. Each point in the list to register is matched
- *          with a point in the reference list according to its label.
+ *          with a point in the reference list according to their order or to their labels if they have any.
  *          The output is a transformation matrix.
  * @section Signals Signals
  * - \b errorComputed(double): emitted when registration error is computed.
  * @section Slots Slots
- * - \b changeMode(std::string, std::string): called when registration mode is changed.
+ * - \b changeMode(std::string): called when registration mode is changed.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
@@ -31,12 +31,16 @@ namespace basicRegistration
            <inout key="registeredPL" uid="..." />
            <inout key="referencePL" uid="..." />
            <inout key="output" uid="..." />
+           <config mode="similarity" />
        </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b registeredPL [::fwData::PointList]: List containing the points to register.
  * - \b referencePL [::fwData::PointList]: List containing the reference points to match with the points to register.
  * - \b output [::fwData::TransformationMatrix3D]: Transformation matrix between the source and target points.
+ *
+ * @subsection Configuration Configuration
+ * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
 class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IController
@@ -93,7 +97,7 @@ protected:
 private:
 
     ///SLOT: changeMode
-    void changeMode(std::string _value, std::string _key);
+    void changeMode(std::string _value);
 
     /// Key source point list
     std::string m_registeredPointsKey;
