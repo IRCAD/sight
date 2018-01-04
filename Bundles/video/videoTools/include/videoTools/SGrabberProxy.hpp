@@ -160,7 +160,7 @@ private:
     bool m_loopVideo { false };
 
     /// Configure if selected services are excluded (true) or included (false).
-    bool m_excludeOrInclude { false };
+    bool m_exclude { false };
 };
 
 } // namespace videoTools

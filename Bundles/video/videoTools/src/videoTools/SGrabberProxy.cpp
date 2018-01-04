@@ -94,8 +94,8 @@ void SGrabberProxy::configuring()
         SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
                     "'exclude' (to exclude the selection of the selector list).",
                     mode == "exclude" || mode == "include" );
-        m_excludeOrInclude = ( mode == "exclude" );
-        OSLM_DEBUG( "selection mode => " << (m_excludeOrInclude ? "Exclude" : "Include") );
+        m_exclude = ( mode == "exclude" );
+        OSLM_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
 
         const auto selectionCfg = subConfig.equal_range("addSelection");
         for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
@@ -236,7 +236,7 @@ void SGrabberProxy::startCamera()
                     }
                     else
                     {
-                        if(m_excludeOrInclude)
+                        if(m_exclude)
                         {
                             if(m_selectedServices.find(srvImpl) == m_selectedServices.end())
                             {
