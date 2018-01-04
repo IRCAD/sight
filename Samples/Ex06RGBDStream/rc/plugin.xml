@@ -284,8 +284,7 @@
             <!-- ***************************************** End connections declarations ***************************************** -->
             <!-- layouts -->
             <start uid="mainView" />
-            <!-- reconstruction services -->
-<!--            <start uid="synchronizer" />-->
+            <start uid="synchronizer" />
             <start uid="scanner" />
             <!-- TFEditor Scene2D -->
             <start uid="grid" />
