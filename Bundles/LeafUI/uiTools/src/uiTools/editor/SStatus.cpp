@@ -36,14 +36,14 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SStatus, ::fwData::Object );
 
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN           = "changeToGreen";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED             = "changeToRed";
-static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE          = "changeToOrange";
-static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED          = "toggleGreenRed";
-static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_GREEN  = "positionChangeToGreen";
-static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_RED    = "positionChangeToRed";
-static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_ORANGE = "positionChangeToOrange";
-static const ::fwCom::Slots::SlotKeyType s_POSITION_TOGGLE_GREEN_RED = "positionToggleGreenRed";
+const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN           = "changeToGreen";
+const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED             = "changeToRed";
+const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE          = "changeToOrange";
+const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED          = "toggleGreenRed";
+const ::fwCom::Slots::SlotKeyType SStatus::s_POSITION_CHANGE_TO_GREEN  = "positionChangeToGreen";
+const ::fwCom::Slots::SlotKeyType SStatus::s_POSITION_CHANGE_TO_RED    = "positionChangeToRed";
+const ::fwCom::Slots::SlotKeyType SStatus::s_POSITION_CHANGE_TO_ORANGE = "positionChangeToOrange";
+const ::fwCom::Slots::SlotKeyType SStatus::s_POSITION_TOGGLE_GREEN_RED = "positionToggleGreenRed";
 
 //-----------------------------------------------------------------------------
 

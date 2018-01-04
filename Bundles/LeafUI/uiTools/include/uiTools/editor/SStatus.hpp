@@ -92,6 +92,20 @@ public:
     /// Destructor. Do nothing.
     UITOOLS_API virtual ~SStatus() noexcept;
 
+    /**
+     * @name Slots API
+     *@{
+     */
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_GREEN;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_RED;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_ORANGE;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_TOGGLE_GREEN_RED;
+    /** @} */
+
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
