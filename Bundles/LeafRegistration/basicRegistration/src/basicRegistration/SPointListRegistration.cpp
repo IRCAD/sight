@@ -177,11 +177,11 @@ void SPointListRegistration::updating()
         // Get the resulting transformation matrix (this matrix takes the source points to the target points)
         vtkSmartPointer<vtkMatrix4x4> m = landmarkTransform->GetMatrix();
         m->Invert();
-        for(size_t l = 0; l < 4; ++l)
+        for(std::uint8_t l = 0; l < 4; ++l)
         {
-            for(size_t c = 0; c < 4; ++c)
+            for(std::uint8_t c = 0; c < 4; ++c)
             {
-                matrix->setCoefficient(l, c, m->GetElement(int(l), int(c)));
+                matrix->setCoefficient(l, c, m->GetElement(l, c));
             }
         }
 
