@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -141,13 +141,13 @@ void SGrabberProxy::startCamera()
             const auto srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
-            auto srvImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
-                                                                            "::arServices::IRGBDGrabber");
+            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                                 "::arServices::IRGBDGrabber");
             if(m_type == CameraType::RGB)
             {
-                auto rgbSrvImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
-                                                                                   "::arServices::IGrabber");
-                std::move(rgbSrvImpl.begin(), rgbSrvImpl.end(), std::back_inserter(srvImpl));
+                auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                                        "::arServices::IGrabber");
+                std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
             }
 
             auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
@@ -159,7 +159,7 @@ void SGrabberProxy::startCamera()
 
             std::vector< std::string > availableExtensionsSelector;
 
-            for(const auto& srvImpl : srvImpl)
+            for(const auto& srvImpl : grabbersImpl)
             {
                 if(srvImpl != "::videoTools::SGrabberProxy")
                 {
@@ -167,13 +167,13 @@ void SGrabberProxy::startCamera()
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);
                     const auto config = this->getConfigTree();
 
+                    // 1. Verify that we have the same number of timelines
                     objectsType.erase(std::remove_if(objectsType.begin(), objectsType.end(),
                                                      [ & ](const std::string& _type)
                         {
                             return _type != "::arData::FrameTL";
                         }), objectsType.end());
 
-                    // 1. Filter against the objects types
                     size_t numTL   = 0;
                     auto inoutsCfg = config.equal_range("inout");
                     for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
@@ -184,14 +184,12 @@ void SGrabberProxy::startCamera()
                         SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
                         const auto obj = this->getInOut< ::fwData::Object >(key);
                         SLM_ASSERT("Object key '" + key + "' not found", obj);
-                        if(obj->getClassname() != objectsType[numTL])
+                        if(obj->getClassname() == "::arData::FrameTL")
                         {
-                            // Skip this implementation if we don't have the same object type
-                            continue;
+                            ++numTL;
                         }
-                        ++numTL;
                     }
-                    if(numTL != config.count("inout"))
+                    if(numTL > objectsType.size())
                     {
                         continue;
                     }
