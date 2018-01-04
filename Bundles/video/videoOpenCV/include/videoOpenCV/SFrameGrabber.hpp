@@ -35,7 +35,7 @@ namespace videoOpenCV
 /**
  * @brief   OpenCV player
  *
- * Defines the service which grab video frame with OpenCV.
+ * Defines the service grabbing video frame with OpenCV.
  *
  * @note Only file source is currently managed.
  * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jpg). The service uses

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,8 +62,7 @@ namespace videoTools
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
- *  - \b type
- *      - \b
+ *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection
  *      - \b mode (optional) : must be include (to add the selection to selector list ) or exclude (to exclude the
  * selection of the selector list).

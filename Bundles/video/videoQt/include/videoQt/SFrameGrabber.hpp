@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ namespace videoQt
 /**
  * @brief   QtMultimedia player
  *
- * Defines the service which grab video frame.
+ * Defines the service grabbing video frame.
  *
  * \b Tags: FILE,STREAM,DEVICE
  *
