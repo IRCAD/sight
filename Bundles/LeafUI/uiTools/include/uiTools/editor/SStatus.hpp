@@ -36,7 +36,7 @@ namespace editor
  * @code{.xml}
    <service uid="..." type="::uiTools::editor::SStatus">
        <form>square|circle</form>
-       <count>1</count>
+       <count>2</count>
        <layout>horizontal|vertical</layout>
        <size>
            <width>20</width>
@@ -57,25 +57,26 @@ namespace editor
  * - \b size (optional): the size of the indicator
  *   - \b width (optional, 20 by default): the width of the indicator
  *   - \b height (optional, 20 by default): the height of the indicator
- * - \b labels (optional): the description associated to the indicators
- *   - \b labelStatus (optional): the description associated to the indicator
+ * - \b labels (optional): the description associated to the indicators when count > 1
+ *   - \b labelStatus (optional): the description associated to each indicator
+ * - \b labelStatus (optional): the description associated to the indicator when count = 1 or is missing
  * - \b red (optional): the description associated to the red status
  * - \b green (optional): the description associated to the green status
  * - \b orange (optional): the description associated to the orange status
  *
  * @section Slots Slots
  * - \b changeToGreen(): This slot allows to change the indicator color to green. If there is more than one status, it
- * only changes the first one.
- * - \b changeToRed(): This slot allows to change the indicator color to red. If there is more than one status, it only
- * changes the first one.
+ * changes them all.
+ * - \b changeToRed(): This slot allows to change the indicator color to red. If there is more than one status, it
+ * changes them all.
  * - \b changeToOrange(): This slot allows to change the indicator color to orange. If there is more than one status, it
- * only changes the first one.
- * - \b toggleGreenRed(bool): This slot allows to change the indicator color to green or red. If there is more than one
- * status, it only toggles the first one.
- * - \b positionChangeToGreen(int): This slot allows to change the indicator color to green for the ith status.
- * - \b positionChangeToRed(int): This slot allows to change the indicator color to red for the ith status.
- * - \b positionChangeToOrange(int): This slot allows to change the indicator color to orange for the ith status.
- * - \b positionToggleGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith
+ * changes them all.
+ * - \b toggleGreenRed(bool): This slot allows to change the indicator color to green or red. If there is more than one,
+ * it toggle them all.
+ * - \b changeNthToGreen(int): This slot allows to change the indicator color to green for the ith status.
+ * - \b changeNthToRed(int): This slot allows to change the indicator color to red for the ith status.
+ * - \b changeNthToOrange(int): This slot allows to change the indicator color to orange for the ith status.
+ * - \b toggleNthGreenRed(int,bool): This slot allows to change the indicator color to green or red for the ith
  * status.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
@@ -96,14 +97,14 @@ public:
      * @name Slots API
      *@{
      */
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_GREEN;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_RED;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_CHANGE_TO_ORANGE;
-    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_POSITION_TOGGLE_GREEN_RED;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_GREEN_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_RED_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_NTH_TO_GREEN_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_NTH_TO_RED_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_NTH_TO_ORANGE_SLOT;
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_NTH_GREEN_RED_SLOT;
     /** @} */
 
 protected:
@@ -144,17 +145,17 @@ protected:
     /// SLOT : change label color (true = green, false = red)
     void toggleGreenRed(const bool green);
 
-    /// SLOT : change ith label color
-    void positionChangeToGreen(const int index);
+    /// SLOT : change nth label color
+    void changeNthToGreen(const int index);
 
-    /// SLOT : change ith label color
-    void positionChangeToRed(const int index);
+    /// SLOT : change nth label color
+    void changeNthToRed(const int index);
 
-    /// SLOT : change ith label color
-    void positionChangeToOrange(const int index);
+    /// SLOT : change nth label color
+    void changeNthToOrange(const int index);
 
-    /// SLOT : change ith label color (true = green, false = red)
-    void positionToggleGreenRed(const int index, const bool green);
+    /// SLOT : change nth label color (true = green, false = red)
+    void toggleNthGreenRed(const int index, const bool green);
 
 private:
 
