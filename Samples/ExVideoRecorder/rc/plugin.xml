@@ -50,15 +50,15 @@
                 </registry>
             </service>
 
-            <service uid="startStopVideo" type="::gui::action::SDefaultButton" />
+            <service uid="startStopVideo" type="::gui::action::SDefault" />
             <service uid="pauseVideo" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>frameGrabber/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="frameRecording" type="::gui::action::SDefaultButton" />
-            <service uid="videoRecording" type="::gui::action::SDefaultButton" />
+            <service uid="frameRecording" type="::gui::action::SDefault" />
+            <service uid="videoRecording" type="::gui::action::SDefault" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
