@@ -152,10 +152,15 @@
                 <signal>startStopVideo/unchecked</signal>
                 <slot>frameGrabber/stopCamera</slot>
             </connect>
-            
+
             <connect>
                 <signal>camera/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSelector/configuredCameras</signal>
+                <slot>frameGrabber/reconfigure</slot>
             </connect>
 
             <start uid="mainFrame" />
