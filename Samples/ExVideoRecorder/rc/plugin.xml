@@ -89,13 +89,11 @@
 
             <service uid="frameWriter" type="::videoOpenCV::SFrameWriter" worker="videoRecordingWorker">
                 <in key="data" uid="frameTL" autoConnect="yes" />
-                <windowTitle>Select the image file to load</windowTitle>
                 <format>.tiff</format>
             </service>
 
             <service uid="videoWriter" type="::videoOpenCV::SVideoWriter" worker="videoRecordingWorker">
                 <in key="data" uid="frameTL" autoConnect="yes" />
-                <windowTitle>Select the image file to load</windowTitle>
             </service>
 
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
