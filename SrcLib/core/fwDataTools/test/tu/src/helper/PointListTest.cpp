@@ -12,7 +12,11 @@
 #include <fwCore/Exception.hpp>
 
 #include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
+
+#include <glm/geometric.hpp>
+#include <glm/vec3.hpp>
+
+#include <random>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::PointListTest );
@@ -134,18 +138,19 @@ void PointListTest::associatePointLists()
         pl2 = ::fwData::PointList::New();
 
         // Associate empty point lists
-        ::fwDataTools::helper::PointList::associate(pl1, ::fwData::TransformationMatrix3D::New(),
-                                                    pl2, ::fwData::TransformationMatrix3D::New());
+        ::fwDataTools::helper::PointList::associate(pl1, pl2);
+
+        CPPUNIT_ASSERT(checkAssociation(pl1, pl2));
     }
 
-    // Simple test with parallel point lists
+    // Test with simple matrices
+    // Create two lists with the same sets of points and shift them with transformation matrices
+    // Associating them should make the x components match
     {
         pl1 = ::fwData::PointList::New();
         pl2 = ::fwData::PointList::New();
 
-        // Build 2 point lists:
-        // The first one with increasing x values
-        // And the second one with inscreasing x values but shifted in y
+        // Build 2 point lists with the same points, the point are in the inverse order in the second list
         for(size_t i = 0; i <= nbPoints; i++)
         {
             p = ::fwData::Point::New(static_cast<float>(i), 0.0f, 0.0f);
@@ -155,27 +160,109 @@ void PointListTest::associatePointLists()
             pl2->pushBack(p);
         }
 
+        // Transform the point lists, shift the points in y
+        ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        tf1->setCoefficient(1, 3, 42.0);
+        ::fwData::TransformationMatrix3D::sptr tf2 = ::fwData::TransformationMatrix3D::New();
+        tf2->setCoefficient(1, 3, -42.0);
+
+        ::fwDataTools::helper::PointList::transform(pl1, tf1);
+        ::fwDataTools::helper::PointList::transform(pl2, tf2);
+
         // Associate the point lists
-        ::fwDataTools::helper::PointList::associate(pl1, ::fwData::TransformationMatrix3D::New(),
-                                                    pl2, ::fwData::TransformationMatrix3D::New());
+        ::fwDataTools::helper::PointList::associate(pl1, pl2);
 
-        const ::fwData::PointList::PointListContainer points1 = pl1->getCRefPoints();
-        ::fwData::PointList::PointListContainer points2 = pl2->getRefPoints();
-
-        const size_t size = points1.size();
-
-        for(size_t i = 0; i < size; ++i)
-        {
-            ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-            ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
-
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[2], tmp2[2], 1e-8);
-        }
-
+        CPPUNIT_ASSERT(checkAssociation(pl1, pl2));
     }
 
+    // Test with random point lists
+    // Fill two point lists with random points
+    // Check that the matched points are really the closest
+    {
+        pl1 = ::fwData::PointList::New();
+        pl2 = ::fwData::PointList::New();
+
+        std::default_random_engine generator;
+        std::uniform_real_distribution<double> distribution(-10, 10);
+        int dice_roll = distribution(generator);
+
+        // Build 2 point lists with the same points, the point are in the inverse order in the second list
+        for(size_t i = 0; i <= nbPoints; i++)
+        {
+            p = ::fwData::Point::New(distribution(generator), distribution(generator), distribution(generator));
+            pl1->pushBack(p);
+
+            p = ::fwData::Point::New(distribution(generator), distribution(generator), distribution(generator));
+            pl2->pushBack(p);
+        }
+
+        // Transform the point lists, shift the points in y
+        ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
+        tf1->setCoefficient(1, 3, 42.0);
+        ::fwData::TransformationMatrix3D::sptr tf2 = ::fwData::TransformationMatrix3D::New();
+        tf2->setCoefficient(1, 3, -42.0);
+
+        ::fwDataTools::helper::PointList::transform(pl1, tf1);
+        ::fwDataTools::helper::PointList::transform(pl2, tf2);
+
+        // Associate the point lists
+        ::fwDataTools::helper::PointList::associate(pl1, pl2);
+
+        CPPUNIT_ASSERT(checkAssociation(pl1, pl2));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool PointListTest::checkAssociation(const ::fwData::PointList::csptr& pl1, const ::fwData::PointList::csptr& pl2)
+{
+    bool associationOK = true;
+
+    const ::fwData::PointList::PointListContainer points1 = pl1->getCRefPoints();
+    const ::fwData::PointList::PointListContainer points2 = pl2->getCRefPoints();
+
+    const size_t size1 = points1.size();
+    const size_t size2 = points2.size();
+
+    int closestPointRank;
+    double closestPointDistance;
+
+    // Take each point of list1
+    for(size_t i = 0; i < size1; ++i)
+    {
+        closestPointRank     = -1;
+        closestPointDistance = std::numeric_limits<double>::max();
+
+        ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
+        ::glm::dvec3 p1                           = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
+
+        // ... And compare it to each point of list 2 to find the closest point
+        // We start at the current index i, because the previous points are already associated
+        // Normally it should be the point with the same rank
+        for(size_t j = i; j < size2; j++)
+        {
+            ::fwData::Point::PointCoordArrayType tmp2 = points2[j]->getCRefCoord();
+            ::glm::dvec3 p2                           = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
+
+            double d = ::glm::distance(p1, p2);
+
+            if(d < closestPointDistance)
+            {
+                closestPointRank     = j;
+                closestPointDistance = d;
+            }
+        }
+
+        // If the closest point is not the point of same rank
+        // Then there is an error
+        if(i != closestPointRank)
+        {
+            associationOK = false;
+            break;
+        }
+    }
+
+    return associationOK;
 }
 
 } //namespace ut

@@ -7,6 +7,8 @@
 #ifndef __FWDATATOOLS_UT_HELPER_POINTLISTTEST_HPP__
 #define __FWDATATOOLS_UT_HELPER_POINTLISTTEST_HPP__
 
+#include <fwData/PointList.hpp>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwDataTools
@@ -30,6 +32,8 @@ public:
     void computeDistance();
 
     void associatePointLists();
+
+    bool checkAssociation(const ::fwData::PointList::csptr&, const ::fwData::PointList::csptr&);
 };
 } //namespace ut
 } //namespace fwDataTools

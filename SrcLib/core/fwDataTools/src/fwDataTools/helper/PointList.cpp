@@ -68,10 +68,30 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
 //------------------------------------------------------------------------------
 
+void PointList::transform(const ::fwData::PointList::csptr& pointList,
+                          const ::fwData::TransformationMatrix3D::csptr&  matrix)
+{
+    ::fwData::PointList::PointListContainer points = pointList->getPoints();
+    const size_t size = points.size();
+
+    for(size_t i = 0; i < size; ++i)
+    {
+        ::fwData::Point::sptr& pt = points[i];
+
+        // Transform the current point with the input matrix
+        ::fwDataTools::TransformationMatrix3D::multiply(matrix, pt, pt);
+
+        const ::fwData::Point::PointCoordArrayType tmp = pt->getCoord();
+
+        // Update the point in the Point list
+        points[i]->setCoord(tmp);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void PointList::associate(const ::fwData::PointList::csptr& pointList1,
-                          const ::fwData::TransformationMatrix3D::csptr& matrix1,
-                          ::fwData::PointList::sptr pointList2,
-                          const ::fwData::TransformationMatrix3D::csptr& matrix2)
+                          ::fwData::PointList::sptr pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
                pointList1->getCRefPoints().size() == pointList2->getCRefPoints().size() );
@@ -89,24 +109,12 @@ void PointList::associate(const ::fwData::PointList::csptr& pointList1,
 
     for(size_t i = 0; i < size; ++i)
     {
-        ::fwData::Point::sptr& pt1 = points1[i];
-        ::fwData::Point::sptr& pt2 = points2[i];
-
-        // Transform the current point with the input matrix
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix1, pt1, pt1);
-        ::fwDataTools::TransformationMatrix3D::multiply(matrix2, pt2, pt2);
-
-        const ::fwData::Point::PointCoordArrayType tmp1 = pt1->getCoord();
-        const ::fwData::Point::PointCoordArrayType tmp2 = pt2->getCoord();
-
-        // Update the point in the Point list
-        points1[i]->setCoord(tmp1);
-        points2[i]->setCoord(tmp2);
+        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
         // Add the point to vector/list
-        vec1.push_back( ::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]));
+        vec1.push_back(::glm::dvec3( tmp1[0], tmp1[1], tmp1[2]));
         list2.push_back(::glm::dvec3( tmp2[0], tmp2[1], tmp2[2]));
-
     }
 
     size_t index = 0;
