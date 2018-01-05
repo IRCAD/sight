@@ -164,15 +164,15 @@ protected:
        @endcode
      * - \<state active="false" executable="false" /\> : fix the state of the action in the menu and Toolbar.
      *   - \b executable not mandatory (Default value true ) : allows to enable/disable the execution of the action.
-     *     If the action appears in the interface it will be enable/disable.
+     *     If the action appears in the interface it will be enabled/disabled.
      *   - \b active not mandatory (Default value false ):
-     *     If the action appears in the interface it will be check/uncheck.
+     *     If the action appears in the interface it will be checked/unchecked.
      *   - \b visible not mandatory (Default value true ):
      *     If true, the action is visible in the interface (and if the action is associated to a menu and/or a toolbar).
      *   - \b inverse not mandatory (Default value true) : allow to invert the state of the action (if "check")
-     * - \<confirmation value="yes" message="..." /\> : configure if the action must be confirm
-     *                                                  by user before to execute it.
-     *   - \b value : if true the action will show a confirmation message before to be executed.
+     * - \<confirmation value="yes" message="..." /\> : configure if the action must be confirmed
+     *                                                  by the user before executing it.
+     *   - \b value : if true the action will show a confirmation message before executing it.
      *   - \b message not mandatory : if not empty the message is shown in dialog box.
      *   - \b defaultbutton not mandatory (default defined by underlying gui backend) :
      *                      specify the dialog default button (yes or no)
