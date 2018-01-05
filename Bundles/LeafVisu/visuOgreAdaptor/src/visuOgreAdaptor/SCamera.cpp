@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,6 +85,8 @@ void SCamera::starting()
     {
         this->calibrate();
     }
+
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -100,23 +102,21 @@ void SCamera::stopping()
 
 void SCamera::updating()
 {
-    ::Ogre::Camera* camera = m_camera;
-
-    // Multithreaded lock
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
-    ::fwData::mt::ObjectReadLock lock(transform);
-
-    // Received input lign and column data from f4s transformation matrix
     ::Ogre::Matrix4 ogreMatrix;
-    for (size_t lt = 0; lt < 4; lt++)
+
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
     {
-        for (size_t ct = 0; ct < 4; ct++)
+        ::fwData::mt::ObjectReadLock lock(transform);
+
+        // Received input lign and column data from f4s transformation matrix
+        for (size_t lt = 0; lt < 4; lt++)
         {
-            ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+            for (size_t ct = 0; ct < 4; ct++)
+            {
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+            }
         }
     }
-
-    lock.unlock();
 
     // Decompose the camera matrix
     ::Ogre::Vector3 position;
@@ -124,11 +124,12 @@ void SCamera::updating()
     ::Ogre::Quaternion orientation;
     ogreMatrix.decomposition(position, scale, orientation);
 
+    // Reverse view-up and direction for AR
     const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
     const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
     orientation = orientation * rotateZ * rotateY;
 
-    ::Ogre::Node* parent = camera->getParentNode();
+    ::Ogre::Node* parent = m_camera->getParentNode();
 
     // Reset the camera position
     parent->setPosition(0, 0, 0);
@@ -152,7 +153,6 @@ void SCamera::updateTF3D()
     orientation.ToRotationMatrix(mat33);
 
     const ::Ogre::Vector3& position = camNode->getPosition();
-    const ::Ogre::Vector3& scale    = camNode->getScale();
 
     ::Ogre::Matrix4 newTransMat;
 
@@ -162,12 +162,6 @@ void SCamera::updateTF3D()
         {
             // Set the 3x3 matrix representing the rotation
             newTransMat[i][j] = mat33[i][j];
-
-            if( i == j )
-            {
-                // Set the scale factor
-                newTransMat[i][j] = newTransMat[i][j] * scale[i];
-            }
         }
     }
 
@@ -182,6 +176,35 @@ void SCamera::updateTF3D()
 
     // And the last  value
     newTransMat[3][3] = 1;
+
+    // Now nullify the reverse of the view-up and direction
+    ::Ogre::Quaternion rotate;
+    const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
+    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    rotate = rotateZ * rotateY;
+    rotate = rotate.Inverse();
+
+    newTransMat = newTransMat * rotate;
+
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    {
+        ::fwData::mt::ObjectWriteLock lock(transform);
+
+        // Received input lign and column data from f4s transformation matrix
+        for (size_t lt = 0; lt < 4; lt++)
+        {
+            for (size_t ct = 0; ct < 4; ct++)
+            {
+                transform->setCoefficient(ct, lt, static_cast<double>(newTransMat[ct][lt]));
+            }
+        }
+    }
+
+    auto sig = transform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 //------------------------------------------------------------------------------
