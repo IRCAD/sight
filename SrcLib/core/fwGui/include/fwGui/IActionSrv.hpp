@@ -157,7 +157,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-           <service uid="item" type="::gui::action::SDefaultButton" autoConnect="no" >
+           <service uid="item" type="::gui::action::SDefault" autoConnect="no" >
               <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>
