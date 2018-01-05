@@ -6,6 +6,8 @@
 
 #include "gui/action/SDefault.hpp"
 
+#include <fwServices/macros.hpp>
+
 namespace gui
 {
 namespace action
