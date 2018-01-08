@@ -33,10 +33,18 @@
 
 #ifdef __MACOSX__
 #define PLUGIN_PATH "plugins_osx.cfg"
-#elif _DEBUG
-#define PLUGIN_PATH "plugins_d.cfg"
+#elif _WIN32
+#   ifdef _DEBUG
+#       define PLUGIN_PATH "plugins_win32_d.cfg"
+#   else
+#       define PLUGIN_PATH "plugins.win32_cfg"
+#   endif
 #else
-#define PLUGIN_PATH "plugins.cfg"
+#   ifdef _DEBUG
+#       define PLUGIN_PATH "plugins_d.cfg"
+#   else
+#       define PLUGIN_PATH "plugins.cfg"
+#   endif
 #endif
 
 #define PLUGIN_FOLDER_NAME "PluginFolder"

@@ -26,13 +26,24 @@ endif ()
 if(NOT APPLE)
     if(WIN32)
         file(GLOB OGRE_PLUGINS "${OGRE_CONFIG_DIR}/RenderSystem*.dll" "${OGRE_CONFIG_DIR}/Plugin_*.dll")
+        set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/ogreplugins/")
+
+        # This copies the plugins into the build directory
+        file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
+
+        # This copies the plugins into the install directory
+        install(DIRECTORY "${FW_OGRE_PLUGINS_DIR}" DESTINATION "ogrePlugins/")
     else()
         file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}*")
-    endif()
-    file(INSTALL ${OGRE_PLUGINS} DESTINATION "${PROJECT_BINARY_DIR}/ogreplugins/")
+        set(FW_OGRE_PLUGINS_DIR "${PROJECT_BINARY_DIR}/lib/ogreplugins/")
 
-    # This copies the plugins into the install directory
-    install(DIRECTORY "${PROJECT_BINARY_DIR}/ogreplugins/" DESTINATION "ogrePlugins/")
+        # This copies the plugins into the build directory
+        file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
+
+        # This copies the plugins into the install directory
+        install(DIRECTORY "${FW_OGRE_PLUGINS_DIR}" DESTINATION "lib/ogreplugins/")
+    endif()
+
 else()
     # Ogre search frameworks plugings in /Contents/Plugins/
     set(FRAMEWORKS_DIR "${PROJECT_BINARY_DIR}/bin/Contents/Plugins")
