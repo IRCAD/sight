@@ -154,9 +154,9 @@ void SStatus::configuring()
             OSLM_WARN_IF("'labelStatus' from " << m_count+1 << " to " << countLabelStatus << " will be lost.",
                          countLabelStatus > m_count);
 
+            const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
-            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v,
-                          configLabels.get().equal_range("labelStatus") )
+            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, labelStatusConfig)
             {
                 const std::string label  = v.second.get<std::string>("");
                 QPointer < QLabel > qLab = new QLabel();
