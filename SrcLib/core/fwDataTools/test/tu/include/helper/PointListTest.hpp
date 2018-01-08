@@ -21,7 +21,8 @@ class PointListTest : public CPPUNIT_NS::TestFixture
 private:
     CPPUNIT_TEST_SUITE( PointListTest );
     CPPUNIT_TEST( computeDistance );
-    CPPUNIT_TEST( associatePointLists );
+    CPPUNIT_TEST( transform );
+    CPPUNIT_TEST( associate );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -31,7 +32,9 @@ public:
 
     void computeDistance();
 
-    void associatePointLists();
+    void transform();
+
+    void associate();
 
     bool checkAssociation(const ::fwData::PointList::csptr&, const ::fwData::PointList::csptr&);
 };

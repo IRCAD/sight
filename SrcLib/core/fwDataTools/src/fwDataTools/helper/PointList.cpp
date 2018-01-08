@@ -56,8 +56,8 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
     for (size_t i = 0; i < size; ++i)
     {
-        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
-        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
+        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
+        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
         const ::glm::dvec3 pt1                          = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
         const ::glm::dvec3 pt2                          = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         distanceArray[i] = ::glm::distance(pt1, pt2);
@@ -68,10 +68,10 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
 //------------------------------------------------------------------------------
 
-void PointList::transform(const ::fwData::PointList::csptr& pointList,
+void PointList::transform(::fwData::PointList::sptr& pointList,
                           const ::fwData::TransformationMatrix3D::csptr&  matrix)
 {
-    ::fwData::PointList::PointListContainer points = pointList->getPoints();
+    ::fwData::PointList::PointListContainer points = pointList->getRefPoints();
     const size_t size = points.size();
 
     for(size_t i = 0; i < size; ++i)
@@ -80,11 +80,6 @@ void PointList::transform(const ::fwData::PointList::csptr& pointList,
 
         // Transform the current point with the input matrix
         ::fwDataTools::TransformationMatrix3D::multiply(matrix, pt, pt);
-
-        const ::fwData::Point::PointCoordArrayType tmp = pt->getCoord();
-
-        // Update the point in the Point list
-        points[i]->setCoord(tmp);
     }
 }
 

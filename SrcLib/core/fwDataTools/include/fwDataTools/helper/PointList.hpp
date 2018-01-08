@@ -46,7 +46,7 @@ public:
      * @param pointList [::fwData::PointList]: pointlist to be transformed
      * @param matrix [::fwData::TransformationMatrix3D]: transformation to apply to each points in pointlist
      */
-    FWDATATOOLS_API static void transform(const ::fwData::PointList::csptr& pointList,
+    FWDATATOOLS_API static void transform(::fwData::PointList::sptr& pointList,
                                           const ::fwData::TransformationMatrix3D::csptr& matrix);
 
     /**
