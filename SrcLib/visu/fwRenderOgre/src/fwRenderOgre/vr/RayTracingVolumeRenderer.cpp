@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -148,16 +148,17 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
     const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
 
+    const float width  = static_cast< float >(m_camera->getViewport()->getActualWidth()) * wRatio;
+    const float height = static_cast< float >(m_camera->getViewport()->getActualHeight()) * hRatio;
+
     for(unsigned int i = 0; i < numViewPoints; ++i)
     {
         m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth() *
-                                                                      static_cast< int >(wRatio)),
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight() *
-                                                                      static_cast< int >(hRatio)),
+                                            static_cast< unsigned int >(width),
+                                            static_cast< unsigned int >(height),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_GR,
@@ -423,8 +424,8 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
     {
         entryPtsTexture->freeInternalResources();
 
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w * static_cast< int >(wRatio)));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h * static_cast< int >(hRatio)));
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(static_cast< float >(w) * wRatio));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(static_cast< float >(h) * hRatio));
 
         entryPtsTexture->createInternalResources();
 
