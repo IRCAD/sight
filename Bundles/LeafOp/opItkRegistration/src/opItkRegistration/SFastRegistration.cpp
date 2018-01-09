@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,6 +22,9 @@
 
 #include <itkRegistrationOp/FastRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
+
+#include <functional>
+#include <numeric>
 
 namespace opItkRegistration
 {
@@ -62,42 +65,24 @@ void SFastRegistration::configuring()
 
 void SFastRegistration::updating()
 {
-    auto source        = this->getInput< ::fwData::Image>("source");
-    auto target        = this->getInput< ::fwData::Image>("target");
-    auto flipTransform = this->getInput< ::fwData::TransformationMatrix3D>("flipTransform");
-    auto transform     = this->getInOut< ::fwData::TransformationMatrix3D>("transform");
+    auto source    = this->getInput< ::fwData::Image>("source");
+    auto target    = this->getInput< ::fwData::Image>("target");
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D>("transform");
     SLM_ASSERT("Missing required input 'source'", source);
     SLM_ASSERT("Missing required input 'target'", target);
     SLM_ASSERT("Missing required inout 'transform'", transform);
-    SLM_ASSERT("Missing required inout 'flipTransform'", flipTransform);
-
-    std::array<bool, 3> flipAxes;
-    for(std::uint8_t i = 0; i != 3; ++i)
-    {
-        flipAxes[i] = flipTransform->getCoefficient(i, i) < 0.;
-    }
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.source   = source;
-    params.target   = target;
-    params.flipAxes = flipAxes;
+    params.source    = source;
+    params.target    = target;
+    params.transform = transform;
+
     {
         ::fwData::mt::ObjectReadLock targetLock(target);
         ::fwData::mt::ObjectReadLock srcLock(source);
         ::fwTools::DynamicType type = target->getPixelType();
         ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ::itkRegistrationOp::RegistrationDispatch >
         ::invoke( type, params );
-    }
-
-    OSLM_INFO("Computed fast registration: [" << params.transform[0] << ", "
-                                              << params.transform[1] << ", "
-                                              << params.transform[2] << "]");
-
-    ::fwData::mt::ObjectWriteLock trfLock(transform);
-    ::fwDataTools::TransformationMatrix3D::identity(transform);
-    for(std::uint8_t i = 0; i != 3; ++i)
-    {
-        transform->setCoefficient(i, 3, params.transform[i]);
     }
 
     transform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType>(

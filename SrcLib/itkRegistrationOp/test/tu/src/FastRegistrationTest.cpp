@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,13 +69,14 @@ void FastRegistrationTest::identityTest()
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.source               = reference;
     params.target               = target;
-    params.flipAxes             = {{false, false, false}};
+    params.transform            = ::fwData::TransformationMatrix3D::New();
     ::fwTools::DynamicType type = target->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
 
     for(size_t i = 0; i != 3; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Translation value is not equal to '0' ", 0., params.transform[i], 1e-8);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Translation value is not equal to '0' ", 0.,
+                                             params.transform->getCoefficient(i, 3), 1e-8);
     }
 }
 
@@ -92,17 +93,17 @@ void FastRegistrationTest::translateTransformTest()
     transform->setCoefficient(2, 3, 7.);
     itkReg::Resampler::resample(target, reference, transform);
 
-    std::array<double, 3> expected {{ -4., -12., -7. }};
+    std::array<double, 3> expected {{ 4., 12., 7. }};
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.source               = reference;
     params.target               = target;
-    params.flipAxes             = {{false, false, false}};
+    params.transform            = ::fwData::TransformationMatrix3D::New();
     ::fwTools::DynamicType type = target->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
-                                             expected[i], params.transform[i], 1e-2);
+                                             expected[i], params.transform->getCoefficient(i, 3), 1e-2);
     }
 }
 
@@ -131,9 +132,9 @@ void FastRegistrationTest::translateTransformWithScalesTest()
     reference->setOrigin(referenceOrigin);
     std::array<float, 3> expected {
         {
-            float(referenceOrigin[0] - targetOrigin[0] - vTrans[0]),
-            float(referenceOrigin[1] - targetOrigin[1] - vTrans[1]),
-            float(referenceOrigin[2] - targetOrigin[2] - vTrans[2])
+            float(targetOrigin[0] + vTrans[0] - referenceOrigin[0]),
+            float(targetOrigin[1] + vTrans[1] - referenceOrigin[1]),
+            float(targetOrigin[2] + vTrans[2] - referenceOrigin[2])
         }
     };
 
@@ -158,13 +159,13 @@ void FastRegistrationTest::translateTransformWithScalesTest()
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.source               = resampledF4sReference;
     params.target               = target;
-    params.flipAxes             = {{false, false, false}};
+    params.transform            = ::fwData::TransformationMatrix3D::New();
     ::fwTools::DynamicType type = target->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
-                                             double(expected[i]), double(params.transform[i]),
+                                             double(expected[i]), params.transform->getCoefficient(i, 3),
                                              double(targetSpacing[i]));
     }
 }

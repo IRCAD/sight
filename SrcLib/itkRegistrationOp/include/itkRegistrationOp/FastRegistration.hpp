@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,9 +10,12 @@
 #include "itkRegistrationOp/config.hpp"
 #include "itkRegistrationOp/ItkImageCaster.hpp"
 #include "itkRegistrationOp/Metric.hpp"
+#include "itkRegistrationOp/Resampler.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/itk.hpp>
 
@@ -23,6 +26,8 @@
 #include <itkMinimumMaximumImageCalculator.h>
 #include <itkRegionOfInterestImageFilter.h>
 #include <itkResampleImageFilter.h>
+
+#include <numeric>
 
 namespace itkRegistrationOp
 {
@@ -38,8 +43,7 @@ struct RegistrationDispatch {
     struct Parameters {
         ::fwData::Image::csptr source;
         ::fwData::Image::csptr target;
-        std::array<bool, 3> flipAxes;
-        std::array<double, 3> transform;
+        ::fwData::TransformationMatrix3D::sptr transform;
     };
 
     //------------------------------------------------------------------------------
@@ -47,9 +51,7 @@ struct RegistrationDispatch {
     template<typename PIXELTYPE>
     void operator()(Parameters& params)
     {
-        params.transform =
-            ::itkRegistrationOp::FastRegistration<PIXELTYPE>
-            ::registerImage(params.target, params.source, params.flipAxes);
+        ::itkRegistrationOp::FastRegistration<PIXELTYPE>::registerImage(params.target, params.source, params.transform);
     }
 };
 
@@ -68,12 +70,11 @@ public:
      * @brief Compute a fast registration containing translation only.
      * @param[in] _target target, i.e. the fixed image.
      * @param[in] _source source, i.e. the image that will be transformed to the target.
-     *
-     * @return The real world coordinates translation which transforms the source to the target image.
+     * @param[inout] _tgt2SrcTrf initial transform applied to the target, updated after registration.
      */
-    static std::array<double, 3> registerImage(const ::fwData::Image::csptr& _target,
-                                               const ::fwData::Image::csptr& _source,
-                                               std::array<bool, 3> flipAxes = {{false, false, false}});
+    static void registerImage(const ::fwData::Image::csptr& _target,
+                              const ::fwData::Image::csptr& _source,
+                              fwData::TransformationMatrix3D::sptr& _targetTransform);
 
 private:
     enum class Direction : unsigned int { X = 0, Y = 1, Z = 2 };
@@ -96,11 +97,6 @@ private:
     static Image2DPtrType computeMIP(Image3DPtrType const& img, Direction d);
 
     /**
-     * @brief Resample the source image to have the same spacing as the target image.
-     */
-    static Image2DPtrType resampleSourceToTarget(Image2DPtrType const& source, Image2DPtrType const& target);
-
-    /**
      * @brief Perform the template matching.
      *
      * @return Translation from the template to the target.
@@ -111,12 +107,34 @@ private:
 //------------------------------------------------------------------------------
 
 template <class PIX>
-std::array<double, 3> FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _target,
-                                                           const ::fwData::Image::csptr& _source,
-                                                           std::array<bool, 3> flipAxes)
+void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _target,
+                                          const ::fwData::Image::csptr& _source,
+                                          ::fwData::TransformationMatrix3D::sptr& _targetTransform)
 {
-    Image3DPtrType target = castTo<PIX>(_target);
-    Image3DPtrType source = castTo<PIX>(_source);
+    const double sourceVoxelVolume = std::accumulate(_source->getSpacing().begin(), _source->getSpacing().end(), 1.,
+                                                     std::multiplies<double>());
+
+    const double targetVoxelVolume = std::accumulate(_target->getSpacing().begin(), _target->getSpacing().end(), 1.,
+                                                     std::multiplies<double>());
+
+    ::fwData::Image::csptr src = _source,
+    tgt                        = _target;
+
+    // Resample the image with the smallest voxels to match the other's voxel size.
+    if(sourceVoxelVolume < targetVoxelVolume)
+    {
+        auto inverseTransform = ::fwData::TransformationMatrix3D::New();
+        ::fwDataTools::TransformationMatrix3D::invert(_targetTransform, inverseTransform);
+
+        src = ::itkRegistrationOp::Resampler::resample(_source, inverseTransform, _target->getSpacing());
+    }
+    else
+    {
+        tgt = ::itkRegistrationOp::Resampler::resample(_target, _targetTransform, _source->getSpacing());
+    }
+
+    Image3DPtrType target = castTo<PIX>(tgt);
+    Image3DPtrType source = castTo<PIX>(src);
 
     auto targetSpacing = target->GetSpacing();
     auto sourceSpacing = source->GetSpacing();
@@ -127,29 +145,24 @@ std::array<double, 3> FastRegistration<PIX>::registerImage(const ::fwData::Image
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[1] != 0.);
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[2] != 0.);
 
-    ::itk::FixedArray<bool, 3> itkFlipAxes(flipAxes.data());
-    auto flip = FlipFilterType::New();
-    flip->SetInput(source);
-    flip->SetFlipAxes(itkFlipAxes);
-    flip->SetFlipAboutOrigin(false);
-    flip->Update();
-    auto flippedSource = flip->GetOutput();
+    auto targetMipX = computeMIP(target, Direction::X);
+    auto targetMipY = computeMIP(target, Direction::Y);
+    auto sourceMipX = computeMIP(source, Direction::X);
+    auto sourceMipY = computeMIP(source, Direction::Y);
 
-    // The flip moves the origin, we reset it to its previous location
-    flippedSource->SetOrigin(source->GetOrigin());
+    auto transX = matchTemplate(sourceMipX, targetMipX);
+    auto transY = matchTemplate(sourceMipY, targetMipY);
 
-    auto targetMipX       = computeMIP(target, Direction::X);
-    auto targetMipY       = computeMIP(target, Direction::Y);
-    auto sourceMipX       = computeMIP(flippedSource, Direction::X);
-    auto sourceMipY       = computeMIP(flippedSource, Direction::Y);
-    auto resampledSourceX = resampleSourceToTarget(sourceMipX, targetMipX);
-    auto resampledSourceY = resampleSourceToTarget(sourceMipY, targetMipY);
+    std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
 
-    auto transX = matchTemplate(resampledSourceX, targetMipX);
-    auto transY = matchTemplate(resampledSourceY, targetMipY);
+    ::fwData::TransformationMatrix3D::sptr translation = ::fwData::TransformationMatrix3D::New();
+    ::fwDataTools::TransformationMatrix3D::identity(translation);
+    for(std::uint8_t i = 0; i != 3; ++i)
+    {
+        translation->setCoefficient(i, 3, res[i]);
+    }
 
-    std::array<double, 3> res {{ -transY[0], -transX[1], -transY[1] }};
-    return res;
+    ::fwDataTools::TransformationMatrix3D::multiply(translation, _targetTransform, _targetTransform);
 }
 
 //------------------------------------------------------------------------------
@@ -162,32 +175,6 @@ typename FastRegistration<PIX>::Image2DPtrType FastRegistration<PIX>::computeMIP
     filter->SetProjectionDimension(static_cast<unsigned int>(d));
     filter->Update();
     return filter->GetOutput();
-}
-
-//------------------------------------------------------------------------------
-
-template <class PIX>
-typename FastRegistration<PIX>::Image2DPtrType
-FastRegistration<PIX>::resampleSourceToTarget(Image2DPtrType const& source, Image2DPtrType const& target)
-{
-    auto tSpacing                       = target->GetSpacing();
-    auto sSpacing                       = source->GetSpacing();
-    auto sSize                          = source->GetBufferedRegion().GetSize();
-    Image2DType::SizeValueType newSizeX = std::ceil(static_cast<double>(sSize[0]) / tSpacing[0] * sSpacing[0]),
-                               newSizeY = std::ceil(static_cast<double>(sSize[1]) / tSpacing[1] * sSpacing[1]);
-    auto newSize                        = Image2DType::SizeType {{ newSizeX, newSizeY }};
-
-    auto transform    = ::itk::IdentityTransform<double, 2>::New();
-    auto interpolator = ::itk::LinearInterpolateImageFunction<Image2DType, double>::New();
-    auto resampler    = ::itk::ResampleImageFilter<Image2DType, Image2DType>::New();
-    resampler->SetInput(source);
-    resampler->SetTransform(transform);
-    resampler->SetInterpolator(interpolator);
-    resampler->SetOutputSpacing(tSpacing);
-    resampler->SetOutputOrigin(source->GetOrigin());
-    resampler->SetSize(newSize);
-    resampler->Update();
-    return resampler->GetOutput();
 }
 
 //------------------------------------------------------------------------------
