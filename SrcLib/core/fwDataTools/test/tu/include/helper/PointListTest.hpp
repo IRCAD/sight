@@ -35,8 +35,6 @@ public:
     void transform();
 
     void associate();
-
-    bool checkAssociation(const ::fwData::PointList::csptr&, const ::fwData::PointList::csptr&);
 };
 } //namespace ut
 } //namespace fwDataTools

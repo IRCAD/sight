@@ -283,7 +283,7 @@ void PointListTest::associate()
         // Associate empty point lists
         ::fwDataTools::helper::PointList::associate(pl1, pl2);
 
-        CPPUNIT_ASSERT(checkAssociation(pl1, pl2));
+        // No results expected
     }
 
     // Test with simple matrices
@@ -315,96 +315,92 @@ void PointListTest::associate()
         // Associate the point lists
         ::fwDataTools::helper::PointList::associate(pl1, pl2);
 
-        CPPUNIT_ASSERT(checkAssociation(pl1, pl2));
+        // Check that the two list are equal (re-ordered)
+        // Only the last component should differ, as there is a (0,0,42) translation
+        // on the first one and a (0,0,-42) translation on the second one
+        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
+        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
+
+        const size_t size = points1.size();
+
+        for(size_t i = 0; i < size; i++)
+        {
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+
+            // Check that the last component is equal to i
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], static_cast<float>(i), 1e-8);
+
+            // Check that the second component is equal to 42
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], -tmp2[1], 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], static_cast<float>(42), 1e-8);
+
+            // Check that the last component is equal to 0
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[2], tmp2[2], 1e-8);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[2], 0.0, 1e-8);
+        }
     }
 
     // Test with random point lists
     // Fill two point lists with random points
     // Check that the matched points are really the closest
     {
-        pl1 = ::fwData::PointList::New();
-        pl2 = ::fwData::PointList::New();
+        // Create an initial octahedron with points
+        ::fwData::PointList::sptr pl1 = ::fwData::PointList::New();
+        pl1->pushBack(::fwData::Point::New(1.0f, 0.0f, 0.0f));
+        pl1->pushBack(::fwData::Point::New(2.0f, 0.0f, 1.0f));
+        pl1->pushBack(::fwData::Point::New(2.0f, 0.8f, 0.0f));
+        pl1->pushBack(::fwData::Point::New(2.0f, 0.0f, -1.0f));
+        pl1->pushBack(::fwData::Point::New(2.0f, -0.8f, 0.0f));
+        pl1->pushBack(::fwData::Point::New(3.0f, 0.0f, 0.0f));
 
-        std::default_random_engine generator;
-        std::uniform_real_distribution<double> distribution(-10, 10);
+        // Reference final octahedron
+        ::fwData::PointList::sptr pl2 = ::fwData::PointList::New();
+        pl2->pushBack(::fwData::Point::New(0.0f, 0.0f, 5.2f));
+        pl2->pushBack(::fwData::Point::New(1.0f, 0.0f, 6.2f));
+        pl2->pushBack(::fwData::Point::New(0.0f, 0.8f, 6.2f));
+        pl2->pushBack(::fwData::Point::New(-1.0f, 0.0f, 6.2f));
+        pl2->pushBack(::fwData::Point::New(0.0f, -0.8f, 6.2f));
+        pl2->pushBack(::fwData::Point::New(0.0f, 0.0f, 7.2f));
 
-        // Build 2 point lists with the same points, the point are in the inverse order in the second list
-        for(size_t i = 0; i <= nbPoints; i++)
-        {
-            p = ::fwData::Point::New(distribution(generator), distribution(generator), distribution(generator));
-            pl1->pushBack(p);
-
-            p = ::fwData::Point::New(distribution(generator), distribution(generator), distribution(generator));
-            pl2->pushBack(p);
-        }
-
-        // Transform the point lists, shift the points in y
+        // Transform the point list
         ::fwData::TransformationMatrix3D::sptr tf1 = ::fwData::TransformationMatrix3D::New();
-        tf1->setCoefficient(1, 3, 42.0);
-        ::fwData::TransformationMatrix3D::sptr tf2 = ::fwData::TransformationMatrix3D::New();
-        tf2->setCoefficient(1, 3, -42.0);
+        // Shift the points in Z
+        tf1->setCoefficient(2, 3, 4.2);
+
+        // Add a 90° rotation around Y
+        tf1->setCoefficient(0, 0, 0.0f);
+        tf1->setCoefficient(0, 2, 1.0f);
+        tf1->setCoefficient(2, 0, 1.0f);
+        tf1->setCoefficient(2, 2, 0.0f);
 
         ::fwDataTools::helper::PointList::transform(pl1, tf1);
-        ::fwDataTools::helper::PointList::transform(pl2, tf2);
 
         // Associate the point lists
         ::fwDataTools::helper::PointList::associate(pl1, pl2);
 
-        CPPUNIT_ASSERT(checkAssociation(pl1, pl2));
-    }
-}
+        // Check that the two lists are equal
+        // The second one corresponds to a Z translation + a 90° Y translation of the first one
+        const ::fwData::PointList::PointListContainer points1 = pl1->getPoints();
+        const ::fwData::PointList::PointListContainer points2 = pl2->getPoints();
 
-//------------------------------------------------------------------------------
+        const size_t size      = points1.size();
+        const int nbComponents = 3;
 
-bool PointListTest::checkAssociation(const ::fwData::PointList::csptr& pl1, const ::fwData::PointList::csptr& pl2)
-{
-    bool associationOK = true;
-
-    const ::fwData::PointList::PointListContainer points1 = pl1->getCRefPoints();
-    const ::fwData::PointList::PointListContainer points2 = pl2->getCRefPoints();
-
-    const size_t size1 = points1.size();
-    const size_t size2 = points2.size();
-
-    size_t closestPointRank;
-    double closestPointDistance;
-
-    // Take each point of list1
-    for(size_t i = 0; i < size1; ++i)
-    {
-        closestPointRank     = -1;
-        closestPointDistance = std::numeric_limits<double>::max();
-
-        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-        const ::glm::dvec3 p1                           = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
-
-        // ... And compare it to each point of list 2 to find the closest point
-        // We start at the current index i, because the previous points are already associated
-        // Normally it should be the point with the same rank
-        for(size_t j = i; j < size2; j++)
+        for(size_t i = 0; i < size; i++)
         {
-            ::fwData::Point::PointCoordArrayType tmp2 = points2[j]->getCRefCoord();
-            const ::glm::dvec3 p2 = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
+            const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
+            const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
 
-            double d = ::glm::distance(p1, p2);
-
-            if(d < closestPointDistance)
+            // Compare the components
+            for(int j = 0; j < nbComponents; j++)
             {
-                closestPointRank     = j;
-                closestPointDistance = d;
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[j], tmp2[j], 1e-5);
             }
         }
 
-        // If the closest point is not the point of same rank
-        // Then there is an error
-        if(i != closestPointRank)
-        {
-            associationOK = false;
-            break;
-        }
     }
-
-    return associationOK;
 }
 
 } //namespace ut
