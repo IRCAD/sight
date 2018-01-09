@@ -62,15 +62,15 @@ void FastRegistrationTest::tearDown()
 
 void FastRegistrationTest::identityTest()
 {
-    ::fwData::Image::csptr target              = createSphereImage< ::std::uint16_t, 3>();
-    ::fwData::Image::sptr reference            = ::fwData::Object::copy(target);
+    ::fwData::Image::csptr moving              = createSphereImage< ::std::uint16_t, 3>();
+    ::fwData::Image::sptr fixed                = ::fwData::Object::copy(moving);
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.source               = reference;
-    params.target               = target;
+    params.fixed                = fixed;
+    params.moving               = moving;
     params.transform            = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::DynamicType type = target->getPixelType();
+    ::fwTools::DynamicType type = moving->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
 
     for(size_t i = 0; i != 3; ++i)
@@ -84,21 +84,21 @@ void FastRegistrationTest::identityTest()
 
 void FastRegistrationTest::translateTransformTest()
 {
-    ::fwData::Image::csptr target   = createSphereImage< ::std::uint16_t, 3>();
-    ::fwData::Image::sptr reference = ::fwData::Image::New();
+    ::fwData::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    ::fwData::Image::sptr fixed   = ::fwData::Image::New();
 
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
     transform->setCoefficient(0, 3, 4.);
     transform->setCoefficient(1, 3, 12.);
     transform->setCoefficient(2, 3, 7.);
-    itkReg::Resampler::resample(target, reference, transform);
+    itkReg::Resampler::resample(moving, fixed, transform);
 
     std::array<double, 3> expected {{ 4., 12., 7. }};
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.source               = reference;
-    params.target               = target;
+    params.fixed                = fixed;
+    params.moving               = moving;
     params.transform            = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::DynamicType type = target->getPixelType();
+    ::fwTools::DynamicType type = moving->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
@@ -113,12 +113,12 @@ void FastRegistrationTest::translateTransformWithScalesTest()
 {
     using ImageType = ::itk::Image< std::uint16_t, 3>;
 
-    // Create the target image
-    auto targetSpacing = ImageType::SpacingType(1.);
-    targetSpacing[1]                = 1.3;
-    ::fwData::Image::sptr target    = createSphereImage< ::std::uint16_t, 3>(targetSpacing);
-    ::fwData::Image::sptr reference = ::fwData::Image::New();
-    target->setOrigin({ 107., 50., -30. });
+    // Create the moving image
+    auto movingSpacing = ImageType::SpacingType(1.);
+    movingSpacing[1]             = 1.3;
+    ::fwData::Image::sptr moving = createSphereImage< ::std::uint16_t, 3>(movingSpacing);
+    ::fwData::Image::sptr fixed  = ::fwData::Image::New();
+    moving->setOrigin({ 107., 50., -30. });
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{ 4., 19., 7. }};
@@ -126,47 +126,47 @@ void FastRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(0, 3, vTrans[0]);
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
-    itkReg::Resampler::resample(target, reference, transform);
-    auto referenceOrigin = std::vector<double> {{ 20., 10., 35. }},
-         targetOrigin    = target->getOrigin();
-    reference->setOrigin(referenceOrigin);
+    itkReg::Resampler::resample(moving, fixed, transform);
+    auto fixedOrigin  = std::vector<double> {{ 20., 10., 35. }},
+         movingOrigin = moving->getOrigin();
+    fixed->setOrigin(fixedOrigin);
     std::array<float, 3> expected {
         {
-            float(targetOrigin[0] + vTrans[0] - referenceOrigin[0]),
-            float(targetOrigin[1] + vTrans[1] - referenceOrigin[1]),
-            float(targetOrigin[2] + vTrans[2] - referenceOrigin[2])
+            float(movingOrigin[0] + vTrans[0] - fixedOrigin[0]),
+            float(movingOrigin[1] + vTrans[1] - fixedOrigin[1]),
+            float(movingOrigin[2] + vTrans[2] - fixedOrigin[2])
         }
     };
 
-    auto itkReference = ::fwItkIO::itkImageFactory<ImageType>(reference, false);
+    auto itkFixed = ::fwItkIO::itkImageFactory<ImageType>(fixed, false);
 
     // Resample the image to get a different spacing
     ImageType::SizeType newSize;
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0; i != 3; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(targetSpacing[i] / newSpacing[i] * target->getSize()[i]);
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
     }
     auto resample = ::itk::ResampleImageFilter<ImageType, ImageType>::New();
-    resample->SetInput(itkReference);
+    resample->SetInput(itkFixed);
     resample->SetSize(newSize);
     resample->SetOutputSpacing(newSpacing);
-    resample->SetOutputOrigin(itkReference->GetOrigin());
+    resample->SetOutputOrigin(itkFixed->GetOrigin());
     resample->Update();
-    auto resampled             = resample->GetOutput();
-    auto resampledF4sReference = ::fwItkIO::dataImageFactory<ImageType>(resampled, true);
+    auto resampled         = resample->GetOutput();
+    auto resampledF4sFixed = ::fwItkIO::dataImageFactory<ImageType>(resampled, true);
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.source               = resampledF4sReference;
-    params.target               = target;
+    params.fixed                = resampledF4sFixed;
+    params.moving               = moving;
     params.transform            = ::fwData::TransformationMatrix3D::New();
-    ::fwTools::DynamicType type = target->getPixelType();
+    ::fwTools::DynamicType type = moving->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Actual transform does not match expected results",
                                              double(expected[i]), params.transform->getCoefficient(i, 3),
-                                             double(targetSpacing[i]));
+                                             double(movingSpacing[i]));
     }
 }
 

@@ -41,8 +41,8 @@ class FastRegistration;
  */
 struct RegistrationDispatch {
     struct Parameters {
-        ::fwData::Image::csptr source;
-        ::fwData::Image::csptr target;
+        ::fwData::Image::csptr fixed;
+        ::fwData::Image::csptr moving;
         ::fwData::TransformationMatrix3D::sptr transform;
     };
 
@@ -51,7 +51,7 @@ struct RegistrationDispatch {
     template<typename PIXELTYPE>
     void operator()(Parameters& params)
     {
-        ::itkRegistrationOp::FastRegistration<PIXELTYPE>::registerImage(params.target, params.source, params.transform);
+        ::itkRegistrationOp::FastRegistration<PIXELTYPE>::registerImage(params.moving, params.fixed, params.transform);
     }
 };
 
@@ -68,13 +68,13 @@ public:
 
     /**
      * @brief Compute a fast registration containing translation only.
-     * @param[in] _target target, i.e. the fixed image.
-     * @param[in] _source source, i.e. the image that will be transformed to the target.
-     * @param[inout] _tgt2SrcTrf initial transform applied to the target, updated after registration.
+     * @param[in] _moving image that will be transformed
+     * @param[in] _fixed fixed image
+     * @param[inout] _transform initial transform applied to the moving image, updated after registration.
      */
-    static void registerImage(const ::fwData::Image::csptr& _target,
-                              const ::fwData::Image::csptr& _source,
-                              fwData::TransformationMatrix3D::sptr& _targetTransform);
+    static void registerImage(const ::fwData::Image::csptr& _moving,
+                              const ::fwData::Image::csptr& _fixed,
+                              fwData::TransformationMatrix3D::sptr& _transform);
 
 private:
     enum class Direction : unsigned int { X = 0, Y = 1, Z = 2 };
@@ -107,37 +107,37 @@ private:
 //------------------------------------------------------------------------------
 
 template <class PIX>
-void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _target,
-                                          const ::fwData::Image::csptr& _source,
-                                          ::fwData::TransformationMatrix3D::sptr& _targetTransform)
+void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _moving,
+                                          const ::fwData::Image::csptr& _fixed,
+                                          ::fwData::TransformationMatrix3D::sptr& _transform)
 {
-    const double sourceVoxelVolume = std::accumulate(_source->getSpacing().begin(), _source->getSpacing().end(), 1.,
+    const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing().begin(), _fixed->getSpacing().end(), 1.,
+                                                    std::multiplies<double>());
+
+    const double movingVoxelVolume = std::accumulate(_moving->getSpacing().begin(), _moving->getSpacing().end(), 1.,
                                                      std::multiplies<double>());
 
-    const double targetVoxelVolume = std::accumulate(_target->getSpacing().begin(), _target->getSpacing().end(), 1.,
-                                                     std::multiplies<double>());
-
-    ::fwData::Image::csptr src = _source,
-    tgt                        = _target;
+    ::fwData::Image::csptr fixed = _fixed,
+    moving                       = _moving;
 
     // Resample the image with the smallest voxels to match the other's voxel size.
-    if(sourceVoxelVolume < targetVoxelVolume)
+    if(fixedVoxelVolume < movingVoxelVolume)
     {
         auto inverseTransform = ::fwData::TransformationMatrix3D::New();
-        ::fwDataTools::TransformationMatrix3D::invert(_targetTransform, inverseTransform);
+        ::fwDataTools::TransformationMatrix3D::invert(_transform, inverseTransform);
 
-        src = ::itkRegistrationOp::Resampler::resample(_source, inverseTransform, _target->getSpacing());
+        fixed = ::itkRegistrationOp::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing());
     }
     else
     {
-        tgt = ::itkRegistrationOp::Resampler::resample(_target, _targetTransform, _source->getSpacing());
+        moving = ::itkRegistrationOp::Resampler::resample(_moving, _transform, _fixed->getSpacing());
     }
 
-    Image3DPtrType target = castTo<PIX>(tgt);
-    Image3DPtrType source = castTo<PIX>(src);
+    Image3DPtrType itkMoving = castTo<PIX>(moving);
+    Image3DPtrType itkFixed  = castTo<PIX>(fixed);
 
-    auto targetSpacing = target->GetSpacing();
-    auto sourceSpacing = source->GetSpacing();
+    auto targetSpacing = itkMoving->GetSpacing();
+    auto sourceSpacing = itkFixed->GetSpacing();
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", targetSpacing[0] != 0.);
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", targetSpacing[1] != 0.);
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", targetSpacing[2] != 0.);
@@ -145,13 +145,13 @@ void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _target,
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[1] != 0.);
     SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[2] != 0.);
 
-    auto targetMipX = computeMIP(target, Direction::X);
-    auto targetMipY = computeMIP(target, Direction::Y);
-    auto sourceMipX = computeMIP(source, Direction::X);
-    auto sourceMipY = computeMIP(source, Direction::Y);
+    auto movingMipX = computeMIP(itkMoving, Direction::X);
+    auto movingMipY = computeMIP(itkMoving, Direction::Y);
+    auto fixedMipX  = computeMIP(itkFixed, Direction::X);
+    auto fixedMipY  = computeMIP(itkFixed, Direction::Y);
 
-    auto transX = matchTemplate(sourceMipX, targetMipX);
-    auto transY = matchTemplate(sourceMipY, targetMipY);
+    auto transX = matchTemplate(fixedMipX, movingMipX);
+    auto transY = matchTemplate(fixedMipY, movingMipY);
 
     std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
 
@@ -162,7 +162,7 @@ void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _target,
         translation->setCoefficient(i, 3, res[i]);
     }
 
-    ::fwDataTools::TransformationMatrix3D::multiply(translation, _targetTransform, _targetTransform);
+    ::fwDataTools::TransformationMatrix3D::multiply(translation, _transform, _transform);
 }
 
 //------------------------------------------------------------------------------

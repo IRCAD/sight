@@ -65,22 +65,23 @@ void SFastRegistration::configuring()
 
 void SFastRegistration::updating()
 {
-    auto source    = this->getInput< ::fwData::Image>("source");
-    auto target    = this->getInput< ::fwData::Image>("target");
+    auto fixed     = this->getInput< ::fwData::Image>("fixed");
+    auto moving    = this->getInput< ::fwData::Image>("moving");
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D>("transform");
-    SLM_ASSERT("Missing required input 'source'", source);
-    SLM_ASSERT("Missing required input 'target'", target);
+    SLM_ASSERT("Missing required input 'fixed'", fixed);
+    SLM_ASSERT("Missing required input 'moving'", moving);
     SLM_ASSERT("Missing required inout 'transform'", transform);
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
-    params.source    = source;
-    params.target    = target;
+    params.fixed     = fixed;
+    params.moving    = moving;
     params.transform = transform;
 
     {
-        ::fwData::mt::ObjectReadLock targetLock(target);
-        ::fwData::mt::ObjectReadLock srcLock(source);
-        ::fwTools::DynamicType type = target->getPixelType();
+        ::fwData::mt::ObjectReadLock movingLock(moving);
+        ::fwData::mt::ObjectReadLock fixedLock(fixed);
+        ::fwData::mt::ObjectWriteLock transformLock(transform);
+        ::fwTools::DynamicType type = moving->getPixelType();
         ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ::itkRegistrationOp::RegistrationDispatch >
         ::invoke( type, params );
     }
