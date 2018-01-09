@@ -48,6 +48,7 @@ const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_NTH_GREEN_RED_SLOT = "toggle
 //-----------------------------------------------------------------------------
 
 SStatus::SStatus() noexcept :
+    m_count(1),
     m_isCircular(false),
     m_width(20),
     m_height(20)
