@@ -33,16 +33,9 @@
 #ifndef __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
 #define __FWRENDEROGRE_COLLISIONTOOLS_COLLISIONTOOLS_HPP__
 
-#include <Ogre.h>
-
 #include "fwRenderOgre/config.hpp"
 
-// uncomment if you want to use ETM as terrainmanager
-//#define ETM_TERRAIN
-
-#ifdef ETM_TERRAIN
-#include "ETTerrainInfo.h"
-#endif
+#include <Ogre.h>
 
 namespace fwRenderOgre
 {
@@ -59,56 +52,27 @@ public:
 
     Ogre::SceneManager* mSceneMgr;
 
-#ifdef ETM_TERRAIN
-    const ET::TerrainInfo* mTerrainInfo;
-    FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* sceneMgr, const ET::TerrainInfo* terrainInfo);
-#endif
-
     FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* sceneMgr);
     FWRENDEROGRE_API ~CollisionTools();
-
-    FWRENDEROGRE_API bool raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* camera,
-                                            const Ogre::Vector2& mousecoords, Ogre::Vector3& result,
-                                            Ogre::MovableObject*& target, float& closest_distance,
-                                            const Ogre::uint32 queryMask = 0xFFFFFFFF);
-    // convenience wrapper with Ogre::Entity to it:
-    FWRENDEROGRE_API bool raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* camera,
-                                            const Ogre::Vector2& mousecoords, Ogre::Vector3& result,
-                                            Ogre::Entity*& target, float& closest_distance,
-                                            const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
     FWRENDEROGRE_API bool collidesWithEntity(const Ogre::Vector3& fromPoint, const Ogre::Vector3& toPoint,
                                              const float collisionRadius = 2.5f, const float rayHeightLevel = 0.0f,
                                              const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
-    FWRENDEROGRE_API void calculateY(::Ogre::SceneNode* n, const bool doTerrainCheck = true, const bool doGridCheck =
-                                         true, const float gridWidth = 1.0f,
-                                     const Ogre::uint32 queryMask = 0xFFFFFFFF);
+    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromCamera(
+        ::Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
+        const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
-    FWRENDEROGRE_API float getTSMHeightAt(const float x, const float z);
+    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycastFromPoint(const Ogre::Vector3&,
+                                                                                                   const Ogre::Vector3&,
+                                                                                                   const Ogre::uint32 queryMask =
+                                                                                                       0xFFFFFFFF);
 
-    FWRENDEROGRE_API bool raycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal,
-                                           Ogre::Vector3& result, Ogre::MovableObject*& target, float& closest_distance,
-                                           const Ogre::uint32 queryMask = 0xFFFFFFFF);
-    // convenience wrapper with Ogre::Entity to it:
-    FWRENDEROGRE_API bool raycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal,
-                                           Ogre::Vector3& result, Ogre::Entity*& target, float& closest_distance,
-                                           const Ogre::uint32 queryMask = 0xFFFFFFFF);
-
-    FWRENDEROGRE_API bool raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::MovableObject*& target,
-                                  float& closest_distance,
-                                  const Ogre::uint32 queryMask = 0xFFFFFFFF);
-    // convenience wrapper with Ogre::Entity to it:
-    FWRENDEROGRE_API bool raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::Entity*& target,
-                                  float& closest_distance,
-                                  const Ogre::uint32 queryMask = 0xFFFFFFFF);
-
-    FWRENDEROGRE_API void setHeightAdjust(const float heightadjust);
-    FWRENDEROGRE_API float getHeightAdjust(void);
+    FWRENDEROGRE_API std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> raycast(const Ogre::Ray&,
+                                                                                          const Ogre::uint32 queryMask =
+                                                                                              0xFFFFFFFF);
 
 private:
-
-    float _heightAdjust;
 
     void GetMeshInformation(const Ogre::MeshPtr mesh,
                             size_t& vertex_count,

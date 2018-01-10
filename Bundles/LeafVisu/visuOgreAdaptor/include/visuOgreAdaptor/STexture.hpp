@@ -50,7 +50,7 @@ class VISUOGREADAPTOR_CLASS_API STexture : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STexture)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STexture)(::fwRenderOgre::IAdaptor) )
 
     VISUOGREADAPTOR_API STexture() noexcept;
     VISUOGREADAPTOR_API virtual ~STexture() noexcept;

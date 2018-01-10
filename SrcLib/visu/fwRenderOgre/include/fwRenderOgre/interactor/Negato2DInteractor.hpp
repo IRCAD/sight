@@ -36,22 +36,22 @@ public:
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 
     /// No resize event handling needed here
-    FWRENDEROGRE_API virtual void resizeEvent(int x, int y)
+    FWRENDEROGRE_API virtual void resizeEvent(int /*x*/, int /*y*/)
     {
     }
 
     /// No key press event handling needed here
-    FWRENDEROGRE_API virtual void keyPressEvent(int key)
+    FWRENDEROGRE_API virtual void keyPressEvent(int /*key*/)
     {
     }
 
     /// No need to handle button release events.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y)
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
     {
     }
 
     /// No need to handle button press events.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y)
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton /*button*/, int /*x*/, int /*y*/)
     {
     }
 

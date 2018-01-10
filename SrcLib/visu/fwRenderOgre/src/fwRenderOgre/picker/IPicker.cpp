@@ -19,6 +19,7 @@
 #include <OGRE/OgreSceneNode.h>
 
 #include <cmath>
+#include <tuple>
 
 namespace fwRenderOgre
 {
@@ -50,6 +51,7 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
         static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
 
     float distance;
+    bool entityFound;
 
 #ifdef SHOW_BOUNDS
     if (m_selectedObject)
@@ -59,8 +61,9 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 #endif
 
     ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager);
-    bool entityFound = tool.raycast(r, m_rayIntersect, m_selectedObject, distance,
-                                    ::Ogre::SceneManager::ENTITY_TYPE_MASK);
+
+    std::tie(entityFound, m_rayIntersect, m_selectedObject, distance) =
+        tool.raycast(r, ::Ogre::SceneManager::ENTITY_TYPE_MASK);
 
     if (entityFound)
     {

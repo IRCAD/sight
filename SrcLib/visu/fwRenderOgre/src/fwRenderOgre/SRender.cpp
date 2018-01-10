@@ -219,7 +219,8 @@ void SRender::configureLayer(const ConfigType& _cfg )
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "Unknown 3D mode : " << stereoMode,
-                stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8");
+                stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8" ||
+                stereoMode == "Stereo");
 
     const int layerDepth = attributes.get<int>("depth");
     SLM_ASSERT("Attribute 'depth' must be greater than 0", layerDepth > 0);
@@ -231,9 +232,10 @@ void SRender::configureLayer(const ConfigType& _cfg )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setStereoMode(stereoMode == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
                              stereoMode == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
+                             stereoMode == "Stereo" ? ::fwRenderOgre::Layer::StereoModeType::STEREO :
                              ::fwRenderOgre::Layer::StereoModeType::NONE);
 
-    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
+    ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")

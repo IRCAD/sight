@@ -1,0 +1,48 @@
+fragment_program Stereo/Mix glsl
+{
+        source LineByLineStereoMix_FP.glsl
+
+        default_params
+        {
+                param_named u_invertLines int 0
+                param_named u_srcTextures0 int 0
+                param_named u_srcTextures1 int 1
+                param_named u_imageShift int 0
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material Stereo
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref Stereo/Mix
+            {
+            }
+
+            texture_unit 0
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+            texture_unit 1
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+

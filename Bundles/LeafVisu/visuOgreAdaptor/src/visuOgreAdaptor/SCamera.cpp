@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,14 +79,14 @@ void SCamera::starting()
     m_camera      = this->getLayer()->getDefaultCamera();
     m_calibration = this->getInput< ::arData::Camera >("calibration");
 
-    this->createTransformService();
-
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
     if (m_calibration)
     {
         this->calibrate();
     }
+
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -102,49 +102,44 @@ void SCamera::stopping()
 
 void SCamera::updating()
 {
-}
+    ::Ogre::Matrix4 ogreMatrix;
 
-//------------------------------------------------------------------------------
-
-void SCamera::createTransformService()
-{
     auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
-
-    if(!transform)
     {
-        transform = ::fwData::TransformationMatrix3D::New();
+        ::fwData::mt::ObjectReadLock lock(transform);
+
+        // Received input lign and column data from f4s transformation matrix
+        for (size_t lt = 0; lt < 4; lt++)
+        {
+            for (size_t ct = 0; ct < 4; ct++)
+            {
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+            }
+        }
     }
 
-    auto transformService = this->registerService< ::visuOgreAdaptor::STransform >("::visuOgreAdaptor::STransform");
-    transformService->registerInOut(transform, "transform", true);
+    // Decompose the camera matrix
+    ::Ogre::Vector3 position;
+    ::Ogre::Vector3 scale;
+    ::Ogre::Quaternion orientation;
+    ogreMatrix.decomposition(position, scale, orientation);
 
-    m_transformService = transformService;
+    // Reverse view-up and direction for AR
+    const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
+    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    orientation = orientation * rotateZ * rotateY;
 
-    transformService->setID(this->getID() + "_" + transformService->getID());
-    transformService->setRenderService(this->getRenderService());
-    transformService->setLayerID(m_layerID);
-    // For now we use the only one Ogre camera in the layer as input
-    transformService->setTransformId(m_camera->getParentSceneNode()->getName());
-    transformService->setParentTransformId(this->getParentTransformId());
+    ::Ogre::Node* parent = m_camera->getParentNode();
 
-    transformService->start();
+    // Reset the camera position
+    parent->setPosition(0, 0, 0);
+    parent->setOrientation(Ogre::Quaternion::IDENTITY);
 
-    this->attachNode(m_camera);
-}
+    // Update the camera position
+    parent->rotate(orientation);
+    parent->translate(position);
 
-//-----------------------------------------------------------------------------
-
-void SCamera::attachNode(::Ogre::MovableObject* _node)
-{
-    auto transformService = this->getTransformService();
-
-    ::Ogre::SceneNode* transNode = transformService->getSceneNode();
-    ::Ogre::SceneNode* node      = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -158,7 +153,6 @@ void SCamera::updateTF3D()
     orientation.ToRotationMatrix(mat33);
 
     const ::Ogre::Vector3& position = camNode->getPosition();
-    const ::Ogre::Vector3& scale    = camNode->getScale();
 
     ::Ogre::Matrix4 newTransMat;
 
@@ -168,12 +162,6 @@ void SCamera::updateTF3D()
         {
             // Set the 3x3 matrix representing the rotation
             newTransMat[i][j] = mat33[i][j];
-
-            if( i == j )
-            {
-                // Set the scale factor
-                newTransMat[i][j] = newTransMat[i][j] * scale[i];
-            }
         }
     }
 
@@ -189,7 +177,34 @@ void SCamera::updateTF3D()
     // And the last  value
     newTransMat[3][3] = 1;
 
-    this->getTransformService()->setTransform(newTransMat);
+    // Now nullify the reverse of the view-up and direction
+    ::Ogre::Quaternion rotate;
+    const ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0, 1, 0));
+    const ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0, 0, 1));
+    rotate = rotateZ * rotateY;
+    rotate = rotate.Inverse();
+
+    newTransMat = newTransMat * rotate;
+
+    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    {
+        ::fwData::mt::ObjectWriteLock lock(transform);
+
+        // Received input lign and column data from f4s transformation matrix
+        for (size_t lt = 0; lt < 4; lt++)
+        {
+            for (size_t ct = 0; ct < 4; ct++)
+            {
+                transform->setCoefficient(ct, lt, static_cast<double>(newTransMat[ct][lt]));
+            }
+        }
+    }
+
+    auto sig = transform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -226,14 +241,14 @@ void SCamera::setAspectRatio(::Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    if ( m_calibration )
+    if ( m_calibration && m_calibration->getIsCalibrated() )
     {
         const double fy = m_calibration->getFy();
+
         m_camera->setFOVy(
             ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
-                                                       atan(static_cast< double >(m_calibration->getHeight() / 2.0) /
+                                                       atan(static_cast< double >(m_calibration->getHeight() / 2) /
                                                             fy))));
-
         this->updating();
     }
 }

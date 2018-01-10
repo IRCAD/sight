@@ -162,7 +162,7 @@ void SNegato2D::stopping()
     m_plane->removeAndDestroyPlane();
     delete m_plane;
 
-    m_3DOgreTexture.setNull();
+    m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
     this->requestRender();
@@ -194,7 +194,7 @@ void SNegato2D::swapping(const KeyType& key)
 
 void SNegato2D::newImage()
 {
-    if(m_3DOgreTexture.isNull())
+    if(!m_3DOgreTexture)
     {
         // The adaptor hasn't start yet (the window is maybe not visible)
         return;
@@ -223,9 +223,9 @@ void SNegato2D::newImage()
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::changeSliceType(int _from, int _to)
+void SNegato2D::changeSliceType(int /*_from*/, int _to)
 {
-    OrientationMode newOrientationMode;
+    OrientationMode newOrientationMode = OrientationMode::X_AXIS;
 
     switch (_to)
     {
@@ -300,7 +300,7 @@ void SNegato2D::updateTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SNegato2D::updateTFWindowing(double window, double level)
+void SNegato2D::updateTFWindowing(double /*window*/, double /*leve*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 

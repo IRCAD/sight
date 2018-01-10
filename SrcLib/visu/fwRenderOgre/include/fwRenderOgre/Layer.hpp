@@ -65,10 +65,11 @@ public:
         NONE,
         AUTOSTEREO_5,
         AUTOSTEREO_8,
+        STEREO
     };
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
-    fwCoreAllowSharedFromThis();
+    fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer)
+    fwCoreAllowSharedFromThis()
 
     /**@name Signals API
      * @{
@@ -235,6 +236,12 @@ public:
 
     FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera() const;
 
+    /// Get the projection matrix used to define nth viewpoint. The index must be lower than the number of viewpoints.
+    FWRENDEROGRE_API ::Ogre::Matrix4 getCameraProjMat(const std::uint8_t cameraIdx) const;
+
+    /// Return the number of cameras (viewpoints) used by this layer. Defined by the stereo mode.
+    FWRENDEROGRE_API std::uint8_t getNumberOfCameras() const;
+
     /// Default light flag setter.
     FWRENDEROGRE_API void setHasDefaultLight(bool hasDefaultLight);
 
@@ -244,16 +251,18 @@ public:
     /// Returns the light adaptors used in this layer.
     FWRENDEROGRE_API std::vector<SPTR(::fwRenderOgre::ILight)> getLightAdaptors() const;
 
+    /// Compute bounding box of the scene.
+    FWRENDEROGRE_API ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
+
     FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
     FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
 
+    FWRENDEROGRE_API static const std::string s_DEFAULT_CAMERA_NODE_NAME;
+
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
-
-    /// Compute bounding box of the scene.
-    ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
 
     /// Setups default compositor for a layer's 3D scene.
     void setupCore();

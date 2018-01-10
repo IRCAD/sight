@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -118,7 +118,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::Ogre::TexturePtr imageTexture,
                                                    TransferFunction& gpuTF,
                                                    PreIntegrationTable& preintegrationTable,
-                                                   ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
                                                    bool shadows,
@@ -128,7 +127,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_entryPointGeometry(nullptr),
     m_proxyGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_stereoMode(stereoMode),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
@@ -145,11 +143,13 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 {
     m_fullScreenQuad->setCorners(-1, 1, 1, -1);
 
-    const unsigned int numViewPoints = m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
+    const unsigned int numViewPoints = this->getLayer()->getNumberOfCameras();
 
-    const float wRatio = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
+    const float wRatio = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
     const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
+
+    const float width  = static_cast< float >(m_camera->getViewport()->getActualWidth()) * wRatio;
+    const float height = static_cast< float >(m_camera->getViewport()->getActualHeight()) * hRatio;
 
     for(unsigned int i = 0; i < numViewPoints; ++i)
     {
@@ -157,17 +157,15 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth() *
-                                                                      wRatio),
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight() *
-                                                                      hRatio),
+                                            static_cast< unsigned int >(width),
+                                            static_cast< unsigned int >(height),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_GR,
                                             ::Ogre::TU_RENDERTARGET ));
     }
 
-    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(numViewPoints > 1)
     {
         m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
@@ -177,7 +175,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     // This can happen when reinstancing this class (e.g. switching 3D mode)
     ::Ogre::GpuProgramManager::SharedParametersMap spMap =
         ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
-    if(spMap["RTVParams"].isNull())
+    if(!spMap["RTVParams"])
     {
         m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
     }
@@ -346,9 +344,6 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination::sptr
 
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
-    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.",
-                 m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
-
     m_preIntegratedRendering = preIntegratedRendering;
 
     this->createRayTracingMaterial();
@@ -422,15 +417,15 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
     const auto numViewPoints = m_entryPointsTextures.size();
-    const float wRatio       = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
+    const float wRatio       = numViewPoints != 1 && numViewPoints != 2 ? 3.f / static_cast<float>(numViewPoints) : 1.f;
     const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
 
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
         entryPtsTexture->freeInternalResources();
 
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w * wRatio));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h * hRatio));
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(static_cast< float >(w) * wRatio));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(static_cast< float >(h) * hRatio));
 
         entryPtsTexture->createInternalResources();
 
@@ -509,7 +504,7 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     {
         ::Ogre::ResourcePtr matResource =
             mm.getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-        if(!matResource.isNull())
+        if(matResource)
         {
             mm.remove(matResource);
             // Our manual object still references the material and uses the material name to know if it should modify
@@ -663,34 +658,13 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometry->getWorldTransforms(&worldMat);
 
-    float eyeAngle = 0.f;
-    float angle    = 0.f;
-    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
-    {
-        eyeAngle = 0.02321f;
-        angle    = eyeAngle * -2.f;
-    }
-    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
-    {
-        eyeAngle = 0.01625f;
-        angle    = eyeAngle * -3.5f;
-    }
-
     ::Ogre::RenderOperation fsRenderOp;
     m_fullScreenQuad->getRenderOperation(fsRenderOp);
 
+    std::uint8_t textureIdx = 0;
     for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
     {
-        ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
-
-        // Move to the next view point if we're in 3D mode
-        if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
-        {
-            const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
-
-            angle  += eyeAngle;
-            projMat = projMat * shearTransform;
-        }
+        ::Ogre::Matrix4 projMat = this->getLayer()->getCameraProjMat(textureIdx++);
 
         ::Ogre::Viewport* entryPtsVp = entryPtsText->getBuffer()->getRenderTarget()->getViewport(0);
         entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH | ::Ogre::FBT_STENCIL, ::Ogre::ColourValue::White);

@@ -50,7 +50,7 @@ class VISUOGREADAPTOR_CLASS_API STransform : public ::fwRenderOgre::IAdaptor,
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((STransform)(::fwRenderOgre::IAdaptor));
+    fwCoreServiceClassDefinitionsMacro((STransform)(::fwRenderOgre::IAdaptor))
 
     /// Constructor,
     VISUOGREADAPTOR_API STransform() noexcept;
@@ -82,8 +82,6 @@ protected:
     ::Ogre::SceneNode* m_transformNode;
     /// Ogre parent Transform sceneNode
     ::Ogre::SceneNode* m_parentTransformNode;
-
-    ::fwData::TransformationMatrix3D::sptr m_fwTransform;
 
 };
 

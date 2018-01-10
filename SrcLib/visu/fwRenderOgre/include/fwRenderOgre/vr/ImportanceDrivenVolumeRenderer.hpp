@@ -39,7 +39,6 @@ public:
                                                     ::Ogre::TexturePtr maskTexture,
                                                     TransferFunction& gpuTF,
                                                     PreIntegrationTable& preintegrationTable,
-                                                    ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                                     bool ambientOcclusion,
                                                     bool colorBleeding,
                                                     bool shadows = false,

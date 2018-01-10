@@ -45,7 +45,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCoreCompositorEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCoreCompositorEditor)(::gui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SCoreCompositorEditor() noexcept;

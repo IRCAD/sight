@@ -73,7 +73,7 @@ public:
     /**
      * @brief Override from RenderTargetListener
      */
-    VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt);
+    VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt) override;
 
     VISUOGREQT_API void setFullScreen(bool fullscreen);
 
@@ -126,21 +126,21 @@ protected:
     /*
      * Qt events to manage keyboard and mouse input
      */
-    virtual void keyPressEvent(QKeyEvent* e);
+    virtual void keyPressEvent(QKeyEvent* e) override;
     /// Qt event to manage mouse move
-    virtual void mouseMoveEvent(QMouseEvent* e);
+    virtual void mouseMoveEvent(QMouseEvent* e) override;
     /// Qt event to manage wheel action
-    virtual void wheelEvent(QWheelEvent* e);
+    virtual void wheelEvent(QWheelEvent* e) override;
     /// Qt event to manage mouse clic
-    virtual void mousePressEvent(QMouseEvent* e);
+    virtual void mousePressEvent(QMouseEvent* e) override;
     /// Qt event to manage mouse clic on release
-    virtual void mouseReleaseEvent(QMouseEvent* e);
+    virtual void mouseReleaseEvent(QMouseEvent* e) override;
     /// Qt event to manage when window visibility in the windowing system changes.
-    virtual void exposeEvent(QExposeEvent* event);
+    virtual void exposeEvent(QExposeEvent* event) override;
     /// Qt event to manage when window is moved.
-    virtual void moveEvent(QMoveEvent* event);
+    virtual void moveEvent(QMoveEvent* event) override;
     /// Qt event to manage generic events
-    virtual bool event(QEvent* event);
+    virtual bool event(QEvent* event) override;
 
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;

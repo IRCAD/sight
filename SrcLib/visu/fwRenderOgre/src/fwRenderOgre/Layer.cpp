@@ -58,8 +58,18 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 
 //-----------------------------------------------------------------------------
 
-const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
-const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
+const std::string Layer::DEFAULT_CAMERA_NAME        = "DefaultCam";
+const std::string Layer::DEFAULT_LIGHT_NAME         = "DefaultLight";
+const std::string Layer::s_DEFAULT_CAMERA_NODE_NAME = "CameraNode";
+
+//-----------------------------------------------------------------------------
+
+static const std::map<Layer::StereoModeType, std::string> s_stereoCompositorMap = {
+    { Layer::StereoModeType::AUTOSTEREO_5, "AutoStereo5" },
+    { Layer::StereoModeType::AUTOSTEREO_8, "AutoStereo8" },
+    { Layer::StereoModeType::STEREO, "Stereo" },
+    { Layer::StereoModeType::NONE, "" }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -84,8 +94,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
     {
         SLM_ASSERT("Layer is not set", m_layer );
 
-        auto stereoMode = m_layer->getStereoMode();
-        if(stereoMode != Layer::StereoModeType::NONE)
+        if(m_layer->getStereoMode() != Layer::StereoModeType::NONE)
         {
             // Set the focal length using the point of interest of the interactor
             // This works well for the trackball but this would need to be adjusted for an another interactor type
@@ -97,36 +106,16 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
             const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
-                float eyeAngle = 0.f;
-                float angle    = 0.f;
-
-                if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
-                {
-                    eyeAngle = 0.02321f;
-                    angle    = eyeAngle * -2.f;
-                }
-                else if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
-                {
-                    eyeAngle = 0.01625f;
-                    angle    = eyeAngle * -3.5f;
-                }
-
                 auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
 
-                for(size_t i = 0; i < 8; ++i)
+                for(std::uint8_t i = 0; i < m_layer->getNumberOfCameras(); ++i)
                 {
-                    const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(
-                        *_camera, angle);
-
-                    ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
-                    projMat                 = projMat * shearTransform;
+                    ::Ogre::Matrix4 projMat = m_layer->getCameraProjMat(i);
 
                     projMat[1][0] = -projMat[1][0];
                     projMat[1][1] = -projMat[1][1];
                     projMat[1][2] = -projMat[1][2];
                     projMat[1][3] = -projMat[1][3];
-
-                    angle += eyeAngle;
 
                     const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
                     {
@@ -258,7 +247,7 @@ void Layer::createScene()
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
     // Create the camera
-    m_camera = m_sceneManager->createCamera(DEFAULT_CAMERA_NAME);
+    m_camera = m_sceneManager->createCamera(Layer::DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
@@ -302,7 +291,7 @@ void Layer::createScene()
         // Create background rectangle covering the whole screen
         ::Ogre::Rectangle2D* rect = new ::Ogre::Rectangle2D();
         rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-        rect->setMaterial(this->getName() + "backgroundMat");
+        rect->setMaterial(material);
 
         // Render the background before everything else
         rect->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
@@ -321,7 +310,8 @@ void Layer::createScene()
     m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
 
     // Creating Camera Scene Node
-    ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
+    ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode(
+        Layer::s_DEFAULT_CAMERA_NODE_NAME);
     cameraNode->setPosition(::Ogre::Vector3(0, 0, 5));
     cameraNode->lookAt(::Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 
@@ -375,12 +365,12 @@ void Layer::createScene()
         }
         if(m_stereoMode != StereoModeType::NONE)
         {
-            compositorChain.push_back(m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
-                                      "AutoStereo8" : "AutoStereo5");
+            compositorChain.push_back(s_stereoCompositorMap.at(m_stereoMode));
         }
 
         m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
 
+        m_compositorChainManager->addAvailableCompositor("Stereo");
         m_compositorChainManager->addAvailableCompositor("AutoStereo5");
         m_compositorChainManager->addAvailableCompositor("AutoStereo8");
     }
@@ -796,8 +786,7 @@ void Layer::requestRender()
 
 void Layer::setStereoMode(StereoModeType mode)
 {
-    const std::string oldCompositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
-                                          "AutoStereo8" : "AutoStereo5";
+    const std::string oldCompositorName = s_stereoCompositorMap.at(m_stereoMode);
 
     // Disable the old compositor
     if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
@@ -808,8 +797,8 @@ void Layer::setStereoMode(StereoModeType mode)
     // Enable the new one
     m_stereoMode = mode;
 
-    const std::string compositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
-                                       "AutoStereo8" : "AutoStereo5";
+    const std::string compositorName = s_stereoCompositorMap.at(m_stereoMode);
+
     if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
     {
         m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());
@@ -964,6 +953,53 @@ bool Layer::isSceneCreated() const
 ::Ogre::Camera* Layer::getDefaultCamera() const
 {
     return m_camera;
+}
+
+//-------------------------------------------------------------------------------------
+
+Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
+{
+    SLM_ASSERT("Index exceeds the number of cameras used for this stereo mode", cameraIdx < this->getNumberOfCameras());
+    ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
+
+    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+    {
+        const float eyeAngle = 0.02321f;
+        const float angle    = eyeAngle * (-2.f + float(cameraIdx));
+
+        extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
+    }
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+    {
+        const float eyeAngle = 0.01625f;
+        const float angle    = eyeAngle * (-3.5f + float(cameraIdx));
+
+        extrinsicTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
+    }
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO)
+    {
+        if(cameraIdx == 1)
+        {
+            // Kind of arbitrary. Should be configurable in the future.
+            extrinsicTransform = ::Ogre::Matrix4(1, 0, 0, 5,
+                                                 0, 1, 0, 0,
+                                                 0, 0, 1, 0,
+                                                 0, 0, 0, 1);
+        }
+    }
+
+    const ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrixWithRSDepth();
+
+    return projMat * extrinsicTransform;
+}
+
+//-------------------------------------------------------------------------------------
+
+uint8_t Layer::getNumberOfCameras() const
+{
+    return m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
+           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 :
+           m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::STEREO       ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------

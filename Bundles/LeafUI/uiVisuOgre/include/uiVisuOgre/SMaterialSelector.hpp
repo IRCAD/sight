@@ -34,7 +34,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::gui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() noexcept;

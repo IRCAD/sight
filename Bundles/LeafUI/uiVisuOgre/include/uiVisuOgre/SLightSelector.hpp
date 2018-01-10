@@ -50,7 +50,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLightSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SLightSelector)(::gui::editor::IEditor) )
 
     /**
      * @name Signals API
@@ -91,10 +91,6 @@ protected Q_SLOTS:
     /// Sets the current layer and initializes the light adaptors list.
     void onSelectedLayerItem(int _index);
 
-    /// Slot: called when the checkbox for all lights is checked or unchecked.
-    /// Checks or unchecks all the light adaptors according to the new state.
-    void onChangedLightsState(int _state);
-
     /// Slot: called when a light is selected.
     /// Loads the selected light parameters in the light editor.
     void onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous);
@@ -115,7 +111,18 @@ protected Q_SLOTS:
     /// Opens a color picker and lets the user choose a new ambient color.
     void onEditAmbientColor(bool _checked);
 
+    /// Slot: called when the "check all" button is clicked.
+    /// Call onCheckAllBoxes(true).
+    void onCheckAllCheckBox();
+
+    /// Slot: called when the "uncheck all" button is clicked.
+    /// Call onCheckAllBoxes(false).
+    void onUnCheckAllCheckBox();
+
 private:
+
+    /// check or uncheck all item in m_lightsList
+    void onCheckAllBoxes(bool visible);
 
     void initLightList(::fwRenderOgre::Layer::sptr _layer);
 
@@ -132,8 +139,9 @@ private:
     ::fwRenderOgre::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
 
     QPointer<QComboBox>   m_layersBox;
-    QPointer<QCheckBox>   m_lightsState;
     QPointer<QListWidget> m_lightsList;
+    QPointer<QPushButton> m_checkAllButton;
+    QPointer<QPushButton> m_unCheckAllButton;
 
     QPointer<QPushButton> m_addLightBtn;
     QPointer<QPushButton> m_removeLightBtn;

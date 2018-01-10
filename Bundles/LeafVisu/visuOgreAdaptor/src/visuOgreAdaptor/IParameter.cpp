@@ -130,17 +130,17 @@ void IParameter::configuring()
 
 void IParameter::updating()
 {
-    if(m_material.isNull() || !m_dirty)
+    if(!m_material || !m_dirty)
     {
         return;
     }
     if(m_techniqueName.empty())
     {
-        bool bSet = false;
-        ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-        while( techIt.hasMoreElements())
+        bool bSet                                      = false;
+        const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
+
+        for(const auto tech : techniques)
         {
-            ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
             bSet |= this->setParameter(*tech);
@@ -178,7 +178,7 @@ void IParameter::updating()
 
 void IParameter::stopping()
 {
-    m_material.setNull();
+    m_material.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         std::vector< ::fwData::Point::sptr > points = pointListValue->getPoints();
         int nbPoints                                = static_cast<int>(points.size());
 
-        float* paramValues = new float[nbPoints * 3];
+        float* paramValues = new float[static_cast<unsigned long long>(nbPoints * 3)];
 
         for(int i = 0; i < nbPoints * 3; )
         {
@@ -296,7 +296,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     else if(objClass == "::fwData::Array")
     {
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
-        SLM_ASSERT("The object is NULL", arrayObject);
+        SLM_ASSERT("The object is nullptr", arrayObject);
 
         size_t numComponents = arrayObject->getNumberOfComponents();
         if(numComponents <= 3)

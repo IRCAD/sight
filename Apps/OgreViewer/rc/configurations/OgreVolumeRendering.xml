@@ -47,7 +47,7 @@
 
         <!-- Begin Generic Scene ***************************************** -->
         <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
-            <scene overlay="true" fullscreen="false">
+            <scene overlay="true" >
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                 <layer id="default" depth="1" />
                 <adaptor uid="interactorAdaptor" />

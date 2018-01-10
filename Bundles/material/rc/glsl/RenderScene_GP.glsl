@@ -13,19 +13,15 @@ layout (triangle_strip, max_vertices = 3) out;
 #endif
 #endif
 
-in VertexDataIn
-{
-    vec3 oNormal;
+in layout(location = 0) vec3 vNormal[];
 
 #ifdef VERTEX_COLOR
-    vec4 oColor;
+in layout(location = 1) vec4 vColor[];
 #endif // VERTEX_COLOR
 
 #ifdef DIFFUSE_TEX
-    vec2 oTexCoord;
+in layout(location = 2) vec2 vTexCoord[];
 #endif // DIFFUSE_TEX
-
-} vertexIn[];
 
 out vec3 oPos;
 out vec3 oNormal;
@@ -46,15 +42,15 @@ vec4 ppcolor;
 void emit(int index)
 {
     oPos = gl_in[index].gl_Position.xyz;
-    oNormal = vertexIn[index].oNormal;
+    oNormal = vNormal[index];
 
 #ifdef DIFFUSE_TEX
-    oUv0 = vertexIn[index].oTexCoord;
+    oUv0 = vTexCoord[index];
 #endif // DIFFUSE_TEX
 
 #ifdef VERTEX_COLOR
     vec4 color;
-    color = vertexIn[index].oColor;
+    color = vColor[index];
 #   ifdef PER_PRIMITIVE_COLOR
     color = ppcolor * color;
 #   endif // PER_PRIMITIVE_COLOR

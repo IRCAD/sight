@@ -104,7 +104,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
         auto floatValue           = ::fwData::Float::dynamicConstCast(shaderObj);
-        const double defaultValue = floatValue->value();
+        const double defaultValue = static_cast<double>(floatValue->value());
         const auto minmax         = getRange(defaultValue);
         const double min          = minmax.first;
         const double max          = minmax.second;
@@ -154,7 +154,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
                 double defaultValue;
                 if(arrayObject->getType() == ::fwTools::Type::s_FLOAT)
                 {
-                    defaultValue = arrayHelper.getItem< float >({0})[0];
+                    defaultValue = static_cast<double>(arrayHelper.getItem< float >({0})[0]);
                 }
                 else
                 {

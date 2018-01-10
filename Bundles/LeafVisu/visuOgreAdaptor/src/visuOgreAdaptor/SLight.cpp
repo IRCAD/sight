@@ -58,7 +58,7 @@ SLight::SLight() noexcept :
 
 //------------------------------------------------------------------------------
 
-SLight::SLight(::fwRenderOgre::ILight::Key key) :
+SLight::SLight(::fwRenderOgre::ILight::Key /*key*/) :
     m_light(nullptr),
     m_lightName(""),
     m_useOrphanNode(true),

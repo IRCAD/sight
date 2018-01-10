@@ -13,6 +13,9 @@ uniform vec4 u_diffuse;
 
 out vec4 FragColor;
 
+// Extern functions
+float getFragmentAlpha();
+
 #ifdef HYBRID
 float unpackFloatFromVec4(vec4 value);
 #endif
@@ -36,5 +39,5 @@ void main()
         discard;
     }
 
-    FragColor.r = u_diffuse.a;
+    FragColor.r = getFragmentAlpha();
 }

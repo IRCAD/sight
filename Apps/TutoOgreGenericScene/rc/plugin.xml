@@ -157,7 +157,7 @@
 
             <service uid="materialAdaptor" type="::visuOgreAdaptor::SMaterial">
                 <inout key="material" uid="material" />
-                <config layer="default" materialName="texMaterial" textureName="meshTexture" normalLength="1.0" shadingMode="flat"/>
+                <config layer="default" materialName="texMaterial" textureName="meshTexture" shadingMode="flat"/>
             </service>
 
             <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D">

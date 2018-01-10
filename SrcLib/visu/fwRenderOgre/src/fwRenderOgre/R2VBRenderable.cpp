@@ -7,6 +7,7 @@
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
 
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRenderQueue.h>
 
 namespace fwRenderOgre
@@ -29,7 +30,9 @@ fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::strin
     instance->mParentSceneManager  = _sceneManager;
 
     // Input material name
-    instance->setMaterial(_mtlName);
+
+    ::Ogre::MaterialPtr mat = ::Ogre::MaterialManager::getSingleton().getByName(_mtlName);
+    instance->setMaterial(mat);
     return instance;
 }
 
@@ -45,14 +48,13 @@ fwRenderOgre::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
 
 //-----------------------------------------------------------------------------
 
-void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
-                                                     const std::string& _mtlName)
+void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord)
 {
-    if(m_r2vbBuffer.isNull() || m_maxOutputVertexCount < _vertexCount)
+    if(m_maxOutputVertexCount < _vertexCount)
     {
+        const std::string r2vbMaterial = (m_r2vbBuffer) ? m_r2vbBuffer->getRenderToBufferMaterial()->getName() : "";
         m_r2vbBuffer = ::Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
 
-        m_r2vbBuffer->setRenderToBufferMaterialName( _mtlName );
         m_r2vbBuffer->setOperationType(::Ogre::RenderOperation::OT_TRIANGLE_LIST);
         m_r2vbBuffer->setResetsEveryUpdate(true);
 
@@ -61,6 +63,10 @@ void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
                                    _vertexCount;
         m_r2vbBuffer->setMaxVertexCount(static_cast<unsigned int>(numVertices));
         m_r2vbBuffer->setSourceRenderable(m_srcObject);
+        if(!r2vbMaterial.empty())
+        {
+            m_r2vbBuffer->setRenderToBufferMaterialName(r2vbMaterial);
+        }
 
         m_maxOutputVertexCount = _vertexCount;
     }

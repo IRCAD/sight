@@ -129,15 +129,13 @@ ImportanceDrivenVolumeRenderer::ImportanceDrivenVolumeRenderer(std::string paren
                                                                ::Ogre::TexturePtr maskTexture,
                                                                TransferFunction& gpuTF,
                                                                PreIntegrationTable& preintegrationTable,
-                                                               ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                                                bool ambientOcclusion,
                                                                bool colorBleeding,
                                                                bool shadows,
                                                                double aoFactor,
                                                                double colorBleedingFactor) :
-    fwRenderOgre::vr::RayTracingVolumeRenderer(parentId, layer, parentNode, imageTexture, gpuTF,
-                                               preintegrationTable, stereoMode, ambientOcclusion, colorBleeding,
-                                               shadows, aoFactor, colorBleedingFactor),
+    fwRenderOgre::vr::RayTracingVolumeRenderer(parentId, layer, parentNode, imageTexture, gpuTF, preintegrationTable,
+                                               ambientOcclusion, colorBleeding, shadows, aoFactor, colorBleedingFactor),
     m_maskTexture(maskTexture),
     m_idvrMethod(s_NONE),
     m_idvrCSG(false),
@@ -200,7 +198,7 @@ void ImportanceDrivenVolumeRenderer::setIDVRMethod(std::string method)
         isSupported = true;
     }
 
-    SLM_ASSERT("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", isSupported);
+    SLM_FATAL_IF("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", !isSupported);
     m_idvrMethod = method;
 
     this->createMaterialAndIDVRTechnique();

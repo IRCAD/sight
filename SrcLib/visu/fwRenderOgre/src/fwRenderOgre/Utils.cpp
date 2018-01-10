@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,6 +19,11 @@
 
 #include <fwRuntime/operations.hpp>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreHardwarePixelBuffer.h>
@@ -26,15 +31,24 @@
 #include <OgreResourceGroupManager.h>
 #include <OgreTextureManager.h>
 
-#include <cstdint>
-
 #ifdef __MACOSX__
 #define PLUGIN_PATH "plugins_osx.cfg"
-#elif _DEBUG
-#define PLUGIN_PATH "plugins_d.cfg"
+#elif _WIN32
+#   ifdef _DEBUG
+#       define PLUGIN_PATH "plugins_win32_d.cfg"
+#   else
+#       define PLUGIN_PATH "plugins.win32_cfg"
+#   endif
 #else
-#define PLUGIN_PATH "plugins.cfg"
+#   ifdef _DEBUG
+#       define PLUGIN_PATH "plugins_d.cfg"
+#   else
+#       define PLUGIN_PATH "plugins.cfg"
+#   endif
 #endif
+
+#define PLUGIN_FOLDER_NAME "PluginFolder"
+#define FILE_SYSTEM_NAME "FileSystem"
 
 namespace fwRenderOgre
 {
@@ -56,16 +70,77 @@ void loadResources()
     {
         try
         {
-            cf.load(path);
-
-            ::Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
-
-            while (seci.hasMoreElements())
+            // Check file existance
+            if(!::boost::filesystem::exists(path))
             {
-                resourceGroupName                              = seci.peekNextKey();
-                ::Ogre::ConfigFile::SettingsMultiMap* settings = seci.getNext();
+                OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
+            }
+
+            // Create string with file content but with correct path
+            std::string res = "";
+            {
+                std::ifstream fichier(path);
+                std::string ligne;
+
+                while(std::getline(fichier, ligne))
+                {
+                    std::vector<std::string> results;
+                    ::boost::split(results, ligne, [](char c){return c == '='; });
+                    for(size_t i = 0; i < results.size(); ++i)
+                    {
+                        if(results[i].compare(FILE_SYSTEM_NAME) == 0)
+                        {
+                            res                                 += results[i];
+                            ::boost::filesystem::path wantedPath = i+1 < results.size() ? results[i+1] : "";
+                            ::boost::filesystem::path newConfpath;
+
+                            if(wantedPath.string().compare("") == 0)
+                            {
+                                newConfpath = ::fwRuntime::Runtime::getDefault()->getWorkingPath();
+                            }
+                            else if(!wantedPath.is_absolute())
+                            {
+                                newConfpath = (::fwRuntime::Runtime::getDefault()->getWorkingPath()
+                                               / wantedPath).normalize();
+                                ++i;
+                            }
+                            else
+                            {
+                                newConfpath = wantedPath;
+                                ++i;
+                            }
+                            res += "=" + (newConfpath / "/").string();
+
+                        }
+                        else
+                        {
+                            res += results[i];
+                        }
+                    }
+                    res += '\n';
+                }
+            }
+
+            // Create temp file and give it to Ogre
+            const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
+            ::boost::filesystem::ofstream tmpFile(tmpPath.string());
+            if(!::boost::filesystem::exists(tmpPath))
+            {
+                OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
+            }
+            tmpFile << res << std::endl;
+            tmpFile.close();
+            cf.load(tmpPath.string());
+            ::boost::filesystem::remove(tmpPath);
+
+            const ::Ogre::ConfigFile::SettingsBySection_ secis = cf.getSettingsBySection();
+
+            for(const auto& seci : secis)
+            {
+                resourceGroupName                             = seci.first;
+                ::Ogre::ConfigFile::SettingsMultiMap settings = seci.second;
                 ::Ogre::ConfigFile::SettingsMultiMap::iterator i;
-                for (i = settings->begin(); i != settings->end(); ++i)
+                for (i = settings.begin(); i != settings.end(); ++i)
                 {
                     typeName = i->first;
                     archName = i->second;
@@ -76,11 +151,11 @@ void loadResources()
         }
         catch ( ::Ogre::FileNotFoundException& )
         {
-            SLM_WARN("Unable to find Ogre resources path : " + path);
+            SLM_ERROR("Unable to find Ogre resources path : " + path);
         }
         catch (...)
         {
-            SLM_WARN("Unable to load resource from " + path);
+            SLM_ERROR("Unable to load resource from " + path);
         }
     }
 }
@@ -108,7 +183,44 @@ void Utils::addResourcesPath(const ::boost::filesystem::path& path)
 
     if(root == nullptr)
     {
-        root = new ::Ogre::Root(::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH).string());
+        const auto& confPath = ::fwRuntime::getLibraryResourceFilePath("fwRenderOgre-0.1/" PLUGIN_PATH);
+
+        // Check file existance
+        if(!::boost::filesystem::exists(confPath))
+        {
+            OSLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
+        }
+
+        // Fix file with correct path
+        boost::property_tree::ptree pt;
+        boost::property_tree::ini_parser::read_ini(confPath.string(), pt);
+
+        if(!pt.get< ::boost::filesystem::path >(PLUGIN_FOLDER_NAME).is_absolute())
+        {
+            const auto newConfpath = (::fwRuntime::Runtime::getDefault()->getWorkingPath()
+                                      / pt.get<std::string>(PLUGIN_FOLDER_NAME)).normalize();
+            pt.put(PLUGIN_FOLDER_NAME, newConfpath.string() + '/');
+        }
+
+        // Create temp file and give it to Ogre
+        const auto tmpPath = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
+        ::boost::filesystem::ofstream tmpFile(tmpPath.string());
+        if(!::boost::filesystem::exists(tmpPath))
+        {
+            OSLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
+        }
+        {
+            for(auto ptr = pt.begin(); ptr != pt.end(); ++ptr)
+            {
+                const std::string& fi = ptr->first;
+                const std::string& se = ptr->second.data();
+                tmpFile << fi << " = " << se << std::endl;
+            }
+            tmpFile.close();
+
+            root = new ::Ogre::Root(tmpPath.string().c_str());
+        }
+        ::boost::filesystem::remove(tmpPath);
 
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
@@ -210,10 +322,10 @@ void Utils::destroyOgreRoot()
     ::Ogre::Image imageOgre;
 
     // If image is flipped, try to switch image
-    ::fwData::Image::SizeType imageSize = imageFw->getSize();
+    const ::fwData::Image::SizeType imageSize = imageFw->getSize();
 
-    uint32_t width  = static_cast<uint32_t>(imageSize[0]);
-    uint32_t height = 1, depth = 1;
+    const uint32_t width = static_cast<uint32_t>(imageSize[0]);
+    uint32_t height      = 1, depth = 1;
 
     if(imageSize.size() >= 2)
     {
@@ -225,7 +337,7 @@ void Utils::destroyOgreRoot()
         }
     }
 
-    ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
+    const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
 
     ::fwDataTools::helper::ImageGetter imageHelper(imageFw);
 
@@ -239,8 +351,8 @@ void Utils::destroyOgreRoot()
 // Only handles RGB for now, since fwData::Image only does so.
 ::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
 {
-    std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
-    size_t numberOfComponent = imageFw->getNumberOfComponents();
+    const std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
+    const size_t numberOfComponent = imageFw->getNumberOfComponents();
 
     if(numberOfComponent == 1)
     {
@@ -254,10 +366,16 @@ void Utils::destroyOgreRoot()
             // int16
             return ::Ogre::PF_L16;
         }
+        else if(pixelType == "unsigned short")
+        {
+            // uint16
+            return ::Ogre::PF_R16_UINT;
+        }
         else if (pixelType == "float")
         {
             return ::Ogre::PF_FLOAT32_R;
         }
+        FW_RAISE("Format '" + pixelType + "' not handled");
     }
 
     if(numberOfComponent == 2)
@@ -272,6 +390,7 @@ void Utils::destroyOgreRoot()
             // int16
             return ::Ogre::PF_R8G8_SNORM;
         }
+        FW_RAISE("Format '" + pixelType + "' not handled");
     }
 
     // PixelFormat in little endian
@@ -332,11 +451,11 @@ void Utils::destroyOgreRoot()
 void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
+    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
     if(imageIsValid)
     {
-        ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
+        const ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
 
         // Conversion from fwData::Image to ::Ogre::Image
         ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(_image);
@@ -397,7 +516,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
 void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
 {
-    auto srcType = _image->getType();
+    const auto srcType = _image->getType();
 
     if(srcType == ::fwTools::Type::s_INT16)
     {

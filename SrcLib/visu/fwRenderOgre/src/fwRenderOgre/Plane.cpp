@@ -87,7 +87,7 @@ void Plane::initializeMaterial()
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    int orientationIndex;
+    int orientationIndex = 0;
 
     switch (m_orientation)
     {
@@ -106,11 +106,10 @@ void Plane::initializeMaterial()
     // is null when we call this method on the first time (from doStart() for instance)
     m_texMaterial->touch();
 
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -121,7 +120,7 @@ void Plane::initializeMaterial()
             SLM_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
-            ::Ogre::TextureFilterOptions filterType;
+            ::Ogre::TextureFilterOptions filterType = ::Ogre::TFO_NONE;
             switch(m_filtering)
             {
                 case FilteringEnumType::NONE:
@@ -310,11 +309,10 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 {
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -333,11 +331,10 @@ void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 
 void Plane::switchThresholding(bool _threshold)
 {
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -363,7 +360,7 @@ void Plane::moveToOriginPosition()
 
 double Plane::getSliceWorldPosition() const
 {
-    ::Ogre::Real position;
+    ::Ogre::Real position = 0.f;
 
     switch(m_orientation)
     {
@@ -421,11 +418,10 @@ void Plane::setEntityOpacity(float _f)
 
 void Plane::changeSlice(float sliceIndex)
 {
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    const ::Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
-    while( techIt.hasMoreElements())
+    for(const auto tech : techniques)
     {
-        ::Ogre::Technique* tech = techIt.getNext();
         SLM_ASSERT("Technique is not set", tech);
 
         if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
@@ -453,7 +449,7 @@ void Plane::changeSlice(float sliceIndex)
     ::Ogre::Real tex_height = static_cast< ::Ogre::Real >( m_texture->getHeight() );
     ::Ogre::Real tex_depth  = static_cast< ::Ogre::Real >( m_texture->getDepth() );
 
-    ::Ogre::MovablePlane* plane;
+    ::Ogre::MovablePlane* plane = nullptr;
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:

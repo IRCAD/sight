@@ -39,10 +39,10 @@ void UtilsTest::convertOgreColorToFwColor()
     refColor->setRGBA(1.f, 1.f, 1.f, 1.f);
 
     ::fwData::Color::sptr resultColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(::Ogre::ColourValue());
-    CPPUNIT_ASSERT(resultColor->red() == refColor->red());
-    CPPUNIT_ASSERT(resultColor->green() == refColor->green());
-    CPPUNIT_ASSERT(resultColor->blue() == refColor->blue());
-    CPPUNIT_ASSERT(resultColor->alpha() == refColor->alpha());
+    CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
+    CPPUNIT_ASSERT(static_cast<int>(resultColor->green()) == static_cast<int>(refColor->green()));
+    CPPUNIT_ASSERT(static_cast<int>(resultColor->blue()) == static_cast<int>(refColor->blue()));
+    CPPUNIT_ASSERT(static_cast<int>(resultColor->alpha()) == static_cast<int>(refColor->alpha()));
 }
 
 //------------------------------------------------------------------------------

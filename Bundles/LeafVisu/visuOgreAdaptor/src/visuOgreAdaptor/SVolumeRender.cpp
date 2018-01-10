@@ -9,6 +9,9 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#define FW_PROFILING_DISABLED
+#include <fwCore/Profiling.hpp>
+
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -37,6 +40,7 @@ namespace visuOgreAdaptor
 
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                    = "newImage";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_MASK_SLOT                     = "newMask";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_IMAGE_SLOT                 = "updateImage";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT              = "updateSampling";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_AO_FACTOR_SLOT             = "updateAOFactor";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT = "updateColorBleedingFactor";
@@ -82,13 +86,14 @@ SVolumeRender::SVolumeRender() noexcept :
     m_satShellRadius(4),
     m_satConeAngle(0.1f),
     m_satConeSamples(50),
-    m_aoFactor(1.f),
-    m_colorBleedingFactor(1.f),
+    m_aoFactor(1.),
+    m_colorBleedingFactor(1.),
     m_autoResetCamera(true)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEW_MASK_SLOT, &SVolumeRender::newMask, this);
+    newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
     newSlot(s_UPDATE_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
     newSlot(s_UPDATE_AO_FACTOR_SLOT, &SVolumeRender::updateAOFactor, this);
     newSlot(s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT, &SVolumeRender::updateColorBleedingFactor, this);
@@ -235,7 +240,7 @@ void SVolumeRender::updateTFPoints()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateTFWindowing(double window, double level)
+void SVolumeRender::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
@@ -263,7 +268,7 @@ void SVolumeRender::updateTFWindowing(double window, double level)
     ::fwServices::IService::KeyConnectionsMap connections;
 
     connections.push( s_IMAGE_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
-    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( s_IMAGE_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT );
     connections.push( s_MASK_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
     connections.push( s_MASK_INOUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
     connections.push( s_CLIPPING_MATRIX_INOUT, ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
@@ -315,8 +320,6 @@ void SVolumeRender::starting()
     }
     else
     {
-        const auto stereoMode = layer->getStereoMode();
-
         m_volumeRenderer = new ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer(this->getID(),
                                                                                   layer,
                                                                                   m_volumeSceneNode,
@@ -324,13 +327,8 @@ void SVolumeRender::starting()
                                                                                   m_maskTexture,
                                                                                   m_gpuTF,
                                                                                   m_preIntegrationTable,
-                                                                                  stereoMode,
                                                                                   m_ambientOcclusion,
                                                                                   m_colorBleeding);
-
-        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
-
-        OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
         // Initially focus on the image center.
         setFocalDistance(50);
@@ -376,10 +374,10 @@ void SVolumeRender::stopping()
     m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
 
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
-    m_3DOgreTexture.setNull();
+    m_3DOgreTexture.reset();
 
     ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
-    m_maskTexture.setNull();
+    m_maskTexture.reset();
 
     m_gpuTF.removeTexture();
     m_preIntegrationTable.removeTexture();
@@ -428,6 +426,25 @@ void SVolumeRender::newImage()
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
 
+    this->updateImage();
+
+    if (m_autoResetCamera || image->getField("resetCamera"))
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
+    else
+    {
+        this->getLayer()->computeCameraParameters();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateImage()
+{
+    ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is missing", image);
+
     this->updateImageInfos(image);
 
     this->getRenderService()->makeCurrent();
@@ -465,15 +482,6 @@ void SVolumeRender::newImage()
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
 
     m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
-
-    if (m_autoResetCamera || image->getField("resetCamera"))
-    {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
-    }
-    else
-    {
-        this->getLayer()->computeCameraParameters();
-    }
 
     this->requestRender();
 }
@@ -746,7 +754,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType mode)
+void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType)
 {
     this->stopping();
     this->starting();
@@ -976,24 +984,6 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::ImportanceDrivenVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
-        }
-    }
-    else if(key == "stereoMode")
-    {
-        if(val == "None")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::NONE);
-        }
-        else if(val == "Autostereo(5)")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5);
-        }
-        else if(val == "Autostereo(8)")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8);
         }
     }
 }

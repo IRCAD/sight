@@ -23,7 +23,7 @@ vec4 lighting(vec3 _normal, vec3 _position)
 
     for(int i = 0; i < u_numLights; ++i)
     {
-        float fLitDiffuse = clamp(dot( normalize(-u_lightDir[i]), _normal ), 0, 1);
+        float fLitDiffuse = abs(dot( normalize(-u_lightDir[i]), _normal ));
         diffuse += fLitDiffuse * u_lightDiffuse[i] * u_diffuse.rgb;
 
         vec3 r = reflect(u_lightDir[i], _normal);
