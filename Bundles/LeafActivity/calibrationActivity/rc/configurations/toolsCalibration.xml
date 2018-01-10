@@ -161,7 +161,7 @@
         </service>
 
         <service uid="interactorStyle1" type="::visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default1" style="InteractorStyle2DForNegato" />
+            <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
@@ -198,7 +198,7 @@
                 <adaptor uid="TransformMatrixAdaptor" />
                 <adaptor uid="pointListAdaptor" />
                 <adaptor uid="sphereCenter" />
-                <adaptor uid="interactorStyle" />
+                <adaptor uid="interactorStyle3D" />
             </scene>
         </service>
 

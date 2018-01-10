@@ -15,5 +15,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwPreferences
+    cvIO
 )
 set( REQUIREMENTS dataReg servicesReg)

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,8 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -25,10 +25,14 @@
 #include <functional>
 #include <sstream>
 
-fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL);
-
 namespace syncTimeline
 {
+
+// -----------------------------------------------------------------------------
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL);
+
+static const ::fwCom::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
+static const ::fwCom::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
 static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
@@ -37,6 +41,8 @@ static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 SMatrixTLSynchronizer::SMatrixTLSynchronizer() noexcept
 {
+    newSignal< MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG);
+    newSignal< MatrixUnsynchronizedSignalType>(MATRIX_UNSYNCHRONIZED_SIG);
 }
 
 // ----------------------------------------------------------------------------
@@ -78,34 +84,40 @@ void SMatrixTLSynchronizer::synchronize()
     {
         std::stringstream matrixPrint;
 
-        for (size_t i = 0; i< this->getKeyGroupSize(s_MATRICES_INOUT); ++i)
+        for(size_t matrixIndex = 0; matrixIndex < this->getKeyGroupSize(s_MATRICES_INOUT); ++matrixIndex)
         {
-            unsigned int index = static_cast< unsigned int >(i);
+            const unsigned int index = static_cast< unsigned int >(matrixIndex);
+
             if(buffer->isPresent(index))
             {
                 const float* values = buffer->getElement(index);
+                auto matrix         = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, matrixIndex);
 
-                auto matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, i);
                 {
                     ::fwData::mt::ObjectWriteLock lock(matrix);
+                    OSLM_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
 
-                    OSLM_ASSERT("Matrix['" << i << "] not found.", matrix);
-                    matrixPrint << std::endl << "Matrix[" << i << "]" << std::endl;
+                    matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
 
-                    for(unsigned int i = 0; i < 4; ++i)
+                    for(std::uint8_t i = 0; i < 4; ++i)
                     {
-                        for(unsigned int j = 0; j < 4; ++j)
+                        for(std::uint8_t j = 0; j < 4; ++j)
                         {
-                            matrix->setCoefficient(i,j,values[i*4+j]);
+                            matrix->setCoefficient(i, j, static_cast<double>(values[i*4+j]));
                             matrixPrint << values[i*4+j] << " ; ";
 
                         }
                         matrixPrint << std::endl;
                     }
                 }
+                this->signal<MatrixSynchronizedSignalType>(MATRIX_SYNCHRONIZED_SIG)->asyncEmit(index);
                 auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                     ::fwData::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();
+            }
+            else
+            {
+                this->signal<MatrixUnsynchronizedSignalType>(MATRIX_UNSYNCHRONIZED_SIG)->asyncEmit(index);
             }
         }
 

@@ -181,6 +181,8 @@ void SColourImageMasking::updating()
 
         ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
+        maskCV = (maskCV > 0);
+
         //convert the ::arData::FrameTL videoTL to an OpenCV image
         const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL, frameBuffOutVideo);
 
@@ -229,6 +231,8 @@ void SColourImageMasking::setBackground()
 
     // Convert color mask to grayscale value
     ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
+
+    maskCV = (maskCV > 0);
 
     // Save size to downscale the image (speed up the process but decrease segmentation quality)
     m_maskDownsize = ::cv::Size(static_cast<int>(static_cast<float>(maskCV.size[1])*m_scaleFactor),

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -102,10 +102,7 @@ void SVideoWriter::configureWithIHM()
 
 void SVideoWriter::stopping()
 {
-    if (m_writer)
-    {
-        this->stopRecord();
-    }
+    this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
@@ -204,8 +201,11 @@ void SVideoWriter::startRecord()
 
 void SVideoWriter::stopRecord()
 {
-    m_writer->release();
-    m_writer.reset();
+    if(m_writer)
+    {
+        m_writer->release();
+        m_writer.reset();
+    }
 }
 
 //------------------------------------------------------------------------------
