@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,12 +52,13 @@ SConfigLauncher::~SConfigLauncher() noexcept
 
 void SConfigLauncher::starting()
 {
-
     m_proxychannel = this->getID() + "_stopConfig";
 
     this->actionServiceStarting();
     ::fwData::Object::sptr currentObj = this->getObject();
-    bool executable = m_configLauncher->isExecutable(currentObj);
+
+    // Check if all inputs exists and if the service was configured to be 'executable'.
+    const bool executable = m_configLauncher->isExecutable(currentObj) & this->getIsExecutable();
     this->setIsExecutable( executable );
 }
 
@@ -124,12 +125,6 @@ void SConfigLauncher::stopConfig()
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         this->setIsActive(false);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SConfigLauncher::info( std::ostream &_sstream )
-{
 }
 
 //-----------------------------------------------------------------------------

@@ -72,9 +72,6 @@ protected:
 
     virtual void configuring() override;
 
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
-
     void notifyMaterial();
 
 protected Q_SLOTS:
@@ -94,9 +91,6 @@ private:
     QPointer<QButtonGroup> m_normalsRadioBox;
 
     ::fwData::Material::sptr m_material;
-
-    /// Signal emitted when normals mode changed (0: none, 1: point, 2: cell)
-    NormalsModeModifiedSignalType::sptr m_sigNormalsModeModified;
 
 };
 

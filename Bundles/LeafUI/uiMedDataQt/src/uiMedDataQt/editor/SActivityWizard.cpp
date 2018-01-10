@@ -122,13 +122,14 @@ void SActivityWizard::configuring()
 
         for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
         {
-            std::string type = elt->getAttributeValue("type");
+            const std::string type = elt->getAttributeValue("type");
             SLM_ASSERT("'series' attribute is missing", !type.empty());
 
-            std::string icon = elt->getAttributeValue("icon");
+            const std::string icon = elt->getAttributeValue("icon");
             SLM_ASSERT("'icon' attribute is missing", !icon.empty());
 
-            m_objectIcons[type] = icon;
+            const auto file = ::fwRuntime::getResourceFilePath(icon);
+            m_objectIcons[type] = file.string();
         }
     }
 }

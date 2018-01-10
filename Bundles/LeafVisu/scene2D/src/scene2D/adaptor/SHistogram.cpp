@@ -82,9 +82,10 @@ void SHistogram::updating()
     ::fwData::Histogram::csptr histogram          = this->getInput< ::fwData::Histogram>(s_HISTOGRAM_INPUT);
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
 
+    m_layer = new QGraphicsItemGroup();
+
     if (!values.empty())
     {
-        m_layer = new QGraphicsItemGroup();
         // Update color with opacity
         QColor color = m_color.color();
         color.setAlphaF( m_opacity );

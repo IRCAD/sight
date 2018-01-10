@@ -46,8 +46,9 @@ fwServicesRegisterMacro( ::fwRenderVTK::IAdaptor, ::visuVTKAdaptor::SImagesBlend
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
-const ::fwCom::Slots::SlotKeyType SImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
+const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT                  = "changeMode";
+const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
+const ::fwCom::Slots::SlotKeyType s_SET_TOP_IMAGE_TRANSPARENCY_SLOT   = "setTopImageTransparency";
 
 static const ::fwServices::IService::KeyType s_IMAGE_GROUP = "image";
 static const ::fwServices::IService::KeyType s_TF_GROUP    = "tf";
@@ -61,6 +62,7 @@ SImagesBlend::SImagesBlend() noexcept :
 {
     newSlot(s_CHANGE_MODE_SLOT, &SImagesBlend::changeMode, this);
     newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &SImagesBlend::changeCheckerboardDivision, this);
+    newSlot(s_SET_TOP_IMAGE_TRANSPARENCY_SLOT, &SImagesBlend::setTopImageTransparency, this);
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +135,7 @@ void SImagesBlend::configuring()
                 const ::fwServices::IService::ConfigType& specAssoc = v.second;
                 const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
                 const std::string tfalpha                           = attr.get("tfalpha", "no");
-                const double opacity                                = attr.get("tfalpha", 1.0);
+                const double opacity                                = attr.get("opacity", 1.0);
 
                 ImageInfo info;
                 info.m_imageOpacity = opacity;
@@ -211,7 +213,8 @@ bool SImagesBlend::checkImageInformations()
                 size    = img->getSize();
                 spacing = img->getSpacing();
                 origin  = img->getOrigin();
-                if(size[2] <= 1)
+
+                if(size.size() < 3 || size[2] <= 1)
                 {
                     m_zDivision = 1;
                 }
@@ -385,6 +388,18 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunctio
     imageAdaptor->setAllowAlphaInTF(info.m_useTFAlfa);
 
     imageAdaptor->start();
+}
+
+//------------------------------------------------------------------------------
+
+void SImagesBlend::setTopImageTransparency(int transparency)
+{
+    SLM_ASSERT("The image group is empty. Have you started the service?", m_imagesInfo.size() > 0);
+    SLM_ERROR_IF("Transparency must be in [0, 255].", transparency < 0 || transparency > 255);
+    auto topImageInfo = m_imagesInfo.rbegin();
+
+    topImageInfo->m_imageOpacity = 1. - (double(transparency) / 255.);
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

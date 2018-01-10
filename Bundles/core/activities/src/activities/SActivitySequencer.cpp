@@ -50,7 +50,8 @@ const ::fwCom::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated"
 const ::fwCom::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
 const ::fwCom::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
 
-const ::fwServices::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+const ::fwServices::IService::KeyType s_SERIESDB_INOUT  = "seriesDB";
+const ::fwServices::IService::KeyType s_OVERRIDES_INOUT = "requirementOverrides";
 
 //------------------------------------------------------------------------------
 
@@ -217,11 +218,27 @@ void SActivitySequencer::storeActivityData()
     ::fwMedData::Series::sptr series           = seriesDB->getContainer()[currentIdx];
     ::fwMedData::ActivitySeries::sptr activity = ::fwMedData::ActivitySeries::dynamicCast(series);
     SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
-    ::fwData::Composite::sptr composite = activity->getData();
+    ::fwData::Composite::sptr composite  = activity->getData();
+    ::fwData::Composite::csptr overrides = this->getInput< ::fwData::Composite>(s_OVERRIDES_INOUT);
 
-    for (const auto& elt : composite->getContainer())
+    if(overrides)
     {
-        m_requirements[elt.first] = elt.second;
+        // Do not store overriden requirements
+        auto overridesContainer = overrides->getContainer();
+        for (const auto& elt : composite->getContainer())
+        {
+            if(overridesContainer.count(elt.first) == 0)
+            {
+                m_requirements[elt.first] = elt.second;
+            }
+        }
+    }
+    else
+    {
+        for (const auto& elt : composite->getContainer())
+        {
+            m_requirements[elt.first] = elt.second;
+        }
     }
 }
 
@@ -233,6 +250,7 @@ void SActivitySequencer::storeActivityData()
     SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     ::fwMedData::ActivitySeries::sptr activity;
+    ::fwData::Composite::csptr overrides = this->getInput< ::fwData::Composite>(s_OVERRIDES_INOUT);
     if (seriesDB->size() > index) // The activity already exists, update the data
     {
         ::fwMedData::Series::sptr series = seriesDB->getContainer()[index];
@@ -241,9 +259,21 @@ void SActivitySequencer::storeActivityData()
         ::fwData::Composite::sptr composite = activity->getData();
 
         // FIXME: update all the data or only the requirement ?
-        for (const auto& elt : composite->getContainer())
+        if(overrides)
         {
-            composite->getContainer()[elt.first] = m_requirements[elt.first];
+            auto overridesContainer = overrides->getContainer();
+            for (const auto& elt : composite->getContainer())
+            {
+                composite->getContainer()[elt.first] = overridesContainer.count(elt.first) == 0 ?
+                                                       m_requirements[elt.first] : overridesContainer[elt.first];
+            }
+        }
+        else
+        {
+            for (const auto& elt : composite->getContainer())
+            {
+                composite->getContainer()[elt.first] = m_requirements[elt.first];
+            }
         }
     }
     else // create a new activity series
@@ -268,7 +298,15 @@ void SActivitySequencer::storeActivityData()
 
         for (const auto& req : info.requirements)
         {
-            if (m_requirements.find(req.name) != m_requirements.end())
+            if (overrides)
+            {
+                auto overridesContainer = overrides->getContainer();
+                if(overridesContainer.count(req.name) != 0)
+                {
+                    composite->getContainer()[req.name] = overridesContainer[req.name];
+                }
+            }
+            else if (m_requirements.find(req.name) != m_requirements.end())
             {
                 composite->getContainer()[req.name] = m_requirements[req.name];
             }

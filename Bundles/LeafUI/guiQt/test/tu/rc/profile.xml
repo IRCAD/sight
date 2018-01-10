@@ -16,6 +16,7 @@
     <activate id="Tuto01Basic" />
     <activate id="Tuto02DataServiceBasic" />
 
+    <start id="visuVTKQt" />
     <start id="guiQt" />
 
 </profile>

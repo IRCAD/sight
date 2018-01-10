@@ -121,9 +121,6 @@ protected:
      */
     virtual void configuring() override;
 
-    /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
-
     /**
      * @name Slots
      * @}

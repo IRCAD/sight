@@ -16,9 +16,19 @@
 
 #include <boost/filesystem/operations.hpp>
 
+#include <limits.h>
+
 #include <algorithm>
 #include <cassert>
 #include <functional>
+
+#ifdef _WIN32
+#include <WinBase.h>
+#elif __APPLE__
+#include <mach-o/dyld.h>
+#else
+#include <unistd.h>
+#endif
 
 namespace fwRuntime
 {
@@ -29,9 +39,37 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 //------------------------------------------------------------------------------
 
-Runtime::Runtime() :
-    m_workingPath(::boost::filesystem::current_path())
+Runtime::Runtime()
 {
+    // Get executable location on 'progPath'
+#ifdef _WIN32
+    char progPath[MAX_PATH];
+    if(  GetModuleFileName(NULL, progPath, MAX_PATH) == 0 )
+#elif __APPLE__
+    char progPath[PATH_MAX];
+    uint32_t size = PATH_MAX;
+    if( _NSGetExecutablePath(progPath, &size) != 0 )
+#else
+    char progPath[PATH_MAX];
+    ssize_t len = readlink("/proc/self/exe", progPath, PATH_MAX-1);
+    if ( len != -1 )
+    {
+        progPath[len] = '\0';
+    }
+    if ( len == -1 )
+#endif
+    // If there is an system error, use the current path
+    {
+        OSLM_WARN("Cannot guess the path of the executable, it's required to set the working directory. "
+                  "Current working directory is used");
+        m_workingPath = ::boost::filesystem::current_path();
+    }
+    else
+    {
+        m_workingPath = progPath;
+        // The program location is 'path/bin/executable', real working path is 'path'
+        m_workingPath = m_workingPath.normalize().parent_path().parent_path();
+    }
 }
 
 //------------------------------------------------------------------------------

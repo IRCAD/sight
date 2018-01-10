@@ -17,5 +17,8 @@ set( DEPENDENCIES
     fwDataCamp
     fwActivities
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+)
 

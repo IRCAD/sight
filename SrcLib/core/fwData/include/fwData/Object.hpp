@@ -176,11 +176,6 @@ public:
     FWDATA_API void removeField( const FieldNameType& name );
 
     /**
-     * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
-     */
-    FWDATA_API void updateFields( const FieldMapType& fieldMap );
-
-    /**
      * @brief A shallow copy of fields (objects in m_children)
      * @param[in] source source of the copy.
      */

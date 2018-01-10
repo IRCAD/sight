@@ -192,6 +192,8 @@ void WorkerQtTest::postFromOutsideTest()
     m_worker->getFuture().wait();
 
     RUN_BASIC_TEST_CHECKS(handler);
+
+    testThread.join();
 }
 
 //-----------------------------------------------------------------------------
@@ -264,33 +266,31 @@ void oneShotBasicTimerTest(int& i,
 
 void WorkerQtTest::basicTimerTest()
 {
-    {
-        TestHandler handler;
-        handler.setWorkerId(m_worker->getThreadId());
+    TestHandler handler;
+    handler.setWorkerId(m_worker->getThreadId());
 
-        ::fwThread::Timer::sptr timer = m_worker->createTimer();
+    ::fwThread::Timer::sptr timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(10);
+    ::fwThread::Timer::TimeDurationType duration = std::chrono::milliseconds(10);
 
-        int i = 1;
-        timer->setFunction(
-            std::bind(
-                &oneShotBasicTimerTest,
-                std::ref(i), handler, std::ref(timer), duration, std::ref(m_worker) )
-            );
-        timer->setDuration(duration);
+    int i = 1;
+    timer->setFunction(
+        std::bind(
+            &oneShotBasicTimerTest,
+            std::ref(i), handler, std::ref(timer), duration, std::ref(m_worker) )
+        );
+    timer->setDuration(duration);
 
-        CPPUNIT_ASSERT(!timer->isRunning());
-        CPPUNIT_ASSERT(handler.m_threadCheckOk);
-        CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+    CPPUNIT_ASSERT(!timer->isRunning());
+    CPPUNIT_ASSERT(handler.m_threadCheckOk);
+    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-        m_worker->post( std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration) );
+    m_worker->post( std::bind(&runBasicTimerTest, std::ref(handler), std::ref(timer), duration) );
 
-        ::fwThread::Worker::FutureType future = m_worker->getFuture();
-        future.wait();
+    ::fwThread::Worker::FutureType future = m_worker->getFuture();
+    future.wait();
 
-        CPPUNIT_ASSERT_EQUAL( 0, boost::any_cast<int>( future.get() ) );
-    }
+    CPPUNIT_ASSERT_EQUAL( 0, boost::any_cast<int>( future.get() ) );
 }
 
 //-----------------------------------------------------------------------------

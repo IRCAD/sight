@@ -122,10 +122,9 @@ void SReconstruction::createMeshService()
 
 void SReconstruction::updating()
 {
-    if (!m_meshService.expired())
+    ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
+    if (meshService)
     {
-        ::fwRenderVTK::IAdaptor::sptr meshService = m_meshService.lock();
-
         auto reconstruction = this->getInput < ::fwData::Reconstruction >(s_RECONSTRUCTION_INPUT);
         SLM_ASSERT("Missing Reconstruction", reconstruction);
         ::visuVTKAdaptor::SMesh::sptr meshAdaptor = SMesh::dynamicCast(meshService);
@@ -144,6 +143,7 @@ void SReconstruction::updating()
         else
         {
             meshAdaptor->updateVisibility( reconstruction->getIsVisible());
+            meshAdaptor->updateOptionsMode();
         }
     }
     else

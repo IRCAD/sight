@@ -6,23 +6,16 @@
 
 #include "uiReconstructionQt/RepresentationEditor.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 
@@ -45,8 +38,6 @@ const ::fwCom::Signals::SignalKeyType RepresentationEditor::s_NORMALS_MODE_MODIF
 
 RepresentationEditor::RepresentationEditor() noexcept
 {
-    m_sigNormalsModeModified = NormalsModeModifiedSignalType::New();
-    ::fwCom::HasSignals::m_signals(s_NORMALS_MODE_MODIFIED_SIG, m_sigNormalsModeModified);
 }
 
 //------------------------------------------------------------------------------
@@ -198,12 +189,6 @@ void RepresentationEditor::updating()
 void RepresentationEditor::swapping()
 {
     this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void RepresentationEditor::info( std::ostream& _sstream )
-{
 }
 
 //------------------------------------------------------------------------------
@@ -383,7 +368,11 @@ void RepresentationEditor::onShowNormals(int state )
     }
 
     this->notifyMaterial();
-    m_sigNormalsModeModified->asyncEmit(static_cast<std::uint8_t>(state), reconstruction->getID());
+
+    // In VTK backend the normals is handled by the mesh and not by the material
+    auto sig = reconstruction->signal< ::fwData::Reconstruction::MeshChangedSignalType >(
+        ::fwData::Reconstruction::s_MESH_CHANGED_SIG);
+    sig->asyncEmit(reconstruction->getMesh());
 }
 
 //------------------------------------------------------------------------------

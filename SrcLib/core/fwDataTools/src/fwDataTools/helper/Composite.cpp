@@ -6,9 +6,7 @@
 
 #include "fwDataTools/helper/Composite.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -28,6 +26,11 @@ Composite::Composite( ::fwData::Composite::wptr _composite ) :
 
 Composite::~Composite()
 {
+    if(!m_addedObjects.empty() || !m_removedObjects.empty() || !m_newChangedObjects.empty() ||
+       !m_oldChangedObjects.empty())
+    {
+        notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -133,6 +136,11 @@ void Composite::notify()
     }
     OSLM_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
                  m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
+
+    m_removedObjects.clear();
+    m_newChangedObjects.clear();
+    m_oldChangedObjects.clear();
+    m_addedObjects.clear();
 }
 
 //-----------------------------------------------------------------------------

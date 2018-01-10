@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,9 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -71,7 +73,7 @@ void ProcessingTest::histogramTest()
     ImageType* itrEnd = arrayHelper.end< ImageType >();
 
     int count = 0;
-    for(; itr!= itrEnd; ++itr)
+    for(; itr != itrEnd; ++itr)
     {
         if(count < imageSize/4)
         {
@@ -92,25 +94,16 @@ void ProcessingTest::histogramTest()
         ++count;
     }
 
-    // Create service.
-    ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create( implementation );
-    CPPUNIT_ASSERT(srv);
-
-    // Register service.
-    ::fwServices::OSR::registerService( image, srv );
-
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
-
-    ::fwRuntime::EConfigurationElement::sptr histogramIdCfg = ::fwRuntime::EConfigurationElement::New("histogramId");
-    histogramIdCfg->setValue(histogram->getID());
-    srvCfg->addConfigurationElement(histogramIdCfg);
+    auto srv = ::fwServices::add< ::fwServices::IController >(implementation, "");
+    CPPUNIT_ASSERT_MESSAGE("Impossible to create the service '" + implementation + "'", srv);
 
     ::fwRuntime::EConfigurationElement::sptr binsWidthCfg = ::fwRuntime::EConfigurationElement::New("binsWidth");
     binsWidthCfg->setValue("1.0");
-    srvCfg->addConfigurationElement(binsWidthCfg);
 
-    srv->setConfiguration(srvCfg);
+    srv->registerInput(image, "image");
+    srv->registerInOut(histogram, "histogram");
+
+    srv->setConfiguration(binsWidthCfg);
     srv->configure();
     srv->start().wait();
     srv->stop().wait();
@@ -123,10 +116,10 @@ void ProcessingTest::histogramTest()
 
     CPPUNIT_ASSERT_EQUAL((float) 40, histogram->getMaxValue());
 
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(10,11));
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(20,21));
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(30,31));
-    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(40,41));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(10, 11));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(20, 21));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(30, 31));
+    CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(40, 41));
 }
 
 //------------------------------------------------------------------------------

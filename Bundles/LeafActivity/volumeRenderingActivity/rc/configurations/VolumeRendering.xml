@@ -108,8 +108,6 @@
             <appConfig id="OrganManagerWithSeries" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
-            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
         </service>
 
         <service uid="ActionSnapshotVR" type="::uiVisu::action::SSnapshot" />
@@ -228,14 +226,6 @@
         <connect>
             <signal>ActionSnapshotVR/snapped</signal>
             <slot>snapshot1/snap</slot>
-        </connect>
-
-        <connect channel="ModelRepresentationChannel">
-            <slot>modelSeriesAdaptor/updateNormalMode</slot>
-        </connect>
-
-        <connect channel="ModelDisplayChannel">
-            <slot>modelSeriesAdaptor/showReconstructions</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

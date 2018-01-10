@@ -437,7 +437,7 @@ void Surface::writeSurfaceSequence(const ::fwData::Reconstruction::csptr& recons
     surface->SetSurfaceProcessing(false);
 
     // Get reconstruction's color
-    const auto rgba = material->ambient()->getRGBA();
+    const auto rgba = material->diffuse()->getRGBA();
     std::vector< float > rgb { rgba[0], rgba[1], rgba[2] };
 
     // Recommended Display Grayscale Value (0x0062,0x000C) - Type 1

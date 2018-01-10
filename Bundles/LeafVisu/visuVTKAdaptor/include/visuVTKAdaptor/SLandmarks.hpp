@@ -71,7 +71,6 @@ public:
 
     /// Widget used to display and interact with landmarks.
     typedef vtkSmartPointer< vtkHandleWidget > LandmarkWidgetType;
-    typedef vtkSmartPointer< vtkActor2D > LabelActorType;
 
     VISUVTKADAPTOR_API SLandmarks() noexcept;
 
@@ -108,7 +107,7 @@ private:
     typedef std::map< std::string, LandmarksWidgetContainerType > GroupWidgetsMapType;
 
     /// Maps Landmarks widget to labels
-    typedef std::map< LandmarkWidgetType, LabelActorType > WidgetLabelMapType;
+    typedef std::map< LandmarkWidgetType, vtkActor2D* > WidgetLabelMapType;
 
     /// Maps Landmarks widget to its vtkCommand
     typedef std::map< LandmarkWidgetType, vtkCommand* > WidgetCommandMapType;

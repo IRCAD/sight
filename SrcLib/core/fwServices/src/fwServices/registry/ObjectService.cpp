@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -193,10 +193,9 @@ std::string ObjectService::getRegistryInformation() const
     ::fwCore::mt::ReadLock lock(m_containerMutex);
     for( const ServiceContainerType::left_map::value_type& objSrvMap :  m_container.left)
     {
-        // TODO FIXME getObject() fail if there are expired object in OSR
         ::fwData::Object::csptr obj = objSrvMap.first.lock();
 
-        if ( previousObj != obj )
+        if ( obj && previousObj != obj )
         {
             info << "Object ( id = "<<obj->getID()<<" ) has "
                  << m_container.left.count(obj) <<" services." << std::endl;
