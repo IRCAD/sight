@@ -3,16 +3,14 @@
     <parameters>
         <param name="modelSeriesUid" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
-        <!-- defined by SConfigLauncher -->
-        <param name="ModelRepresentationChannel" />
-        <param name="ModelDisplayChannel" />
     </parameters>
     <config>
-        <!-- ***************************************** Begin Objects declaration ***************************************** -->
+        <!-- ***************************************** Begin Objects declaration *********************************** -->
         <object uid="${modelSeriesUid}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
-        <!-- ***************************************** End Objects declaration ***************************************** -->
-        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+        <!-- ***************************************** End Objects declaration ************************************* -->
+
+        <!-- ***************************************** Begin layouts declaration *********************************** -->
         <!-- MAIN FRAME -->
         <service uid="organManagerFrame" type="::gui::frame::SDefaultFrame">
             <window onclose="notify" />
@@ -45,8 +43,8 @@
             </registry>
         </service>
 
-        <!-- ***************************************** End layouts declaration ***************************************** -->
-        <!-- ***************************************** Begin services declarations    ************************************ -->
+        <!-- ***************************************** End layouts declaration ************************************* -->
+        <!-- ***************************************** Begin services declarations    ****************************** -->
         <service uid="updaterReconst" type="::ctrlSelection::updater::SObjFromSlot">
             <out key="object" uid="reconstruction" />
         </service>
@@ -66,8 +64,8 @@
             </columns>
         </service>
 
-        <!-- ***************************************** End services declarations ***************************************** -->
-        <!-- ***************************************** Begin connections declarations    *************************************** -->
+        <!-- ***************************************** End services declarations *********************************** -->
+        <!-- ***************************************** Begin connections declarations    *************************** -->
         <connect>
             <signal>listOrganEditor/reconstructionSelected</signal>
             <slot>updaterReconst/addOrSwap</slot>
@@ -77,16 +75,7 @@
             <signal>organManagerFrame/closed</signal>
         </connect>
 
-        <connect channel="${ModelDisplayChannel}">
-            <signal>listOrganEditor/recDisplayModified</signal>
-            <slot>listOrganEditor/showReconstructions</slot>
-        </connect>
-
-        <connect channel="${ModelRepresentationChannel}">
-            <signal>representationEditor/normalsModeModified</signal>
-        </connect>
-
-        <!-- ***************************************** End connections declarations    ***************************************** -->
+        <!-- ***************************************** End connections declarations    ***************************** -->
         <!-- START AND STOP SERVICES -->
         <start uid="organManagerFrame" />
         <start uid="updaterReconst" />

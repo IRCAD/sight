@@ -238,12 +238,12 @@
 
             <service uid="cam2ReaderFile" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="cam2Mesh" />
-                <file>PoCMeshManualRegistration-0.1/cam.trian</file>
+                <resource>PoCMeshManualRegistration-0.1/cam.trian</resource>
             </service>
 
             <service uid="cam1ReaderFile" type="::ioData::STrianMeshReader">
                 <inout key="data" uid="cam1Mesh" />
-                <file>PoCMeshManualRegistration-0.1/cam.trian</file>
+                <resource>PoCMeshManualRegistration-0.1/cam.trian</resource>
             </service>
 
             <!-- ***************************************** Begin render scenes declarations    ***************************************** -->
