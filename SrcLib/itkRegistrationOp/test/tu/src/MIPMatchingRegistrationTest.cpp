@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "FastRegistrationTest.hpp"
+#include "MIPMatchingRegistrationTest.hpp"
 
 #include "helper.hpp"
 
-#include <itkRegistrationOp/FastRegistration.hpp>
 #include <itkRegistrationOp/Metric.hpp>
+#include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
@@ -37,7 +37,7 @@
 #include <itkRegionOfInterestImageFilter.h>
 #include <itkResampleImageFilter.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::itkRegistrationOp::ut::FastRegistrationTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(::itkRegistrationOp::ut::MIPMatchingRegistrationTest);
 
 namespace itkRegistrationOp
 {
@@ -48,19 +48,19 @@ namespace itkReg = ::itkRegistrationOp;
 
 //------------------------------------------------------------------------------
 
-void FastRegistrationTest::setUp()
+void MIPMatchingRegistrationTest::setUp()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void FastRegistrationTest::tearDown()
+void MIPMatchingRegistrationTest::tearDown()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void FastRegistrationTest::identityTest()
+void MIPMatchingRegistrationTest::identityTest()
 {
     ::fwData::Image::csptr moving              = createSphereImage< ::std::uint16_t, 3>();
     ::fwData::Image::sptr fixed                = ::fwData::Object::copy(moving);
@@ -82,7 +82,7 @@ void FastRegistrationTest::identityTest()
 
 //------------------------------------------------------------------------------
 
-void FastRegistrationTest::translateTransformTest()
+void MIPMatchingRegistrationTest::translateTransformTest()
 {
     ::fwData::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
     ::fwData::Image::sptr fixed   = ::fwData::Image::New();
@@ -109,7 +109,7 @@ void FastRegistrationTest::translateTransformTest()
 
 //------------------------------------------------------------------------------
 
-void FastRegistrationTest::translateTransformWithScalesTest()
+void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
 {
     using ImageType = ::itk::Image< std::uint16_t, 3>;
 

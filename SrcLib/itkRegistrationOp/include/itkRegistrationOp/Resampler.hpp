@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ITKREGISTRATIONOP_RESAMPLER_HPP__
-#define __ITKREGISTRATIONOP_RESAMPLER_HPP__
+#pragma once
 
 #include "itkRegistrationOp/config.hpp"
 
@@ -48,5 +47,3 @@ public:
 };
 
 }// namespace itkRegistrationOp
-
-#endif // __ITKREGISTRATIONOP_RESAMPLER_HPP__

@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ITKREGISTRATIONOP_FASTREGISTRATION_HPP__
-#define __ITKREGISTRATIONOP_FASTREGISTRATION_HPP__
+#pragma once
 
 #include "itkRegistrationOp/config.hpp"
 #include "itkRegistrationOp/ItkImageCaster.hpp"
@@ -33,11 +32,11 @@ namespace itkRegistrationOp
 {
 
 template <class PIX>
-class FastRegistration;
+class MIPMatchingRegistration;
 
 /**
- * @brief Helper type containing the parameters and return values from FastRegistration::registerImage() for use with
- * the Dispatcher.
+ * @brief Helper type containing the parameters and return values from MIPMatchingRegistration::registerImage()
+ * for use with the Dispatcher.
  */
 struct RegistrationDispatch {
     struct Parameters {
@@ -51,18 +50,19 @@ struct RegistrationDispatch {
     template<typename PIXELTYPE>
     void operator()(Parameters& params)
     {
-        ::itkRegistrationOp::FastRegistration<PIXELTYPE>::registerImage(params.moving, params.fixed, params.transform);
+        ::itkRegistrationOp::MIPMatchingRegistration<PIXELTYPE>::registerImage(params.moving, params.fixed,
+                                                                               params.transform);
     }
 };
 
 /**
- * @brief Compute a fast registration, composed of pure translation, between two 3-dimensional images of the given
- * pixel type.
+ * @brief Fast approximate registration, made of pure translation roughly matching two 3-dimensional images
+ * of the given pixel type.
  *
  * @tparam PIX Subpixel type of the images.
  */
 template <typename PIX>
-class FastRegistration
+class MIPMatchingRegistration
 {
 public:
 
@@ -71,6 +71,8 @@ public:
      * @param[in] _moving image that will be transformed
      * @param[in] _fixed fixed image
      * @param[inout] _transform initial transform applied to the moving image, updated after registration.
+     *
+     * @pre The transformed moving image must approximately match
      */
     static void registerImage(const ::fwData::Image::csptr& _moving,
                               const ::fwData::Image::csptr& _fixed,
@@ -107,9 +109,9 @@ private:
 //------------------------------------------------------------------------------
 
 template <class PIX>
-void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _moving,
-                                          const ::fwData::Image::csptr& _fixed,
-                                          ::fwData::TransformationMatrix3D::sptr& _transform)
+void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _moving,
+                                                 const ::fwData::Image::csptr& _fixed,
+                                                 ::fwData::TransformationMatrix3D::sptr& _transform)
 {
     const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing().begin(), _fixed->getSpacing().end(), 1.,
                                                     std::multiplies<double>());
@@ -168,7 +170,8 @@ void FastRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _moving,
 //------------------------------------------------------------------------------
 
 template <class PIX>
-typename FastRegistration<PIX>::Image2DPtrType FastRegistration<PIX>::computeMIP(Image3DPtrType const& img, Direction d)
+typename MIPMatchingRegistration<PIX>::Image2DPtrType MIPMatchingRegistration<PIX>::computeMIP(
+    Image3DPtrType const& img, Direction d)
 {
     auto filter = MIPFilterType::New();
     filter->SetInput(img);
@@ -180,8 +183,8 @@ typename FastRegistration<PIX>::Image2DPtrType FastRegistration<PIX>::computeMIP
 //------------------------------------------------------------------------------
 
 template <class PIX>
-typename FastRegistration<PIX>::Image2DType::PointType
-FastRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Image2DPtrType const& img)
+typename MIPMatchingRegistration<PIX>::Image2DType::PointType
+MIPMatchingRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Image2DPtrType const& img)
 {
     // The correlation filter works in pixel space and as such, requires that images occupy the same physical space, ie
     // have the same origin and spacings. Spacing is already OK thanks to the previous resampling, we deal with the
@@ -220,4 +223,3 @@ FastRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Image2DPtr
 
 } // itkRegistrationOp
 
-#endif // __ITKREGISTRATIONOP_FASTREGISTRATION_HPP__

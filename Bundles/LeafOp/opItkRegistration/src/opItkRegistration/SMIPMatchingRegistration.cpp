@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "opItkRegistration/SFastRegistration.hpp"
+#include "opItkRegistration/SMIPMatchingRegistration.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -20,7 +20,7 @@
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
-#include <itkRegistrationOp/FastRegistration.hpp>
+#include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
 
 #include <functional>
@@ -30,40 +30,40 @@ namespace opItkRegistration
 {
 
 fwServicesRegisterMacro(::arServices::IRegisterer,
-                        ::opItkRegistration::SFastRegistration);
+                        ::opItkRegistration::SMIPMatchingRegistration);
 
-SFastRegistration::SFastRegistration() noexcept :
+SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
     ::arServices::IRegisterer()
 {
 }
 
 //------------------------------------------------------------------------------
 
-SFastRegistration::~SFastRegistration() noexcept
+SMIPMatchingRegistration::~SMIPMatchingRegistration() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SFastRegistration::starting()
+void SMIPMatchingRegistration::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SFastRegistration::stopping()
+void SMIPMatchingRegistration::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SFastRegistration::configuring()
+void SMIPMatchingRegistration::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SFastRegistration::updating()
+void SMIPMatchingRegistration::updating()
 {
     auto fixed     = this->getInput< ::fwData::Image>("fixed");
     auto moving    = this->getInput< ::fwData::Image>("moving");
@@ -93,7 +93,7 @@ void SFastRegistration::updating()
 
 //------------------------------------------------------------------------------
 
-void SFastRegistration::computeRegistration(::fwCore::HiResClock::HiResClockType)
+void SMIPMatchingRegistration::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
     this->updating();
 }

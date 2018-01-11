@@ -412,7 +412,7 @@
             <log>true</log>
         </service>
 
-        <service uid="fastRegistration" type="::opItkRegistration::SFastRegistration" worker="fastRegistrationWorker">
+        <service uid="fastRegistration" type="::opItkRegistration::SMIPMatchingRegistration" worker="fastRegistrationWorker">
             <in key="moving" uid="${referenceImageUid}"/>
             <in key="fixed" uid="${targetImageUid}"/>
             <inout key="transform" uid="${transformUid}"/>
