@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_ISERVICE_HPP__
-#define __FWSERVICES_ISERVICE_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/factory/new.hpp"
@@ -696,6 +695,26 @@ protected:
 
 private:
 
+    // Slot: start the service
+    SharedFutureType startSlot();
+    SharedFutureType internalStart(bool _async);
+
+    // Slot: stop the service
+    SharedFutureType stopSlot();
+    SharedFutureType internalStop(bool _async);
+
+    // Slot: swap the object
+    SharedFutureType swapSlot(::fwData::Object::sptr _obj);
+    SharedFutureType internalSwap(::fwData::Object::sptr _obj, bool _async);
+
+    // Slot: swap an object
+    SharedFutureType swapKeySlot(const KeyType& _key, ::fwData::Object::sptr _obj);
+    SharedFutureType internalSwapKey(const KeyType& _key, ::fwData::Object::sptr _obj, bool _async);
+
+    // Slot: update the service
+    SharedFutureType updateSlot();
+    SharedFutureType internalUpdate(bool _async);
+
     /// Connect the service with configuration services and objects
     FWSERVICES_API void connectToConfig();
 
@@ -769,5 +788,3 @@ private:
 } // namespace fwServices
 
 #include "fwServices/IService.hxx"
-
-#endif // __FWSERVICES_ISERVICE_HPP__
