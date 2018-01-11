@@ -158,7 +158,6 @@ void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _
     std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
 
     ::fwData::TransformationMatrix3D::sptr translation = ::fwData::TransformationMatrix3D::New();
-    ::fwDataTools::TransformationMatrix3D::identity(translation);
     for(std::uint8_t i = 0; i != 3; ++i)
     {
         translation->setCoefficient(i, 3, res[i]);
@@ -214,8 +213,8 @@ MIPMatchingRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Ima
     maxIdx[0] -= (templateSize[0] - 1);
     maxIdx[1] -= (templateSize[1] - 1);
     Image2DType::PointType p;
-    p[0] = maxIdx[0] * spacing[0];
-    p[1] = maxIdx[1] * spacing[1];
+    p[0] = static_cast<double>(maxIdx[0]) * spacing[0];
+    p[1] = static_cast<double>(maxIdx[1]) * spacing[1];
     p   += tOrigin;
 
     return p;

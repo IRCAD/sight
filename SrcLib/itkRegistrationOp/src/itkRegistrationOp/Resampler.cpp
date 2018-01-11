@@ -148,7 +148,7 @@ fwData::Image::sptr Resampler::resample(const fwData::Image::csptr& _img,
     PointType max;
     for(std::uint8_t i = 0; i < 3; ++i)
     {
-        max[i] = inputOrigin[i] + inputSize[i] * inputSpacing[i];
+        max[i] = inputOrigin[i] + static_cast<double>(inputSize[i]) * inputSpacing[i];
     }
 
     inputBB->SetMinimum(min);
