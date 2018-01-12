@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,11 +56,11 @@ IService::IService() :
     newSignal<UpdatedSignalType>( s_UPDATED_SIG );
     newSignal<StoppedSignalType>( s_STOPPED_SIG );
 
-    m_slotStart   = newSlot( s_START_SLOT, &IService::start, this );
-    m_slotStop    = newSlot( s_STOP_SLOT, &IService::stop, this );
-    m_slotUpdate  = newSlot( s_UPDATE_SLOT, &IService::update, this );
-    m_slotSwap    = newSlot( s_SWAP_SLOT, &IService::swap, this );
-    m_slotSwapKey = newSlot( s_SWAPKEY_SLOT, &IService::swapKey, this );
+    m_slotStart   = newSlot( s_START_SLOT, &IService::startSlot, this );
+    m_slotStop    = newSlot( s_STOP_SLOT, &IService::stopSlot, this );
+    m_slotUpdate  = newSlot( s_UPDATE_SLOT, &IService::updateSlot, this );
+    m_slotSwap    = newSlot( s_SWAP_SLOT, &IService::swapSlot, this );
+    m_slotSwapKey = newSlot( s_SWAPKEY_SLOT, &IService::swapKeySlot, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ IService::~IService()
 
 //-----------------------------------------------------------------------------
 
-void IService::info( std::ostream& _sstream )
+void IService::info( std::ostream& )
 {
 }
 
@@ -292,39 +292,7 @@ IService::SharedFutureType IService::start()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
-
-        this->connectToConfig();
-
-        PackagedTaskType task( std::bind(&IService::starting, this) );
-        SharedFutureType future = task.get_future();
-
-        m_globalState = STARTING;
-        task();
-
-        try
-        {
-            // This allows to trigger the exception if there was one
-            future.get();
-        }
-        catch (std::exception& e)
-        {
-            SLM_ERROR("Error while STARTING service '" + this->getID() + "' : " + e.what());
-            SLM_ERROR("Service '" + this->getID() + "' is still STOPPED.");
-            m_globalState = STOPPED;
-            this->disconnectFromConfig();
-
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-        m_globalState = STARTED;
-
-        this->autoConnect();
-
-        auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
-        sig->asyncEmit();
-
-        return future;
+        return this->internalStart(false);
     }
     else
     {
@@ -338,39 +306,7 @@ IService::SharedFutureType IService::stop()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
-
-        this->autoDisconnect();
-
-        PackagedTaskType task( std::bind(&IService::stopping, this) );
-        SharedFutureType future = task.get_future();
-
-        m_globalState = STOPPING;
-        task();
-
-        try
-        {
-            // This allows to trigger the exception if there was one
-            future.get();
-        }
-        catch (std::exception& e)
-        {
-            SLM_ERROR("Error while STOPPING service '" + this->getID() + "' : " + e.what());
-            SLM_ERROR("Service '" + this->getID() + "' is still STARTED.");
-            m_globalState = STARTED;
-            this->autoConnect();
-
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-        m_globalState = STOPPED;
-
-        auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
-        sig->asyncEmit();
-
-        this->disconnectFromConfig();
-
-        return future;
+        return this->internalStop(false);
     }
     else
     {
@@ -384,35 +320,7 @@ IService::SharedFutureType IService::update()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
-                    "' of type '" << this->getClassname() << "'", m_globalState == STARTED );
-        OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
-                    "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
-
-        PackagedTaskType task( std::bind(&IService::updating, this) );
-        SharedFutureType future = task.get_future();
-
-        m_updatingState = UPDATING;
-        task();
-        m_updatingState = NOTUPDATING;
-
-        try
-        {
-            // This allows to trigger the exception if there was one
-            future.get();
-        }
-        catch (std::exception& e)
-        {
-            SLM_ERROR("Error while UPDATING service '" + this->getID() + "' : " + e.what());
-
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-
-        auto sig = this->signal<StartedSignalType>(s_UPDATED_SIG);
-        sig->asyncEmit();
-
-        return future;
+        return this->internalUpdate(false);
     }
     else
     {
@@ -426,34 +334,7 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
-                    m_associatedObject.lock() != _obj );
-        OSLM_FATAL_IF(
-            "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
-            m_globalState != STARTED);
-
-        PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
-        SharedFutureType future = task.get_future();
-
-        m_globalState = SWAPPING;
-        ::fwServices::OSR::swapService( _obj, this->getSptr() );
-        task();
-        m_globalState = STARTED;
-
-        try
-        {
-            // This allows to trigger the exception if there was one
-            future.get();
-        }
-        catch (std::exception& e)
-        {
-            SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
-
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-
-        return future;
+        return this->internalSwap(_obj, false);
     }
     else
     {
@@ -467,37 +348,7 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_FATAL_IF(
-            "Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
-            (_obj ? _obj->getID() : "nullptr"),
-            m_globalState != STARTED);
-
-        auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
-        PackagedTaskType task( fn );
-        SharedFutureType future = task.get_future();
-
-        this->autoDisconnect();
-
-        m_globalState = SWAPPING;
-        task();
-        m_globalState = STARTED;
-
-        try
-        {
-            // This allows to trigger the exception if there was one
-            future.get();
-        }
-        catch (std::exception& e)
-        {
-            SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
-
-            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
-            return future;
-        }
-
-        this->autoConnect();
-
-        return future;
+        return this->internalSwapKey(_key, _obj, false);
     }
     else
     {
@@ -565,9 +416,262 @@ IService::KeyConnectionsMap IService::getAutoConnections() const
 
 //-----------------------------------------------------------------------------
 
-void IService::addProxyConnection(const helper::ProxyConnections& proxy)
+IService::SharedFutureType IService::startSlot()
 {
-    m_proxies[proxy.m_channel] = proxy;
+    return this->internalStart(true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalStart(bool _async)
+{
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
+
+    this->connectToConfig();
+
+    m_globalState = STARTING;
+
+    PackagedTaskType task( std::bind(&IService::starting, this) );
+    SharedFutureType future = task.get_future();
+    task();
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (const std::exception& e)
+    {
+        SLM_ERROR("Error while STARTING service '" + this->getID() + "' : " + e.what());
+        SLM_ERROR("Service '" + this->getID() + "' is still STOPPED.");
+        m_globalState = STOPPED;
+        this->disconnectFromConfig();
+
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+
+    }
+    m_globalState = STARTED;
+
+    this->autoConnect();
+
+    auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
+    sig->asyncEmit();
+
+    return future;
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::stopSlot()
+{
+    return this->internalStop(true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalStop(bool _async)
+{
+    OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
+
+    this->autoDisconnect();
+
+    PackagedTaskType task( std::bind(&IService::stopping, this) );
+    SharedFutureType future = task.get_future();
+
+    m_globalState = STOPPING;
+    task();
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Error while STOPPING service '" + this->getID() + "' : " + e.what());
+        SLM_ERROR("Service '" + this->getID() + "' is still STARTED.");
+        m_globalState = STARTED;
+        this->autoConnect();
+
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+    }
+    m_globalState = STOPPED;
+
+    auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
+    sig->asyncEmit();
+
+    this->disconnectFromConfig();
+
+    return future;
+
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::swapSlot(::fwData::Object::sptr _obj)
+{
+    return this->internalSwap(_obj, true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalSwap(::fwData::Object::sptr _obj, bool _async)
+{
+    OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
+                m_associatedObject.lock() != _obj );
+    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
+                  m_globalState != STARTED);
+
+    PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
+    SharedFutureType future = task.get_future();
+
+    m_globalState = SWAPPING;
+    ::fwServices::OSR::swapService( _obj, this->getSptr() );
+    task();
+    m_globalState = STARTED;
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+    }
+
+    return future;
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::swapKeySlot(const KeyType& _key, ::fwData::Object::sptr _obj)
+{
+    return this->internalSwapKey(_key, _obj, true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, ::fwData::Object::sptr _obj, bool _async)
+{
+    OSLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
+                  (_obj ? _obj->getID() : "nullptr"),
+                  m_globalState != STARTED);
+
+    auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
+    PackagedTaskType task( fn );
+    SharedFutureType future = task.get_future();
+
+    this->autoDisconnect();
+
+    m_globalState = SWAPPING;
+    task();
+    m_globalState = STARTED;
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+    }
+
+    this->autoConnect();
+
+    return future;
+
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::updateSlot()
+{
+    return this->internalUpdate(true);
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::internalUpdate(bool _async)
+{
+    OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
+                "' of type '" << this->getClassname() << "'", m_globalState == STARTED );
+    OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
+                "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
+
+    PackagedTaskType task( std::bind(&IService::updating, this) );
+    SharedFutureType future = task.get_future();
+    m_updatingState = UPDATING;
+    task();
+
+    try
+    {
+        // This allows to trigger the exception if there was one
+        future.get();
+    }
+    catch (std::exception& e)
+    {
+        SLM_ERROR("Error while UPDATING service '" + this->getID() + "' : " + e.what());
+
+        m_updatingState = NOTUPDATING;
+        if(!_async)
+        {
+            // The future is shared, thus the caller can still catch the exception if needed with ufuture.get()
+            return future;
+        }
+        else
+        {
+            // Rethrow the same exception
+            throw;
+        }
+    }
+    m_updatingState = NOTUPDATING;
+
+    auto sig = this->signal<StartedSignalType>(s_UPDATED_SIG);
+    sig->asyncEmit();
+
+    return future;
 }
 
 //-----------------------------------------------------------------------------
@@ -742,6 +846,13 @@ void IService::disconnectFromConfig()
 void IService::autoDisconnect()
 {
     m_autoConnections.disconnect();
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::addProxyConnection(const helper::ProxyConnections& proxy)
+{
+    m_proxies[proxy.m_channel] = proxy;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ void AppConfigParametersTest::setUp()
     ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
     runtime->addDefaultBundles();
 
-    ::boost::filesystem::path location = ::boost::filesystem::current_path() / "share/tu_exec_fwServices-0.0";
+    ::boost::filesystem::path location = runtime->getWorkingPath() / "share/tu_exec_fwServices-0.0";
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 
     runtime->addBundles(location);

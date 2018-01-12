@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ServiceTest.hpp"
-
-#include "TestService.hpp"
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -217,99 +215,18 @@ void ServiceTest::testStartStopUpdate()
 
 void ServiceTest::testStartStopUpdateExceptions()
 {
-    // Add service
-    auto service = ::fwServices::add< ::fwServices::ut::TestService>("::fwServices::ut::TestServiceImplementation");
-
-    // Service must be stop when it is created
-    CPPUNIT_ASSERT(service->isStopped());
-
-    // Start service
-    service->start();
-    CPPUNIT_ASSERT(service->isStarted());
-
-    // Stop service
-    service->stop();
-    CPPUNIT_ASSERT(service->isStopped());
-
-    // Start service with exceptions
-    service->setRaiseException(true);
-    service->start();
-    CPPUNIT_ASSERT(service->isStopped());
-
-    // Check we can catch the exception
-    bool exceptionCaught = false;
-    try
+    // Test on the same worker
     {
-        service->start().get();
+        auto service = ::fwServices::add< ::fwServices::ut::TestService>("::fwServices::ut::TestServiceImplementation");
+        ServiceTest::startStopUpdateExceptions(service);
     }
-    catch(::fwCore::Exception e)
+    // Test on a different worker
     {
-        exceptionCaught = true;
-        CPPUNIT_ASSERT_EQUAL(std::string("start error"), std::string(e.what()));
+        auto service = ::fwServices::add< ::fwServices::ut::TestService>("::fwServices::ut::TestServiceImplementation");
+        service->setWorker(::fwThread::Worker::New());
+        ServiceTest::startStopUpdateExceptions(service);
     }
-    CPPUNIT_ASSERT(exceptionCaught);
-    CPPUNIT_ASSERT(service->isStopped());
 
-    // Start service again
-    service->setRaiseException(false);
-    service->start();
-    CPPUNIT_ASSERT(service->isStarted());
-
-    // Update service
-    service->update();
-    CPPUNIT_ASSERT(service->getIsUpdated());
-    service->resetIsUpdated();
-    CPPUNIT_ASSERT(!service->getIsUpdated());
-
-    // Update service with exception caught
-    service->setRaiseException(true);
-    exceptionCaught = false;
-    try
-    {
-        service->update().get();
-    }
-    catch(::fwCore::Exception e)
-    {
-        exceptionCaught = true;
-        CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
-    }
-    CPPUNIT_ASSERT(exceptionCaught);
-    CPPUNIT_ASSERT(!service->getIsUpdated());
-
-    // Update service without exception caught
-    service->update();
-    CPPUNIT_ASSERT(!service->getIsUpdated());
-
-    // Update service
-    service->setRaiseException(false);
-    service->update();
-    CPPUNIT_ASSERT(service->getIsUpdated());
-
-    // Stop service with exception caught
-    service->setRaiseException(true);
-    exceptionCaught = false;
-    try
-    {
-        service->stop().get();
-    }
-    catch(::fwCore::Exception e)
-    {
-        exceptionCaught = true;
-        CPPUNIT_ASSERT_EQUAL(std::string("stop error"), std::string(e.what()));
-    }
-    CPPUNIT_ASSERT(exceptionCaught);
-    CPPUNIT_ASSERT(service->isStarted());
-
-    // Update service without exception caught
-    service->stop();
-    CPPUNIT_ASSERT(service->isStarted());
-
-    service->setRaiseException(false);
-    service->stop();
-    CPPUNIT_ASSERT(service->isStopped());
-
-    // Erase Service
-    ::fwServices::OSR::unregisterService(service);
 }
 
 //------------------------------------------------------------------------------
@@ -358,6 +275,12 @@ struct TestServiceSignals : public ::fwCom::HasSlots
     bool m_stopped;
 
 };
+
+//------------------------------------------------------------------------------
+
+TestServiceSignals::~TestServiceSignals()
+{
+}
 
 // Wait at worst 1s for a given condition
 #define WAIT(cond) \
@@ -486,8 +409,98 @@ void ServiceTest::testCommunication()
 
 //------------------------------------------------------------------------------
 
-TestServiceSignals::~TestServiceSignals()
+void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
 {
+    // Service must be stop when it is created
+    CPPUNIT_ASSERT(_service->isStopped());
+
+    // Start service
+    _service->start().wait();
+    CPPUNIT_ASSERT(_service->isStarted());
+
+    // Stop service
+    _service->stop().wait();
+    CPPUNIT_ASSERT(_service->isStopped());
+
+    // Start service with exceptions
+    _service->setRaiseException(true);
+    _service->start().wait();
+    CPPUNIT_ASSERT(_service->isStopped());
+
+    // Check we can catch the exception
+    bool exceptionCaught = false;
+    try
+    {
+        _service->start().get();
+    }
+    catch(const ::fwCore::Exception& e)
+    {
+        exceptionCaught = true;
+        CPPUNIT_ASSERT_EQUAL(std::string("start error"), std::string(e.what()));
+    }
+    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(_service->isStopped());
+
+    // Start service again
+    _service->setRaiseException(false);
+    _service->start().wait();
+    CPPUNIT_ASSERT(_service->isStarted());
+
+    // Update service
+    _service->update().wait();
+    CPPUNIT_ASSERT(_service->getIsUpdated());
+    _service->resetIsUpdated();
+    CPPUNIT_ASSERT(!_service->getIsUpdated());
+
+    // Update service with exception caught
+    _service->setRaiseException(true);
+    exceptionCaught = false;
+    try
+    {
+        _service->update().get();
+    }
+    catch(::fwCore::Exception e)
+    {
+        exceptionCaught = true;
+        CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
+    }
+    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(!_service->getIsUpdated());
+
+    // Update service without exception caught
+    _service->update().wait();
+    CPPUNIT_ASSERT(!_service->getIsUpdated());
+
+    // Update service
+    _service->setRaiseException(false);
+    _service->update().wait();
+    CPPUNIT_ASSERT(_service->getIsUpdated());
+
+    // Stop service with exception caught
+    _service->setRaiseException(true);
+    exceptionCaught = false;
+    try
+    {
+        _service->stop().get();
+    }
+    catch(::fwCore::Exception e)
+    {
+        exceptionCaught = true;
+        CPPUNIT_ASSERT_EQUAL(std::string("stop error"), std::string(e.what()));
+    }
+    CPPUNIT_ASSERT(exceptionCaught);
+    CPPUNIT_ASSERT(_service->isStarted());
+
+    // Update service without exception caught
+    _service->stop().wait();
+    CPPUNIT_ASSERT(_service->isStarted());
+
+    _service->setRaiseException(false);
+    _service->stop().wait();
+    CPPUNIT_ASSERT(_service->isStopped());
+
+    // Erase Service
+    ::fwServices::OSR::unregisterService(_service);
 }
 
 //------------------------------------------------------------------------------
