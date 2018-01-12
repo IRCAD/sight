@@ -17,6 +17,8 @@
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
 
+            <object uid="cube" type="::fwData::Mesh" /> 
+
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
@@ -201,6 +203,12 @@
                     <key uid="camera" /> <!-- destination -->
                 </out>
             </service>
+
+            <service uid="meshreader" type="::ioVTK::SMeshReader"> 
+                <inout key="output" uid="cube" /> 
+                <file>/home/mschweitzer/dev/data/cube.vtk</file> 
+            </service> 
+
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -210,8 +218,10 @@
                     <layer id="default" depth="2" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
+                    <adaptor uid="interactorStyle2" /> 
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
+                    <adaptor uid="meshAdpt" /> 
                 </scene>
             </service>
 
@@ -225,6 +235,10 @@
                 <config layer="default" style="Fixed" />
             </service>
 
+            <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle"> 
+                <config layer="video" style="Fixed" /> 
+            </service> 
+
             <service uid="axis" type="::visuOgreAdaptor::SAxis">
                 <config layer="default" transform="id" autoresetcamera="no" length="30" />
             </service>
@@ -234,6 +248,12 @@
                 <in key="calibration" uid="camera" />
                 <config layer="default" />
             </service>
+
+
+            <service uid="meshAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes"> 
+                <inout key="mesh" uid="cube" /> 
+                <config layer="default" transform="id" /> 
+            </service> 
 
             <!-- *************************** End generic scene *************************** -->
 
@@ -410,15 +430,21 @@
             <start uid="genericScene" />
             <start uid="error" />
             <start uid="hideAxis" />
+            <start uid="meshreader" /> 
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
+            <start uid="interactorStyle2" /> 
             <start uid="axis" />
             <start uid="cameraAdpt" />
+            <start uid="meshAdpt" /> 
 
             <update uid="actionHide" />
             <update uid="hideAxis" />
+
+            <update uid="meshreader" /> 
+
         </config>
     </extension>
 </plugin>

@@ -28,6 +28,7 @@ set( REQUIREMENTS
     visuOgre
     visuOgreAdaptor
     visuOgreQt
+    ioVTK
     )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES ExSimpleARCVOgreConfig)
