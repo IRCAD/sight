@@ -42,18 +42,15 @@ static const std::string VIDEO_WITHTF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 //------------------------------------------------------------------------------
 
-static const ::fwServices::IService::KeyType s_IMAGE_INPUT  = "image";
-static const ::fwServices::IService::KeyType s_TF_INPUT     = "tf";
-static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
+static const ::fwServices::IService::KeyType s_IMAGE_INPUT = "image";
+static const ::fwServices::IService::KeyType s_TF_INPUT    = "tf";
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
-static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
 SVideo::SVideo() noexcept
 {
     newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
-    newSlot(s_CALIBRATE_SLOT, &SVideo::calibrate, this);
 }
 
 //------------------------------------------------------------------------------
@@ -205,26 +202,6 @@ void SVideo::updating()
 
             m_isTextureInit = true;
 
-            ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>(s_CAMERA_INPUT);
-            if(camera)
-            {
-                if(camera->getIsCalibrated())
-                {
-                    const float shiftX = static_cast<float>(size[0] ) / 2.f - static_cast<float>(camera->getCx());
-                    const float shiftY = static_cast<float>(size[1] ) / 2.f - static_cast<float>(camera->getCy());
-
-                    auto camNode           = cam->getParentSceneNode();
-                    const auto curPosition = camNode->getPosition();
-                    if (m_reverse)
-                    {
-                        camNode->setPosition(shiftX, -shiftY, curPosition.z);
-                    }
-                    else
-                    {
-                        camNode->setPosition(-shiftX, shiftY, curPosition.z);
-                    }
-                }
-            }
         }
 
         m_previousWidth  = size[0];
@@ -248,39 +225,6 @@ void SVideo::updateTF()
 
 //-----------------------------------------------------------------------------
 
-void SVideo::calibrate()
-{
-    ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>(s_CAMERA_INPUT);
-    if ( camera && camera->getIsCalibrated() )
-    {
-
-        ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-        SLM_ASSERT("Default camera not found", cam);
-
-        if(camera)
-        {
-            if(camera->getIsCalibrated())
-            {
-                const float shiftX = static_cast<float>(m_previousWidth ) / 2.f - static_cast<float>(camera->getCx());
-                const float shiftY = static_cast<float>(m_previousHeight ) / 2.f - static_cast<float>(camera->getCy());
-
-                auto camNode           = cam->getParentSceneNode();
-                const auto curPosition = camNode->getPosition();
-                if (m_reverse)
-                {
-                    camNode->setPosition(shiftX, -shiftY, curPosition.z);
-                }
-                else
-                {
-                    camNode->setPosition(-shiftX, shiftY, curPosition.z);
-                }
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 ::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
@@ -289,9 +233,6 @@ void SVideo::calibrate()
 
     connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
     connections.push( s_TF_INPUT, ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-
-    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_INPUT, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
     return connections;
 }

@@ -24,7 +24,6 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="..." />
-            <in key="camera" uid="..." />
             <in key="tf" uid="..." optional="yes" />
             <config renderer="default" reversed="true" />
         </service>
@@ -88,9 +87,6 @@ private:
 
     /// True if the texture is initialized
     bool m_isTextureInit { false };
-
-    /// UID of the camera
-    std::string m_cameraUID;
 
     /// Store previous image size
     size_t m_previousWidth { 0 };
