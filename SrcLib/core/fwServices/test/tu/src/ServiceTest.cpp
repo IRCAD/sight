@@ -428,8 +428,6 @@ void ServiceTest::startStopUpdateExceptions(TestService::sptr _service)
     CPPUNIT_ASSERT(_service->isStopped());
 
     // Check we can catch the exception
-//    CPPUNIT_ASSERT_THROW(  _service->start().get(), ::fwCore::Exception);
-
     bool exceptionCaught = false;
     try
     {
