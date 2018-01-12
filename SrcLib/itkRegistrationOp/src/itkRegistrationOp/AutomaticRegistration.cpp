@@ -156,7 +156,22 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
         }
     }
 
-    itkTransform->SetCenter(targetCenter);
+    // Initialize transform. Center the reference image.
+    typedef typename ::itk::CenteredTransformInitializer< TransformType, RegisteredImageType, RegisteredImageType >
+        TransformInitializerType;
+
+    // This class initializes the transform by setting its center and translation.
+    // If our target and reference image don't change than this will always yield the same result.
+    typename TransformInitializerType::Pointer initializer = TransformInitializerType::New();
+
+    initializer->SetTransform(itkTransform);
+    initializer->SetFixedImage(target);
+    initializer->SetMovingImage(reference);
+
+    initializer->MomentsOn();
+    initializer->InitializeTransform();
+
+//    itkTransform->SetCenter(targetCenter);
     // Setting the offset also recomputes the translation using the offset, rotation and center
     // so the matrix needs to be set first.
     itkTransform->SetMatrix(m);
@@ -184,7 +199,7 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     optimizer->SetReturnBestParametersAndValue(true);
     optimizer->SetNumberOfIterations(_maxIterations);
 
-    // The fixed image isn't tranformed, nearest neighbor interpolation is enough.
+    // The fixed image isn't transformed, nearest neighbor interpolation is enough.
     auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction< RegisteredImageType, RealType >::New();
     auto movingInterpolator = ::itk::LinearInterpolateImageFunction< RegisteredImageType, RealType >::New();
 

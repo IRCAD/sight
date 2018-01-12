@@ -63,7 +63,7 @@ void MIPMatchingRegistrationTest::tearDown()
 void MIPMatchingRegistrationTest::identityTest()
 {
     ::fwData::Image::csptr moving              = createSphereImage< ::std::uint16_t, 3>();
-    ::fwData::Image::sptr fixed                = ::fwData::Object::copy(moving);
+    ::fwData::Image::csptr fixed               = ::fwData::Object::copy(moving);
     ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;

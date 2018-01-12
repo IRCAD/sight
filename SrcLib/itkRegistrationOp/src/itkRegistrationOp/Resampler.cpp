@@ -59,6 +59,8 @@ struct Resampling
         typename ImageType::SpacingType spacing     = itkImage->GetSpacing();
         typename ImageType::DirectionType direction = itkImage->GetDirection();
 
+        SLM_ASSERT("Input spacing can't be null along any axis", spacing[0] > 0 && spacing[1] > 0 && spacing[2] > 0);
+
         if(params.i_targetImage)
         {
             for(std::uint8_t i = 0; i < 3; ++i)
@@ -68,6 +70,8 @@ struct Resampling
 
                 origin[i]  = params.i_targetImage->getOrigin()[i];
                 spacing[i] = params.i_targetImage->getSpacing()[i];
+
+                SLM_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
             }
         }
 
@@ -91,7 +95,6 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
                          const ::fwData::TransformationMatrix3D::csptr& _trf,
                          const ::fwData::Image::csptr& _targetImg)
 {
-    const ::fwTools::DynamicType type          = _inImage->getPixelType();
     const itk::Matrix<double, 4, 4 > itkMatrix = ::fwItkIO::helper::Transform::convertToITK(_trf);
 
     // We need to extract a 3x3 matrix and a vector to set the affine transform.
@@ -122,6 +125,7 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
     params.i_trf         = transf.GetPointer();
     params.i_targetImage = _targetImg;
 
+    const ::fwTools::DynamicType type = _inImage->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Resampling >::invoke(type, params);
 }
 

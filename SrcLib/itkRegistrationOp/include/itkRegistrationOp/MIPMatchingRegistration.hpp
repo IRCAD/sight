@@ -135,27 +135,18 @@ void MIPMatchingRegistration<PIX>::registerImage(const ::fwData::Image::csptr& _
         moving = ::itkRegistrationOp::Resampler::resample(_moving, _transform, _fixed->getSpacing());
     }
 
-    Image3DPtrType itkMoving = castTo<PIX>(moving);
-    Image3DPtrType itkFixed  = castTo<PIX>(fixed);
+    const Image3DPtrType itkMoving = castTo<PIX>(moving);
+    const Image3DPtrType itkFixed  = castTo<PIX>(fixed);
 
-    auto targetSpacing = itkMoving->GetSpacing();
-    auto sourceSpacing = itkFixed->GetSpacing();
-    SLM_ASSERT("Spacing must be nonzero for all axes of both images", targetSpacing[0] != 0.);
-    SLM_ASSERT("Spacing must be nonzero for all axes of both images", targetSpacing[1] != 0.);
-    SLM_ASSERT("Spacing must be nonzero for all axes of both images", targetSpacing[2] != 0.);
-    SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[0] != 0.);
-    SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[1] != 0.);
-    SLM_ASSERT("Spacing must be nonzero for all axes of both images", sourceSpacing[2] != 0.);
+    const auto movingMipX = computeMIP(itkMoving, Direction::X);
+    const auto movingMipY = computeMIP(itkMoving, Direction::Y);
+    const auto fixedMipX  = computeMIP(itkFixed, Direction::X);
+    const auto fixedMipY  = computeMIP(itkFixed, Direction::Y);
 
-    auto movingMipX = computeMIP(itkMoving, Direction::X);
-    auto movingMipY = computeMIP(itkMoving, Direction::Y);
-    auto fixedMipX  = computeMIP(itkFixed, Direction::X);
-    auto fixedMipY  = computeMIP(itkFixed, Direction::Y);
+    const auto transX = matchTemplate(fixedMipX, movingMipX);
+    const auto transY = matchTemplate(fixedMipY, movingMipY);
 
-    auto transX = matchTemplate(fixedMipX, movingMipX);
-    auto transY = matchTemplate(fixedMipY, movingMipY);
-
-    std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
+    const std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
 
     ::fwData::TransformationMatrix3D::sptr translation = ::fwData::TransformationMatrix3D::New();
     for(std::uint8_t i = 0; i != 3; ++i)
@@ -221,4 +212,3 @@ MIPMatchingRegistration<PIX>::matchTemplate(Image2DPtrType const& _template, Ima
 }
 
 } // itkRegistrationOp
-
