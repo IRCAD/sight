@@ -1,30 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataTools/AlgoMeshDeformation.hpp"
+#include "Tuto14MeshGenerator/AlgoMeshDeformation.hpp"
 
-#include "fwDataTools/Mesh.hpp"
 #include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
 
-
-namespace fwDataTools
+namespace Tuto14MeshGenerator
 {
 
 //-----------------------------------------------------------------------------
 
 AlgoMeshDeformation::AlgoMeshDeformation() noexcept :
+    m_nbStep(0),
     m_amplitude(40),
     m_step(0),
     m_direction(1),
     m_nbPoints(0),
     m_nbCells(0),
-    m_yCenter(0),
-    m_nbStep(0)
+    m_yCenter(0)
 {
 }
 
@@ -41,7 +40,6 @@ void AlgoMeshDeformation::setParam(
     const unsigned int _nbStep,
     const unsigned int _amplitude)
 {
-    SLM_TRACE_FUNC();
     m_mesh      = _mesh;
     m_nbStep    = _nbStep;
     m_amplitude = _amplitude;
@@ -59,10 +57,10 @@ void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
 {
     if (    m_mesh.expired() ||
             m_nbPoints != _mesh->getNumberOfPoints() ||
-            m_nbCells  != _mesh->getNumberOfCells()  ||
+            m_nbCells != _mesh->getNumberOfCells()  ||
             !_mesh->getPointColorsArray())
     {
-        this->setParam( _mesh, 50, 50 );
+        this->setParam( _mesh, _nbStep, _amplitude );
         this->initSimu();
     }
     else
@@ -155,5 +153,5 @@ void AlgoMeshDeformation::computeSimu()
 
 //-----------------------------------------------------------------------------
 
-}   // namespace fwBreathing
+} // namespace Tuto14MeshGenerator
 

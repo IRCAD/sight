@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioData/action/SMeshModifier.hpp"
+#include "Tuto14MeshGenerator/SMeshModifier.hpp"
 
-#include <fwCore/base.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Mesh.hpp>
 
@@ -16,12 +16,10 @@
 
 #include <fwServices/macros.hpp>
 
-namespace ioData
-{
-namespace action
+namespace Tuto14MeshGenerator
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioData::action::SMeshModifier, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto14MeshGenerator::SMeshModifier, ::fwData::Mesh );
 
 //-----------------------------------------------------------------------------
 
@@ -182,6 +180,5 @@ void SMeshModifier::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-}
 }
 

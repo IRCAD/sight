@@ -1,7 +1,16 @@
-<plugin id="Tuto14MeshGenerator" version="@PROJECT_VERSION@">
+<plugin id="Tuto14MeshGenerator" class="::Tuto14MeshGenerator::Plugin" version="@PROJECT_VERSION@">
+
+    <library name="Tuto14MeshGenerator" />
+
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::Tuto14MeshGenerator::SMeshModifier</service>
+        <object>::fwData::Mesh</object>
+    </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto14MeshGenerator</id>
@@ -132,37 +141,37 @@
                 <type mode="writer" />
             </service>
 
-            <service uid="action_shakeMeshPoint" type="::ioData::action::SMeshModifier">
+            <service uid="action_shakeMeshPoint" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ShakeMeshPoint" />
             </service>
 
-            <service uid="action_colorizeMeshPoints" type="::ioData::action::SMeshModifier">
+            <service uid="action_colorizeMeshPoints" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ColorizeMeshPoints" />
             </service>
 
-            <service uid="action_colorizeMeshCells" type="::ioData::action::SMeshModifier">
+            <service uid="action_colorizeMeshCells" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ColorizeMeshCells" />
             </service>
 
-            <service uid="action_computePointNormals" type="::ioData::action::SMeshModifier">
+            <service uid="action_computePointNormals" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ComputePointNormals" />
             </service>
 
-            <service uid="action_computeCellNormals" type="::ioData::action::SMeshModifier">
+            <service uid="action_computeCellNormals" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ComputeCellNormals" />
             </service>
 
-            <service uid="action_shakePointNormals" type="::ioData::action::SMeshModifier">
+            <service uid="action_shakePointNormals" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ShakePointNormals" />
             </service>
 
-            <service uid="action_shakeCellNormals" type="::ioData::action::SMeshModifier">
+            <service uid="action_shakeCellNormals" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="ShakeCellNormals" />
             </service>
@@ -186,7 +195,7 @@
                 </slots>
             </service>
 
-            <service uid="action_meshDeformation" type="::ioData::action::SMeshModifier">
+            <service uid="action_meshDeformation" type="::Tuto14MeshGenerator::SMeshModifier">
                 <inout key="mesh" uid="myMesh" />
                 <config functor="MeshDeformation" />
             </service>

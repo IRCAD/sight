@@ -1,23 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_ACTION_SMESHMODIFIER_HPP__
-#define __IODATA_ACTION_SMESHMODIFIER_HPP__
+#pragma once
 
-#include "ioData/config.hpp"
-
-#include <fwDataTools/AlgoMeshDeformation.hpp>
+#include "Tuto14MeshGenerator/AlgoMeshDeformation.hpp"
+#include "Tuto14MeshGenerator/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <fwServices/IService.hpp>
-
-namespace ioData
-{
-namespace action
+namespace Tuto14MeshGenerator
 {
 
 /**
@@ -27,7 +21,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::ioData::action::SMeshModifier" >
+     <service type="::Tuto14MeshGenerator::SMeshModifier" >
          <inout key="mesh" uid="..." />
          <config functor="ShakeMeshPoint" />
      </service>
@@ -46,40 +40,40 @@ namespace action
  *  - ShakeCellNormals
  *  - MeshDeformation
  */
-class IODATA_CLASS_API SMeshModifier : public ::fwGui::IActionSrv
+class TUTO14MESHGENERATOR_CLASS_API SMeshModifier : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMeshModifier)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SMeshModifier)(::fwGui::IActionSrv) )
 
     /**
      * @brief Constructor. Do nothing.
      */
-    IODATA_API SMeshModifier() noexcept;
+    TUTO14MESHGENERATOR_API SMeshModifier() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    IODATA_API virtual ~SMeshModifier() noexcept;
+    TUTO14MESHGENERATOR_API virtual ~SMeshModifier() noexcept;
 
 protected:
 
-    IODATA_API virtual void configuring() override;
+    TUTO14MESHGENERATOR_API virtual void configuring() override;
 
-    IODATA_API virtual void starting() override;
+    TUTO14MESHGENERATOR_API virtual void starting() override;
 
-    IODATA_API virtual void stopping() override;
+    TUTO14MESHGENERATOR_API virtual void stopping() override;
 
     /**
      * @brief Process the action: modifies the mesh using the selected functor.
      */
-    IODATA_API virtual void updating() override;
+    TUTO14MESHGENERATOR_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class.
      */
-    IODATA_API virtual void info(std::ostream& _sstream ) override;
+    TUTO14MESHGENERATOR_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
 
@@ -89,10 +83,8 @@ private:
     std::string m_functor;
 
     /// Algo use to animate a deformation on the mesh
-    ::fwDataTools::AlgoMeshDeformation m_animator;
+    ::Tuto14MeshGenerator::AlgoMeshDeformation m_animator;
 };
 
-} // namespace action
-} // namespace ioData
+} // namespace Tuto14MeshGenerator
 
-#endif /*__IODATA_ACTION_SMESHMODIFIER_HPP__*/

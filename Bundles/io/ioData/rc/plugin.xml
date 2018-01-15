@@ -29,7 +29,7 @@
         <object>::fwData::TransformationMatrix3D</object>
         <desc>TransformationMatrix3D Writer</desc>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
         <service>::ioData::MeshWriterService</service>
@@ -42,12 +42,6 @@
         <service>::ioData::SAttachmentSeriesReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>AttachmentSeries reader</desc>
-    </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::ioData::action::SMeshModifier</service>
-        <object>::fwData::Mesh</object>
     </extension>
 
 </plugin>

@@ -3,17 +3,17 @@ set( NAME Tuto14MeshGenerator )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE )
-set( DEPENDENCIES  )
+set( DEPENDENCIES
+    fwDataTools
+    fwGui )
 set( REQUIREMENTS
     dataReg
-    ctrlSelection
     gui
     guiQt
     ioData
     ioVTK
     io
     servicesReg
-    uiVisuQt
     uiIO
     visuVTK
     visuVTKQt
