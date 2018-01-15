@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __SCENE2D_ADAPTOR_SGRID2D_HPP__
-#define __SCENE2D_ADAPTOR_SGRID2D_HPP__
+#pragma once
 
 #include "scene2D/config.hpp"
 
@@ -17,6 +16,10 @@ namespace adaptor
 {
 /**
  * @brief Render grid on the scene2d.
+ *
+ * @section Slots Slots
+ * - \b setGridSpacing(double, double, std::string) : set the grid spacing in x and y. It is intended to be connected to
+ * a double2Changed signal of a SParameters service; the string key parameter should be set to "spacing".
  *
  * @section XML XML Configuration
  *
@@ -46,6 +49,13 @@ class SCENE2D_CLASS_API SGrid2D : public ::fwRenderQt::IAdaptor
 
 public:
     fwCoreServiceClassDefinitionsMacro( (SGrid2D)(::fwRenderQt::IAdaptor) );
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    SCENE2D_API static const ::fwCom::Slots::SlotKeyType s_SET_GRID_SPACING_SLOT;
+    /** @} */
 
     /// Constructor, set the x and y spacing to 10
     SCENE2D_API SGrid2D() noexcept;
@@ -87,6 +97,9 @@ private:
     /// Returns y-axis ending value
     float getYEndVal();
 
+    /// Slot: This method is used to set the grid spacing from two double parameters.
+    void setGridSpacing(double _x, double _y, std::string _key);
+
     /// Bounds of the grid and spacing values for each axis.
     float m_xMin, m_xMax, m_yMin, m_yMax, m_xSpacing, m_ySpacing;
 
@@ -103,6 +116,4 @@ private:
 
 } // namespace adaptor
 } // namespace scene2D
-
-#endif // __SCENE2D_ADAPTOR_SGRID2D_HPP__
 

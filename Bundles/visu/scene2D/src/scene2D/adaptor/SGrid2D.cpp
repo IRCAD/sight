@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/SGrid2D.hpp"
+
+#include <fwCom/Slots.hxx>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
@@ -13,12 +15,18 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SGrid2D);
-
 namespace scene2D
 {
 namespace adaptor
 {
+
+//---------------------------------------------------------------------------------------------------------------
+
+fwServicesRegisterMacro( ::fwRenderQt::IAdaptor, ::scene2D::adaptor::SGrid2D);
+
+const ::fwCom::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
+
+//---------------------------------------------------------------------------------------------------------------
 
 SGrid2D::SGrid2D() noexcept :
     m_xMin(0.f),
@@ -29,6 +37,7 @@ SGrid2D::SGrid2D() noexcept :
     m_ySpacing(10.f),
     m_layer(nullptr)
 {
+    newSlot(s_SET_GRID_SPACING_SLOT, &::scene2D::adaptor::SGrid2D::setGridSpacing, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -80,6 +89,14 @@ void SGrid2D::draw()
 {
     SLM_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.f);
     SLM_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.f);
+
+    // Remove all lines from the scene
+    for (const auto& line : m_lines)
+    {
+        this->getScene2DRender()->getScene()->removeItem(line);
+    }
+    // Clear the lines vector
+    m_lines.clear();
 
     this->getScene2DRender()->getScene()->removeItem( m_layer );
     m_layer = new QGraphicsItemGroup();
@@ -175,6 +192,18 @@ float SGrid2D::getYStartVal()
 float SGrid2D::getYEndVal()
 {
     return (int)( m_yMax / m_ySpacing ) * m_ySpacing;
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+void SGrid2D::setGridSpacing(double _x, double _y, std::string _key)
+{
+    if(_key == "spacing")
+    {
+        m_xSpacing = static_cast<float>(_x);
+        m_ySpacing = static_cast<float>(_y);
+        this->draw();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------
