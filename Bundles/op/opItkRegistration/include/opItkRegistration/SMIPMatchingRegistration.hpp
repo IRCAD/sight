@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __OPITKREGISTRATION_SFASTREGISTRATION_HPP__
-#define __OPITKREGISTRATION_SFASTREGISTRATION_HPP__
+#pragma once
 
 #include "opItkRegistration/config.hpp"
 
@@ -42,24 +41,20 @@ namespace opItkRegistration
  * @subsection In-Out In-Out
  * - \b transform [::fwData::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
- * @note The initial registration is currently not applied, and the output consists purely of translation.
- *
- * @todo Remove the need for a `flipTransform` parameter and resample the source image properly based on the `transform`
- * matrix.
  */
-class OPITKREGISTRATION_CLASS_API SFastRegistration : public ::arServices::IRegisterer
+class OPITKREGISTRATION_CLASS_API SMIPMatchingRegistration : public ::arServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SFastRegistration)(::arServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SMIPMatchingRegistration)(::arServices::IRegisterer));
 
     /**
      * @brief Constructor
      */
-    OPITKREGISTRATION_API SFastRegistration() noexcept;
+    OPITKREGISTRATION_API SMIPMatchingRegistration() noexcept;
     /**
      * @brief Destructor
      */
-    OPITKREGISTRATION_API virtual ~SFastRegistration() noexcept;
+    OPITKREGISTRATION_API virtual ~SMIPMatchingRegistration() noexcept;
 
 protected:
     /**
@@ -99,6 +94,4 @@ private:
 };
 
 } // namespace opItkRegistration
-
-#endif // __OPITKREGISTRATION_SFASTREGISTRATION_HPP__
 
