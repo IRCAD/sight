@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -454,11 +454,11 @@ void SParameters::onResetDoubleMapped(QWidget* widget)
         const int count    = spinbox->property("count").toInt();
         SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
+        QDoubleSpinBox* spin1 = spinbox->property("widget#0").value< QDoubleSpinBox*>();
+        spin1->setValue(value);
+
         if(count == 1)
         {
-            QDoubleSpinBox* spin1 = spinbox->property("widget#0").value< QDoubleSpinBox*>();
-            spin1->setValue(value);
-
             this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key.toStdString());
         }
         else
