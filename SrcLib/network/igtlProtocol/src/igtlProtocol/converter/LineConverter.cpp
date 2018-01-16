@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,11 +45,11 @@ LineConverter::~LineConverter()
     ::fwData::Line::csptr srcLine = ::fwData::Line::dynamicConstCast(src);
 
     dest = ::igtl::PositionMessage::New();
-    std::transform(srcLine->getPosition()->getCRefCoord().begin(),
-                   srcLine->getPosition()->getCRefCoord().end(), &pos[0],
+    std::transform(srcLine->getPosition()->getCoord().begin(),
+                   srcLine->getPosition()->getCoord().end(), &pos[0],
                    ::boost::numeric_cast<double, float>);
-    std::transform(srcLine->getDirection()->getCRefCoord().begin(),
-                   srcLine->getDirection()->getCRefCoord().end(), &direction[0],
+    std::transform(srcLine->getDirection()->getCoord().begin(),
+                   srcLine->getDirection()->getCoord().end(), &direction[0],
                    ::boost::numeric_cast<double, float>);
     dest->SetPosition(pos);
     dest->SetQuaternion(direction);

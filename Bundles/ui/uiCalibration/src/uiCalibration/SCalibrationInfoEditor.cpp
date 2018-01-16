@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,8 +65,8 @@ void SCalibrationInfoEditor::updating()
         for(it1 = plList1.begin(), it2 = plList2.begin(); it1 != plList1.end() && it2 != plList2.end(); ++it1, ++it2 )
         {
             QString countString;
-            size_t count1 = (*it1)->getCRefPoints().size();
-            size_t count2 = (*it2)->getCRefPoints().size();
+            size_t count1 = (*it1)->getPoints().size();
+            size_t count2 = (*it2)->getPoints().size();
 
             countString = QString("%1. %2 and %3 elements").arg(captureIdx).arg(count1).arg(count2);
 
@@ -81,7 +81,7 @@ void SCalibrationInfoEditor::updating()
         for(it1 = plList1.begin(); it1 != plList1.end(); ++it1)
         {
             QString countString;
-            size_t count = (*it1)->getCRefPoints().size();
+            size_t count = (*it1)->getPoints().size();
             countString = QString("%1. %2 element%3").arg(captureIdx).arg(count).arg(count > 1 ? "s" : "");
 
             m_capturesListWidget->addItem(countString);

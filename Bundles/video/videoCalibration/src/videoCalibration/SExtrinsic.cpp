@@ -1,32 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
+#include "videoCalibration/SExtrinsic.hpp"
+
+#include <arData/CalibrationInfo.hpp>
+#include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
+
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <fwTools/fwID.hpp>
+#include <fwTools/Object.hpp>
 
-#include <arData/CameraSeries.hpp>
-#include <arData/Camera.hpp>
-#include <arData/CalibrationInfo.hpp>
-
-#include <arlcore/Camera.h>
-#include <arlcore/PointsList.h>
-#include <arlcore/PlaneSystem.h>
 #include <arlcore/Calibration.h>
-
-#include "videoCalibration/SExtrinsic.hpp"
+#include <arlcore/Camera.h>
+#include <arlcore/PlaneSystem.h>
+#include <arlcore/PointsList.h>
 
 fwServicesRegisterMacro(::videoCalibration::ICalibration, ::videoCalibration::SExtrinsic, ::arData::CameraSeries);
 
@@ -35,9 +35,10 @@ namespace videoCalibration
 
 // ----------------------------------------------------------------------------
 
-SExtrinsic::SExtrinsic() noexcept : m_width(0),
-                                    m_height(0),
-                                    m_camIndex(1)
+SExtrinsic::SExtrinsic() noexcept :
+    m_width(0),
+    m_height(0),
+    m_camIndex(1)
 {
 
 }
@@ -169,18 +170,18 @@ void SExtrinsic::updating()
 
                 std::vector< std::vector< ::arlCore::Point::csptr > > acq(2);
 
-                for(fwData::Point::csptr point : ptList1->getCRefPoints())
+                for(fwData::Point::csptr point : ptList1->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     acq[0].push_back(
-                        ::arlCore::Point::PointFactory(point->getCRefCoord()[0], point->getCRefCoord()[1]));
+                        ::arlCore::Point::PointFactory(point->getCoord()[0], point->getCoord()[1]));
                 }
 
-                for(fwData::Point::csptr point : ptList2->getCRefPoints())
+                for(fwData::Point::csptr point : ptList2->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     acq[1].push_back(
-                        ::arlCore::Point::PointFactory(point->getCRefCoord()[0], point->getCRefCoord()[1]));
+                        ::arlCore::Point::PointFactory(point->getCoord()[0], point->getCoord()[1]));
                 }
 
                 points.push_back(acq);
