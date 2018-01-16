@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -216,26 +216,18 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
 
     ::Ogre::CompositionTechnique* tech = compositor->getTechnique();
 
-    std::vector< ::Ogre::CompositionTargetPass*> targetPasses;
-
     // Collect target passes
-    const size_t numTargetPasses = tech->getNumTargetPasses();
-    for(size_t j = 0; j < numTargetPasses; ++j)
-    {
-        ::Ogre::CompositionTargetPass* targetPass = tech->getTargetPass(j);
-        targetPasses.push_back(targetPass);
-    }
+    std::vector< ::Ogre::CompositionTargetPass*> targetPasses = tech->getTargetPasses();
     targetPasses.push_back(tech->getOutputTargetPass());
 
     for(const auto targetPass : targetPasses)
     {
-        const size_t numPasses = targetPass->getNumPasses();
+        const auto& passes = targetPass->getPasses();
 
-        for(size_t i = 0; i < numPasses; ++i)
+        for(auto targetPass : passes)
         {
-            const ::Ogre::CompositionPass* pass = targetPass->getPass(i);
             // We retrieve the parameters of the base material in a temporary material
-            const ::Ogre::MaterialPtr material = pass->getMaterial();
+            const ::Ogre::MaterialPtr material = targetPass->getMaterial();
 
             if(material)
             {

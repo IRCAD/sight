@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -162,7 +162,8 @@ void SATVolumeIllumination::updateVolIllum()
         ::Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
             "VolumeIllumination");
 
-        ::Ogre::CompositionPass* pass = compInstance->getTechnique()->getOutputTargetPass()->getPass(0);
+        const auto& passes = compInstance->getTechnique()->getOutputTargetPass()->getPasses();
+        ::Ogre::CompositionPass* pass = passes[0];
 
         if(pass->getMaterial()->getName() != currentMaterialName)
         {
