@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -189,7 +189,7 @@ void SPointList::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
     ::fwData::mt::ObjectReadLock lock(_pointList);
 
-    const size_t uiNumVertices = _pointList->getCRefPoints().size();
+    const size_t uiNumVertices = _pointList->getPoints().size();
     if(uiNumVertices == 0)
     {
         SLM_DEBUG("Empty mesh");
