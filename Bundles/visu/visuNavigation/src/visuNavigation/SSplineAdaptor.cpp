@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,7 +62,7 @@ void SSplineAdaptor::starting()
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    const size_t numberOfPoints = pointList->getCRefPoints().size();
+    const size_t numberOfPoints = pointList->getPoints().size();
 
     for(size_t i = 0; i < numberOfPoints; ++i)
     {
@@ -92,7 +92,7 @@ void SSplineAdaptor::addPoint(::fwData::Point::sptr /*point*/)
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_POINTLIST_INPUT);
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    const size_t numberOfPoints = pointList->getCRefPoints().size();
+    const size_t numberOfPoints = pointList->getPoints().size();
     ::navigation::computeSpline(pointList, numberOfPoints - 1, m_vtkpoints, m_parametricSpline, m_splineLength);
 
     this->updating();

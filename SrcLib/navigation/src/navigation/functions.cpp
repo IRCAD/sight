@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,19 @@
 
 #include <fwData/Point.hpp>
 
-#include <cmath>
-
-#include <vtkPlane.h>
-#include <vtkSpline.h>
 #include <vtkCardinalSpline.h>
-#include <vtkPoints.h>
 #include <vtkMath.h>
+#include <vtkPlane.h>
+#include <vtkPoints.h>
+#include <vtkSpline.h>
 #include <vtkTransform.h>
+
+#include <cmath>
 
 namespace navigation
 {
+
+//------------------------------------------------------------------------------
 
 void computeSpline(
     const ::fwData::PointList::csptr& pointList,
@@ -28,11 +30,11 @@ void computeSpline(
 {
     SLM_ASSERT("No valid point list", pointList);
     OSLM_ASSERT("Requested point of index '" << pointIndex << "' whereas point list size is '"
-                                             << pointList->getCRefPoints().size() << "'",
-                pointIndex < pointList->getCRefPoints().size());
+                                             << pointList->getPoints().size() << "'",
+                pointIndex < pointList->getPoints().size());
 
     // Get the last point of PointList
-    ::fwData::Point::sptr point = (pointList->getCRefPoints())[pointIndex];
+    ::fwData::Point::sptr point = (pointList->getPoints())[pointIndex];
 
     // Insert the point in points.
     points->InsertNextPoint(&point->getRefCoord()[0]);
@@ -62,7 +64,7 @@ void updateSpline(
     int nbofPoints                        = 0;
     SLM_ASSERT("No valid point list", pointList);
 
-    for(::fwData::Point::sptr point :  pointList->getCRefPoints())
+    for(::fwData::Point::sptr point :  pointList->getPoints())
     {
         tempPoints->InsertNextPoint(&point->getRefCoord()[0]);
         nbofPoints++;
@@ -142,7 +144,7 @@ void computeViewUp(const double x[3], double* viewUp)
 
 bool arePointsCoplanar(const ::fwData::PointList::csptr& pointList, double* normal)
 {
-    const size_t numberOfPoints = pointList->getCRefPoints().size();
+    const size_t numberOfPoints = pointList->getPoints().size();
     bool arePointsCoplanar      = true;
     bool isNormalComputed       = false;
 
@@ -154,15 +156,15 @@ bool arePointsCoplanar(const ::fwData::PointList::csptr& pointList, double* norm
         vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
 
         // Define the plane build by the 3 first points of the spline
-        point1 = (pointList->getCRefPoints())[0];
-        point2 = (pointList->getCRefPoints())[1];
-        point3 = (pointList->getCRefPoints())[2];
+        point1 = (pointList->getPoints())[0];
+        point2 = (pointList->getPoints())[1];
+        point3 = (pointList->getPoints())[2];
 
         // Define the two first vectors
         for (int i = 0; i < 3; ++i)
         {
-            vector1[i] = point2->getCRefCoord()[i] - point1->getCRefCoord()[i];
-            vector2[i] = point3->getCRefCoord()[i] - point1->getCRefCoord()[i];
+            vector1[i] = point2->getCoord()[i] - point1->getCoord()[i];
+            vector2[i] = point3->getCoord()[i] - point1->getCoord()[i];
         }
 
         math->Cross(vector1, vector2, res);
@@ -185,14 +187,14 @@ bool arePointsCoplanar(const ::fwData::PointList::csptr& pointList, double* norm
             // Check if the next points of the pointList are on the plane define by point1, point2, point3
             for (int n = 3; n < numberOfPoints; ++n)
             {
-                pointnext = (pointList->getCRefPoints())[n];
+                pointnext = (pointList->getPoints())[n];
 
                 for (int i = 0; i < 3; ++i)
                 {
-                    col0[i]    = pointnext->getCRefCoord()[0] - point1->getCRefCoord()[i];
-                    col1[i]    = pointnext->getCRefCoord()[1] - point2->getCRefCoord()[i];
-                    col2[i]    = pointnext->getCRefCoord()[2] - point3->getCRefCoord()[i];
-                    vector2[i] = pointnext->getCRefCoord()[i] - point1->getCRefCoord()[i];
+                    col0[i]    = pointnext->getCoord()[0] - point1->getCoord()[i];
+                    col1[i]    = pointnext->getCoord()[1] - point2->getCoord()[i];
+                    col2[i]    = pointnext->getCoord()[2] - point3->getCoord()[i];
+                    vector2[i] = pointnext->getCoord()[i] - point1->getCoord()[i];
                 }
             }
 
@@ -230,7 +232,7 @@ void initializeVectors(
     double angle)
 {
     double u[3], du[3], ptFirst[3], ptNext[3], viewUp[3], splineNormal[3], xfirst[3], zfirst[3];
-    size_t numberOfPoints                   = pointList->getCRefPoints().size();
+    size_t numberOfPoints                   = pointList->getPoints().size();
     vtkSmartPointer<vtkMath> math           = vtkSmartPointer<vtkMath>::New();
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
 
@@ -351,5 +353,4 @@ void computePolyData(
 }
 
 } // namespace navigation
-
 

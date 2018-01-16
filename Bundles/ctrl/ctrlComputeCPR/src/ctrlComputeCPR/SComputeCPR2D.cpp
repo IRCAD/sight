@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,11 +47,12 @@ const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_UPDATE_SPLINE_SLOT  = "update
 
 //----------------------------------------------------------------------------------------------------------------
 
-SComputeCPR2D::SComputeCPR2D() noexcept : m_selectedPointIndex(0),
-                                          m_nbSplinePoints(0),
-                                          m_height(50.0),
-                                          m_spacing(0.0),
-                                          m_angle(0.)
+SComputeCPR2D::SComputeCPR2D() noexcept :
+    m_selectedPointIndex(0),
+    m_nbSplinePoints(0),
+    m_height(50.0),
+    m_spacing(0.0),
+    m_angle(0.)
 {
     newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR2D::setHeight, this);
     newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR2D::setSpacing, this);
@@ -106,7 +107,7 @@ void SComputeCPR2D::addPoint(::fwData::Point::sptr /*point*/)
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
     SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
 
-    m_nbSplinePoints = pointList->getCRefPoints().size();
+    m_nbSplinePoints = pointList->getPoints().size();
     this->updateSpline();
 }
 
@@ -117,7 +118,7 @@ void SComputeCPR2D::removePoint(::fwData::Point::sptr /*point*/)
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
     SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
 
-    m_nbSplinePoints = pointList->getCRefPoints().size();
+    m_nbSplinePoints = pointList->getPoints().size();
     this->clearVisualizePointList();
 
     // Visualize the last points
@@ -252,7 +253,7 @@ void SComputeCPR2D::fillVisualizePointList(size_t selectedPointIndex)
     // Clear the pointList if there are already points in
     this->clearVisualizePointList();
 
-    if(selectedPointIndex < pointList->getCRefPoints().size() && selectedPointIndex >= 0)
+    if(selectedPointIndex < pointList->getPoints().size() && selectedPointIndex >= 0)
     {
         this->addPointToVisualizePointList(pointList, selectedPointIndex, visualizePointList);
     }
@@ -292,11 +293,11 @@ void SComputeCPR2D::addPointToVisualizePointList(
     const ::fwData::PointList::sptr& visualizePointList)
 {
     OSLM_ASSERT("Point of index '" << indexSelectedPoint << "' not found in point list of size '"
-                                   << pointList->getCRefPoints().size() << "'",
-                indexSelectedPoint >= 0 && indexSelectedPoint < pointList->getCRefPoints().size());
+                                   << pointList->getPoints().size() << "'",
+                indexSelectedPoint >= 0 && indexSelectedPoint < pointList->getPoints().size());
 
     // Initialize the points
-    ::fwData::Point::sptr srcPoint  = pointList->getCRefPoints()[indexSelectedPoint];
+    ::fwData::Point::sptr srcPoint  = pointList->getPoints()[indexSelectedPoint];
     ::fwData::Point::sptr destPoint = ::fwData::Point::New();
 
     // Point label

@@ -1,14 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "cpr/functions.hpp"
-
-#include <boost/assign/list_of.hpp>
-
-#include <vtkMath.h>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -18,10 +14,16 @@
 
 #include <navigation/functions.hpp>
 
+#include <boost/assign/list_of.hpp>
+
+#include <vtkMath.h>
+
 #include <math.h>
 
 namespace cpr
 {
+
+//------------------------------------------------------------------------------
 
 double getImageMinSpacing(const CSPTR(::fwData::Image)& imageSource)
 {
@@ -119,7 +121,7 @@ void computePositionOfPointOnSpline(
     ::navigation::updateSpline(pointList, points, parametricSpline, splineLength);
 
     // Get the parametric value v of the spline corresponding to the considered point
-    ::fwData::Point::sptr point = pointList->getCRefPoints()[indexPoint];
+    ::fwData::Point::sptr point = pointList->getPoints()[indexPoint];
     for (int i = 0; i < 3; ++i)
     {
         findPoint[i] = point->getRefCoord()[i];
