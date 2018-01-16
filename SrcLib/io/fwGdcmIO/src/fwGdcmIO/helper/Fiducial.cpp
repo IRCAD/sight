@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,7 @@ bool Fiducial::containsLandmarks(const SPTR(::fwMedData::SeriesDB)& seriesDB)
             {
                 ::fwData::PointList::sptr pointList =
                     image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
-                if(pointList && !pointList->getCRefPoints().empty())
+                if(pointList && !pointList->getPoints().empty())
                 {
                     return true;
                 }
@@ -94,10 +94,10 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
                     for(const ::fwData::Object::sptr& object : distanceVector->getContainer())
                     {
                         ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
-                        if(pointList && pointList->getCRefPoints().size() >= 2)
+                        if(pointList && pointList->getPoints().size() >= 2)
                         {
-                            const ::fwData::Point::sptr point1 = *pointList->getCRefPoints().begin();
-                            const ::fwData::Point::sptr point2 = *(++pointList->getCRefPoints().begin());
+                            const ::fwData::Point::sptr point1 = *pointList->getPoints().begin();
+                            const ::fwData::Point::sptr point2 = *(++pointList->getPoints().begin());
                             const size_t frameNumber1          =
                                 ::fwGdcmIO::helper::DicomDataTools::convertPointToFrameNumber(image, point1);
                             const size_t frameNumber2 =

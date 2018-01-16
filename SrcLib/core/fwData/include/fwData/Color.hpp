@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_COLOR_HPP__
-#define __FWDATA_COLOR_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -56,9 +55,8 @@ public:
     /** Get/Set the array of color values (red, green, blue, alpha).
      *  @name ColorArray accessor
      *  @{  */
-    const ColorArray getRGBA() const;
     ColorArray& getRefRGBA();
-    const ColorArray& getCRefRGBA() const;
+    const ColorArray& getRGBA() const;
     void setRGBA(const ColorArray&  _vRGBA);
     /** @} */
 
@@ -102,13 +100,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const Color::ColorArray Color::getRGBA() const
-{
-    return m_vRGBA;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Color::ColorArray& Color::getRefRGBA()
 {
     return this->m_vRGBA;
@@ -116,7 +107,7 @@ inline Color::ColorArray& Color::getRefRGBA()
 
 //-----------------------------------------------------------------------------
 
-inline const Color::ColorArray& Color::getCRefRGBA() const
+inline const Color::ColorArray& Color::getRGBA() const
 {
     return this->m_vRGBA;
 }
@@ -132,4 +123,3 @@ inline void Color::setRGBA(const Color::ColorArray&  _vRGBA)
 
 } // end namespace fwData
 
-#endif // __FWDATA_COLOR_HPP__

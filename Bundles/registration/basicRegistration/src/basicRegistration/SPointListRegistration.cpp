@@ -102,7 +102,7 @@ void SPointListRegistration::updating()
         vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& firstPoint = referencePL->getCRefPoints()[0];
+        const auto& firstPoint = referencePL->getPoints()[0];
 
         // If the points have labels ...
         if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
@@ -143,13 +143,13 @@ void SPointListRegistration::updating()
         else
         {
             // ... Else match them according to their order.
-            for(const auto& refPoint : referencePL->getCRefPoints())
+            for(const auto& refPoint : referencePL->getPoints())
             {
                 const auto& coords = refPoint->getRefCoord();
                 sourcePts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
 
-            for(const auto& regPoint : registeredPL->getCRefPoints())
+            for(const auto& regPoint : registeredPL->getPoints())
             {
                 const auto& coords = regPoint->getRefCoord();
                 targetPts->InsertNextPoint(coords[0], coords[1], coords[2]);

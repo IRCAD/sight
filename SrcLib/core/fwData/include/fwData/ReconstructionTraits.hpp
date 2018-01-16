@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_RECONSTRUCTIONTRAITS_HPP__
-#define __FWDATA_RECONSTRUCTIONTRAITS_HPP__
+#pragma once
 
 #include "fwData/factory/new.hpp"
 #include "fwData/Node.hpp"
@@ -49,9 +48,8 @@ public:
      * @{
      * @brief Get/Set value of the identifier.
      */
-    const std::string  getIdentifier () const;
     std::string& getRefIdentifier ();
-    const std::string& getCRefIdentifier () const;
+    const std::string& getIdentifier () const;
     void setIdentifier (const std::string& _identifier);
     /// @}
 
@@ -94,13 +92,6 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline const std::string ReconstructionTraits::getIdentifier () const
-{
-    return m_identifier;
-}
-
-//-----------------------------------------------------------------------------
-
 inline std::string& ReconstructionTraits::getRefIdentifier ()
 {
     return m_identifier;
@@ -108,7 +99,7 @@ inline std::string& ReconstructionTraits::getRefIdentifier ()
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& ReconstructionTraits::getCRefIdentifier () const
+inline const std::string& ReconstructionTraits::getIdentifier () const
 {
     return m_identifier;
 }
@@ -123,6 +114,4 @@ inline void ReconstructionTraits::setIdentifier (const std::string& _identifier)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_RECONSTRUCTIONTRAITS_HPP__
 

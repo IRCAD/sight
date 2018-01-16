@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,7 +68,7 @@ void SManageLandmark::createLandmark(::fwDataTools::PickingInfo info)
     {
         auto pointList = this->getInOut< ::fwData::PointList >(s_LANDMARKS_INOUT);
 
-        m_counter = pointList->getCRefPoints().size();
+        m_counter = pointList->getPoints().size();
 
         ::fwData::Point::sptr point = ::fwData::Point::New(info.m_worldPos[0], info.m_worldPos[1], info.m_worldPos[2]);
 

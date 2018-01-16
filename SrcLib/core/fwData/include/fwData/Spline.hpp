@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_SPLINE_HPP__
-#define __FWDATA_SPLINE_HPP__
+#pragma once
 
 #include "fwData/Color.hpp"
 #include "fwData/config.hpp"
@@ -78,9 +77,8 @@ public:
      * @{
      * @brief Get/Set value of the radius.
      */
-    const double  getRadius () const;
     double& getRefRadius ();
-    const double& getCRefRadius () const;
+    const double& getRadius () const;
     void setRadius(double _radius);
     /// @}
 
@@ -88,22 +86,18 @@ public:
      * @{
      * @brief Get/Set value of the number of slices.
      */
-    const int  getNbSides () const;
     int& getRefNbSides ();
-    const int& getCRefNbSides () const;
+    int getNbSides () const;
     void setNbSides (const int _nbSides);
-    void setCRefNbSides (const int& _nbSides);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the spline identifier.
      */
-    const int  getIdSpline () const;
     int& getRefIdSpline ();
-    const int& getCRefIdSpline () const;
+    int getIdSpline () const;
     void setIdSpline (const int _idSpline);
-    void setCRefIdSpline (const int& _idSpline);
     /// @}
 
     /// Defines deep copy
@@ -121,13 +115,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const double Spline::getRadius () const
-{
-    return m_radius;
-}
-
-//-----------------------------------------------------------------------------
-
 inline double& Spline::getRefRadius ()
 {
     return m_radius;
@@ -135,7 +122,7 @@ inline double& Spline::getRefRadius ()
 
 //-----------------------------------------------------------------------------
 
-inline const double& Spline::getCRefRadius () const
+inline const double& Spline::getRadius () const
 {
     return m_radius;
 }
@@ -149,13 +136,6 @@ inline void Spline::setRadius(double _radius)
 
 //-----------------------------------------------------------------------------
 
-inline const int Spline::getNbSides () const
-{
-    return m_nbSides;
-}
-
-//-----------------------------------------------------------------------------
-
 inline int& Spline::getRefNbSides ()
 {
     return this->m_nbSides;
@@ -163,7 +143,7 @@ inline int& Spline::getRefNbSides ()
 
 //-----------------------------------------------------------------------------
 
-inline const int& Spline::getCRefNbSides () const
+inline int Spline::getNbSides () const
 {
     return m_nbSides;
 }
@@ -177,14 +157,7 @@ inline void Spline::setNbSides (const int _nbSides)
 
 //-----------------------------------------------------------------------------
 
-inline void Spline::setCRefNbSides (const int& _nbSides)
-{
-    m_nbSides = _nbSides;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const int Spline::getIdSpline () const
+inline int Spline::getIdSpline () const
 {
     return m_idSpline;
 }
@@ -198,13 +171,6 @@ inline int& Spline::getRefIdSpline ()
 
 //-----------------------------------------------------------------------------
 
-inline const int& Spline::getCRefIdSpline () const
-{
-    return m_idSpline;
-}
-
-//-----------------------------------------------------------------------------
-
 inline void Spline::setIdSpline (const int _idSpline)
 {
     m_idSpline = _idSpline;
@@ -212,14 +178,5 @@ inline void Spline::setIdSpline (const int _idSpline)
 
 //-----------------------------------------------------------------------------
 
-inline void Spline::setCRefIdSpline (const int& _idSpline)
-{
-    m_idSpline = _idSpline;
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace fwData
-
-#endif // __FWDATA_SPLINE_HPP__
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,7 +79,7 @@ void Series::write() throw (::fwGdcmIO::exception::Failed)
             image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
         ::fwData::Vector::sptr distances =
             image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
-        if((landmarks && !landmarks->getCRefPoints().empty()) || (distances && !distances->empty()))
+        if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
             if(m_fiducialsExportMode == SPATIAL_FIDUCIALS)

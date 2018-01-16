@@ -41,10 +41,10 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
                            ::fwData::PointList::sptr pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getPoints().size() == pointList2->getCRefPoints().size() );
+               pointList1->getPoints().size() == pointList2->getPoints().size() );
 
-    const ::fwData::PointList::PointListContainer points1 = pointList1->getCRefPoints();
-    const ::fwData::PointList::PointListContainer points2 = pointList2->getCRefPoints();
+    const ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
+    const ::fwData::PointList::PointListContainer points2 = pointList2->getPoints();
     const size_t size                                     = points1.size();
 
     ::fwData::Array::sptr outputArray = ::fwData::Array::New();
@@ -56,8 +56,8 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 
     for (size_t i = 0; i < size; ++i)
     {
-        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCRefCoord();
-        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCRefCoord();
+        const ::fwData::Point::PointCoordArrayType tmp1 = points1[i]->getCoord();
+        const ::fwData::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
         const ::glm::dvec3 pt1                          = ::glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
         const ::glm::dvec3 pt2                          = ::glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         distanceArray[i] = ::glm::distance(pt1, pt2);
@@ -89,7 +89,7 @@ void PointList::associate(const ::fwData::PointList::csptr& pointList1,
                           ::fwData::PointList::sptr pointList2)
 {
     SLM_ASSERT("the 2 pointLists must have the same number of points",
-               pointList1->getCRefPoints().size() == pointList2->getCRefPoints().size() );
+               pointList1->getPoints().size() == pointList2->getPoints().size() );
 
     ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
     ::fwData::PointList::PointListContainer points2 = pointList2->getRefPoints();

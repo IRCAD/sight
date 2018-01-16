@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_FIELDHELPER_MEDICALIMAGEHELPERS_HPP__
-#define __FWDATATOOLS_FIELDHELPER_MEDICALIMAGEHELPERS_HPP__
+#pragma once
 
 #include "fwDataTools/config.hpp"
 #include "fwDataTools/helper/Image.hpp"
@@ -297,7 +296,7 @@ public:
         ::fwDataTools::helper::Image imagehelper(param.image);
         IMAGE* buffer                         = static_cast < IMAGE* > (imagehelper.getBuffer());
         const INT_INDEX& p                    = param.point;
-        const std::vector<std::int32_t>& size = param.image->getCRefSize();
+        const std::vector<std::int32_t>& size = param.image->getSize();
         const int& sx                         = size[0];
         const int& sy                         = size[1];
         const int& offset                     = p[0] + sx*p[1] + p[2]*sx*sy;
@@ -399,6 +398,4 @@ void MedicalImageHelpers::getMinMax(const ::fwData::Image::csptr _img, MINMAXTYP
 
 } // fieldHelper
 } // fwDataTools
-
-#endif // __FWDATATOOLS_FIELDHELPER_MEDICALIMAGEHELPERS_HPP__
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,9 +69,9 @@ void SPointLabel::updating()
 
         this->setText( label );
 
-        const double px = point->getCRefCoord()[0];
-        const double py = point->getCRefCoord()[1];
-        const double pz = point->getCRefCoord()[2];
+        const double px = point->getCoord()[0];
+        const double py = point->getCoord()[1];
+        const double pz = point->getCoord()[2];
 
         m_actor->GetPositionCoordinate()->SetValue(px, py, pz);
         this->setVtkPipelineModified();

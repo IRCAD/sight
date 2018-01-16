@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_MATERIAL_HPP__
-#define __FWDATA_MATERIAL_HPP__
+#pragma once
 
 #include "fwData/Color.hpp"
 #include "fwData/factory/new.hpp"
@@ -133,45 +132,40 @@ public:
     /** @{
      *  @brief get/set the shading models(flat, gouraud, phong)
      */
-    const ShadingType getShadingMode() const;
     ShadingType& getRefShadingMode();
-    const ShadingType& getCRefShadingMode() const;
+    const ShadingType& getShadingMode() const;
     void setShadingMode(ShadingType _shadingMode);
     /// @}
 
     /** @{
      *  @brief get/set the representation models (edge, point, wireframe, surface)
      */
-    const RepresentationType getRepresentationMode() const;
     RepresentationType& getRefRepresentationMode();
-    const RepresentationType& getCRefRepresentationMode() const;
+    const RepresentationType& getRepresentationMode() const;
     void setRepresentationMode(RepresentationType _representationMode);
     /// @}
 
     /** @{
      *  @brief get/set the option representation (Standard, normals)
      */
-    const OptionsType  getOptionsMode () const;
     OptionsType& getRefOptionsMode ();
-    const OptionsType& getCRefOptionsMode () const;
+    const OptionsType& getOptionsMode () const;
     void setOptionsMode (OptionsType _optionsMode);
     /// @}
 
     /** @{
      *  @brief get/set the texture filtering
      */
-    const FilteringType getDiffuseTextureFiltering() const;
     FilteringType& getRefDiffuseTextureFiltering();
-    const FilteringType& getCRefDiffuseTextureFiltering() const;
+    const FilteringType& getDiffuseTextureFiltering() const;
     void setDiffuseTextureFiltering(FilteringType _diffuseTextureFiltering);
     /// @}
 
     /** @{
      *  @brief get/set the texture wrapping
      */
-    const WrappingType  getDiffuseTextureWrapping () const;
     WrappingType& getRefDiffuseTextureWrapping ();
-    const WrappingType& getCRefDiffuseTextureWrapping () const;
+    const WrappingType& getDiffuseTextureWrapping () const;
     void setDiffuseTextureWrapping (WrappingType _diffuseTextureWrapping);
     /// @}
 
@@ -219,13 +213,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const Material::ShadingType Material::getShadingMode() const
-{
-    return m_shadingMode;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Material::ShadingType& Material::getRefShadingMode()
 {
     return this->m_shadingMode;
@@ -233,7 +220,7 @@ inline Material::ShadingType& Material::getRefShadingMode()
 
 //-----------------------------------------------------------------------------
 
-inline const Material::ShadingType& Material::getCRefShadingMode() const
+inline const Material::ShadingType& Material::getShadingMode() const
 {
     return this->m_shadingMode;
 }
@@ -247,13 +234,6 @@ inline void Material::setShadingMode(ShadingType _shadingMode)
 
 //-----------------------------------------------------------------------------
 
-inline const Material::RepresentationType Material::getRepresentationMode() const
-{
-    return m_representationMode;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Material::RepresentationType& Material::getRefRepresentationMode()
 {
     return this->m_representationMode;
@@ -261,7 +241,7 @@ inline Material::RepresentationType& Material::getRefRepresentationMode()
 
 //-----------------------------------------------------------------------------
 
-inline const Material::RepresentationType& Material::getCRefRepresentationMode() const
+inline const Material::RepresentationType& Material::getRepresentationMode() const
 {
     return this->m_representationMode;
 }
@@ -275,13 +255,6 @@ inline void Material::setRepresentationMode(RepresentationType _representationMo
 
 //-----------------------------------------------------------------------------
 
-inline const Material::OptionsType Material::getOptionsMode () const
-{
-    return m_optionsMode;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Material::OptionsType& Material::getRefOptionsMode ()
 {
     return this->m_optionsMode;
@@ -289,7 +262,7 @@ inline Material::OptionsType& Material::getRefOptionsMode ()
 
 //-----------------------------------------------------------------------------
 
-inline const Material::OptionsType& Material::getCRefOptionsMode () const
+inline const Material::OptionsType& Material::getOptionsMode () const
 {
     return this->m_optionsMode;
 }
@@ -303,13 +276,6 @@ inline void Material::setOptionsMode (OptionsType _optionsMode)
 
 //-----------------------------------------------------------------------------
 
-inline const Material::FilteringType Material::getDiffuseTextureFiltering() const
-{
-    return m_diffuseTextureFiltering;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Material::FilteringType& Material::getRefDiffuseTextureFiltering()
 {
     return this->m_diffuseTextureFiltering;
@@ -317,7 +283,7 @@ inline Material::FilteringType& Material::getRefDiffuseTextureFiltering()
 
 //-----------------------------------------------------------------------------
 
-inline const Material::FilteringType& Material::getCRefDiffuseTextureFiltering() const
+inline const Material::FilteringType& Material::getDiffuseTextureFiltering() const
 {
     return this->m_diffuseTextureFiltering;
 }
@@ -331,13 +297,6 @@ inline void Material::setDiffuseTextureFiltering(FilteringType _diffuseTextureFi
 
 //-----------------------------------------------------------------------------
 
-inline const Material::WrappingType Material::getDiffuseTextureWrapping () const
-{
-    return m_diffuseTextureWrapping;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Material::WrappingType& Material::getRefDiffuseTextureWrapping ()
 {
     return this->m_diffuseTextureWrapping;
@@ -345,7 +304,7 @@ inline Material::WrappingType& Material::getRefDiffuseTextureWrapping ()
 
 //-----------------------------------------------------------------------------
 
-inline const Material::WrappingType& Material::getCRefDiffuseTextureWrapping () const
+inline const Material::WrappingType& Material::getDiffuseTextureWrapping () const
 {
     return this->m_diffuseTextureWrapping;
 }
@@ -360,6 +319,4 @@ inline void Material::setDiffuseTextureWrapping (WrappingType _diffuseTextureWra
 //-----------------------------------------------------------------------------
 
 } //namespace fwData
-
-#endif /* __FWDATA_MATERIAL_HPP__ */
 

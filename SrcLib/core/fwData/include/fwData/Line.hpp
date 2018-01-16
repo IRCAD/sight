@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_LINE_HPP__
-#define __FWDATA_LINE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -51,18 +50,16 @@ public:
     /** @{
      *  @brief get/set point position
      */
-    const ::fwData::Point::sptr getPosition() const;
     ::fwData::Point::sptr& getRefPosition();
-    const ::fwData::Point::sptr& getCRefPosition() const;
+    const ::fwData::Point::sptr& getPosition() const;
     void setPosition(const ::fwData::Point::sptr& _position);
     /// @}
 
     /** @{
      *  @brief get/set point direction
      */
-    const ::fwData::Point::sptr getDirection () const;
     ::fwData::Point::sptr & getRefDirection();
-    const ::fwData::Point::sptr& getCRefDirection() const;
+    const ::fwData::Point::sptr& getDirection() const;
     void setDirection (const ::fwData::Point::sptr& _direction);
     /// @}
 
@@ -76,13 +73,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::Point::sptr Line::getPosition() const
-{
-    return m_position;
-}
-
-//-----------------------------------------------------------------------------
-
 inline ::fwData::Point::sptr& Line::getRefPosition()
 {
     return this->m_position;
@@ -90,7 +80,7 @@ inline ::fwData::Point::sptr& Line::getRefPosition()
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::Point::sptr& Line::getCRefPosition() const
+inline const ::fwData::Point::sptr& Line::getPosition() const
 {
     return this->m_position;
 }
@@ -104,13 +94,6 @@ inline void Line::setPosition(const ::fwData::Point::sptr& _position)
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::Point::sptr Line::getDirection () const
-{
-    return m_direction;
-}
-
-//-----------------------------------------------------------------------------
-
 inline ::fwData::Point::sptr& Line::getRefDirection()
 {
     return this->m_direction;
@@ -118,7 +101,7 @@ inline ::fwData::Point::sptr& Line::getRefDirection()
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::Point::sptr& Line::getCRefDirection() const
+inline const ::fwData::Point::sptr& Line::getDirection() const
 {
     return this->m_direction;
 }
@@ -133,6 +116,4 @@ inline void Line::setDirection (const ::fwData::Point::sptr& _direction)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_LINE_HPP__
 

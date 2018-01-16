@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_ROITRAITS_HPP__
-#define __FWDATA_ROITRAITS_HPP__
+#pragma once
 
 #include "fwData/factory/new.hpp"
 #include "fwData/Node.hpp"
@@ -49,9 +48,8 @@ public:
      * @{
      * @brief Get/Set value of the ROIs identifier.
      */
-    const std::string  getIdentifier() const;
     std::string& getRefIdentifier();
-    const std::string& getCRefIdentifier() const;
+    const std::string& getIdentifier() const;
     void setIdentifier(const std::string& _identifier);
     /// @}
 
@@ -59,11 +57,9 @@ public:
      * @{
      * @brief Get/Set value of the ROI evaluated expression.
      */
-    const StructureTraits::ROIExpression  getEvaluatedExp () const;
     StructureTraits::ROIExpression& getRefEvaluatedExp ();
-    const StructureTraits::ROIExpression& getCRefEvaluatedExp () const;
-    void setEvaluatedExp (const StructureTraits::ROIExpression _evaluatedExp);
-    void setCRefEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp);
+    const StructureTraits::ROIExpression& getEvaluatedExp () const;
+    void setEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp);
     /// @}
 
     /// Set the ROI mask node used for ROI
@@ -99,13 +95,6 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline const std::string ROITraits::getIdentifier() const
-{
-    return m_identifier;
-}
-
-//-----------------------------------------------------------------------------
-
 inline std::string& ROITraits::getRefIdentifier()
 {
     return m_identifier;
@@ -113,7 +102,7 @@ inline std::string& ROITraits::getRefIdentifier()
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& ROITraits::getCRefIdentifier() const
+inline const std::string& ROITraits::getIdentifier() const
 {
     return m_identifier;
 }
@@ -127,13 +116,6 @@ inline void ROITraits::setIdentifier(const std::string& _identifier)
 
 //-----------------------------------------------------------------------------
 
-inline const StructureTraits::ROIExpression ROITraits::getEvaluatedExp () const
-{
-    return m_evaluatedExp;
-}
-
-//-----------------------------------------------------------------------------
-
 inline StructureTraits::ROIExpression& ROITraits::getRefEvaluatedExp ()
 {
     return m_evaluatedExp;
@@ -141,21 +123,14 @@ inline StructureTraits::ROIExpression& ROITraits::getRefEvaluatedExp ()
 
 //-----------------------------------------------------------------------------
 
-inline const StructureTraits::ROIExpression& ROITraits::getCRefEvaluatedExp () const
+inline const StructureTraits::ROIExpression& ROITraits::getEvaluatedExp () const
 {
     return m_evaluatedExp;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void ROITraits::setEvaluatedExp (const StructureTraits::ROIExpression _evaluatedExp)
-{
-    m_evaluatedExp = _evaluatedExp;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void ROITraits::setCRefEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp)
+inline void ROITraits::setEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp)
 {
     m_evaluatedExp = _evaluatedExp;
 }
@@ -163,6 +138,4 @@ inline void ROITraits::setCRefEvaluatedExp (const StructureTraits::ROIExpression
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_ROITRAITS_HPP__
 

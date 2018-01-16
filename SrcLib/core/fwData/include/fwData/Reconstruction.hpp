@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_RECONSTRUCTION_HPP__
-#define __FWDATA_RECONSTRUCTION_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -60,7 +59,7 @@ public:
      * @{
      * @brief Get/Set value of the bIsVisible.
      */
-    const bool  getIsVisible () const;
+    bool  getIsVisible () const;
     void setIsVisible (const bool _bIsVisible);
     /// @}
 
@@ -68,9 +67,8 @@ public:
      * @{
      * @brief Get/Set value of the organName.
      */
-    const std::string  getOrganName () const;
     std::string& getRefOrganName ();
-    const std::string& getCRefOrganName () const;
+    const std::string& getOrganName () const;
     void setOrganName (const std::string& _sOrganName);
     /// @}
 
@@ -78,9 +76,8 @@ public:
      * @{
      * @brief Get/Set value of the structureType.
      */
-    const std::string  getStructureType () const;
     std::string& getRefStructureType ();
-    const std::string& getCRefStructureType () const;
+    const std::string& getStructureType () const;
     void setStructureType (const std::string& _sStructureType);
     /// @}
 
@@ -174,7 +171,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const bool Reconstruction::getIsVisible () const
+inline bool Reconstruction::getIsVisible () const
 {
     return m_bIsVisible;
 }
@@ -188,13 +185,6 @@ inline void Reconstruction::setIsVisible (const bool _bIsVisible)
 
 //-----------------------------------------------------------------------------
 
-inline const std::string Reconstruction::getOrganName () const
-{
-    return m_sOrganName;
-}
-
-//-----------------------------------------------------------------------------
-
 inline std::string& Reconstruction::getRefOrganName ()
 {
     return m_sOrganName;
@@ -202,7 +192,7 @@ inline std::string& Reconstruction::getRefOrganName ()
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Reconstruction::getCRefOrganName () const
+inline const std::string& Reconstruction::getOrganName () const
 {
     return m_sOrganName;
 }
@@ -216,13 +206,6 @@ inline void Reconstruction::setOrganName (const std::string& _sOrganName)
 
 //-----------------------------------------------------------------------------
 
-inline const std::string Reconstruction::getStructureType () const
-{
-    return m_sStructureType;
-}
-
-//-----------------------------------------------------------------------------
-
 inline std::string& Reconstruction::getRefStructureType ()
 {
     return this->m_sStructureType;
@@ -230,7 +213,7 @@ inline std::string& Reconstruction::getRefStructureType ()
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Reconstruction::getCRefStructureType () const
+inline const std::string& Reconstruction::getStructureType () const
 {
     return this->m_sStructureType;
 }
@@ -301,6 +284,4 @@ inline void Reconstruction::setComputedMaskVolume (double val)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_RECONSTRUCTION_HPP__
 

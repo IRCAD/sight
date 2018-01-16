@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_POINT_HPP__
-#define __FWDATA_POINT_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -55,9 +54,8 @@ public:
 
     /// @brief get/set point coordinates
     /// @{
-    const PointCoordArrayType  getCoord () const;
     PointCoordArrayType& getRefCoord ();
-    const PointCoordArrayType& getCRefCoord() const;
+    const PointCoordArrayType& getCoord() const;
     void setCoord(const PointCoordArrayType& _vCoord);
     /// @}
 
@@ -76,13 +74,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const Point::PointCoordArrayType Point::getCoord () const
-{
-    return m_vCoord;
-}
-
-//-----------------------------------------------------------------------------
-
 inline Point::PointCoordArrayType& Point::getRefCoord ()
 {
     return this->m_vCoord;
@@ -90,7 +81,7 @@ inline Point::PointCoordArrayType& Point::getRefCoord ()
 
 //-----------------------------------------------------------------------------
 
-inline const Point::PointCoordArrayType& Point::getCRefCoord() const
+inline const Point::PointCoordArrayType& Point::getCoord() const
 {
     return this->m_vCoord;
 }
@@ -105,6 +96,4 @@ inline void Point::setCoord(const PointCoordArrayType& _vCoord)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-
-#endif // __FWDATA_POINT_HPP__
 

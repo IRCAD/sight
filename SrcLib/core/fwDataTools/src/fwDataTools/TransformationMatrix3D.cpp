@@ -1,15 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDataTools/TransformationMatrix3D.hpp"
-#include <glm/matrix.hpp>
+
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/matrix.hpp>
 
 namespace fwDataTools
 {
+
+//------------------------------------------------------------------------------
 
 bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::csptr& _input,
                                     ::fwData::TransformationMatrix3D::sptr& _output)
@@ -84,7 +87,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
     // and perform the inverse multiplication
     const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf->getCoefficients().data());
 
-    const auto& inCoord = _input->getCRefCoord();
+    const auto& inCoord = _input->getCoord();
     ::glm::dvec4 in;
     in[0] = inCoord[0];
     in[1] = inCoord[1];

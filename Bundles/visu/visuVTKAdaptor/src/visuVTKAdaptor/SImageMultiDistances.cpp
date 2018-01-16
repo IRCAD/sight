@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -357,7 +357,7 @@ void SImageMultiDistances::updating()
                 }
             }
             // test pass OK : install service
-            SLM_ASSERT( "Empty Point List for Distance !!!!", !distance->getCRefPoints().empty() );
+            SLM_ASSERT( "Empty Point List for Distance !!!!", !distance->getPoints().empty() );
             this->installSubServices(distance);
         }
     }
