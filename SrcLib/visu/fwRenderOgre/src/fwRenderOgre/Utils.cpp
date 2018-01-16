@@ -37,7 +37,7 @@
 #   ifdef _DEBUG
 #       define PLUGIN_PATH "plugins_win32_d.cfg"
 #   else
-#       define PLUGIN_PATH "plugins.win32_cfg"
+#       define PLUGIN_PATH "plugins_win32.cfg"
 #   endif
 #else
 #   ifdef _DEBUG
@@ -70,7 +70,7 @@ void loadResources()
     {
         try
         {
-            // Check file existance
+            // Check file existence
             if(!::boost::filesystem::exists(path))
             {
                 OSLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
