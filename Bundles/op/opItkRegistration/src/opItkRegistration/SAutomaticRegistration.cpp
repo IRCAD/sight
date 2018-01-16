@@ -232,8 +232,15 @@ void SAutomaticRegistration::updating()
             transfoModifiedSig->asyncEmit();
         };
 
-    registrator.registerImage(target, reference, transform, m_metric, multiResolutionParameters,
-                              m_samplingPercentage, m_minStep, m_maxIterations, iterationCallback);
+    try
+    {
+        registrator.registerImage(target, reference, transform, m_metric, multiResolutionParameters,
+                                  m_samplingPercentage, m_minStep, m_maxIterations, iterationCallback);
+    }
+    catch(::itk::ExceptionObject& e)
+    {
+        OSLM_ERROR("[ITK EXCEPTION]" << e.GetDescription());
+    }
 
     m_sigComputed->asyncEmit();
     transfoModifiedSig->asyncEmit();

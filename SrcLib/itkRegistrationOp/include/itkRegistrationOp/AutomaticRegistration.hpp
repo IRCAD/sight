@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ITKREGISTRATIONOP_AUTOMATICREGISTRATION_HPP__
-#define __ITKREGISTRATIONOP_AUTOMATICREGISTRATION_HPP__
+#pragma once
 
 #include "itkRegistrationOp/config.hpp"
 #include "itkRegistrationOp/Metric.hpp"
@@ -57,9 +56,9 @@ public:
                                              const ::fwData::TransformationMatrix3D::sptr& _trf,
                                              MetricType _metric,
                                              const MultiResolutionParametersType& _multiResolutionParameters,
-                                             RealType _samplingPercentage = 1.0,
-                                             double _minStep = 0.0001,
-                                             unsigned long _maxIterations = 200,
+                                             RealType _samplingPercentage    = 1.0,
+                                             double _minStep                 = 0.0001,
+                                             unsigned long _maxIterations    = 200,
                                              IterationCallbackType _callback = nullptr);
 
     ITKREGISTRATIONOP_API void stopRegistration();
@@ -98,9 +97,11 @@ private:
 
     RegistrationMethodType::Pointer m_registrator { nullptr };
 
-    static void convertToF4sMatrix(const TransformType* _itkMat, const ::fwData::TransformationMatrix3D::sptr& _f4sMat);
+    bool m_invert { false };
+
+    void convertToF4sMatrix(const TransformType* _itkMat, const ::fwData::TransformationMatrix3D::sptr& _f4sMat) const;
+
+    static double computeVolume(const fwData::Image::csptr& _img);
 };
 
 } // itkRegistrationOp
-
-#endif // __ITKREGISTRATIONOP_AUTOMATICREGISTRATION_HPP__
