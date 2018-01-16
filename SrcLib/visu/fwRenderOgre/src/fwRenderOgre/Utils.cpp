@@ -466,9 +466,12 @@ void Utils::loadOgreTexture(const ::fwData::Image::csptr& _image, ::Ogre::Textur
             _texture->getTextureType() != _texType ||
             _texture->getFormat() != pixelFormat )
         {
+            const auto& size = _image->getSize();
+            SLM_ASSERT("Only handle 2D and 3D textures", size.size() >= 2);
+            const size_t depth = size.size() == 2 ? 1 : size[2];
 
-            ::fwRenderOgre::Utils::allocateTexture(_texture.get(), _image->getSize()[0], _image->getSize()[1],
-                                                   _image->getSize()[2], pixelFormat, _texType, _dynamic);
+            ::fwRenderOgre::Utils::allocateTexture(_texture.get(), size[0], size[1], depth,
+                                                   pixelFormat, _texType, _dynamic);
         }
 
         // Copy image's pixel box into texture buffer
