@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SAXIS_HPP__
-#define __VISUOGREADAPTOR_SAXIS_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
@@ -14,7 +13,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
@@ -26,22 +24,27 @@ namespace fwData
 {
 class Material;
 }
-namespace fwData
-{
-class Mesh;
-}
-namespace fwRenderOgre
-{
-class R2VBRenderable;
-}
 
 namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor shows a coordinate system.
+ * @brief This adaptor shows a simple coordinate system.
  *
- * TODO
+ * @section Slots Slots
+ * -\b updateVisibility(bool): Sets whether the axis is shown or not.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="::visuOgreAdaptor::SAxis">
+        <config layer="default" transform="transformUID" length="30" />
+    </service>
+   @endcode
+ * @subsection Configuration Configuration:
+ * -\b renderer (mandatory): defines the mesh's layer
+ * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
+ * in the STransform adaptor
+ * -\b length (optional): lenght of the axis in mm (default 50)
  *
  */
 class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
@@ -83,16 +86,25 @@ private:
     void stopping() override;
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
     void updating() override;
+    /// Attach a node in the scene graph
+    void attachNode(::Ogre::MovableObject* _node);
 
     /// Node in the scene graph
     ::Ogre::Entity* m_entity;
-
+    /// Pointer to a SMaterial adaptor
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
+    /// Scene node for X axe
+    ::Ogre::SceneNode* m_xLineNode;
+    /// Scene node for Y axe
+    ::Ogre::SceneNode* m_yLineNode;
+    /// Scene node for Z axe
+    ::Ogre::SceneNode* m_zLineNode;
+    /// Handle the length of each axes (in mm)
+    float m_length;
 
 };
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SAXIS_HPP__
 
