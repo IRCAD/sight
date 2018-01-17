@@ -466,7 +466,7 @@ void SFrameGrabber::grabVideo()
         if (m_loopVideo)
         {
             // loop the video
-            double ratio = m_videoCapture.get(::cv::CAP_PROP_POS_AVI_RATIO);
+            const double ratio = m_videoCapture.get(::cv::CAP_PROP_POS_AVI_RATIO);
             if (ratio == 1.)
             {
                 m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, 0);
