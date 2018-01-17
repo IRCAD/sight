@@ -292,6 +292,7 @@ void SCamera::calibrate()
 
         //setup projection matrix
         ::Ogre::Matrix4 m = m_camera->getProjectionMatrixWithRSDepth();
+
         m[0][0] = 2.f * nfx / winW;
         m[0][1] = 0.f;
         m[0][2] = wcx;
