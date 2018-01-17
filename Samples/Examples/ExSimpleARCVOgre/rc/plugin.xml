@@ -17,7 +17,7 @@
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
 
-            <object uid="cube" type="::fwData::Mesh" /> 
+            <object uid="cube" type="::fwData::Mesh" />
 
             <object uid="matrixTL" type="::arData::MatrixTL" />
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
@@ -45,11 +45,13 @@
                 <gui>
                     <layout>
                         <menu name="File" />
+                        <menu name="Options" />
                         <menu name="Preferences" />
                     </layout>
                 </gui>
                 <registry>
                     <menu sid="menuFile" start="yes" />
+                    <menu sid="menuOptions" start="yes" />
                     <menu sid="menuPreferences" start="yes" />
                 </registry>
             </service>
@@ -57,13 +59,24 @@
             <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
-                        <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="actionHide" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuOptions" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
+                        <menuItem name="Show Cube" shortcut="Ctrl+C" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionHide" start="yes" />
+                    <menuItem sid="actionUpdateCubeVisibility" start="yes" />
                 </registry>
             </service>
 
@@ -173,9 +186,15 @@
             </service>
 
             <!-- hide axis adaptor until a marker is found -->
-            <service uid="hideAxis" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="actionUpdateAxesVisibility" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>axis/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <service uid="actionUpdateCubeVisibility" type="::gui::action::SBooleanSlotCaller" >
+                <slots>
+                    <slot>meshAdpt/updateVisibility</slot>
                 </slots>
             </service>
 
@@ -204,10 +223,10 @@
                 </out>
             </service>
 
-            <service uid="meshreader" type="::ioVTK::SMeshReader"> 
-                <inout key="output" uid="cube" /> 
-                <file>/home/mschweitzer/dev/data/cube.vtk</file> 
-            </service> 
+            <service uid="meshreader" type="::ioVTK::SMeshReader">
+                <inout key="output" uid="cube" />
+                <resource>ExSimpleARCVOgre-@PROJECT_VERSION@/cube60.vtk</resource>
+            </service>
 
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- *************************** Begin generic scene *************************** -->
@@ -218,10 +237,10 @@
                     <layer id="default" depth="2" />
                     <adaptor uid="videoAdpt" />
                     <adaptor uid="interactorStyle" />
-                    <adaptor uid="interactorStyle2" /> 
+                    <adaptor uid="interactorStyle2" />
                     <adaptor uid="axis" />
                     <adaptor uid="cameraAdpt" />
-                    <adaptor uid="meshAdpt" /> 
+                    <adaptor uid="meshAdpt" />
                 </scene>
             </service>
 
@@ -235,12 +254,12 @@
                 <config layer="default" style="Fixed" />
             </service>
 
-            <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle"> 
-                <config layer="video" style="Fixed" /> 
-            </service> 
+            <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="video" style="Fixed" />
+            </service>
 
             <service uid="axis" type="::visuOgreAdaptor::SAxis">
-                <config layer="default" transform="id" autoresetcamera="no" length="30" />
+                <config layer="default" transform="id" length="30" />
             </service>
 
             <service uid="cameraAdpt" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
@@ -249,11 +268,10 @@
                 <config layer="default" />
             </service>
 
-
-            <service uid="meshAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes"> 
-                <inout key="mesh" uid="cube" /> 
-                <config layer="default" transform="id" /> 
-            </service> 
+            <service uid="meshAdpt" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="cube" />
+                <config layer="default" />
+            </service>
 
             <!-- *************************** End generic scene *************************** -->
 
@@ -429,21 +447,22 @@
             <start uid="matrixReverser" />
             <start uid="genericScene" />
             <start uid="error" />
-            <start uid="hideAxis" />
-            <start uid="meshreader" /> 
+            <start uid="meshreader" />
+            <start uid="actionUpdateAxesVisibility" />
 
             <!-- VTK scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
-            <start uid="interactorStyle2" /> 
+            <start uid="interactorStyle2" />
             <start uid="axis" />
             <start uid="cameraAdpt" />
-            <start uid="meshAdpt" /> 
+            <start uid="meshAdpt" />
 
             <update uid="actionHide" />
-            <update uid="hideAxis" />
+            <update uid="actionUpdateAxesVisibility" />
+            <update uid="actionUpdateCubeVisibility" />
 
-            <update uid="meshreader" /> 
+            <update uid="meshreader" />
 
         </config>
     </extension>
