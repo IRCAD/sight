@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ARSERVICES_IRGBDGRABBER_HPP__
-#define __ARSERVICES_IRGBDGRABBER_HPP__
+#pragma once
 
 #include "arServices/config.hpp"
 #include <arServices/IGrabber.hpp>
@@ -28,7 +27,6 @@ public:
      * @{
      */
     ARSERVICES_API static const ::fwServices::IService::KeyType s_DEPTHTL_INOUT;
-    ARSERVICES_API static const ::fwServices::IService::KeyType s_IRTL_INOUT;
     /** @} */
 
     /// Constructor.
@@ -39,4 +37,3 @@ public:
 };
 
 } //namespace arServices
-#endif  // __ARSERVICES_IRGBDGRABBER_HPP__

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOOPENNI_SSCAN_HPP__
-#define __VIDEOOPENNI_SSCAN_HPP__
+#pragma once
 
 #include "videoOpenni/config.hpp"
 
@@ -67,6 +66,13 @@ public:
 
     /// Destructor. Does nothing.
     VIDEOOPENNI_API virtual ~SScan() noexcept;
+
+    /**
+     * @name Data API
+     * @{
+     */
+    VIDEOOPENNI_API static const ::fwServices::IService::KeyType s_IRTL_INOUT;
+    /** @} */
 
     /**
      * @name Slots API
@@ -154,6 +160,3 @@ private:
     bool m_pause; ///< Whether we are in pause
 };
 }
-
-#endif /*__VIDEOOPENNI_SSCAN_HPP__*/
-

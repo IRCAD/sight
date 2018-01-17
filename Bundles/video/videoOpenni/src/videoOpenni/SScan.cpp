@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,6 +27,8 @@ namespace videoOpenni
 // is compatible with this interface. Indeed it is capable to output only the color frame.
 
 const ::fwCom::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
+
+const ::fwServices::IService::KeyType SScan::s_IRTL_INOUT = "irTL";
 
 // -----------------------------------------------------------------------------
 
@@ -488,4 +490,3 @@ void SScan::presentFrame()
 // -----------------------------------------------------------------------------
 
 } // namespace videoOpenni
-
