@@ -242,7 +242,7 @@ void SExtrinsic::updating()
 #endif
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
 
-        ext_matrices[ext_matrices.size() - 1].copy_out(&(matrix->getRefCoefficients()[0]));
+        ext_matrices[ext_matrices.size() - 1].copy_out(&(matrix->getCoefficients()[0]));
         {
             ::fwData::mt::ObjectWriteLock camSeriesLock(camSeries);
             camSeries->setExtrinsicMatrix(m_camIndex, matrix);

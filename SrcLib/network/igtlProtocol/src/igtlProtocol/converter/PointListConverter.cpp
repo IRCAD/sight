@@ -72,7 +72,7 @@ PointListConverter::~PointListConverter()
         fwPoint = ::fwData::Point::New();
         srcPoints->GetPointElement(i, elem);
         elem->GetPosition(igtlPos);
-        std::transform(&igtlPos[0], &igtlPos[3], fwPoint->getRefCoord().begin(),
+        std::transform(&igtlPos[0], &igtlPos[3], fwPoint->getCoord().begin(),
                        ::boost::numeric_cast<float, double>);
         fwPoints.push_back(fwPoint);
     }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,10 +61,10 @@ void PatchTest::tearDown()
 //------------------------------------------------------------------------------
 
 template <typename T>
-SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::string &reader)
+SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const std::string& reader)
 {
 
-    typename T::sptr readObj               = T::New();
+    typename T::sptr readObj = T::New();
     ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( reader );
     CPPUNIT_ASSERT(readerSrv);
 
@@ -207,4 +207,3 @@ void PatchTest::arPatchMedicalDataTest()
 
 } //namespace ut
 } //namespace arPatchMedicalData
-

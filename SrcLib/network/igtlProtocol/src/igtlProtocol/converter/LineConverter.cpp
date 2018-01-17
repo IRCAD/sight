@@ -70,9 +70,9 @@ LineConverter::~LineConverter()
     dest->setDirection(::fwData::Point::New());
     srcLine->GetPosition(igtlPos);
     srcLine->GetQuaternion(igtlDirection);
-    std::transform(&igtlPos[0], &igtlPos[3], dest->getPosition()->getRefCoord().begin(),
+    std::transform(&igtlPos[0], &igtlPos[3], dest->getPosition()->getCoord().begin(),
                    ::boost::numeric_cast<float, double>);
-    std::transform(&igtlDirection[0], &igtlDirection[3], dest->getDirection()->getRefCoord().begin(),
+    std::transform(&igtlDirection[0], &igtlDirection[3], dest->getDirection()->getCoord().begin(),
                    ::boost::numeric_cast<float, double>);
 
     return dest;

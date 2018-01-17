@@ -230,8 +230,8 @@ void DataConverterTest::pointListConverterTest()
     for (int i = 0; i < 2; ++i)
     {
         point = ::fwData::Point::New();
-        std::copy(points[i], points[i] + 3, point->getRefCoord().begin());
-        pointList->getRefPoints().push_back(point);
+        std::copy(points[i], points[i] + 3, point->getCoord().begin());
+        pointList->getPoints().push_back(point);
     }
     msg =
         ::igtl::PointMessage::Pointer(dynamic_cast< ::igtl::PointMessage*>(converter->fromFwObject(
@@ -289,8 +289,8 @@ void DataConverterTest::lineConverterTest()
     line = ::fwData::Line::New();
     line->setPosition(::fwData::Point::New());
     line->setDirection(::fwData::Point::New());
-    std::copy(direction, direction + 3, line->getDirection()->getRefCoord().begin());
-    std::copy(position, position + 3, line->getPosition()->getRefCoord().begin());
+    std::copy(direction, direction + 3, line->getDirection()->getCoord().begin());
+    std::copy(position, position + 3, line->getPosition()->getCoord().begin());
     lineMsg =
         ::igtl::PositionMessage::Pointer(dynamic_cast< ::igtl::PositionMessage*>(converter->fromFwObject(
                                                                                      line).GetPointer()));
