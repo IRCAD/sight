@@ -6,6 +6,8 @@
 
 #include "visuOgreAdaptor/SAxis.hpp"
 
+#include "visuOgreAdaptor/STransform.hpp"
+
 #include <fwRenderOgre/helper/Scene.hpp>
 
 namespace visuOgreAdaptor
@@ -18,10 +20,10 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 //-----------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept :
-    m_entity(nullptr),
     m_materialAdaptor(nullptr),
     m_material(nullptr),
-    m_length(50.f)
+    m_length(50.f),
+    m_isVisible(true)
 {
 
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
@@ -37,11 +39,19 @@ SAxis::~SAxis() noexcept
 
 void SAxis::updateVisibility(bool isVisible)
 {
-    m_xLineNode->setVisible(isVisible);
-    m_yLineNode->setVisible(isVisible);
-    m_zLineNode->setVisible(isVisible);
+    m_isVisible = isVisible;
+    m_xLineNode->setVisible(m_isVisible);
+    m_yLineNode->setVisible(m_isVisible);
+    m_zLineNode->setVisible(m_isVisible);
 
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+bool SAxis::getVisibility() const
+{
+    return m_isVisible;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,10 +99,7 @@ void SAxis::starting()
     ::Ogre::ManualObject* zLine = sceneMgr->createManualObject("zline");
     m_zLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode("zline_node");
 
-    // NOTE: The second parameter to the create method is the resource group the material will be added to.
-    // If the group you name does not exist (in your resources.cfg file) the library will assert() and your program will
-    // crash
-
+    // set the material
     m_material = ::fwData::Material::New();
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
@@ -104,15 +111,14 @@ void SAxis::starting()
     m_materialAdaptor->setShadingMode("ambient");
     m_materialAdaptor->start();
 
+    // Draw
     xLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     xLine->position(0, 0, 0);
     xLine->colour(1.0f, 0, 0);
     xLine->normal(1, 0, 0);
-
     xLine->position(m_length, 0, 0);
     xLine->colour(1.0f, 0, 0);
     xLine->normal(1, 0, 0);
-
     xLine->end();
 
     m_xLineNode->attachObject(xLine);
@@ -120,15 +126,12 @@ void SAxis::starting()
     this->attachNode(xLine);
 
     yLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
-
     yLine->position(0, 0, 0);
     yLine->colour(0, 1.0f, 0);
     yLine->normal(1, 0, 0);
-
     yLine->position(0, m_length, 0);
     yLine->colour(0, 1.0f, 0);
     yLine->normal(1, 0, 0);
-
     yLine->end();
 
     m_yLineNode->attachObject(yLine);
@@ -147,7 +150,6 @@ void SAxis::starting()
     m_zLineNode->attachObject(zLine);
 
     this->attachNode(zLine);
-
 }
 
 //-----------------------------------------------------------------------------

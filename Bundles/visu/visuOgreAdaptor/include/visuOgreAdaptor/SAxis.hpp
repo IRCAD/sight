@@ -8,12 +8,9 @@
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
-#include "visuOgreAdaptor/STransform.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
-
-#include <fwData/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -55,7 +52,7 @@ public:
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SAxis() noexcept;
-    /// Destructor: if an entity exists in the Ogre Scene, asks Ogre to destroy it.
+    /// Destructor: Does nothing
     VISUOGREADAPTOR_API virtual ~SAxis() noexcept;
 
     /**
@@ -65,12 +62,12 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
 
-    /// Sets whether the mesh is to be seen or not.
+    /// Sets visibility of axis
     VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
 
     /** @} */
 
-    /// Returns if the SMesh is visible in the scene or not.
+    /// Returns if the axis is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
 
     /// Returns proposals to connect service slots to associated object signals
@@ -89,8 +86,6 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
-    /// Node in the scene graph
-    ::Ogre::Entity* m_entity;
     /// Pointer to a SMaterial adaptor
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Pointer to the Material data
@@ -103,8 +98,9 @@ private:
     ::Ogre::SceneNode* m_zLineNode;
     /// Handle the length of each axes (in mm)
     float m_length;
+    /// Handles the visibility of the axis
+    bool m_isVisible;
 
 };
 
 } //namespace visuOgreAdaptor
-
