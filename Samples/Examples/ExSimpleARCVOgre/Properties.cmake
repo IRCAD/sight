@@ -5,7 +5,6 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
 
-    activities
     appXml
     arDataReg
     arMedia
