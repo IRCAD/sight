@@ -41,6 +41,7 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformat
 SCamera::SCamera() noexcept :
     m_camera(nullptr),
     m_nearClipDistance(1.f),
+    m_farClipDistance(1000.f),
     m_aspectRatio(0.f)
 {
     newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
@@ -81,6 +82,9 @@ void SCamera::starting()
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
+
+    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
     if (m_calibration)
     {
         this->calibrate();
@@ -243,12 +247,73 @@ void SCamera::calibrate()
 {
     if ( m_calibration && m_calibration->getIsCalibrated() )
     {
-        const double fy = m_calibration->getFy();
 
-        m_camera->setFOVy(
-            ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
-                                                       atan(static_cast< double >(m_calibration->getHeight() / 2) /
-                                                            fy))));
+        const float fx = static_cast< float >(m_calibration->getFx());
+        const float fy = static_cast< float >(m_calibration->getFy());
+
+        const float cx = static_cast< float >( m_calibration->getCx() );
+        const float cy = static_cast< float >( m_calibration->getCy() );
+
+        //calibration images size
+        const float imW = static_cast< float >( m_calibration->getWidth() );
+        const float imH = static_cast< float >( m_calibration->getHeight() );
+
+        //displayed image size
+        const float winW = static_cast< float >( m_camera->getViewport()->getActualWidth() );
+        const float winH = static_cast< float >( m_camera->getViewport()->getActualHeight() );
+
+        //compute ratio between calibration image height & displayed image height
+        const float ratioH = winH / imH;
+
+        //compute new fx, fy
+        const float nfx = fx * ratioH;
+        const float nfy = fy * ratioH;
+
+        const float znear = m_nearClipDistance;
+        const float zfar  = m_farClipDistance;
+
+        // compute principle point offset according to size of displayed image
+        float px       = ratioH * cx;
+        const float py = ratioH * cy;
+
+        const long expectedWindowSize = std::lround(ratioH * imW);
+
+        if( expectedWindowSize != static_cast<long>(winW))
+        {
+            const long diffX = (static_cast<long>(winW) - expectedWindowSize) / 2;
+            px += static_cast<float>(diffX);
+        }
+
+        const float cx1 = winW - px;
+        const float cy1 = winH - py;
+
+        const float wcx = cx1 / ( (winW - 1.f) / 2.f) -1.f;
+        const float wcy = cy1 / ( (winH - 1.f) / 2.f) -1.f;
+
+        //setup projection matrix
+        ::Ogre::Matrix4 m = m_camera->getProjectionMatrixWithRSDepth();
+        m[0][0] = 2.f * nfx / winW;
+        m[0][1] = 0.f;
+        m[0][2] = wcx;
+        m[0][3] = 0.f;
+
+        m[1][0] = 0.f;
+        m[1][1] = 2.f * nfy / winH;
+        m[1][2] = -wcy;
+        m[1][3] = 0.f;
+
+        m[2][0] = 0.f;
+        m[2][1] = 0.f;
+        m[2][2] = -(zfar + znear) / (zfar - znear);
+        m[2][3] = -2.f * zfar * znear / (zfar - znear);
+
+        m[3][0] = 0.f;
+        m[3][1] = 0.f;
+        m[3][2] = -1.f;
+        m[3][3] = 0.f;
+
+        m_camera->setCustomProjectionMatrix(true, m);
+
         this->updating();
     }
 }
