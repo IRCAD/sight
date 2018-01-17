@@ -247,7 +247,6 @@ void SCamera::calibrate()
 {
     if ( m_calibration && m_calibration->getIsCalibrated() )
     {
-
         const float fx = static_cast< float >(m_calibration->getFx());
         const float fy = static_cast< float >(m_calibration->getFy());
 
@@ -287,10 +286,11 @@ void SCamera::calibrate()
         const float cx1 = winW - px;
         const float cy1 = winH - py;
 
+        // compute the offset according to current size
         const float wcx = cx1 / ( (winW - 1.f) / 2.f) -1.f;
         const float wcy = cy1 / ( (winH - 1.f) / 2.f) -1.f;
 
-        //setup projection matrix
+        // setup projection matrix
         ::Ogre::Matrix4 m = m_camera->getProjectionMatrixWithRSDepth();
 
         m[0][0] = 2.f * nfx / winW;
