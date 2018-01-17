@@ -13,7 +13,6 @@ set( REQUIREMENTS
         arMedia
         videoQt
         visuVTKQt
-        videoVLC
         visuVTKARAdaptor
         uiSelector
         uiData
