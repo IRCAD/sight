@@ -95,7 +95,7 @@ public:
      *  @brief Get/Set histogram values
      *  @{
      */
-    fwHistogramValues& getRefValues();
+    fwHistogramValues& getValues();
     const fwHistogramValues& getValues() const;
     void setValues(const fwHistogramValues& _values);
     /// @}
@@ -104,7 +104,7 @@ public:
      *  @brief Get/Set minimum value within the histogram
      *  @{
      */
-    float& getRefMinValue ();
+    float& getMinValue ();
     const float& getMinValue () const;
     void setMinValue (float _minValue);
     /// @}
@@ -113,7 +113,7 @@ public:
      *  @brief Get/Set maximum value within the histogram
      *  @{
      */
-    float& getRefMaxValue();
+    float& getMaxValue();
     const float& getMaxValue() const;
     void setMaxValue(float _maxValue);
     /// @}
@@ -149,7 +149,7 @@ inline void Histogram::setBinsWidth(float _binsWidth)
 
 //-----------------------------------------------------------------------------
 
-inline Histogram::fwHistogramValues& Histogram::getRefValues()
+inline Histogram::fwHistogramValues& Histogram::getValues()
 {
     return this->m_values;
 }
@@ -170,7 +170,7 @@ inline void Histogram::setValues(const Histogram::fwHistogramValues& _values)
 
 //-----------------------------------------------------------------------------
 
-inline float& Histogram::getRefMinValue ()
+inline float& Histogram::getMinValue ()
 {
     return this->m_minValue;
 }
@@ -191,7 +191,7 @@ inline void Histogram::setMinValue (float _minValue)
 
 //-----------------------------------------------------------------------------
 
-inline float& Histogram::getRefMaxValue()
+inline float& Histogram::getMaxValue()
 {
     return this->m_maxValue;
 }
@@ -213,4 +213,3 @@ inline void Histogram::setMaxValue(float _maxValue)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

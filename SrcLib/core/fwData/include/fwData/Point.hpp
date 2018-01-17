@@ -31,7 +31,7 @@ public:
                                                ((::fwData::factory::New< Point >, () ))
                                                    ((PointFactory, ((float))((float)(0.0f)) ((float) (0.0f)) ))
                                                    ((PointFactory, ((double))((double)(0.0)) ((double) (0.0)) ))
-                                                   ((PointFactory, ((const PointCoordArrayType &)) ))
+                                                   ((PointFactory, ((const PointCoordArrayType&)) ))
                                                    ((PointFactory, ((Point::sptr)) ))
                                                );
 
@@ -54,7 +54,7 @@ public:
 
     /// @brief get/set point coordinates
     /// @{
-    PointCoordArrayType& getRefCoord ();
+    PointCoordArrayType& getCoord ();
     const PointCoordArrayType& getCoord() const;
     void setCoord(const PointCoordArrayType& _vCoord);
     /// @}
@@ -74,7 +74,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Point::PointCoordArrayType& Point::getRefCoord ()
+inline Point::PointCoordArrayType& Point::getCoord ()
 {
     return this->m_vCoord;
 }
@@ -96,4 +96,3 @@ inline void Point::setCoord(const PointCoordArrayType& _vCoord)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

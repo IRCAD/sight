@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -137,7 +137,7 @@ void Fiducial::addLandmark(double x, double y, double z, const std::string& labe
         m_object->setField(::fwDataTools::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
-    pointList->getRefPoints().push_back(point);
+    pointList->getPoints().push_back(point);
     m_object->setField("ShowLandmarks", ::fwData::Boolean::New(true));
 }
 

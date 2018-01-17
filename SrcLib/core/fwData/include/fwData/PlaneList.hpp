@@ -51,7 +51,7 @@ public:
     /** @{
      *  @brief get/set container of all planes
      */
-    PlaneListContainer& getRefPlanes ();
+    PlaneListContainer& getPlanes ();
     const PlaneListContainer& getPlanes () const;
     void setPlanes (const PlaneListContainer& _vPlanes);
     /// @}
@@ -84,7 +84,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline PlaneList::PlaneListContainer& PlaneList::getRefPlanes ()
+inline PlaneList::PlaneListContainer& PlaneList::getPlanes ()
 {
     return this->m_vPlanes;
 }
@@ -106,4 +106,3 @@ inline void PlaneList::setPlanes (const PlaneList::PlaneListContainer& _vPlanes)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

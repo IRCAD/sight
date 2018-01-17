@@ -55,7 +55,7 @@ public:
     /** Get/Set the array of color values (red, green, blue, alpha).
      *  @name ColorArray accessor
      *  @{  */
-    ColorArray& getRefRGBA();
+    ColorArray& getRGBA();
     const ColorArray& getRGBA() const;
     void setRGBA(const ColorArray&  _vRGBA);
     /** @} */
@@ -100,7 +100,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Color::ColorArray& Color::getRefRGBA()
+inline Color::ColorArray& Color::getRGBA()
 {
     return this->m_vRGBA;
 }
@@ -122,4 +122,3 @@ inline void Color::setRGBA(const Color::ColorArray&  _vRGBA)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

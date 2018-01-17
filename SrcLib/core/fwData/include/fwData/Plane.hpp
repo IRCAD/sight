@@ -54,7 +54,7 @@ public:
     /** @{
      *  @brief get/set points container
      */
-    PointContainer& getRefPoints();
+    PointContainer& getPoints();
     const PointContainer& getPoints() const;
     void setPoints(const PointContainer& _vPoints);
     /// @}
@@ -89,7 +89,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Plane::PointContainer& Plane::getRefPoints()
+inline Plane::PointContainer& Plane::getPoints()
 {
     return this->m_vPoints;
 }
@@ -125,4 +125,3 @@ inline void Plane::setIsIntersection(bool _isIntersection)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

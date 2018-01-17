@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #include "ioTuto/ExternalDataReaderService.hpp"
 
 #include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Composite.hpp>
 
@@ -128,16 +128,16 @@ void ExternalDataReaderService::updating()
             while(!file.eof())
             {
                 readedValue = 0;
-                while ( !file.eof() && readedValue<32 )
+                while ( !file.eof() && readedValue < 32 )
                 {
                     file >> value;
-                    if  (readedValue<16)
+                    if  (readedValue < 16)
                     {
-                        transformation1->getRefCoefficients()[readedValue] = value;
+                        transformation1->getCoefficients()[readedValue] = value;
                     }
                     else
                     {
-                        transformation2->getRefCoefficients()[readedValue] = value;
+                        transformation2->getCoefficients()[readedValue] = value;
                     }
                     readedValue++;
                 }
@@ -189,4 +189,3 @@ void ExternalDataReaderService::updating()
 //------------------------------------------------------------------------------
 
 }
-

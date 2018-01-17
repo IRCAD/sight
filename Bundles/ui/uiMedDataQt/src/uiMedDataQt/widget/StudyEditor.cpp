@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,9 +46,9 @@ StudyEditor::StudyEditor(QWidget* parent) :
     layout->addRow(tr("Description"), m_description);
     layout->addRow(tr("Patient age"), m_patientAge);
 
-    QObject::connect(m_date, SIGNAL(textChanged(const QString &)), this, SLOT(onDateChanged(const QString &)));
-    QObject::connect(m_time, SIGNAL(textChanged(const QString &)), this, SLOT(onTimeChanged(const QString &)));
-    QObject::connect(m_description, SIGNAL(textChanged(const QString &)), this, SLOT(onDescChanged(const QString &)));
+    QObject::connect(m_date, SIGNAL(textChanged(const QString&)), this, SLOT(onDateChanged(const QString&)));
+    QObject::connect(m_time, SIGNAL(textChanged(const QString&)), this, SLOT(onTimeChanged(const QString&)));
+    QObject::connect(m_description, SIGNAL(textChanged(const QString&)), this, SLOT(onDescChanged(const QString&)));
 
     QGroupBox* group = new QGroupBox(tr("Study"));
     group->setLayout(layout);
@@ -61,10 +61,10 @@ StudyEditor::StudyEditor(QWidget* parent) :
 
 StudyEditor::~StudyEditor()
 {
-    QObject::disconnect(m_date, SIGNAL(textChanged(const QString &)), this, SLOT(onDateChanged(const QString &)));
-    QObject::disconnect(m_time, SIGNAL(textChanged(const QString &)), this, SLOT(onTimeChanged(const QString &)));
-    QObject::disconnect(m_description, SIGNAL(textChanged(const QString &)), this,
-                        SLOT(onDescChanged(const QString &)));
+    QObject::disconnect(m_date, SIGNAL(textChanged(const QString&)), this, SLOT(onDateChanged(const QString&)));
+    QObject::disconnect(m_time, SIGNAL(textChanged(const QString&)), this, SLOT(onTimeChanged(const QString&)));
+    QObject::disconnect(m_description, SIGNAL(textChanged(const QString&)), this,
+                        SLOT(onDescChanged(const QString&)));
 }
 
 //-----------------------------------------------------------------------------
@@ -188,4 +188,3 @@ void StudyEditor::setSeries(SPTR(::fwMedData::Series)series)
 
 } // namespace widget
 } // namespace uiMedDataQt
-

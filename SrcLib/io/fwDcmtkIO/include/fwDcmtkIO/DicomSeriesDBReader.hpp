@@ -89,7 +89,7 @@ public:
     }
     //------------------------------------------------------------------------------
 
-    bool& getRefDicomdirActivated ()
+    bool& getDicomdirActivated ()
     {
         return this->m_isDicomdirActivated;
     }
@@ -106,7 +106,7 @@ public:
      * @{ */
     //------------------------------------------------------------------------------
 
-    std::string& getRefDicomFilterType ()
+    std::string& getDicomFilterType ()
     {
         return this->m_dicomFilterType;
     }
@@ -191,4 +191,3 @@ private:
 };
 
 } // namespace fwDcmtkIO
-

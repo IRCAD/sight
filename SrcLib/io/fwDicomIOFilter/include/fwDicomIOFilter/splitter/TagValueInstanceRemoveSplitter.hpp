@@ -51,7 +51,7 @@ public:
      * @{ */
     //------------------------------------------------------------------------------
 
-    DcmTagKey& getRefTag ()
+    DcmTagKey& getTag ()
     {
         return this->m_tag;
     }
@@ -74,7 +74,7 @@ public:
      * @{ */
     //------------------------------------------------------------------------------
 
-    std::string& getRefTagValue()
+    std::string& getTagValue()
     {
         return this->m_tagValue;
     }
@@ -109,4 +109,3 @@ protected:
 
 } // namespace splitter
 } // namespace fwDicomIOFilter
-

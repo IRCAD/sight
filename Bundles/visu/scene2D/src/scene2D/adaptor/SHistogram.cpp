@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -151,8 +151,8 @@ void SHistogram::updateCurrentPoint(::fwRenderQt::data::Event& _event, const ::f
 
     if(index >= 0 && index < nbValues)
     {
-        point->getRefCoord()[0] = sceneCoord.getX();
-        point->getRefCoord()[1] = values.at( index / histogramBinsWidth ) * m_scale;
+        point->getCoord()[0] = sceneCoord.getX();
+        point->getCoord()[1] = values.at( index / histogramBinsWidth ) * m_scale;
     }
 }
 
@@ -219,4 +219,3 @@ void SHistogram::processInteraction( ::fwRenderQt::data::Event& _event)
 }   // namespace adaptor
 
 }   // namespace scene2D
-

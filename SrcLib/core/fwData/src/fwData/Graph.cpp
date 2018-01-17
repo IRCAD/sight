@@ -67,7 +67,7 @@ bool Graph::removeNode( Node::csptr node)
 
 //------------------------------------------------------------------------------
 
-Graph::NodeContainer& Graph::getRefNodes()
+Graph::NodeContainer& Graph::getNodes()
 {
     return m_nodes;
 }
@@ -311,7 +311,7 @@ const Graph::ConnectionContainer& Graph::getConnections() const
 
 //------------------------------------------------------------------------------
 
-Graph::ConnectionContainer& Graph::getRefConnections()
+Graph::ConnectionContainer& Graph::getConnections()
 {
     return m_connections;
 }

@@ -145,7 +145,7 @@ void LoadLandmark::load(const ::boost::filesystem::path& path)
 
     for(::fwData::Point::sptr landmark :  newLandmarks->getPoints())
     {
-        landmarks->getRefPoints().push_back( landmark );
+        landmarks->getPoints().push_back( landmark );
         auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
         sig->asyncEmit(landmark);
     }

@@ -69,7 +69,7 @@ public:
      * @{
      * @brief Get/Set value of the safe resection.
      */
-    ::fwData::Resection::sptr & getRefSafeResection();
+    ::fwData::Resection::sptr& getSafeResection();
     const ::fwData::Resection::sptr& getSafeResection() const;
     void setSafeResection(const ::fwData::Resection::sptr& _safeResection);
     /// @}
@@ -126,7 +126,7 @@ inline void ResectionDB::setResections (const ResectionDB::ResectionContainerTyp
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::Resection::sptr& ResectionDB::getRefSafeResection()
+inline ::fwData::Resection::sptr& ResectionDB::getSafeResection()
 {
     return m_safeResection;
 }
@@ -148,4 +148,3 @@ inline void ResectionDB::setSafeResection(const ::fwData::Resection::sptr& _safe
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

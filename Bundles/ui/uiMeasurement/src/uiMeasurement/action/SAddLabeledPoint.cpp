@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,12 +33,10 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SAddLabeledPoint, ::fwData::PointList );
 
-
 //------------------------------------------------------------------------------
 
-
-SAddLabeledPoint::SAddLabeledPoint( ) noexcept
-    : m_count(1)
+SAddLabeledPoint::SAddLabeledPoint( ) noexcept :
+    m_count(1)
 {
 }
 
@@ -67,7 +65,7 @@ bool SAddLabeledPoint::defineLabel(std::string& name)
     ::fwGui::dialog::InputDialog inputDlg;
     inputDlg.setTitle("Label");
     inputDlg.setMessage("Which label for the point?");
-    inputDlg.setInput (name);
+    inputDlg.setInput(name);
     std::string inputText = inputDlg.getInput();
 
     if(!inputText.empty())
@@ -78,7 +76,6 @@ bool SAddLabeledPoint::defineLabel(std::string& name)
     }
     return res;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -95,7 +92,7 @@ void SAddLabeledPoint::updating()
         ::fwData::Point::sptr newPoint = ::fwData::Point::New();
 
         // append to landmark
-        landmarks->getRefPoints().push_back( newPoint );
+        landmarks->getPoints().push_back( newPoint );
 
         // append to point the label
         ::fwData::String::sptr label = ::fwData::String::New();

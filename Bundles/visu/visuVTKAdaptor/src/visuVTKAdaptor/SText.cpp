@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -187,7 +187,7 @@ void SText::setStyle()
     {
         ::fwData::Color::sptr color = ::fwData::Color::New();
         color->setRGBA(m_textColor);
-        textprop->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
+        textprop->SetColor(color->getRGBA()[0], color->getRGBA()[1], color->getRGBA()[2]);
     }
     else
     {
@@ -264,4 +264,3 @@ fwServices::IService::KeyConnectionsMap SText::getAutoConnections() const
 //-----------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-

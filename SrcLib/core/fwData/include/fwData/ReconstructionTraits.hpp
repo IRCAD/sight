@@ -48,7 +48,7 @@ public:
      * @{
      * @brief Get/Set value of the identifier.
      */
-    std::string& getRefIdentifier ();
+    std::string& getIdentifier ();
     const std::string& getIdentifier () const;
     void setIdentifier (const std::string& _identifier);
     /// @}
@@ -92,7 +92,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline std::string& ReconstructionTraits::getRefIdentifier ()
+inline std::string& ReconstructionTraits::getIdentifier ()
 {
     return m_identifier;
 }
@@ -114,4 +114,3 @@ inline void ReconstructionTraits::setIdentifier (const std::string& _identifier)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

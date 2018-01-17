@@ -43,7 +43,7 @@ public:
      * @{
      * @brief Get/Set value of the pointList.
      */
-    ::fwData::PointList::sptr & getRefPointList();
+    ::fwData::PointList::sptr& getPointList();
     const ::fwData::PointList::sptr& getPointList() const;
     void setPointList (const ::fwData::PointList::sptr& _pointList);
     /// @}
@@ -52,7 +52,7 @@ public:
      * @{
      * @brief Get/Set value of the Type.
      */
-    std::string& getRefType ();
+    std::string& getType ();
     const std::string& getType () const;
     void setType (const std::string& _sType);
     /// @}
@@ -61,7 +61,7 @@ public:
      * @{
      * @brief Get/Set value of the Tag size.
      */
-    double& getRefSize ();
+    double& getSize ();
     double getSize () const;
     void setSize (const double _size);
     /// @}
@@ -87,7 +87,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::PointList::sptr& Tag::getRefPointList()
+inline ::fwData::PointList::sptr& Tag::getPointList()
 {
     return this->m_pointList;
 }
@@ -108,7 +108,7 @@ inline void Tag::setPointList (const ::fwData::PointList::sptr& _pointList)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Tag::getRefType ()
+inline std::string& Tag::getType ()
 {
     return m_sType;
 }
@@ -136,7 +136,7 @@ inline double Tag::getSize () const
 
 //-----------------------------------------------------------------------------
 
-inline double& Tag::getRefSize ()
+inline double& Tag::getSize ()
 {
     return m_size;
 }
@@ -151,4 +151,3 @@ inline void Tag::setSize (const double _size)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

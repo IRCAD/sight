@@ -52,7 +52,7 @@ public:
 
     /// @brief get/set points container
     /// @{
-    PointListContainer& getRefPoints ();
+    PointListContainer& getPoints ();
     const PointListContainer& getPoints () const;
     void setPoints (const PointListContainer& _vPoints);
 
@@ -84,7 +84,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline PointList::PointListContainer& PointList::getRefPoints ()
+inline PointList::PointListContainer& PointList::getPoints ()
 {
     return this->m_vPoints;
 }
@@ -113,4 +113,3 @@ inline void PointList::pushBack(const ::fwData::Point::sptr& p)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

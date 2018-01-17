@@ -104,7 +104,7 @@ public:
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_service->getPicker(), m_service->getRenderer(), world);
             }
 
-            std::copy( world, world+3, point->getRefCoord().begin() );
+            std::copy( world, world+3, point->getCoord().begin() );
 
             auto sig = point->signal< ::fwData::Point::ModifiedSignalType >(::fwData::Point::s_MODIFIED_SIG);
             sig->asyncEmit();
@@ -118,7 +118,7 @@ public:
 
 protected:
 
-    ::fwRenderVTK::IAdaptor * m_service;
+    ::fwRenderVTK::IAdaptor* m_service;
 
     int m_pickLimiter;
 };

@@ -319,7 +319,7 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
     }
 
     ::fwData::Point::sptr pt = ::fwData::Point::New();
-    std::copy( world, world +3, pt->getRefCoord().begin() );
+    std::copy( world, world +3, pt->getCoord().begin() );
     this->setVtkPipelineModified();
     return pt;
 }
@@ -418,8 +418,8 @@ void SImageMultiDistances::createNewDistance( std::string sceneId )
     ::fwData::Point::sptr pt1 = this->screenToWorld(sizeX/3, sizeY/2);
     ::fwData::Point::sptr pt2 = this->screenToWorld(2*sizeX/3, sizeY/2);
 
-    newPL->getRefPoints().push_back( pt1 );
-    newPL->getRefPoints().push_back( pt2 );
+    newPL->getPoints().push_back( pt1 );
+    newPL->getPoints().push_back( pt2 );
 
     this->installSubServices(newPL);
     this->setVtkPipelineModified();

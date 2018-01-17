@@ -50,7 +50,7 @@ public:
     /** @{
      *  @brief get/set point position
      */
-    ::fwData::Point::sptr& getRefPosition();
+    ::fwData::Point::sptr& getPosition();
     const ::fwData::Point::sptr& getPosition() const;
     void setPosition(const ::fwData::Point::sptr& _position);
     /// @}
@@ -58,7 +58,7 @@ public:
     /** @{
      *  @brief get/set point direction
      */
-    ::fwData::Point::sptr & getRefDirection();
+    ::fwData::Point::sptr& getDirection();
     const ::fwData::Point::sptr& getDirection() const;
     void setDirection (const ::fwData::Point::sptr& _direction);
     /// @}
@@ -73,7 +73,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::Point::sptr& Line::getRefPosition()
+inline ::fwData::Point::sptr& Line::getPosition()
 {
     return this->m_position;
 }
@@ -94,7 +94,7 @@ inline void Line::setPosition(const ::fwData::Point::sptr& _position)
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::Point::sptr& Line::getRefDirection()
+inline ::fwData::Point::sptr& Line::getDirection()
 {
     return this->m_direction;
 }
@@ -116,4 +116,3 @@ inline void Line::setDirection (const ::fwData::Point::sptr& _direction)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

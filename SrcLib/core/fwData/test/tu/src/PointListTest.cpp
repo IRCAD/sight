@@ -64,7 +64,7 @@ void PointListTest::getterTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], point2->getCoord()[1], 10e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], point2->getCoord()[2], 10e-6);
 
-    ::fwData::PointList::PointListContainer& container = pl1->getRefPoints();
+    ::fwData::PointList::PointListContainer& container = pl1->getPoints();
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0], 10e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1], 10e-6);
@@ -92,7 +92,7 @@ void PointListTest::setterTest()
 
     CPPUNIT_ASSERT_NO_THROW( pl1->setPoints(vec) );
 
-    ::fwData::PointList::PointListContainer& container = pl1->getRefPoints();
+    ::fwData::PointList::PointListContainer& container = pl1->getPoints();
 
     for(unsigned p = 0; p < vec.size(); ++p)
     {
@@ -118,7 +118,7 @@ void PointListTest::pushTest()
     CPPUNIT_ASSERT_NO_THROW( pl1->pushBack(point1) );
     CPPUNIT_ASSERT_NO_THROW( pl1->pushBack(point2) );
 
-    ::fwData::PointList::PointListContainer& container = pl1->getRefPoints();
+    ::fwData::PointList::PointListContainer& container = pl1->getPoints();
 
     for(unsigned p = 0; p < vec.size(); ++p)
     {

@@ -77,7 +77,7 @@ public:
      * @{
      * @brief Get/Set value of the radius.
      */
-    double& getRefRadius ();
+    double& getRadius ();
     const double& getRadius () const;
     void setRadius(double _radius);
     /// @}
@@ -86,7 +86,7 @@ public:
      * @{
      * @brief Get/Set value of the number of slices.
      */
-    int& getRefNbSides ();
+    int& getNbSides ();
     int getNbSides () const;
     void setNbSides (const int _nbSides);
     /// @}
@@ -95,7 +95,7 @@ public:
      * @{
      * @brief Get/Set value of the spline identifier.
      */
-    int& getRefIdSpline ();
+    int& getIdSpline ();
     int getIdSpline () const;
     void setIdSpline (const int _idSpline);
     /// @}
@@ -115,7 +115,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline double& Spline::getRefRadius ()
+inline double& Spline::getRadius ()
 {
     return m_radius;
 }
@@ -136,7 +136,7 @@ inline void Spline::setRadius(double _radius)
 
 //-----------------------------------------------------------------------------
 
-inline int& Spline::getRefNbSides ()
+inline int& Spline::getNbSides ()
 {
     return this->m_nbSides;
 }
@@ -164,7 +164,7 @@ inline int Spline::getIdSpline () const
 
 //-----------------------------------------------------------------------------
 
-inline int& Spline::getRefIdSpline ()
+inline int& Spline::getIdSpline ()
 {
     return m_idSpline;
 }
@@ -179,4 +179,3 @@ inline void Spline::setIdSpline (const int _idSpline)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

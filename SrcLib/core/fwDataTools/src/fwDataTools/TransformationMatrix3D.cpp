@@ -22,7 +22,7 @@ bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::cspt
     const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input->getCoefficients().data());
     const ::glm::dmat4x4 matInverse = ::glm::inverse(mat);
 
-    auto& coefs = _output->getRefCoefficients();
+    auto& coefs = _output->getCoefficients();
     for (size_t i = 0; i < 4; ++i)
     {
         const size_t rowDst          = i * 4;
@@ -51,7 +51,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::cs
 
     const ::glm::dmat4x4 matC = matB * matA;
 
-    auto& coefs = _output->getRefCoefficients();
+    auto& coefs = _output->getCoefficients();
     for (size_t i = 0; i < 4; ++i)
     {
         const size_t rowDst          = i * 4;

@@ -53,7 +53,7 @@ public:
      * @{
      * @brief Get/Set value of the planeList.
      */
-    ::fwData::PlaneList::sptr & getRefPlaneList();
+    ::fwData::PlaneList::sptr& getPlaneList();
     const ::fwData::PlaneList::sptr& getPlaneList() const;
     void setPlaneList (const ::fwData::PlaneList::sptr& _planeList);
     /// @}
@@ -62,7 +62,7 @@ public:
      * @{
      * @brief Get/Set value of the inputs.
      */
-    ResectionInputs& getRefInputs ();
+    ResectionInputs& getInputs ();
     const ResectionInputs& getInputs () const;
     void setInputs (const ResectionInputs& _vInputs);
     /// @}
@@ -71,7 +71,7 @@ public:
      * @{
      * @brief Get/Set value of the outputs.
      */
-    ResectionOutputs& getRefOutputs ();
+    ResectionOutputs& getOutputs ();
     const ResectionOutputs& getOutputs () const;
     void setOutputs (const ResectionOutputs& _vOutputs);
     /// @}
@@ -88,7 +88,7 @@ public:
      * @{
      * @brief Get/Set value of the name.
      */
-    std::string& getRefName ();
+    std::string& getName ();
     const std::string& getName () const;
     void setName (const std::string& _name);
 
@@ -175,7 +175,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::PlaneList::sptr& Resection::getRefPlaneList()
+inline ::fwData::PlaneList::sptr& Resection::getPlaneList()
 {
     return m_planeList;
 }
@@ -196,7 +196,7 @@ inline void Resection::setPlaneList (const ::fwData::PlaneList::sptr& _planeList
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionInputs& Resection::getRefInputs ()
+inline Resection::ResectionInputs& Resection::getInputs ()
 {
     return m_vInputs;
 }
@@ -217,7 +217,7 @@ inline void Resection::setInputs (const Resection::ResectionInputs& _vInputs)
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionOutputs& Resection::getRefOutputs ()
+inline Resection::ResectionOutputs& Resection::getOutputs ()
 {
     return m_vOutputs;
 }
@@ -252,7 +252,7 @@ inline void Resection::setIsSafePart (const bool _isSafePart)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Resection::getRefName ()
+inline std::string& Resection::getName ()
 {
     return m_name;
 }
@@ -302,4 +302,3 @@ inline void Resection::setIsValid (const bool _isValid)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-

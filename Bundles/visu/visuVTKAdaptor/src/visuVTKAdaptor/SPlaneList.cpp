@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -139,9 +139,9 @@ public:
             ::fwData::PlaneList::sptr planeList = m_service->getInOut< ::fwData::PlaneList >(s_PLANES_INOUT);
             SLM_ASSERT("PlaneList '" + s_PLANES_INOUT + "' is missing", planeList);
 
-            planeList->getRefPlanes().erase
+            planeList->getPlanes().erase
             (
-                std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
+                std::find( planeList->getPlanes().begin(), planeList->getPlanes().end(), m_pickedPlane.lock())
             );
             notifyDeletePlane(planeList, planeBackup);
         }
@@ -165,11 +165,11 @@ public:
                 ::fwData::PlaneList::sptr planeList = m_service->getInOut< ::fwData::PlaneList >(s_PLANES_INOUT);
                 SLM_ASSERT("PlaneList '" + s_PLANES_INOUT + "' is missing", planeList);
 
-                if(!planeList->getRefPlanes().empty())
+                if(!planeList->getPlanes().empty())
                 {
                     ::fwData::PlaneList::PlaneListContainer::iterator itr = std::find(
-                        planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock());
-                    if(itr != planeList->getRefPlanes().end() )
+                        planeList->getPlanes().begin(), planeList->getPlanes().end(), m_pickedPlane.lock());
+                    if(itr != planeList->getPlanes().end() )
                     {
                         isFind = true;
                         break;
@@ -181,7 +181,7 @@ public:
     }
 
 protected:
-    ::fwRenderVTK::IAdaptor *m_service;
+    ::fwRenderVTK::IAdaptor* m_service;
     vtkPicker* m_picker;
     vtkPropCollection* m_propCollection;
     double m_display[3];

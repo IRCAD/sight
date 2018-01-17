@@ -71,7 +71,7 @@ PointList::computeDistance(::fwData::PointList::sptr pointList1,
 void PointList::transform(::fwData::PointList::sptr& pointList,
                           const ::fwData::TransformationMatrix3D::csptr&  matrix)
 {
-    ::fwData::PointList::PointListContainer points = pointList->getRefPoints();
+    ::fwData::PointList::PointListContainer points = pointList->getPoints();
     const size_t size = points.size();
 
     for(size_t i = 0; i < size; ++i)
@@ -92,7 +92,7 @@ void PointList::associate(const ::fwData::PointList::csptr& pointList1,
                pointList1->getPoints().size() == pointList2->getPoints().size() );
 
     ::fwData::PointList::PointListContainer points1 = pointList1->getPoints();
-    ::fwData::PointList::PointListContainer points2 = pointList2->getRefPoints();
+    ::fwData::PointList::PointListContainer points2 = pointList2->getPoints();
 
     const size_t size = points1.size();
 

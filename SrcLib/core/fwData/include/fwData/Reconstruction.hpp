@@ -67,7 +67,7 @@ public:
      * @{
      * @brief Get/Set value of the organName.
      */
-    std::string& getRefOrganName ();
+    std::string& getOrganName ();
     const std::string& getOrganName () const;
     void setOrganName (const std::string& _sOrganName);
     /// @}
@@ -76,7 +76,7 @@ public:
      * @{
      * @brief Get/Set value of the structureType.
      */
-    std::string& getRefStructureType ();
+    std::string& getStructureType ();
     const std::string& getStructureType () const;
     void setStructureType (const std::string& _sStructureType);
     /// @}
@@ -185,7 +185,7 @@ inline void Reconstruction::setIsVisible (const bool _bIsVisible)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Reconstruction::getRefOrganName ()
+inline std::string& Reconstruction::getOrganName ()
 {
     return m_sOrganName;
 }
@@ -206,7 +206,7 @@ inline void Reconstruction::setOrganName (const std::string& _sOrganName)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Reconstruction::getRefStructureType ()
+inline std::string& Reconstruction::getStructureType ()
 {
     return this->m_sStructureType;
 }
@@ -284,4 +284,3 @@ inline void Reconstruction::setComputedMaskVolume (double val)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

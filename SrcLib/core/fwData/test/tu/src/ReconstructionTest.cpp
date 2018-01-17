@@ -59,11 +59,11 @@ void ReconstructionTest::methode1() //test des setters et getters
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
 
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
 
 }
 
@@ -87,11 +87,11 @@ void ReconstructionTest::methode2()
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefOrganName(), CREFORGANNAME);
+    CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
 
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
     CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefStructureType(), CREFSTRUCTURETYPE);
+    CPPUNIT_ASSERT_EQUAL(p1->getStructureType(), CREFSTRUCTURETYPE);
 }
 
 //------------------------------------------------------------------------------
@@ -107,4 +107,3 @@ void ReconstructionTest::image()
 
 } //namespace ut
 } //namespace fwData
-

@@ -75,7 +75,7 @@ void SManageLandmark::createLandmark(::fwDataTools::PickingInfo info)
         ::fwData::String::sptr label = ::fwData::String::New(std::to_string(m_counter));
         point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, label );
 
-        pointList->getRefPoints().push_back(point);
+        pointList->getPoints().push_back(point);
 
         auto sig = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
             ::fwData::PointList::s_POINT_ADDED_SIG);
@@ -91,7 +91,7 @@ void SManageLandmark::clearPointlist()
 
     if (pointList)
     {
-        pointList->getRefPoints().clear();
+        pointList->getPoints().clear();
         ::fwData::Point::sptr point;
         auto sig = pointList->signal< ::fwData::PointList::PointAddedSignalType >(
             ::fwData::PointList::s_POINT_REMOVED_SIG);

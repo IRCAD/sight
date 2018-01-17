@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -90,7 +90,7 @@ void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
         ::fwData::Point::sptr point = ::fwData::Point::New(static_cast<double>(pointValues[0]),
                                                            static_cast<double>(pointValues[1]), zCoordinate);
         point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
-        pointList->getRefPoints().push_back(point);
+        pointList->getPoints().push_back(point);
 
     }
 }

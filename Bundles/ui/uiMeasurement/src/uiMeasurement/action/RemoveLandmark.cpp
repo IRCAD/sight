@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,6 @@
 #include <exception>
 #include <sstream>
 
-
 namespace uiMeasurement
 {
 namespace action
@@ -34,9 +33,7 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveLandmark, ::fwData::Image );
 
-
 //------------------------------------------------------------------------------
-
 
 RemoveLandmark::RemoveLandmark( ) noexcept
 {
@@ -70,7 +67,7 @@ void RemoveLandmark::info(std::ostream& _sstream )
     selections.push_back("ALL");
     std::map< std::string, ::fwData::Point::sptr > correspondance;
 
-    for(::fwData::Point::sptr landmark :  landmarksBackup->getRefPoints())
+    for(::fwData::Point::sptr landmark :  landmarksBackup->getPoints())
     {
         ::fwData::String::sptr name = landmark->getField< ::fwData::String >(
             ::fwDataTools::fieldHelper::Image::m_labelId);
@@ -85,7 +82,7 @@ void RemoveLandmark::info(std::ostream& _sstream )
     std::string selection = selector->show();
     if( !selection.empty() )
     {
-        if (selection=="ALL")
+        if (selection == "ALL")
         {
             removeAll = true;
         }
@@ -119,7 +116,7 @@ void RemoveLandmark::updating( )
 
     if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) && landmarks)
     {
-        if (!landmarks->getRefPoints().empty())
+        if (!landmarks->getPoints().empty())
         {
             bool requestAll;
             ::fwData::Point::sptr landmarkToRemove = this->getLandmarkToRemove(image, requestAll );
@@ -129,10 +126,10 @@ void RemoveLandmark::updating( )
             {
 
                 ::fwData::PointList::PointListContainer::iterator itr;
-                itr = std::find( landmarks->getRefPoints().begin(), landmarks->getRefPoints().end(), landmarkToRemove );
-                if (itr != landmarks->getRefPoints().end())
+                itr = std::find( landmarks->getPoints().begin(), landmarks->getPoints().end(), landmarkToRemove );
+                if (itr != landmarks->getPoints().end())
                 {
-                    landmarks->getRefPoints().erase(itr);
+                    landmarks->getPoints().erase(itr);
                     this->notify(image, landmarkToRemove);
                 }
             }

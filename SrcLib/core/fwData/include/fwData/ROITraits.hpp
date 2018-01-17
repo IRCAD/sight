@@ -48,7 +48,7 @@ public:
      * @{
      * @brief Get/Set value of the ROIs identifier.
      */
-    std::string& getRefIdentifier();
+    std::string& getIdentifier();
     const std::string& getIdentifier() const;
     void setIdentifier(const std::string& _identifier);
     /// @}
@@ -57,7 +57,7 @@ public:
      * @{
      * @brief Get/Set value of the ROI evaluated expression.
      */
-    StructureTraits::ROIExpression& getRefEvaluatedExp ();
+    StructureTraits::ROIExpression& getEvaluatedExp ();
     const StructureTraits::ROIExpression& getEvaluatedExp () const;
     void setEvaluatedExp (const StructureTraits::ROIExpression& _evaluatedExp);
     /// @}
@@ -95,7 +95,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline std::string& ROITraits::getRefIdentifier()
+inline std::string& ROITraits::getIdentifier()
 {
     return m_identifier;
 }
@@ -116,7 +116,7 @@ inline void ROITraits::setIdentifier(const std::string& _identifier)
 
 //-----------------------------------------------------------------------------
 
-inline StructureTraits::ROIExpression& ROITraits::getRefEvaluatedExp ()
+inline StructureTraits::ROIExpression& ROITraits::getEvaluatedExp ()
 {
     return m_evaluatedExp;
 }
@@ -138,4 +138,3 @@ inline void ROITraits::setEvaluatedExp (const StructureTraits::ROIExpression& _e
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-

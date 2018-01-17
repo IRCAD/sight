@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -107,11 +107,11 @@ void FrameLayoutManager::createFrame()
 void FrameLayoutManager::destroyFrame()
 {
 
-    this->getRefFrameInfo().m_state           = this->getState();
-    this->getRefFrameInfo().m_size.first      = m_qtWindow->size().width();
-    this->getRefFrameInfo().m_size.second     = m_qtWindow->size().height();
-    this->getRefFrameInfo().m_position.first  = m_qtWindow->geometry().x();
-    this->getRefFrameInfo().m_position.second = m_qtWindow->geometry().y();
+    this->getFrameInfo().m_state           = this->getState();
+    this->getFrameInfo().m_size.first      = m_qtWindow->size().width();
+    this->getFrameInfo().m_size.second     = m_qtWindow->size().height();
+    this->getFrameInfo().m_position.first  = m_qtWindow->geometry().x();
+    this->getFrameInfo().m_position.second = m_qtWindow->geometry().y();
     this->writeConfig();
 
     QObject::disconnect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
@@ -189,4 +189,3 @@ bool FrameLayoutManager::isOnScreen(const QPoint& pos)
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-

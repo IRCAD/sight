@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -170,18 +170,18 @@ void WriterReaderTest::writeReadSeriesDBTest()
                                                                 1.2 + origin[1],
                                                                 4.5 + origin[2]);
     point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label1") );
-    landmarks->getRefPoints().push_back(point);
+    landmarks->getPoints().push_back(point);
     ::fwData::Point::sptr point2 = ::fwData::Point::New(1.2 + origin[0],
                                                         2.4 + origin[1],
                                                         0.3 + origin[2]);
     point2->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label2") );
-    landmarks->getRefPoints().push_back(point2);
+    landmarks->getPoints().push_back(point2);
     ::fwData::Image::SizeType size = image->getSize();
     ::fwData::Point::sptr point3   = ::fwData::Point::New(1.2 + origin[0],
                                                           2.4 + origin[1],
                                                           static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
     point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("toto") );
-    landmarks->getRefPoints().push_back(point3);
+    landmarks->getPoints().push_back(point3);
 
     // Add distance
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
@@ -189,8 +189,8 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwData::Point::sptr pt2    = ::fwData::Point::New(static_cast<double>(size[0]-1) * spacing[0],
                                                         static_cast<double>(size[1]-1) * spacing[1],
                                                         static_cast<double>(size[2]-1) * spacing[2]);
-    pl->getRefPoints().push_back( pt1 );
-    pl->getRefPoints().push_back( pt2 );
+    pl->getPoints().push_back( pt1 );
+    pl->getPoints().push_back( pt2 );
 
     ::fwData::Vector::sptr vectDist;
     vectDist = image->setDefaultField< ::fwData::Vector >(

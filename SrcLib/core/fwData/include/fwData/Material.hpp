@@ -132,7 +132,7 @@ public:
     /** @{
      *  @brief get/set the shading models(flat, gouraud, phong)
      */
-    ShadingType& getRefShadingMode();
+    ShadingType& getShadingMode();
     const ShadingType& getShadingMode() const;
     void setShadingMode(ShadingType _shadingMode);
     /// @}
@@ -140,7 +140,7 @@ public:
     /** @{
      *  @brief get/set the representation models (edge, point, wireframe, surface)
      */
-    RepresentationType& getRefRepresentationMode();
+    RepresentationType& getRepresentationMode();
     const RepresentationType& getRepresentationMode() const;
     void setRepresentationMode(RepresentationType _representationMode);
     /// @}
@@ -148,7 +148,7 @@ public:
     /** @{
      *  @brief get/set the option representation (Standard, normals)
      */
-    OptionsType& getRefOptionsMode ();
+    OptionsType& getOptionsMode ();
     const OptionsType& getOptionsMode () const;
     void setOptionsMode (OptionsType _optionsMode);
     /// @}
@@ -156,7 +156,7 @@ public:
     /** @{
      *  @brief get/set the texture filtering
      */
-    FilteringType& getRefDiffuseTextureFiltering();
+    FilteringType& getDiffuseTextureFiltering();
     const FilteringType& getDiffuseTextureFiltering() const;
     void setDiffuseTextureFiltering(FilteringType _diffuseTextureFiltering);
     /// @}
@@ -164,7 +164,7 @@ public:
     /** @{
      *  @brief get/set the texture wrapping
      */
-    WrappingType& getRefDiffuseTextureWrapping ();
+    WrappingType& getDiffuseTextureWrapping ();
     const WrappingType& getDiffuseTextureWrapping () const;
     void setDiffuseTextureWrapping (WrappingType _diffuseTextureWrapping);
     /// @}
@@ -213,7 +213,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline Material::ShadingType& Material::getRefShadingMode()
+inline Material::ShadingType& Material::getShadingMode()
 {
     return this->m_shadingMode;
 }
@@ -234,7 +234,7 @@ inline void Material::setShadingMode(ShadingType _shadingMode)
 
 //-----------------------------------------------------------------------------
 
-inline Material::RepresentationType& Material::getRefRepresentationMode()
+inline Material::RepresentationType& Material::getRepresentationMode()
 {
     return this->m_representationMode;
 }
@@ -255,7 +255,7 @@ inline void Material::setRepresentationMode(RepresentationType _representationMo
 
 //-----------------------------------------------------------------------------
 
-inline Material::OptionsType& Material::getRefOptionsMode ()
+inline Material::OptionsType& Material::getOptionsMode ()
 {
     return this->m_optionsMode;
 }
@@ -276,7 +276,7 @@ inline void Material::setOptionsMode (OptionsType _optionsMode)
 
 //-----------------------------------------------------------------------------
 
-inline Material::FilteringType& Material::getRefDiffuseTextureFiltering()
+inline Material::FilteringType& Material::getDiffuseTextureFiltering()
 {
     return this->m_diffuseTextureFiltering;
 }
@@ -297,7 +297,7 @@ inline void Material::setDiffuseTextureFiltering(FilteringType _diffuseTextureFi
 
 //-----------------------------------------------------------------------------
 
-inline Material::WrappingType& Material::getRefDiffuseTextureWrapping ()
+inline Material::WrappingType& Material::getDiffuseTextureWrapping ()
 {
     return this->m_diffuseTextureWrapping;
 }
@@ -319,4 +319,3 @@ inline void Material::setDiffuseTextureWrapping (WrappingType _diffuseTextureWra
 //-----------------------------------------------------------------------------
 
 } //namespace fwData
-

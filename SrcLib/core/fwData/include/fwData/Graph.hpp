@@ -77,7 +77,7 @@ public:
      * @{
      * @brief Get the node container
      */
-    FWDATA_API NodeContainer& getRefNodes();
+    FWDATA_API NodeContainer& getNodes();
     FWDATA_API const NodeContainer& getNodes() const;
     ///@}
 
@@ -89,7 +89,7 @@ public:
      * @return map<Edge, pair<source node, destination node> >
      */
     FWDATA_API const ConnectionContainer& getConnections() const;
-    FWDATA_API ConnectionContainer& getRefConnections();
+    FWDATA_API ConnectionContainer& getConnections();
 
     /**
      * @brief Add and edge
@@ -224,4 +224,3 @@ protected:
 };
 
 } // namespace fwData
-

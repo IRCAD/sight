@@ -35,7 +35,7 @@ public:
      * @{
      * @brief Retrieve the identifier.
      */
-    std::string& getRefIdentifier ();
+    std::string& getIdentifier ();
     const std::string& getIdentifier () const;
     void setIdentifier (const std::string& _identifier);
     /// @}
@@ -45,7 +45,7 @@ public:
      * @brief Retrieve the type.
      */
 
-    std::string& getRefType ();
+    std::string& getType ();
     const std::string& getType () const;
     void setType (const std::string& _type);
     /// @}
@@ -73,7 +73,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Port::getRefIdentifier ()
+inline std::string& Port::getIdentifier ()
 {
     return this->m_identifier;
 }
@@ -94,7 +94,7 @@ inline void Port::setIdentifier (const std::string& _identifier)
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Port::getRefType ()
+inline std::string& Port::getType ()
 {
     return this->m_type;
 }
@@ -116,4 +116,3 @@ inline void Port::setType (const std::string& _type)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
