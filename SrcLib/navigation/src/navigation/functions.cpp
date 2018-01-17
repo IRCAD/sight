@@ -37,7 +37,7 @@ void computeSpline(
     ::fwData::Point::sptr point = (pointList->getPoints())[pointIndex];
 
     // Insert the point in points.
-    points->InsertNextPoint(&point->getRefCoord()[0]);
+    points->InsertNextPoint(&point->getCoord()[0]);
     computedSpline->SetNumberOfPoints(pointIndex + 1);
     computedSpline->SetPoints(points);
 
@@ -66,7 +66,7 @@ void updateSpline(
 
     for(::fwData::Point::sptr point :  pointList->getPoints())
     {
-        tempPoints->InsertNextPoint(&point->getRefCoord()[0]);
+        tempPoints->InsertNextPoint(&point->getCoord()[0]);
         nbofPoints++;
     }
 
@@ -151,8 +151,8 @@ bool arePointsCoplanar(const ::fwData::PointList::csptr& pointList, double* norm
     if (numberOfPoints >= 3)
     {
         ::fwData::Point::sptr point1, point2, point3, pointnext;
-        double col0[3]                = {0, 0, 0}, col1[3] = {0, 0, 0}, col2[3] = {0, 0, 0};
-        double vector1[3]             = {0, 0, 0}, vector2[3] = {0, 0, 0}, res[3] = {0, 0, 0};
+        double col0[3] = {0, 0, 0}, col1[3] = {0, 0, 0}, col2[3] = {0, 0, 0};
+        double vector1[3] = {0, 0, 0}, vector2[3] = {0, 0, 0}, res[3] = {0, 0, 0};
         vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
 
         // Define the plane build by the 3 first points of the spline
@@ -353,4 +353,3 @@ void computePolyData(
 }
 
 } // namespace navigation
-

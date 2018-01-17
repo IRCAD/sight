@@ -322,7 +322,7 @@ void SComputeCPR2D::addPointToVisualizePointList(
     OSLM_DEBUG("size in height " << yCoord * m_spacing * 2);
 
     // Add destPoint to visualizePointList
-    visualizePointList->getRefPoints().push_back(destPoint);
+    visualizePointList->getPoints().push_back(destPoint);
 
     // Notify
     auto sig = visualizePointList->signal< ::fwData::PointList::PointAddedSignalType >(
@@ -341,12 +341,12 @@ void SComputeCPR2D::clearVisualizePointList()
     ::fwData::PointList::sptr visualizePointList = this->getInOut< ::fwData::PointList >(s_POINTS_KEY);
     SLM_ASSERT( s_POINTS_KEY + " doesn't exist or is not a pointlist", visualizePointList);
 
-    if(visualizePointList && visualizePointList->getRefPoints().size() > 0)
+    if(visualizePointList && visualizePointList->getPoints().size() > 0)
     {
         // Messages to notify that points of visualizePointList are removed
-        for(int i = 0; i < visualizePointList->getRefPoints().size(); ++i)
+        for(int i = 0; i < visualizePointList->getPoints().size(); ++i)
         {
-            ::fwData::Point::sptr point = visualizePointList->getRefPoints()[i];
+            ::fwData::Point::sptr point = visualizePointList->getPoints()[i];
 
             auto sig = visualizePointList->signal< ::fwData::PointList::PointRemovedSignalType >(
                 ::fwData::PointList::s_POINT_REMOVED_SIG);
@@ -357,11 +357,10 @@ void SComputeCPR2D::clearVisualizePointList()
         }
 
         // Clear the pointList
-        visualizePointList->getRefPoints().clear();
+        visualizePointList->getPoints().clear();
     }
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
 }   //namespace ctrlComputeCPR
-

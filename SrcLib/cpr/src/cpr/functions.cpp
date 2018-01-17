@@ -124,7 +124,7 @@ void computePositionOfPointOnSpline(
     ::fwData::Point::sptr point = pointList->getPoints()[indexPoint];
     for (int i = 0; i < 3; ++i)
     {
-        findPoint[i] = point->getRefCoord()[i];
+        findPoint[i] = point->getCoord()[i];
     }
 
     // Initialization
@@ -188,4 +188,3 @@ bool computeImageIndexFromSpacePosition(
 }
 
 } // namespace cpr
-

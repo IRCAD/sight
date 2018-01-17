@@ -364,7 +364,7 @@ void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
     {
         if (lt < 3)
         {
-            destMatrix->setCoefficient(lt, 3, point->getRefCoord()[lt]);
+            destMatrix->setCoefficient(lt, 3, point->getCoord()[lt]);
         }
         else
         {
@@ -402,4 +402,3 @@ void SMoveAlongSpline::setCameraRotation (double angle)
 //------------------------------------------------------------------------------
 
 } // ctrlSplineNavigation
-
