@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -110,7 +110,7 @@ void ServiceFactory::parseBundleInformation()
         {
             OSLM_DEBUG(
                 "We already have informations about this service  (from register macro) ( "<< bundle.first <<
-                " )." );
+                    " )." );
 
             ServiceInfo& info       = iter->second;
             ServiceInfo& infoBundle = bundle.second;
@@ -208,8 +208,8 @@ IService::sptr ServiceFactory::create( const std::string& _srvType, const std::s
 
         OSLM_ASSERT(
             "Conflicting types were defined for this service, "
-            << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType,
-            _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType);
+                << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType,
+                _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType);
     }
 #endif //_DEBUG
 
@@ -544,4 +544,3 @@ ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
 
 } // namespace registry
 } // namespace fwServices
-
