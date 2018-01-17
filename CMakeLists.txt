@@ -577,18 +577,22 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
-        set(REGISTER_SERVICES_SRC)
-        if(EXISTS "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp")
-            set(REGISTER_SERVICES_SRC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp")
-        endif()
+
         add_library(${FWPROJECT_NAME} ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES}
             ${${FWPROJECT_NAME}_PCH_LIB}
-            ${REGISTER_SERVICES_SRC}
         )
+
+        # create the custom command that may generate the plugin.xml and the registerServices.cpp file
+        if(NOT EXISTS "${${FWPROJECT_NAME}_DIR}/rc/plugin.xml" )
+            target_sources( ${FWPROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" )
+            set_source_files_properties("${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" PROPERTIES GENERATED TRUE)
+
+            plugin_setup("${FWPROJECT_NAME}" "${${FWPROJECT_NAME}_HEADERS}")
+        endif()
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -1076,10 +1080,6 @@ if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
         if(${PROJECT}_TYPE STREQUAL "APP")
             if(NOT EXISTS "${${PROJECT}_DIR}/rc/profile.xml" )
                 profile_setup("${PROJECT}")
-            endif()
-        elseif(${PROJECT}_TYPE STREQUAL "BUNDLE")
-            if(NOT EXISTS "${${PROJECT}_DIR}/rc/plugin.xml" )
-                plugin_setup("${PROJECT}")
             endif()
         endif()
     endforeach()
