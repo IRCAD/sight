@@ -12,10 +12,10 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <itkEuler3DTransform.h>
 #include <itkImageRegistrationMethodv4.h>
 #include <itkIntTypes.h>
 #include <itkRegularStepGradientDescentOptimizerv4.h>
-#include <itkVersorRigid3DTransform.h>
 
 #include <functional>
 
@@ -88,7 +88,7 @@ public:
     ITKREGISTRATIONOP_API void getCurrentMatrix(const ::fwData::TransformationMatrix3D::sptr& _trf) const;
 
 private:
-    typedef typename ::itk::VersorRigid3DTransform< RealType > TransformType;
+    typedef typename ::itk::Euler3DTransform< RealType > TransformType;
 
     typedef typename ::itk::ImageRegistrationMethodv4< RegisteredImageType, RegisteredImageType, TransformType >
         RegistrationMethodType;
