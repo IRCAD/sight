@@ -224,7 +224,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
     {
         const auto& passes = targetPass->getPasses();
 
-        for(auto targetPass : passes)
+        for(const auto targetPass : passes)
         {
             // We retrieve the parameters of the base material in a temporary material
             const ::Ogre::MaterialPtr material = targetPass->getMaterial();
