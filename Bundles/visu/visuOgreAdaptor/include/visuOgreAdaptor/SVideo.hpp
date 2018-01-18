@@ -16,8 +16,11 @@
 namespace visuOgreAdaptor
 {
 /**
- * @brief   Adaptor to render a video frame from a 2D-image.
-
+ * @brief Adaptor to render a video frame from a 2D-image.
+ *
+ *  * @section Slots Slots
+ * -\b updateTF(): Updates the displayed transfer function
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -70,9 +73,6 @@ private:
 
     /// Slot: Updates the displayed transfer function
     void updateTF();
-
-    /// Slot: Move the video plane according to the optical center
-    void calibrate();
 
     /// Ogre texture used to store the fwImage
     ::Ogre::TexturePtr m_texture;

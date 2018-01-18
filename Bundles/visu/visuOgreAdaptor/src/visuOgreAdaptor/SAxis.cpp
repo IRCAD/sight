@@ -24,6 +24,9 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 SAxis::SAxis() noexcept :
     m_materialAdaptor(nullptr),
     m_material(nullptr),
+    m_xLineNode(nullptr),
+    m_yLineNode(nullptr),
+    m_zLineNode(nullptr),
     m_length(50.f),
     m_isVisible(true)
 {
@@ -92,14 +95,14 @@ void SAxis::starting()
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
-    ::Ogre::ManualObject* xLine = sceneMgr->createManualObject("xline");
-    m_xLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode("xline_node");
+    ::Ogre::ManualObject* xLine = sceneMgr->createManualObject(this->getID() + "_xline");
+    m_xLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_xline_node");
 
-    ::Ogre::ManualObject* yLine = sceneMgr->createManualObject("yline");
-    m_yLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode("yline_node");
+    ::Ogre::ManualObject* yLine = sceneMgr->createManualObject(this->getID() + "_yline");
+    m_yLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_yline_node");
 
-    ::Ogre::ManualObject* zLine = sceneMgr->createManualObject("zline");
-    m_zLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode("zline_node");
+    ::Ogre::ManualObject* zLine = sceneMgr->createManualObject(this->getID() + "_zline");
+    m_zLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_zline_node");
 
     // set the material
     m_material = ::fwData::Material::New();
@@ -195,4 +198,3 @@ void SAxis::attachNode(::Ogre::MovableObject* _node)
 //-----------------------------------------------------------------------------
 
 } //visuOgreAdaptor
-
