@@ -9,7 +9,6 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>

@@ -8,6 +8,8 @@
 
 #include "visuOgreAdaptor/STransform.hpp"
 
+#include <fwCom/Slots.hxx>
+
 #include <fwRenderOgre/helper/Scene.hpp>
 
 namespace visuOgreAdaptor
