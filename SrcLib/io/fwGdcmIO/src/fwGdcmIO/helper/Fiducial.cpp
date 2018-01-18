@@ -120,4 +120,3 @@ bool Fiducial::contains3DDistances(const SPTR(::fwMedData::SeriesDB)& seriesDB)
 
 } // namespace helper
 } // namespace fwGdcmIO
-

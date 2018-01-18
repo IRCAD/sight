@@ -158,4 +158,3 @@ typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bo
 } // end namespace
 
 #endif // __FWITKIO_ITK_HXX__
-

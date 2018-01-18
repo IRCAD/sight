@@ -398,4 +398,3 @@ void MedicalImageHelpers::getMinMax(const ::fwData::Image::csptr _img, MINMAXTYP
 
 } // fieldHelper
 } // fwDataTools
-

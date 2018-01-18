@@ -778,4 +778,3 @@ void ConversionTest::conversionNotManagedExceptionTest()
 
 }     // namespace ut
 }  // namespace fwAtomConversion
-

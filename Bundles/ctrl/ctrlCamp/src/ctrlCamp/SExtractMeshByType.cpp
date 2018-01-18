@@ -62,7 +62,7 @@ void SExtractMeshByType::configuring()
                 const std::vector< ConfigType > keyCfg = cfg->find("key");
                 OSLM_ASSERT(
                     "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " <<  keyCfg.size(),
-                    extractCfg.size() == keyCfg.size());
+                        extractCfg.size() == keyCfg.size());
                 ok = true;
             }
         }
@@ -121,7 +121,7 @@ void SExtractMeshByType::updating()
         }
         OSLM_ERROR_IF(
             "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
-            !found);
+                !found);
     }
 }
 
