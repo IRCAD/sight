@@ -159,4 +159,3 @@ void SSplineAdaptor::updating()
 //------------------------------------------------------------------------------
 
 } //namespace visuNavigation
-

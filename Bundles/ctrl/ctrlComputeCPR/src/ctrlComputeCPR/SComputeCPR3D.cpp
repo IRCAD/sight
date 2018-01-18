@@ -198,4 +198,3 @@ void SComputeCPR3D::setNormalRotation(double angle)
 }
 
 }   //namespace ctrlComputeCPR
-
