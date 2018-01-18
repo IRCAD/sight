@@ -513,7 +513,7 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::vector<R2VBRenderable*> Mesh::updateR2VB(const::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
+std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
                                               const std::string& _materialName, bool _hasTexture)
 {
     //------------------------------------------
