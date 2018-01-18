@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __TRACKERARUCO_SARUCOTRACKER_HPP__
-#define __TRACKERARUCO_SARUCOTRACKER_HPP__
+#pragma once
 
 #include "trackerAruco/config.hpp"
 
@@ -151,7 +150,7 @@ protected:
     TRACKERARUCO_API void stopping() override;
 
     /// Detect marker
-    TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp);
+    TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) override;
 
 private:
 
@@ -201,5 +200,3 @@ private:
 };
 
 } // namespace trackerAruco
-
-#endif /* __TRACKERARUCO_SARUCOTRACKER_HPP__ */

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MATHS_SSWITCHMATRICES_HPP__
-#define __MATHS_SSWITCHMATRICES_HPP__
+#pragma once
 
 #include "maths/config.hpp"
 
@@ -52,7 +51,7 @@ class MATHS_CLASS_API SSwitchMatrices : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SSwitchMatrices)(::fwServices::IController));
+    fwCoreServiceClassDefinitionsMacro((SSwitchMatrices)(::fwServices::IController))
 
     /**
      * @brief Constructor.
@@ -84,11 +83,6 @@ protected:
     MATHS_API void stopping() override;
 
     /// Does nothing.
-    void swapping()
-    {
-    }
-
-    /// Does nothing.
     MATHS_API void updating() override;
 
     /// Switch to next Matrix
@@ -103,5 +97,3 @@ private:
 };
 
 } //namespace maths
-
-#endif  // __MATHS_SSWITCHMATRICES_HPP__
