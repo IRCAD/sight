@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SVIDEO_HPP__
-#define __VISUOGREADAPTOR_SVIDEO_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -17,21 +16,22 @@
 namespace visuOgreAdaptor
 {
 /**
- * @brief   Adaptor to render a video frame from a 2D-image.
-
+ * @brief Adaptor to render a video frame from a 2D-image.
+ *
+ *  * @section Slots Slots
+ * -\b updateTF(): Updates the displayed transfer function
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="..." />
-            <in key="camera" uid="..." />
             <in key="tf" uid="..." optional="yes" />
             <config renderer="default" reversed="true" />
         </service>
    @endcode
  * @subsection Input Input:
  * - \b image [::fwData::Image]: frame displayed.
- * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
  * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
  * @subsection Configuration Configuration:
  * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
@@ -74,9 +74,6 @@ private:
     /// Slot: Updates the displayed transfer function
     void updateTF();
 
-    /// Slot: Move the video plane according to the optical center
-    void calibrate();
-
     /// Ogre texture used to store the fwImage
     ::Ogre::TexturePtr m_texture;
 
@@ -88,9 +85,6 @@ private:
 
     /// True if the texture is initialized
     bool m_isTextureInit { false };
-
-    /// UID of the camera
-    std::string m_cameraUID;
 
     /// Store previous image size
     size_t m_previousWidth { 0 };
@@ -106,5 +100,3 @@ private:
 };
 
 } // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SVIDEO_HPP__
