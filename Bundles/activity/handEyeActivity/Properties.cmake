@@ -14,14 +14,11 @@ set( REQUIREMENTS
         videoQt
         visuVTKQt
         visuVTKARAdaptor
-        uiSelector
-        uiData
         videoTools
         arDataReg
         dataReg
         servicesReg
         imageConfig
-        modelSeriesConfig
         registrationARL
         trackerAruco
         trackingCalibration
