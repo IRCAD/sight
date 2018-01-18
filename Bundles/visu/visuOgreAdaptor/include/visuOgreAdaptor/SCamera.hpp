@@ -135,4 +135,3 @@ inline ::Ogre::Camera* SCamera::getCamera()
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
