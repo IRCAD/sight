@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_TRANSFORMATIONMATRIX3DWRITERSERVICE_HPP__
-#define __IODATA_TRANSFORMATIONMATRIX3DWRITERSERVICE_HPP__
+#pragma once
 
 #include "ioData/config.hpp"
 
@@ -66,14 +65,14 @@ protected:
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
-    IODATA_API virtual void starting( );
+    IODATA_API virtual void starting() override;
 
     /**
      * @brief Stopping method. This method is called by stop() from base service ( ::fwServices::IService )
      *
      * The stopping method is empty for this service.
      */
-    IODATA_API virtual void stopping( );
+    IODATA_API virtual void stopping() override;
 
     /**
      * @brief Configuring method : calls implementation from `io::IWriter`
@@ -103,5 +102,3 @@ protected:
 };
 
 } // namespace ioData
-
-#endif // __IODATA_TRANSFORMATIONMATRIX3DWRITERSERVICE_HPP__
