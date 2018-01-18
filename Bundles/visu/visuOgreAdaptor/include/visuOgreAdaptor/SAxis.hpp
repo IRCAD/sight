@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
     </service>
    @endcode
  * @subsection Configuration Configuration:
- * -\b renderer (mandatory): defines the mesh's layer
+ * -\b layer (mandatory): defines the mesh's layer
  * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
  * -\b length (optional): lenght of the axis in mm (default 50)

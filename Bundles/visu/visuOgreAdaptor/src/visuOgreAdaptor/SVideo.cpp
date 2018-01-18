@@ -6,8 +6,6 @@
 
 #include "visuOgreAdaptor/SVideo.hpp"
 
-#include <arData/Camera.hpp>
-
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectReadLock.hpp>

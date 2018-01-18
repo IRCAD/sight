@@ -29,7 +29,6 @@ namespace visuOgreAdaptor
    @endcode
  * @subsection Input Input:
  * - \b image [::fwData::Image]: frame displayed.
- * - \b camera [::arData::Camera] (optional): camera calibration, recenters the video using the (cx, cy) offsets.
  * - \b tf [::fwData::TransferFunction] (optional): a transfer function that can be applied to the video.
  * @subsection Configuration Configuration:
  * - \b reverse (optional)(default: true) : if true, the actor is rotated by 180° along the z and y axis.
