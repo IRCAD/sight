@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ARSERVICES_IGRABBER_HPP__
-#define __ARSERVICES_IGRABBER_HPP__
+#pragma once
 
 #include "arServices/config.hpp"
 
@@ -118,4 +117,3 @@ public:
 };
 
 } //namespace arServices
-#endif  // __ARSERVICES_IGRABBER_HPP__

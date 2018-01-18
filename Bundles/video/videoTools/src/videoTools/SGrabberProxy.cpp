@@ -411,4 +411,3 @@ void SGrabberProxy::modifyDuration(int64_t duration)
 //-----------------------------------------------------------------------------
 
 } // namespace videoTools
-

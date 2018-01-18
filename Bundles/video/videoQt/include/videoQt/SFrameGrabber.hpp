@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_SFRAMEGRABBER_HPP__
-#define __VIDEOQT_SFRAMEGRABBER_HPP__
+#pragma once
 
 #include "videoQt/config.hpp"
 #include <videoQt/player/QVideoPlayer.hpp>
@@ -151,5 +150,3 @@ private:
 };
 
 } // namespace videoQt
-
-#endif /*__VIDEOQT_SFRAMEGRABBER_HPP__*/

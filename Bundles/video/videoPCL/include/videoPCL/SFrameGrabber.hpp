@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOPCL_SFRAMEGRABBER_HPP__
-#define __VIDEOPCL_SFRAMEGRABBER_HPP__
+#pragma once
 
 #include "videoPCL/config.hpp"
 
@@ -138,5 +137,3 @@ private:
 };
 
 } // namespace videoOpenCV
-
-#endif /*__VIDEOPCL_SFRAMEGRABBER_HPP__*/
