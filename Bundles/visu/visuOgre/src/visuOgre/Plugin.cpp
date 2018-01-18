@@ -48,8 +48,8 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void F4SOgreListener::messageLogged(const::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
-                                    const::Ogre::String& /*_logName*/, bool& _skipThisMessage)
+void F4SOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
+                                    const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {
