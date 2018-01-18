@@ -128,10 +128,12 @@ void SAutomaticRegistration::updating()
 
     typedef ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
 
-    std::remove_copy_if(m_multiResolutionParameters.begin(),
-                        m_multiResolutionParameters.end(),
-                        multiResolutionParameters.begin(),
-                        [](const ParamPairType& v){return v.first == 0; });
+    auto lastElt = std::remove_copy_if(m_multiResolutionParameters.begin(),
+                                       m_multiResolutionParameters.end(),
+                                       multiResolutionParameters.begin(),
+                                       [](const ParamPairType& v){return v.first == 0; });
+
+    multiResolutionParameters.erase(lastElt, multiResolutionParameters.end());
 
     ::itkRegistrationOp::AutomaticRegistration registrator;
 
