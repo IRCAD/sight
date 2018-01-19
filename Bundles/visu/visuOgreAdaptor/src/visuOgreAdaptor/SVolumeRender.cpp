@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -290,7 +290,7 @@ void SVolumeRender::starting()
     this->updateImageInfos(image);
 
     m_sceneManager    = this->getSceneManager();
-    m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
+    m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode(this->getID() + "_sceneNode");
     m_camera          = this->getLayer()->getDefaultCamera();
 
     // Create textures

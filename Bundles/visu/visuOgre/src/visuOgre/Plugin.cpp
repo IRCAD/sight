@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,8 +48,8 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-void F4SOgreListener::messageLogged(const::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
-                                    const::Ogre::String& /*_logName*/, bool& _skipThisMessage)
+void F4SOgreListener::messageLogged(const ::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool /*_maskDebug*/,
+                                    const ::Ogre::String& /*_logName*/, bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {
@@ -60,6 +60,9 @@ void F4SOgreListener::messageLogged(const::Ogre::String& _message, ::Ogre::LogMe
                 break;
             case ::Ogre::LML_NORMAL:
                 SLM_DEBUG(_message);
+                break;
+            case ::Ogre::LML_WARNING:
+                SLM_WARN(_message);
                 break;
             case ::Ogre::LML_CRITICAL:
                 SLM_ERROR(_message);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ void SceneTest::tearDown()
 
 void SceneTest::getNodeById()
 {
-    ::Ogre::SceneManager* sceneManager = m_ogreRoot->createSceneManager(::Ogre::ST_GENERIC, "test");
+    ::Ogre::SceneManager* sceneManager = m_ogreRoot->createSceneManager("DefaultSceneManager", "test");
 
     ::Ogre::SceneNode* rootNode = sceneManager->getRootSceneNode();
     CPPUNIT_ASSERT(nullptr != rootNode);

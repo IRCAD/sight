@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -192,7 +192,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
     ::Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
 
     // Check if depthpeeling technique is already existing
-    const int numOfTargetPass = static_cast<int>(dpCompTech->getNumTargetPasses());
+    const int numOfTargetPass = static_cast<int>(dpCompTech->getTargetPasses().size());
 
     // 3 is the first ping pong target
     const int firstPingPongTarget = 4;
@@ -269,7 +269,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
     ::Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
 
     // Check if depthpeeling technique is already existing
-    const int numOfTargetPass = static_cast<int>(dpCompTech->getNumTargetPasses());
+    const int numOfTargetPass = static_cast<int>(dpCompTech->getTargetPasses().size());
 
     // 3 is the first ping pong target
     const int firstPingPongTarget = 2;
@@ -342,7 +342,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
     ::Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
 
     // Check if hybrid transparency technique is already existing
-    const int numOfTargetPass = static_cast<int>(dpCompTech->getNumTargetPasses());
+    const int numOfTargetPass = static_cast<int>(dpCompTech->getTargetPasses().size());
 
     // 3 is the first ping pong target
     const int firstPingPongTarget = 4;

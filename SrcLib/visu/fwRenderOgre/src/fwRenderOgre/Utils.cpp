@@ -34,17 +34,9 @@
 #ifdef __MACOSX__
 #define PLUGIN_PATH "plugins_osx.cfg"
 #elif _WIN32
-#   ifdef _DEBUG
-#       define PLUGIN_PATH "plugins_win32_d.cfg"
-#   else
-#       define PLUGIN_PATH "plugins_win32.cfg"
-#   endif
+#   define PLUGIN_PATH "plugins_win32.cfg"
 #else
-#   ifdef _DEBUG
-#       define PLUGIN_PATH "plugins_d.cfg"
-#   else
-#       define PLUGIN_PATH "plugins.cfg"
-#   endif
+#   define PLUGIN_PATH "plugins.cfg"
 #endif
 
 #define PLUGIN_FOLDER_NAME "PluginFolder"
@@ -325,7 +317,7 @@ void Utils::destroyOgreRoot()
     const ::fwData::Image::SizeType imageSize = imageFw->getSize();
 
     const uint32_t width = static_cast<uint32_t>(imageSize[0]);
-    uint32_t height      = 1, depth = 1;
+    uint32_t height = 1, depth = 1;
 
     if(imageSize.size() >= 2)
     {

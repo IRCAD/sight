@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -238,7 +238,7 @@ void Layer::createScene()
     namespace fwc = ::fwRenderOgre::compositor;
 
     auto root = ::fwRenderOgre::Utils::getOgreRoot();
-    m_sceneManager = root->createSceneManager(::Ogre::ST_GENERIC, m_renderService.lock()->getID() + "_" + m_id);
+    m_sceneManager = root->createSceneManager("DefaultSceneManager", m_renderService.lock()->getID() + "_" + m_id);
     m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
 
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
