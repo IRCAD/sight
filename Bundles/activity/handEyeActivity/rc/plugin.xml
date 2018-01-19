@@ -3,7 +3,6 @@
     <requirement id="visuVTKARAdaptor"/>
     <requirement id="visuVTKAdaptor"/>
     <requirement id="visuVTKQt"/>
-    <requirement id="uiSelector"/>
     <requirement id="videoTools"/>
     <requirement id="trackerAruco"/>
 
