@@ -1,24 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "CalibrationInfoTest.hpp"
 
-#include <fwTools/Type.hpp>
+#include <arData/CalibrationInfo.hpp>
+
+#include <fwCore/spyLog.hpp>
 
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwTest/helper/compare.hpp>
 #include <fwTest/generator/Image.hpp>
+#include <fwTest/helper/compare.hpp>
 
-#include <arData/CalibrationInfo.hpp>
-
-#include <fwCore/spyLog.hpp>
+#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CalibrationInfoTest );
@@ -57,38 +57,37 @@ void CalibrationInfoTest::calibrationInfoTest()
     ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
     ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
 
-    pl->getRefPoints().push_back(pt1);
-    pl->getRefPoints().push_back(pt2);
-    pl->getRefPoints().push_back(pt3);
+    pl->getPoints().push_back(pt1);
+    pl->getPoints().push_back(pt2);
+    pl->getPoints().push_back(pt3);
 
-    calInfo->addRecord(img,pl);
+    calInfo->addRecord(img, pl);
 
     //Testing values
 
     ::arData::CalibrationInfo::ImageContainerType imgList = calInfo->getImageContainer();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1),imgList.size());
-    CPPUNIT_ASSERT_EQUAL(img,imgList.front());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), imgList.size());
+    CPPUNIT_ASSERT_EQUAL(img, imgList.front());
 
     ::arData::CalibrationInfo::PointListContainerType plList = calInfo->getPointListContainer();
 
-    CPPUNIT_ASSERT_EQUAL(size_t(1),plList.size());
-    CPPUNIT_ASSERT_EQUAL(pl,plList.front());
+    CPPUNIT_ASSERT_EQUAL(size_t(1), plList.size());
+    CPPUNIT_ASSERT_EQUAL(pl, plList.front());
 
     ::fwData::PointList::sptr pl1 = calInfo->getPointList(imgList.front());
-    CPPUNIT_ASSERT_EQUAL(pl,pl1);
+    CPPUNIT_ASSERT_EQUAL(pl, pl1);
 
     ::fwData::Image::sptr img1 = calInfo->getImage(plList.front());
-    CPPUNIT_ASSERT_EQUAL(img,img1);
-
+    CPPUNIT_ASSERT_EQUAL(img, img1);
 
     calInfo->removeRecord(0);
 
     ::fwData::PointList::sptr pl2 = calInfo->getPointList(img);
-    CPPUNIT_ASSERT_EQUAL(::fwData::PointList::sptr(),pl2);
+    CPPUNIT_ASSERT_EQUAL(::fwData::PointList::sptr(), pl2);
 
     ::fwData::Image::sptr img2 = calInfo->getImage(pl);
-    CPPUNIT_ASSERT_EQUAL(::fwData::Image::sptr(),img2);
+    CPPUNIT_ASSERT_EQUAL(::fwData::Image::sptr(), img2);
 
     CPPUNIT_ASSERT(calInfo->getImageContainer().empty());
     CPPUNIT_ASSERT(calInfo->getPointListContainer().empty());
@@ -109,12 +108,11 @@ void CalibrationInfoTest::shallowCopyTest()
     ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
     ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
 
-    pl->getRefPoints().push_back(pt1);
-    pl->getRefPoints().push_back(pt2);
-    pl->getRefPoints().push_back(pt3);
+    pl->getPoints().push_back(pt1);
+    pl->getPoints().push_back(pt2);
+    pl->getPoints().push_back(pt3);
 
-    calInfo->addRecord(img,pl);
-
+    calInfo->addRecord(img, pl);
 
     ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::New();
     calInfo2->shallowCopy(calInfo);
@@ -138,12 +136,11 @@ void CalibrationInfoTest::deepCopyTest()
     ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
     ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
 
-    pl->getRefPoints().push_back(pt1);
-    pl->getRefPoints().push_back(pt2);
-    pl->getRefPoints().push_back(pt3);
+    pl->getPoints().push_back(pt1);
+    pl->getPoints().push_back(pt2);
+    pl->getPoints().push_back(pt3);
 
-    calInfo->addRecord(img,pl);
-
+    calInfo->addRecord(img, pl);
 
     ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::New();
     calInfo2->deepCopy(calInfo);
@@ -164,7 +161,7 @@ void CalibrationInfoTest::deepCopyTest()
     while(iterImg1 != calInfo->getImageContainer().end())
     {
         CPPUNIT_ASSERT(*iterImg1 != *iterImg2);
-        CPPUNIT_ASSERT(*iterPl1  != *iterPl2);
+        CPPUNIT_ASSERT(*iterPl1 != *iterPl2);
 
         CPPUNIT_ASSERT(::fwTest::helper::compare(*iterImg1, *iterImg2));
         CPPUNIT_ASSERT(::fwTest::helper::compare(*iterPl1, *iterPl2));
@@ -178,7 +175,6 @@ void CalibrationInfoTest::deepCopyTest()
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace ut
 } //namespace arData

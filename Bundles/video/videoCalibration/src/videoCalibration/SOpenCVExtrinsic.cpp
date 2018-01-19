@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,10 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -25,8 +25,8 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Object.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwTools/Object.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -40,10 +40,11 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "update
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept : m_width(11),
-                                                m_height(8),
-                                                m_squareSize(20.0),
-                                                m_camIndex(1)
+SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
+    m_width(11),
+    m_height(8),
+    m_squareSize(20.0),
+    m_camIndex(1)
 {
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
 }
@@ -149,7 +150,6 @@ void SOpenCVExtrinsic::updating()
             ::arData::CalibrationInfo::PointListContainerType::iterator itr2   = ptlists2.begin();
             ::arData::CalibrationInfo::PointListContainerType::iterator itrEnd = ptlists1.end();
 
-
             for(; itr1 != itrEnd; ++itr1, ++itr2)
             {
                 ::fwData::PointList::sptr ptList1 = *itr1;
@@ -157,20 +157,20 @@ void SOpenCVExtrinsic::updating()
                 std::vector< ::cv::Point2f > imgPoint1;
                 std::vector< ::cv::Point2f > imgPoint2;
 
-                for(fwData::Point::csptr point : ptList1->getCRefPoints())
+                for(fwData::Point::csptr point : ptList1->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     imgPoint1.push_back(::cv::Point2f(
-                                            static_cast<float>(point->getCRefCoord()[0]),
-                                            static_cast<float>(point->getCRefCoord()[1])));
+                                            static_cast<float>(point->getCoord()[0]),
+                                            static_cast<float>(point->getCoord()[1])));
                 }
 
-                for(fwData::Point::csptr point : ptList2->getCRefPoints())
+                for(fwData::Point::csptr point : ptList2->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
                     imgPoint2.push_back(::cv::Point2f(
-                                            static_cast<float>(point->getCRefCoord()[0]),
-                                            static_cast<float>(point->getCRefCoord()[1])));
+                                            static_cast<float>(point->getCoord()[0]),
+                                            static_cast<float>(point->getCoord()[1])));
                 }
 
                 imagePoints1.push_back(imgPoint1);
@@ -201,15 +201,15 @@ void SOpenCVExtrinsic::updating()
             ::fwData::mt::ObjectReadLock cam1Lock(cam1);
             ::fwData::mt::ObjectReadLock cam2Lock(cam2);
 
-            cameraMatrix1.at<double>(0,0) = cam1->getFx();
-            cameraMatrix1.at<double>(1,1) = cam1->getFy();
-            cameraMatrix1.at<double>(0,2) = cam1->getCx();
-            cameraMatrix1.at<double>(1,2) = cam1->getCy();
+            cameraMatrix1.at<double>(0, 0) = cam1->getFx();
+            cameraMatrix1.at<double>(1, 1) = cam1->getFy();
+            cameraMatrix1.at<double>(0, 2) = cam1->getCx();
+            cameraMatrix1.at<double>(1, 2) = cam1->getCy();
 
-            cameraMatrix2.at<double>(0,0) = cam2->getFx();
-            cameraMatrix2.at<double>(1,1) = cam2->getFy();
-            cameraMatrix2.at<double>(0,2) = cam2->getCx();
-            cameraMatrix2.at<double>(1,2) = cam2->getCy();
+            cameraMatrix2.at<double>(0, 0) = cam2->getFx();
+            cameraMatrix2.at<double>(1, 1) = cam2->getFy();
+            cameraMatrix2.at<double>(0, 2) = cam2->getCx();
+            cameraMatrix2.at<double>(1, 2) = cam2->getCy();
             for (size_t i = 0; i < 5; ++i)
             {
                 distortionCoefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
@@ -228,16 +228,16 @@ void SOpenCVExtrinsic::updating()
         OSLM_DEBUG("Calibration error :" << err);
 
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
-        for (size_t i = 0; i<3; ++i)
+        for (size_t i = 0; i < 3; ++i)
         {
-            for (size_t j = 0; j<3; ++j)
+            for (size_t j = 0; j < 3; ++j)
             {
-                matrix->setCoefficient(i,j, rotationMatrix.at<double>(static_cast<int>(i),static_cast<int>(j)));
+                matrix->setCoefficient(i, j, rotationMatrix.at<double>(static_cast<int>(i), static_cast<int>(j)));
             }
         }
-        matrix->setCoefficient(0,3, translationVector.at<double>(0,0));
-        matrix->setCoefficient(1,3, translationVector.at<double>(1,0));
-        matrix->setCoefficient(2,3, translationVector.at<double>(2,0));
+        matrix->setCoefficient(0, 3, translationVector.at<double>(0, 0));
+        matrix->setCoefficient(1, 3, translationVector.at<double>(1, 0));
+        matrix->setCoefficient(2, 3, translationVector.at<double>(2, 0));
 
         {
             ::fwData::mt::ObjectWriteLock camSeriesLock(camSeries);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -230,8 +230,8 @@ void DataConverterTest::pointListConverterTest()
     for (int i = 0; i < 2; ++i)
     {
         point = ::fwData::Point::New();
-        std::copy(points[i], points[i] + 3, point->getRefCoord().begin());
-        pointList->getRefPoints().push_back(point);
+        std::copy(points[i], points[i] + 3, point->getCoord().begin());
+        pointList->getPoints().push_back(point);
     }
     msg =
         ::igtl::PointMessage::Pointer(dynamic_cast< ::igtl::PointMessage*>(converter->fromFwObject(
@@ -247,8 +247,8 @@ void DataConverterTest::pointListConverterTest()
     ::fwData::PointList::sptr pointList2 = ::fwData::PointList::dynamicCast(destObj);
     for (int i = 0; i < 2; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(pointList2->getCRefPoints()[i]->getCRefCoord().begin(),
-                                  pointList2->getCRefPoints()[i]->getCRefCoord().end(),
+        CPPUNIT_ASSERT(std::equal(pointList2->getPoints()[i]->getCoord().begin(),
+                                  pointList2->getPoints()[i]->getCoord().end(),
                                   points[i]));
     }
 }
@@ -289,24 +289,24 @@ void DataConverterTest::lineConverterTest()
     line = ::fwData::Line::New();
     line->setPosition(::fwData::Point::New());
     line->setDirection(::fwData::Point::New());
-    std::copy(direction, direction + 3, line->getDirection()->getRefCoord().begin());
-    std::copy(position, position + 3, line->getPosition()->getRefCoord().begin());
+    std::copy(direction, direction + 3, line->getDirection()->getCoord().begin());
+    std::copy(position, position + 3, line->getPosition()->getCoord().begin());
     lineMsg =
         ::igtl::PositionMessage::Pointer(dynamic_cast< ::igtl::PositionMessage*>(converter->fromFwObject(
                                                                                      line).GetPointer()));
     lineMsg->GetPosition(position);
     lineMsg->GetQuaternion(direction);
-    CPPUNIT_ASSERT(std::equal(line->getPosition()->getCRefCoord().begin(),
-                              line->getPosition()->getCRefCoord().end(), position));
-    CPPUNIT_ASSERT(std::equal(line->getDirection()->getCRefCoord().begin(),
-                              line->getDirection()->getCRefCoord().end(), direction));
+    CPPUNIT_ASSERT(std::equal(line->getPosition()->getCoord().begin(),
+                              line->getPosition()->getCoord().end(), position));
+    CPPUNIT_ASSERT(std::equal(line->getDirection()->getCoord().begin(),
+                              line->getDirection()->getCoord().end(), direction));
 
     ::fwData::Object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(lineMsg.GetPointer()));
     ::fwData::Line::sptr line2     = ::fwData::Line::dynamicCast(destObj);
-    CPPUNIT_ASSERT(std::equal(line2->getPosition()->getCRefCoord().begin(),
-                              line2->getPosition()->getCRefCoord().end(), position));
-    CPPUNIT_ASSERT(std::equal(line2->getDirection()->getCRefCoord().begin(),
-                              line2->getDirection()->getCRefCoord().end(), direction));
+    CPPUNIT_ASSERT(std::equal(line2->getPosition()->getCoord().begin(),
+                              line2->getPosition()->getCoord().end(), position));
+    CPPUNIT_ASSERT(std::equal(line2->getDirection()->getCoord().begin(),
+                              line2->getDirection()->getCoord().end(), direction));
 }
 
 //------------------------------------------------------------------------------

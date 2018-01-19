@@ -1,11 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "DataCampHelper.hpp"
 #include "CalibrationInfoTest.hpp"
+
+#include "DataCampHelper.hpp"
+
+#include <arDataCamp/Version.hpp>
 
 #include <arData/CalibrationInfo.hpp>
 
@@ -13,9 +16,6 @@
 #include <fwData/Point.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
-#include <arDataCamp/Version.hpp>
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arDataCamp::ut::CalibrationInfoTest );
@@ -25,10 +25,14 @@ namespace arDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void CalibrationInfoTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void CalibrationInfoTest::tearDown()
 {
@@ -51,12 +55,11 @@ void CalibrationInfoTest::propertiesTest()
     ::fwData::Point::sptr pt2 = ::fwData::Point::New( 4.0, 5.0, 6.0 );
     ::fwData::Point::sptr pt3 = ::fwData::Point::New( 7.0, 8.0, 9.0 );
 
-    pl->getRefPoints().push_back(pt1);
-    pl->getRefPoints().push_back(pt2);
-    pl->getRefPoints().push_back(pt3);
+    pl->getPoints().push_back(pt1);
+    pl->getPoints().push_back(pt2);
+    pl->getPoints().push_back(pt3);
 
     calInfo->addRecord(img, pl);
-
 
     const DataCampHelper::PropertiesNameType dataProperties = { "fields",
                                                                 "image_container",

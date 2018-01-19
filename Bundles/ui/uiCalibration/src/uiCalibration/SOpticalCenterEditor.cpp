@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -118,7 +118,7 @@ void SOpticalCenterEditor::updating()
     // Reset matrix if it isn't correctly formatted.
     if(matrix->getCoefficient(3, 3) == 1.)
     {
-        auto& coeffs = matrix->getRefCoefficients();
+        auto& coeffs = matrix->getCoefficients();
         coeffs.fill(0.);
     }
 

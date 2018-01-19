@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -131,11 +131,11 @@ void SOpenCVIntrinsic::updating()
             {
                 std::vector< ::cv::Point2f > dst;
 
-                for(::fwData::Point::csptr point : capture->getCRefPoints())
+                for(::fwData::Point::csptr point : capture->getPoints())
                 {
                     SLM_ASSERT("point is null", point);
-                    dst.push_back(::cv::Point2f(static_cast<float>(point->getCRefCoord()[0]),
-                                                static_cast<float>(point->getCRefCoord()[1])));
+                    dst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
+                                                static_cast<float>(point->getCoord()[1])));
                 }
                 imagePoints.push_back(dst);
                 objectPoints.push_back(points);

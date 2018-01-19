@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,9 +44,9 @@ PointListConverter::~PointListConverter()
     ::fwData::PointList::csptr srcPoints = ::fwData::PointList::dynamicConstCast(src);
 
     ::igtl::PointMessage::Pointer dest = ::igtl::PointMessage::New();
-    for(::fwData::Point::sptr const &srcPoint :  srcPoints->getCRefPoints())
+    for(::fwData::Point::sptr const &srcPoint :  srcPoints->getPoints())
     {
-        std::transform(srcPoint->getCRefCoord().begin(), srcPoint->getCRefCoord().end(), pos,
+        std::transform(srcPoint->getCoord().begin(), srcPoint->getCoord().end(), pos,
                        ::boost::numeric_cast<double, float>);
         elem = ::igtl::PointElement::New();
         elem->SetPosition(pos);
@@ -72,7 +72,7 @@ PointListConverter::~PointListConverter()
         fwPoint = ::fwData::Point::New();
         srcPoints->GetPointElement(i, elem);
         elem->GetPosition(igtlPos);
-        std::transform(&igtlPos[0], &igtlPos[3], fwPoint->getRefCoord().begin(),
+        std::transform(&igtlPos[0], &igtlPos[3], fwPoint->getCoord().begin(),
                        ::boost::numeric_cast<float, double>);
         fwPoints.push_back(fwPoint);
     }

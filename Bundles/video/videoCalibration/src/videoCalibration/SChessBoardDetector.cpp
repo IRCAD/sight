@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -284,7 +284,7 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
             ::cv::cornerSubPix(grayImg, corners, ::cv::Size(5, 5), ::cv::Size(-1, -1), term);
 
             pointlist                                       = ::fwData::PointList::New();
-            ::fwData::PointList::PointListContainer& points = pointlist->getRefPoints();
+            ::fwData::PointList::PointListContainer& points = pointlist->getPoints();
             points.reserve(corners.size());
 
             for(::cv::Point2f& p : corners)
@@ -320,4 +320,3 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameT
 // ----------------------------------------------------------------------------
 
 } //namespace videoCalibration
-
