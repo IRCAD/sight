@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -67,7 +67,7 @@ void SAddPoint::addPoint(::fwData::Object::sptr _pointObject)
     {
         ::fwData::mt::ObjectWriteLock lock(pointList);
         auto point = ::fwData::Point::dynamicCast(_pointObject);
-        pointList->getRefPoints().push_back(point);
+        pointList->getPoints().push_back(point);
     }
 
     auto sig = pointList->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG);

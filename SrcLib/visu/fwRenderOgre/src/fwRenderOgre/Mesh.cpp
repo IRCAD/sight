@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -440,7 +440,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
 void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 {
-    auto points = _pointList->getCRefPoints();
+    auto points = _pointList->getPoints();
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = points.size();
@@ -513,7 +513,7 @@ void Mesh::updateMesh(const ::fwData::PointList::csptr& _pointList)
 
 //------------------------------------------------------------------------------
 
-std::vector<R2VBRenderable*> Mesh::updateR2VB(const::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
+std::vector<R2VBRenderable*> Mesh::updateR2VB(const ::fwData::Mesh::sptr& _mesh, ::Ogre::SceneManager& _sceneMgr,
                                               const std::string& _materialName, bool _hasTexture)
 {
     //------------------------------------------
@@ -705,14 +705,14 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
     PointType yMax = std::numeric_limits<PointType>::lowest();
     PointType zMax = std::numeric_limits<PointType>::lowest();
 
-    const auto& points     = _pointList->getCRefPoints();
+    const auto& points     = _pointList->getPoints();
     const size_t numPoints = points.size();
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
         for (size_t i = 0; i < numPoints; ++i)
         {
-            const auto point = points[i]->getCRefCoord();
+            const auto point = points[i]->getCoord();
             const auto& pt0  = point[0];
             xMin = std::min(xMin, pt0);
             xMax = std::max(xMax, pt0);
@@ -731,7 +731,7 @@ void Mesh::updateVertices(const ::fwData::PointList::csptr& _pointList)
         FW_PROFILE_AVG("UPDATE POS", 5);
         for (size_t i = 0; i < numPoints; ++i)
         {
-            const auto point = points[i]->getCRefCoord();
+            const auto point = points[i]->getCoord();
             pPos[0] = static_cast<float>(point[0]);
             pPos[1] = static_cast<float>(point[1]);
             pPos[2] = static_cast<float>(point[2]);
