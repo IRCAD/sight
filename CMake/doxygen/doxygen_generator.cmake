@@ -28,3 +28,26 @@ function(doxygenGenerator)
             "Generating API documentation with Doxygen" VERBATIM)
     endif()
 endfunction()
+
+# Create a target generating a Dash/Zeal compatible docset
+function(docsetGenerator)
+    find_package(PythonInterp 3 QUIET)
+    if(NOT PYTHONINTERP_FOUND)
+        message(WARNING "A Python3 interpreter is required to build the Dash docset, but none was found.")
+        return()
+    endif()
+    add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/build_docset.py
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      DEPENDS doc
+                      COMMENT "Generating dash docset" VERBATIM)
+    add_custom_command(TARGET docset POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/doxygen/Info.plist
+                                                        ${CMAKE_CURRENT_BINARY_DIR}/Documentation/fw4spl.docset/Contents
+                       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/doxygen/f4s_logo_16x16.png
+                                                        ${CMAKE_CURRENT_BINARY_DIR}/Documentation/fw4spl.docset/icon.png
+                       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/cmake/doxygen/f4s_logo_32x32.png
+                                                        ${CMAKE_CURRENT_BINARY_DIR}/Documentation/fw4spl.docset/icon@2x.png
+                       COMMENT "Copying dash docset configuration files"
+                       VERBATIM
+)
+endfunction()
