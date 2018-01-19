@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -92,16 +92,16 @@ void SMoveAlongSpline::configuring()
 void SMoveAlongSpline::starting()
 {
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList>(S_POINTS_KEY);
-    m_nbSplinePoints                     = pointList->getCRefPoints().size();
+    m_nbSplinePoints                     = pointList->getPoints().size();
     if (m_nbSplinePoints == 0)
     {
         return;
     }
 
     ::navigation::computeSpline(pointList, m_nbSplinePoints - 1, m_vtkPoints, m_parametricSpline, m_splineLength);
-    m_sigSplineLengthChanged->asyncEmit (m_splineLength);
+    m_sigSplineLengthChanged->asyncEmit(m_splineLength);
 
-    if(m_nbSplinePoints>=2)
+    if(m_nbSplinePoints >= 2)
     {
         ::navigation::initializeVectors(pointList, m_parametricSpline, &m_previousyVector[0], m_angle);
     }
@@ -129,18 +129,18 @@ void SMoveAlongSpline::addPoint(::fwData::Point::sptr /*point*/)
     m_sigSplineLengthChanged->asyncEmit(m_splineLength);
     m_nbSplinePoints++;
 
-    if(m_nbSplinePoints>=2)
+    if(m_nbSplinePoints >= 2)
     {
         ::navigation::initializeVectors(pointList, m_parametricSpline, &m_previousyVector[0], m_angle);
     }
 
     // Synchronize the position on the spline according to the slider position.
-    if(m_nbSplinePoints>1 && m_splineLength>0.0)
+    if(m_nbSplinePoints > 1 && m_splineLength > 0.0)
     {
         this->moveToPoint(m_currentSliderPosition);
     }
 
-    else if(m_nbSplinePoints==1 || m_nbSplinePoints==0 )
+    else if(m_nbSplinePoints == 1 || m_nbSplinePoints == 0 )
     {
         this->moveToPoint(0);
     }
@@ -162,12 +162,12 @@ void SMoveAlongSpline::removePoint(::fwData::Point::sptr /*point*/)
     }
 
     // Synchronize the position on the spline according to the slider position.
-    if(m_nbSplinePoints>1 && m_splineLength>0.0)
+    if(m_nbSplinePoints > 1 && m_splineLength > 0.0)
     {
         this->moveToPoint(m_currentSliderPosition);
     }
 
-    else if(m_nbSplinePoints==1 || m_nbSplinePoints==0 )
+    else if(m_nbSplinePoints == 1 || m_nbSplinePoints == 0 )
     {
         this->moveToPoint(0);
     }
@@ -188,12 +188,12 @@ void SMoveAlongSpline::updateSpline()
     }
 
     // Synchronize the position on the spline according to the slider position.
-    if(m_nbSplinePoints>1 && m_splineLength>0.0)
+    if(m_nbSplinePoints > 1 && m_splineLength > 0.0)
     {
         this->moveToPoint(m_currentSliderPosition);
     }
 
-    else if(m_nbSplinePoints==1 || m_nbSplinePoints==0 )
+    else if(m_nbSplinePoints == 1 || m_nbSplinePoints == 0 )
     {
         this->moveToPoint(0);
     }
@@ -203,7 +203,7 @@ void SMoveAlongSpline::updateSpline()
 
 void SMoveAlongSpline::moveToPoint (double sliderPosition)
 {
-    if(m_nbSplinePoints>1)
+    if(m_nbSplinePoints > 1)
     {
         m_currentSliderPosition = sliderPosition;
         const double incr = 1.0 / m_splineLength;
@@ -231,7 +231,7 @@ void SMoveAlongSpline::moveToPoint (double sliderPosition)
     }
 
     // if there is no point set the matrix to identity
-    else if(m_nbSplinePoints==0)
+    else if(m_nbSplinePoints == 0)
     {
         // Send the destination matrix to SJumpToPoint
         ::fwData::TransformationMatrix3D::sptr destMatrix = ::fwData::TransformationMatrix3D::New();
@@ -272,7 +272,7 @@ void SMoveAlongSpline::computeTransformationMatrix (double position)
         m_parametricSpline->Evaluate(u, Ptnext, Du);
     }
 
-    else if(position >=1 )
+    else if(position >= 1 )
     {
         u[0] = position - 0.01;
         m_parametricSpline->Evaluate(u, Pt, Du);
@@ -364,7 +364,7 @@ void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
     {
         if (lt < 3)
         {
-            destMatrix->setCoefficient(lt, 3, point->getRefCoord()[lt]);
+            destMatrix->setCoefficient(lt, 3, point->getCoord()[lt]);
         }
         else
         {
@@ -401,6 +401,4 @@ void SMoveAlongSpline::setCameraRotation (double angle)
 
 //------------------------------------------------------------------------------
 
-
 } // ctrlSplineNavigation
-

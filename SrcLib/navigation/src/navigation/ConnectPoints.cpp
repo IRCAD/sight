@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ void ConnectPoints::disconnectPointToService(const ::fwCom::HasSignals::sptr& ha
     OSLM_ASSERT("Failed to retrieve signal holder in connections container", it != m_connections.end());
 
     it->second.disconnect();
-    m_connections.erase(m_connections.find (hasSignals));
+    m_connections.erase(m_connections.find(hasSignals));
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ void ConnectPoints::connectAllSplinePoints(
     const ::fwCom::HasSlots::sptr& hasSlots,
     const ::fwCom::Slots::SlotKeyType& slotKey )
 {
-    for(::fwData::Point::sptr point :  pointList->getRefPoints())
+    for(::fwData::Point::sptr point :  pointList->getPoints())
     {
         this->connectPointToService(point, ::fwData::Object::s_MODIFIED_SIG, hasSlots, slotKey);
     }
@@ -75,4 +75,3 @@ void ConnectPoints::disconnectSplinePoints()
 }
 
 } // namespace navigation
-
