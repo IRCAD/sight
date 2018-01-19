@@ -128,10 +128,12 @@ void SAutomaticRegistration::updating()
 
     typedef ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
 
-    std::remove_copy_if(m_multiResolutionParameters.begin(),
-                        m_multiResolutionParameters.end(),
-                        multiResolutionParameters.begin(),
-                        [](const ParamPairType& v){return v.first == 0; });
+    auto lastElt = std::remove_copy_if(m_multiResolutionParameters.begin(),
+                                       m_multiResolutionParameters.end(),
+                                       multiResolutionParameters.begin(),
+                                       [](const ParamPairType& v){return v.first == 0; });
+
+    multiResolutionParameters.erase(lastElt, multiResolutionParameters.end());
 
     ::itkRegistrationOp::AutomaticRegistration registrator;
 
@@ -232,8 +234,15 @@ void SAutomaticRegistration::updating()
             transfoModifiedSig->asyncEmit();
         };
 
-    registrator.registerImage(target, reference, transform, m_metric, multiResolutionParameters,
-                              m_samplingPercentage, m_minStep, m_maxIterations, iterationCallback);
+    try
+    {
+        registrator.registerImage(target, reference, transform, m_metric, multiResolutionParameters,
+                                  m_samplingPercentage, m_minStep, m_maxIterations, iterationCallback);
+    }
+    catch(::itk::ExceptionObject& e)
+    {
+        OSLM_ERROR("[ITK EXCEPTION]" << e.GetDescription());
+    }
 
     m_sigComputed->asyncEmit();
     transfoModifiedSig->asyncEmit();

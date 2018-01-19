@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __OPITKREGISTRATION_SAUTOMATICREGISTRATION_HPP__
-#define __OPITKREGISTRATION_SAUTOMATICREGISTRATION_HPP__
+#pragma once
 
 #include "opItkRegistration/config.hpp"
 
@@ -42,7 +41,7 @@ namespace opItkRegistration
  * - \b reference [::fwData::Image]: Image that will be deformed to match the target.
  *
  * @subsection In-Out In-Out
- * - \b transform [::fwData::TransformationMatrix3D]: The initial tranform used during registration, will be updated
+ * - \b transform [::fwData::TransformationMatrix3D]: The initial transform used during registration, will be updated
  * with the new value after registration.
  *
  * @subsection Configuration Configuration
@@ -52,9 +51,9 @@ namespace opItkRegistration
  * even if it didn't find a suitable result.
  * - \b metric : the metric used to compare the two images. Possible values are :
  * MeanSquares : fastest metric, only works when matching images with the same intensity values.
- * - \b levels (optional, default=1:0): multi-resolution levels seperated by semicolons
+ * - \b levels (optional, default=1:0): multi-resolution levels separated by semicolons
  * with their parameters separated by colons.
- * - \b log (optional, defaul=false): enable/disable logging, outputs stats in a CSV file at each registration step.
+ * - \b log (optional, default=false): enable/disable logging, outputs stats in a CSV file at each registration step.
  *
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
@@ -131,5 +130,3 @@ private:
 };
 
 } // namespace opItkRegistration
-
-#endif // __OPITKREGISTRATION_SAUTOMATICREGISTRATION_HPP__

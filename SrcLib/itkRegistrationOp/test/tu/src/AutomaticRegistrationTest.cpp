@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -139,8 +139,8 @@ void AutomaticRegistrationTest::rigidTransformTest()
                                                   itkReg::MEAN_SQUARES,
                                                   multiResolutionParameters,
                                                   1.0,
-                                                  0.0001,
-                                                  1000);
+                                                  0.00005,
+                                                  1200);
 
     const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
     const ::glm::dmat4 id  = res * rigidTrf;
