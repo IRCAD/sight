@@ -102,7 +102,7 @@ void SPointListRegistration::updating()
         vtkSmartPointer<vtkPoints> sourcePts = vtkSmartPointer<vtkPoints>::New();
         vtkSmartPointer<vtkPoints> targetPts = vtkSmartPointer<vtkPoints>::New();
 
-        const auto& firstPoint = referencePL->getCRefPoints()[0];
+        const auto& firstPoint = referencePL->getPoints()[0];
 
         // If the points have labels ...
         if(firstPoint->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
@@ -120,22 +120,22 @@ void SPointListRegistration::updating()
 
                     if(labelRef == labelReg)
                     {
-                        auto coord = pointRef->getRefCoord();
+                        auto coord = pointRef->getCoord();
                         sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
                         OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
                                        ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
                         OSLM_TRACE(
                             "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
-                            pointRef->getCoord()[2] );
+                                pointRef->getCoord()[2] );
 
-                        coord = pointReg->getRefCoord();
+                        coord = pointReg->getCoord();
                         targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
                         OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
                                        ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
                         OSLM_TRACE(
                             "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
-                            pointReg->getCoord()[2] );
+                                pointReg->getCoord()[2] );
                     }
                 }
             }
@@ -143,15 +143,15 @@ void SPointListRegistration::updating()
         else
         {
             // ... Else match them according to their order.
-            for(const auto& refPoint : referencePL->getCRefPoints())
+            for(const auto& refPoint : referencePL->getPoints())
             {
-                const auto& coords = refPoint->getRefCoord();
+                const auto& coords = refPoint->getCoord();
                 sourcePts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
 
-            for(const auto& regPoint : registeredPL->getCRefPoints())
+            for(const auto& regPoint : registeredPL->getPoints())
             {
-                const auto& coords = regPoint->getRefCoord();
+                const auto& coords = regPoint->getCoord();
                 targetPts->InsertNextPoint(coords[0], coords[1], coords[2]);
             }
         }
@@ -263,4 +263,3 @@ void SPointListRegistration::changeMode(std::string _value)
 //----------------------------------------------------------------------------
 
 } // namespace basicRegistration
-

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_APPCONFIGMANAGER_HPP__
-#define __FWSERVICES_APPCONFIGMANAGER_HPP__
+#pragma once
 
 #include "fwServices/config.hpp"
 #include "fwServices/helper/Config.hpp"
@@ -90,7 +89,7 @@ private:
     ::fwData::Object::sptr getNewObject(ConfigAttribute type,
                                         ConfigAttribute uid = ConfigAttribute("", false)) const;
 
-    ::fwData::Object::sptr getRefObject(ConfigAttribute type, const std::string& uid) const;
+    ::fwData::Object::sptr getObject(ConfigAttribute type, const std::string& uid) const;
 
     ::fwServices::IService::sptr getNewService(const std::string& uid, const std::string& implType) const;
 
@@ -198,6 +197,3 @@ inline std::string AppConfigManager::msgHead() const
 }
 
 } // namespace fwServices
-
-#endif // __FWSERVICES_APPCONFIGMANAGER_HPP__
-

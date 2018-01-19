@@ -1,28 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwTest/generator/Object.hpp"
+
 #include "fwTest/generator/Image.hpp"
 #include "fwTest/generator/Mesh.hpp"
 #include "fwTest/generator/SeriesDB.hpp"
-#include "fwTest/generator/Object.hpp"
 
 #include <fwData/Integer.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Resection.hpp>
-#include <fwData/ResectionDB.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/ProcessObject.hpp>
-
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include <fwData/Resection.hpp>
+#include <fwData/ResectionDB.hpp>
+#include <fwData/String.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <cmath>
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
+#include <cmath>
 
 namespace fwTest
 {
@@ -126,7 +126,7 @@ namespace generator
     ::fwData::StructureTraits::CategoryContainer categories(2);
     categories[0] = ::fwData::StructureTraits::ABDOMEN;
     categories[1] = ::fwData::StructureTraits::BODY;
-    pStructureTraits->setCRefCategories(categories);
+    pStructureTraits->setCategories(categories);
 
     return pStructureTraits;
 }
@@ -194,12 +194,12 @@ namespace generator
     unsigned int nbInputs  = rand()%5;
     unsigned int nbOutputs = rand()%5;
 
-    for (unsigned int i = 0; i<nbInputs; ++i)
+    for (unsigned int i = 0; i < nbInputs; ++i)
     {
         node->addInputPort(Object::createPort());
     }
 
-    for (unsigned int i = 0; i<nbOutputs; ++i)
+    for (unsigned int i = 0; i < nbOutputs; ++i)
     {
         node->addOutputPort(Object::createPort());
     }
@@ -249,7 +249,7 @@ namespace generator
     tf->setName( "TFColor" );
     tf->setWindow(window );
 
-    for (unsigned char nb = 0; nb<nbPoints; ++nb)
+    for (unsigned char nb = 0; nb < nbPoints; ++nb)
     {
         double value = rand()%100 - level;
         tf->addTFColor( value,
@@ -278,7 +278,8 @@ namespace generator
     tf->setWindow( -200.02 );
 
     tf->addTFColor( -40.33, ::fwData::TransferFunction::TFColor( 0.9f, 0.2f, 0.3f, 0.4f) );
-    tf->addTFColor( 3,      ::fwData::TransferFunction::TFColor( 0.1f, 0.2f, 0.9f, 0.4f) ); // Invert point 3 <=> -0.2, for tests
+    tf->addTFColor( 3,      ::fwData::TransferFunction::TFColor( 0.1f, 0.2f, 0.9f, 0.4f) ); // Invert point 3 <=> -0.2,
+                                                                                            // for tests
     tf->addTFColor( -0.2,   ::fwData::TransferFunction::TFColor( 0.1f, 0.9f, 0.3f, 0.4f) );
     tf->addTFColor( 150,    ::fwData::TransferFunction::TFColor( 0.1f, 0.2f, 0.3f, 0.9f) );
 
@@ -295,10 +296,10 @@ namespace generator
     // use the default value PHONG,SURFACE, STANDARD
 
     ::fwData::Color::sptr ambient = ::fwData::Color::New();
-    ambient->setRGBA(0.5f,0.5f,0.5f,0.5f);
+    ambient->setRGBA(0.5f, 0.5f, 0.5f, 0.5f);
 
     ::fwData::Color::sptr diffuse = ::fwData::Color::New();
-    diffuse->setRGBA(0.8f,0.2f,0.5f,0.4f);
+    diffuse->setRGBA(0.8f, 0.2f, 0.5f, 0.4f);
 
     ::fwData::Material::sptr material = ::fwData::Material::New();
 
@@ -329,7 +330,6 @@ namespace generator
     po->setOutputValue(IMAGEID2, image2);
     return po;
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -399,4 +399,3 @@ namespace generator
 
 } // namespace generator
 } // namespace fwTest
-

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,6 @@
 
 #include <exception>
 
-
 namespace uiMeasurement
 {
 namespace action
@@ -32,9 +31,7 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddDistance, ::fwData::Image );
 
-
 //------------------------------------------------------------------------------
-
 
 AddDistance::AddDistance( ) noexcept :
     m_actionCheckId(-1)
@@ -66,24 +63,24 @@ void AddDistance::updating()
     }
 
     ::fwData::Point::sptr pt1 = ::fwData::Point::New();
-    std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getRefCoord().begin() );
+    std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getCoord().begin() );
 
     ::fwData::Point::sptr pt2 = ::fwData::Point::New();
-    std::copy( image->getSize().begin(),  image->getSize().begin() +3, pt2->getRefCoord().begin() );
+    std::copy( image->getSize().begin(),  image->getSize().begin() +3, pt2->getCoord().begin() );
 
-    std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
+    std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
                     image->getSpacing().begin(),
-                    pt2->getRefCoord().begin(),
+                    pt2->getCoord().begin(),
                     std::multiplies<double>() );
-    std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
+    std::transform( pt2->getCoord().begin(), pt2->getCoord().end(),
                     image->getOrigin().begin(),
-                    pt2->getRefCoord().begin(),
+                    pt2->getCoord().begin(),
                     std::plus<double>() );
 
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 
-    pl->getRefPoints().push_back( pt1 );
-    pl->getRefPoints().push_back( pt2 );
+    pl->getPoints().push_back( pt1 );
+    pl->getPoints().push_back( pt2 );
 
     ::fwData::Vector::sptr vectDist;
     vectDist = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, ::fwData::Vector::New());

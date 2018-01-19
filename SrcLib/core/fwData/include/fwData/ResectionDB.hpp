@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_RESECTIONDB_HPP__
-#define __FWDATA_RESECTIONDB_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -70,9 +69,8 @@ public:
      * @{
      * @brief Get/Set value of the safe resection.
      */
-    const ::fwData::Resection::sptr  getSafeResection() const;
-    ::fwData::Resection::sptr & getRefSafeResection();
-    const ::fwData::Resection::sptr& getCRefSafeResection() const;
+    ::fwData::Resection::sptr& getSafeResection();
+    const ::fwData::Resection::sptr& getSafeResection() const;
     void setSafeResection(const ::fwData::Resection::sptr& _safeResection);
     /// @}
 
@@ -128,21 +126,14 @@ inline void ResectionDB::setResections (const ResectionDB::ResectionContainerTyp
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::Resection::sptr ResectionDB::getSafeResection() const
+inline ::fwData::Resection::sptr& ResectionDB::getSafeResection()
 {
     return m_safeResection;
 }
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::Resection::sptr& ResectionDB::getRefSafeResection()
-{
-    return m_safeResection;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const ::fwData::Resection::sptr& ResectionDB::getCRefSafeResection() const
+inline const ::fwData::Resection::sptr& ResectionDB::getSafeResection() const
 {
     return m_safeResection;
 }
@@ -157,6 +148,3 @@ inline void ResectionDB::setSafeResection(const ::fwData::Resection::sptr& _safe
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_RESECTIONDB_HPP__
-

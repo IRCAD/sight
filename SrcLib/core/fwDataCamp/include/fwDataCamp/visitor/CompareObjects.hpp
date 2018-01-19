@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef  __FWDATACAMP_VISITOR_COMPAREOBJECTS_HPP__
-#define  __FWDATACAMP_VISITOR_COMPAREOBJECTS_HPP__
+#pragma once
 
-#include <fwCore/macros.hpp>
-#include <fwCore/Exception.hpp>
+#include "fwDataCamp/config.hpp"
 
 #include <fwCamp/camp/ExtendedClassVisitor.hpp>
 
-#include "fwDataCamp/config.hpp"
+#include <fwCore/Exception.hpp>
+#include <fwCore/macros.hpp>
 
 namespace fwData
 {
@@ -26,9 +25,7 @@ namespace visitor
 {
 
 /**
- * @class   CompareObjects
  * @brief   Visitor used to compare two objects.
- * @date    2013.
  */
 class FWDATACAMP_CLASS_API CompareObjects : public ::camp::ExtendedClassVisitor
 {
@@ -154,6 +151,3 @@ private:
 } // namespace visitor
 
 } // namespace fwDataCamp
-
-#endif // __FWDATACAMP_VISITOR_COMPAREOBJECTS_HPP__
-

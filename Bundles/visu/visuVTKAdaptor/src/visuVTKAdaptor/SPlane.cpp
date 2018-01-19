@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -91,7 +91,7 @@ void SPlane::starting()
     ::fwData::Plane::csptr plane = this->getInOut< ::fwData::Plane >(s_PLANE_INOUT);
     SLM_ASSERT("Plane is missing", plane);
 
-    for( const ::fwData::Point::sptr& point :  plane->getCRefPoints() )
+    for( const ::fwData::Point::sptr& point :  plane->getPoints() )
     {
         // create the srv configuration for objects auto-connection
         auto servicePoint = this->registerService< ::fwRenderVTK::IAdaptor >("::visuVTKAdaptor::SPoint");

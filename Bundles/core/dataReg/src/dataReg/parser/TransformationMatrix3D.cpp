@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@ void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
             for ( unsigned int k = 0; k < 16; k++)
             {
                 inputString >> coef;
-                matrix->getRefCoefficients()[k] = coef;
+                matrix->getCoefficients()[k] = coef;
             }
         }
     }
@@ -53,4 +53,3 @@ void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
 
 } //namespace parser
 } //namespace dataReg
-

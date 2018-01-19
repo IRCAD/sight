@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#pragma once
 
 #ifndef __FWITKIO_ITK_HXX__
 #define __FWITKIO_ITK_HXX__
@@ -117,7 +119,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
     unsigned long nbpixels = 1;
     for (std::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
     {
-        // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
+        // itkRegion.SetIndex( d,  static_cast<int>(imageData->getOrigin()[d]) );
         itkRegion.SetSize( d,   static_cast<unsigned long>(imageData->getSize()[d]) );
         nbpixels *= itkRegion.GetSize()[d];
     }
@@ -156,4 +158,3 @@ typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bo
 } // end namespace
 
 #endif // __FWITKIO_ITK_HXX__
-

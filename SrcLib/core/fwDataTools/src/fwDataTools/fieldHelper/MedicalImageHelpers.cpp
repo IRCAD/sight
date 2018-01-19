@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -95,8 +95,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
         fieldIsModified = true;
     }
 
-
-    SLM_ASSERT (
+    SLM_ASSERT(
         "Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
         axialIdx && frontalIdx && sagittalIdx
         );
@@ -120,7 +119,6 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
         fieldIsModified      = true;
     }
 
-
     return fieldIsModified;
 }
 
@@ -134,11 +132,11 @@ bool MedicalImageHelpers::checkImageSliceIndex( ::fwData::Image::sptr _pImg )
 
     MedicalImageHelpers::checkImageSliceIndex(_pImg);
 
-    point->getRefCoord()[0] =
+    point->getCoord()[0] =
         _pImg->getField< ::fwData::Integer >( ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId )->value();
-    point->getRefCoord()[1] =
+    point->getCoord()[1] =
         _pImg->getField< ::fwData::Integer >( ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId  )->value();
-    point->getRefCoord()[2] =
+    point->getCoord()[2] =
         _pImg->getField< ::fwData::Integer >( ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId    )->value();
 
     return point;

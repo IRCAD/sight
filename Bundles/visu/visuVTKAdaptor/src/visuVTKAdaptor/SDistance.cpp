@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -132,10 +132,10 @@ void SDistance::updating()
     ::fwData::Point::csptr p2 = m_point2.lock();
 
     double ps1[3];
-    std::copy(p1->getCRefCoord().begin(), (p1)->getCRefCoord().end(), ps1 );
+    std::copy(p1->getCoord().begin(), (p1)->getCoord().end(), ps1 );
 
     double ps2[3];
-    std::copy(p2->getCRefCoord().begin(), (p2)->getCRefCoord().end(), ps2 );
+    std::copy(p2->getCoord().begin(), (p2)->getCoord().end(), ps2 );
 
     m_distanceRepresentation->GetPoint1Representation()->SetWorldPosition(ps1);
     m_distanceRepresentation->GetPoint2Representation()->SetWorldPosition(ps2);

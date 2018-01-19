@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
-#define __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
+#pragma once
 
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
@@ -49,7 +48,7 @@ public:
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /// Getters/setters
-    TMCoefArray& getRefCoefficients ();
+    TMCoefArray& getCoefficients ();
     const TMCoefArray& getCoefficients () const;
     void setCoefficients (const TMCoefArray& _vCoefficients);
 
@@ -86,7 +85,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline TransformationMatrix3D::TMCoefArray& TransformationMatrix3D::getRefCoefficients()
+inline TransformationMatrix3D::TMCoefArray& TransformationMatrix3D::getCoefficients()
 {
     return this->m_vCoefficients;
 }
@@ -124,6 +123,3 @@ inline void TransformationMatrix3D::setCoefficient(size_t l, size_t c, Transform
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
-

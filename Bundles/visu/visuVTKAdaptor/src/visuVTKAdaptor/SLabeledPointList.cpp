@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -121,7 +121,7 @@ public:
         else if ( (eventId == vtkCommand::RightButtonReleaseEvent ) && !m_pickedPoint.expired() &&
                   !m_pickedPointList.expired() && std::equal(pos, pos+1, m_lastPos) )
         {
-            ::fwData::PointList::PointListContainer& points       = m_pickedPointList.lock()->getRefPoints();
+            ::fwData::PointList::PointListContainer& points       = m_pickedPointList.lock()->getPoints();
             ::fwData::PointList::PointListContainer::iterator itr =
                 std::find( points.begin(), points.end(), m_pickedPoint.lock() );
             if(itr != points.end())
@@ -155,7 +155,7 @@ public:
 
                 if (!m_pickedPoint.expired() && !m_pickedPointList.expired())
                 {
-                    ::fwData::PointList::PointListContainer& points       = m_pickedPointList.lock()->getRefPoints();
+                    ::fwData::PointList::PointListContainer& points       = m_pickedPointList.lock()->getPoints();
                     ::fwData::PointList::PointListContainer::iterator itr =
                         std::find(points.begin(), points.end(), m_pickedPoint.lock());
                     if(itr != points.end() )
@@ -170,7 +170,7 @@ public:
     }
 
 protected:
-    ::fwRenderVTK::IAdaptor *m_service;
+    ::fwRenderVTK::IAdaptor* m_service;
     vtkPicker* m_picker;
     vtkPropCollection* m_propCollection;
     double m_display[3];
@@ -266,7 +266,7 @@ void SLabeledPointList::updating()
         pointListAdaptor->setAutoRender( this->getAutoRender() );
         pointListAdaptor->start();
 
-        for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
+        for( ::fwData::Point::sptr point :  landmarks->getPoints() )
         {
             auto serviceLabel = this->registerService< ::fwRenderVTK::IAdaptor>("::visuVTKAdaptor::SPointLabel");
             // register the point list

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_RESECTION_HPP__
-#define __FWDATA_RESECTION_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -54,9 +53,8 @@ public:
      * @{
      * @brief Get/Set value of the planeList.
      */
-    const ::fwData::PlaneList::sptr  getPlaneList () const;
-    ::fwData::PlaneList::sptr & getRefPlaneList();
-    const ::fwData::PlaneList::sptr& getCRefPlaneList() const;
+    ::fwData::PlaneList::sptr& getPlaneList();
+    const ::fwData::PlaneList::sptr& getPlaneList() const;
     void setPlaneList (const ::fwData::PlaneList::sptr& _planeList);
     /// @}
 
@@ -64,29 +62,25 @@ public:
      * @{
      * @brief Get/Set value of the inputs.
      */
-    const ResectionInputs  getInputs () const;
-    ResectionInputs& getRefInputs ();
-    const ResectionInputs& getCRefInputs () const;
-    void setInputs (const ResectionInputs _vInputs);
-    void setCRefInputs (const ResectionInputs& _vInputs);
+    ResectionInputs& getInputs ();
+    const ResectionInputs& getInputs () const;
+    void setInputs (const ResectionInputs& _vInputs);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the outputs.
      */
-    const ResectionOutputs  getOutputs () const;
-    ResectionOutputs& getRefOutputs ();
-    const ResectionOutputs& getCRefOutputs () const;
-    void setOutputs (const ResectionOutputs _vOutputs);
-    void setCRefOutputs (const ResectionOutputs& _vOutputs);
+    ResectionOutputs& getOutputs ();
+    const ResectionOutputs& getOutputs () const;
+    void setOutputs (const ResectionOutputs& _vOutputs);
     /// @}
 
     /**
      * @{
      * @brief Get/Set value of the IsSafePart.
      */
-    const bool  getIsSafePart () const;
+    bool  getIsSafePart () const;
     void setIsSafePart (const bool _isSafePart);
     /// @}
 
@@ -94,11 +88,9 @@ public:
      * @{
      * @brief Get/Set value of the name.
      */
-    const std::string  getName () const;
-    std::string& getRefName ();
-    const std::string& getCRefName () const;
-    void setName (const std::string _name);
-    void setCRefName (const std::string& _name);
+    std::string& getName ();
+    const std::string& getName () const;
+    void setName (const std::string& _name);
 
     /// @}
 
@@ -106,7 +98,7 @@ public:
      * @{
      * @brief Get/Set value of the IsVisible.
      */
-    const bool  getIsVisible () const;
+    bool  getIsVisible () const;
     void setIsVisible (const bool _isVisible);
 
     /// @}
@@ -115,7 +107,7 @@ public:
      * @{
      * @brief Get/Set value of the IsValid.
      */
-    const bool  getIsValid () const;
+    bool  getIsValid () const;
     void setIsValid (const bool _isValid);
 
     /// @}
@@ -183,21 +175,14 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline const ::fwData::PlaneList::sptr Resection::getPlaneList () const
+inline ::fwData::PlaneList::sptr& Resection::getPlaneList()
 {
     return m_planeList;
 }
 
 //-----------------------------------------------------------------------------
 
-inline ::fwData::PlaneList::sptr& Resection::getRefPlaneList()
-{
-    return m_planeList;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const ::fwData::PlaneList::sptr& Resection::getCRefPlaneList() const
+inline const ::fwData::PlaneList::sptr& Resection::getPlaneList() const
 {
     return m_planeList;
 }
@@ -211,77 +196,49 @@ inline void Resection::setPlaneList (const ::fwData::PlaneList::sptr& _planeList
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionInputs Resection::getInputs () const
+inline Resection::ResectionInputs& Resection::getInputs ()
 {
     return m_vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionInputs& Resection::getRefInputs ()
+inline const Resection::ResectionInputs& Resection::getInputs () const
 {
     return m_vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionInputs& Resection::getCRefInputs () const
-{
-    return m_vInputs;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Resection::setInputs (const Resection::ResectionInputs _vInputs)
+inline void Resection::setInputs (const Resection::ResectionInputs& _vInputs)
 {
     m_vInputs = _vInputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setCRefInputs (const Resection::ResectionInputs& _vInputs)
-{
-    m_vInputs = _vInputs;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const Resection::ResectionOutputs Resection::getOutputs () const
+inline Resection::ResectionOutputs& Resection::getOutputs ()
 {
     return m_vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Resection::ResectionOutputs& Resection::getRefOutputs ()
+inline const Resection::ResectionOutputs& Resection::getOutputs () const
 {
     return m_vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Resection::ResectionOutputs& Resection::getCRefOutputs () const
-{
-    return m_vOutputs;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Resection::setOutputs (const Resection::ResectionOutputs _vOutputs)
+inline void Resection::setOutputs (const Resection::ResectionOutputs& _vOutputs)
 {
     m_vOutputs = _vOutputs;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setCRefOutputs (const Resection::ResectionOutputs& _vOutputs)
-{
-    m_vOutputs = _vOutputs;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const bool Resection::getIsSafePart () const
+inline bool Resection::getIsSafePart () const
 {
     return m_isSafePart;
 }
@@ -295,42 +252,28 @@ inline void Resection::setIsSafePart (const bool _isSafePart)
 
 //-----------------------------------------------------------------------------
 
-inline const std::string Resection::getName () const
+inline std::string& Resection::getName ()
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline std::string& Resection::getRefName ()
+inline const std::string& Resection::getName () const
 {
     return m_name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Resection::getCRefName () const
-{
-    return m_name;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Resection::setName (const std::string _name)
+inline void Resection::setName (const std::string& _name)
 {
     m_name = _name;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Resection::setCRefName (const std::string& _name)
-{
-    m_name = _name;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const bool Resection::getIsVisible () const
+inline bool Resection::getIsVisible () const
 {
     return m_isVisible;
 }
@@ -344,7 +287,7 @@ inline void Resection::setIsVisible (const bool _isVisible)
 
 //-----------------------------------------------------------------------------
 
-inline const bool Resection::getIsValid () const
+inline bool Resection::getIsValid () const
 {
     return m_isValid;
 }
@@ -359,6 +302,3 @@ inline void Resection::setIsValid (const bool _isValid)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-
-#endif // __FWDATA_RESECTION_HPP__
-

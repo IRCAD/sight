@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_PORT_HPP__
-#define __FWDATA_PORT_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -36,11 +35,9 @@ public:
      * @{
      * @brief Retrieve the identifier.
      */
-    const std::string  getIdentifier () const;
-    std::string& getRefIdentifier ();
-    const std::string& getCRefIdentifier () const;
-    void setIdentifier (const std::string _identifier);
-    void setCRefIdentifier (const std::string& _identifier);
+    std::string& getIdentifier ();
+    const std::string& getIdentifier () const;
+    void setIdentifier (const std::string& _identifier);
     /// @}
 
     /**
@@ -48,11 +45,9 @@ public:
      * @brief Retrieve the type.
      */
 
-    const std::string  getType () const;
-    std::string& getRefType ();
-    const std::string& getCRefType () const;
-    void setType (const std::string _type);
-    void setCRefType (const std::string& _type);
+    std::string& getType ();
+    const std::string& getType () const;
+    void setType (const std::string& _type);
     /// @}
 
     /**
@@ -78,70 +73,42 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const std::string Port::getIdentifier () const
-{
-    return m_identifier;
-}
-
-//-----------------------------------------------------------------------------
-
-inline std::string& Port::getRefIdentifier ()
+inline std::string& Port::getIdentifier ()
 {
     return this->m_identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Port::getCRefIdentifier () const
+inline const std::string& Port::getIdentifier () const
 {
     return this->m_identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setIdentifier (const std::string _identifier)
+inline void Port::setIdentifier (const std::string& _identifier)
 {
     this->m_identifier = _identifier;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setCRefIdentifier (const std::string& _identifier)
-{
-    this->m_identifier = _identifier;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const std::string Port::getType () const
-{
-    return m_type;
-}
-
-//-----------------------------------------------------------------------------
-
-inline std::string& Port::getRefType ()
+inline std::string& Port::getType ()
 {
     return this->m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const std::string& Port::getCRefType () const
+inline const std::string& Port::getType () const
 {
     return this->m_type;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Port::setType (const std::string _type)
-{
-    this->m_type = _type;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Port::setCRefType (const std::string& _type)
+inline void Port::setType (const std::string& _type)
 {
     this->m_type = _type;
 }
@@ -149,6 +116,3 @@ inline void Port::setCRefType (const std::string& _type)
 //-----------------------------------------------------------------------------
 
 } // namespace fwData
-
-#endif // __FWDATA_PORT_HPP__
-

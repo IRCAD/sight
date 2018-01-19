@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_GRAPH_HPP__
-#define __FWDATA_GRAPH_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/Edge.hpp"
@@ -78,8 +77,8 @@ public:
      * @{
      * @brief Get the node container
      */
-    FWDATA_API NodeContainer& getRefNodes();
-    FWDATA_API const NodeContainer& getCRefNodes() const;
+    FWDATA_API NodeContainer& getNodes();
+    FWDATA_API const NodeContainer& getNodes() const;
     ///@}
 
     /**
@@ -89,8 +88,8 @@ public:
      *
      * @return map<Edge, pair<source node, destination node> >
      */
-    FWDATA_API const ConnectionContainer& getCRefConnections() const;
-    FWDATA_API ConnectionContainer& getRefConnections();
+    FWDATA_API const ConnectionContainer& getConnections() const;
+    FWDATA_API ConnectionContainer& getConnections();
 
     /**
      * @brief Add and edge
@@ -225,6 +224,3 @@ protected:
 };
 
 } // namespace fwData
-
-#endif // __FWDATA_GRAPH_HPP__
-

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_PLANE_HPP__
-#define __FWDATA_PLANE_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -55,19 +54,15 @@ public:
     /** @{
      *  @brief get/set points container
      */
-    const PointContainer getPoints() const;
-    PointContainer& getRefPoints();
-    const PointContainer& getCRefPoints() const;
-    void setPoints(const PointContainer _vPoints);
-    void setCRefPoints(const PointContainer& _vPoints);
+    PointContainer& getPoints();
+    const PointContainer& getPoints() const;
+    void setPoints(const PointContainer& _vPoints);
     /// @}
 
     /** @{
      *  @brief get/set flag if the plane is an intersection one (else an union one)
      */
     bool getIsIntersection () const;
-    bool& getRefIsIntersection ();
-    const bool& getCRefIsIntersection () const;
     void setIsIntersection(bool _isIntersection);
     /// @}
 
@@ -94,35 +89,21 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const Plane::PointContainer Plane::getPoints() const
-{
-    return m_vPoints;
-}
-
-//-----------------------------------------------------------------------------
-
-inline Plane::PointContainer& Plane::getRefPoints()
+inline Plane::PointContainer& Plane::getPoints()
 {
     return this->m_vPoints;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Plane::PointContainer& Plane::getCRefPoints() const
+inline const Plane::PointContainer& Plane::getPoints() const
 {
     return this->m_vPoints;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Plane::setPoints(const Plane::PointContainer _vPoints)
-{
-    this->m_vPoints = _vPoints;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Plane::setCRefPoints(const Plane::PointContainer& _vPoints)
+inline void Plane::setPoints(const Plane::PointContainer& _vPoints)
 {
     this->m_vPoints = _vPoints;
 }
@@ -136,20 +117,6 @@ inline bool Plane::getIsIntersection () const
 
 //-----------------------------------------------------------------------------
 
-inline bool& Plane::getRefIsIntersection ()
-{
-    return this->m_isIntersection;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const bool& Plane::getCRefIsIntersection () const
-{
-    return this->m_isIntersection;
-}
-
-//-----------------------------------------------------------------------------
-
 inline void Plane::setIsIntersection(bool _isIntersection)
 {
     this->m_isIntersection = _isIntersection;
@@ -158,6 +125,3 @@ inline void Plane::setIsIntersection(bool _isIntersection)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-
-#endif // __FWDATA_PLANE_HPP__
-

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -151,7 +151,7 @@ void SHistogramValue::updating()
         ::fwData::Point::csptr point = this->getInput< ::fwData::Point>(s_POINT_INPUT);
 
         m_text->setTransform( transform );
-        m_text->setPos( point->getCRefCoord()[0] + diameterH * 2, point->getCRefCoord()[1] - diameterV * 2 );
+        m_text->setPos( point->getCoord()[0] + diameterH * 2, point->getCoord()[1] - diameterV * 2 );
         m_text->setVisible( true );
     }
     else

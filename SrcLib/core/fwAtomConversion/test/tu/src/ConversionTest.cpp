@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -252,7 +252,7 @@ void ConversionTest::graphConversionTest()
     ::fwData::Node::sptr n1, n2, n3;
 
     // Test nodes
-    const ::fwData::Graph::NodeContainer& nodes = newGraph->getCRefNodes();
+    const ::fwData::Graph::NodeContainer& nodes = newGraph->getNodes();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size", (size_t)3, nodes.size() );
     for( ::fwData::Node::sptr node :  nodes )
     {
@@ -277,7 +277,7 @@ void ConversionTest::graphConversionTest()
     CPPUNIT_ASSERT_MESSAGE("Test node n3", n3 );
 
     // Test edges
-    const ::fwData::Graph::ConnectionContainer& connections = newGraph->getCRefConnections();
+    const ::fwData::Graph::ConnectionContainer& connections = newGraph->getConnections();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size", (size_t)2, connections.size() );
     for( ::fwData::Graph::ConnectionContainer::value_type elem  :  connections )
     {
@@ -778,4 +778,3 @@ void ConversionTest::conversionNotManagedExceptionTest()
 
 }     // namespace ut
 }  // namespace fwAtomConversion
-

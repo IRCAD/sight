@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -115,8 +115,8 @@ void Measurement::addDistance(const SPTR(::fwData::Point)& point1,
     }
 
     ::fwData::PointList::sptr pointList = ::fwData::PointList::New();
-    pointList->getRefPoints().push_back(point1);
-    pointList->getRefPoints().push_back(point2);
+    pointList->getPoints().push_back(point1);
+    pointList->getPoints().push_back(point2);
 
     distanceVector->getContainer().push_back(pointList);
     m_object->setField("ShowDistances", ::fwData::Boolean::New(true));

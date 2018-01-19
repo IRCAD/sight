@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -143,9 +143,9 @@ void LoadLandmark::load(const ::boost::filesystem::path& path)
     helper->launch();
     helper->stopAndDestroy();
 
-    for(::fwData::Point::sptr landmark :  newLandmarks->getCRefPoints())
+    for(::fwData::Point::sptr landmark :  newLandmarks->getPoints())
     {
-        landmarks->getRefPoints().push_back( landmark );
+        landmarks->getPoints().push_back( landmark );
         auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
         sig->asyncEmit(landmark);
     }

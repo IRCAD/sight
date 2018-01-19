@@ -1,22 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
+#include "fwDataIO/reader/TransformationMatrix3DReader.hpp"
 
-#include <boost/filesystem/convenience.hpp>
+#include "fwDataIO/reader/registry/macros.hpp"
 
 #include <fwData/location/SingleFile.hpp>
 
-#include "fwDataIO/reader/TransformationMatrix3DReader.hpp"
-#include "fwDataIO/reader/registry/macros.hpp"
+#include <boost/filesystem/convenience.hpp>
 
+#include <fstream>
+#include <iostream>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TransformationMatrix3DReader );
-
 
 namespace fwDataIO
 {
@@ -50,14 +49,14 @@ void TransformationMatrix3DReader::read()
     char readedValue = 0;
     double value;
 
-    while ( !inFile.eof() && readedValue<16 )
+    while ( !inFile.eof() && readedValue < 16 )
     {
         inFile >> value;
-        this->getConcreteObject()->getRefCoefficients()[readedValue] = value;
+        this->getConcreteObject()->getCoefficients()[readedValue] = value;
         readedValue++;
     }
 
-    assert(this->getConcreteObject()->getRefCoefficients().size()==16 );
+    assert(this->getConcreteObject()->getCoefficients().size() == 16 );
 }
 
 //------------------------------------------------------------------------------

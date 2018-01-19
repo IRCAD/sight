@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -106,16 +106,16 @@ void AddLandmark::updating()
         // create a new point
         ::fwData::Point::sptr newPoint = ::fwDataTools::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
         // transform slice to mm
-        std::transform( newPoint->getRefCoord().begin(), newPoint->getRefCoord().end(),
+        std::transform( newPoint->getCoord().begin(), newPoint->getCoord().end(),
                         image->getSpacing().begin(),
-                        newPoint->getRefCoord().begin(),
+                        newPoint->getCoord().begin(),
                         std::multiplies<double>() );
-        std::transform( newPoint->getRefCoord().begin(), newPoint->getRefCoord().end(),
+        std::transform( newPoint->getCoord().begin(), newPoint->getCoord().end(),
                         image->getOrigin().begin(),
-                        newPoint->getRefCoord().begin(),
+                        newPoint->getCoord().begin(),
                         std::plus<double>() );
         // append to landmark
-        landmarks->getRefPoints().push_back( newPoint );
+        landmarks->getPoints().push_back( newPoint );
 
         // append to point the label
         ::fwData::String::sptr label = ::fwData::String::New();

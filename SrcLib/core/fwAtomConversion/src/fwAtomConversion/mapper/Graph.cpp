@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwAtoms/String.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Sequence.hpp>
-#include <fwData/Graph.hpp>
-#include <fwTools/UUID.hpp>
-
-
 #include "fwAtomConversion/mapper/Graph.hpp"
-#include "fwAtomConversion/mapper/registry/macros.hpp"
+
 #include "fwAtomConversion/convert.hpp"
 #include "fwAtomConversion/exception/ConversionNotManaged.hpp"
+#include "fwAtomConversion/mapper/registry/macros.hpp"
+
+#include <fwAtoms/Map.hpp>
+#include <fwAtoms/Sequence.hpp>
+#include <fwAtoms/String.hpp>
+
+#include <fwData/Graph.hpp>
+
+#include <fwTools/UUID.hpp>
 
 namespace fwAtomConversion
 {
@@ -28,10 +30,10 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 //-----------------------------------------------------------------------------
 
 ::fwAtoms::Object::sptr Graph::convert( ::fwData::Object::sptr object,
-                                        DataVisitor::AtomCacheType & cache )
+                                        DataVisitor::AtomCacheType& cache )
 {
     const camp::Class& metaclass = ::camp::classByName( object->getClassname() );
-    ::fwAtomConversion::DataVisitor visitor ( object, cache );
+    ::fwAtomConversion::DataVisitor visitor( object, cache );
     metaclass.visit(visitor);
     ::fwAtoms::Object::sptr atom = visitor.getAtomObject();
 
@@ -41,7 +43,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 
     typedef ::fwData::Graph::ConnectionContainer GraphConnections;
     ::fwAtoms::Object::sptr value;
-    for( GraphConnections::value_type elem :  graph->getCRefConnections() )
+    for( GraphConnections::value_type elem :  graph->getConnections() )
     {
         value = ::fwAtoms::Object::New();
 
@@ -62,11 +64,11 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 //-----------------------------------------------------------------------------
 
 ::fwData::Object::sptr Graph::convert(  ::fwAtoms::Object::sptr atom,
-                                        AtomVisitor::DataCacheType & cache,
-                                        const AtomVisitor::IReadPolicy &uuidPolicy
+                                        AtomVisitor::DataCacheType& cache,
+                                        const AtomVisitor::IReadPolicy& uuidPolicy
                                         )
 {
-    ::fwAtomConversion::AtomVisitor visitor ( atom, cache, uuidPolicy );
+    ::fwAtomConversion::AtomVisitor visitor( atom, cache, uuidPolicy );
     visitor.visit();
     ::fwData::Object::sptr data = visitor.getDataObject();
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);

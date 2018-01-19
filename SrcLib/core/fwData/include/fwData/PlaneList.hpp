@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_PLANELIST_HPP__
-#define __FWDATA_PLANELIST_HPP__
+#pragma once
 
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
@@ -52,9 +51,8 @@ public:
     /** @{
      *  @brief get/set container of all planes
      */
-    const PlaneListContainer  getPlanes () const;
-    PlaneListContainer& getRefPlanes ();
-    const PlaneListContainer& getCRefPlanes () const;
+    PlaneListContainer& getPlanes ();
+    const PlaneListContainer& getPlanes () const;
     void setPlanes (const PlaneListContainer& _vPlanes);
     /// @}
 
@@ -86,21 +84,14 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const PlaneList::PlaneListContainer PlaneList::getPlanes () const
-{
-    return m_vPlanes;
-}
-
-//-----------------------------------------------------------------------------
-
-inline PlaneList::PlaneListContainer& PlaneList::getRefPlanes ()
+inline PlaneList::PlaneListContainer& PlaneList::getPlanes ()
 {
     return this->m_vPlanes;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const PlaneList::PlaneListContainer& PlaneList::getCRefPlanes () const
+inline const PlaneList::PlaneListContainer& PlaneList::getPlanes () const
 {
     return this->m_vPlanes;
 }
@@ -115,6 +106,3 @@ inline void PlaneList::setPlanes (const PlaneList::PlaneListContainer& _vPlanes)
 //-----------------------------------------------------------------------------
 
 } // end namespace fwData
-
-#endif // __FWDATA_PLANELIST_HPP__
-

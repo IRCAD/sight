@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGDCMIO_CONTAINER_DICOMINSTANCE_HPP__
-#define __FWGDCMIO_CONTAINER_DICOMINSTANCE_HPP__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 
@@ -52,7 +51,7 @@ public:
      */
     FWGDCMIO_API DicomInstance(const SPTR(::fwMedData::Series)& series,
                                const SPTR(::fwLog::Logger)& logger = nullptr,
-                               bool isMultiFiles = true);
+                               bool isMultiFiles                   = true);
 
     /**
      * @brief Constructor
@@ -135,7 +134,7 @@ public:
     }
 
     /// Get SOP Instance UID container
-    SOPInstanceUIDContainerType& getRefSOPInstanceUIDContainer()
+    SOPInstanceUIDContainerType& getSOPInstanceUIDContainer()
     {
         return m_SOPInstanceUIDContainer;
     }
@@ -191,5 +190,3 @@ private:
 
 } //namespace container
 } //namespace fwGdcmIO
-
-#endif /* __FWGDCMIO_CONTAINER_DICOMINSTANCE_HPP__ */

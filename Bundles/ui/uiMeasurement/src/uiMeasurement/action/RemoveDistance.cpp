@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMeasurement/action/RemoveDistance.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwCom/Signal.hxx>
+
+#include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
@@ -89,11 +89,11 @@ std::string distanceToStr(double dist)
             ::fwData::Point::sptr pt2 = pl->getPoints().back();
 
             double dist  = 0;
-            double delta = pt1->getCRefCoord()[0] - pt2->getCRefCoord()[0];
+            double delta = pt1->getCoord()[0] - pt2->getCoord()[0];
             dist += delta*delta;
-            delta = pt1->getCRefCoord()[1] - pt2->getCRefCoord()[1];
+            delta = pt1->getCoord()[1] - pt2->getCoord()[1];
             dist += delta*delta;
-            delta = pt1->getCRefCoord()[2] - pt2->getCRefCoord()[2];
+            delta = pt1->getCoord()[2] - pt2->getCoord()[2];
             dist += delta*delta;
             dist  = sqrt(dist);
 

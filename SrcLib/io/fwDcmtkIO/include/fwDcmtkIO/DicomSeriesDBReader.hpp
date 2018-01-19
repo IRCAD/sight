@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDCMTKIO_DICOMSERIESDBREADER_HPP__
-#define __FWDCMTKIO_DICOMSERIESDBREADER_HPP__
+#pragma once
 
 #include "fwDcmtkIO/config.hpp"
 #include "fwDcmtkIO/reader/IObjectReader.hpp"
@@ -84,19 +83,13 @@ public:
     /**
      * @brief Set whether the reader must use the dicomdir file or not
      * @{ */
-    const bool  getDicomdirActivated () const
+    bool getDicomdirActivated () const
     {
         return m_isDicomdirActivated;
     }
     //------------------------------------------------------------------------------
 
-    bool& getRefDicomdirActivated ()
-    {
-        return this->m_isDicomdirActivated;
-    }
-    //------------------------------------------------------------------------------
-
-    const bool& getCRefDicomdirActivated () const
+    bool& getDicomdirActivated ()
     {
         return this->m_isDicomdirActivated;
     }
@@ -111,19 +104,15 @@ public:
     /**
      * @brief Dicom filter type that must be applied prior the reading process
      * @{ */
-    const std::string  getDicomFilterType () const
-    {
-        return m_dicomFilterType;
-    }
     //------------------------------------------------------------------------------
 
-    std::string& getRefDicomFilterType ()
+    std::string& getDicomFilterType ()
     {
         return this->m_dicomFilterType;
     }
     //------------------------------------------------------------------------------
 
-    const std::string& getCRefDicomFilterType () const
+    const std::string& getDicomFilterType () const
     {
         return this->m_dicomFilterType;
     }
@@ -202,5 +191,3 @@ private:
 };
 
 } // namespace fwDcmtkIO
-
-#endif /*__FWDCMTKIO_DICOMSERIESDBREADER_HPP__*/

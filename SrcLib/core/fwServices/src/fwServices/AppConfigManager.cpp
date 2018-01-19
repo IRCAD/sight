@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -285,7 +285,7 @@ fwData::Object::sptr AppConfigManager::findObject(const std::string& uid, const 
 
 // ------------------------------------------------------------------------
 
-::fwData::Object::sptr AppConfigManager::getRefObject(ConfigAttribute type, const std::string& uid) const
+::fwData::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::string& uid) const
 {
     SLM_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", ::fwTools::fwID::exist(uid));
     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
@@ -498,7 +498,7 @@ void AppConfigManager::createObjects(::fwRuntime::ConfigurationElement::csptr cf
                 if (buildMode.second && buildMode.first == "ref")
                 {
                     SLM_ASSERT(this->msgHead() + "Missing attribute \"id\".", id.second);
-                    obj = this->getRefObject(type, id.first);
+                    obj = this->getObject(type, id.first);
                 }
                 else
                 {
