@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ctrlComputeCPR/SComputeCPR3D.hpp"
+
+#include <cpr/functions.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -22,11 +24,9 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <cpr/functions.hpp>
 #include <math.h>
 
 fwServicesRegisterMacro(::fwServices::IController, ::ctrlComputeCPR::SComputeCPR3D, ::fwData::Mesh);
-
 
 namespace ctrlComputeCPR
 {
@@ -41,10 +41,11 @@ const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_UPDATE_SPLINE_SLOT  = "update
 
 //----------------------------------------------------------------------------------------------------------
 
-SComputeCPR3D::SComputeCPR3D() noexcept : m_nbSplinePoints(0),
-                                          m_angle(0.),
-                                          m_spacing(0.),
-                                          m_height(50.0)
+SComputeCPR3D::SComputeCPR3D() noexcept :
+    m_nbSplinePoints(0),
+    m_angle(0.),
+    m_spacing(0.),
+    m_height(50.0)
 {
     newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR3D::setHeight, this);
     newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR3D::setSpacing, this);
@@ -70,7 +71,7 @@ void SComputeCPR3D::starting()
     // Get the points of the spline point list
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
     SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
-    m_nbSplinePoints = pointList->getCRefPoints().size();
+    m_nbSplinePoints = pointList->getPoints().size();
 
     if(m_nbSplinePoints > 2)
     {
@@ -104,7 +105,7 @@ void SComputeCPR3D::updateSpline()
 {
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
     SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
-    m_nbSplinePoints = pointList->getCRefPoints().size();
+    m_nbSplinePoints = pointList->getPoints().size();
 
     if(m_nbSplinePoints > 2)
     {
@@ -197,4 +198,3 @@ void SComputeCPR3D::setNormalRotation(double angle)
 }
 
 }   //namespace ctrlComputeCPR
-

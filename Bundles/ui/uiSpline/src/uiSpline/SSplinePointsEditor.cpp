@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -109,7 +109,7 @@ void SSplinePointsEditor::starting()
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    for(::fwData::Point::sptr point : pointList->getRefPoints())
+    for(::fwData::Point::sptr point : pointList->getPoints())
     {
         SLM_ASSERT("Invalid point object", point);
         ::fwData::String::sptr text = ::fwData::String::dynamicCast(point->getField(s_FIELD_NAME));
@@ -170,7 +170,7 @@ void SSplinePointsEditor::getInteraction(::fwDataTools::PickingInfo info)
 
         ::fwData::Point::sptr point = ::fwData::Point::New(info.m_worldPos[0], info.m_worldPos[1], info.m_worldPos[2]);
         // Add the point clicked on a negato in the PointList
-        pointList->getRefPoints().push_back(point);
+        pointList->getPoints().push_back(point);
 
         // Connect point
         m_connectObj->connectPointToService(point, "modified", this->getSptr(), "updatePointList");
@@ -207,7 +207,7 @@ void SSplinePointsEditor::onClickItem(QListWidgetItem* item)
 
     ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
     const int index = m_list->row(item);
-    ::fwData::Point::sptr point = pointList->getRefPoints()[index];
+    ::fwData::Point::sptr point = pointList->getPoints()[index];
     this->fillVisualizePointList(index);
 
     m_sigPointSelected->asyncEmit(point);
@@ -220,7 +220,7 @@ void SSplinePointsEditor::onDoubleClickItem(QListWidgetItem* item)
 {
     ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
     const int index = m_list->row(item);
-    ::fwData::Point::sptr point = pointList->getRefPoints()[index];
+    ::fwData::Point::sptr point = pointList->getPoints()[index];
 
     m_sigPointSelected->asyncEmit(point);
 }
@@ -242,9 +242,9 @@ void SSplinePointsEditor::onClickRenamePoint()
         item->setText(QString::fromUtf8(text.c_str()));
 
         ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
-        pointList->getRefPoints()[index]->setField(s_FIELD_NAME, ::fwData::String::New(text));
-        pointList->getRefPoints()[index]->setField(::fwDataTools::fieldHelper::Image::m_labelId,
-                                                   ::fwData::String::New(text));
+        pointList->getPoints()[index]->setField(s_FIELD_NAME, ::fwData::String::New(text));
+        pointList->getPoints()[index]->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                                ::fwData::String::New(text));
 
         this->fillVisualizePointList(index);
     }
@@ -266,10 +266,10 @@ void SSplinePointsEditor::onClickRemovePoint()
     m_numberOfPoints--;
 
     ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
-    ::fwData::Point::sptr point         = pointList->getRefPoints()[indexPoint];
+    ::fwData::Point::sptr point         = pointList->getPoints()[indexPoint];
 
     m_connectObj->disconnectPointToService(point);
-    pointList->getRefPoints().erase(pointList->getRefPoints().begin() + indexPoint);
+    pointList->getPoints().erase(pointList->getPoints().begin() + indexPoint);
 
     m_list->removeItemWidget(item);
     delete(item);
@@ -296,7 +296,7 @@ void SSplinePointsEditor::onClickRemoveAllPoints()
 
     this->clearVisualizePointList();
 
-    pointList->getRefPoints().clear();
+    pointList->getPoints().clear();
     m_list->clear();
 
     m_renamePointButton->setEnabled(false);
@@ -349,8 +349,8 @@ void SSplinePointsEditor::addPointToVisualizePointList(const ::fwData::PointList
     ::fwData::PointList::sptr visualizePointList = this->getInOut< ::fwData::PointList>(S_SELECTED_POINTS_KEY);
     SLM_ASSERT( S_SELECTED_POINTS_KEY + " doesn't exist or is not a pointList", pointList);
 
-    ::fwData::Point::sptr pointToAdd = pointList->getRefPoints()[selectedPointIndex];
-    visualizePointList->getRefPoints().push_back(pointToAdd);
+    ::fwData::Point::sptr pointToAdd = pointList->getPoints()[selectedPointIndex];
+    visualizePointList->getPoints().push_back(pointToAdd);
 
     auto sig = visualizePointList->signal< ::fwData::PointList::PointAddedSignalType >(
         ::fwData::PointList::s_POINT_ADDED_SIG);
@@ -364,12 +364,12 @@ void SSplinePointsEditor::clearVisualizePointList()
     ::fwData::PointList::sptr visualizePointList = this->getInOut< ::fwData::PointList>(S_SELECTED_POINTS_KEY);
     SLM_ASSERT( S_SELECTED_POINTS_KEY + " doesn't exist or is not a pointList", visualizePointList);
 
-    if(visualizePointList && visualizePointList->getRefPoints().size() > 0)
+    if(visualizePointList && visualizePointList->getPoints().size() > 0)
     {
         // Messages to notify that points of visualizePointList are removed
-        for(int i = 0; i < visualizePointList->getRefPoints().size(); i++)
+        for(int i = 0; i < visualizePointList->getPoints().size(); i++)
         {
-            ::fwData::Point::sptr point = visualizePointList->getRefPoints()[i];
+            ::fwData::Point::sptr point = visualizePointList->getPoints()[i];
 
             auto sig = visualizePointList->signal< ::fwData::PointList::PointRemovedSignalType >(
                 ::fwData::PointList::s_POINT_REMOVED_SIG);
@@ -377,7 +377,7 @@ void SSplinePointsEditor::clearVisualizePointList()
         }
 
         // Clears the pointList
-        visualizePointList->getRefPoints().clear();
+        visualizePointList->getPoints().clear();
     }
 }
 
@@ -397,4 +397,3 @@ void SSplinePointsEditor::updatePointList()
 //------------------------------------------------------------------------------
 
 } // namespace uiSpline
-
