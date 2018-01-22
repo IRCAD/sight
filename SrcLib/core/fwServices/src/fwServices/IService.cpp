@@ -179,7 +179,7 @@ void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
 {
     OSLM_ERROR(indent << " data : '" << pt.data() << "'" );
 
-    for( ::boost::property_tree::ptree::value_type &v :  pt)
+    for( ::boost::property_tree::ptree::value_type& v :  pt)
     {
         OSLM_ERROR((indent + "  '") << v.first << "':" );
         displayPt(v.second, indent + "      ");
@@ -239,7 +239,7 @@ IService::ConfigType IService::getConfigTree() const
     const auto configTree = ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
 
     // This is in case we get the configuration from a ::fwServices::registry::ServiceConfig
-    const auto srvConfig = configTree.get_child_optional("config");
+    auto srvConfig = configTree.get_child_optional("config");
 
     if(srvConfig.is_initialized())
     {
@@ -247,7 +247,12 @@ IService::ConfigType IService::getConfigTree() const
     }
     else
     {
-        return configTree.get_child("service");
+        srvConfig = configTree.get_child_optional("service");
+        if(srvConfig.is_initialized())
+        {
+            return srvConfig.value();
+        }
+        return IService::ConfigType();
     }
 }
 
@@ -283,7 +288,7 @@ void IService::reconfiguring()
 {
     OSLM_FATAL(
         "If this method (reconfiguring) is called, it must be overriden in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
-        ")" );
+            ")" );
 }
 
 //-----------------------------------------------------------------------------
