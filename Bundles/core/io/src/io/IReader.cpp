@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -208,7 +208,7 @@ void IReader::configuring()
         else if (config.count("resource") == 1)
         {
             const std::string resource = config.get<std::string>("resource");
-            auto folder                = ::fwRuntime::getBundleResourcePath(resource);
+            auto folder                = ::fwRuntime::getBundleResourceFilePath(resource);
             if(folder.empty())
             {
                 // If not found in a bundle, look into libraries
@@ -262,4 +262,3 @@ void IReader::readFiles(::io::LocationsType files)
 //-----------------------------------------------------------------------------
 
 }
-
