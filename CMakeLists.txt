@@ -10,6 +10,7 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/find_sse.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
@@ -143,6 +144,17 @@ endif()
 if(MSVC_IDE)
     set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} /MP")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
+option(USE_SSE "Use SSE/SSE2/SSE3/SSE4 if available (WARNING, this variable must match the deps settings !)" ON)
+
+if(USE_SSE)
+    # Build with SSE support if possible
+    fwFindSSE()
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SSE_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS}")
+    add_definitions("${SSE_DEFINITIONS}")
 endif()
 
 set(LIBRARY_OUTPUT_DIR lib)
