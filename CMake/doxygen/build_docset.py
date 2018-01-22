@@ -3,7 +3,7 @@ import bs4
 import os
 from pathlib import Path
 import re
-from shutil import rmtree, copyfile, copytree
+import shutil
 import sqlite3
 import sys
 
@@ -29,15 +29,11 @@ def bootstrap_docset():
     Create the skeleton for the docset, i.e. the directory structure along with the SQLite database. Return the SQLite
     database connection.
     """
-    # First, clear any remains from a previous docset build
-    if Path('./Documentation/fw4spl.docset/').exists():
-        rmtree('./Documentation/fw4spl.docset/')
-
     # Create the directory structure.
-    Path('./Documentation/fw4spl.docset/Contents/Resources').mkdir(parents=True, exist_ok=True)
+    Path('./Documentation/Docset/fw4spl.docset/Contents/Resources').mkdir(parents=True, exist_ok=True)
 
     # Then, create the SQLite database
-    db = Path('./Documentation/fw4spl.docset/Contents/Resources/docSet.dsidx')
+    db = Path('./Documentation/Docset/fw4spl.docset/Contents/Resources/docSet.dsidx')
     if db.exists():
         os.remove(str(db))
     conn = sqlite3.connect(str(db))
@@ -52,14 +48,10 @@ def gather_sources():
     Return a list containing the paths to all interesting HTML files contained at the root of the Doxygen html
     directory. We're not interested in what's in the subdirectories.
     """
-    def recurse_dir(d):
-        files = list()
-        for _, _, dir_files in os.walk(d):
-            files += [f for f in dir_files if f.endswith('.html')]
-        for _d in subdirs:
-            files += recurse_dir(_d)
-        return files
-    return recurse_dir('./Documentation/Doxygen/html')
+    files = list()
+    for _, _, dir_files in os.walk('./Documentation/Docset/html/'):
+        files += [f for f in dir_files if f.endswith('.html')]
+    return files
 
 def parse_file(f):
     """
@@ -72,7 +64,7 @@ def parse_file(f):
     if any(map(lambda regexp: regexp.match(f), file_skip_re)):
         return entries
     try:
-        html = open(os.path.join('./Documentation/Doxygen/html', f), encoding="utf8").read()
+        html = open(os.path.join('./Documentation/Docset/html', f), encoding="utf8").read()
         soup = bs4.BeautifulSoup(html, "html.parser")
         inherits_iservice = soup.find(class_='inherit_header pub_methods_classfwServices_1_1IService')
         inherits_object = soup.find(class_='inherit_header pub_methods_classfwData_1_1Object')
@@ -125,7 +117,6 @@ def parse_file(f):
                 return (struct_, "Struct", f)
 
         if class_file_re.match(f):
-            print("Class file: " + f)
             class_triple = file_class(f, soup)
             if class_triple is None:
                 return entries
@@ -151,7 +142,6 @@ def parse_file(f):
                 if triple is not None:
                     entries.append(triple)
         elif struct_file_re.match(f):
-            print("Struct file: " + f)
             struct_triple = file_struct(f, soup)
             if struct_triple is None:
                 return entries
@@ -180,7 +170,13 @@ def populate_db(conn, services):
     conn.commit()
 
 def copy_files():
-    copytree('./Documentation/Doxygen/html', './Documentation/fw4spl.docset/Contents/Resources/Documents')
+    try:
+        shutil.copytree('./Documentation/Docset/html', './Documentation/Docset/fw4spl.docset/Contents/Resources/Documents')
+    except shutil.Error as err:
+        errors = err.args[0]
+        print("Warning: some files were not copied correctly. The generated docset might be incomplete.")
+        for src, dst, why in errors:
+            print("File '" + src + "' was not copied correctly. Reason: " + why)
 
 if __name__ == '__main__':
     conn = bootstrap_docset()
@@ -189,7 +185,6 @@ if __name__ == '__main__':
     for f in html_files:
         new_entries = parse_file(f)
         if len(new_entries) != 0:
-            print(repr(new_entries))
             entries += new_entries
     populate_db(conn, entries)
     copy_files()
