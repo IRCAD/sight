@@ -8,7 +8,7 @@
     <config>
         <object uid="extractedModelSeries" type="::fwMedData::ModelSeries" />
         <object uid="frameTLColor" type="::arData::FrameTL" />
-        <object uid="frameTLDepth" type="::arData::FrameTL" />
+        <object uid="depthTL" type="::arData::FrameTL" />
         <object uid="exportTLColor" type="::arData::FrameTL" />
         <object uid="exportTLDepth" type="::arData::FrameTL" />
         <object uid="exportTLIR" type="::arData::FrameTL" />
@@ -234,7 +234,7 @@
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="frameTLColor" />
-                <key uid="frameTLDepth" />
+                <key uid="depthTL" />
             </in>
             <inout group="image">
                 <key uid="imageVideo" />
@@ -257,8 +257,8 @@
 
         <!-- Manages Sense camera configuration -->
         <service uid="scanner" type="::videoOpenni::SScan" worker="scanWorker">
-            <inout key="frameTLDepth" uid="frameTLDepth" />
-            <inout key="frameTLColors" uid="frameTLColor" />
+            <inout key="frameTL" uid="frameTLColor" />
+            <inout key="depthTL" uid="depthTL" />
             <inout key="snapshotTLDepth" uid="exportTLDepth" />
             <inout key="snapshotTLColors" uid="exportTLColor" />
             <inout key="snapshotTLIR" uid="exportTLIR" />

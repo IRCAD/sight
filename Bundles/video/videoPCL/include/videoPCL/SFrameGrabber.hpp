@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOPCL_SFRAMEGRABBER_HPP__
-#define __VIDEOPCL_SFRAMEGRABBER_HPP__
+#pragma once
 
 #include "videoPCL/config.hpp"
 
@@ -28,7 +27,7 @@ namespace videoPCL
 {
 
 /**
- * @brief   Defines the service which grab video frame.
+ * @brief   Defines the service grabbing video frame.
  *
  * @note Only 'file' source is currently managed.
  * @note You can load 2D point cloud in a folder like img_<timestamp>.pcd (ex. img_642752427.pcd). The service uses
@@ -138,5 +137,3 @@ private:
 };
 
 } // namespace videoOpenCV
-
-#endif /*__VIDEOPCL_SFRAMEGRABBER_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,6 +18,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+
+#include <boost/tokenizer.hpp>
 
 namespace videoTools
 {
@@ -64,7 +66,7 @@ void SGrabberProxy::stopping()
         this->unregisterService(m_service);
         m_service.reset();
 
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
+        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
         frameTL->clearTimeline();
     }
 }
@@ -82,13 +84,18 @@ void SGrabberProxy::configuring()
 
     if(itSubConfig != config.not_found())
     {
-        const auto& subConfig  = itSubConfig->second;
-        const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode");
+        const auto& subConfig = itSubConfig->second;
+
+        m_type = subConfig.get<std::string>("camera.<xmlattr>.type", "RGB") == "RGB" ?
+                 CameraType::RGB :
+                 CameraType::RGBD;
+
+        const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
         SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
                     "'exclude' (to exclude the selection of the selector list).",
                     mode == "exclude" || mode == "include" );
-        m_excludeOrInclude = ( mode == "exclude" );
-        OSLM_DEBUG( "selection mode => " << (m_excludeOrInclude ? "Exclude" : "Include") );
+        m_exclude = ( mode == "exclude" );
+        OSLM_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
 
         const auto selectionCfg = subConfig.equal_range("addSelection");
         for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
@@ -131,33 +138,116 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            const auto serviceFactory = ::fwServices::registry::ServiceFactory::getDefault();
-            auto servicesImpl         = serviceFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
-                                                                                             "::arServices::IGrabber");
+            const auto srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
+
+            // We select all RGBD grabbers. They should be capable to output a single color frame
+            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                                 "::arServices::IRGBDGrabber");
+            if(m_type == CameraType::RGB)
+            {
+                auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::arData::FrameTL",
+                                                                                        "::arServices::IGrabber");
+                std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
+            }
+
+            auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+            ::arData::Camera::SourceType sourceType = ::arData::Camera::UNKNOWN;
+            if(camera)
+            {
+                sourceType = camera->getCameraSource();
+            }
+
             std::vector< std::string > availableExtensionsSelector;
 
-            for(const auto& srv : servicesImpl)
+            for(const auto& srvImpl : grabbersImpl)
             {
-                if(srv != "::videoTools::SGrabberProxy")
+                if(srvImpl != "::videoTools::SGrabberProxy")
                 {
+                    SLM_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
+                    auto objectsType  = srvFactory->getServiceObjects(srvImpl);
+                    const auto config = this->getConfigTree();
+
+                    // 1. Verify that we have the same number of timelines
+                    objectsType.erase(std::remove_if(objectsType.begin(), objectsType.end(),
+                                                     [ & ](const std::string& _type)
+                        {
+                            return _type != "::arData::FrameTL";
+                        }), objectsType.end());
+
+                    size_t numTL   = 0;
+                    auto inoutsCfg = config.equal_range("inout");
+                    for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+                    {
+                        ::fwServices::IService::ConfigType parameterCfg;
+
+                        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+                        SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
+                        const auto obj = this->getInOut< ::fwData::Object >(key);
+                        SLM_ASSERT("Object key '" + key + "' not found", obj);
+                        if(obj->getClassname() == "::arData::FrameTL")
+                        {
+                            ++numTL;
+                        }
+                    }
+                    if(numTL > objectsType.size())
+                    {
+                        continue;
+                    }
+
+                    // 2. Filter against the source type
+                    if(sourceType != ::arData::Camera::UNKNOWN)
+                    {
+                        const auto tags = srvFactory->getServiceTags(srvImpl);
+
+                        const ::boost::char_separator<char> sep(",");
+                        const ::boost::tokenizer< ::boost::char_separator<char> > tokens(tags, sep);
+                        bool capsMatch = false;
+                        for(const auto& token : tokens)
+                        {
+                            ::arData::Camera::SourceType handledSourceType = ::arData::Camera::UNKNOWN;
+                            if(token == "FILE")
+                            {
+                                handledSourceType = ::arData::Camera::FILE;
+                            }
+                            else if(token == "STREAM")
+                            {
+                                handledSourceType = ::arData::Camera::STREAM;
+                            }
+                            else if(token == "DEVICE")
+                            {
+                                handledSourceType = ::arData::Camera::DEVICE;
+                            }
+                            if(handledSourceType == sourceType)
+                            {
+                                capsMatch = true;
+                                break;
+                            }
+                        }
+                        if(!capsMatch)
+                        {
+                            continue;
+                        }
+                    }
+
+                    // 3. Filter against user choices
                     if(m_selectedServices.empty())
                     {
-                        availableExtensionsSelector.push_back(srv);
+                        availableExtensionsSelector.push_back(srvImpl);
                     }
                     else
                     {
-                        if(m_excludeOrInclude)
+                        if(m_exclude)
                         {
-                            if(m_selectedServices.find(srv) == m_selectedServices.end())
+                            if(m_selectedServices.find(srvImpl) == m_selectedServices.end())
                             {
-                                availableExtensionsSelector.push_back(srv);
+                                availableExtensionsSelector.push_back(srvImpl);
                             }
                         }
                         else
                         {
-                            if(m_selectedServices.find(srv) != m_selectedServices.end())
+                            if(m_selectedServices.find(srvImpl) != m_selectedServices.end())
                             {
-                                availableExtensionsSelector.push_back(srv);
+                                availableExtensionsSelector.push_back(srvImpl);
                             }
                         }
                     }
@@ -166,12 +256,21 @@ void SGrabberProxy::startCamera()
 
             if(availableExtensionsSelector.size() > 1)
             {
+                std::map<std::string, std::string> descToExtension;
+                std::vector<std::string> descriptions;
+                for(const auto& extension : availableExtensionsSelector)
+                {
+                    const auto desc = srvFactory->getServiceDescription(extension);
+                    descToExtension[desc] = extension;
+                    descriptions.push_back(desc);
+                }
                 ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
 
                 selector->setTitle("Choose a video grabber");
-                selector->setSelections(availableExtensionsSelector);
+                selector->setSelections(descriptions);
 
-                m_grabberImpl = selector->show();
+                const auto selectedDesc = selector->show();
+                m_grabberImpl = descToExtension[selectedDesc];
             }
             else if( availableExtensionsSelector.size() == 1)
             {
@@ -194,11 +293,25 @@ void SGrabberProxy::startCamera()
 
         m_service = this->registerService< ::arServices::IGrabber>(m_grabberImpl);
 
-        auto camera = this->getInput< ::arData::Camera >(s_CAMERA_KEY);
-        m_service->registerInput(camera, s_CAMERA_KEY);
+        auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
+        if(camera)
+        {
+            m_service->registerInput(camera, s_CAMERA_INPUT);
+        }
 
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
-        m_service->registerInOut(frameTL, s_FRAMETL_KEY);
+        const auto config = this->getConfigTree();
+        auto inoutsCfg    = config.equal_range("inout");
+        for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
+        {
+            const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+            SLM_ASSERT("Missing 'key' tag.", !key.empty());
+
+            auto frameTL = this->getInOut< ::arData::FrameTL >(key);
+            if(frameTL)
+            {
+                m_service->registerInOut(frameTL, key);
+            }
+        }
 
         ::fwRuntime::ConfigurationElement::csptr srvCfg;
         if ( m_serviceToConfig.find( m_grabberImpl ) != m_serviceToConfig.end() )
@@ -273,7 +386,7 @@ void SGrabberProxy::reconfigure()
         this->unregisterService(m_service);
         m_service.reset();
 
-        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_KEY);
+        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL_INOUT);
         frameTL->clearTimeline();
     }
     m_grabberImpl = "";
@@ -298,4 +411,3 @@ void SGrabberProxy::modifyDuration(int64_t duration)
 //-----------------------------------------------------------------------------
 
 } // namespace videoTools
-

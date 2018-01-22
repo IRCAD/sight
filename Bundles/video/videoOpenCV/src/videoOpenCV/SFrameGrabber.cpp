@@ -41,10 +41,6 @@ const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PREVIOUS_IMAGE_SLOT = "previo
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::arServices::IGrabber, ::videoOpenCV::SFrameGrabber, ::arData::FrameTL);
-
-// -----------------------------------------------------------------------------
-
 SFrameGrabber::SFrameGrabber() noexcept :
     m_loopVideo(false),
     m_isInitialized(false),
@@ -116,17 +112,18 @@ void SFrameGrabber::startCamera()
     if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
         ::boost::filesystem::path file = camera->getVideoFile();
-        ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
         {
+            const ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
             file = videoDir / file;
         }
+        file = file.lexically_normal();
 
         m_isPaused = false;
 
-        ::boost::filesystem::path ext = file.extension();
+        const ::boost::filesystem::path ext = file.extension();
 
         if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" )
         {
@@ -292,14 +289,14 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         std::string file = m_imageToRead.front().string();
         ::cv::Mat image = ::cv::imread(file, ::cv::IMREAD_UNCHANGED);
 
-        int width  = image.size().width;
-        int height = image.size().height;
-        int type   = image.type();
+        const int width  = image.size().width;
+        const int height = image.size().height;
+        const int type   = image.type();
 
         if (width > 0 && height > 0)
         {
-            size_t w = static_cast<size_t>(width);
-            size_t h = static_cast<size_t>(height);
+            const size_t w = static_cast<size_t>(width);
+            const size_t h = static_cast<size_t>(height);
             switch (type)
             {
                 case CV_8UC1:
@@ -396,11 +393,11 @@ void SFrameGrabber::grabVideo()
 
             if (!m_isInitialized)
             {
-                size_t width  = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_WIDTH));
-                size_t height = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_HEIGHT));
+                const size_t width  = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_WIDTH));
+                const size_t height = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_FRAME_HEIGHT));
 
-                size_t w = static_cast<size_t>(image.size().width);
-                size_t h = static_cast<size_t>(image.size().height);
+                const size_t w = static_cast<size_t>(image.size().width);
+                const size_t h = static_cast<size_t>(image.size().height);
 
                 if (width != w || height != h)
                 {
@@ -433,7 +430,7 @@ void SFrameGrabber::grabVideo()
             }
 
             // Get time slider position
-            size_t ms        = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_MSEC));
+            const size_t ms  = static_cast<size_t>(m_videoCapture.get(::cv::CAP_PROP_POS_MSEC));
             auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
             sigPosition->asyncEmit(static_cast<std::int64_t>(ms));
 
@@ -469,8 +466,8 @@ void SFrameGrabber::grabVideo()
         if (m_loopVideo)
         {
             // loop the video
-            double ratio = m_videoCapture.get(::cv::CAP_PROP_POS_AVI_RATIO);
-            if (ratio == 1)
+            const double ratio = m_videoCapture.get(::cv::CAP_PROP_POS_AVI_RATIO);
+            if (ratio == 1.)
             {
                 m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, 0);
             }

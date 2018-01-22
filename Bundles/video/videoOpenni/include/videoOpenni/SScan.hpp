@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOOPENNI_SSCAN_HPP__
-#define __VIDEOOPENNI_SSCAN_HPP__
+#pragma once
 
 #include "videoOpenni/config.hpp"
 
 #include <arData/FrameTL.hpp>
 
-#include <arServices/IGrabber.hpp>
+#include <arServices/IRGBDGrabber.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -21,12 +20,15 @@ namespace videoOpenni
 {
 
 /**
- * @brief   This service grabs the depth, color, ir frames from a compatible RGBD camera (Kinect, Sense, etc...).
+ * @brief   Kinect or Sense camera
  *
+ * This service grabs the depth, color, ir frames from a compatible RGBD camera (Kinect, Sense, etc...).
  * The frames are pushed into the timelines that are configured.
  * According to the device, it may not be possible to grab all streams simultaneously. On the Sense and the Kinect for
  * instance, it is not possible to get the color and the IR streams
  * together.
+ *
+ * \b Tags: DEVICE
  *
  * @section Slots Slots
  * - \b startCamera(): Start capturing frames from the camera.
@@ -37,35 +39,40 @@ namespace videoOpenni
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type ="::videoOpenni::SScan" >
-        <inout key="frameTLDepth" uid="..." />
-        <inout key="frameTLColors" uid="..." />
-        <inout key="frameTLIR" uid="..." />
-        <inout key="frameTLPositions" uid="..." />
+        <inout key="depthTL" uid="..." />
+        <inout key="frameTL" uid="..." />
+        <inout key="irTL"    uid="..." />
         <inout key="snapshotTLDepth" uid="..." />
         <inout key="snapshotTLColors" uid="..." />
         <inout key="snapshotTLIR" uid="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b frameTLDepth [::arData::FrameTL]: Frame timeline of the depth stream.
- * - \b frameTLColors [::arData::FrameTL]: Frame timeline of the color stream.
- * - \b frameTLIR [::arData::FrameTL]: Frame timeline of the infrared stream.
- * - \b frameTLPositions [::arData::FrameTL]: Timeline storing a point cloud computed from the depth stream.
+ * - \b depthTL [::arData::FrameTL]: Frame timeline of the depth stream.
+ * - \b frameTL [::arData::FrameTL]: Frame timeline of the color stream.
+ * - \b irTL [::arData::FrameTL]: Frame timeline of the infrared stream.
  * - \b snapshotTLDepth [::arData::FrameTL]: Frame timeline used to store snaphots of the color stream.
  * - \b snapshotTLColors [::arData::FrameTL]: Frame timeline used to store snaphots of the depth stream.
  * - \b snapshotTLIR [::arData::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
  */
-class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IGrabber
+class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IRGBDGrabber) );
 
     /// Constructor. Creates/Connects slots and creates a worker for the frame grabber slot.
     VIDEOOPENNI_API SScan() noexcept;
 
     /// Destructor. Does nothing.
     VIDEOOPENNI_API virtual ~SScan() noexcept;
+
+    /**
+     * @name Data API
+     * @{
+     */
+    VIDEOOPENNI_API static const ::fwServices::IService::KeyType s_IRTL_INOUT;
+    /** @} */
 
     /**
      * @name Slots API
@@ -122,7 +129,6 @@ private:
     ::arData::FrameTL::sptr m_depthTL; ///< Depth timeline.
     ::arData::FrameTL::sptr m_colorTL; ///< Color timeline.
     ::arData::FrameTL::sptr m_irTL; ///< Infrared timeline.
-    ::arData::FrameTL::sptr m_positionsTimeline; ///< Positions timeline.
 
     // Snapshot timelines
     ::arData::FrameTL::sptr m_snapshotDepthTL; ///< Depth timeline.
@@ -154,6 +160,3 @@ private:
     bool m_pause; ///< Whether we are in pause
 };
 }
-
-#endif /*__VIDEOOPENNI_SSCAN_HPP__*/
-

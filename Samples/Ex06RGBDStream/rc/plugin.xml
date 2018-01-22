@@ -10,7 +10,6 @@
         <config>
             <object uid="frameTLVideo" type="::arData::FrameTL" />
             <object uid="frameTLDepth" type="::arData::FrameTL" />
-            <object uid="RGBDCameraSeries" type="::arData::CameraSeries" />
             <object uid="imageDepth" type="::fwData::Image" />
             <object uid="imageVideo" type="::fwData::Image" />
             <object uid="viewport" type="::fwRenderQt::data::Viewport" />
@@ -256,10 +255,12 @@
             </service>
 
             <!-- Manages Sense camera configuration -->
-            <service uid="scanner" type="::videoOpenni::SScan" worker="scanWorker">
-                <inout key="frameTLDepth" uid="frameTLDepth" />
-                <inout key="frameTLColors" uid="frameTLVideo" />
-                <inout key="cameraSeries" uid="RGBDCameraSeries" />
+            <service uid="scanner" type="::videoTools::SGrabberProxy" worker="scanWorker">
+                <inout key="depthTL" uid="frameTLDepth" />
+                <inout key="frameTL" uid="frameTLVideo" />
+                <config>
+                    <camera type="RGBD" />
+                </config>
             </service>
 
             <!-- ***************************************** Begin mesh computing services declarations ***************************************** -->
@@ -283,7 +284,6 @@
             <!-- ***************************************** End connections declarations ***************************************** -->
             <!-- layouts -->
             <start uid="mainView" />
-            <!-- reconstruction services -->
             <start uid="synchronizer" />
             <start uid="scanner" />
             <!-- TFEditor Scene2D -->

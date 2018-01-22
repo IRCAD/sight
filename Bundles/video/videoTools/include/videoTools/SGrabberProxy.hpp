@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOTOOLS_SGRABBERPROXY_HPP__
-#define __VIDEOTOOLS_SGRABBERPROXY_HPP__
+#pragma once
 
 #include "videoTools/config.hpp"
 
@@ -50,6 +49,7 @@ namespace videoTools
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <config>
+                <camera type="RGBD" />
                 <selection mode="include" />
                 <addSelection service="::videoQt::SFrameGrabber" />
                 <config id="cvGrabberConfig" service="::videoOpenCV::SFrameGrabber" />
@@ -61,6 +61,7 @@ namespace videoTools
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
+ *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection
  *      - \b mode (optional) : must be include (to add the selection to selector list ) or exclude (to exclude the
  * selection of the selector list).
@@ -130,6 +131,15 @@ private:
     /// SLOT : duration of the video has changed.
     void modifyDuration(int64_t position);
 
+    enum class CameraType : std::uint8_t
+    {
+        RGB,
+        RGBD,
+    };
+
+    /// Camera type (RGB, RGBD,...)
+    CameraType m_type { CameraType::RGB };
+
     /// grabber implementation chosen by the user
     std::string m_grabberImpl;
 
@@ -149,10 +159,7 @@ private:
     bool m_loopVideo { false };
 
     /// Configure if selected services are excluded (true) or included (false).
-    bool m_excludeOrInclude { false };
-
+    bool m_exclude { false };
 };
 
 } // namespace videoTools
-
-#endif /*__VIDEOTOOLS_SGRABBERPROXY_HPP__*/
