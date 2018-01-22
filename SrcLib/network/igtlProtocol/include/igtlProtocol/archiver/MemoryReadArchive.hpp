@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IGTLPROTOCOL_ARCHIVER_MEMORYREADARCHIVE_HPP__
-#define __IGTLPROTOCOL_ARCHIVER_MEMORYREADARCHIVE_HPP__
+#pragma once
 
 #include "igtlProtocol/config.hpp"
 
@@ -52,7 +51,7 @@ public:
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      * @throw ::fwZip::exception::Read if cannot retrieve file in archive.
      */
-    IGTLPROTOCOL_API SPTR(std::istream) getFile(const ::boost::filesystem::path& path);
+    IGTLPROTOCOL_API SPTR(std::istream) getFile(const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
@@ -66,7 +65,7 @@ public:
      *
      * @return cloned instance
      */
-    IReadArchive::sptr clone() const
+    IReadArchive::sptr clone() const override
     {
         return SPTR(MemoryReadArchive) (new MemoryReadArchive(m_BUFFER, m_SIZE));
     }
@@ -100,5 +99,3 @@ private:
 
 } // namespace archiver
 } // namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_ARCHIVER_MEMORYREADARCHIVE_HPP__

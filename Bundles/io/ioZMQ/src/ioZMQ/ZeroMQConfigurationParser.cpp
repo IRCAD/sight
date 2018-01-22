@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,8 +34,8 @@ void ZeroMQConfigurationParser::parse (
     ::fwRuntime::ConfigurationElement::sptr patternElement;
 
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
-    if ( (protocolElement = m_configuration->findConfigurationElement ("protocol"))
-         && (patternElement = m_configuration->findConfigurationElement ("pattern")))
+    if ( (protocolElement = m_configuration->findConfigurationElement("protocol"))
+         && (patternElement = m_configuration->findConfigurationElement("pattern")))
     {
         this->parsePatternMode(patternElement->getValue(), supportedPatterns);
         this->parseProtocol(protocolElement);
@@ -53,7 +53,7 @@ void ZeroMQConfigurationParser::parseProtocol(
 {
     std::string protocol;
 
-    if (!(protocol = protocolElement->getAttributeValue ("type")).empty())
+    if (!(protocol = protocolElement->getAttributeValue("type")).empty())
     {
         if (protocol == "tcp")
         {
@@ -163,14 +163,14 @@ void ZeroMQConfigurationParser::parseIpc (
 
 //-----------------------------------------------------------------------------
 
-::zmqNetwork::Socket::PatternMode const ZeroMQConfigurationParser::getPatternMode() const
+::zmqNetwork::Socket::PatternMode ZeroMQConfigurationParser::getPatternMode() const
 {
     return m_patternMode;
 }
 
 //-----------------------------------------------------------------------------
 
-::zmqNetwork::Socket::SocketMode const ZeroMQConfigurationParser::getSocketMode() const
+::zmqNetwork::Socket::SocketMode ZeroMQConfigurationParser::getSocketMode() const
 {
     return m_sockMode;
 }

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UICALIBRATION_SCAMERASERIESEDITOR_HPP__
-#define __UICALIBRATION_SCAMERASERIESEDITOR_HPP__
+#pragma once
 
 #include "uiCalibration/config.hpp"
 
@@ -45,7 +44,7 @@ class UICALIBRATION_CLASS_API SCameraSeriesEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCameraSeriesEditor)(::gui::editor::IEditor));
+    fwCoreServiceClassDefinitionsMacro((SCameraSeriesEditor)(::gui::editor::IEditor))
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef ::fwCom::Slot<void ()> UpdateInfosSlotType;
@@ -80,7 +79,7 @@ public:
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    UICALIBRATION_API void updating()
+    UICALIBRATION_API void updating() override
     {
     }
 
@@ -116,5 +115,3 @@ protected:
 
 };
 } // namespace uiCalibration
-
-#endif // __UICALIBRATION_SCAMERASERIESEDITOR_HPP__

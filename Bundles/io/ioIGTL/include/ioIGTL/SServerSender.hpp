@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOIGTL_SSERVERSENDER_HPP__
-#define __IOIGTL_SSERVERSENDER_HPP__
+#pragma once
 
 #include "ioIGTL/config.hpp"
 
@@ -48,7 +47,7 @@ class IOIGTL_CLASS_API SServerSender : public ::ioNetwork::INetworkSender
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SServerSender)( ::ioNetwork::INetworkSender ) );
+    fwCoreServiceClassDefinitionsMacro( (SServerSender)( ::ioNetwork::INetworkSender ) )
 
     /// Constructor
     IOIGTL_API SServerSender();
@@ -75,7 +74,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const ::fwData::Object::csptr& obj, const size_t index);
+    void sendObject(const ::fwData::Object::csptr& obj, const size_t index) override;
 
     /// Server instance
     ::igtlNetwork::Server::sptr m_server;
@@ -92,5 +91,3 @@ private:
 };
 
 } // namespace ioIGTL
-
-#endif /*__IOIGTL_SSERVERSENDER_HPP__*/

@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IGTLPROTOCOL_ARCHIVER_MEMORYWRITEARCHIVE_HPP__
-#define __IGTLPROTOCOL_ARCHIVER_MEMORYWRITEARCHIVE_HPP__
-
 ///// ugly but we must for windows system typedef SSIZE_T to ssize_t for portability
+#pragma once
+
 #if defined(_WIN32)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
@@ -101,7 +100,7 @@ public:
      * @param[in] path file in archive
      * @return output stream of memory entry archive
      */
-    IGTLPROTOCOL_API SPTR(std::ostream) createFile(const ::boost::filesystem::path &path) override;
+    IGTLPROTOCOL_API SPTR(std::ostream) createFile(const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Write source file in memory archive
@@ -111,7 +110,7 @@ public:
      * @throw ::fwZip::exception::Write when file cannot be opened
      */
     IGTLPROTOCOL_API void putFile(const ::boost::filesystem::path& sourceFile,
-                                  const ::boost::filesystem::path& path);
+                                  const ::boost::filesystem::path& path) override;
 
     /**
      * @brief Create folder in archive
@@ -178,5 +177,3 @@ protected:
 
 } // namespace archiver
 } // namespace igtlProtocol
-
-#endif // __IGTLPROTOCOL_ARCHIVER_MEMORYWRITEARCHIVE_HPP__

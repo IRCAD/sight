@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOZMQ_ZEROMQCONFIGURATIONPARSER_HPP__
-#define __IOZMQ_ZEROMQCONFIGURATIONPARSER_HPP__
+#pragma once
 
 #include "ioZMQ/config.hpp"
 #include "ioZMQ/Patterns.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <zmqNetwork/Socket.hpp>
 
 #include <vector>
-
 
 namespace ioZMQ
 {
@@ -62,14 +61,14 @@ public:
      *
      * @return pattern mode
      */
-    IOZMQ_API ::zmqNetwork::Socket::PatternMode const getPatternMode() const;
+    IOZMQ_API ::zmqNetwork::Socket::PatternMode getPatternMode() const;
 
     /**
      * @brief get socket mode
      *
      * @return socket mode
      */
-    IOZMQ_API ::zmqNetwork::Socket::SocketMode const getSocketMode() const;
+    IOZMQ_API ::zmqNetwork::Socket::SocketMode getSocketMode() const;
 
     /**
      * @brief get hostname or interface
@@ -113,5 +112,3 @@ private:
     std::string m_host;
 };
 }
-
-#endif /*__IOZMQ_ZEROMQCONFIGURATIONPARSER_HPP__ */
