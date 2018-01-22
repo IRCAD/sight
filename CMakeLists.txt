@@ -589,7 +589,9 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         # create the custom command that may generate the plugin.xml and the registerServices.cpp file
         if(NOT EXISTS "${${FWPROJECT_NAME}_DIR}/rc/plugin.xml" )
             target_sources( ${FWPROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" )
-            set_source_files_properties("${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" PROPERTIES GENERATED TRUE)
+            set_source_files_properties("${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" PROPERTIES
+                GENERATED TRUE
+                SKIP_AUTOMOC ON)
 
             plugin_setup("${FWPROJECT_NAME}" "${${FWPROJECT_NAME}_HEADERS}")
         endif()
