@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_ACTIVITYSERIES1_HPP__
-#define __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_ACTIVITYSERIES1_HPP__
+#pragma once
+
+#include "fwStructuralPatch/config.hpp"
+#include "fwStructuralPatch/creator/fwMedData/Series1.hpp"
 
 #include <fwAtomsPatch/IStructuralCreator.hpp>
-
-#include "fwStructuralPatch/creator/fwMedData/Series1.hpp"
-#include "fwStructuralPatch/config.hpp"
 
 namespace fwStructuralPatch
 {
@@ -26,7 +25,7 @@ class FWSTRUCTURALPATCH_CLASS_API ActivitySeries1 : public ::fwStructuralPatch::
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-        (ActivitySeries1)(::fwStructuralPatch::creator::fwMedData::Series1),(()), new ActivitySeries1);
+        (ActivitySeries1)(::fwStructuralPatch::creator::fwMedData::Series1), (()), new ActivitySeries1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API ActivitySeries1();
@@ -35,18 +34,15 @@ public:
     FWSTRUCTURALPATCH_API ~ActivitySeries1();
 
     /// Copy constructor
-    FWSTRUCTURALPATCH_API ActivitySeries1( const ActivitySeries1 &cpy );
+    FWSTRUCTURALPATCH_API ActivitySeries1( const ActivitySeries1& cpy );
 
     /**
      * @brief Creates the specified object.
      */
-    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create();
+    FWSTRUCTURALPATCH_API virtual ::fwAtoms::Object::sptr create() override;
 
 };
 
 } // namespace fwMedData
 } // namespace creator
 } // namespace fwStructuralPatch
-
-#endif // __FWSTRUCTURALPATCH_CREATOR_FWMEDDATA_ACTIVITYSERIES1_HPP__
-

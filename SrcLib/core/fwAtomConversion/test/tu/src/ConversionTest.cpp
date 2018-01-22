@@ -576,14 +576,14 @@ class ClassNotCamped : public ::fwData::Object
 public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotCamped)(::fwData::Object),
-                                               ((::fwData::factory::New< ClassNotCamped >, () )) );
+                                               ((::fwData::factory::New< ClassNotCamped >, () )) )
 
     ClassNotCamped(::fwData::Object::Key key)
     {
     }
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache ) override
+    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType& ) override
     {
     }
 
@@ -696,9 +696,8 @@ class ClassNotManaged : public ::fwData::Object
 public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotManaged)(::fwData::Object),
-                                               ((::fwData::factory::New< ClassNotManaged >, () )) );
-
-    fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
+                                               ((::fwData::factory::New< ClassNotManaged >, () )) )
+    fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
 
     ClassNotManaged(::fwData::Object::Key key)
     {
@@ -707,7 +706,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache )
+    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType& ) override
     {
     }
 

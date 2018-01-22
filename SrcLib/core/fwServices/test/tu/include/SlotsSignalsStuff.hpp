@@ -48,7 +48,7 @@ public:
         (()),
         ::fwData::factory::New< Buffer >)
 
-    Buffer( ::fwData::Object::Key key )
+    Buffer( ::fwData::Object::Key )
     {
     }
     ~Buffer()
@@ -57,7 +57,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy( const Object::csptr& _source, DeepCopyCacheType& cache ) override
+    void cachedDeepCopy( const Object::csptr&, DeepCopyCacheType& ) override
     {
     }
 };

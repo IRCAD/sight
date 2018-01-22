@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SORIENTATIONMARKER_HPP__
-#define __VISUVTKADAPTOR_SORIENTATIONMARKER_HPP__
+#pragma once
 
 #ifndef ANDROID
 
@@ -50,7 +49,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    void updating()
+    void updating() override
     {
     }
 
@@ -63,5 +62,3 @@ protected:
 } //namespace visuVTKAdaptor
 
 #endif // ANDROID
-
-#endif //__VISUVTKADAPTOR_SORIENTATIONMARKER_HPP__

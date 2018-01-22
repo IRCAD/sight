@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUIQT_EDITOR_SACTIVITYVIEW_HPP__
-#define __GUIQT_EDITOR_SACTIVITYVIEW_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
@@ -64,7 +63,7 @@ class GUIQT_CLASS_API SActivityView : public ::gui::view::IActivityView
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::gui::view::IActivityView) );
+    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::gui::view::IActivityView) )
 
     /// Constructor. Do nothing.
     GUIQT_API SActivityView();
@@ -98,7 +97,7 @@ private:
     /**
      * @brief Slot: Launch the given activity in the current view (stop and destroy the previous one).
      */
-    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries);
+    void launchActivity(::fwMedData::ActivitySeries::sptr activitySeries) override;
 
     /// Helper to launch activity configuration
     ::fwServices::IAppConfigManager::sptr m_configManager;
@@ -111,5 +110,3 @@ private:
 
 } //namespace editor
 } // guiQt
-
-#endif /*__GUIQT_EDITOR_SACTIVITYVIEW_HPP__*/

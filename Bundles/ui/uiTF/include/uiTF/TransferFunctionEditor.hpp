@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UITF_TRANSFERFUNCTIONEDITOR_HPP__
-#define __UITF_TRANSFERFUNCTIONEDITOR_HPP__
+#pragma once
 
 #include "uiTF/config.hpp"
 
@@ -67,7 +66,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (TransferFunctionEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (TransferFunctionEditor)(::gui::editor::IEditor) )
 
     /// Basic constructor, do nothing.
     UITF_API TransferFunctionEditor();
@@ -100,7 +99,7 @@ protected:
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UITF_API virtual KeyConnectionsMap getAutoConnections() const;
+    UITF_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Initialize the transfer functions.
@@ -152,4 +151,3 @@ private:
 };
 
 }
-#endif // __UITF_TRANSFERFUNCTIONEDITOR_HPP__
