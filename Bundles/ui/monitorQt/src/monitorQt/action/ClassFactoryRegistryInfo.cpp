@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,10 +44,10 @@ void ClassFactoryRegistryInfo::updating( )
 
     for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )
     {
-        const std::string objImpl = ServiceRegistry::getDefault()->getObjectImplementation(key);
-        QTreeWidgetItem* srvItem  = new QTreeWidgetItem();
+        const auto objImpl       = ServiceRegistry::getDefault()->getServiceObjects(key);
+        QTreeWidgetItem* srvItem = new QTreeWidgetItem();
         srvItem->setText(0, QString::fromStdString(key));
-        srvItem->setText(1, QString::fromStdString(objImpl));
+        srvItem->setText(1, QString::fromStdString(objImpl[0]));
         m_tree->addTopLevelItem( srvItem );
     }
     m_dialog->show();
@@ -101,4 +101,3 @@ void ClassFactoryRegistryInfo::stopping()
 } // namespace action
 
 } // namespace monitorQt
-

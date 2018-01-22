@@ -1,18 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_UT_TESTSERVICES_HPP__
-#define __FWSERVICES_UT_TESTSERVICES_HPP__
+#pragma once
 
 #include <fwServices/macros.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
 
 namespace fwServices
 {
@@ -25,9 +23,9 @@ namespace ut
 class TestConfigService : public ::fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestConfigService)(::fwServices::IService) );
-    TestConfigService() noexcept
-        :   m_isUpdated(false)
+    fwCoreServiceClassDefinitionsMacro( (TestConfigService)(::fwServices::IService) )
+    TestConfigService() noexcept :
+        m_isUpdated(false)
     {
     }
 
@@ -42,19 +40,29 @@ public:
     }
 
 protected:
-    virtual void configuring()
+    //------------------------------------------------------------------------------
+
+    virtual void configuring() override
     {
     }
-    virtual void starting()
+    //------------------------------------------------------------------------------
+
+    virtual void starting() override
     {
     }
-    virtual void stopping()
+    //------------------------------------------------------------------------------
+
+    virtual void stopping() override
     {
     }
-    virtual void updating()
+    //------------------------------------------------------------------------------
+
+    virtual void updating() override
     {
     }
-    virtual void info( std::ostream& _sstream )
+    //------------------------------------------------------------------------------
+
+    virtual void info( std::ostream& _sstream ) override
     {
         _sstream << "TestConfigService";
     }
@@ -69,7 +77,7 @@ class TestServiceImplementationImage : public TestConfigService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwServices::ut::TestConfigService) );
+    fwCoreServiceClassDefinitionsMacro( (TestServiceImplementationImage)(::fwServices::ut::TestConfigService) )
     TestServiceImplementationImage() noexcept
     {
     }
@@ -77,16 +85,24 @@ public:
     {
     }
 
-    virtual void configuring()
+    //------------------------------------------------------------------------------
+
+    virtual void configuring() override
     {
     }
-    virtual void starting()
+    //------------------------------------------------------------------------------
+
+    virtual void starting() override
     {
     }
-    virtual void stopping()
+    //------------------------------------------------------------------------------
+
+    virtual void stopping() override
     {
     }
-    virtual void updating()
+    //------------------------------------------------------------------------------
+
+    virtual void updating() override
     {
         m_isUpdated = true;
     }
@@ -95,5 +111,3 @@ public:
 
 } //namespace ut
 } //namespace fwServices
-
-#endif // __FWSERVICES_UT_TESTSERVICES_HPP__

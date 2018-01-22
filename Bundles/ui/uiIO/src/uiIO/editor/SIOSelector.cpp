@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -284,7 +284,7 @@ void SIOSelector::updating()
                 {
                     ::fwServices::registry::ServiceFactory::sptr services =
                         ::fwServices::registry::ServiceFactory::getDefault();
-                    std::string objType = services->getObjectImplementation(extensionId);
+                    std::string objType = services->getServiceObjects(extensionId)[0];
                     if(!objType.compare("::fwData::Object"))
                     {
                         object = this->getObject< ::fwData::Composite>();

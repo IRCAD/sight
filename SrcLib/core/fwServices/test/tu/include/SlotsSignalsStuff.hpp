@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWSERVICES_UT_SLOTSSIGNALSSTUFF_HPP__
-#define __FWSERVICES_UT_SLOTSSIGNALSSTUFF_HPP__
+#pragma once
 
 #include <fwServices/IService.hpp>
 
@@ -47,7 +46,7 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro(
         (Buffer)(::fwData::Object),
         (()),
-        ::fwData::factory::New< Buffer >);
+        ::fwData::factory::New< Buffer >)
 
     Buffer( ::fwData::Object::Key key )
     {
@@ -58,7 +57,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy( const Object::csptr& _source, DeepCopyCacheType& cache )
+    void cachedDeepCopy( const Object::csptr& _source, DeepCopyCacheType& cache ) override
     {
     }
 };
@@ -68,7 +67,7 @@ public:
 class IBasicTest : public ::fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (IBasicTest)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IBasicTest)(::fwServices::IService) )
 };
 
 class SBasicTest : public IBasicTest,
@@ -76,7 +75,7 @@ class SBasicTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SBasicTest)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SBasicTest)(IBasicTest) )
 
     bool m_updateFinished;
     bool m_swapFinished;
@@ -87,7 +86,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring()
+    virtual void configuring() override
     {
     }
     virtual void starting() override;
@@ -102,7 +101,7 @@ class SReaderTest : public IBasicTest
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SReaderTest)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SReaderTest)(IBasicTest) )
 
     SReaderTest()
     {
@@ -112,22 +111,22 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring()
+    virtual void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting()
+    virtual void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping()
+    virtual void swapping() override
     {
     }
     virtual void updating() override;
@@ -141,7 +140,7 @@ public:
 
     typedef ::fwCom::Signal< void () > ChangedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SReader2Test)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SReader2Test)(IBasicTest) )
 
     SReader2Test();
 
@@ -151,22 +150,22 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring()
+    virtual void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting()
+    virtual void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping()
+    virtual void swapping() override
     {
     }
     virtual void updating() override;
@@ -181,7 +180,7 @@ class SShowTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShowTest)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SShowTest)(IBasicTest) )
 
     SShowTest();
 
@@ -197,22 +196,22 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring()
+    virtual void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting()
+    virtual void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping()
+    virtual void swapping() override
     {
     }
     virtual void updating() override;
@@ -229,7 +228,7 @@ class SShow2Test : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShow2Test)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SShow2Test)(IBasicTest) )
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 
@@ -241,22 +240,22 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring()
+    virtual void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting()
+    virtual void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping()
+    virtual void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping()
+    virtual void swapping() override
     {
     }
     virtual void updating() override;
@@ -269,5 +268,3 @@ protected:
 
 } //namespace ut
 } //namespace fwServices
-
-#endif // __FWSERVICES_UT_SLOTSSIGNALSSTUFF_HPP__
