@@ -14,6 +14,11 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
          endif()
     endforeach()
 
+    # Add each bundle deps to the requirement list
+    foreach(CURRENT_BUNDLE_DEPS ${${PROJECT}_BUNDLE_DEPENDENCIES})
+        list(APPEND REQUIREMENT_LIST "    <requirement id=\"${CURRENT_BUNDLE_DEPS}\"/>")
+    endforeach()
+
     set(PLUGIN_CONFIG_COMMAND   ${CMAKE_COMMAND}
                                 -DPROJECT="${PROJECT}"
                                 -DPROJECT_VERSION="${${PROJECT}_VERSION}"

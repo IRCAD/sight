@@ -88,14 +88,6 @@ set(ADDITIONAL_PROJECTS CACHE PATH
 
 set(SET_API_VERSION ON)
 
-# Empty custom macro that can be overriden by projects CMakeLists
-macro(fwLibExtra)
-    # Do nothing
-endmacro()
-macro(fwBundleExtra)
-    # Do nothing
-endmacro()
-
 if(ADDITIONAL_PROJECTS)
     foreach(ADDITIONAL_PROJECT ${ADDITIONAL_PROJECTS})
         # parse additional CMakeLists
@@ -557,8 +549,6 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         endif()
     endif()
 
-    fwLibExtra()
-
 endmacro()
 
 macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
@@ -697,8 +687,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     if(${FWPROJECT_NAME}_INSTALL)
         createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
     endif()
-
-    fwBundleExtra()
 endmacro()
 
 # Include the projects in parameter and export them.
@@ -727,24 +715,28 @@ endmacro()
 #     fwUse( fwCore fwData )
 # WARNING : some part of this cmake file relies on this macro signature
 
-macro(fwUse)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
+macro(fwDefineDependencies)
 
-    set(${FWPROJECT_NAME}_DEPENDENCIES)
-    set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES)
-    set(${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES)
-    set(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES)
+    set(${NAME}_DEPENDENCIES)
+    set(${NAME}_BUNDLE_DEPENDENCIES)
 
     foreach(PROJECT ${ARGV})
-        list(APPEND ${FWPROJECT_NAME}_DEPENDENCIES ${PROJECT})
-        list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
+        list(APPEND ${NAME}_DEPENDENCIES ${PROJECT})
+        list(APPEND ${NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
     endforeach()
 
-    set(${FWPROJECT_NAME}_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES ${${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES ${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES ${${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES} PARENT_SCOPE)
+    set(${NAME}_DEPENDENCIES ${${NAME}_DEPENDENCIES} PARENT_SCOPE)
+    set(${NAME}_BUNDLE_DEPENDENCIES ${${NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
 
+endmacro()
+
+# Defines project's linked dependencies on others projects
+# example :
+#     fwUse( fwCore fwData )
+# WARNING : some part of this cmake file relies on this macro signature
+
+macro(fwUse)
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
 endmacro()
 
 
@@ -757,8 +749,6 @@ macro(fwReq)
     add_dependencies(${FWPROJECT_NAME} ${ARGV})
 
     set(${FWPROJECT_NAME}_REQUIREMENTS)
-    set(${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS)
-    set(${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS)
     set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS)
 
     foreach(PROJECT ${ARGV})
@@ -767,9 +757,7 @@ macro(fwReq)
     endforeach()
 
     set(${FWPROJECT_NAME}_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS ${${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS ${${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS ${${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS} PARENT_SCOPE)
 
 endmacro()
 
@@ -872,6 +860,8 @@ macro(fwLoadProperties)
     loadProperties("Properties.cmake")
 
     string( TOUPPER "${TYPE}" TYPE )
+
+    fwDefineDependencies( ${NAME} ${DEPENDENCIES} )
 
     if( TYPE STREQUAL "EXECUTABLE" )
         fwExec(${NAME} ${VERSION} ${OPTIONS})
