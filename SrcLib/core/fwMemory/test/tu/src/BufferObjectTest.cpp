@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,10 @@
 
 #include <boost/thread/thread.hpp>
 
+#include <chrono>
 #include <functional>
 #include <limits>
+#include <thread>
 #include <type_traits>
 
 // Registers the fixture into the 'registry'
@@ -61,10 +63,15 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT_EQUAL( static_cast< ::fwMemory::BufferObject::SizeType>(SIZE), bo->getSize() );
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
+    // We need to wait before checking that the buffer was unlocked because the actual unlocking is performed on a
+    // worker for thread safety and the buffer might take a little time to actually unlock. Not waiting causes random
+    // errors in the test that tend to pop when the machine is under load.
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         char* buf = static_cast<char*>(lock.getBuffer());
 
@@ -84,10 +91,13 @@ void BufferObjectTest::allocateTest()
         }
     }
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
     {
         ::fwMemory::BufferObject::Lock lock(bo->lock());
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         ::fwMemory::BufferObject::Lock lock2(bo->lock());
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(2), bo->lockCount() );
@@ -231,10 +241,10 @@ void BufferObjectTest::lockThreadedStressTest()
 
     group.join_all();
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     CPPUNIT_ASSERT_EQUAL( static_cast<long>(0), bo->lockCount() );
 
 }
 
 } // namespace ut
 } // namespace fwMemory
-
