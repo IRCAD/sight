@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,7 +69,8 @@ void STDataListener::configuring()
     {
         for(auto dn : deviceNames)
         {
-            m_client.addAuthorizedDevice(dn->getValue());
+            const std::string dnKey = ::ioIGTL::helper::getPreferenceKey<std::string>(dn->getValue());
+            m_client.addAuthorizedDevice(dnKey);
         }
         m_client.setFilteringByDeviceName(true);
     }
@@ -226,4 +227,3 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-
