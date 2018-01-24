@@ -1,21 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UICALIBRATION_SCAMERACONFIGLAUNCHER_HPP__
-#define __UICALIBRATION_SCAMERACONFIGLAUNCHER_HPP__
+#pragma once
 
 #include "uiCalibration/config.hpp"
 
 #include <arData/CameraSeries.hpp>
 
+#include <fwGui/editor/IEditor.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/helper/ConfigLauncher.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -66,12 +65,12 @@ namespace uiCalibration
  *
  */
 class UICALIBRATION_CLASS_API SCameraConfigLauncher : public QObject,
-                                                      public ::gui::editor::IEditor
+                                                      public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCameraConfigLauncher)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCameraConfigLauncher)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UICALIBRATION_API SCameraConfigLauncher() noexcept;
@@ -126,6 +125,3 @@ private:
 };
 
 } // namespace uiCalibration
-
-#endif // __UICALIBRATION_SCAMERACONFIGLAUNCHER_HPP__
-

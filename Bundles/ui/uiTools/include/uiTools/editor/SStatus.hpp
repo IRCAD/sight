@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UITOOLS_EDITOR_SSTATUS_HPP__
-#define __UITOOLS_EDITOR_SSTATUS_HPP__
+#pragma once
 
 #include "uiTools/config.hpp"
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -80,12 +79,12 @@ namespace editor
  * status.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
-                                  public ::gui::editor::IEditor
+                                  public ::fwGui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SStatus)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SStatus)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UITOOLS_API SStatus() noexcept;
@@ -178,6 +177,3 @@ private:
 
 } // namespace editor
 } // namespace uiTools
-
-#endif /*__UITOOLS_EDITOR_SSTATUS_HPP__*/
-

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UINETWORK_SOBJECTCONNECTORTREE_HPP__
-#define __UINETWORK_SOBJECTCONNECTORTREE_HPP__
+#pragma once
 
 #include "uiNetwork/AObjectConnectorWidget.hpp"
 #include "uiNetwork/config.hpp"
@@ -15,7 +14,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Vector.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <boost/regex.hpp>
 
@@ -36,19 +35,19 @@ namespace uiNetwork
  */
 class UINETWORK_CLASS_API SObjectConnectorTree :
     public QObject,
-    public ::gui::editor::IEditor
+    public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SObjectConnectorTree) (::gui::editor::IEditor));
+    fwCoreServiceClassDefinitionsMacro( (SObjectConnectorTree) (::fwGui::editor::IEditor));
 
     /**
      * @brief configure the service and initialize the ConnectorModel
      *
      * @code{.xml}
-        <service uid="${GENERIC_UID}_object_connector_view" type="::gui::editor::IEditor"
+        <service uid="${GENERIC_UID}_object_connector_view" type="::fwGui::editor::IEditor"
      * impl="::uiNetwork::SObjectConnectorTree" autoConnect="yes">
             <filter>T.*</filter>
             <config impl="::ioZMQ::SZeroMQSender">
@@ -126,6 +125,3 @@ private:
 };
 
 } // namespace uiNetwork
-
-#endif /*__UINETWORK_SOBJECTCONNECTORTREE_HPP__*/
-

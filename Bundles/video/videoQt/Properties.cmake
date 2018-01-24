@@ -5,6 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
         fwCore
         fwData
+        fwDataTools
         fwGui
         fwGuiQt
         fwCom
@@ -16,8 +17,7 @@ set( DEPENDENCIES
         arData
         arPreferences
         fwThread
-        gui
-        )
+)
 set( REQUIREMENTS  )
 set( PLUGINS
     mediaservice

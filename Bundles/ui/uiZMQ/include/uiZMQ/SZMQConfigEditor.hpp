@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIZMQ_SZMQCONFIGEDITOR_HPP__
-#define __UIZMQ_SZMQCONFIGEDITOR_HPP__
+#pragma once
 
 #include "uiZMQ/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <zmqNetwork/Socket.hpp>
+#include <fwGui/editor/IDialogEditor.hpp>
 
-#include <gui/editor/IDialogEditor.hpp>
+#include <zmqNetwork/Socket.hpp>
 
 #include <QComboBox>
 #include <QDialog>
@@ -32,7 +31,7 @@ namespace uiZMQ
  */
 class UIZMQ_CLASS_API SZMQConfigEditor :
     public QObject,
-    public ::gui::editor::IDialogEditor
+    public ::fwGui::editor::IDialogEditor
 {
 Q_OBJECT
 public:
@@ -51,7 +50,7 @@ public:
                                     ::zmqNetwork::Socket::SocketMode const,
                                     std::string const& host) > ConfigurationUpdatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SZMQConfigEditor) (::gui::editor::IDialogEditor));
+    fwCoreServiceClassDefinitionsMacro( (SZMQConfigEditor) (::fwGui::editor::IDialogEditor));
 
     /**
      * @brief create gui interface
@@ -111,6 +110,3 @@ private:
 };
 
 } // namespace uiZMQ
-
-#endif /*__UIZMQ_SZMQCONFIGEDITOR_HPP__*/
-

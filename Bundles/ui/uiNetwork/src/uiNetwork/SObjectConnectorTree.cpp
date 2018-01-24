@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 #include <QSize>
 #include <QWidget>
 
-fwServicesRegisterMacro(::gui::editor::IEditor, ::uiNetwork::SObjectConnectorTree, ::fwData::Object);
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiNetwork::SObjectConnectorTree, ::fwData::Object);
 
 namespace uiNetwork
 {
@@ -85,7 +85,7 @@ void SObjectConnectorTree::starting()
     this->initRootConnector();
     this->refreshTree();
 
-    QObject::connect(m_filterEditor, SIGNAL(textChanged(QString const &)), this, SLOT(onFilterChange(QString const&)));
+    QObject::connect(m_filterEditor, SIGNAL(textChanged(QString const&)), this, SLOT(onFilterChange(QString const&)));
     QObject::connect(refreshButton, SIGNAL(clicked()), this, SLOT(refreshTree()));
 }
 
@@ -156,4 +156,3 @@ void SObjectConnectorTree::swapping()
 //-----------------------------------------------------------------------------
 
 }  //namespace uiNetwork
-

@@ -24,7 +24,7 @@
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor, ::fwData::Object);
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor);
 
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT        = "remove";
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";

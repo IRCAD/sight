@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UITOOLS_EDITOR_SMATRIXVIEWER_HPP__
-#define __UITOOLS_EDITOR_SMATRIXVIEWER_HPP__
+#pragma once
 
 #include "uiTools/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -43,10 +42,10 @@ namespace editor
  */
 
 class UITOOLS_CLASS_API SMatrixViewer : public QObject,
-                                        public ::gui::editor::IEditor
+                                        public ::fwGui::editor::IEditor
 {
 public:
-    fwCoreServiceClassDefinitionsMacro( (SMatrixViewer)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SMatrixViewer)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UITOOLS_API SMatrixViewer() noexcept;
@@ -92,5 +91,3 @@ private:
 } //namespace editor
 
 } // namespace uiTools
-
-#endif // __UITOOLS_EDITOR_SMATRIXVIEWER_HPP__

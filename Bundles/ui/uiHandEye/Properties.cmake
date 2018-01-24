@@ -14,7 +14,5 @@ set( DEPENDENCIES
         fwCom
         fwMedData
         fwDataTools
-
-        gui
 )
 set( REQUIREMENTS  )

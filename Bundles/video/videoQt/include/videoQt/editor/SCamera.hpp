@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_EDITOR_SCAMERA_HPP__
-#define __VIDEOQT_EDITOR_SCAMERA_HPP__
+#pragma once
 
 #include "videoQt/config.hpp"
 
@@ -13,9 +12,9 @@
 
 #include <fwCom/Signal.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -70,13 +69,13 @@ namespace editor
  * camera series already contains camera data, an assertion will be raised.
  */
 class VIDEOQT_CLASS_API SCamera : public QObject,
-                                  public ::gui::editor::IEditor
+                                  public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCamera)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCamera)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     VIDEOQT_API SCamera() noexcept;
@@ -143,6 +142,3 @@ private:
 
 } // editor
 } // videoQt
-
-#endif /*__VIDEOQT_EDITOR_SCAMERA_HPP__*/
-

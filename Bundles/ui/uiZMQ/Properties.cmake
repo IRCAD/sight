@@ -14,6 +14,5 @@ set( DEPENDENCIES
     zmqNetwork
     
     ioZMQ
-    gui
 )
 set( REQUIREMENTS)

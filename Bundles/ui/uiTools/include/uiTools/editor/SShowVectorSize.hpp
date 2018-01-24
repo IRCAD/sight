@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__
-#define __UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__
+#pragma once
 
 #include "uiTools/config.hpp"
 
 #include <fwData/Vector.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -30,7 +29,7 @@ namespace editor
  * @brief  SShowVectorSize service show the size of a fwData::Vector
  *
  * @code{.xml}
-    <service uid="..." type="::gui::editor::IEditor" impl="::uiTools::editor::SShowVectorSize" autoConnect="yes">
+    <service uid="..." type="::uiTools::editor::SShowVectorSize" autoConnect="yes">
         <in key="vector" uid="..." autoConnect="yes"/>
         <text> my text </text>
     </service>
@@ -46,12 +45,12 @@ namespace editor
  *
  */
 class UITOOLS_CLASS_API SShowVectorSize : public QObject,
-                                          public ::gui::editor::IEditor
+                                          public ::fwGui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShowVectorSize)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SShowVectorSize)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UITOOLS_API SShowVectorSize() noexcept;
@@ -112,6 +111,3 @@ private:
 
 } // namespace editor
 } // namespace uiTools
-
-#endif /*__UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__*/
-

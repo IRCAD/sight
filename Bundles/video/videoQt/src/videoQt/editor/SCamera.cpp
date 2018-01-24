@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,7 +42,7 @@ namespace videoQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SCamera );
 
 const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
 
@@ -318,4 +318,3 @@ std::vector< ::arData::Camera::sptr > SCamera::getCameras() const
 
 } //namespace editor
 } //namespace videoQt
-

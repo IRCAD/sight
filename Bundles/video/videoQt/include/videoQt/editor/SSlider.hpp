@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_EDITOR_SSLIDER_HPP__
-#define __VIDEOQT_EDITOR_SSLIDER_HPP__
+#pragma once
 
 #include "videoQt/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -30,13 +29,13 @@ namespace editor
  * @brief   This editor allows to draw a slider. It is designed to be used with SFrameGrabber to browse a video.
  */
 class VIDEOQT_CLASS_API SSlider : public QObject,
-                                  public ::gui::editor::IEditor
+                                  public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSlider)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSlider)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     VIDEOQT_API SSlider() noexcept;
@@ -86,7 +85,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::gui::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
+        <service uid="..." type="::fwGui::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
        @endcode
      */
     virtual void configuring() override;
@@ -121,6 +120,3 @@ private:
 
 } // editor
 } // videoQt
-
-#endif /*__VIDEOQT_EDITOR_SSLIDER_HPP__*/
-

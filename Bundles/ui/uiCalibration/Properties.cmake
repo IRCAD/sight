@@ -14,9 +14,9 @@ set( DEPENDENCIES
         fwGuiQt
         fwCom
         fwMedData
-
-        gui
         io
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    io
+)
 

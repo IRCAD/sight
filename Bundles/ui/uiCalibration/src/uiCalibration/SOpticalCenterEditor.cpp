@@ -27,7 +27,7 @@ namespace uiCalibration
 static const ::fwServices::IService::KeyType s_CAMERA_INPUT = "camera";
 static const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::arData::Camera);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::arData::Camera);
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept

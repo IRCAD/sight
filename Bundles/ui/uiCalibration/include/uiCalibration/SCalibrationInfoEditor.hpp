@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UICALIBRATION_SCALIBRATIONINFOEDITOR_HPP__
-#define __UICALIBRATION_SCALIBRATIONINFOEDITOR_HPP__
+#pragma once
 
 #include "uiCalibration/config.hpp"
 
 #include <fwData/List.hpp>
 #include <fwData/PointList.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -41,12 +40,12 @@ namespace uiCalibration
  * - \b calInfo2 [::arData::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
-                                                       public ::gui::editor::IEditor
+                                                       public ::fwGui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCalibrationInfoEditor)(::gui::editor::IEditor));
+    fwCoreServiceClassDefinitionsMacro((SCalibrationInfoEditor)(::fwGui::editor::IEditor));
 
     /**
      * @name Slots API
@@ -128,5 +127,3 @@ private:
     QPointer< QListWidget > m_capturesListWidget;
 };
 } // namespace uiCalibration
-
-#endif // __UICALIBRATION_SCALIBRATIONINFOEDITOR_HPP__

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UICALIBRATION_SOPTICALCENTEREDITOR_HPP__
-#define __UICALIBRATION_SOPTICALCENTEREDITOR_HPP__
+#pragma once
 
 #include "uiCalibration/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -44,12 +43,12 @@ namespace uiCalibration
    0   0   0   0
  */
 class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
-                                                     public ::gui::editor::IEditor
+                                                     public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SOpticalCenterEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SOpticalCenterEditor)(::fwGui::editor::IEditor) );
 
     /// Constructor.
     UICALIBRATION_API SOpticalCenterEditor() noexcept;
@@ -91,5 +90,3 @@ private:
 };
 
 } // uiCalibration
-
-#endif // __UICALIBRATION_SOPTICALCENTEREDITOR_HPP__

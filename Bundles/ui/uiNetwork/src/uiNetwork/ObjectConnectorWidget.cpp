@@ -1,19 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiNetwork/ObjectConnectorWidget.hpp"
+
 #include "uiNetwork/NetworkListenerWidget.hpp"
 #include "uiNetwork/NetworkSenderWidget.hpp"
 
-#include <gui/editor/IDialogEditor.hpp>
-#include <uiIO/editor/SIOSelector.hpp>
+#include <fwGui/editor/IDialogEditor.hpp>
+
 #include <fwServices/op/Add.hpp>
 
-#include <Qt>
+#include <uiIO/editor/SIOSelector.hpp>
+
 #include <QPushButton>
+#include <Qt>
 
 namespace uiNetwork
 {
@@ -59,8 +62,8 @@ void ObjectConnectorWidget::onLoadData()
     ::uiIO::editor::SIOSelector::sptr selectorService;
 
     selectorService =
-        ::uiIO::editor::SIOSelector::dynamicCast(::fwServices::add< ::gui::editor::IDialogEditor >(m_obj,
-                                                                                                   "::uiIO::editor::SIOSelector"));
+        ::uiIO::editor::SIOSelector::dynamicCast(::fwServices::add< ::fwGui::editor::IDialogEditor >(m_obj,
+                                                                                                     "::uiIO::editor::SIOSelector"));
     if (selectorService != NULL)
     {
         selectorService->setIOMode(::uiIO::editor::SIOSelector::READER_MODE);

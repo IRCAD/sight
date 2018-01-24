@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIHANDEYE_SHANDEYEEDITOR_HPP__
-#define __UIHANDEYE_SHANDEYEEDITOR_HPP__
+#pragma once
 
 #include "uiHandEye/config.hpp"
 
@@ -15,7 +14,7 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -58,12 +57,12 @@ namespace uiHandEye
  *[::fwData::TransformationMatrix3D]
  */
 class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,
-                                           public ::gui::editor::IEditor
+                                           public ::fwGui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SHandEyeEditor)(::gui::editor::IEditor));
+    fwCoreServiceClassDefinitionsMacro((SHandEyeEditor)(::fwGui::editor::IEditor));
 
     /**
      * @name Slots API
@@ -162,5 +161,3 @@ private:
 
 };
 } // namespace uiHandEye
-
-#endif // __UIHANDEYE_SHANDEYEEDITOR_HPP__
