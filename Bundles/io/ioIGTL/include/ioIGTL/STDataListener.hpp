@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOIGTL_STDATALISTENER_HPP__
-#define __IOIGTL_STDATALISTENER_HPP__
+#pragma once
 
 #include "ioIGTL/config.hpp"
 
@@ -51,8 +50,8 @@ namespace ioIGTL
  * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
  * - \b TData : specified IGTL matrix name to push in specified timeline index
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
- * @note : hostname and port of this service can be a value or a nameKey from preference settings
-   (for example <server>%HOSTNAME%:%PORT%</server>)
+ * @note : hostname, port and deviceName of this service can be a value or a nameKey from preference settings
+   (for example <server>%HOSTNAME%:%PORT%</server>, <deviceName>%DEVICE_NAME%</deviceName>)
  */
 class IOIGTL_CLASS_API STDataListener : public ::ioNetwork::INetworkListener
 {
@@ -107,6 +106,3 @@ private:
 };
 
 } // namespace ioIGTL
-
-#endif /*__IOIGTL_STDATALISTENER_HPP__*/
-
