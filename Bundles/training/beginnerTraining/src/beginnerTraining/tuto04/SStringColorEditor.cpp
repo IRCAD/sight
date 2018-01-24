@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,7 @@
 #include <qpalette.h>
 #include <qwidget.h>
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto04::SStringColorEditor );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::beginnerTraining::tuto04::SStringColorEditor );
 
 namespace beginnerTraining
 {
@@ -152,4 +152,3 @@ void SStringColorEditor::changeColor(std::array<uint8_t, 4> color, std::string k
 
 } // namespace tuto04
 } // namespace beginnerTraining
-

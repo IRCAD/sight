@@ -11,7 +11,5 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     navigation
-    gui
-    guiQt
     cpr
 )

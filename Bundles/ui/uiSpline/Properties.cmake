@@ -5,11 +5,11 @@ set( DEPENDENCIES
     fwCore
     fwCom
     fwData
+    fwDataTools
     fwServices
     fwRuntime
     fwTools
     fwGui
     fwGuiQt
     navigation
-    gui
-    )
+)

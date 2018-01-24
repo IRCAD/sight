@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UILOGO_EDITOR_SBUTTON_HPP__
-#define __UILOGO_EDITOR_SBUTTON_HPP__
+#pragma once
 
 #include "uiLogo/config.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QObject>
 
@@ -28,11 +27,11 @@ namespace editor
  * Once the user clicks the button, a signal is sent
  */
 class UILOGO_CLASS_API SButton : public QObject,
-                                 public ::gui::editor::IEditor
+                                 public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SButton)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SButton)(::fwGui::editor::IEditor) );
 
     /// Triggered signal type
 
@@ -96,5 +95,3 @@ private:
 
 }   //namespace uiLogo
 }   //namespace editor
-
-#endif /* __UILOGO_EDITOR_SBUTTON_HPP__ */

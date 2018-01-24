@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 #include <QString>
 #include <QWidget>
 
-fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Image);
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Image);
 
 namespace uiCPR
 {
@@ -211,4 +211,3 @@ void SCPREditor::onClickComputeSlotType()
 }
 
 }//namespace uiSpline
-

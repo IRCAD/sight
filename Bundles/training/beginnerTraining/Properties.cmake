@@ -12,7 +12,8 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     io
-    gui
 )
-set( REQUIREMENTS  )
+set( REQUIREMENTS
+    io
+)
 
