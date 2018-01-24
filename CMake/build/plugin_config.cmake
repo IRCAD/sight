@@ -16,14 +16,13 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
 
     # Add each bundle deps to the requirement list
     foreach(CURRENT_BUNDLE_DEPS ${${PROJECT}_BUNDLE_DEPENDENCIES})
-        list(APPEND REQUIREMENT_LIST "    <requirement id=\"${CURRENT_BUNDLE_DEPS}\"/>")
+        list(APPEND PROJECT_REQUIREMENTS ${CURRENT_BUNDLE_DEPS})
     endforeach()
 
     set(PLUGIN_CONFIG_COMMAND   ${CMAKE_COMMAND}
                                 -DPROJECT="${PROJECT}"
                                 -DPROJECT_VERSION="${${PROJECT}_VERSION}"
                                 -DPROJECT_DIR="${${PROJECT}_DIR}"
-                                -DPROJECT_BUNDLE_DEPENDENCIES="${${PROJECT}_BUNDLE_DEPENDENCIES}"
                                 -DPROJECT_REQUIREMENTS="${PROJECT_REQUIREMENTS}"
                                 -DCMAKE_SCRIPTS_DIR="${CMAKE_SOURCE_DIR}/CMake/build"
                                 -DPLUGIN_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}"

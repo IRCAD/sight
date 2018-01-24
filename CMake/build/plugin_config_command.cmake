@@ -12,11 +12,6 @@ if(PROJECT_REQUIREMENTS)
     endforeach()
 endif()
 
-# Add each bundle deps to the requirement list
-foreach(CURRENT_BUNDLE_DEPS ${PROJECT_BUNDLE_DEPENDENCIES})
-    list(APPEND REQUIREMENT_LIST "    <requirement id=\"${CURRENT_BUNDLE_DEPS}\"/>")
-endforeach()
-
 if(REQUIREMENT_LIST)
     list(SORT REQUIREMENT_LIST)
     string(REPLACE ";" "\n" REQUIREMENT_LIST "${REQUIREMENT_LIST}")
