@@ -67,8 +67,8 @@ function(docsetGenerator)
         return()
     endif()
     add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/build_docset.py
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                      DEPENDS docset_doxygen
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset
+                      DEPENDS docset_doxygen ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json
                       COMMENT "Generating dash docset"
                       VERBATIM)
     add_custom_command(TARGET docset POST_BUILD
