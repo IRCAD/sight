@@ -46,6 +46,21 @@ function(docsetGenerator)
                       DEPENDS docset_clean ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/Doxyfile
                       COMMENT "Generating API documentation with Doxygen (docset version)" VERBATIM)
 
+    set(BUNDLES_JSON)
+    set(SRCLIBS_JSON)
+    foreach(PROJECT ${PROJECT_LIST})
+        if(${PROJECT}_TYPE STREQUAL "LIBRARY")
+            set(SRCLIBS_JSON "${SRCLIBS_JSON}, \"${PROJECT}\"")
+        elseif(${PROJECT}_TYPE STREQUAL "BUNDLE")
+            set(BUNDLES_JSON "${BUNDLES_JSON}, \"${PROJECT}\"")
+        endif()
+    endforeach()
+    string(REGEX REPLACE "^[ ]*,[ ]*" "" BUNDLES_JSON "${BUNDLES_JSON}")
+    string(REGEX REPLACE "^[ ]*,[ ]*" "" SRCLIBS_JSON "${SRCLIBS_JSON}")
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/doxygen/projects.json.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json @ONLY)
+
     find_package(PythonInterp 3 QUIET)
     if(NOT PYTHONINTERP_FOUND)
         message(WARNING "A Python3 interpreter is required to build the Dash docset, but none was found.")
