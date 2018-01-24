@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SCORECOMPOSITOREDITOR_HPP__
-#define __UIVISUOGRE_SCORECOMPOSITOREDITOR_HPP__
+#pragma once
 
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -39,13 +38,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class UIVISUOGRE_CLASS_API SCoreCompositorEditor : public QObject,
-                                                   public ::gui::editor::IEditor
+                                                   public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCoreCompositorEditor)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (SCoreCompositorEditor)(::fwGui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SCoreCompositorEditor() noexcept;
@@ -111,5 +110,3 @@ private:
 };
 
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_SCORECOMPOSITOREDITOR_HPP__

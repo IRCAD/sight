@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__
-#define __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
 
+#include <fwGui/editor/IEditor.hpp>
+
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/Layer.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -31,13 +30,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
-                                                 public ::gui::editor::IEditor
+                                                 public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorSelector)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (SCompositorSelector)(::fwGui::editor::IEditor) )
 
     /** @} */
 
@@ -126,5 +125,3 @@ private:
 };
 
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__

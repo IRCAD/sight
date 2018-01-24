@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SMATERIALSELECTOR_HPP__
-#define __UIVISUOGRE_SMATERIALSELECTOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
 
 #include <fwData/Reconstruction.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QComboBox>
 #include <QLabel>
@@ -28,13 +27,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre material template and apply it to the current reconstruction
  */
 class UIVISUOGRE_CLASS_API SMaterialSelector : public QObject,
-                                               public ::gui::editor::IEditor
+                                               public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::fwGui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() noexcept;
@@ -89,5 +88,3 @@ private:
 };
 
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_SMATERIALSELECTOR_HPP__

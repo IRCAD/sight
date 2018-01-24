@@ -7,7 +7,7 @@
     <requirement id="uiIO"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SMaterialSelector</service>
         <object>::fwData::Reconstruction</object>
         <desc>service description</desc>
@@ -15,56 +15,56 @@
 
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::STextureSelector</service>
         <object>::fwData::Reconstruction</object>
         <desc>service description</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SCompositorParameterEditor</service>
         <object>::fwData::Object</object>
         <desc>service description</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SShaderParameterEditor</service>
         <object>::fwData::Reconstruction</object>
         <desc>service description</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SCompositorSelector</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SStereoSelector</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SCoreCompositorEditor</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SLightSelector</service>
         <object>::fwData::Composite</object>
         <desc>User interface to select light adaptor from a selected layer or create a new one.</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiVisuOgre::SLightEditor</service>
         <object>::fwData::Composite</object>
         <desc>User interface to edit a light adaptor.</desc>

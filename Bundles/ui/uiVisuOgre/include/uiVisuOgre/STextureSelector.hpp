@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_STEXTURESELECTOR_HPP__
-#define __UIVISUOGRE_STEXTURESELECTOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
 
 #include <fwData/Reconstruction.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -25,14 +24,14 @@ namespace uiVisuOgre
  * @brief   Allows to select a ::fwData::Image and apply it to the current reconstruction as an Ogre texture
  */
 class UIVISUOGRE_CLASS_API STextureSelector : public QObject,
-                                              public ::gui::editor::IEditor
+                                              public ::fwGui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STextureSelector)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (STextureSelector)(::fwGui::editor::IEditor) )
 
     UIVISUOGRE_API STextureSelector() noexcept;
     UIVISUOGRE_API virtual ~STextureSelector() noexcept;
@@ -69,5 +68,3 @@ private:
 };
 
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_STEXTURESELECTOR_HPP__

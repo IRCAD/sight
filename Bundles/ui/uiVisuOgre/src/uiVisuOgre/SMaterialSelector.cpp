@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction);
 
 const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
@@ -94,8 +94,8 @@ void SMaterialSelector::starting()
 
     this->updating();
 
-    QObject::connect(m_materialBox, SIGNAL(activated(const QString &)), this,
-                     SLOT(onSelectedModeItem(const QString &)));
+    QObject::connect(m_materialBox, SIGNAL(activated(const QString&)), this,
+                     SLOT(onSelectedModeItem(const QString&)));
     QObject::connect(m_reloadButton, SIGNAL(clicked()), this, SLOT(onReloadMaterial()));
 }
 

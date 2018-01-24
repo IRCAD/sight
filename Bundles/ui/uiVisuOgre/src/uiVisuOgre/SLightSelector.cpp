@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 
@@ -100,8 +100,8 @@ void SLightSelector::starting()
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
-    QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-                     this, SLOT(onSelectedLightItem(QListWidgetItem*, QListWidgetItem*)));
+    QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+                     this, SLOT(onSelectedLightItem(QListWidgetItem*,QListWidgetItem*)));
     QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
