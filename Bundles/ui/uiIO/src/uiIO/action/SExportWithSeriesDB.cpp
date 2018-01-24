@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 //------------------------------------------------------------------------------
 
 SExportWithSeriesDB::SExportWithSeriesDB( ) noexcept :
-    m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
+    m_ioSelectorSrvConfig("IOSelectorServiceConfigVRRenderReader")
 {
     m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
     m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SExportWithSeriesDB::forwardJob, this );
@@ -48,7 +48,7 @@ SExportWithSeriesDB::~SExportWithSeriesDB() noexcept
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::info(std::ostream &_sstream )
+void SExportWithSeriesDB::info(std::ostream& _sstream )
 {
     _sstream << "Action for add SeriesDB" << std::endl;
 }
@@ -90,7 +90,7 @@ void SExportWithSeriesDB::updating( )
     // Init and execute the service
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add(localSeriesDB,
-                                      "::gui::editor::IDialogEditor",
+                                      "::fwGui::editor::IDialogEditor",
                                       "::uiIO::editor::SIOSelector");
 
     ioSelectorSrv->setWorker(m_associatedWorker);

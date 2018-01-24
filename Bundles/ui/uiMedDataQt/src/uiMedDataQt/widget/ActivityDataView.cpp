@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -644,7 +644,7 @@ void ActivityDataView::importObject()
             if (this->readObject(seriesDB))
             {
                 unsigned int nbImportedObj = 0;
-                for (const ::fwMedData::Series::sptr& series : * seriesDB)
+                for (const ::fwMedData::Series::sptr& series : *seriesDB)
                 {
                     if (series->isA(type))
                     {
@@ -685,7 +685,7 @@ bool ActivityDataView::readObject(::fwData::Object::sptr obj)
 {
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add(obj,
-                                      "::gui::editor::IDialogEditor",
+                                      "::fwGui::editor::IDialogEditor",
                                       "::uiIO::editor::SIOSelector");
 
     ::fwRuntime::ConfigurationElement::csptr ioCfg;

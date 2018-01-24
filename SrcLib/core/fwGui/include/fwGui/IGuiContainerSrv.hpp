@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGUI_IGUICONTAINERSRV_HPP__
-#define __FWGUI_IGUICONTAINERSRV_HPP__
+#pragma once
 
 #include "fwGui/config.hpp"
 
@@ -51,7 +50,7 @@ class ISlideViewBuilder;
  * @section XML Example of XML configuration
  *
  * @code{.xml}
-   <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
+   <service uid="subView1" type="::gui::view::SDefaultView" autoConnect="no" >
        <gui>
            <layout type="::fwGui::LineLayoutManager" >
                <orientation value="horizontal" />
@@ -204,5 +203,3 @@ private:
 };
 
 } // namespace fwGui
-
-#endif /*__FWGUI_IGUICONTAINERSRV_HPP__*/

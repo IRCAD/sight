@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEASUREMENTQT_EDITOR_DISTANCE_HPP__
-#define __UIMEASUREMENTQT_EDITOR_DISTANCE_HPP__
+#pragma once
 
 #include "uiMeasurementQt/config.hpp"
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -46,12 +45,12 @@ namespace editor
    \b genericScene is the uid of the ::fwRenderVTK::SRender representing the generic scene which will be printed.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
-                                           public ::gui::editor::IEditor
+                                           public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (Distance)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (Distance)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;
@@ -113,6 +112,3 @@ private:
 };
 } // namespace editor
 } // uiMeasurementQt
-
-#endif /*__UIMEASUREMENTQT_EDITOR_DISTANCE_HPP__*/
-

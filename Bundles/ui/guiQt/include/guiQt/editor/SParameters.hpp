@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUIQT_EDITOR_SPARAMETERS_HPP__
-#define __GUIQT_EDITOR_SPARAMETERS_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
 #include <QGridLayout>
 #include <QObject>
@@ -71,11 +70,11 @@ namespace editor
  * and will send 'imageBlend' or 'imageCheckerboard'.
  */
 class GUIQT_CLASS_API SParameters : public QObject,
-                                    public ::gui::editor::IEditor
+                                    public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SParameters)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SParameters)(::fwGui::editor::IEditor) );
 
     /// Boolean changed signal type
     typedef ::fwCom::Signal< void (bool, std::string) > BooleanChangedSignalType;
@@ -180,5 +179,3 @@ private:
 
 }   //namespace guiQt
 }   //namespace editor
-
-#endif /* __GUIQT_EDITOR_SPARAMETERS_HPP__ */

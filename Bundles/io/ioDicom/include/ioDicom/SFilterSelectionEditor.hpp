@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODICOM_SFILTERSELECTIONEDITOR_HPP__
-#define __IODICOM_SFILTERSELECTIONEDITOR_HPP__
+#pragma once
 
 #include "ioDicom/config.hpp"
 
 #include <fwDicomIOFilter/IFilter.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -45,13 +44,13 @@ namespace ioDicom
  */
 
 class IODICOM_CLASS_API SFilterSelectionEditor : public QObject,
-                                                 public ::gui::editor::IEditor
+                                                 public ::fwGui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFilterSelectionEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SFilterSelectionEditor)( ::fwGui::editor::IEditor ) );
 
     typedef std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > FilterMapType;
 
@@ -169,5 +168,3 @@ protected:
 };
 
 } // namespace ioDicom
-
-#endif // __IODICOM_SFILTERSELECTIONEDITOR_HPP__

@@ -6,12 +6,12 @@ set( DEPENDENCIES
     fwCom
     fwCore
     fwData
+    fwDataTools
     fwGuiQt
     fwRuntime
     fwServices
     fwTools
     fwGui
-    gui
 )
 set( REQUIREMENTS  )
 

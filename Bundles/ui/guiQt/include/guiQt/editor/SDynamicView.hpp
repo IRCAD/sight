@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUIQT_EDITOR_SDYNAMICVIEW_HPP__
-#define __GUIQT_EDITOR_SDYNAMICVIEW_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
@@ -17,6 +16,8 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwGui/view/IActivityView.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
@@ -24,8 +25,6 @@
 #include <fwServices/IAppConfigManager.hpp>
 
 #include <fwTools/Failed.hpp>
-
-#include <gui/view/IActivityView.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -67,7 +66,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::gui::view::IView" impl="::guiQt::editor::SDynamicView" autoConnect="yes" >
+   <service type="::guiQt::editor::SDynamicView" autoConnect="yes" >
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
@@ -87,13 +86,13 @@ namespace editor
  *          composite contained in the ActivitySeries.
  */
 class GUIQT_CLASS_API SDynamicView : public QObject,
-                                     public ::gui::view::IActivityView
+                                     public ::fwGui::view::IActivityView
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SDynamicView)(::gui::view::IActivityView) );
+    fwCoreServiceClassDefinitionsMacro( (SDynamicView)(::fwGui::view::IActivityView) );
 
     /// Constructor. Do nothing.
     GUIQT_API SDynamicView() noexcept;
@@ -216,5 +215,3 @@ private:
 
 } //namespace editor
 } // guiQt
-
-#endif /*__GUIQT_EDITOR_SDYNAMICVIEW_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ namespace monitorQt
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::monitorQt::DumpEditor, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::monitorQt::DumpEditor );
 
 ::fwMemory::BufferManager::BufferInfoMapType m_bufferInfos;
 ::fwMemory::BufferManager::BufferStats m_bufferStats = {0, 0};
@@ -488,10 +488,10 @@ void DumpEditor::starting()
 
     qtContainer->setLayout( sizer );
 
-    QObject::connect(m_refresh, SIGNAL(clicked()), this, SLOT(onRefreshButton( )));
+    QObject::connect(m_refresh, SIGNAL(clicked()), this, SLOT(onRefreshButton()));
     QObject::connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
 
-    QObject::connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(onRefreshButton( )));
+    QObject::connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(onRefreshButton()));
     QObject::connect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
 
     ::fwMemory::BufferManager::sptr buffManager = ::fwMemory::BufferManager::getDefault();
@@ -619,7 +619,7 @@ void DumpEditor::onBufferInfo()
         bool isLock = dumpBuffInfo.lockCount() > 0;
         if ( isLock )
         {
-            lockStatus = "locked(" +  ::fwTools::getString(dumpBuffInfo.lockCount()) +")";
+            lockStatus = "locked(" + ::fwTools::getString(dumpBuffInfo.lockCount()) +")";
         }
         else
         {
@@ -750,4 +750,3 @@ void DumpEditor::changeStatus( int index )
 //------------------------------------------------------------------------------
 
 }
-

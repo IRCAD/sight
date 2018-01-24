@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,7 +85,7 @@ void SSeriesDBReader::configureWithIHM()
         ::fwServices::IService::sptr filterSelectorSrv;
         ::fwData::String::sptr key = ::fwData::String::New();
         filterSelectorSrv          = ::fwServices::add(key,
-                                                       "::gui::editor::IDialogEditor",
+                                                       "::fwGui::editor::IDialogEditor",
                                                        "::ioDicom::SFilterSelectorDialog");
         filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();

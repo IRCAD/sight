@@ -10,13 +10,13 @@
 
 #include <fwActivities/registry/Activities.hpp>
 
+#include <fwGui/view/IActivityView.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
 
 #include <fwTools/Failed.hpp>
-
-#include <gui/view/IActivityView.hpp>
 
 namespace guiQt
 {
@@ -40,7 +40,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::gui::view::IView" impl="::guiQt::editor::SActivityView" autoConnect="yes" >
+   <service type="::guiQt::editor::SActivityView" autoConnect="yes" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
@@ -58,12 +58,12 @@ namespace editor
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
  */
-class GUIQT_CLASS_API SActivityView : public ::gui::view::IActivityView
+class GUIQT_CLASS_API SActivityView : public ::fwGui::view::IActivityView
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::gui::view::IActivityView) )
+    fwCoreServiceClassDefinitionsMacro( (SActivityView)(::fwGui::view::IActivityView) )
 
     /// Constructor. Do nothing.
     GUIQT_API SActivityView();

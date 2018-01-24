@@ -42,7 +42,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";

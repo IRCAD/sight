@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -174,8 +174,8 @@ void SFilterSelectionEditor::starting()
     QObject::connect(m_splitFilterButton, SIGNAL(clicked(void)), this, SLOT(splitFilter(void)));
     QObject::connect(m_applyFiltersButton, SIGNAL(clicked(void)), this, SLOT(applyFilters(void)));
     QObject::connect(m_deleteShortcut, SIGNAL(activated()), this, SLOT(removeFilter(void)));
-    QObject::connect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-                     SLOT(showContextMenuForSelectedFilter(const QPoint &)));
+    QObject::connect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this,
+                     SLOT(showContextMenuForSelectedFilter(const QPoint&)));
     QObject::connect(m_forcedApplyCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onForceChecked(int)));
 }
 
@@ -243,8 +243,8 @@ void SFilterSelectionEditor::stopping()
     QObject::disconnect(m_splitFilterButton, SIGNAL(clicked(void)), this, SLOT(splitFilter(void)));
     QObject::disconnect(m_applyFiltersButton, SIGNAL(clicked(void)), this, SLOT(applyFilters(void)));
     QObject::disconnect(m_deleteShortcut, SIGNAL(activated()), this, SLOT(removeFilter(void)));
-    QObject::disconnect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-                        SLOT(showContextMenuForSelectedFilter(const QPoint &)));
+    QObject::disconnect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this,
+                        SLOT(showContextMenuForSelectedFilter(const QPoint&)));
 
     this->destroy();
 }

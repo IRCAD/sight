@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const ::fwCom::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-fwServicesRegisterMacro( ::gui::view::IActivityView, ::guiQt::editor::SDynamicView, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SDynamicView );
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ SDynamicView::~SDynamicView() noexcept
 
 void SDynamicView::configuring()
 {
-    this->::gui::view::IActivityView::configuring();
+    this->::fwGui::view::IActivityView::configuring();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 

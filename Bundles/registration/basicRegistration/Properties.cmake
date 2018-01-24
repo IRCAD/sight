@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwDataTools
     fwGuiQt
     fwItkIO
-
-    gui
+    fwGui
 )
 set( REQUIREMENTS  )

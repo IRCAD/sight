@@ -12,7 +12,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
-    gui
+    fwDataTools
 )
 set( REQUIREMENTS  )
 

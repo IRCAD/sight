@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@ static const ::fwCom::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 
 static const ::fwCom::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SSignalButton, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSignalButton );
 
 //-----------------------------------------------------------------------------
 
@@ -239,4 +239,3 @@ void SSignalButton::info( std::ostream& _sstream )
 
 } // namespace editor
 } // namespace gui
-

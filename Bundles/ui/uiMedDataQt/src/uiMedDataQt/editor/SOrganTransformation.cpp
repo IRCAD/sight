@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@ namespace uiMedDataQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation );
 
 static const ::fwServices::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const ::fwServices::IService::KeyType s_COMPOSITE_INOUT    = "composite";
@@ -93,12 +93,12 @@ void SOrganTransformation::starting()
     m_saveSelectionComboBox = new QComboBox();
 
     QObject::connect(m_reconstructionListBox,
-                     SIGNAL(itemClicked(QListWidgetItem* )),
+                     SIGNAL(itemClicked(QListWidgetItem*)),
                      this,
                      SLOT(onReconstructionCheck(QListWidgetItem*)));
-    QObject::connect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
-    QObject::connect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
-    QObject::connect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
+    QObject::connect(m_resetButton, SIGNAL(clicked()), this, SLOT(onResetClick()));
+    QObject::connect(m_saveButton, SIGNAL(clicked()), this, SLOT(onSaveClick()));
+    QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadClick()));
     QObject::connect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
     layoutGroupBox->addWidget( m_selectAllCheckBox, 0);
@@ -118,12 +118,12 @@ void SOrganTransformation::starting()
 void SOrganTransformation::stopping()
 {
     QObject::disconnect(m_reconstructionListBox,
-                        SIGNAL(itemClicked(QListWidgetItem* )),
+                        SIGNAL(itemClicked(QListWidgetItem*)),
                         this,
                         SLOT(onReconstructionCheck(QListWidgetItem*)));
-    QObject::disconnect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
-    QObject::disconnect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
-    QObject::disconnect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
+    QObject::disconnect(m_resetButton, SIGNAL(clicked()), this, SLOT(onResetClick()));
+    QObject::disconnect(m_saveButton, SIGNAL(clicked()), this, SLOT(onSaveClick()));
+    QObject::disconnect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadClick()));
     QObject::disconnect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
     this->destroy();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,8 @@
 namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstructionQt::RepresentationEditor, ::fwData::Reconstruction );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::RepresentationEditor,
+                         ::fwData::Reconstruction );
 
 //------------------------------------------------------------------------------
 
@@ -137,8 +138,8 @@ void RepresentationEditor::starting()
     qtContainer->setLayout( layout );
     qtContainer->setEnabled(false);
 
-    QObject::connect(m_buttonGroup, SIGNAL(buttonClicked( int )), this, SLOT(onChangeRepresentation( int )));
-    QObject::connect(m_buttonGroupShading, SIGNAL(buttonClicked( int )), this, SLOT(onChangeShading( int )));
+    QObject::connect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onChangeRepresentation(int)));
+    QObject::connect(m_buttonGroupShading, SIGNAL(buttonClicked(int)), this, SLOT(onChangeShading(int)));
 
     this->updating();
 }
@@ -149,8 +150,8 @@ void RepresentationEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked( int )), this, SLOT(onChangeRepresentation(int )));
-    QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked( int )), this, SLOT(onChangeShading(int )));
+    QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onChangeRepresentation(int)));
+    QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked(int)), this, SLOT(onChangeShading(int)));
 
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
 
@@ -390,4 +391,3 @@ void RepresentationEditor::notifyMaterial()
 //------------------------------------------------------------------------------
 
 }
-

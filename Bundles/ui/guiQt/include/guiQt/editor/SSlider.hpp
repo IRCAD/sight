@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUIQT_EDITOR_SSLIDER_HPP__
-#define __GUIQT_EDITOR_SSLIDER_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -37,7 +36,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::gui::editor::IEditor" impl="::guiQt::editor::SSlider" autoConnect="no"/>
+    <service uid="..." type="::guiQt::editor::SSlider" autoConnect="no"/>
         <editBox>false</editBox>
         <resetButton>false</resetButton>
         <defaultValue>200</defaultValue>
@@ -60,13 +59,13 @@ namespace editor
  * - \b setMaxValue(int): This slot allows to set maximum value.
  */
 class GUIQT_CLASS_API SSlider : public QObject,
-                                public ::gui::editor::IEditor
+                                public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSlider)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSlider)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     GUIQT_API SSlider() noexcept;
@@ -163,5 +162,3 @@ private:
 
 }
 }
-
-#endif /*__GUIQT_EDITOR_SSLIDER_HPP__*/

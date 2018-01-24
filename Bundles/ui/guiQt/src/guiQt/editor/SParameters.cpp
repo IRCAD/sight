@@ -38,7 +38,7 @@ namespace editor
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SParameters, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SParameters );
 
 static const ::fwCom::Signals::SignalKeyType BOOLEAN_CHANGED_SIG  = "boolChanged";
 static const ::fwCom::Signals::SignalKeyType COLOR_CHANGED_SIG    = "colorChanged";
@@ -576,7 +576,7 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     layout.addWidget(colourButton, row, 2);
     layout.addWidget(resetButton, row, 5);
 
-    QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton( )));
+    QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
 
     // Connect reset button to the button
     m_resetMapper->setMapping(resetButton, colourButton);

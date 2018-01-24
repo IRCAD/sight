@@ -1,21 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MONITORQT_DUMPEDITOR_HPP__
-#define __MONITORQT_DUMPEDITOR_HPP__
+#pragma once
 
 #include "monitorQt/config.hpp"
 
 #include <fwCom/Connection.hpp>
 
+#include <fwGui/editor/IEditor.hpp>
+
 #include <fwMemory/BufferManager.hpp>
 
 #include <fwTools/Failed.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 #include <QFutureWatcher>
 #include <QPointer>
@@ -41,13 +40,13 @@ namespace monitorQt
  * @brief   Editor to dump or restore selected buffer.
  */
 class MONITORQT_CLASS_API DumpEditor : public QObject,
-                                       public ::gui::editor::IEditor
+                                       public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (DumpEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (DumpEditor)(::fwGui::editor::IEditor) );
 
     /// Constructor. Does nothing.
     MONITORQT_API DumpEditor() noexcept;
@@ -124,6 +123,3 @@ private:
 };
 
 } // monitorQt
-
-#endif //__MONITORQT_DUMPEDITOR_HPP__
-

@@ -2,7 +2,6 @@
     <library name="ioITK" />
 
     <requirement id="io" />
-    <requirement id="gui" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>

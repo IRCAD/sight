@@ -17,7 +17,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwDataTools
-    gui
     )
 set( REQUIREMENTS
     uiImageQt

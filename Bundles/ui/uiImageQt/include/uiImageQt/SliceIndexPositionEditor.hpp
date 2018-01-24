@@ -1,21 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__
-#define __UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__
+#pragma once
 
 #include "uiImageQt/config.hpp"
 
 #include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
+#include <fwGui/editor/IEditor.hpp>
+
 #include <fwGuiQt/SliceSelector.hpp>
 
 #include <fwTools/Failed.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 namespace uiImageQt
 {
@@ -41,13 +40,13 @@ namespace uiImageQt
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
-class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor,
+class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::fwGui::editor::IEditor,
                                                      public ::fwDataTools::helper::MedicalImageAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SliceIndexPositionEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SliceIndexPositionEditor)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API SliceIndexPositionEditor() noexcept;
@@ -92,8 +91,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="slider_negato1" impl="::uiImageQt::SliceIndexPositionEditor" type="::gui::editor::IEditor"
-     * autoConnect="yes">
+       <service uid="slider_negato1" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
        </service>
        @endcode
@@ -142,6 +140,3 @@ private:
 };
 
 } // uiImageQt
-
-#endif /*__UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__*/
-

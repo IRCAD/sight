@@ -6,6 +6,7 @@ set( DEPENDENCIES
     fwCom
     fwCore
     fwData
+    fwDataTools
     fwGui
     fwTools
     fwJobs
@@ -14,12 +15,10 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
 
-    gui
     io
 )
 
 set( REQUIREMENTS
-    gui
     dataReg
     servicesReg
 )

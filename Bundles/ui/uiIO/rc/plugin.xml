@@ -3,11 +3,10 @@
     <library name="uiIO" />
 
     <requirement id="dataReg" />
-    <requirement id="gui" />
     <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IDialogEditor</type>
+        <type>::fwGui::editor::IDialogEditor</type>
         <service>::uiIO::editor::SIOSelector</service>
         <object>::fwData::Object</object>
     </extension>

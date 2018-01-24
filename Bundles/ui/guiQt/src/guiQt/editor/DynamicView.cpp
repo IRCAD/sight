@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ namespace editor
 
 static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 
-fwServicesRegisterMacro( ::gui::view::IView, ::guiQt::editor::DynamicView, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::view::IView, ::guiQt::editor::DynamicView);
 
 AppConfig::AppConfig(const ConfigType& config) :
     id(config.get<std::string>("<xmlattr>.id")),
@@ -55,7 +55,7 @@ AppConfig::AppConfig(const ConfigType& config) :
     if(config.count("parameters") == 1 )
     {
         const ConfigType& configParameters = config.get_child("parameters");
-        BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
+        BOOST_FOREACH( const ConfigType::value_type& v,  configParameters.equal_range("parameter") )
         {
             ParameterType parameter( v.second );
             parameters.push_back( parameter );
@@ -95,8 +95,8 @@ void DynamicView::starting()
     m_tabWidget->setDocumentMode( true );
     m_tabWidget->setMovable( true );
 
-    QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested( int )), this, SLOT( closeTabSignal( int )));
-    QObject::connect(m_tabWidget, SIGNAL(currentChanged( int )), this, SLOT(changedTab( int )));
+    QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTabSignal(int)));
+    QObject::connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(changedTab(int)));
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->addWidget( m_tabWidget );
@@ -396,4 +396,3 @@ void DynamicView::changedTab( int index )
 
 }// namespace editor
 }// namespace guiQt
-

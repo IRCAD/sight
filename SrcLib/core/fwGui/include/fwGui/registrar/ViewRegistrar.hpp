@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__
-#define __FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__
+#pragma once
 
-#include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/container/fwToolBar.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -54,7 +53,7 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
+        <service uid="subView1" type="::gui::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -172,6 +171,3 @@ protected:
 
 } // namespace registrar
 } // namespace fwGui
-
-#endif /*__FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__*/
-

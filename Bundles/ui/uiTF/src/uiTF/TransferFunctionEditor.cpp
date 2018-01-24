@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,7 +49,7 @@ static const ::fwServices::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::TransferFunctionEditor);
 
 //------------------------------------------------------------------------------
 
@@ -172,13 +172,13 @@ void TransferFunctionEditor::updating()
 void TransferFunctionEditor::stopping()
 {
     // Qt signals management ( disconnection )
-    QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
-    QObject::disconnect(m_deleteButton, SIGNAL(   clicked()), this, SLOT(deleteTF()));
-    QObject::disconnect(m_newButton, SIGNAL(   clicked()), this, SLOT(newTF()));
-    QObject::disconnect(m_reinitializeButton, SIGNAL(   clicked()), this, SLOT(reinitializeTFPool()));
-    QObject::disconnect(m_renameButton, SIGNAL(   clicked()), this, SLOT(renameTF()));
-    QObject::disconnect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
-    QObject::disconnect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
+    QObject::disconnect(m_pTransferFunctionPreset, SIGNAL(activated(int)), this, SLOT(presetChoice(int)));
+    QObject::disconnect(m_deleteButton, SIGNAL(clicked()), this, SLOT(deleteTF()));
+    QObject::disconnect(m_newButton, SIGNAL(clicked()), this, SLOT(newTF()));
+    QObject::disconnect(m_reinitializeButton, SIGNAL(clicked()), this, SLOT(reinitializeTFPool()));
+    QObject::disconnect(m_renameButton, SIGNAL(clicked()), this, SLOT(renameTF()));
+    QObject::disconnect(m_importButton, SIGNAL(clicked()), this, SLOT(importTF()));
+    QObject::disconnect(m_exportButton, SIGNAL(clicked()), this, SLOT(exportTF()));
 
     this->destroy();
 }

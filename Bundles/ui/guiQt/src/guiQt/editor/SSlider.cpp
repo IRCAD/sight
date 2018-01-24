@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SSlider, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSlider );
 
 const ::fwCom::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
@@ -188,7 +188,7 @@ void SSlider::starting()
         m_valueEdit->setMaximumWidth( 70 );
         m_valueEdit->setInputMask("#0000");
 
-        isConnected = QObject::connect( m_valueEdit, SIGNAL( returnPressed()), this, SLOT(editValue()) );
+        isConnected = QObject::connect( m_valueEdit, SIGNAL(returnPressed()), this, SLOT(editValue()) );
         SLM_ASSERT("editingFinished Signal failed to connect to onTextChanged Slot.", isConnected);
 
         layout->addWidget( m_valueEdit );

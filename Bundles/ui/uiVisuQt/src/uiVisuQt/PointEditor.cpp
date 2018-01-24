@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::fwData::Composite );
 
 static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -139,4 +139,3 @@ void PointEditor::info( std::ostream& _sstream )
 //------------------------------------------------------------------------------
 
 } // namespace uiVisuQt
-

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,13 +26,13 @@
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::basicRegistration::SImagesSubstract );
 
 namespace basicRegistration
 {
 
 SImagesSubstract::SImagesSubstract() noexcept :
-    ::gui::editor::IEditor(),
+    ::fwGui::editor::IEditor(),
     mpComputeButton(0)
 {
 
@@ -61,7 +61,7 @@ void SImagesSubstract::starting()
 
     QVBoxLayout* layout = new QVBoxLayout(container);
     mpComputeButton = new QPushButton(tr("Compute"), container );
-    QObject::connect(mpComputeButton, SIGNAL(clicked( )), this, SLOT(OnCompute()));
+    QObject::connect(mpComputeButton, SIGNAL(clicked()), this, SLOT(OnCompute()));
 
     layout->addWidget(mpComputeButton, 0);
     container->setLayout( layout );
@@ -153,4 +153,3 @@ void SImagesSubstract::OnCompute()
 }
 // -----------------------------------------------------------------------------
 } // namespace basicRegistration
-

@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOPACS_SPACSCONFIGURATIONEDITOR_HPP__
-#define __IOPACS_SPACSCONFIGURATIONEDITOR_HPP__
+#pragma once
 
 #include "ioPacs/config.hpp"
 
+#include <fwGui/editor/IEditor.hpp>
+
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -31,13 +30,13 @@ namespace ioPacs
  * @brief   This editor service is used to edit a pacs configuration
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
-                                                  public ::gui::editor::IEditor
+                                                  public ::fwGui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPacsConfigurationEditor)( ::gui::editor::IEditor ) );
+    fwCoreServiceClassDefinitionsMacro( (SPacsConfigurationEditor)( ::fwGui::editor::IEditor ) );
     /**
      * @brief Constructor
      */
@@ -138,5 +137,3 @@ protected:
 };
 
 } // namespace ioPacs
-
-#endif // __IOPACS_SPACSCONFIGURATIONEDITOR_HPP__

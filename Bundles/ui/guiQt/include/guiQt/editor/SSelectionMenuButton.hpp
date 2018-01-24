@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUIQT_EDITOR_SSELECTIONMENUBUTTON_HPP__
-#define __GUIQT_EDITOR_SSELECTIONMENUBUTTON_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QAction>
 #include <QObject>
@@ -37,7 +36,7 @@ namespace editor
  *
  * @section XML Example of configuration
  * @code{.xml}
-    <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImageQt::SSelectionMenuButton">
+    <service uid="sliceListNegato3DEditor" type="::uiImageQt::SSelectionMenuButton">
         <text>...</text>
         <toolTip>...</toolTip>
         <items>
@@ -66,14 +65,14 @@ namespace editor
  * - \b disable(): This slots allows to disable the button
  */
 class GUIQT_CLASS_API SSelectionMenuButton : public QObject,
-                                             public ::gui::editor::IEditor
+                                             public ::fwGui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SSelectionMenuButton)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSelectionMenuButton)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     GUIQT_API SSelectionMenuButton() noexcept;
@@ -156,5 +155,3 @@ private:
 
 } // namespace editor
 } // namespace guiQt
-
-#endif /*__GUIQT_EDITOR_SSELECTIONMENUBUTTON_HPP__*/

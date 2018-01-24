@@ -6,14 +6,14 @@
     <requirement id="io" />
     
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::ioDicom::SFilterSelectionEditor</service>
         <object>::fwData::Vector</object>
         <desc>Filter Selection Editor</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IDialogEditor</type>
+        <type>::fwGui::editor::IDialogEditor</type>
         <service>::ioDicom::SFilterSelectorDialog</service>
         <object>::fwData::String</object>
     </extension>
@@ -26,7 +26,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::ioDicom::SSliceIndexDicomEditor</service>
         <object>::fwMedData::DicomSeries</object>
         <desc>Slice Index Dicom Editor</desc>

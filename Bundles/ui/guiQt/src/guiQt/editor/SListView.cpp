@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace guiQt
 {
 namespace editor
 {
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SListView, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SListView );
 
 const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG          = "itemAdded";
 const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";

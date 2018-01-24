@@ -2,11 +2,10 @@
     <library name="ioPacs" />
 
     <requirement id="dataReg"/>
-    <requirement id="gui" />
     <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::ioPacs::SPacsConfigurationEditor</service>
         <object>::fwPacsIO::data::PacsConfiguration</object>
         <desc>Pacs Configuration Editor</desc>
@@ -27,7 +26,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::ioPacs::SQueryEditor</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Query Editor</desc>
@@ -48,7 +47,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::ioPacs::SSliceIndexDicomPullerEditor</service>
         <object>::fwMedData::DicomSeries</object>
         <desc>Slice Index Dicom Puller Editor</desc>

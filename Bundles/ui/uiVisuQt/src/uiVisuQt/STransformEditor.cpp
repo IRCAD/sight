@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::fwData::TransformationMatrix3D);
 
 //------------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ void STransformEditor::starting()
         sliderLayout->addWidget( m_sliders[i].m_sliderValue, 1);
 
         layout->addLayout(sliderLayout, 0);
-        QObject::connect(m_sliders[i].m_slider, SIGNAL(valueChanged(int )), this, SLOT(onSliderChanged(int)));
+        QObject::connect(m_sliders[i].m_slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
         QObject::connect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
     }
 
@@ -193,7 +193,7 @@ void STransformEditor::stopping()
 {
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
     {
-        QObject::disconnect(m_sliders[i].m_slider, SIGNAL(valueChanged(int )), this, SLOT(onSliderChanged(int)));
+        QObject::disconnect(m_sliders[i].m_slider, SIGNAL(valueChanged(int)), this, SLOT(onSliderChanged(int)));
         QObject::disconnect(m_sliders[i].m_sliderValue, SIGNAL(editingFinished()), this, SLOT(onTextChanged()));
     }
 

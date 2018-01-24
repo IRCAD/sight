@@ -1,24 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUIQT_EDITOR_DYNAMICVIEW_HPP__
-#define __GUIQT_EDITOR_DYNAMICVIEW_HPP__
+#pragma once
 
 #include "guiQt/config.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 #include <fwActivities/registry/ActivityMsg.hpp>
 
+#include <fwGui/view/IView.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/IAppConfigManager.hpp>
 
 #include <fwTools/Failed.hpp>
-
-#include <gui/view/IView.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -69,7 +68,7 @@ struct AppConfig
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" >
+   <service type="::guiQt::editor::DynamicView" autoConnect="yes" >
        <config dynamicConfigStartStop="false">
            <appConfig id="Visu2DID" title="Visu2D" >
                <parameters>
@@ -101,13 +100,13 @@ struct AppConfig
  *
  */
 class GUIQT_CLASS_API DynamicView : public QObject,
-                                    public ::gui::view::IView
+                                    public ::fwGui::view::IView
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (DynamicView)(::gui::view::IView) );
+    fwCoreServiceClassDefinitionsMacro( (DynamicView)(::fwGui::view::IView) );
 
     /// Constructor. Do nothing.
     GUIQT_API DynamicView() noexcept;
@@ -201,5 +200,3 @@ protected Q_SLOTS:
 
 }//namespace editor
 } // guiQt
-
-#endif /*__GUIQT_EDITOR_DYNAMICVIEW_HPP__*/

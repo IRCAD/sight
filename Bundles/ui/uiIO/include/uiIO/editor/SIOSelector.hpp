@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIIO_EDITOR_SIOSELECTOR_HPP__
-#define __UIIO_EDITOR_SIOSELECTOR_HPP__
+#pragma once
 
 #include "uiIO/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwJobs/IJob.hpp>
+#include <fwGui/editor/IDialogEditor.hpp>
 
-#include <gui/editor/IDialogEditor.hpp>
+#include <fwJobs/IJob.hpp>
 
 namespace uiIO
 {
@@ -24,7 +23,7 @@ namespace editor
 /**
  * @brief   Defines the service interface managing the editor service for object.
  */
-class UIIO_CLASS_API SIOSelector : public ::gui::editor::IDialogEditor
+class UIIO_CLASS_API SIOSelector : public ::fwGui::editor::IDialogEditor
 {
 
 public:
@@ -36,7 +35,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro( (SIOSelector)( ::gui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SIOSelector)( ::fwGui::editor::IDialogEditor) );
 
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
     typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
@@ -74,7 +73,7 @@ protected:
      *
      * Sample of configuration :
      * @code{.xml}
-          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector"
+          <service uid="GENERIC_UID_writer" type="::fwGui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector"
      * autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
@@ -134,6 +133,3 @@ private:
 } // namespace editor
 
 } // namespace uiIO
-
-#endif // __UIIO_EDITOR_SIOSELECTOR_HPP__
-

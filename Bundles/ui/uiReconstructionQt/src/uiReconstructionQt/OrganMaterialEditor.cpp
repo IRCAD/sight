@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,8 @@
 namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor, ::fwData::Reconstruction );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
+                         ::fwData::Reconstruction );
 
 OrganMaterialEditor::OrganMaterialEditor() noexcept
 {
@@ -83,8 +84,8 @@ void OrganMaterialEditor::starting()
     qtContainer->setLayout( layout );
     qtContainer->setEnabled(false);
 
-    QObject::connect(m_opacitySlider, SIGNAL(valueChanged( int )), this, SLOT(onOpacitySlider( int )));
-    QObject::connect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton( )));
+    QObject::connect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
+    QObject::connect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
 
     this->updating();
 }
@@ -95,8 +96,8 @@ void OrganMaterialEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_opacitySlider, SIGNAL(valueChanged( int )), this, SLOT(onOpacitySlider( int )));
-    QObject::disconnect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton( )));
+    QObject::disconnect(m_opacitySlider, SIGNAL(valueChanged(int)), this, SLOT(onOpacitySlider(int)));
+    QObject::disconnect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton()));
 
     this->destroy();
 }
@@ -227,4 +228,3 @@ void OrganMaterialEditor::materialNotification( )
 //------------------------------------------------------------------------------
 
 }
-

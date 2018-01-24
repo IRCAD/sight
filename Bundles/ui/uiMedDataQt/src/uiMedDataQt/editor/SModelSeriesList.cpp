@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -124,7 +124,7 @@ public:
     }
 };
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, ::fwMedData::ModelSeries);
 
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
@@ -169,7 +169,7 @@ void SModelSeriesList::starting()
         m_showCheckBox = new QCheckBox( tr("Hide all organs"));
         m_showCheckBox->setToolTip(tr("Show or hide all organs"));
         layoutButton->addWidget( m_showCheckBox, 0 );
-        QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
+        QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
 
         m_checkAllButton = new QPushButton(tr("Check all"));
         layoutButton->addWidget(m_checkAllButton, 0);
@@ -184,13 +184,13 @@ void SModelSeriesList::starting()
 
     qtContainer->setLayout( layout );
 
-    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     this->updating();
 
-    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*, int )),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, int )));
+    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
 }
 
 //------------------------------------------------------------------------------
@@ -201,13 +201,13 @@ void SModelSeriesList::stopping()
 
     if(m_showCheckBox)
     {
-        QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
+        QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowReconstructions(int)));
     }
 
-    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*, int )),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, int )));
-    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,int)));
+    QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
 
     this->destroy();
 }

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
-#define __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
+#pragma once
 
 #include "uiMedDataQt/config.hpp"
 
@@ -16,9 +15,9 @@
 
 #include <fwData/Reconstruction.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -40,12 +39,12 @@ class ValueView;
  * @brief   SModelSeriesList service.
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
-                                                public ::gui::editor::IEditor
+                                                public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeriesList)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SModelSeriesList() noexcept;
@@ -156,6 +155,3 @@ private:
 
 } // namespace editor
 } // namespace uiMedDataQt
-
-#endif /*__UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__*/
-

@@ -7,13 +7,13 @@
     <requirement id="uiImageQt" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSelector</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSeries</service>
         <object>::fwData::Vector</object>
     </extension>
@@ -37,19 +37,19 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SModelSeriesList</service>
         <object>::fwMedData::ModelSeries</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SOrganTransformation</service>
         <object>::fwMedData::ModelSeries</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::editor::IEditor</type>
+        <type>::fwGui::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SActivityWizard</service>
         <object>::fwMedData::SeriesDB</object>
     </extension>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,7 +53,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::activities::editor::SCreateActivity, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::activities::editor::SCreateActivity );
 
 //------------------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ void SCreateActivity::configuring()
                    mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
-        BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
+        BOOST_FOREACH( const ConfigType::value_type& v, configFilter.equal_range("id") )
         {
             m_keys.push_back(v.second.get<std::string>(""));
         }

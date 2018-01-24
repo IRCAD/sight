@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace gui
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::gui::editor::SJobBar, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::gui::editor::SJobBar );
 
 static const ::fwCom::Slots::SlotKeyType SHOW_JOB_SLOT      = "showJob";
 static const ::fwCom::Signals::SignalKeyType STARTED_SIGNAL = "started";
@@ -57,7 +57,7 @@ void SJobBar::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::info(std::ostream &_sstream )
+void SJobBar::info(std::ostream& _sstream )
 {
     _sstream << "Starter editor" << std::endl;
 }
@@ -125,4 +125,3 @@ void SJobBar::showJob( ::fwJobs::IJob::sptr iJob )
 
 } // namespace editor
 } // namespace gui
-

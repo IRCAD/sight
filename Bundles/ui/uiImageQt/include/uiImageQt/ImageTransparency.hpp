@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIIMAGEQT_IMAGETRANSPARENCY_HPP__
-#define __UIIMAGEQT_IMAGETRANSPARENCY_HPP__
+#pragma once
 
 #include "uiImageQt/config.hpp"
 
 #include <fwData/Point.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -28,13 +27,13 @@ namespace uiImageQt
  * @brief   ImageTransparency service allows to change image transparency.
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject,
-                                              public ::gui::editor::IEditor
+                                              public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ImageTransparency)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (ImageTransparency)(::fwGui::editor::IEditor) );
 
     UIIMAGEQT_API ImageTransparency() noexcept;
 
@@ -96,5 +95,3 @@ private:
 };
 
 } // uiImageQt
-
-#endif /*__UIIMAGEQT_IMAGETRANSPARENCY_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, ::fwData::Image );
 
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 static const ::fwServices::IService::KeyType s_TF_INOUT    = "tf";
@@ -141,12 +141,12 @@ void WindowLevel::starting()
 
     QObject::connect(m_valueTextMin, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
     QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
-    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
-                     SLOT(onWindowLevelWidgetChanged( double, double )));
-    QObject::connect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
-    QObject::connect(m_toggleAutoButton, SIGNAL(toggled( bool )), this, SLOT(onToggleAutoWL( bool )));
-    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
-                     SLOT(onDynamicRangeSelectionChanged( QAction* )));
+    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited(double,double)), this,
+                     SLOT(onWindowLevelWidgetChanged(double,double)));
+    QObject::connect(m_toggleTFButton, SIGNAL(toggled(bool)), this, SLOT(onToggleTF(bool)));
+    QObject::connect(m_toggleAutoButton, SIGNAL(toggled(bool)), this, SLOT(onToggleAutoWL(bool)));
+    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered(QAction*)), this,
+                     SLOT(onDynamicRangeSelectionChanged(QAction*)));
 
     ::fwData::TransferFunction::sptr tf = this->getInOut < ::fwData::TransferFunction >(s_TF_INOUT);
     this->setOrCreateTF(tf, image);
@@ -159,15 +159,15 @@ void WindowLevel::starting()
 void WindowLevel::stopping()
 {
     this->removeTFConnections();
-    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
-                        SLOT(onDynamicRangeSelectionChanged( QAction* )));
-    QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
-    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
-                        SLOT(onWindowLevelWidgetChanged( double, double )));
-    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( )), this,
-                        SLOT(onTextEditingFinished( )));
-    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( )), this,
-                        SLOT(onTextEditingFinished( )));
+    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered(QAction*)), this,
+                        SLOT(onDynamicRangeSelectionChanged(QAction*)));
+    QObject::disconnect(m_toggleTFButton, SIGNAL(toggled(bool)), this, SLOT(onToggleTF(bool)));
+    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited(double,double)), this,
+                        SLOT(onWindowLevelWidgetChanged(double,double)));
+    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished()), this,
+                        SLOT(onTextEditingFinished()));
+    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished()), this,
+                        SLOT(onTextEditingFinished()));
 
     this->destroy();
 }
@@ -511,4 +511,3 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 //------------------------------------------------------------------------------
 
 }
-

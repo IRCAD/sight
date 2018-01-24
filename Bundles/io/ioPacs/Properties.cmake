@@ -13,10 +13,10 @@ set( DEPENDENCIES
     fwRuntime
     fwTools
     fwData
+    fwDataTools
     fwMedData
     fwMedDataTools
     fwServices
-    gui
     io
     )
 set( REQUIREMENTS

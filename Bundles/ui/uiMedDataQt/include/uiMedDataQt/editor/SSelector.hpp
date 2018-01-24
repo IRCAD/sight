@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
-#define __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
+#pragma once
 
 #include "uiMedDataQt/config.hpp"
 #include "uiMedDataQt/widget/Selector.hpp"
@@ -15,9 +14,9 @@
 
 #include <fwData/Vector.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <QAbstractItemView>
 #include <QObject>
@@ -60,11 +59,11 @@ namespace editor
  *    - \b icon : the icon path
  */
 class UIMEDDATAQT_CLASS_API SSelector : public QObject,
-                                        public ::gui::editor::IEditor
+                                        public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSelector)(::fwGui::editor::IEditor) );
 
     /// Constructor
     UIMEDDATAQT_API SSelector();
@@ -174,6 +173,3 @@ private:
 };
 } // namespace editor
 } // namespace uiMedDataQt
-
-#endif // __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
-

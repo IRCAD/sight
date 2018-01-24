@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODICOM_SFILTERSELECTORDIALOG_HPP__
-#define __IODICOM_SFILTERSELECTORDIALOG_HPP__
+#pragma once
 
 #include "ioDicom/config.hpp"
 
-#include <gui/editor/IDialogEditor.hpp>
+#include <fwGui/editor/IDialogEditor.hpp>
 
 namespace ioDicom
 {
@@ -17,12 +16,12 @@ namespace ioDicom
 /**
  * @brief   Defines the service interface managing the editor service for object.
  */
-class IODICOM_CLASS_API SFilterSelectorDialog : public ::gui::editor::IDialogEditor
+class IODICOM_CLASS_API SFilterSelectorDialog : public ::fwGui::editor::IDialogEditor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SFilterSelectorDialog)( ::gui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SFilterSelectorDialog)( ::fwGui::editor::IDialogEditor) );
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -51,7 +50,7 @@ protected:
      *
      * Sample of configuration :
      * @code{.xml}
-          <service uid="GENERIC_UID_filter" type="::gui::editor::IDialogEditor"
+          <service uid="GENERIC_UID_filter" type="::fwGui::editor::IDialogEditor"
      * impl="::ioDicom::dcmtk::editor::SFilterSelectorDialog" autoConnect="no">
               <selection mode="include" />
               <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
@@ -88,6 +87,3 @@ private:
 };
 
 } // namespace ioDicom
-
-#endif // __IODICOM_SFILTERSELECTORDIALOG_HPP__
-

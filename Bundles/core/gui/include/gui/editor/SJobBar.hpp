@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_EDITOR_SJOBBAR_HPP__
-#define __GUI_EDITOR_SJOBBAR_HPP__
+#pragma once
 
 #include "gui/config.hpp"
-#include "gui/editor/IDialogEditor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwGui/editor/IDialogEditor.hpp>
 #include <fwGui/IActionSrv.hpp>
 
 #include <fwJobs/IJob.hpp>
@@ -35,15 +34,15 @@ namespace editor
 {
 
 /**
- * @brief   Service diplaying a progress bar.
+ * @brief   Service displaying a progress bar.
  */
 
-class GUI_CLASS_API SJobBar : public ::gui::editor::IDialogEditor
+class GUI_CLASS_API SJobBar : public ::fwGui::editor::IDialogEditor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SJobBar)(::gui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SJobBar)(::fwGui::editor::IDialogEditor) );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -99,5 +98,3 @@ protected:
 
 } // namespace editor
 } // namespace gui
-
-#endif /*__GUI_EDITOR_SJOBBAR_HPP__*/

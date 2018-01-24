@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@ namespace uiMeasurementQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks );
 
 //------------------------------------------------------------------------------
 
@@ -90,12 +90,12 @@ void SLandmarks::configuring()
     m_defaultLandmarkSize = config.get_optional<float>("size").get_value_or(10.0);
     OSLM_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
-        m_defaultLandmarkSize <= 0.f);
+            m_defaultLandmarkSize <= 0.f);
 
     m_defaultLandmarkOpacity = config.get_optional<float>("opacity").get_value_or(1.0);
     OSLM_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
-        m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
+            m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
     const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
@@ -817,7 +817,7 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
     {
         OSLM_ASSERT(
             "Index must be less than " << currentItem->childCount(),
-            static_cast<int>(index) < currentItem->childCount());
+                static_cast<int>(index) < currentItem->childCount());
 
         currentItem = currentItem->child(static_cast<int>(index));
     }
@@ -960,4 +960,3 @@ QTreeWidgetItem* SLandmarks::getGroupItem(const std::string& groupName) const
 
 } // namespace editor
 } // namespace uiMeasurementQt
-

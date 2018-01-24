@@ -21,6 +21,8 @@ set( DEPENDENCIES
     fwZip
     fwCom
     io
-    )
-set( REQUIREMENTS  )
+)
+set( REQUIREMENTS 
+    io 
+)
 

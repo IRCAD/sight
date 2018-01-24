@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ namespace editor
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -108,8 +108,8 @@ void SSelector::starting()
 
     if(!m_insertMode)
     {
-        QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex &)),
-                         this, SLOT(onDoubleClick(const QModelIndex &)));
+        QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex&)),
+                         this, SLOT(onDoubleClick(const QModelIndex&)));
     }
 
     if(m_allowedRemove)

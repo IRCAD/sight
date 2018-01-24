@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUQT_POINTEDITOR_HPP__
-#define __UIVISUQT_POINTEDITOR_HPP__
+#pragma once
 
 #include "uiVisuQt/config.hpp"
 
@@ -13,9 +12,9 @@
 
 #include <fwDataTools/PickingInfo.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwTools/Failed.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -28,13 +27,13 @@ namespace uiVisuQt
  * @brief   PointEditor service allows to display point information.
  */
 class UIVISUQT_CLASS_API PointEditor : public QObject,
-                                       public ::gui::editor::IEditor
+                                       public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (PointEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (PointEditor)(::fwGui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     UIVISUQT_API PointEditor() noexcept;
@@ -73,5 +72,3 @@ private:
 };
 
 } // uiData
-
-#endif /*__UIVISUQT_POINTEDITOR_HPP___*/

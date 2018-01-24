@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 #include <fwGui/GuiRegistry.hpp>
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include <fwRuntime/helper.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/helper.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
@@ -25,7 +25,7 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout );
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ void SModifyLayout::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SModifyLayout::info(std::ostream &_sstream )
+void SModifyLayout::info(std::ostream& _sstream )
 {
     _sstream << "Starter Action" << std::endl;
 }
@@ -226,4 +226,3 @@ void SModifyLayout::configuring()
 
 } // namespace action
 } // namespace gui
-

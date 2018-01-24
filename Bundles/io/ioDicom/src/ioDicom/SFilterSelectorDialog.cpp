@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,12 +38,12 @@ namespace ioDicom
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::fwData::String );
+fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::fwData::String );
 
 //------------------------------------------------------------------------------
 
 SFilterSelectorDialog::SFilterSelectorDialog() :
-    m_filtersAreExcluded   ( true )
+    m_filtersAreExcluded( true )
 {
     SLM_TRACE_FUNC();
 }
