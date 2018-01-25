@@ -4,7 +4,6 @@
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
-    <requirement id="uiIO"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>

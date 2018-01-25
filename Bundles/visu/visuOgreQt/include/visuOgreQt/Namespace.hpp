@@ -1,16 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREQT_NAMESPACE_HPP__
-#define __VISUOGREQT_NAMESPACE_HPP__
-
 /**
- * @brief       The namespace visuOgreQt contains a vtk Renderer window interactor manager using Qt. *
+ * @ingroup apprequirement
+ *
+ * @brief The namespace visuOgreQt contains a Ogre Renderer window interactor manager using Qt.
+ *
+ *  It must be set in the application (or activity) \p \<requirement\> in order to use a Ogre scene in an application
+ * using Qt.
  */
+#pragma once
+
 namespace visuOgreQt
 {
 }
-#endif /* __VISUOGREQT_NAMESPACE_HPP__ */
