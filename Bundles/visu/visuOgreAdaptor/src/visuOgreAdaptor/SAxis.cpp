@@ -115,15 +115,12 @@ void SAxis::starting()
     m_materialAdaptor->setLayerID(m_layerID);
     m_materialAdaptor->setShadingMode("ambient");
     m_materialAdaptor->start();
+    m_materialAdaptor->update();
 
     // Draw
     xLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     xLine->position(0, 0, 0);
-    xLine->colour(1.0f, 0, 0);
-    xLine->normal(1, 0, 0);
     xLine->position(m_length, 0, 0);
-    xLine->colour(1.0f, 0, 0);
-    xLine->normal(1, 0, 0);
     xLine->end();
 
     m_xLineNode->attachObject(xLine);
@@ -132,11 +129,7 @@ void SAxis::starting()
 
     yLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     yLine->position(0, 0, 0);
-    yLine->colour(0, 1.0f, 0);
-    yLine->normal(1, 0, 0);
     yLine->position(0, m_length, 0);
-    yLine->colour(0, 1.0f, 0);
-    yLine->normal(1, 0, 0);
     yLine->end();
 
     m_yLineNode->attachObject(yLine);
@@ -145,11 +138,7 @@ void SAxis::starting()
 
     zLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     zLine->position(0, 0, 0);
-    zLine->colour(0, 0, 1.0f);
-    zLine->normal(1, 0, 0);
     zLine->position(0, 0, m_length);
-    zLine->colour(0, 0, 1.0f);
-    zLine->normal(1, 0, 0);
     zLine->end();
 
     m_zLineNode->attachObject(zLine);
