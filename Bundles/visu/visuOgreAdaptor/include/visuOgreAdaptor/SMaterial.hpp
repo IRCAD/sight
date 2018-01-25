@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SMATERIAL_HPP__
-#define __VISUOGREADAPTOR_SMATERIAL_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
@@ -189,6 +188,13 @@ private:
 
 //------------------------------------------------------------------------------
 
+inline ::Ogre::MaterialPtr SMaterial::getMaterial()
+{
+    return ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
+}
+
+//------------------------------------------------------------------------------
+
 inline void SMaterial::setMaterialTemplateName(const std::string& _materialName)
 {
     m_materialTemplateName = _materialName;
@@ -246,5 +252,3 @@ inline ::fwRenderOgre::Material* SMaterial::getMaterialFw() const
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SMATERIAL_HPP__
