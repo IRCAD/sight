@@ -1,19 +1,9 @@
 <plugin id="dicomPacsWriterActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
-    <requirement id="ctrlMemory" />
-    <requirement id="ctrlSelection" />
     <requirement id="dataReg" />
-    <requirement id="dicomAppConfig" />
-    <requirement id="gui" />
     <requirement id="guiQt" />
-    <requirement id="ioGdcm" />
-    <requirement id="media" />
-    <requirement id="uiMedDataQt" />
-    <requirement id="visuVTK" />
-    <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKQt" />
-    <requirement id="ioPacs" />
 
     <xi:include href="configurations/DicomPacsWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

@@ -1,13 +1,7 @@
 <plugin id="volumeRenderingActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
-    <requirement id="2DVisualizationActivity" />
-    <requirement id="3DVisualizationActivity" />
-    <requirement id="visuVTKVRAdaptor" />
     <requirement id="scene2D" />
-    <requirement id="uiTF" />
-    <requirement id="uiIO" />
-    <requirement id="media" />
 
     <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

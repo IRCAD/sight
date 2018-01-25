@@ -3,8 +3,6 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="gui" />
-    <requirement id="uiImageQt" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>

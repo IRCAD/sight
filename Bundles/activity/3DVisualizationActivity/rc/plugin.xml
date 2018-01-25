@@ -1,9 +1,6 @@
 <plugin id="3DVisualizationActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
-    <requirement id="2DVisualizationActivity" />
-    <requirement id="uiReconstructionQt" />
-    <requirement id="media" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

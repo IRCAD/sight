@@ -1,15 +1,7 @@
 <plugin id="blendActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="servicesReg" />
-    <requirement id="gui" />
     <requirement id="guiQt" />
-    <requirement id="ctrlSelection" />
-    <requirement id="uiVisu" />
-    <requirement id="uiVisuQt" />
-    <requirement id="visuVTKAdaptor" />
-    <requirement id="uiImageQt" />
-    <requirement id="media" />
-    <requirement id="uiTF" />
     <requirement id="scene2D" />
 
     <xi:include href="configurations/Blend.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

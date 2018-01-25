@@ -3,7 +3,6 @@
 
     <requirement id="dataReg"/>
     <requirement id="io" />
-    <requirement id="ioDicom" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>

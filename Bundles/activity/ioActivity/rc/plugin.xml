@@ -1,8 +1,6 @@
 <plugin id="ioActivity" version="@PROJECT_VERSION@">
 
     <requirement id="io" />
-    <requirement id="uiIO" />
-    <requirement id="media" />
     <requirement id="filterVRRender" />
     <requirement id="activities" />
 

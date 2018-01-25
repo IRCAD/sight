@@ -3,7 +3,6 @@
     
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
-    <requirement id="gui"/>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

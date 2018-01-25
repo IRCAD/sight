@@ -4,6 +4,5 @@
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
-    <requirement id="visuVTK" />
 
 </plugin>

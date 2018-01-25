@@ -1,20 +1,8 @@
 <plugin id="dicomFilteringActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
-    <requirement id="ctrlMemory" />
-    <requirement id="ctrlSelection" />
     <requirement id="dataReg" />
-    <requirement id="dicomAppConfig" />
-    <requirement id="gui" />
     <requirement id="guiQt" />
-    <requirement id="ioDicom" />
-    <requirement id="ioGdcm" />
-    <requirement id="media" />
-    <requirement id="uiGenericQt" />
-    <requirement id="uiIO" />
-    <requirement id="uiMedDataQt" />
-    <requirement id="visuVTK" />
-    <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
