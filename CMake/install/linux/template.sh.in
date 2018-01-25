@@ -18,7 +18,7 @@ LD_LIBRARY_PATH=$libdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 # export the path to the fonts (mandatory for Qt)
-QT_QPA_FONTDIR=$fontdir
+QT_QPA_FONTDIR="$libdir/fonts"
 export QT_QPA_FONTDIR
 
 # Use CMAKE Variable of fwlauncher and Profile.xml path
