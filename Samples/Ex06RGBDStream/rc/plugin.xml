@@ -4,7 +4,6 @@
     <requirement id="scene2D" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="visuVTKARAdaptor" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex06RGBDStream</id>
         <config>

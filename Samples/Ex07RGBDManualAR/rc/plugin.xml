@@ -3,7 +3,6 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="visuVTKARAdaptor" />
     <requirement id="preferences" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex07RGBDManualARConfig</id>

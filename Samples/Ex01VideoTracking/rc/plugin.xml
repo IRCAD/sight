@@ -2,8 +2,6 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="trackerAruco" />
-    <requirement id="arMedia" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex01VideoTrackingConfig</id>
         <config>

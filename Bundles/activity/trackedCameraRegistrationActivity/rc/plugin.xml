@@ -2,7 +2,6 @@
 
     <requirement id="activities" />
     <requirement id="visuVTKQt" />
-    <requirement id="visuVTKARAdaptor" />
 
     <xi:include href="configurations/trackedCameraRegistration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/rgbCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

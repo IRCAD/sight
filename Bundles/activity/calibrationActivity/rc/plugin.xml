@@ -1,13 +1,7 @@
 <plugin id="calibrationActivity" class="::calibrationActivity::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="calibrationActivity" />
-    <requirement id="gui" />
-    <requirement id="visuVTKAdaptor" />
-    <requirement id="visuVTKARAdaptor" />
     <requirement id="visuVTKQt" />
-    <requirement id="media" />
-    <requirement id="arMedia" />
-    <requirement id="validators" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

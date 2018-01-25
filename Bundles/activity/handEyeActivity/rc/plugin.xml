@@ -1,10 +1,6 @@
 <plugin id="handEyeActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="visuVTKARAdaptor"/>
-    <requirement id="visuVTKAdaptor"/>
     <requirement id="visuVTKQt"/>
-    <requirement id="videoTools"/>
-    <requirement id="trackerAruco"/>
 
     <xi:include href="configurations/camerasHandEyeCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/trackingHandEyeCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

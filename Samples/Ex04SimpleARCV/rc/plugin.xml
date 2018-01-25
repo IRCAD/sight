@@ -3,10 +3,7 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="trackerAruco" />
-    <requirement id="arMedia" />
     <requirement id="preferences" />
-    <requirement id="visuVTKARAdaptor" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04SimpleARCVConfig</id>
         <config>
