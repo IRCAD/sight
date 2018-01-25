@@ -216,7 +216,7 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
 
         if(!m_hasNormal)
         {
-            // Verify if mesh contains Tetra or Edge
+            // Verify if mesh contains Tetra, Edge or Point
             // If not, generate normals
             ::fwData::Mesh::ConstCellTypesMultiArrayType cellsType = meshHelper.getCellTypes();
             bool computeNormals = true;
@@ -224,7 +224,8 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
             for(unsigned int i = 0; i < cellsType.size() && computeNormals; ++i)
             {
                 auto cellType = cellsType[static_cast<int>(i)];
-                if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA)
+                if(cellType == ::fwData::Mesh::EDGE || cellType == ::fwData::Mesh::TETRA
+                   || cellType == ::fwData::Mesh::POINT)
                 {
                     computeNormals = false;
                 }
@@ -655,11 +656,13 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
     {
         FW_PROFILE_AVG("UPDATE NORMALS", 5);
         ::fwData::Mesh::ConstPointNormalsMultiArrayType normals = meshHelper.getPointNormals();
-        NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
+
+        NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex) + 3;
 
         for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pNormal, &normals[static_cast<int>(i)][0], 3 * sizeof(NormalValueType) );
+
             pNormal += uiStrideFloat;
         }
     }
