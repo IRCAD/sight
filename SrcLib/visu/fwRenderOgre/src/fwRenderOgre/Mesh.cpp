@@ -34,7 +34,7 @@ const unsigned int Mesh::s_maxTextureSize;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
+void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras, void* _pPoints,
                  ::fwDataTools::helper::MeshGetter& _meshHelper, size_t _uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
@@ -43,6 +43,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     T* pQuads     = static_cast<T*>(_pQuads);
     T* pEdges     = static_cast<T*>(_pEdges);
     T* pTetras    = static_cast<T*>(_pTetras);
+    T* pPoints    = static_cast<T*>(_pPoints);
 
     ::fwData::Mesh::ConstCellDataMultiArrayType cells                  = _meshHelper.getCellData();
     ::fwData::Mesh::ConstCellDataOffsetsMultiArrayType cellDataOffsets = _meshHelper.getCellDataOffsets();
@@ -51,7 +52,11 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
     for (unsigned int i = 0; i < _uiNumCells; ++i)
     {
         long offset = static_cast<long>(cellDataOffsets[static_cast<int>(i)]);
-        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
+        if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::POINT )
+        {
+            *pPoints++ = static_cast<T>(cells[offset]);
+        }
+        else if ( cellsType[static_cast<int>(i)] == ::fwData::Mesh::TRIANGLE )
         {
             *pTriangles++ = static_cast<T>(cells[offset]);
             *pTriangles++ = static_cast<T>(cells[offset + 1]);
@@ -285,17 +290,21 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     for(unsigned int i = 0; i < cellsType.size(); ++i)
     {
         auto cellType = cellsType[static_cast<int>(i)];
-        if(cellType == ::fwData::Mesh::TRIANGLE)
+        if(cellType == ::fwData::Mesh::POINT)
+        {
+            numIndices[::fwData::Mesh::POINT] += 1;
+        }
+        else if(cellType == ::fwData::Mesh::EDGE)
+        {
+            numIndices[::fwData::Mesh::EDGE] += 2;
+        }
+        else if(cellType == ::fwData::Mesh::TRIANGLE)
         {
             numIndices[::fwData::Mesh::TRIANGLE] += 3;
         }
         else if(cellType == ::fwData::Mesh::QUAD)
         {
             numIndices[::fwData::Mesh::QUAD] += 4;
-        }
-        else if(cellType == ::fwData::Mesh::EDGE)
-        {
-            numIndices[::fwData::Mesh::EDGE] += 2;
         }
         else if(cellType == ::fwData::Mesh::TETRA)
         {
@@ -418,12 +427,14 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh)
     {
         copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                       indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+                                      indexBuffer[::fwData::Mesh::POINT],
                                       meshHelper, _mesh->getNumberOfCells() );
     }
     else
     {
         copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
                                       indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
+                                      indexBuffer[::fwData::Mesh::POINT],
                                       meshHelper, _mesh->getNumberOfCells() );
     }
 
