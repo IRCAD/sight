@@ -79,7 +79,7 @@ void SMaterial::createShaderParameterAdaptors()
     // We retrieve the parameters of the base material in a temporary material
     m_material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
 
-    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
+    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", m_material );
 
     const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*m_material);
     for(const auto& constant : constants)

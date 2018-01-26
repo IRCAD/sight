@@ -38,8 +38,8 @@ const std::string SFrustum::s_CONFIG_FAR     = "far";
 //-----------------------------------------------------------------------------
 
 SFrustum::SFrustum() noexcept :
-    m_materialAdaptor(nullptr),
     m_material(nullptr),
+    m_materialAdaptor(nullptr),
     m_visibility(true),
     m_near(0),
     m_far(0)
@@ -183,7 +183,11 @@ void SFrustum::setDataToOgreCam()
     const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_IN_CAMERA_NAME);
     if(camera != nullptr)
     {
-        m_ogreCam->setFOVy(::Ogre::Radian(2*atan(camera->getHeight()/(2*camera->getFy()))));
+        const auto h   = static_cast<float>(camera->getHeight());
+        const auto fy  = camera->getFy();
+        const auto res = 2.f * std::atan( static_cast<float>( h / (2.f * fy)));
+
+        m_ogreCam->setFOVy(::Ogre::Radian( ::Ogre::Real(res)));
         m_ogreCam->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));
         m_ogreCam->setVisible(m_visibility);
     }
