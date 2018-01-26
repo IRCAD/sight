@@ -29,6 +29,7 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * -\b updateVisibility(bool): Sets whether the axis is shown or not.
+ * -\b toggleVisibility(): Toggle whether the axis is shown or not.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -61,8 +62,14 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
 
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
+
     /// Sets visibility of axis
     VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
+
+    /// Toggle visibility of axis
+    VISUOGREADAPTOR_API void toggleVisibility();
 
     /** @} */
 
@@ -93,12 +100,6 @@ private:
     ::fwData::Material::sptr m_materialRed;
     ::fwData::Material::sptr m_materialGreen;
     ::fwData::Material::sptr m_materialBlue;
-    /// Scene node for X axe
-    ::Ogre::SceneNode* m_xLineNode;
-    /// Scene node for Y axe
-    ::Ogre::SceneNode* m_yLineNode;
-    /// Scene node for Z axe
-    ::Ogre::SceneNode* m_zLineNode;
     /// Handle the length of each axes (in mm)
     float m_length;
     /// Handles the visibility of the axis

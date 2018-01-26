@@ -16,6 +16,7 @@ namespace visuOgreAdaptor
 {
 
 const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
@@ -28,14 +29,11 @@ SAxis::SAxis() noexcept :
     m_materialRed(nullptr),
     m_materialGreen(nullptr),
     m_materialBlue(nullptr),
-    m_xLineNode(nullptr),
-    m_yLineNode(nullptr),
-    m_zLineNode(nullptr),
     m_length(50.f),
     m_isVisible(true)
 {
-
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SAxis::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -49,11 +47,15 @@ SAxis::~SAxis() noexcept
 void SAxis::updateVisibility(bool isVisible)
 {
     m_isVisible = isVisible;
-    m_xLineNode->setVisible(m_isVisible);
-    m_yLineNode->setVisible(m_isVisible);
-    m_zLineNode->setVisible(m_isVisible);
+    this->updating();
+}
 
-    this->requestRender();
+//------------------------------------------------------------------------------
+
+void SAxis::toggleVisibility()
+{
+    m_isVisible = !m_isVisible;
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -100,16 +102,8 @@ void SAxis::starting()
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     ::Ogre::ManualObject* xLine = sceneMgr->createManualObject(this->getID() + "_xline");
-    m_xLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_xline_node");
-    m_xLineNode->setVisible(m_isVisible);
-
     ::Ogre::ManualObject* yLine = sceneMgr->createManualObject(this->getID() + "_yline");
-    m_yLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_yline_node");
-    m_yLineNode->setVisible(m_isVisible);
-
     ::Ogre::ManualObject* zLine = sceneMgr->createManualObject(this->getID() + "_zline");
-    m_zLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_zline_node");
-    m_zLineNode->setVisible(m_isVisible);
 
     // set the material
     m_materialRed = ::fwData::Material::New();
@@ -160,16 +154,12 @@ void SAxis::starting()
     xLine->position(m_length, 0, 0);
     xLine->end();
 
-    m_xLineNode->attachObject(xLine);
-
     this->attachNode(xLine);
 
     yLine->begin(m_materialGreenAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     yLine->position(0, 0, 0);
     yLine->position(0, m_length, 0);
     yLine->end();
-
-    m_yLineNode->attachObject(yLine);
 
     this->attachNode(yLine);
 
@@ -178,15 +168,22 @@ void SAxis::starting()
     zLine->position(0, 0, m_length);
     zLine->end();
 
-    m_zLineNode->attachObject(zLine);
-
     this->attachNode(zLine);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
 void SAxis::updating()
 {
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* transNode     =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    if (transNode != nullptr)
+    {
+        transNode->setVisible(m_isVisible);
+    }
     this->requestRender();
 }
 
@@ -205,7 +202,7 @@ void SAxis::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SAxis::attachNode(::Ogre::MovableObject* _node)
+void SAxis::attachNode(::Ogre::MovableObject* object)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     =
@@ -214,13 +211,9 @@ void SAxis::attachNode(::Ogre::MovableObject* _node)
     if (transNode == nullptr)
     {
         transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+        transNode->setVisible(m_isVisible);
     }
-    ::Ogre::SceneNode* node = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    transNode->attachObject(object);
 }
 
 //-----------------------------------------------------------------------------
