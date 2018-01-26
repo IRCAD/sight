@@ -86,9 +86,13 @@ private:
     void attachNode(::Ogre::MovableObject* _node);
 
     /// Pointer to a SMaterial adaptor
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialRedAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialGreenAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialBlueAdaptor;
     /// Pointer to the Material data
-    ::fwData::Material::sptr m_material;
+    ::fwData::Material::sptr m_materialRed;
+    ::fwData::Material::sptr m_materialGreen;
+    ::fwData::Material::sptr m_materialBlue;
     /// Scene node for X axe
     ::Ogre::SceneNode* m_xLineNode;
     /// Scene node for Y axe
