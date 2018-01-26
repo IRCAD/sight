@@ -119,6 +119,8 @@ public:
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
+    VISUOGREADAPTOR_API static const std::string s_INOUT_MATERIAL;
+
 protected:
 
     /// Configure the parameters
@@ -177,6 +179,8 @@ private:
 
     /// Current number of lights in the scene.
     int m_lightsNumber;
+
+    ::Ogre::MaterialPtr m_material;
 
     ::fwRenderOgre::Material::uptr m_materialFw;
     ::fwRenderOgre::R2VBRenderable* m_r2vbObject { nullptr };
@@ -252,3 +256,4 @@ inline ::fwRenderOgre::Material* SMaterial::getMaterialFw() const
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
+

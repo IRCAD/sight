@@ -7,36 +7,99 @@
 #pragma once
 
 #include "visuOgreAdaptor/config.hpp"
+#include <visuOgreAdaptor/SMaterial.hpp>
+
+#include <fwData/Material.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
+#include <string>
+
 namespace visuOgreAdaptor
 {
 
+/**
+ * @brief This adaptor display a fwData::Camera
+ *
+ * @section Slots Slots
+ * -\b updateVisibility(bool): Sets whether the axis is shown or not.
+ * -\b toggleVisibility(): Toggle whether the axis is shown or not.
+ * -\b updateCamera(): Update Ogre::Camera.
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="::visuOgreAdaptor::SFrustum">
+        <in key="camera" uid="..." />
+        <config layer="..." transform="..." near="..." far="..."/>
+    </service>
+   @endcode
+ * @subsection Configuration Configuration:
+ * -\b layer (mandatory): defines the frustum's layer
+ * -\b transform (optional): the name of the Ogre transform node where to attach the frustum, as it was specified
+ * in the STransform adaptor
+ * -\b near (optional): near clipping of the Ogre::Camera
+ * -\b far (optional): far clipping of the Ogre::Camera
+ */
 class VISUOGREADAPTOR_CLASS_API SFrustum : public ::fwRenderOgre::IAdaptor,
                                            public ::fwRenderOgre::ITransformable
 {
 public:
+
     fwCoreServiceClassDefinitionsMacro((SFrustum)(::fwRenderOgre::IAdaptor));
+
+    /// Slot for enable/disable visibility
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
+    /// Slot for toggle visibility
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
+    /// Slot for update
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLOT;
+    typedef ::fwCom::Slot<void ()> UpdateSlotType;
+    /// Input camera name
+    VISUOGREADAPTOR_API static const std::string s_IN_CAMERA_NAME;
+    /// Config near clipping name
+    VISUOGREADAPTOR_API static const std::string s_CONFIG_NEAR;
+    /// Config far clipping name
+    VISUOGREADAPTOR_API static const std::string s_CONFIG_FAR;
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SFrustum() noexcept;
     /// Destructor: Does nothing
     VISUOGREADAPTOR_API virtual ~SFrustum() noexcept;
-    /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Sets visibility of the furstum
+    VISUOGREADAPTOR_API void updateVisibility(bool);
+    /// Toggle visibility of the furstum
+    VISUOGREADAPTOR_API void toggleVisibility();
+    /// Update camera parameters
+    VISUOGREADAPTOR_API void updateCamera();
 
 private:
 
-    /// Configures the adaptor
+    /// Configures.
     void configuring() override;
-    /// Manually creates a Mesh in the Default Ogre Ressource group
+    /// Manually creates a frustum.
     void starting() override;
-    /// Deletes the mesh after unregistering the service, and shutting connections.
+    /// Deletes the frustum.
     void stopping() override;
-    /// Checks if the fwData::Mesh has changed, and updates it if it has.
+    /// Checks if the camera has changed, and updates it if it has.
     void updating() override;
+
+    /// Set data to Ogre::Camera
+    void setDataToOgreCam();
+
+    /// Ogre's camera
+    Ogre::Camera* m_ogreCam;
+    /// Pointer to the Material data.
+    ::fwData::Material::sptr m_material;
+    /// Adaptor to create an ogre Ogre::Material from fwData::Material.
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    /// Visibility
+    bool m_visibility;
+    /// Near clipping
+    float m_near;
+    /// Far clipping
+    float m_far;
 };
 
 } //namespace visuOgreAdaptor
