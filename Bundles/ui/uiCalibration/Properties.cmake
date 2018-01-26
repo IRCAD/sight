@@ -16,7 +16,3 @@ set( DEPENDENCIES
         fwMedData
         io
 )
-set( REQUIREMENTS
-    io
-)
-
