@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IO_IOTYPES_HPP__
-#define __IO_IOTYPES_HPP__
+#pragma once
 
-#include "io/config.hpp"
+#include "fwIO/config.hpp"
 
 #include <boost/filesystem/path.hpp>
 
-namespace io
+#include <string>
+#include <vector>
+
+namespace fwIO
 {
 //! IOPathType defines different type of paths used by service readers/writers
 typedef enum
@@ -25,9 +27,6 @@ typedef enum
 /// List of paths managed by io services
 typedef std::vector< ::boost::filesystem::path > LocationsType;
 
-IO_API extern const std::string s_DATA_KEY;
+FWIO_API extern const std::string s_DATA_KEY;
 
-} // namespace io
-
-
-#endif /* __IO_IOTYPES_HPP__ */
+} // namespace fwIO

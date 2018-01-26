@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IO_IWRITER_HPP__
-#define __IO_IWRITER_HPP__
+#pragma once
 
-#include "io/config.hpp"
-#include "io/ioTypes.hpp"
+#include "fwIO/config.hpp"
+#include "fwIO/ioTypes.hpp"
 
 #include <fwServices/IService.hpp>
 
 #include <boost/filesystem/path.hpp>
 
-namespace io
+namespace fwIO
 {
 
 /**
@@ -31,7 +30,7 @@ namespace io
  * @li To write the object use update() method
  * @li Finally we must call stop() before deleting the service
  */
-class IO_CLASS_API IWriter : public fwServices::IService
+class FWIO_CLASS_API IWriter : public ::fwServices::IService
 {
 
 public:
@@ -41,7 +40,7 @@ public:
      * @name Slots API
      * @{
      */
-    IO_API static const ::fwCom::Slots::SlotKeyType s_SET_FILE_FOLDER;
+    FWIO_API static const ::fwCom::Slots::SlotKeyType s_SET_FILE_FOLDER;
     /// @}
 
     /**
@@ -50,7 +49,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IO_API virtual void configureWithIHM() = 0;
+    FWIO_API virtual void configureWithIHM() = 0;
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -60,57 +59,57 @@ public:
      * A reader can support file and folder, or files and folder, but not
      * file and files ( because files include file concept ).
      */
-    IO_API virtual ::io::IOPathType getIOPathType() const;
+    FWIO_API virtual ::fwIO::IOPathType getIOPathType() const;
 
     /**
      * @brief Returns the file path set by the user or set during service configuration
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service does not support FILE mode
      */
-    IO_API const ::boost::filesystem::path& getFile() const;
+    FWIO_API const ::boost::filesystem::path& getFile() const;
 
     /**
      * @brief Sets file path
      * @pre exception if service does not support FILE mode
      */
-    IO_API void setFile(const ::boost::filesystem::path& file);
+    FWIO_API void setFile(const ::boost::filesystem::path& file);
 
     /**
      * @brief Returns file paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FILES mode
      */
-    IO_API const ::io::LocationsType& getFiles() const;
+    FWIO_API const ::fwIO::LocationsType& getFiles() const;
 
     /**
      * @brief Sets file paths
      * @pre exception if service does not support FILES mode
      */
-    IO_API void setFiles(const ::io::LocationsType& files);
+    FWIO_API void setFiles(const ::fwIO::LocationsType& files);
 
     /**
      * @brief Returns folder path set by the user or set during service configuration
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FOLDER mode
      */
-    IO_API const ::boost::filesystem::path& getFolder() const;
+    FWIO_API const ::boost::filesystem::path& getFolder() const;
 
     /**
      * @brief Clear any location set by the setFile/setFiles/setFolder setter
      */
-    IO_API void clearLocations();
+    FWIO_API void clearLocations();
 
     /**
      * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
-    IO_API const ::io::LocationsType& getLocations() const;
+    FWIO_API const ::fwIO::LocationsType& getLocations() const;
 
     /**
      * @brief Sets folder path
      * @pre exception if service does not support FOLDER mode
      */
-    IO_API void setFolder(const ::boost::filesystem::path& folder);
+    FWIO_API void setFolder(const ::boost::filesystem::path& folder);
 
     /**
      * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
@@ -118,16 +117,16 @@ public:
      *
      * @pre exception if service does not support FILE or FILES mode
      */
-    IO_API void setFileFolder(::boost::filesystem::path folder);
+    FWIO_API void setFileFolder(::boost::filesystem::path folder);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
-    IO_API bool hasLocationDefined() const;
+    FWIO_API bool hasLocationDefined() const;
 
 protected:
 
-    IO_API IWriter() noexcept;
+    FWIO_API IWriter() noexcept;
 
-    IO_API virtual ~IWriter() noexcept;
+    FWIO_API virtual ~IWriter() noexcept;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -164,7 +163,7 @@ protected:
        </service>
        @endcode
      */
-    IO_API virtual void configuring() override;
+    FWIO_API virtual void configuring() override;
 
     /**
      * @brief Title of the window that will open when the `configureWithIHM` slot is called
@@ -174,9 +173,7 @@ protected:
 private:
 
     /// Value to stock file or folder paths
-    ::io::LocationsType m_locations;
+    ::fwIO::LocationsType m_locations;
 };
 
-}
-
-#endif // __IO_IWRITER_HPP__
+} //namespace fwIO
