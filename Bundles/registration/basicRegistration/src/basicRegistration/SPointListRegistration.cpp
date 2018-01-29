@@ -26,7 +26,7 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IRegisterer, ::basicRegistration::SPointListRegistration );
 
 namespace basicRegistration
 {
@@ -92,9 +92,9 @@ void SPointListRegistration::stopping()
 {
 }
 
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void SPointListRegistration::updating()
+void SPointListRegistration::computeRegistration(::fwCore::HiResClock::HiResClockType)
 {
     ::fwData::PointList::sptr registeredPL        = this->getInOut< ::fwData::PointList >("registeredPL");
     ::fwData::PointList::sptr referencePL         = this->getInOut< ::fwData::PointList >("referencePL");
@@ -233,6 +233,14 @@ void SPointListRegistration::updating()
                                                           "You must enter 2 or more points for the registration to work.",
                                                           ::fwGui::dialog::IMessageDialog::WARNING);
     }
+}
+
+// ----------------------------------------------------------------------------
+
+void SPointListRegistration::updating()
+{
+    const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+    this->computeRegistration(timestamp);
 }
 
 //----------------------------------------------------------------------------
