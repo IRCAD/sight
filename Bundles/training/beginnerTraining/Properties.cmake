@@ -11,9 +11,7 @@ set( DEPENDENCIES
     fwData
     fwGui
     fwGuiQt
-    io
+    fwIO
 )
-set( REQUIREMENTS
-    io
-)
+set( REQUIREMENTS )
 

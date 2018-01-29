@@ -6,7 +6,6 @@ set( DEPENDENCIES )
 
 set( REQUIREMENTS
     gui
-    io
     ioData
     guiQt
     ctrlSelection

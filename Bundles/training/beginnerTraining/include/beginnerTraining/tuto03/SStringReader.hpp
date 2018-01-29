@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __BEGINNERTRAINING_TUTO03_SSTRINGREADER_HPP__
-#define __BEGINNERTRAINING_TUTO03_SSTRINGREADER_HPP__
+#pragma once
 
 #include "beginnerTraining/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 namespace beginnerTraining
 {
@@ -32,11 +31,11 @@ namespace tuto03
  * @subsection Configuration Configuration:
  * - \b file: input file path.
  */
-class BEGINNERTRAINING_CLASS_API SStringReader : public ::io::IReader
+class BEGINNERTRAINING_CLASS_API SStringReader : public ::fwIO::IReader
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SStringReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SStringReader)(::fwIO::IReader) );
 
     BEGINNERTRAINING_API SStringReader();
     BEGINNERTRAINING_API virtual ~SStringReader() noexcept;
@@ -56,7 +55,7 @@ protected:
     BEGINNERTRAINING_API virtual void configureWithIHM() override;
 
     /// Overrides io method
-    BEGINNERTRAINING_API virtual ::io::IOPathType getIOPathType() const override;
+    BEGINNERTRAINING_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
     /// Notify modification of associated data
     BEGINNERTRAINING_API void notifyMessage();
@@ -64,6 +63,3 @@ protected:
 
 } // namespace tuto03
 } // namespace beginnerTraining
-
-#endif /*__BEGINNERTRAINING_TUTO03_SSTRINGREADER_HPP__*/
-

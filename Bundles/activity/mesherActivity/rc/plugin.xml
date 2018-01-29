@@ -3,7 +3,6 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
-    <requirement id="io" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/mesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
