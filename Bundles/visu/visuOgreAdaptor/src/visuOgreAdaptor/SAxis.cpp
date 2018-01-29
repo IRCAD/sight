@@ -23,12 +23,8 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 //-----------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept :
-    m_materialRedAdaptor(nullptr),
-    m_materialGreenAdaptor(nullptr),
-    m_materialBlueAdaptor(nullptr),
-    m_materialRed(nullptr),
-    m_materialGreen(nullptr),
-    m_materialBlue(nullptr),
+    m_materialAdaptor(nullptr),
+    m_material(nullptr),
     m_length(50.f),
     m_isVisible(true)
 {
@@ -106,66 +102,45 @@ void SAxis::starting()
     ::Ogre::ManualObject* zLine = sceneMgr->createManualObject(this->getID() + "_zline");
 
     // set the material
-    m_materialRed = ::fwData::Material::New();
-    m_materialRed->diffuse()->setRGBA("#ff0000ff");
+    m_material = ::fwData::Material::New();
 
-    m_materialRedAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialRedAdaptor->registerInOut(m_materialRed, "material", true);
-    m_materialRedAdaptor->setID(this->getID() + "_" + m_materialRedAdaptor->getID());
-    m_materialRedAdaptor->setMaterialName(this->getID() + "_" + m_materialRedAdaptor->getID());
-    m_materialRedAdaptor->setRenderService( this->getRenderService() );
-    m_materialRedAdaptor->setLayerID(m_layerID);
-    m_materialRedAdaptor->setShadingMode("ambient");
-    m_materialRedAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_materialRedAdaptor->start();
-    m_materialRedAdaptor->update();
+    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
+    m_materialAdaptor->registerInOut(m_material, "material", true);
+    m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
+    m_materialAdaptor->setRenderService( this->getRenderService() );
+    m_materialAdaptor->setLayerID(m_layerID);
+    m_materialAdaptor->setShadingMode("ambient");
+    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->start();
 
-    m_materialGreen = ::fwData::Material::New();
-    m_materialGreen->diffuse()->setRGBA("#00ff00ff");
-
-    m_materialGreenAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialGreenAdaptor->registerInOut(m_materialGreen, "material", true);
-    m_materialGreenAdaptor->setID(this->getID() + "_" + m_materialGreenAdaptor->getID());
-    m_materialGreenAdaptor->setMaterialName(this->getID() + "_" + m_materialGreenAdaptor->getID());
-    m_materialGreenAdaptor->setRenderService( this->getRenderService() );
-    m_materialGreenAdaptor->setLayerID(m_layerID);
-    m_materialGreenAdaptor->setShadingMode("ambient");
-    m_materialGreenAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_materialGreenAdaptor->start();
-    m_materialGreenAdaptor->update();
-
-    m_materialBlue = ::fwData::Material::New();
-    m_materialBlue->diffuse()->setRGBA("#0000ffff");
-
-    m_materialBlueAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialBlueAdaptor->registerInOut(m_materialBlue, "material", true);
-    m_materialBlueAdaptor->setID(this->getID() + "_" + m_materialBlueAdaptor->getID());
-    m_materialBlueAdaptor->setMaterialName(this->getID() + "_" + m_materialBlueAdaptor->getID());
-    m_materialBlueAdaptor->setRenderService( this->getRenderService() );
-    m_materialBlueAdaptor->setLayerID(m_layerID);
-    m_materialBlueAdaptor->setShadingMode("ambient");
-    m_materialBlueAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_materialBlueAdaptor->start();
-    m_materialBlueAdaptor->update();
+    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    m_materialAdaptor->update();
 
     // Draw
-    xLine->begin(m_materialRedAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    xLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     xLine->position(0, 0, 0);
+    xLine->colour(1.0f, 0, 0);
     xLine->position(m_length, 0, 0);
+    xLine->colour(1.0f, 0, 0);
     xLine->end();
 
     this->attachNode(xLine);
 
-    yLine->begin(m_materialGreenAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    yLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     yLine->position(0, 0, 0);
+    yLine->colour(0, 1.0f, 0);
     yLine->position(0, m_length, 0);
+    yLine->colour(0, 1.0f, 0);
     yLine->end();
 
     this->attachNode(yLine);
 
-    zLine->begin(m_materialBlueAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    zLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     zLine->position(0, 0, 0);
+    zLine->colour(0, 0, 1.0f);
     zLine->position(0, 0, m_length);
+    zLine->colour(0, 0, 1.0f);
     zLine->end();
 
     this->attachNode(zLine);
@@ -192,12 +167,8 @@ void SAxis::updating()
 void SAxis::stopping()
 {
     this->unregisterServices();
-    m_materialRedAdaptor.reset();
-    m_materialGreenAdaptor.reset();
-    m_materialBlueAdaptor.reset();
-    m_materialRed   = nullptr;
-    m_materialGreen = nullptr;
-    m_materialBlue  = nullptr;
+    m_materialAdaptor.reset();
+    m_material = nullptr;
 }
 
 //-----------------------------------------------------------------------------

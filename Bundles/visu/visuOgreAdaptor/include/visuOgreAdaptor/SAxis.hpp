@@ -93,13 +93,9 @@ private:
     void attachNode(::Ogre::MovableObject* _node);
 
     /// Pointer to a SMaterial adaptor
-    ::visuOgreAdaptor::SMaterial::sptr m_materialRedAdaptor;
-    ::visuOgreAdaptor::SMaterial::sptr m_materialGreenAdaptor;
-    ::visuOgreAdaptor::SMaterial::sptr m_materialBlueAdaptor;
+    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Pointer to the Material data
-    ::fwData::Material::sptr m_materialRed;
-    ::fwData::Material::sptr m_materialGreen;
-    ::fwData::Material::sptr m_materialBlue;
+    ::fwData::Material::sptr m_material;
     /// Handle the length of each axes (in mm)
     float m_length;
     /// Handles the visibility of the axis
