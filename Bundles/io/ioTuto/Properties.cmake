@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwGui
     fwRuntime
     fwServices
-    io
+    fwIO
 
     fwTools
     fwCore )

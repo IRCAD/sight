@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,6 +17,8 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
@@ -29,12 +31,10 @@
 
 #include <vtkGdcmIO/SeriesDBReader.hpp>
 
-#include <io/IReader.hpp>
-
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -91,7 +91,7 @@ void SSeriesDBReader::stopping()
 
 void SSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -203,9 +203,9 @@ void SSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

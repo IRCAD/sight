@@ -10,7 +10,6 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     dataReg
     servicesReg
-    io
     ioPacs
     )
 

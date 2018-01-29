@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SMeshWriter, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, ::fwData::Mesh );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -43,9 +43,9 @@ SMeshWriter::SMeshWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SMeshWriter::getIOPathType() const
+::fwIO::IOPathType SMeshWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ void SMeshWriter::stopping()
 
 void SMeshWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

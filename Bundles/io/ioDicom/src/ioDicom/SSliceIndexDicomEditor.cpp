@@ -148,8 +148,8 @@ void SSliceIndexDicomEditor::starting()
     // Create reader
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
 
-    ::io::IReader::sptr dicomReader;
-    dicomReader = ::io::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    ::fwIO::IReader::sptr dicomReader;
+    dicomReader = ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioDicom::SSliceIndexDicomEditor.", dicomReader);
     ::fwServices::OSR::registerService(m_tempSeriesDB, dicomReader);

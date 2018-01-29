@@ -3,10 +3,9 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
+        <type>::fwIO::IWriter</type>
         <service>::ioQt::SPdfWriter</service>
         <object>::fwData::Object</object>
     </extension>

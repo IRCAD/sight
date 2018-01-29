@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -95,7 +95,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create("::io::IReader", "::ioVTK::SSeriesDBReader" );
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create("::fwIO::IReader", "::ioVTK::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
@@ -185,7 +185,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     seriesDB->getContainer().push_back(imageSeries);
 
     ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create("::io::IReader", "::ioVTK::SSeriesDBReader" );
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create("::fwIO::IReader", "::ioVTK::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 

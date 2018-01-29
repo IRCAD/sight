@@ -8,7 +8,6 @@ set( REQUIREMENTS
     servicesReg
     gui
     guiQt
-    io
     ioVTK
     uiIO # contains services to show dialogs for reader/writer selection
     visuVTKQt

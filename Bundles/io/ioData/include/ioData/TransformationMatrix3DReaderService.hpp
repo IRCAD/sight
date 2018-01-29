@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_TRANSFORMATIONMATRIX3DREADERSERVICE_HPP__
-#define __IODATA_TRANSFORMATIONMATRIX3DREADERSERVICE_HPP__
+#pragma once
 
 #include "ioData/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -25,19 +24,19 @@ namespace ioData
  * @li Use stop() to stop service before to destroy it.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderService ,
+ * fwServicesRegisterMacro( ::fwIO::IReader , ::ioData::TransformationMatrix3DReaderService ,
  *::fwData::TransformationMatrix3D )
  */
-class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::io::IReader
+class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (TransformationMatrix3DReaderService)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (TransformationMatrix3DReaderService)(::fwIO::IReader) );
 
     /// Super class of reader services
-    typedef ::io::IReader SuperClass;
+    typedef ::fwIO::IReader SuperClass;
 
-    /** @name Specified reader service methods ( override from ::io::IReader )
+    /** @name Specified reader service methods ( override from ::fwIO::IReader )
      * @{
      */
 
@@ -56,7 +55,7 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
+    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -106,5 +105,3 @@ protected:
 };
 
 } // namespace ioData
-
-#endif // __IODATA_TRANSFORMATIONMATRIX3DREADERSERVICE_HPP__

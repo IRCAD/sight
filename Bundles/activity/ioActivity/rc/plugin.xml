@@ -1,6 +1,5 @@
 <plugin id="ioActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="io" />
     <requirement id="filterVRRender" />
     <requirement id="activities" />
 

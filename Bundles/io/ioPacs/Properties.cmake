@@ -17,7 +17,7 @@ set( DEPENDENCIES
     fwMedData
     fwMedDataTools
     fwServices
-    io
+    fwIO
     )
 set( REQUIREMENTS
     dataReg

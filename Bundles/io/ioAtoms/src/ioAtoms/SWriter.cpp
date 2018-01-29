@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ namespace ioAtoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioAtoms::SWriter, ::fwData::Object );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, ::fwData::Object );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -83,7 +83,7 @@ void SWriter::stopping()
 
 void SWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 
     typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
@@ -325,9 +325,9 @@ void SWriter::updating()
             ::boost::filesystem::path archiveRootName;
             if ( extension == ".json" )
             {
-                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
                 archiveRootName = filename;
-                format = ::fwAtomsBoostIO::JSON;
+                format          = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".jsonz" )
             {
@@ -335,15 +335,15 @@ void SWriter::updating()
                 {
                     ::boost::filesystem::remove( filePath );
                 }
-                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
                 archiveRootName = "root.json";
-                format = ::fwAtomsBoostIO::JSON;
+                format          = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".xml" )
             {
-                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
                 archiveRootName = filename;
-                format = ::fwAtomsBoostIO::XML;
+                format          = ::fwAtomsBoostIO::XML;
             }
             else if ( extension == ".xmlz" )
             {
@@ -351,9 +351,9 @@ void SWriter::updating()
                 {
                     ::boost::filesystem::remove( filePath );
                 }
-                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
                 archiveRootName = "root.xml";
-                format = ::fwAtomsBoostIO::XML;
+                format          = ::fwAtomsBoostIO::XML;
             }
             else
             {
@@ -397,9 +397,9 @@ void SWriter::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SWriter::getIOPathType() const
+::fwIO::IOPathType SWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -445,4 +445,3 @@ void SWriter::configureWithIHM()
 //-----------------------------------------------------------------------------
 
 } // namespace ioAtoms
-

@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_SMESHREADER_HPP__
-#define __IOVTK_SMESHREADER_HPP__
+#pragma once
 
 #include "ioVTK/config.hpp"
 
 #include <fwData/Mesh.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -41,7 +40,7 @@ namespace ioVTK
  * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB
  *
  */
-class IOVTK_CLASS_API SMeshReader : public ::io::IReader
+class IOVTK_CLASS_API SMeshReader : public ::fwIO::IReader
 {
 
 public:
@@ -49,7 +48,7 @@ public:
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro( (SMeshReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SMeshReader)( ::fwIO::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -66,7 +65,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::io::IOPathType getIOPathType() const override;
+    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.
@@ -141,5 +140,3 @@ private:
 };
 
 } // namespace ioVTK
-
-#endif //__IOVTK_SMESHREADER_HPP__

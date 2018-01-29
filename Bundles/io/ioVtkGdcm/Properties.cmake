@@ -12,7 +12,7 @@ set( DEPENDENCIES
     fwServices
     fwTools
     vtkGdcmIO
-    io
+    fwIO
     fwDataIO
 )
 set( REQUIREMENTS  )

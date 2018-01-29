@@ -2,7 +2,6 @@
     <library name="ioDicom" />
 
     <requirement id="dataReg"/>
-    <requirement id="io" />
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IEditor</type>

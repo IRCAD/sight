@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOGDCM_SDICOMSERIESWRITER_HPP__
-#define __IOGDCM_SDICOMSERIESWRITER_HPP__
+#pragma once
 
 #include "ioGdcm/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -31,13 +30,13 @@ namespace ioGdcm
 /**
  * @brief Services to write an DicomSeries in DICOM format.
  */
-class IOGDCM_CLASS_API SDicomSeriesWriter : public ::io::IWriter
+class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 {
 
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesWriter)( ::fwIO::IWriter) );
 
     /**
      * @brief   constructor
@@ -67,7 +66,7 @@ protected:
     IOGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
     /// Save the selected Dicom series
@@ -81,5 +80,3 @@ private:
 };
 
 } // namespace ioGdcm
-
-#endif //__IOGDCM_SDICOMSERIESWRITER_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioData::TransformationMatrix3DWriterService,
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::TransformationMatrix3DWriterService,
                          ::fwData::TransformationMatrix3D );
 
 //-----------------------------------------------------------------------------
@@ -51,16 +51,16 @@ void TransformationMatrix3DWriterService::starting( )
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
+::fwIO::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DWriterService::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

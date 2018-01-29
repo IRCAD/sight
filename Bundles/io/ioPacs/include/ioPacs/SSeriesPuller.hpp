@@ -1,15 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOPACS_SSERIESPULLER_HPP__
-#define __IOPACS_SSERIESPULLER_HPP__
+#pragma once
 
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
+
+#include <fwIO/IReader.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
@@ -20,8 +21,6 @@
 #include <fwServices/IController.hpp>
 
 #include <fwThread/Worker.hpp>
-
-#include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -173,7 +172,7 @@ protected:
     ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
 
     /// Reader
-    ::io::IReader::sptr m_dicomReader;
+    ::fwIO::IReader::sptr m_dicomReader;
 
     /// Reader Config
     std::string m_dicomReaderSrvConfig;
@@ -213,5 +212,3 @@ protected:
 };
 
 } // namespace ioPacs
-
-#endif // __IOPACS_SSERIESPULLER_HPP__

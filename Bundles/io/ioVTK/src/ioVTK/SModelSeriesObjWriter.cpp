@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SModelSeriesObjWriter, ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesObjWriter, ::fwMedData::ModelSeries );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -48,9 +48,9 @@ SModelSeriesObjWriter::SModelSeriesObjWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SModelSeriesObjWriter::getIOPathType() const
+::fwIO::IOPathType SModelSeriesObjWriter::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void SModelSeriesObjWriter::stopping()
 
 void SModelSeriesObjWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

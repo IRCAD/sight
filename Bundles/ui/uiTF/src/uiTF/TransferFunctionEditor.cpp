@@ -19,15 +19,15 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwIO/ioTypes.hpp>
+#include <fwIO/IReader.hpp>
+#include <fwIO/IWriter.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <io/ioTypes.hpp>
-#include <io/IReader.hpp>
-#include <io/IWriter.hpp>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -401,7 +401,7 @@ void TransferFunctionEditor::importTF()
 
     ::fwServices::OSR::registerService(tf, srv);
 
-    ::io::IReader::sptr reader = ::io::IReader::dynamicCast(srv);
+    ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(srv);
     reader->start();
     reader->configureWithIHM();
     reader->update().wait();
@@ -432,7 +432,7 @@ void TransferFunctionEditor::exportTF()
 
     ::fwServices::OSR::registerService(m_selectedTF, srv);
 
-    ::io::IWriter::sptr writer = ::io::IWriter::dynamicCast(srv);
+    ::fwIO::IWriter::sptr writer = ::fwIO::IWriter::dynamicCast(srv);
     writer->start();
     writer->configureWithIHM();
     writer->update().wait();
@@ -481,7 +481,7 @@ void TransferFunctionEditor::initTransferFunctions()
         ::fwServices::IService::sptr srv    =
             ::fwServices::registry::ServiceFactory::getDefault()->create("::ioAtoms::SReader");
         ::fwServices::OSR::registerService(tf, srv);
-        ::io::IReader::sptr reader = ::io::IReader::dynamicCast(srv);
+        ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(srv);
 
         ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
         ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");

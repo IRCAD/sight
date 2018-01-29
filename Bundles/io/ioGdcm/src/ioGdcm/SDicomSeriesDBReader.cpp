@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,6 +23,8 @@
 
 #include <fwGuiQt/dialog/MessageDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
@@ -33,8 +35,6 @@
 #include <fwServices/macros.hpp>
 
 #include <fwTools/System.hpp>
-
-#include <io/IReader.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -47,7 +47,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioGdcm::SDicomSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, ::fwMedData::SeriesDB );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const ::fwCom::Signals::SignalKeyType FILES_ADDED_SIGNAL = "filesAdded";
@@ -77,7 +77,7 @@ SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
 
 void SDicomSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 
     // Show log dialog
     ::fwRuntime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
@@ -390,9 +390,9 @@ void SDicomSeriesDBReader::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SDicomSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SDicomSeriesDBReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,6 +18,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwItkIO/ImageReader.hpp>
 
 #include <fwMedData/Equipment.hpp>
@@ -33,14 +35,12 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/UUID.hpp>
 
-#include <io/IReader.hpp>
-
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -56,16 +56,16 @@ SInrSeriesDBReader::~SInrSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SInrSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SInrSeriesDBReader::getIOPathType() const
 {
-    return ::io::FILES;
+    return ::fwIO::FILES;
 }
 
 //------------------------------------------------------------------------------
 
 void SInrSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
-#define __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
+#pragma once
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/ConfigurationElementContainer.hpp"
@@ -169,10 +168,10 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      * @param[in]   depth           depth of the recursion
      */
     FWRUNTIME_API std::vector < ConfigurationElement::sptr > find(
-        std::string name = "",
-        std::string attribute = "",
+        std::string name           = "",
+        std::string attribute      = "",
         std::string attributeValue = "",
-        int depth = 1
+        int depth                  = 1
         );
 
     /**
@@ -245,5 +244,3 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
 };
 
 } // namespace fwRuntime
-
-#endif //  __FWRUNTIME_CONFIGURATIONELEMENT_HPP__

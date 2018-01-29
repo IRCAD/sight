@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,6 +21,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
@@ -30,12 +32,10 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IWriter.hpp>
-
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SDicomSeriesWriter, ::fwMedData::DicomSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, ::fwMedData::DicomSeries );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -97,7 +97,7 @@ void SDicomSeriesWriter::stopping()
 
 void SDicomSeriesWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -181,9 +181,9 @@ void SDicomSeriesWriter::saveDicomSeries( const ::boost::filesystem::path folder
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SDicomSeriesWriter::getIOPathType() const
+::fwIO::IOPathType SDicomSeriesWriter::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

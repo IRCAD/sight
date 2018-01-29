@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,18 +10,18 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <io/IReader.hpp>
 
 #include <boost/lexical_cast.hpp>
 
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::io::IReader, ::ioData::SplineReaderService, ::fwData::Spline );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::SplineReaderService, ::fwData::Spline );
 
 namespace ioData
 {

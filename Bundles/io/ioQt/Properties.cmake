@@ -12,6 +12,6 @@ set( DEPENDENCIES
         fwServices
         fwThread
         fwTools
-        io
+        fwIO
     )
 set( REQUIREMENTS  )

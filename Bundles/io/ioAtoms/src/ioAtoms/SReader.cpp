@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@
 namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioAtoms::SReader, ::fwData::Object );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioAtoms::SReader, ::fwData::Object );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -88,7 +88,7 @@ void SReader::configuring()
 {
     SLM_TRACE_FUNC();
 
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 
     typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
@@ -239,27 +239,27 @@ void SReader::updating()
 
                     if ( extension == ".json" )
                     {
-                        readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                        readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
                         archiveRootName = filename;
-                        format = ::fwAtomsBoostIO::JSON;
+                        format          = ::fwAtomsBoostIO::JSON;
                     }
                     else if ( extension == ".jsonz" )
                     {
-                        readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                        readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
                         archiveRootName = "root.json";
-                        format = ::fwAtomsBoostIO::JSON;
+                        format          = ::fwAtomsBoostIO::JSON;
                     }
                     else if ( extension == ".xml" )
                     {
-                        readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                        readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
                         archiveRootName = filename;
-                        format = ::fwAtomsBoostIO::XML;
+                        format          = ::fwAtomsBoostIO::XML;
                     }
                     else if ( extension == ".xmlz" )
                     {
-                        readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                        readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
                         archiveRootName = "root.xml";
-                        format = ::fwAtomsBoostIO::XML;
+                        format          = ::fwAtomsBoostIO::XML;
                     }
                     else
                     {
@@ -403,9 +403,9 @@ void SReader::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SReader::getIOPathType() const
+::fwIO::IOPathType SReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -458,4 +458,3 @@ void SReader::configureWithIHM()
 //-----------------------------------------------------------------------------
 
 } // namespace ioAtoms
-

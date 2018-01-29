@@ -2,8 +2,6 @@
 
     <library name="ioTuto" />
 
-    <requirement id="io" />
-
 <!-- All Reader/Writer can extended by providing a specific configuration, being a user info for instance -->
 <!--     <extension-point id="::ioTuto::ioTuto1" /> -->
 
@@ -14,7 +12,7 @@
 
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioTuto::ExternalDataReaderService</service>
         <object>::fwData::Composite</object>
     </extension>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,16 +16,16 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwItkIO/JpgImageWriter.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <io/IWriter.hpp>
-
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioITK::JpgImageWriterService, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::JpgImageWriterService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
@@ -41,16 +41,16 @@ JpgImageWriterService::~JpgImageWriterService() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType JpgImageWriterService::getIOPathType() const
+::fwIO::IOPathType JpgImageWriterService::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void JpgImageWriterService::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

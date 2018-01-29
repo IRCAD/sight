@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_STRIANMESHREADER_HPP__
-#define __IODATA_STRIANMESHREADER_HPP__
+#pragma once
 
 #include "ioData/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -36,17 +35,17 @@ namespace ioData
  * @subsubsection Configuration Configuration
  * - \b file : .trian file to read
  */
-class IODATA_CLASS_API STrianMeshReader : public ::io::IReader
+class IODATA_CLASS_API STrianMeshReader : public ::fwIO::IReader
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (STrianMeshReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (STrianMeshReader)(::fwIO::IReader) );
 
     /// Super class of reader services
-    typedef ::io::IReader SuperClass;
+    typedef ::fwIO::IReader SuperClass;
 
-    /** @name Specified reader service methods ( override from ::io::IReader )
+    /** @name Specified reader service methods ( override from ::fwIO::IReader )
      * @{
      */
 
@@ -65,7 +64,7 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
+    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -119,5 +118,3 @@ protected:
 };
 
 }
-
-#endif /*__IODATA_STRIANMESHREADER_HPP__*/

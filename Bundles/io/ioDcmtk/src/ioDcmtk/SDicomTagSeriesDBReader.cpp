@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,18 +15,18 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IReader.hpp>
-
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioDcmtk::SDicomTagSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SDicomTagSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ SDicomTagSeriesDBReader::~SDicomTagSeriesDBReader() noexcept
 
 void SDicomTagSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ void SDicomTagSeriesDBReader::updating()
             if( seriesDB->size() > 0 )
             {
                 // Retrieve dataStruct associated with this service
-                auto associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
+                auto associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
                 associatedSeriesDB->shallowCopy( seriesDB );
 
                 ::fwGui::Cursor cursor;
@@ -175,7 +175,7 @@ void SDicomTagSeriesDBReader::updating()
 
 void SDicomTagSeriesDBReader::notificationOfDBUpdate()
 {
-    ::fwMedData::SeriesDB::csptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
+    ::fwMedData::SeriesDB::csptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;
@@ -191,9 +191,9 @@ void SDicomTagSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SDicomTagSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SDicomTagSeriesDBReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

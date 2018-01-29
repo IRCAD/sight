@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwCore
 )
 set( REQUIREMENTS
-    io
     gui
     dataReg
     servicesReg

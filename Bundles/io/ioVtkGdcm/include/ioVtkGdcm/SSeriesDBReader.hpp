@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTKGDCM_SSERIESDBREADER_HPP__
-#define __IOVTKGDCM_SSERIESDBREADER_HPP__
+#pragma once
 
 #include "ioVtkGdcm/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -29,7 +28,7 @@ class IJob;
 namespace ioVtkGdcm
 {
 
-class IOVTKGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
+class IOVTKGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
@@ -37,7 +36,7 @@ public:
     typedef std::vector< ExtensionType > ExtensionsType;
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::fwIO::IReader) );
     /**
      * @brief   constructor
      *
@@ -76,7 +75,7 @@ protected:
     IOVTKGDCM_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOVTKGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOVTKGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -89,5 +88,3 @@ private:
 };
 
 } // namespace ioVtkGdcm
-
-#endif //__IOVTKGDCM_SSERIESDBREADER_HPP__

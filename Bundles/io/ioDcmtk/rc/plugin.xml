@@ -2,24 +2,23 @@
     <library name="ioDcmtk" />
 
     <requirement id="dataReg"/>
-    <requirement id="io" />
     
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioDcmtk::SSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Series DB Reader (DCMTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioDcmtk::SDicomSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Dicom Series DB Reader (DCMTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioDcmtk::SDicomTagSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Dicom Tag Series DB Reader (DCMTK)</desc>

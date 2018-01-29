@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_SIMAGEREADER_HPP__
-#define __IOVTK_SIMAGEREADER_HPP__
+#pragma once
 
 #include "ioVTK/config.hpp"  // Declaration of class and function export
 
-#include <io/IReader.hpp> // Definition of abstract reader class
+#include <fwIO/IReader.hpp> // Definition of abstract reader class
 
 #include <boost/filesystem/path.hpp> // Used to save the file system path of loaded image
 
@@ -32,7 +31,7 @@ namespace ioVTK
  *
  * Service reading a VTK Image using the fwVtkIO lib.
  */
-class IOVTK_CLASS_API SImageReader : public ::io::IReader
+class IOVTK_CLASS_API SImageReader : public ::fwIO::IReader
 {
 
 public:
@@ -40,7 +39,7 @@ public:
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro( (SImageReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SImageReader)( ::fwIO::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -58,7 +57,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::io::IOPathType getIOPathType() const override;
+    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
     /// Method called when the service is started, does nothing.
     IOVTK_API virtual void starting() override;
@@ -104,5 +103,3 @@ private:
 };
 
 } // namespace ioVTK
-
-#endif // __IOVTK_SIMAGEREADER_HPP__

@@ -12,7 +12,6 @@ set( REQUIREMENTS
     guiQt
     ioData
     ioVTK
-    io
     servicesReg
     uiIO
     visuVTK

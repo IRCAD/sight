@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,6 +19,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
@@ -30,14 +32,12 @@
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
 
-#include <io/IWriter.hpp>
-
 #include <boost/algorithm/string.hpp>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SImageWriter, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, ::fwData::Image );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -50,9 +50,9 @@ SImageWriter::SImageWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SImageWriter::getIOPathType() const
+::fwIO::IOPathType SImageWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void SImageWriter::stopping()
 
 void SImageWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

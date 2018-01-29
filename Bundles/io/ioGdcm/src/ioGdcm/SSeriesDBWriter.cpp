@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,6 +20,8 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
@@ -29,12 +31,10 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IWriter.hpp>
-
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ void SSeriesDBWriter::stopping()
 
 void SSeriesDBWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -171,9 +171,9 @@ void SSeriesDBWriter::saveSeriesDB( const ::boost::filesystem::path folder, ::fw
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBWriter::getIOPathType() const
+::fwIO::IOPathType SSeriesDBWriter::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

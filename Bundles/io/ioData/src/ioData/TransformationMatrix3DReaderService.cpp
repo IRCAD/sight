@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,9 +16,9 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwIO/IReader.hpp>
 
-#include <io/IReader.hpp>
+#include <fwServices/macros.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -30,14 +30,14 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IReader, ::ioData::TransformationMatrix3DReaderService,
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::TransformationMatrix3DReaderService,
                          ::fwData::TransformationMatrix3D );
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType TransformationMatrix3DReaderService::getIOPathType() const
+::fwIO::IOPathType TransformationMatrix3DReaderService::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void TransformationMatrix3DReaderService::starting( )
 
 void TransformationMatrix3DReaderService::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------

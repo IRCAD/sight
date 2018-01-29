@@ -11,10 +11,9 @@ set( DEPENDENCIES
     fwGuiQt
     fwRuntime
     fwServices
-    io
+    fwIO
 )
 set( REQUIREMENTS 
-    io
     ioAtoms
 )
 

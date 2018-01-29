@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_MESHWRITERSERVICE_HPP__
-#define __IODATA_MESHWRITERSERVICE_HPP__
+#pragma once
 
 #include "ioData/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -24,17 +23,17 @@ namespace ioData
  * @li Use update() to write the mesh and notify observers.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
+ * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh )
  */
-class IODATA_CLASS_API MeshWriterService : public ::io::IWriter
+class IODATA_CLASS_API MeshWriterService : public ::fwIO::IWriter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (MeshWriterService)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (MeshWriterService)(::fwIO::IWriter) );
 
     /// Super class of writer services
-    typedef ::io::IWriter SuperClass;
+    typedef ::fwIO::IWriter SuperClass;
 
     /**
      * @brief   Constructor : does nothing
@@ -46,7 +45,7 @@ public:
      */
     IODATA_API ~MeshWriterService() noexcept;
 
-    /** @name Specified writer service methods ( override from ::io::IWriter )
+    /** @name Specified writer service methods ( override from ::fwIO::IWriter )
      * @{
      */
 
@@ -60,7 +59,7 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
+    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -114,5 +113,3 @@ protected:
 };
 
 }
-
-#endif /*__IODATA_MESHWRITERSERVICE_HPP__*/

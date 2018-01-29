@@ -20,6 +20,9 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+#include <fwIO/IWriter.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
@@ -27,9 +30,6 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
-
-#include <io/IReader.hpp>
-#include <io/IWriter.hpp>
 
 #include <sstream>
 #include <string>
@@ -157,19 +157,19 @@ void SIOSelector::updating()
 {
     SLM_TRACE_FUNC();
 
-    // Retrieve implementation of type ::io::IReader for this object
+    // Retrieve implementation of type ::fwIO::IReader for this object
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                this->getObject()->getClassname(), "::io::IReader");
+                this->getObject()->getClassname(), "::fwIO::IReader");
     }
     else // m_mode == WRITER_MODE
     {
         availableExtensionsId =
             ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                this->getObject()->getClassname(), "::io::IWriter");
+                this->getObject()->getClassname(), "::fwIO::IWriter");
     }
 
     // Filter available extensions and replace id by service description
@@ -300,8 +300,8 @@ void SIOSelector::updating()
                     }
                 }
 
-                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( extensionId );
-                reader->registerInOut(this->getObject(), ::io::s_DATA_KEY);
+                ::fwIO::IReader::sptr reader = ::fwServices::add< ::fwIO::IReader >( extensionId );
+                reader->registerInOut(this->getObject(), ::fwIO::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -338,12 +338,13 @@ void SIOSelector::updating()
             else
             {
                 // When all writers make use of getObject(), we can use the following code instead:
-                //      ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( extensionId );
-                //      writer->registerInput(this->getObject(), ::io::s_DATA_KEY);
+                //      ::fwIO::IWriter::sptr writer = ::fwServices::add< ::fwIO::IWriter >( extensionId );
+                //      writer->registerInput(this->getObject(), ::fwIO::s_DATA_KEY);
 
                 auto factory = ::fwServices::registry::ServiceFactory::getDefault();
-                ::io::IWriter::sptr writer = ::io::IWriter::dynamicCast(factory->create( "::io::IWriter", extensionId));
-                ::fwServices::OSR::registerService(this->getObject(), ::io::s_DATA_KEY,
+                ::fwIO::IWriter::sptr writer =
+                    ::fwIO::IWriter::dynamicCast(factory->create( "::fwIO::IWriter", extensionId));
+                ::fwServices::OSR::registerService(this->getObject(), ::fwIO::s_DATA_KEY,
                                                    ::fwServices::IService::AccessType::INPUT, writer);
 
                 writer->setWorker(m_associatedWorker);

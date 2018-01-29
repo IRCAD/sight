@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOGDCM_SSERIESDBREADER_HPP__
-#define __IOGDCM_SSERIESDBREADER_HPP__
+#pragma once
 
 #include "ioGdcm/config.hpp"
 
 #include <fwCom/Signal.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -33,11 +32,11 @@ namespace ioGdcm
 /**
  * @brief Read DICOM (ImageSeries/ModelSeries) with gdcm reader
  **/
-class IOGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
+class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::fwIO::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
@@ -112,7 +111,7 @@ protected:
     IOGDCM_API virtual void configureWithIHM() override;
 
     /// Return managed file type, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -120,7 +119,7 @@ private:
      * @brief Create a seriesDB and fill it using the data of the DICOM files
      * @param[in] dicomDir DICOM folder
      */
-    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path & dicomDir);
+    SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
 
     /// Selector config used to select a filter to apply
     std::string m_filterSelectorSrvConfig;
@@ -145,5 +144,3 @@ private:
 };
 
 } // namespace ioGdcm
-
-#endif //__IOGDCM_SSERIESDBREADER_HPP__

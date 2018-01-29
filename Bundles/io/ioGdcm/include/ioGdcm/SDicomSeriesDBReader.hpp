@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOGDCM_SDICOMSERIESDBREADER_HPP__
-#define __IOGDCM_SDICOMSERIESDBREADER_HPP__
+#pragma once
 
 #include "ioGdcm/config.hpp"
 
 #include <fwCom/Signal.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -34,7 +33,7 @@ namespace ioGdcm
 /**
  * @brief Read DicomSeries from DICOM with gdcm reader
  **/
-class IOGDCM_CLASS_API SDicomSeriesDBReader : public ::io::IReader
+class IOGDCM_CLASS_API SDicomSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
@@ -46,7 +45,7 @@ public:
     typedef ::boost::filesystem::path PathType;
     typedef ::fwCom::Signal< void ( bool, std::vector< PathType > ) > FilesAddedSignal;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::fwIO::IReader) );
     /**
      * @brief   constructor
      *
@@ -107,7 +106,7 @@ protected:
     IOGDCM_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -139,5 +138,3 @@ private:
 };
 
 } // namespace ioGdcm
-
-#endif //__IOGDCM_SDICOMSERIESDBREADER_HPP__

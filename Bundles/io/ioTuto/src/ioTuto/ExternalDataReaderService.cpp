@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::io::IReader, ::ioTuto::ExternalDataReaderService, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTuto::ExternalDataReaderService, ::fwData::Composite );
 
 namespace ioTuto
 {
@@ -39,7 +39,7 @@ ExternalDataReaderService::ExternalDataReaderService()
 
 void ExternalDataReaderService::info(std::ostream& _sstream )
 {
-    this->::io::IReader::info( _sstream );
+    this->::fwIO::IReader::info( _sstream );
     _sstream << std::endl << " External data file reader";
 }
 
@@ -181,9 +181,9 @@ void ExternalDataReaderService::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType ExternalDataReaderService::getIOPathType() const
+::fwIO::IOPathType ExternalDataReaderService::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------

@@ -12,12 +12,12 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
 #include <fwThread/Worker.hpp>
-
-#include <io/IReader.hpp>
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
@@ -185,7 +185,7 @@ protected:
     std::string m_dicomReaderType;
 
     /// Reader
-    ::io::IReader::wptr m_dicomReader;
+    ::fwIO::IReader::wptr m_dicomReader;
 
     /// Image Key
     std::string m_imageKey;

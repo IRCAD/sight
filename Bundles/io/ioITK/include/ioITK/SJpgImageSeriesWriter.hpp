@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOITK_SJPGIMAGESERIESWRITER_HPP__
-#define __IOITK_SJPGIMAGESERIESWRITER_HPP__
+#pragma once
 
 #include "ioITK/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -21,11 +20,11 @@ namespace ioITK
 /**
  * @brief Write an image to jpg format
  **/
-class IOITK_CLASS_API SJpgImageSeriesWriter : public ::io::IWriter
+class IOITK_CLASS_API SJpgImageSeriesWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SJpgImageSeriesWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SJpgImageSeriesWriter)( ::fwIO::IWriter) );
 
     IOITK_API SJpgImageSeriesWriter() noexcept;
 
@@ -52,11 +51,8 @@ protected:
     IOITK_API virtual void configureWithIHM() override;
 
     /// Return managed file type, here FOLDER
-    IOITK_API ::io::IOPathType getIOPathType() const override;
+    IOITK_API ::fwIO::IOPathType getIOPathType() const override;
 
 };
 
 } // namespace ioITK
-
-#endif //__IOITK_SJPGIMAGESERIESWRITER_HPP__
-

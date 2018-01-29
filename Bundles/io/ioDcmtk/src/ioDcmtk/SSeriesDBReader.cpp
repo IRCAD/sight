@@ -21,6 +21,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
@@ -29,12 +31,10 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IReader.hpp>
-
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ void SSeriesDBReader::configureWithIHM()
 
 void SSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 
     // Use filter selector
     ::fwRuntime::ConfigurationElement::sptr selectorConfig =
@@ -229,7 +229,8 @@ void SSeriesDBReader::updating()
         if( seriesDB->size() > 0 )
         {
             // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
+            ::fwMedData::SeriesDB::sptr associatedSeriesDB =
+                this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
@@ -251,7 +252,7 @@ void SSeriesDBReader::updating()
 
 void SSeriesDBReader::notificationOfDBUpdate()
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;
@@ -267,9 +268,9 @@ void SSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

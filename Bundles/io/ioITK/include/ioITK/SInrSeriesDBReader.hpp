@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOITK_SINRSERIESDBREADER_HPP__
-#define __IOITK_SINRSERIESDBREADER_HPP__
+#pragma once
 
 #include "ioITK/config.hpp"
 
 #include <fwCore/macros.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -33,11 +32,11 @@ namespace ioITK
 /**
  * @brief Reads inr files and pushes them into SeriesDB.
  */
-class IOITK_CLASS_API SInrSeriesDBReader : public ::io::IReader
+class IOITK_CLASS_API SInrSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SInrSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SInrSeriesDBReader)( ::fwIO::IReader) );
 
     IOITK_API SInrSeriesDBReader() noexcept;
 
@@ -69,7 +68,7 @@ protected:
     IOITK_API virtual void configureWithIHM() override;
 
     /// Returns managed file type, here FILES
-    IOITK_API ::io::IOPathType getIOPathType() const override;
+    IOITK_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -81,5 +80,3 @@ private:
 };
 
 } // namespace ioITK
-
-#endif //__IOITK_SINRSERIESDBREADER_HPP__

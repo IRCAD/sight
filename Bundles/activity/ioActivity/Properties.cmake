@@ -6,7 +6,6 @@ set( REQUIREMENTS
         activities
         ctrlSelection
         gui
-        io
         uiIO
         media
         filterVRRender

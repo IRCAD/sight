@@ -14,7 +14,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
-    io
+    fwIO
     fwData
     fwDataTools
     fwMedData

@@ -12,7 +12,6 @@ set( REQUIREMENTS
     gui
     guiQt
     imageConfig
-    io
     ioAtoms
     ioVTK
     preferences

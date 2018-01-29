@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -116,7 +116,7 @@ void SSeriesPuller::starting()
     // Create reader
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
     m_dicomReader                                           =
-        ::io::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+        ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioPacs::SSeriesPuller.",
                m_dicomReader);
     ::fwServices::OSR::registerService(m_tempSeriesDB, m_dicomReader);
@@ -126,11 +126,11 @@ void SSeriesPuller::starting()
         // Get the config
         ::fwRuntime::ConfigurationElement::csptr readerConfig =
             ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
-                m_dicomReaderSrvConfig, "::io::IReader");
+                m_dicomReaderSrvConfig, "::fwIO::IReader");
 
         SLM_ASSERT("Sorry, there is no service configuration "
                    << m_dicomReaderSrvConfig
-                   << " for ::io::IReader", readerConfig);
+                   << " for ::fwIO::IReader", readerConfig);
 
         m_dicomReader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(readerConfig) );
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -101,7 +101,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService(imageSeries, "::io::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
+    executeService(imageSeries, "::fwIO::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -126,7 +126,7 @@ void IoItkTest::testImageWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    executeService( image, "::io::IWriter", "::ioITK::JpgImageWriterService", srvCfg );
+    executeService( image, "::fwIO::IWriter", "::ioITK::JpgImageWriterService", srvCfg );
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -161,11 +161,11 @@ void IoItkTest::testSaveLoadInr()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    executeService( image, "::io::IWriter", "::ioITK::InrImageWriterService", srvCfg );
+    executeService( image, "::fwIO::IWriter", "::ioITK::InrImageWriterService", srvCfg );
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService( image2, "::fwIO::IReader", "::ioITK::InrImageReaderService", srvCfg );
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -206,11 +206,11 @@ void IoItkTest::ImageSeriesInrTest()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    executeService( imageSeries, "::io::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
+    executeService( imageSeries, "::fwIO::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService( image2, "::fwIO::IReader", "::ioITK::InrImageReaderService", srvCfg );
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -255,7 +255,7 @@ void IoItkTest::SeriesDBInrTest()
 
     // load SeriesDB
     ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
-    executeService( sdb, "::io::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
+    executeService( sdb, "::fwIO::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
 
     ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
     ::fwData::Image::SizeType size       = list_of(512)(512)(134);
@@ -291,4 +291,3 @@ void IoItkTest::SeriesDBInrTest()
 
 } //namespace ut
 } //namespace ioITK
-

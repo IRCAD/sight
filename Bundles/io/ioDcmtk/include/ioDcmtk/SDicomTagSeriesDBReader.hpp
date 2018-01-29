@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODCMTK_SDICOMTAGSERIESDBREADER_HPP__
-#define __IODCMTK_SDICOMTAGSERIESDBREADER_HPP__
+#pragma once
 
 #include "ioDcmtk/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -36,14 +35,14 @@ namespace ioDcmtk
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::SeriesDB]: SeriesDB
  */
-class IODCMTK_CLASS_API SDicomTagSeriesDBReader : public ::io::IReader
+class IODCMTK_CLASS_API SDicomTagSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
     typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro( (SDicomTagSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomTagSeriesDBReader)( ::fwIO::IReader) );
     /**
      * @brief   constructor
      *
@@ -79,7 +78,7 @@ protected:
     IODCMTK_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IODCMTK_API ::io::IOPathType getIOPathType() const override;
+    IODCMTK_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -90,5 +89,3 @@ private:
 };
 
 } // namespace ioDcmtk
-
-#endif //__IODCMTK_SDICOMTAGSERIESDBREADER_HPP__

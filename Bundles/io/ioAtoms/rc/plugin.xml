@@ -4,17 +4,16 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioAtoms::SReader</service>
         <object>::fwData::Object</object>
         <desc>Atoms reader</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
+        <type>::fwIO::IWriter</type>
         <service>::ioAtoms::SWriter</service>
         <object>::fwData::Object</object>
         <desc>Atoms writer</desc>

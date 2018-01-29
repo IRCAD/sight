@@ -14,8 +14,7 @@ set( DEPENDENCIES
     fwMedDataTools
     fwRuntime
     fwServices
-
-    io
+    fwIO
 )
 
 set( REQUIREMENTS

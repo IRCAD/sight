@@ -1,26 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOTUTO_EXTERNALDATAREADERSERVICE_HPP__
-#define __IOTUTO_EXTERNALDATAREADERSERVICE_HPP__
+#pragma once
 
 #include "ioTuto/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
 namespace ioTuto
 {
 
-class IOTUTO_CLASS_API ExternalDataReaderService : public ::io::IReader
+class IOTUTO_CLASS_API ExternalDataReaderService : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (ExternalDataReaderService)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (ExternalDataReaderService)( ::fwIO::IReader) );
     /**
      * @brief Constructor : does nothing
      */
@@ -100,7 +99,6 @@ protected:
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    IOTUTO_API ::io::IOPathType getIOPathType() const override;
+    IOTUTO_API ::fwIO::IOPathType getIOPathType() const override;
 };
 }
-#endif /*__IOTUTO_EXTERNALDATAREADERSERVICE_HPP__*/

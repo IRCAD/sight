@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOGDCM_SSERIESDBWRITER_HPP__
-#define __IOGDCM_SSERIESDBWRITER_HPP__
+#pragma once
 
 #include "ioGdcm/config.hpp"
 
 #include <fwGdcmIO/writer/Series.hpp>
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -28,11 +27,11 @@ namespace ioGdcm
 /**
  * @brief Services to write several series in DICOM format.
  */
-class IOGDCM_CLASS_API SSeriesDBWriter : public ::io::IWriter
+class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBWriter)( ::fwIO::IWriter) );
 
     /**
      * @brief Constructor
@@ -62,7 +61,7 @@ protected:
     IOGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -82,5 +81,3 @@ private:
 };
 
 } // namespace ioGdcm
-
-#endif //__IOGDCM_SSERIESDBWRITER_HPP__

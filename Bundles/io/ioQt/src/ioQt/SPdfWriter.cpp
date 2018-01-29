@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@
 #include <QPainter>
 #include <QPixmap>
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioQt::SPdfWriter, ::fwData::Object );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, ::fwData::Object );
 
 namespace ioQt
 {
@@ -46,7 +46,7 @@ SPdfWriter::SPdfWriter()
 
 void SPdfWriter::info(std::ostream& _sstream )
 {
-    this->::io::IWriter::info( _sstream );
+    this->::fwIO::IWriter::info( _sstream );
     _sstream << std::endl << " External data file reader";
 }
 
@@ -61,7 +61,7 @@ SPdfWriter::~SPdfWriter() noexcept
 
 void SPdfWriter::configuring()
 {
-    this->::io::IWriter::configuring();
+    this->::fwIO::IWriter::configuring();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
@@ -217,9 +217,9 @@ void SPdfWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SPdfWriter::getIOPathType() const
+::fwIO::IOPathType SPdfWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_SATTACHMENTSERIESREADER_HPP__
-#define __IODATA_SATTACHMENTSERIESREADER_HPP__
+#pragma once
 
 #include "ioData/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -30,20 +29,20 @@ namespace ioData
  * @subsection In-Out In-Out
  * - \b data [::fwMedData::SeriesDB]: SeriesDB updated with AttachmentSeries.
  */
-class IODATA_CLASS_API SAttachmentSeriesReader : public ::io::IReader
+class IODATA_CLASS_API SAttachmentSeriesReader : public ::fwIO::IReader
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAttachmentSeriesReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SAttachmentSeriesReader)(::fwIO::IReader) );
 
     /// Super class of reader services
-    typedef ::io::IReader SuperClass;
+    typedef ::fwIO::IReader SuperClass;
 
     /// Constructor : does nothing
     IODATA_API SAttachmentSeriesReader();
 
-    /** @name Specified reader service methods ( override from ::io::IWriter )
+    /** @name Specified reader service methods ( override from ::fwIO::IWriter )
      * @{
      */
 
@@ -59,7 +58,7 @@ public:
     /// @}
 
     /// Returns path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
+    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -111,5 +110,3 @@ protected:
 };
 
 } //namespace ioData
-
-#endif /*__IODATA_SATTACHMENTSERIESREADER_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,6 +19,8 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
 
@@ -26,14 +28,12 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IWriter.hpp>
-
 #include <string>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ void SSurfaceSegmentationWriter::stopping()
 
 void SSurfaceSegmentationWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -195,9 +195,9 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const ::boost::filesys
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
+::fwIO::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 } // namespace ioGdcm

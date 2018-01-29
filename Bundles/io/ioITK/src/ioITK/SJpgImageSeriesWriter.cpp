@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,16 +18,16 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <io/IWriter.hpp>
-
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedData::ImageSeries );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedData::ImageSeries );
 
 //------------------------------------------------------------------------------
 
@@ -43,16 +43,16 @@ SJpgImageSeriesWriter::~SJpgImageSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SJpgImageSeriesWriter::getIOPathType() const
+::fwIO::IOPathType SJpgImageSeriesWriter::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SJpgImageSeriesWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -145,4 +145,3 @@ void SJpgImageSeriesWriter::updating()
 //------------------------------------------------------------------------------
 
 } // namespace ioITK
-

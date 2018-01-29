@@ -8,7 +8,7 @@
 
 #include "ioData/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -24,20 +24,20 @@ namespace ioData
  * @li Use stop() to stop service before to destroy it.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService ,
+ * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::TransformationMatrix3DWriterService ,
  *::fwData::TransformationMatrix3D )
  */
-class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::io::IWriter
+class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::fwIO::IWriter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (TransformationMatrix3DWriterService)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (TransformationMatrix3DWriterService)(::fwIO::IWriter) );
 
     /// Super class of writer services
-    typedef ::io::IWriter SuperClass;
+    typedef ::fwIO::IWriter SuperClass;
 
-    /** @name Specified writer service methods ( override from ::io::IWriter )
+    /** @name Specified writer service methods ( override from ::fwIO::IWriter )
      * @{
      */
 
@@ -50,7 +50,7 @@ public:
     IODATA_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::io::IOPathType getIOPathType() const override;
+    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
     ///@}
 

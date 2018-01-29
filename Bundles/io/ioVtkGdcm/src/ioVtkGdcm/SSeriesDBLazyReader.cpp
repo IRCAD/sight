@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
@@ -27,12 +29,10 @@
 
 #include <vtkGdcmIO/SeriesDBLazyReader.hpp>
 
-#include <io/IReader.hpp>
-
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void SSeriesDBLazyReader::stopping()
 
 void SSeriesDBLazyReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -196,9 +196,9 @@ void SSeriesDBLazyReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBLazyReader::getIOPathType() const
+::fwIO::IOPathType SSeriesDBLazyReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

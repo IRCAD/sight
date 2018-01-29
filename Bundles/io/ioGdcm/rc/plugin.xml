@@ -2,7 +2,6 @@
     <library name="ioGdcm" />
 
     <requirement id="dataReg"/>
-    <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
@@ -19,35 +18,35 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioGdcm::SDicomSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Dicom Series DB Reader (GDCM)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
+        <type>::fwIO::IWriter</type>
         <service>::ioGdcm::SDicomSeriesWriter</service>
         <object>::fwMedData::DicomSeries</object>
         <desc>Dicom Writer (Copy files)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
+        <type>::fwIO::IReader</type>
         <service>::ioGdcm::SSeriesDBReader</service>
         <object>::fwMedData::SeriesDB</object>
         <desc>Dicom Reader (GDCM)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
+        <type>::fwIO::IWriter</type>
         <service>::ioGdcm::SSeriesDBWriter</service>
         <object>::fwData::Vector</object>
         <desc>Dicom Series DB Writer (GDCM)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IWriter</type>
+        <type>::fwIO::IWriter</type>
         <service>::ioGdcm::SSurfaceSegmentationWriter</service>
         <object>::fwData::Vector</object>
         <desc>DICOM 3D/Surface Segmentation Writer (GDCM)</desc>

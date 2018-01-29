@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,18 +17,18 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IReader.hpp>
-
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioDcmtk::SDicomSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SDicomSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
 
 void SDicomSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -195,9 +195,9 @@ void SDicomSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SDicomSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SDicomSeriesDBReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------

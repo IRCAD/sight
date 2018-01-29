@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,6 +11,8 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
+
+#include <fwIO/IReader.hpp>
 
 #include <fwMedData/AttachmentSeries.hpp>
 #include <fwMedData/Equipment.hpp>
@@ -25,12 +27,10 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/UUID.hpp>
 
-#include <io/IReader.hpp>
-
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/operations.hpp>
 
-fwServicesRegisterMacro( ::io::IReader, ::ioData::SAttachmentSeriesReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::SAttachmentSeriesReader, ::fwMedData::SeriesDB );
 
 namespace ioData
 {
@@ -117,16 +117,16 @@ std::vector< std::string > SAttachmentSeriesReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SAttachmentSeriesReader::getIOPathType() const
+::fwIO::IOPathType SAttachmentSeriesReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SAttachmentSeriesReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ void SAttachmentSeriesReader::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::fwIO::s_DATA_KEY);
 
         ::fwMedData::AttachmentSeries::sptr series = ::fwMedData::AttachmentSeries::New();
         const std::string instanceUID = ::fwTools::UUID::generateUUID();

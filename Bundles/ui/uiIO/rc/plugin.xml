@@ -3,7 +3,6 @@
     <library name="uiIO" />
 
     <requirement id="dataReg" />
-    <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::editor::IDialogEditor</type>

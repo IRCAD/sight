@@ -14,7 +14,7 @@ set( DEPENDENCIES
     fwGui
     fwRuntime
     fwServices
-    io
+    fwIO
     )
 set( REQUIREMENTS  )
 

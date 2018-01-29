@@ -2,10 +2,8 @@
 
     <activate id="dataReg" version="0.1" />
     <activate id="servicesReg" version="0.1" />
-
     <activate id="gui" version="0.1" />
 
-    <activate id="io" version="0.1" />
     <activate id="ioPacs" version="0.1" />
 
     <start id="ioPacs" />

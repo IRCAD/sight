@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOATOMS_SREADER_HPP__
-#define __IOATOMS_SREADER_HPP__
+#pragma once
 
 #include "ioAtoms/config.hpp"
 
 #include <fwCom/Signal.hpp>
 
-#include <fwJobs/IJob.hpp>
+#include <fwIO/IReader.hpp>
 
-#include <io/IReader.hpp>
+#include <fwJobs/IJob.hpp>
 
 #include <map>
 #include <set>
@@ -29,7 +28,7 @@ namespace ioAtoms
 /**
  * @brief Atoms reader. Service to load data from Atoms format
  */
-class IOATOMS_CLASS_API SReader : public ::io::IReader
+class IOATOMS_CLASS_API SReader : public ::fwIO::IReader
 {
 
 public:
@@ -37,7 +36,7 @@ public:
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro( (SReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SReader)(::fwIO::IReader) );
 
     /// Does nothing
     SReader();
@@ -102,7 +101,7 @@ protected:
      * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
      * shown.
      *
-     * @see ::io::IReader
+     * @see ::fwIO::IReader
      * @throw ::fwTools::Failed
      */
     IOATOMS_API void configuring() override;
@@ -113,7 +112,7 @@ protected:
     IOATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    IOATOMS_API ::io::IOPathType getIOPathType() const override;
+    IOATOMS_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -152,6 +151,3 @@ private:
 };
 
 } // namespace ioAtoms
-
-#endif // __IOATOMS_SREADER_HPP__
-

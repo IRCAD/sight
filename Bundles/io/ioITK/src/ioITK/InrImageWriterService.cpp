@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,16 +17,16 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
+#include <fwIO/IWriter.hpp>
+
 #include <fwItkIO/ImageWriter.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <io/IWriter.hpp>
-
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioITK::InrImageWriterService, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::InrImageWriterService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
@@ -42,16 +42,16 @@ InrImageWriterService::~InrImageWriterService() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType InrImageWriterService::getIOPathType() const
+::fwIO::IOPathType InrImageWriterService::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void InrImageWriterService::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

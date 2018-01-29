@@ -16,7 +16,7 @@ set( DEPENDENCIES
     fwJobs
     fwCom
     fwServices
-    io
+    fwIO
     )
 set( REQUIREMENTS
     dataReg

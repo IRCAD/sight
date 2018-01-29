@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTKGDCM_SSERIESDBLAZYREADER_HPP__
-#define __IOVTKGDCM_SSERIESDBLAZYREADER_HPP__
+#pragma once
 
 #include "ioVtkGdcm/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -30,7 +29,7 @@ namespace ioVtkGdcm
 {
 
 /// This service reads a dicom dir in lazy mode, and provides a ::fwMedData::SeriesDB.
-class IOVTKGDCM_CLASS_API SSeriesDBLazyReader : public ::io::IReader
+class IOVTKGDCM_CLASS_API SSeriesDBLazyReader : public ::fwIO::IReader
 {
 
 public:
@@ -38,7 +37,7 @@ public:
     typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBLazyReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBLazyReader)( ::fwIO::IReader) );
 
     /// constructor
     IOVTKGDCM_API SSeriesDBLazyReader() noexcept;
@@ -73,7 +72,7 @@ protected:
     IOVTKGDCM_API virtual void configureWithIHM() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOVTKGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOVTKGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -88,5 +87,3 @@ private:
 };
 
 } // namespace ioVtkGdcm
-
-#endif //__IOVTKGDCM_SSERIESDBLAZYREADER_HPP__

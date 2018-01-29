@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_SSERIESDBREADER_HPP__
-#define __IOVTK_SSERIESDBREADER_HPP__
+#pragma once
 
 #include "ioVTK/config.hpp"
 
 #include <fwData/location/ILocation.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -36,7 +35,7 @@ namespace ioVTK
  *
  * Service reading a VTK file (mesh or image) using the fwVtkIO lib.
  */
-class IOVTK_CLASS_API SSeriesDBReader : public ::io::IReader
+class IOVTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
@@ -51,7 +50,7 @@ public:
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::fwIO::IReader) );
 
     /**
      * @brief Configure the vtk file path.
@@ -63,7 +62,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::io::IOPathType getIOPathType() const override;
+    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.
@@ -120,5 +119,3 @@ private:
 };
 
 } // namespace ioVTK
-
-#endif //__IOVTK_SSERIESDBREADER_HPP__

@@ -25,6 +25,8 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/PulseProgressDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
@@ -40,12 +42,10 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IReader.hpp>
-
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -71,9 +71,9 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ void SSeriesDBReader::configureWithIHM()
 
 void SSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 
     // Use filter selector
     ::fwRuntime::ConfigurationElement::sptr selectorConfig =

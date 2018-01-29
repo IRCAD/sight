@@ -20,9 +20,7 @@ set( DEPENDENCIES
     fwServices
     fwZip
     fwCom
-    io
+    fwIO
 )
-set( REQUIREMENTS 
-    io 
-)
+set( REQUIREMENTS )
 

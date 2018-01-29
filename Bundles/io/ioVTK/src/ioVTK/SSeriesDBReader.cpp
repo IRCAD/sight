@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -47,9 +47,9 @@ SSeriesDBReader::SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SSeriesDBReader::getIOPathType() const
+::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::io::FILES;
+    return ::fwIO::FILES;
 }
 
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ void SSeriesDBReader::stopping()
 
 void SSeriesDBReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------

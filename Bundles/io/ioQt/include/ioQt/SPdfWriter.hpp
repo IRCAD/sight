@@ -12,7 +12,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <QPdfWriter>
 #include <QtWidgets>
@@ -48,7 +48,7 @@ namespace ioQt
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 
-class IOQT_CLASS_API SPdfWriter : public ::io::IWriter
+class IOQT_CLASS_API SPdfWriter : public ::fwIO::IWriter
 {
 
 public:
@@ -60,7 +60,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceClassDefinitionsMacro( (SPdfWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SPdfWriter)( ::fwIO::IWriter) );
     /**
      * @brief Constructor : does nothing
      */
@@ -128,7 +128,7 @@ protected:
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    IOQT_API ::io::IOPathType getIOPathType() const override;
+    IOQT_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 

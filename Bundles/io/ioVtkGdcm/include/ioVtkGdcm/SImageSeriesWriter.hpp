@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
-#define __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
+#pragma once
 
 #include "ioVtkGdcm/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -31,11 +30,11 @@ namespace ioVtkGdcm
 /**
  * @brief Services to write an ImageSeries in DICOM format.
  */
-class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::io::IWriter
+class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SImageSeriesWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSeriesWriter)( ::fwIO::IWriter) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -67,7 +66,7 @@ protected:
     IOVTKGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOVTKGDCM_API ::io::IOPathType getIOPathType() const override;
+    IOVTKGDCM_API ::fwIO::IOPathType getIOPathType() const override;
 
 private:
 
@@ -77,5 +76,3 @@ private:
 };
 
 } // namespace ioVtkGdcm
-
-#endif //__IOVTKGDCM_SIMAGESERIESWRITER_HPP__

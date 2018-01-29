@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,7 +81,7 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
     readerCfg->addConfigurationElement(folderCfg);
 
     ::fwServices::IService::sptr srv =
-        ::fwServices::registry::ServiceFactory::getDefault()->create( "::io::IReader", srvImpl );
+        ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwIO::IReader", srvImpl );
     CPPUNIT_ASSERT(srv);
 
     ::fwServices::OSR::registerService( seriesDB, srv );
@@ -198,7 +198,7 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
 
     ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create(
-        "::io::IWriter", "::ioVtkGdcm::SImageSeriesWriter" );
+        "::fwIO::IWriter", "::ioVtkGdcm::SImageSeriesWriter" );
     CPPUNIT_ASSERT(writerSrv);
 
     ::fwServices::OSR::registerService( imgSeries, writerSrv );
@@ -214,7 +214,7 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create(
-        "::io::IReader", "::ioVtkGdcm::SSeriesDBReader" );
+        "::fwIO::IReader", "::ioVtkGdcm::SSeriesDBReader" );
     CPPUNIT_ASSERT(readerSrv);
 
     ::fwServices::OSR::registerService( seriesDB, readerSrv );

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOITK_INRIMAGEWRITERSERVICE_HPP__
-#define __IOITK_INRIMAGEWRITERSERVICE_HPP__
+#pragma once
 
 #include "ioITK/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -21,11 +20,11 @@ class Image;
 namespace ioITK
 {
 
-class IOITK_CLASS_API InrImageWriterService : public ::io::IWriter
+class IOITK_CLASS_API InrImageWriterService : public ::fwIO::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (InrImageWriterService)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (InrImageWriterService)( ::fwIO::IWriter) );
 
     IOITK_API InrImageWriterService() noexcept;
 
@@ -54,10 +53,8 @@ protected:
     IOITK_API virtual void configureWithIHM() override;
 
     /// Return managed file type, here FILE
-    IOITK_API ::io::IOPathType getIOPathType() const override;
+    IOITK_API ::fwIO::IOPathType getIOPathType() const override;
 
 };
 
 } // namespace ioITK
-
-#endif //__IOITK_INRIMAGEWRITERSERVICE_HPP__

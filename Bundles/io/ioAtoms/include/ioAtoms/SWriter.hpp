@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOATOMS_SWRITER_HPP__
-#define __IOATOMS_SWRITER_HPP__
+#pragma once
 
 #include "ioAtoms/config.hpp"
 
@@ -15,9 +14,9 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwJobs/IJob.hpp>
+#include <fwIO/IWriter.hpp>
 
-#include <io/IWriter.hpp>
+#include <fwJobs/IJob.hpp>
 
 #include <set>
 
@@ -27,12 +26,12 @@ namespace ioAtoms
 /**
  * @brief Atoms writer. Service to write an fwData medical data converted in fwAtoms.
  */
-class IOATOMS_CLASS_API SWriter : public ::io::IWriter
+class IOATOMS_CLASS_API SWriter : public ::fwIO::IWriter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SWriter)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SWriter)(::fwIO::IWriter) );
 
     /// Signal type for job creation.
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
@@ -89,7 +88,7 @@ protected:
      * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
      * shown.
      *
-     * @see ::io::IWriter
+     * @see ::fwIO::IWriter
      * @throw ::fwTools::Failed
      */
     IOATOMS_API void configuring() override;
@@ -107,7 +106,7 @@ protected:
     IOATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    IOATOMS_API ::io::IOPathType getIOPathType() const override;
+    IOATOMS_API ::fwIO::IOPathType getIOPathType() const override;
 
     /// To activate atom patcher
     bool m_useAtomsPatcher;
@@ -142,6 +141,3 @@ protected:
 };
 
 } // namespace ioAtoms
-
-#endif // __IOATOMS_SWRITER_HPP__
-

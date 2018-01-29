@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ void Plugin::initialize()
     m_image = ::fwData::Image::New();
 
     // Reader service
-    m_readerSrv = ::fwServices::add(m_image, "::io::IReader", "::ioVTK::SImageReader");
+    m_readerSrv = ::fwServices::add(m_image, "::fwIO::IReader", "::ioVTK::SImageReader");
     ::fwServices::IService::ConfigType readerCfg;
     readerCfg.put("file", "../../data/patient1.vtk");
     m_readerSrv->setConfiguration( readerCfg );

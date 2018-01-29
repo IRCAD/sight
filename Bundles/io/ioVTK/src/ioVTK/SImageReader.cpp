@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,6 +22,8 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
@@ -33,8 +35,6 @@
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
-
-#include <io/IReader.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -50,15 +50,15 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of ::fwData::Image
-fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SImageReader, ::fwData::Image );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::fwData::Image );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SImageReader::getIOPathType() const
+::fwIO::IOPathType SImageReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ void SImageReader::stopping()
 
 void SImageReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------

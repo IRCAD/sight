@@ -16,7 +16,6 @@ set( DEPENDENCIES
     fwGui
 )
 set( REQUIREMENTS
-    io
     ioVtkGdcm
 )
 

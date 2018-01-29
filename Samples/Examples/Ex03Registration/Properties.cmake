@@ -11,7 +11,6 @@ set( REQUIREMENTS
     fwlauncher
     gui
     guiQt
-    io
     ioAtoms
     ioData
     ioITK

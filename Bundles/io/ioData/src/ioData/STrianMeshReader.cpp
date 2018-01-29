@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,16 +19,16 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwIO/IReader.hpp>
 
-#include <io/IReader.hpp>
+#include <fwServices/macros.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::io::IReader, ::ioData::STrianMeshReader, ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, ::fwData::Mesh );
 
 namespace ioData
 {
@@ -52,16 +52,16 @@ std::vector< std::string > STrianMeshReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType STrianMeshReader::getIOPathType() const
+::fwIO::IOPathType STrianMeshReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void STrianMeshReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void STrianMeshReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve object
-        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::io::s_DATA_KEY);
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("mesh not instanced", mesh);
 
         ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();

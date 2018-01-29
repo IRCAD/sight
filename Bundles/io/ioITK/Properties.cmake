@@ -13,7 +13,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
-    io
+    fwIO
 )
 set( REQUIREMENTS  )
 

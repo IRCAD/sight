@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODATA_SPLINEREADERSERVICE_HPP__
-#define __IODATA_SPLINEREADERSERVICE_HPP__
+#pragma once
 
 #include "ioData/config.hpp"
 
 #include <fwData/Spline.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -27,15 +26,15 @@ namespace ioData
  * @li Use update() to read the spline and notify observers.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
+ * fwServicesRegisterMacro( ::fwIO::IReader , ::ioData::SplineReaderService , ::fwData::Spline )
  */
-class IODATA_CLASS_API SplineReaderService : public ::io::IReader
+class IODATA_CLASS_API SplineReaderService : public ::fwIO::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro( (SplineReaderService)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SplineReaderService)( ::fwIO::IReader) );
     /// Super class of reader services
-    typedef ::io::IReader SuperClass;
+    typedef ::fwIO::IReader SuperClass;
     /**
      * @brief   Constructor
      */
@@ -46,7 +45,7 @@ public:
      */
     IODATA_API ~SplineReaderService() noexcept;
 
-    /** @name Specified reader service methods ( override from ::io::IReader )
+    /** @name Specified reader service methods ( override from ::fwIO::IReader )
      * @{
      */
     /**
@@ -95,7 +94,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service uid="tubeReader" type="::io::IReader" impl="::ioData::SplineReaderService">
+       <service uid="tubeReader" type="::fwIO::IReader" impl="::ioData::SplineReaderService">
        <spline id="0" matrix="../matrix.trf" nbSides="10" radius="10">
         <point id="0"/>
         <point id="4"/>
@@ -151,5 +150,3 @@ private:
 };
 
 }
-
-#endif /*__IODATA_SPLINEREADERSERVICE_HPP__*/

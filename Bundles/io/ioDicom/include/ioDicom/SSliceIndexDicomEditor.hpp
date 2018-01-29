@@ -12,7 +12,7 @@
 
 #include <fwGui/editor/IEditor.hpp>
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
@@ -158,7 +158,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    ::io::IReader::wptr m_dicomReader;
+    ::fwIO::IReader::wptr m_dicomReader;
 
     /// Temporary SeriesDB
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;
