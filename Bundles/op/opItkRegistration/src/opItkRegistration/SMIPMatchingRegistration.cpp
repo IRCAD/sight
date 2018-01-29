@@ -29,11 +29,11 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro(::arServices::IRegisterer,
+fwServicesRegisterMacro(::fwServices::IRegisterer,
                         ::opItkRegistration::SMIPMatchingRegistration);
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
-    ::arServices::IRegisterer()
+    ::fwServices::IRegisterer()
 {
 }
 
@@ -99,4 +99,3 @@ void SMIPMatchingRegistration::computeRegistration(::fwCore::HiResClock::HiResCl
 }
 
 } // namespace opItkRegistration
-
