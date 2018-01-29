@@ -95,10 +95,7 @@ void ServiceFactory::parseBundleInformation()
         bundleInfoMap.emplace(std::make_pair(service, info));
     }
 
-#if SPYLOG_LEVEL >= 5
-    //Print information
     this->printInfoMap( bundleInfoMap );
-#endif
 
     ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     // Merge data info
@@ -134,10 +131,7 @@ void ServiceFactory::parseBundleInformation()
 
     }
 
-#if SPYLOG_LEVEL >= 5
-    //Print information
     this->printInfoMap( m_srvImplTosrvInfo );
-#endif
     this->checkServicesNotDeclaredInPluginXml();
 }
 
@@ -297,7 +291,14 @@ void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
     {
         OSLM_DEBUG(" Service name = " << srvReg.first );
         OSLM_DEBUG("  - type   = " << srvReg.second.serviceType );
-        OSLM_DEBUG("  - object = " << srvReg.second.objectImpl);
+
+#if SPYLOG_LEVEL >= 5
+        size_t objNum = 0;
+        for(const auto& objImpl : srvReg.second.objectImpl)
+        {
+            OSLM_DEBUG("  - object " << objNum++ << " = " << objImpl)
+        }
+#endif
 
         OSLM_DEBUG_IF("  - bundle = " <<  srvReg.second.bundle->getIdentifier(), srvReg.second.bundle );
         OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", !srvReg.second.bundle );
