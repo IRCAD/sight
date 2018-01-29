@@ -12,7 +12,6 @@ set( DEPENDENCIES
         arData
         fwCom
         fwGui
-        arServices
         arPreferences
 )
 set( REQUIREMENTS  )

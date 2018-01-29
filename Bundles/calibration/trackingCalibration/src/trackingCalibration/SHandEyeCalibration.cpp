@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 namespace trackingCalibration
 {
 
-fwServicesRegisterMacro(::arServices::IRegisterer, ::trackingCalibration::SHandEyeCalibration);
+fwServicesRegisterMacro(::fwServices::IRegisterer, ::trackingCalibration::SHandEyeCalibration);
 
 static const ::fwServices::IService::KeyType s_MATRIXVECTOR1_INPUT = "matrixVector1";
 static const ::fwServices::IService::KeyType s_MATRIXVECTOR2_INPUT = "matrixVector2";

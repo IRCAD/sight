@@ -1,19 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __REGISTRATIONARL_SPOSEFROM2D_HPP__
-#define __REGISTRATIONARL_SPOSEFROM2D_HPP__
+#pragma once
 
 #include "registrationARL/config.hpp"
-
-#include <arServices/IRegisterer.hpp>
 
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
 
+#include <fwServices/IRegisterer.hpp>
 #include <fwServices/macros.hpp>
 
 #include <arlcore/Point.h>
@@ -54,10 +52,10 @@ namespace registrationARL
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class REGISTRATIONARL_CLASS_API SPoseFrom2d : public ::arServices::IRegisterer
+class REGISTRATIONARL_CLASS_API SPoseFrom2d : public ::fwServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::arServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::fwServices::IRegisterer));
 
     typedef std::vector< ::arlCore::Point::csptr > ARLPointListType;
     typedef std::vector<std::string> VectKeyType;
@@ -130,5 +128,3 @@ private:
 };
 
 } // namespace registrationARL
-
-#endif /* __REGISTRATIONARL_SPOSEFROM2D_HPP__ */

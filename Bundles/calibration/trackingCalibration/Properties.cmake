@@ -12,7 +12,6 @@ set( DEPENDENCIES
     ARLcore
     fwCom
     arData
-    arServices
     eigenTools
     handEyeCalibration
 )

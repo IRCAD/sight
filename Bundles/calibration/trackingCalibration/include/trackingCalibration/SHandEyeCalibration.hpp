@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __TRACKINGCALIBRATION_SHANDEYECALIBRATION_HPP__
-#define __TRACKINGCALIBRATION_SHANDEYECALIBRATION_HPP__
+#pragma once
 
 #include "trackingCalibration/config.hpp"
 
-#include <arServices/IRegisterer.hpp>
+#include <fwServices/IRegisterer.hpp>
 
 #include <handEyeCalibration/HandEyeApi.hpp>
 
@@ -35,11 +34,11 @@ namespace trackingCalibration
  * - \b matrixVector1 [::fwData::Vector]: vector of matrices corresponding to {Ai, Aj, ...} matrices
  * - \b matrixVector2 [::fwData::Vector]: vector of matrices corresponding to {Bi, Bj, ...} matrices
  */
-class TRACKINGCALIBRATION_CLASS_API SHandEyeCalibration : public ::arServices::IRegisterer
+class TRACKINGCALIBRATION_CLASS_API SHandEyeCalibration : public ::fwServices::IRegisterer
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SHandEyeCalibration)(arServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SHandEyeCalibration)(::fwServices::IRegisterer));
 
     /**
      * @brief Constructor.
@@ -90,5 +89,3 @@ private:
 };
 
 }
-
-#endif // __TRACKINGCALIBRATION_SHANDEYECALIBRATION_HPP__

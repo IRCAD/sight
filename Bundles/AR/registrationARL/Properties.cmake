@@ -5,7 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     arData
     ARLcore
-    arServices
+    fwServices
     fwCom
     fwCore
     fwData
