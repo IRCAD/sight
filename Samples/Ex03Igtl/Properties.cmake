@@ -16,7 +16,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     media
     preferences
-    io
     ioVTK
     ioNetwork
     ioIGTL

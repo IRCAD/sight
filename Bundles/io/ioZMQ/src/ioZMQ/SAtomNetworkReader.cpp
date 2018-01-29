@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::io::IReader, ::ioZMQ::SAtomNetworkReader, ::fwData::Object);
+fwServicesRegisterMacro(::fwIO::IReader, ::ioZMQ::SAtomNetworkReader, ::fwData::Object);
 
 namespace ioZMQ
 {
@@ -39,7 +39,7 @@ SAtomNetworkReader::~SAtomNetworkReader() noexcept
 
 void SAtomNetworkReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +108,9 @@ void SAtomNetworkReader::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SAtomNetworkReader::getIOPathType() const
+::fwIO::IOPathType SAtomNetworkReader::getIOPathType() const
 {
-    return ::io::TYPE_NOT_DEFINED;
+    return ::fwIO::TYPE_NOT_DEFINED;
 }
 
 //-----------------------------------------------------------------------------
@@ -125,4 +125,3 @@ void SAtomNetworkReader::swapping()
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-

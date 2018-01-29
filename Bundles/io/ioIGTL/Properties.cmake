@@ -13,8 +13,8 @@ set( DEPENDENCIES
     fwGui
     fwThread
     fwPreferences
+    fwIO
     igtlNetwork
     ioNetwork
-    io
 )
 set( REQUIREMENTS)

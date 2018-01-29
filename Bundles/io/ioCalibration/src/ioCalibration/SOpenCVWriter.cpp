@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 
 namespace ioCalibration
 {
-fwServicesRegisterMacro(::io::IWriter, ::ioCalibration::SOpenCVWriter);
+fwServicesRegisterMacro(::fwIO::IWriter, ::ioCalibration::SOpenCVWriter);
 // ----------------------------------------------------------------------------
 
 SOpenCVWriter::SOpenCVWriter()
@@ -41,7 +41,7 @@ SOpenCVWriter::~SOpenCVWriter()
 
 void SOpenCVWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void SOpenCVWriter::stopping()
 void SOpenCVWriter::updating()
 {
 
-    ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >(::io::s_DATA_KEY);
+    ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("CameraSeries is null", camSeries);
 
     bool use_dialog = false;
@@ -200,9 +200,9 @@ void SOpenCVWriter::swapping()
 
 // ----------------------------------------------------------------------------
 
-::io::IOPathType SOpenCVWriter::getIOPathType() const
+::fwIO::IOPathType SOpenCVWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 // ----------------------------------------------------------------------------

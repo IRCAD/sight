@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL);
 
 static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX  = "saveMatrix";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -56,16 +56,16 @@ SMatrixWriter::~SMatrixWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SMatrixWriter::getIOPathType() const
+::fwIO::IOPathType SMatrixWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatrixWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +139,7 @@ void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(::io::s_DATA_KEY);
+        ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >(::fwIO::s_DATA_KEY);
 
         unsigned int numberOfMat = matrixTL->getMaxElementNum();
         // Get the buffer of the copied timeline
@@ -200,7 +200,7 @@ void SMatrixWriter::stopRecord()
 ::fwServices::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::io::s_DATA_KEY, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(::fwIO::s_DATA_KEY, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

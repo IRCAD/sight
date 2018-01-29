@@ -27,7 +27,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::videoOpenCV::SVideoWriter, ::arData::FrameTL);
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, ::arData::FrameTL);
 
 static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME   = "saveFrame";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -51,16 +51,16 @@ SVideoWriter::~SVideoWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SVideoWriter::getIOPathType() const
+::fwIO::IOPathType SVideoWriter::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SVideoWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void SVideoWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_writer && m_writer->isOpened())
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::io::s_DATA_KEY);
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
 
         // Get the buffer of the copied timeline
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
@@ -162,7 +162,7 @@ void SVideoWriter::startRecord()
     {
         ::boost::filesystem::path path = this->getFile();
 
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::io::s_DATA_KEY);
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
         int width  = static_cast<int>( frameTL->getWidth() );
         int height = static_cast<int>( frameTL->getHeight() );
 
@@ -213,7 +213,7 @@ void SVideoWriter::stopRecord()
 ::fwServices::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::io::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    connections.push(::fwIO::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
     return connections;
 }
 

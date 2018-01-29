@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOTIMELINE_SMATRICESREADER_HPP__
-#define __IOTIMELINE_SMATRICESREADER_HPP__
+#pragma once
 
 #include "ioTimeline/config.hpp"
 
 #include <arData/MatrixTL.hpp>
 
-#include <fwThread/Timer.hpp>
+#include <fwIO/IReader.hpp>
 
-#include <io/IReader.hpp>
+#include <fwThread/Timer.hpp>
 
 #include <array>
 
@@ -64,12 +63,12 @@ namespace ioTimeline
  *     timestamps to figure out at which speed to read the matrices. (default: false)
  */
 
-class IOTIMELINE_CLASS_API SMatricesReader : public ::io::IReader
+class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMatricesReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SMatricesReader)(::fwIO::IReader) );
 
     /// Constructor.
     IOTIMELINE_API SMatricesReader() noexcept;
@@ -80,8 +79,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     IOTIMELINE_API virtual void configureWithIHM() override;
 
-    /// Return file type (::io::FILE)
-    IOTIMELINE_API virtual ::io::IOPathType getIOPathType() const override;
+    /// Return file type (::fwIO::FILE)
+    IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.
@@ -150,5 +149,3 @@ private:
 };
 
 } // ioTimeline
-
-#endif // __IOTIMELINE_SMATRICESREADER_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,9 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwIO/ioTypes.hpp>
 
-#include <io/ioTypes.hpp>
+#include <fwServices/macros.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -27,7 +27,7 @@
 
 namespace ioCalibration
 {
-fwServicesRegisterMacro(::io::IReader, ::ioCalibration::SOpenCVReader);
+fwServicesRegisterMacro(::fwIO::IReader, ::ioCalibration::SOpenCVReader);
 // ----------------------------------------------------------------------------
 
 SOpenCVReader::SOpenCVReader()
@@ -44,7 +44,7 @@ SOpenCVReader::~SOpenCVReader()
 
 void SOpenCVReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void SOpenCVReader::stopping()
 void SOpenCVReader::updating()
 {
 
-    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >(::io::s_DATA_KEY);
+    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >(::fwIO::s_DATA_KEY);
 
     bool use_dialog = false;
     //use dialog only if no file was configured
@@ -247,9 +247,9 @@ void SOpenCVReader::swapping()
 
 // ----------------------------------------------------------------------------
 
-::io::IOPathType SOpenCVReader::getIOPathType() const
+::fwIO::IOPathType SOpenCVReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 // ----------------------------------------------------------------------------

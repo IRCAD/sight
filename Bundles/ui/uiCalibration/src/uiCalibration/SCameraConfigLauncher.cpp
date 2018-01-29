@@ -23,14 +23,14 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwIO/IReader.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <io/IReader.hpp>
 
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -213,7 +213,7 @@ void SCameraConfigLauncher::onImportClicked()
 
     try
     {
-        ::io::IReader::sptr reader = ::io::IReader::dynamicCast(readerService);
+        ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(readerService);
         reader->start();
         reader->configureWithIHM();
         reader->update();

@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOCALIBRATION_SOPENCVREADER_HPP__
-#define __IOCALIBRATION_SOPENCVREADER_HPP__
+#pragma once
 
 #include "ioCalibration/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwIO/IReader.hpp>
 
 namespace ioCalibration
 {
@@ -22,10 +21,10 @@ namespace ioCalibration
        </service>
  * @endcode
  */
-class IOCALIBRATION_CLASS_API SOpenCVReader : public ::io::IReader
+class IOCALIBRATION_CLASS_API SOpenCVReader : public ::fwIO::IReader
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpenCVReader)(::io::IReader));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVReader)(::fwIO::IReader));
 
     ///Constructor
     IOCALIBRATION_API SOpenCVReader();
@@ -62,10 +61,8 @@ protected:
     IOCALIBRATION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    IOCALIBRATION_API ::io::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API ::fwIO::IOPathType getIOPathType() const override;
 
 };
 
 } //namespace ioCalibration
-
-#endif // __IOCALIBRATION_SOPENCVREADER_HPP__

@@ -14,7 +14,6 @@ set( REQUIREMENTS
     gui
     guiQt
 
-    io
     ioAtoms
     ioCalibration
     ioARActivity

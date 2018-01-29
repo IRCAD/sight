@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOTIMELINE_SMATRIXWRITER_HPP__
-#define __IOTIMELINE_SMATRIXWRITER_HPP__
+#pragma once
 
 #include "ioTimeline/config.hpp"
 
 #include <arData/MatrixTL.hpp>
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 namespace ioTimeline
 {
@@ -43,12 +42,12 @@ namespace ioTimeline
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  */
-class IOTIMELINE_CLASS_API SMatrixWriter : public ::io::IWriter
+class IOTIMELINE_CLASS_API SMatrixWriter : public ::fwIO::IWriter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SMatrixWriter)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SMatrixWriter)(::fwIO::IWriter) );
 
     /// Constructor.
     IOTIMELINE_API SMatrixWriter() noexcept;
@@ -62,8 +61,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     IOTIMELINE_API virtual void configureWithIHM() override;
 
-    /// Return file type (::io::FOLDER)
-    IOTIMELINE_API virtual ::io::IOPathType getIOPathType() const override;
+    /// Return file type (::fwIO::FOLDER)
+    IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -99,5 +98,3 @@ private:
 };
 
 } // ioTimeline
-
-#endif // __IOTIMELINE_SMATRIXWRITER_HPP__

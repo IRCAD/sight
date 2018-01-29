@@ -8,12 +8,11 @@ set( DEPENDENCIES
         fwRuntime
         fwServices
         fwTools
+        fwIO
         arData
         fwCom
         fwGui
         arServices
-        arPreferences
-
-        io
+        arPreferences 
 )
 set( REQUIREMENTS  )

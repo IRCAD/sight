@@ -1,6 +1,5 @@
 <plugin id="ioARActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="io" />
     <requirement id="filterVRRender" />
 
     <!-- Service config used to read a seriesDB using ioAtoms. -->

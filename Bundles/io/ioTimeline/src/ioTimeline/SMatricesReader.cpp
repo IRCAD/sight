@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL);
+fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::arData::MatrixTL);
 
 static const ::fwServices::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -73,16 +73,16 @@ SMatricesReader::~SMatricesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SMatricesReader::getIOPathType() const
+::fwIO::IOPathType SMatricesReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatricesReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 

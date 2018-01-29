@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOZMQ_SIMAGENETWORKREADER_HPP__
-#define __IOZMQ_SIMAGENETWORKREADER_HPP__
+#pragma once
 
 #include "ioZMQ/config.hpp"
 
-#include <zmqNetwork/Socket.hpp>
+#include <fwIO/IReader.hpp>
 
-#include <io/IReader.hpp>
+#include <zmqNetwork/Socket.hpp>
 
 namespace ioZMQ
 {
@@ -19,12 +18,12 @@ namespace ioZMQ
  *
  * @brief image reader using ZMQNetwork library
  */
-class IOZMQ_CLASS_API SImageNetworkReader : public ::io::IReader
+class IOZMQ_CLASS_API SImageNetworkReader : public ::fwIO::IReader
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SImageNetworkReader) (::io::IReader));
+    fwCoreServiceClassDefinitionsMacro( (SImageNetworkReader) (::fwIO::IReader));
 
     /// Constructor
     IOZMQ_API SImageNetworkReader();
@@ -38,7 +37,7 @@ public:
     IOZMQ_API virtual void configureWithIHM() override;
 
     /// Overrides
-    IOZMQ_API ::io::IOPathType getIOPathType() const override;
+    IOZMQ_API ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -67,6 +66,3 @@ private:
 };
 
 } // namespace ioZMQ
-
-#endif /*__IOZMQ_SIMAGENETWORKREADER_HPP__*/
-

@@ -14,5 +14,5 @@ set( DEPENDENCIES
         fwGuiQt
         fwCom
         fwMedData
-        io
+        fwIO
 )

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::io::IWriter, ::ioZMQ::SImageNetworkWriter, ::fwData::Image);
+fwServicesRegisterMacro(::fwIO::IWriter, ::ioZMQ::SImageNetworkWriter, ::fwData::Image);
 
 namespace ioZMQ
 {
@@ -33,7 +33,7 @@ SImageNetworkWriter::~SImageNetworkWriter() noexcept
 
 void SImageNetworkWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,9 +86,9 @@ void SImageNetworkWriter::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SImageNetworkWriter::getIOPathType() const
+::fwIO::IOPathType SImageNetworkWriter::getIOPathType() const
 {
-    return ::io::TYPE_NOT_DEFINED;
+    return ::fwIO::TYPE_NOT_DEFINED;
 }
 
 //-----------------------------------------------------------------------------
@@ -103,4 +103,3 @@ void SImageNetworkWriter::swapping()
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-

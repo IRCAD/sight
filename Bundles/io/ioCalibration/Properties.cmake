@@ -12,6 +12,6 @@ set( DEPENDENCIES
     arData
     fwCom
     fwGui
-    io
+    fwIO
 )
-set( REQUIREMENTS io dataReg servicesReg)
+set( REQUIREMENTS dataReg servicesReg)

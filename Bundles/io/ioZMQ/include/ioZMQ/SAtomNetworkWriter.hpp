@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOZMQ_SATOMNETWORKWRITER_HPP__
-#define __IOZMQ_SATOMNETWORKWRITER_HPP__
+#pragma once
 
 #include "ioZMQ/config.hpp"
 
-#include <zmqNetwork/Socket.hpp>
+#include <fwIO/IWriter.hpp>
 
-#include <io/IWriter.hpp>
+#include <zmqNetwork/Socket.hpp>
 
 namespace ioZMQ
 {
@@ -20,12 +19,12 @@ namespace ioZMQ
  *
  * @brief writer of atom object using ZMQNetwork library
  */
-class IOZMQ_CLASS_API SAtomNetworkWriter : public ::io::IWriter
+class IOZMQ_CLASS_API SAtomNetworkWriter : public ::fwIO::IWriter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SAtomNetworkWriter) (::io::IWriter));
+    fwCoreServiceClassDefinitionsMacro( (SAtomNetworkWriter) (::fwIO::IWriter));
 
     /// Constructor
     IOZMQ_API SAtomNetworkWriter();
@@ -34,7 +33,7 @@ public:
     IOZMQ_API virtual ~SAtomNetworkWriter() noexcept;
 
     /// Overrides
-    IOZMQ_API ::io::IOPathType getIOPathType() const override;
+    IOZMQ_API ::fwIO::IOPathType getIOPathType() const override;
 
     /**
      * @brief configure the host(in zeromq format) to send atom to a client
@@ -69,6 +68,3 @@ private:
 };
 
 } // namespace ioZMQ
-
-#endif /*__IOZMQ_SATOMNETWORKWRITER_HPP__*/
-

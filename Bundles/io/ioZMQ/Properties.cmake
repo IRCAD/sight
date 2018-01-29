@@ -11,8 +11,8 @@ set( DEPENDENCIES
     fwRuntime
     fwGui
     fwThread
+    fwIO
     zmqNetwork
     ioNetwork
-    io
 )
 set( REQUIREMENTS)

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::io::IReader, ::ioZMQ::SImageNetworkReader, ::fwData::Image);
+fwServicesRegisterMacro(::fwIO::IReader, ::ioZMQ::SImageNetworkReader, ::fwData::Image);
 
 namespace ioZMQ
 {
@@ -39,7 +39,7 @@ SImageNetworkReader::~SImageNetworkReader() noexcept
 
 void SImageNetworkReader::configuring()
 {
-    ::io::IReader::configuring();
+    ::fwIO::IReader::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +108,9 @@ void SImageNetworkReader::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SImageNetworkReader::getIOPathType() const
+::fwIO::IOPathType SImageNetworkReader::getIOPathType() const
 {
-    return ::io::TYPE_NOT_DEFINED;
+    return ::fwIO::TYPE_NOT_DEFINED;
 }
 
 //-----------------------------------------------------------------------------
@@ -125,4 +125,3 @@ void SImageNetworkReader::swapping()
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-

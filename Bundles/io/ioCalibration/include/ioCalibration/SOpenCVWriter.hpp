@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOCALIBRATION_SOPENCVWRITER_HPP__
-#define __IOCALIBRATION_SOPENCVWRITER_HPP__
+#pragma once
 
 #include "ioCalibration/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 namespace ioCalibration
 {
@@ -56,10 +55,10 @@ namespace ioCalibration
     </opencv_storage>
  * @endcode
  */
-class IOCALIBRATION_CLASS_API SOpenCVWriter : public ::io::IWriter
+class IOCALIBRATION_CLASS_API SOpenCVWriter : public ::fwIO::IWriter
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SOpenCVWriter)(::io::IWriter));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVWriter)(::fwIO::IWriter));
 
     ///Constructor
     IOCALIBRATION_API SOpenCVWriter();
@@ -96,10 +95,8 @@ protected:
     IOCALIBRATION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    IOCALIBRATION_API ::io::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API ::fwIO::IOPathType getIOPathType() const override;
 
 };
 
 } //namespace ioCalibration
-
-#endif // __IOCALIBRATION_SOPENCVWRITER_HPP__

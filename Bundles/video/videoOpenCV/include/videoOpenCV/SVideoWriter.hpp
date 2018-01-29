@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOOPENCV_SVIDEOWRITER_HPP__
-#define __VIDEOOPENCV_SVIDEOWRITER_HPP__
+#pragma once
 
 #include "videoOpenCV/config.hpp"
 
 #include <arData/FrameTL.hpp>
 
-#include <io/IWriter.hpp>
+#include <fwIO/IWriter.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -35,12 +34,12 @@ namespace videoOpenCV
  * @subsection Input Input
  * - \b data [::arData::FrameTL]: timeline containing the frame to save.
  */
-class VIDEOOPENCV_CLASS_API SVideoWriter : public ::io::IWriter
+class VIDEOOPENCV_CLASS_API SVideoWriter : public ::fwIO::IWriter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SVideoWriter)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SVideoWriter)(::fwIO::IWriter) );
 
     /// Constructor.
     VIDEOOPENCV_API SVideoWriter() noexcept;
@@ -54,8 +53,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     VIDEOOPENCV_API virtual void configureWithIHM() override;
 
-    /// Return file type (::io::FILE)
-    VIDEOOPENCV_API virtual ::io::IOPathType getIOPathType() const override;
+    /// Return file type (::fwIO::FILE)
+    VIDEOOPENCV_API virtual ::fwIO::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -89,5 +88,3 @@ private:
 };
 
 } // videoOpenCV
-
-#endif // __VIDEOOPENCV_SVIDEOWRITER_HPP__

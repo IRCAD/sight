@@ -31,7 +31,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::videoOpenCV::SFrameWriter, ::arData::FrameTL);
+fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::arData::FrameTL);
 
 static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME           = "saveFrame";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD         = "startRecord";
@@ -61,16 +61,16 @@ SFrameWriter::~SFrameWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType SFrameWriter::getIOPathType() const
+::fwIO::IOPathType SFrameWriter::getIOPathType() const
 {
-    return ::io::FOLDER;
+    return ::fwIO::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SFrameWriter::configuring()
 {
-    ::io::IWriter::configuring();
+    ::fwIO::IWriter::configuring();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
@@ -141,7 +141,7 @@ void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::io::s_DATA_KEY);
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
         // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
         // between frames and timestamps.
         // TODO: experiment with queuing frames and writing them from a worker thread.
@@ -198,7 +198,7 @@ void SFrameWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::io::s_DATA_KEY);
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(::fwIO::s_DATA_KEY);
 
         if (frameTL->getType() == ::fwTools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -271,7 +271,7 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
 ::fwServices::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::io::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(::fwIO::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 
