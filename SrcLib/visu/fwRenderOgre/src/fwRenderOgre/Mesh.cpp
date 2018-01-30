@@ -781,7 +781,7 @@ void Mesh::updateColors(const ::fwData::Mesh::csptr& _mesh)
     // 1 - Initialization
     if(hasVertexColor)
     {
-        bindLayer(_mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_UBYTE4);
+        bindLayer(_mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_COLOUR);
     }
     else
     {
