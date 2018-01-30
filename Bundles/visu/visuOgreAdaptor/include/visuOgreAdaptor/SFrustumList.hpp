@@ -120,6 +120,7 @@ private:
     /// circular list of frustum adaptors
     ::boost::circular_buffer< ::Ogre::Camera* > m_frustumList;
 
+    /// Used to generate unique ID for each Ogre::Camera.
     size_t m_currentCamIndex;
 
     /// Adaptor to create an ogre Ogre::Material from fwData::Material.

@@ -35,7 +35,7 @@ SFrustumList::SFrustumList() noexcept :
     m_visibility(true),
     m_near(1.f),
     m_far(100.f),
-    m_color("#00ff00ff"),
+    m_color("#0000ffff"),
     m_capacity(50),
     m_currentCamIndex(0)
 {
@@ -72,10 +72,10 @@ void SFrustumList::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_near = config.get<float>("near", 1.f);
-    m_far  = config.get<float>("far", 100.f);
+    m_far  = config.get<float>("far", 20.f);
 
-    m_color    = config.get< std::string >("color", "#00ff00ff");
-    m_capacity = config.get< unsigned int > ("nbMax", 50);
+    m_color    = config.get< std::string >("color", "#0000ffff");
+    m_capacity = config.get< unsigned int > ("nbMax", 200);
 
 }
 
@@ -125,7 +125,6 @@ void SFrustumList::toggleVisibility()
 
 void SFrustumList::addFrustum()
 {
-
     //Get camera parameters
     const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_IN_CAMERA_NAME);
 
@@ -167,7 +166,12 @@ void SFrustumList::addFrustum()
     ::Ogre::Vector3 position;
     ::Ogre::Vector3 scale;
     ::Ogre::Quaternion orientation;
+
+    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
+
     ogreMat.decomposition(position, scale, orientation);
+
+    orientation = orientation * rotateX;
 
     camera->setOrientation(orientation);
     camera->setPosition(position);
@@ -240,7 +244,6 @@ void SFrustumList::updating()
 void SFrustumList::stopping()
 {
     this->unregisterServices();
-    //m_materialAdaptor->stop();
     this->clear();
 }
 
