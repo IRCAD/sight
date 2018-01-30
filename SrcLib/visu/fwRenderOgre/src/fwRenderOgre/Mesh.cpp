@@ -647,7 +647,6 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
         for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pPos, &points[static_cast<int>(i)][0], 3 * sizeof(PointValueType) );
-
             pPos += uiStrideFloat;
         }
     }
@@ -656,13 +655,10 @@ void Mesh::updateVertices(const ::fwData::Mesh::csptr& _mesh)
     {
         FW_PROFILE_AVG("UPDATE NORMALS", 5);
         ::fwData::Mesh::ConstPointNormalsMultiArrayType normals = meshHelper.getPointNormals();
-
-        NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex) + 3;
-
+        NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
         for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pNormal, &normals[static_cast<int>(i)][0], 3 * sizeof(NormalValueType) );
-
             pNormal += uiStrideFloat;
         }
     }

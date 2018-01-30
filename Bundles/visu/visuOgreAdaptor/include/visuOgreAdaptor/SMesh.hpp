@@ -274,4 +274,3 @@ inline void SMesh::setIsReconstructionManaged(bool _isReconstructionManaged)
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
