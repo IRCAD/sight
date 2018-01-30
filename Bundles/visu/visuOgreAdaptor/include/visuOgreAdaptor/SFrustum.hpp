@@ -20,11 +20,11 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief This adaptor display a fwData::Camera
+ * @brief This adaptor display the frustum of an arData::Camera
  *
  * @section Slots Slots
- * -\b updateVisibility(bool): Sets whether the axis is shown or not.
- * -\b toggleVisibility(): Toggle whether the axis is shown or not.
+ * -\b updateVisibility(bool): Sets whether the frustum is shown or not.
+ * -\b toggleVisibility(): Toggle whether the frustum is shown or not.
  * -\b updateCamera(): Update Ogre::Camera.
  * @section XML XML Configuration
  * @code{.xml}
@@ -53,26 +53,15 @@ public:
     /// Slot for toggle visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
-    /// Slot for update
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdateSlotType;
-    /// Input camera name
-    VISUOGREADAPTOR_API static const std::string s_IN_CAMERA_NAME;
-    /// Config near clipping name
-    VISUOGREADAPTOR_API static const std::string s_CONFIG_NEAR;
-    /// Config far clipping name
-    VISUOGREADAPTOR_API static const std::string s_CONFIG_FAR;
 
     /// Constructor: Sets default parameters and initializes necessary members.
     VISUOGREADAPTOR_API SFrustum() noexcept;
     /// Destructor: Does nothing
     VISUOGREADAPTOR_API virtual ~SFrustum() noexcept;
-    /// Sets visibility of the furstum
+    /// Sets visibility of the frustum
     VISUOGREADAPTOR_API void updateVisibility(bool);
-    /// Toggle visibility of the furstum
+    /// Toggle visibility of the frustum
     VISUOGREADAPTOR_API void toggleVisibility();
-    /// Update camera parameters
-    VISUOGREADAPTOR_API void updateCamera();
 
 private:
 
@@ -90,8 +79,6 @@ private:
 
     /// Ogre's camera
     Ogre::Camera* m_ogreCam;
-    /// Pointer to the Material data.
-    ::fwData::Material::sptr m_material;
     /// Adaptor to create an ogre Ogre::Material from fwData::Material.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Visibility
@@ -100,6 +87,8 @@ private:
     float m_near;
     /// Far clipping
     float m_far;
+    /// color of frustum
+    std::string m_color;
 };
 
 } //namespace visuOgreAdaptor

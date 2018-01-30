@@ -29,24 +29,22 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
 
 const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
-const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_SLOT            = "updateCamera";
 
-const std::string SFrustum::s_IN_CAMERA_NAME = "camera";
-const std::string SFrustum::s_CONFIG_NEAR    = "near";
-const std::string SFrustum::s_CONFIG_FAR     = "far";
+static const std::string s_IN_CAMERA_NAME = "camera";
+static const std::string s_CONFIG_NEAR    = "near";
+static const std::string s_CONFIG_FAR     = "far";
 
 //-----------------------------------------------------------------------------
 
 SFrustum::SFrustum() noexcept :
-    m_material(nullptr),
     m_materialAdaptor(nullptr),
     m_visibility(true),
     m_near(0),
-    m_far(0)
+    m_far(0),
+    m_color("#0000ffff")
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
-    newSlot(s_UPDATE_SLOT, &SFrustum::updateCamera, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,13 +66,6 @@ void SFrustum::updateVisibility(bool isVisible)
 void SFrustum::toggleVisibility()
 {
     m_visibility = !m_visibility;
-    updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void SFrustum::updateCamera()
-{
     updating();
 }
 
@@ -104,6 +95,11 @@ void SFrustum::configuring()
     {
         m_far = config.get<float>(s_CONFIG_FAR);
     }
+
+    if(config.count("color"))
+    {
+        m_color = config.get< std::string >("color");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -113,10 +109,12 @@ void SFrustum::starting()
     this->initialize();
 
     // Create material
-    m_material = ::fwData::Material::New();
+    ::fwData::Material::sptr material = ::fwData::Material::New();
+
+    material->diffuse()->setRGBA(m_color);
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    m_materialAdaptor->registerInOut(material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
     m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
@@ -134,11 +132,11 @@ void SFrustum::starting()
     m_ogreCam->setDebugDisplayEnabled(true);
 
     // Clipping
-    if(m_near != 0)
+    if(m_near != 0.f)
     {
         m_ogreCam->setNearClipDistance(m_near);
     }
-    if(m_far != 0)
+    if(m_far != 0.f)
     {
         m_ogreCam->setFarClipDistance(m_far);
     }
@@ -173,7 +171,6 @@ void SFrustum::stopping()
 {
     this->unregisterServices();
     m_materialAdaptor.reset();
-    m_material = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -183,17 +180,17 @@ void SFrustum::setDataToOgreCam()
     const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_IN_CAMERA_NAME);
     if(camera != nullptr)
     {
-        const auto h   = static_cast<float>(camera->getHeight());
-        const auto fy  = camera->getFy();
-        const auto res = 2.f * std::atan( static_cast<float>( h / (2.f * fy)));
+        const auto h    = static_cast<float>(camera->getHeight());
+        const auto fy   = camera->getFy();
+        const auto fovY = 2.f * std::atan( static_cast<float>( h / (2.f * fy)));
 
-        m_ogreCam->setFOVy(::Ogre::Radian( ::Ogre::Real(res)));
+        m_ogreCam->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
         m_ogreCam->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));
         m_ogreCam->setVisible(m_visibility);
     }
     else
     {
-        OSLM_WARN("the input \'" << s_IN_CAMERA_NAME << "\' is not set");
+        SLM_WARN("the input '" + s_IN_CAMERA_NAME + "' is not set");
     }
 }
 
