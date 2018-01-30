@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,7 +69,8 @@ namespace visuVTKAdaptor
 
 SCamera::SCamera() noexcept :
     m_cameraCommand(CameraClallback::New(this)),
-    m_transOrig(nullptr)
+    m_transOrig(nullptr),
+    m_viewAngle(30.)
 {
 }
 
@@ -84,6 +85,10 @@ SCamera::~SCamera() noexcept
 void SCamera::configuring()
 {
     this->configureParams();
+
+    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>.");
+    m_viewAngle = config.get<double>("viewAngle", 30.0);
+
 }
 
 //------------------------------------------------------------------------------
@@ -105,6 +110,7 @@ void SCamera::starting()
     camera->SetPosition(position);
     camera->SetFocalPoint(focal);
     camera->SetViewUp(viewUp);
+    camera->SetViewAngle(m_viewAngle);
     //camera->SetClippingRange(0.1, 10000);
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );

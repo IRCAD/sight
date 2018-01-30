@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKADAPTOR_SCAMERA_HPP__
-#define __VISUVTKADAPTOR_SCAMERA_HPP__
+#pragma once
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -27,7 +26,7 @@ namespace visuVTKAdaptor
  * @code{.xml}
    <service type="::visuVTKAdaptor::SCamera" autoConnect="yes">
        <inout key="transform" uid="..." />
-       <config renderer="default" />
+       <config renderer="default" viewAngle="30"/>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -35,6 +34,7 @@ namespace visuVTKAdaptor
  * @subsection Configuration Configuration
  * - \b config(mandatory) : contains the adaptor configuration
  *    - \b renderer (mandatory): defines the renderer to use.
+ *    - \b viewAngle (optional): defines the angular height of the camera view measured in degrees (default is 30)
  */
 class VISUVTKADAPTOR_CLASS_API SCamera : public ::fwRenderVTK::IAdaptor
 {
@@ -68,8 +68,9 @@ private:
     vtkCommand* m_cameraCommand;
     vtkPerspectiveTransform* m_transOrig;
 
+    // the angular height of the camera view measured in degrees
+    double m_viewAngle;
+
 };
 
 } //namespace visuVTKAdaptor
-
-#endif // __VISUVTKADAPTOR_SCAMERA_HPP__
