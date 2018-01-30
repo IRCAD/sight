@@ -67,13 +67,6 @@ SMaterial::~SMaterial() noexcept
 
 //------------------------------------------------------------------------------
 
-::Ogre::MaterialPtr SMaterial::getMaterial()
-{
-    return m_material;
-}
-
-//------------------------------------------------------------------------------
-
 void SMaterial::createShaderParameterAdaptors()
 {
     // We retrieve the parameters of the base material in a temporary material
