@@ -16,7 +16,4 @@ set( DEPENDENCIES
         uiIO
         material
 )
-set( REQUIREMENTS
-    uiIO
-)
 

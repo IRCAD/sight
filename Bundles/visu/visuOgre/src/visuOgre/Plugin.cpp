@@ -19,9 +19,7 @@ namespace visuOgre
 
 //------------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("visuOgre::Plugin");
-
-//------------------------------------------------------------------------------
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::visuOgre::Plugin");
 
 //------------------------------------------------------------------------------
 
