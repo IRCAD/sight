@@ -16,6 +16,7 @@ namespace visuOgreAdaptor
 {
 
 const ::fwCom::Slots::SlotKeyType SAxis::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
@@ -24,14 +25,11 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 SAxis::SAxis() noexcept :
     m_materialAdaptor(nullptr),
     m_material(nullptr),
-    m_xLineNode(nullptr),
-    m_yLineNode(nullptr),
-    m_zLineNode(nullptr),
     m_length(50.f),
     m_isVisible(true)
 {
-
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, &SAxis::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -45,11 +43,15 @@ SAxis::~SAxis() noexcept
 void SAxis::updateVisibility(bool isVisible)
 {
     m_isVisible = isVisible;
-    m_xLineNode->setVisible(m_isVisible);
-    m_yLineNode->setVisible(m_isVisible);
-    m_zLineNode->setVisible(m_isVisible);
+    this->updating();
+}
 
-    this->requestRender();
+//------------------------------------------------------------------------------
+
+void SAxis::toggleVisibility()
+{
+    m_isVisible = !m_isVisible;
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,71 +98,67 @@ void SAxis::starting()
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
     ::Ogre::ManualObject* xLine = sceneMgr->createManualObject(this->getID() + "_xline");
-    m_xLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_xline_node");
-
     ::Ogre::ManualObject* yLine = sceneMgr->createManualObject(this->getID() + "_yline");
-    m_yLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_yline_node");
-
     ::Ogre::ManualObject* zLine = sceneMgr->createManualObject(this->getID() + "_zline");
-    m_zLineNode                 = sceneMgr->getRootSceneNode()->createChildSceneNode(this->getID() + "_zline_node");
 
     // set the material
     m_material = ::fwData::Material::New();
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
     m_materialAdaptor->registerInOut(m_material, "material", true);
-
     m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
     m_materialAdaptor->setLayerID(m_layerID);
     m_materialAdaptor->setShadingMode("ambient");
+    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
     m_materialAdaptor->start();
+
+    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    m_materialAdaptor->update();
 
     // Draw
     xLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     xLine->position(0, 0, 0);
     xLine->colour(1.0f, 0, 0);
-    xLine->normal(1, 0, 0);
     xLine->position(m_length, 0, 0);
     xLine->colour(1.0f, 0, 0);
-    xLine->normal(1, 0, 0);
     xLine->end();
-
-    m_xLineNode->attachObject(xLine);
 
     this->attachNode(xLine);
 
     yLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     yLine->position(0, 0, 0);
     yLine->colour(0, 1.0f, 0);
-    yLine->normal(1, 0, 0);
     yLine->position(0, m_length, 0);
     yLine->colour(0, 1.0f, 0);
-    yLine->normal(1, 0, 0);
     yLine->end();
-
-    m_yLineNode->attachObject(yLine);
 
     this->attachNode(yLine);
 
     zLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     zLine->position(0, 0, 0);
     zLine->colour(0, 0, 1.0f);
-    zLine->normal(1, 0, 0);
     zLine->position(0, 0, m_length);
     zLine->colour(0, 0, 1.0f);
-    zLine->normal(1, 0, 0);
     zLine->end();
 
-    m_zLineNode->attachObject(zLine);
-
     this->attachNode(zLine);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
 void SAxis::updating()
 {
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* transNode     =
+        ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
+    if (transNode != nullptr)
+    {
+        transNode->setVisible(m_isVisible);
+    }
     this->requestRender();
 }
 
@@ -175,10 +173,8 @@ void SAxis::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SAxis::attachNode(::Ogre::MovableObject* _node)
+void SAxis::attachNode(::Ogre::MovableObject* object)
 {
-    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
-
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* transNode     =
         ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
@@ -186,13 +182,9 @@ void SAxis::attachNode(::Ogre::MovableObject* _node)
     if (transNode == nullptr)
     {
         transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
+        transNode->setVisible(m_isVisible);
     }
-    ::Ogre::SceneNode* node = _node->getParentSceneNode();
-    if ((node != transNode) && transNode)
-    {
-        _node->detachFromParent();
-        transNode->attachObject(_node);
-    }
+    transNode->attachObject(object);
 }
 
 //-----------------------------------------------------------------------------

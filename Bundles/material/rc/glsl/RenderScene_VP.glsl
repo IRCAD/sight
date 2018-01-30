@@ -66,7 +66,7 @@ void main(void)
     vNormal = normal;
 
 #   ifdef VERTEX_COLOR
-    vColor = colour/255.f;
+    vColor = colour;
 #   endif // VERTEX_COLOR
 
 #   ifdef DIFFUSE_TEX
@@ -89,10 +89,7 @@ void main(void)
     outPosition_WS = (u_world * position).xyz;
 
 #       ifdef VERTEX_COLOR
-
-    // We could skip this division, however r2vb in Ogre doesn't allow us to output the color in the correct format.
-    // So we use VET_UBYTE4 for both pipelines (r2vb/regular) to avoid a new #define.
-    outColor = colour/255.f;
+    outColor = colour;
 #       else
     outColor = vec4(1.,1.,1.,1.);
 #       endif // VERTEX_COLOR
@@ -107,7 +104,7 @@ void main(void)
 #       endif // AMBIENT
 
 #       ifdef VERTEX_COLOR
-    outColor *= colour/255.f;
+    outColor *= colour;
 #       endif // VERTEX_COLOR
 
 #   endif // PIXEL_LIT
