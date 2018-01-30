@@ -41,7 +41,7 @@ SFrustum::SFrustum() noexcept :
     m_visibility(true),
     m_near(0),
     m_far(0),
-    m_color("#0000ffff")
+    m_color("#ff0000ff")
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
