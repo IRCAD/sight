@@ -64,16 +64,7 @@ void STDataListener::configuring()
         throw ::fwTools::Failed("Server element not found");
     }
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
-    if(!deviceNames.empty())
-    {
-        for(auto dn : deviceNames)
-        {
-            const std::string dnKey = ::ioIGTL::helper::getPreferenceKey<std::string>(dn->getValue());
-            m_client.addAuthorizedDevice(dnKey);
-        }
-        m_client.setFilteringByDeviceName(true);
-    }
+    m_deviceNamesConfig = m_configuration->find("deviceName");
 
     ::fwRuntime::ConfigurationElement::sptr tdata = m_configuration->findConfigurationElement("TData");
 
@@ -106,6 +97,16 @@ void STDataListener::runClient()
     {
         const std::uint16_t port   = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
         const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
+
+        if(!m_deviceNamesConfig.empty())
+        {
+            for(auto dn : m_deviceNamesConfig)
+            {
+                const std::string dnKey = ::ioIGTL::helper::getPreferenceKey<std::string>(dn->getValue());
+                m_client.addAuthorizedDevice(dnKey);
+            }
+            m_client.setFilteringByDeviceName(true);
+        }
 
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();

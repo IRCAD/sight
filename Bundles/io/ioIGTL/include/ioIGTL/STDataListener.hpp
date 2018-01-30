@@ -102,6 +102,9 @@ private:
     /// port config key
     std::string m_portConfig;
 
+    /// device names key
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > m_deviceNamesConfig;
+
     MatrixNameIndexType m_matrixNameIndex;
 };
 
