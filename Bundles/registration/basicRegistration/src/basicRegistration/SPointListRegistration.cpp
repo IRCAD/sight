@@ -51,26 +51,32 @@ SPointListRegistration::~SPointListRegistration()
 
 void SPointListRegistration::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const auto optConfig = this->getConfigTree().get_child_optional("config.<xmlattr>");
+    if(optConfig)
+    {
+        const std::string mode = optConfig->get< std::string >("mode", "rigid");
 
-    const std::string mode = config.get< std::string >("mode", "rigid");
-
-    if(mode == "rigid")
-    {
-        m_registrationMode = RIGID;
-    }
-    else if(mode == "similarity")
-    {
-        m_registrationMode = SIMILARITY;
-    }
-    else if(mode == "affine")
-    {
-        m_registrationMode = AFFINE;
+        if(mode == "rigid")
+        {
+            m_registrationMode = RIGID;
+        }
+        else if(mode == "similarity")
+        {
+            m_registrationMode = SIMILARITY;
+        }
+        else if(mode == "affine")
+        {
+            m_registrationMode = AFFINE;
+        }
+        else
+        {
+            SLM_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
+                      " Defaulting to 'rigid'.")
+        }
     }
     else
     {
-        SLM_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
-                  " Defaulting to 'rigid'.")
+        m_registrationMode = RIGID;
     }
 }
 
