@@ -1,8 +1,8 @@
 fwLoadProperties()
 
-find_package(Boost COMPONENTS filesystem locale REQUIRED)
+find_package(Boost QUIET COMPONENTS filesystem locale REQUIRED)
 
-find_package(GDCM REQUIRED)
+find_package(GDCM QUIET REQUIRED)
 include(${GDCM_USE_FILE})
 
 fwForwardInclude(${Boost_INCLUDE_DIRS} ${GDCM_INCLUDE_DIRS})

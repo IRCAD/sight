@@ -1,4 +1,4 @@
 fwLoadProperties()
 
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost QUIET COMPONENTS program_options REQUIRED)
 fwLink(${Boost_LIBRARIES})

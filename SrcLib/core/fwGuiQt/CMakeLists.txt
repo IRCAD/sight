@@ -10,7 +10,7 @@ configure_file("${CMAKE_CURRENT_LIST_DIR}/bin/qt.conf" "${CMAKE_BINARY_DIR}/bin/
 
 target_compile_definitions(${FWPROJECT_NAME} PUBLIC "-DQT_NO_KEYWORDS")
 
-find_package(Qt5 COMPONENTS Core Gui Widgets Concurrent REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets Concurrent REQUIRED)
 
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIRS}

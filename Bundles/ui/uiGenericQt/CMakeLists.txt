@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(Qt5 COMPONENTS Core Gui Help Widgets REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Help Widgets REQUIRED)
 
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIRS}

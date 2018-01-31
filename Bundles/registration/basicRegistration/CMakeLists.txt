@@ -1,9 +1,9 @@
 
 fwLoadProperties()
 
-find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
-find_package(ITK REQUIRED)
-find_package(VTK COMPONENTS vtkCommonDataModel NO_MODULE REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
+find_package(ITK QUIET REQUIRED)
+find_package(VTK QUIET COMPONENTS vtkCommonDataModel NO_MODULE REQUIRED)
 include(${VTK_USE_FILE})
 
 fwForwardInclude(

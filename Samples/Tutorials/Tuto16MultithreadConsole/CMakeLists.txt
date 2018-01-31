@@ -5,7 +5,7 @@ set(SPYLOG_LEVEL_Tuto16MultithreadConsole info)
 
 fwLoadProperties()
 
-find_package (Boost COMPONENTS log REQUIRED)
+find_package(Boost QUIET COMPONENTS log REQUIRED)
 
 fwLink(
     ${Boost_LOG_LIBRARY}

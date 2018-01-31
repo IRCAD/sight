@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(CppUnit REQUIRED)
+find_package(CppUnit QUIET REQUIRED)
 
 fwForwardInclude(
     ${CPPUNIT_INCLUDE_DIR}

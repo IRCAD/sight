@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core REQUIRED)
 
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${BUNDLE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
 

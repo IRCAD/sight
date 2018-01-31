@@ -1,10 +1,10 @@
 fwLoadProperties()
 
-find_package(DCMTK REQUIRED)
+find_package(DCMTK QUIET REQUIRED)
 fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )
 fwLink( ${DCMTK_LIBRARIES} )
 
-find_package(Qt5 COMPONENTS Core Gui Widgets Concurrent REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets Concurrent REQUIRED)
 fwLink(
     ${Qt5Core_LIBRARIES}
     ${Qt5Gui_LIBRARIES}

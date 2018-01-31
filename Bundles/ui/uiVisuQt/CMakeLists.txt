@@ -1,8 +1,8 @@
 fwLoadProperties()
 
-find_package (Boost COMPONENTS regex REQUIRED)
-find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
-find_package(glm REQUIRED)
+find_package(Boost QUIET COMPONENTS regex REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
+find_package(glm QUIET REQUIRED)
 
 fwForwardInclude(
     ${Boost_INCLUDE_DIRS}

@@ -1,8 +1,8 @@
 fwLoadProperties()
 
-find_package(ITK REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(ZLIB REQUIRED )
+find_package(ITK QUIET REQUIRED)
+find_package(JPEG QUIET REQUIRED)
+find_package(ZLIB QUIET REQUIRED )
 
 find_library(JPEG_LIBRARY libjpeg)
 

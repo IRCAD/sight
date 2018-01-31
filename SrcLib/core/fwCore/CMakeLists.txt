@@ -1,9 +1,9 @@
 fwLoadProperties()
 
 if(ANDROID)
-    find_package (Boost COMPONENTS thread system filesystem date_time REQUIRED)
+    find_package(Boost QUIET COMPONENTS thread system filesystem date_time REQUIRED)
 else()
-    find_package (Boost COMPONENTS thread system filesystem date_time log log_setup REQUIRED)
+    find_package(Boost QUIET COMPONENTS thread system filesystem date_time log log_setup REQUIRED)
 endif()
 fwForwardInclude(${Boost_INCLUDE_DIRS})
 fwForwardLink(

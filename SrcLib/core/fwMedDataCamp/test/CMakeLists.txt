@@ -1,5 +1,5 @@
 fwLoadProperties()
-find_package(CAMP REQUIRED)
+find_package(CAMP QUIET REQUIRED)
 
 fwInclude(
     ${CAMP_INCLUDE_DIR}

@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(VTK COMPONENTS vtkInteractionWidgets NO_MODULE)
+find_package(VTK QUIET COMPONENTS vtkInteractionWidgets NO_MODULE)
 
 include(${VTK_USE_FILE})
 
