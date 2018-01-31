@@ -34,7 +34,7 @@
 #include <QString>
 #include <QWidget>
 
-fwServicesRegisterMacro(::gui::editor::IEditor, ::uiSpline::SSplinePointsEditor, ::fwData::PointList);
+fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiSpline::SSplinePointsEditor, ::fwData::PointList);
 
 namespace uiSpline
 {

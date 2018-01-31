@@ -2,23 +2,8 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="gui" />
     <requirement id="guiQt" />
-    <requirement id="io" />
-    <requirement id="ioData" />
-    <requirement id="ioVTK" />
-    <requirement id="uiVisuQt" />
-    <requirement id="uiImageQt" />
-    <requirement id="uiReconstructionQt" />
-    <requirement id="uiMedDataQt" />
-    <requirement id="uiIO" />
-    <requirement id="visuVTK" />
     <requirement id="visuVTKQt" />
-    <requirement id="visuVTKAdaptor" />
-    <requirement id="opVTKMesh" />
-    <requirement id="ctrlSelection" />
-    <requirement id="opPOCMesher" />
-    <requirement id="uiLogo" />
 
     <xi:include href="configurations/mesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/inputParameters.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

@@ -2,7 +2,6 @@
 
     <requirement id="servicesReg" />
     <requirement id="guiQt" />
-    <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
 

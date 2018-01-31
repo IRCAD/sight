@@ -11,7 +11,6 @@ set( DEPENDENCIES
             fwGui
             fwGuiQt
             fwCom
-            gui
             )
 
 set(REQUIREMENTS

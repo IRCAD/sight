@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 #include <sstream>
 #include <string>
 
-fwServicesRegisterMacro( ::io::IReader, ::beginnerTraining::tuto03::SStringReader, ::fwData::String );
+fwServicesRegisterMacro( ::fwIO::IReader, ::beginnerTraining::tuto03::SStringReader, ::fwData::String );
 
 namespace beginnerTraining
 {
@@ -67,8 +67,8 @@ void SStringReader::updating()
     {
         // Read data.txt
         std::string line;
-        std::string data ("");
-        std::ifstream myfile ( this->getFile().string().c_str() );
+        std::string data("");
+        std::ifstream myfile( this->getFile().string().c_str() );
         if ( myfile.is_open() )
         {
             while ( myfile.good() )
@@ -109,9 +109,9 @@ void SStringReader::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-::io::IOPathType SStringReader::getIOPathType() const
+::fwIO::IOPathType SStringReader::getIOPathType() const
 {
-    return ::io::FILE;
+    return ::fwIO::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -134,5 +134,3 @@ void SStringReader::notifyMessage()
 
 } // namespace tuto03
 } // namespace beginnerTraining
-
-

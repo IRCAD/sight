@@ -15,6 +15,5 @@ set( DEPENDENCIES
             fwMedData
             fwCom
             opVTKMesh
-            gui
             )
 set( REQUIREMENTS   )

@@ -2,8 +2,6 @@
 
     <library name="ctrlSplineNavigation" />
 
-    <requirement id="io"/>
-
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::ctrlSplineNavigation::SMoveAlongSpline</service>

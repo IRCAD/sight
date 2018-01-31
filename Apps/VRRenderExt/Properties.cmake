@@ -15,7 +15,6 @@ set( REQUIREMENTS
     ctrlMemory
     fwlauncher
 
-    io
     ioData
     ioAtoms
     ioITK

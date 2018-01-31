@@ -1,7 +1,5 @@
 <plugin id="cprActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="mediaExt" />
-    <requirement id="uiIO" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/curvedPlanarReformation.xml" xmlns:xi="http://www.w3.org/2003/XInclude" /> 
