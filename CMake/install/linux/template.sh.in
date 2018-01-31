@@ -17,9 +17,11 @@ bundledir="$rootdir/@BUNDLE_RC_PREFIX@"
 LD_LIBRARY_PATH=$libdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
-# export the path to the fonts (mandatory for Qt)
+# export the path to the fonts if it exists (mandatory for Qt)
 QT_QPA_FONTDIR="$libdir/fonts"
-export QT_QPA_FONTDIR
+if [ -d $QT_QPA_FONTDIR ]; then
+    export QT_QPA_FONTDIR
+fi
 
 # Use CMAKE Variable of fwlauncher and Profile.xml path
 exec "$bindir/fwlauncher-0.1" "$bundledir/@PROFILE_PATH@" "-B" "$bundledir" "--rwd" "$me/.."
