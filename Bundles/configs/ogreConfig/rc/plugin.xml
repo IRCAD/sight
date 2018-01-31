@@ -1,6 +1,5 @@
 <plugin id="ogreConfig" version="@PROJECT_VERSION@">
 
-    <requirement id="gui" />
 
     <xi:include href="configurations/OgreHistogramManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreIDVR.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

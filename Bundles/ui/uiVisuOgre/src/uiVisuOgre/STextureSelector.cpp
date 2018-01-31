@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::fwData::Reconstruction);
 
 //------------------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ void STextureSelector::starting()
     qtContainer->setLayout( layout );
     qtContainer->setEnabled(true);
 
-    QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadButton( )));
-    QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButton( )));
+    QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadButton()));
+    QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButton()));
 
     this->updating();
 }
@@ -121,7 +121,7 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv           = ::fwServices::add< ::gui::editor::IDialogEditor >(image, "::uiIO::editor::SIOSelector");
+    auto srv           = ::fwServices::add< ::fwGui::editor::IDialogEditor >(image, "::uiIO::editor::SIOSelector");
     auto ioSelectorSrv = ::uiIO::editor::SIOSelector::dynamicCast(srv);
     if (ioSelectorSrv != nullptr)
     {

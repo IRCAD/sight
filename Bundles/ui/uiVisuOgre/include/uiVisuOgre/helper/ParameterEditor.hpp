@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_HELPER_PARAMETEREDITOR_HPP__
-#define __UIVISUOGRE_HELPER_PARAMETEREDITOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwServices/IService.hpp>
+#include <fwRenderOgre/IParameter.hpp>
 
-#include <visuOgreAdaptor/SCompositorParameter.hpp>
+#include <fwServices/IService.hpp>
 
 namespace uiVisuOgre
 {
@@ -31,7 +30,7 @@ public:
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
     UIVISUOGRE_API static ::fwServices::IService::ConfigType
-    createConfig(const ::visuOgreAdaptor::IParameter::csptr& _adaptor,
+    createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
                  const ::fwServices::IService::csptr& _paramSrv,
                  ::fwCom::helper::SigSlotConnection& _connections);
 };
@@ -39,6 +38,3 @@ public:
 } // namespace helper
 
 } // namespace uiVisuOgre
-
-#endif // __UIVISUOGRE_HELPER_PARAMETEREDITOR_HPP__
-

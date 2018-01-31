@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,7 +57,7 @@ std::pair<T, T> getRange(T _value)
 
 //-----------------------------------------------------------------------------
 
-fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAdaptor::IParameter::csptr& _adaptor,
+fwServices::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
                                                                const ::fwServices::IService::csptr& _paramSrv,
                                                                ::fwCom::helper::SigSlotConnection& _connections)
 {

@@ -3,10 +3,7 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
-    <requirement id="trackerAruco" />
-    <requirement id="arMedia" />
     <requirement id="preferences" />
-    <requirement id="visuOgreAdaptor" />
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExSimpleARCVOgreConfig</id>
         <config>

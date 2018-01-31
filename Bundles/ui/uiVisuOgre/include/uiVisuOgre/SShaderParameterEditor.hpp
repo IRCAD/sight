@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__
-#define __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
 
@@ -13,13 +12,13 @@
 
 #include <fwData/String.hpp>
 
+#include <fwGui/editor/IEditor.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 #include <QVBoxLayout>
 
@@ -29,12 +28,12 @@ namespace uiVisuOgre
 /**
  * @brief   Editor allowing to edit each parameters from each shader of a reconstruction
  */
-class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::gui::editor::IEditor
+class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::fwGui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShaderParameterEditor)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (SShaderParameterEditor)(::fwGui::editor::IEditor) )
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;
@@ -105,5 +104,3 @@ private:
 };
 
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__

@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SLIGHTEDITOR_HPP__
-#define __UIVISUOGRE_SLIGHTEDITOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/ILight.hpp>
+#include <fwGui/editor/IEditor.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <fwRenderOgre/ILight.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -35,13 +34,13 @@ namespace uiVisuOgre
  *  <service uid=SLightEditorUid" type="uiVisuOgre::SLightEditor" />
  */
 class UIVISUOGRE_CLASS_API SLightEditor : public QObject,
-                                          public ::gui::editor::IEditor
+                                          public ::fwGui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SLightEditor)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (SLightEditor)(::fwGui::editor::IEditor) )
 
     /**
      * @name Slots API
@@ -106,5 +105,3 @@ private:
 };
 
 } // namespace uiVisuOgre
-
-#endif // __UIVISUOGRE_SLIGHTEDITOR_HPP__

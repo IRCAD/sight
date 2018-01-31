@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SCOMPOSITORPARAMETEREDITOR_HPP__
-#define __UIVISUOGRE_SCOMPOSITORPARAMETEREDITOR_HPP__
+#pragma once
 
 #include "uiVisuOgre/config.hpp"
+
+#include <fwGui/editor/IEditor.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/SRender.hpp>
-
-#include <gui/editor/IEditor.hpp>
 
 #include <QVBoxLayout>
 
@@ -32,12 +31,12 @@ namespace uiVisuOgre
        </service>
        @endcode
  */
-class UIVISUOGRE_CLASS_API SCompositorParameterEditor : public ::gui::editor::IEditor
+class UIVISUOGRE_CLASS_API SCompositorParameterEditor : public ::fwGui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorParameterEditor)(::gui::editor::IEditor) )
+    fwCoreServiceClassDefinitionsMacro( (SCompositorParameterEditor)(::fwGui::editor::IEditor) )
 
     /// Constructor.
     UIVISUOGRE_API SCompositorParameterEditor() noexcept;
@@ -97,5 +96,3 @@ private:
 };
 
 } // uiVisuOgre
-
-#endif // __UIVISUOGRE_SCOMPOSITORPARAMETEREDITOR_HPP__

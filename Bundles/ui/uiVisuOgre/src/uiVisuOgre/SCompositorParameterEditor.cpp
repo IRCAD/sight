@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,14 +18,12 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <visuOgreAdaptor/SCompositorParameter.hpp>
-
 #include <QWidget>
 
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor, ::fwData::Object);
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor, ::fwData::Object);
 
 //------------------------------------------------------------------------------
 SCompositorParameterEditor::SCompositorParameterEditor() noexcept
@@ -160,12 +158,9 @@ void SCompositorParameterEditor::updateGuiInfo()
         const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
-
             /// Getting associated object infos
-            const ::fwData::Object::csptr shaderObj = ::fwServices::IService::constCast(paramAdaptor)->getObject();
-            //paramAdaptor->getInputs().begin()->second.lock();
-            const auto& objType = shaderObj->getClassname();
+            const ::fwData::Object::csptr shaderObj = adaptor->getObject();
+            const auto& objType                     = shaderObj->getClassname();
 
             if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
             {
@@ -193,8 +188,9 @@ void SCompositorParameterEditor::updateGuiInfo()
 
     ::fwGui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = ::fwServices::add( this->getObject(), "::gui::editor::IEditor", "::guiQt::editor::SParameters",
-                                            m_editorInfo.uuid );
+    auto editorService = ::fwServices::add(
+        this->getObject(), "::fwGui::editor::IEditor", "::guiQt::editor::SParameters",
+        m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
     ::fwServices::IService::ConfigType editorConfig;
@@ -205,7 +201,7 @@ void SCompositorParameterEditor::updateGuiInfo()
         const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
+            auto paramAdaptor = ::fwRenderOgre::IParameter::dynamicConstCast(adaptor);
             auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                     m_editorInfo.service.lock(),
                                                                                     m_editorInfo.connections);

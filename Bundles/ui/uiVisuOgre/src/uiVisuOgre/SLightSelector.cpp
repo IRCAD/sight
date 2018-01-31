@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <visuOgreAdaptor/SMaterial.hpp>
-
 #include <OGRE/OgreColourValue.h>
 
 #include <QColor>
@@ -36,7 +34,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 
@@ -100,8 +98,8 @@ void SLightSelector::starting()
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
-    QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-                     this, SLOT(onSelectedLightItem(QListWidgetItem*, QListWidgetItem*)));
+    QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+                     this, SLOT(onSelectedLightItem(QListWidgetItem*,QListWidgetItem*)));
     QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
@@ -343,7 +341,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
         for(auto srv : materialServices)
         {
-            ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(srv);
+            ::fwRenderOgre::IAdaptor::sptr materialAdaptor = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
 
             if(materialAdaptor->getLayerID() == currentLayer->getLayerID())
             {
