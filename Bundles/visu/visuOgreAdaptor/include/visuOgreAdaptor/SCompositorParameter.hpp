@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
-#define __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
-#include "visuOgreAdaptor/IParameter.hpp"
+
+#include <fwRenderOgre/IParameter.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -44,12 +44,12 @@ class CompositorListener;
  * - \b technique (optional) : name of the technique, default to the first in the compositor
  * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to fragment.
  */
-class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::visuOgreAdaptor::IParameter
+class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::fwRenderOgre::IParameter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::visuOgreAdaptor::IParameter) )
+    fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::fwRenderOgre::IParameter) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SCompositorParameter() noexcept;
@@ -85,5 +85,3 @@ private:
 };
 
 } // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__

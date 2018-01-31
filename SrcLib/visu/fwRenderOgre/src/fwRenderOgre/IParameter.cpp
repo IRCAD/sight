@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuOgreAdaptor/IParameter.hpp"
-
-#include "visuOgreAdaptor/defines.hpp"
-#include "visuOgreAdaptor/SMaterial.hpp"
+#include "fwRenderOgre/IParameter.hpp"
 
 #include <fwCom/Slots.hxx>
 
@@ -18,9 +15,7 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/ArrayGetter.hpp>
@@ -32,7 +27,7 @@
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
 
-namespace visuOgreAdaptor
+namespace fwRenderOgre
 {
 
 //------------------------------------------------------------------------------
@@ -340,7 +335,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
 //------------------------------------------------------------------------------
 
-void IParameter::setMaterial(const::Ogre::MaterialPtr& material)
+void IParameter::setMaterial(const ::Ogre::MaterialPtr& material)
 {
     m_material = material;
 }
@@ -519,4 +514,4 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
 
 //------------------------------------------------------------------------------
 
-} // namespace visuOgreAdaptor
+} // namespace fwRenderOgre

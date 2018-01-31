@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
-#define __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
-#include "visuOgreAdaptor/IParameter.hpp"
+
+#include <fwRenderOgre/IParameter.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -44,12 +44,12 @@ namespace visuOgreAdaptor
  * - \b technique (optional) : name of the technique, default to the first in the material
  * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
  */
-class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::visuOgreAdaptor::IParameter
+class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IParameter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::visuOgreAdaptor::IParameter) )
+    fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::fwRenderOgre::IParameter) )
 
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() noexcept;
@@ -78,5 +78,3 @@ private:
 };
 
 } // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__

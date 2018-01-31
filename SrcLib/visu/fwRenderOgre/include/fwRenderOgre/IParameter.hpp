@@ -1,23 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_IPARAMETER_HPP__
-#define __VISUOGREADAPTOR_IPARAMETER_HPP__
+#pragma once
 
-#include "visuOgreAdaptor/config.hpp"
+#include "fwRenderOgre/config.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
 
-#include <fwRenderOgre/IAdaptor.hpp>
-
-namespace visuOgreAdaptor
+namespace fwRenderOgre
 {
 
 /**
  * @brief   Base interface containing common code to upload shader parameters from FW4SPL data.
  */
-class VISUOGREADAPTOR_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
+class FWRENDEROGRE_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 {
 
 public:
@@ -29,51 +27,51 @@ public:
      * @{
      */
 
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
 
     ///@}
 
     /// Constructor.
-    VISUOGREADAPTOR_API IParameter() noexcept;
+    FWRENDEROGRE_API IParameter() noexcept;
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~IParameter() noexcept;
+    FWRENDEROGRE_API virtual ~IParameter() noexcept;
 
     /// Set the shaderType by passing the value of the ShaderEnumType of this adaptor.
-    VISUOGREADAPTOR_API void setShaderType(::Ogre::GpuProgramType shaderType);
+    FWRENDEROGRE_API void setShaderType(::Ogre::GpuProgramType shaderType);
 
     /// Set the name of the parameter m_paramName.
-    VISUOGREADAPTOR_API void setParamName(const std::string& paramName);
+    FWRENDEROGRE_API void setParamName(const std::string& paramName);
 
     /// Get the name of the parameter m_paramName.
-    VISUOGREADAPTOR_API const std::string& getParamName() const;
+    FWRENDEROGRE_API const std::string& getParamName() const;
 
     /// Get the name of the parameter m_paramName.
-    VISUOGREADAPTOR_API const std::string& getDefaultValue() const;
+    FWRENDEROGRE_API const std::string& getDefaultValue() const;
 
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void configuring() override;
+    FWRENDEROGRE_API virtual void configuring() override;
 
     /// Updates the shader parameter values and requests a render of the scene.
-    VISUOGREADAPTOR_API virtual void updating() override;
+    FWRENDEROGRE_API virtual void updating() override;
 
     /// Clear the mesh pointer.
-    VISUOGREADAPTOR_API virtual void stopping() override;
+    FWRENDEROGRE_API virtual void stopping() override;
 
     /// Set the parameter for a given technique
-    VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);
+    FWRENDEROGRE_API virtual bool setParameter(::Ogre::Technique& technique);
 
     /// Set the material to update
-    VISUOGREADAPTOR_API void setMaterial(const::Ogre::MaterialPtr& material);
+    FWRENDEROGRE_API void setMaterial(const ::Ogre::MaterialPtr& material);
 
 private:
 
@@ -115,6 +113,4 @@ private:
     bool m_dirty;
 };
 
-} // visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_IPARAMETER_HPP__
+} // fwRenderOgre

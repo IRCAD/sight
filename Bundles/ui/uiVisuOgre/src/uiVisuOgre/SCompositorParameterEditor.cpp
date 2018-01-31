@@ -18,8 +18,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <visuOgreAdaptor/SCompositorParameter.hpp>
-
 #include <QWidget>
 
 namespace uiVisuOgre
@@ -160,12 +158,9 @@ void SCompositorParameterEditor::updateGuiInfo()
         const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
-
             /// Getting associated object infos
-            const ::fwData::Object::csptr shaderObj = ::fwServices::IService::constCast(paramAdaptor)->getObject();
-            //paramAdaptor->getInputs().begin()->second.lock();
-            const auto& objType = shaderObj->getClassname();
+            const ::fwData::Object::csptr shaderObj = adaptor->getObject();
+            const auto& objType                     = shaderObj->getClassname();
 
             if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
             {
@@ -206,7 +201,7 @@ void SCompositorParameterEditor::updateGuiInfo()
         const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
+            auto paramAdaptor = ::fwRenderOgre::IParameter::dynamicConstCast(adaptor);
             auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                     m_editorInfo.service.lock(),
                                                                                     m_editorInfo.connections);

@@ -22,8 +22,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <visuOgreAdaptor/SMaterial.hpp>
-
 #include <OGRE/OgreColourValue.h>
 
 #include <QColor>
@@ -343,7 +341,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
         for(auto srv : materialServices)
         {
-            ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(srv);
+            ::fwRenderOgre::IAdaptor::sptr materialAdaptor = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
 
             if(materialAdaptor->getLayerID() == currentLayer->getLayerID())
             {

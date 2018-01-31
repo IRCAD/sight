@@ -19,9 +19,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <visuOgreAdaptor/SMaterial.hpp>
-#include <visuOgreAdaptor/SShaderParameter.hpp>
-
 #include <QWidget>
 
 namespace uiVisuOgre
@@ -199,7 +196,7 @@ void SShaderParameterEditor::updateGuiInfo()
         const auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor);
+            auto paramAdaptor = ::fwRenderOgre::IParameter::dynamicCast(adaptor);
             auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                     m_editorInfo.service.lock(),
                                                                                     m_editorInfo.connections);
