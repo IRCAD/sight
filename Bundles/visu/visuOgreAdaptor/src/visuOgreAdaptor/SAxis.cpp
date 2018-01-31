@@ -20,6 +20,8 @@ const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
+const std::string SAxis::s_CONFIG_LENGHT = "length";
+
 //-----------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept :
@@ -66,7 +68,8 @@ bool SAxis::getVisibility() const
 ::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SAxis::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( ::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, ::fwData::Object::s_MODIFIED_SIG,
+                      s_UPDATE_SLOT );
     return connections;
 }
 
@@ -78,14 +81,18 @@ void SAxis::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count("transform"))
+    if(config.count(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM))
     {
-        this->setTransformId(config.get<std::string>("transform"));
+        this->setTransformId(config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM));
+    }
+    else
+    {
+        this->setTransformId(this->getID());
     }
 
-    if(config.count("length"))
+    if(config.count(s_CONFIG_LENGHT))
     {
-        m_length = config.get<float>("length");
+        m_length = config.get<float>(s_CONFIG_LENGHT);
     }
 }
 
@@ -105,9 +112,9 @@ void SAxis::starting()
     m_material = ::fwData::Material::New();
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, "material", true);
-    m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
+    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
     m_materialAdaptor->setLayerID(m_layerID);
     m_materialAdaptor->setShadingMode("ambient");

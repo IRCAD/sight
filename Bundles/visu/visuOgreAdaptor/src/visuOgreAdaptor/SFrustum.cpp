@@ -30,9 +30,10 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
 const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-static const std::string s_IN_CAMERA_NAME = "camera";
-static const std::string s_CONFIG_NEAR    = "near";
-static const std::string s_CONFIG_FAR     = "far";
+const std::string SFrustum::s_IN_CAMERA_NAME = "camera";
+const std::string SFrustum::s_CONFIG_NEAR    = "near";
+const std::string SFrustum::s_CONFIG_FAR     = "far";
+const std::string SFrustum::s_CONFIG_COLOR   = "color";
 
 //-----------------------------------------------------------------------------
 
@@ -41,7 +42,7 @@ SFrustum::SFrustum() noexcept :
     m_visibility(true),
     m_near(0),
     m_far(0),
-    m_color("#ff0000ff")
+    m_color()
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
@@ -96,9 +97,9 @@ void SFrustum::configuring()
         m_far = config.get<float>(s_CONFIG_FAR);
     }
 
-    if(config.count("color"))
+    if(config.count(s_CONFIG_COLOR))
     {
-        m_color = config.get< std::string >("color");
+        m_color = config.get< std::string >(s_CONFIG_COLOR);
     }
 }
 
@@ -115,8 +116,8 @@ void SFrustum::starting()
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
     m_materialAdaptor->registerInOut(material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
-    m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
+    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
+    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
     m_materialAdaptor->setLayerID(this->m_layerID);
     m_materialAdaptor->setShadingMode("ambient");
@@ -125,7 +126,7 @@ void SFrustum::starting()
     m_materialAdaptor->update();
 
     // Create camera
-    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_"+s_IN_CAMERA_NAME));
+    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_IN_CAMERA_NAME));
     m_ogreCam->setPosition(Ogre::Vector3(0, 0, 0));
     m_ogreCam->setMaterial(m_materialAdaptor->getMaterial());
     m_ogreCam->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));

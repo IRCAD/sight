@@ -39,6 +39,7 @@ namespace visuOgreAdaptor
  * in the STransform adaptor
  * -\b near (optional): near clipping of the Ogre::Camera
  * -\b far (optional): far clipping of the Ogre::Camera
+ * -\b color (optional): color of the frustum
  */
 class VISUOGREADAPTOR_CLASS_API SFrustum : public ::fwRenderOgre::IAdaptor,
                                            public ::fwRenderOgre::ITransformable
@@ -62,6 +63,11 @@ public:
     VISUOGREADAPTOR_API void updateVisibility(bool);
     /// Toggle visibility of the frustum
     VISUOGREADAPTOR_API void toggleVisibility();
+
+    static const std::string s_IN_CAMERA_NAME;
+    static const std::string s_CONFIG_NEAR;
+    static const std::string s_CONFIG_FAR;
+    static const std::string s_CONFIG_COLOR;
 
 private:
 
