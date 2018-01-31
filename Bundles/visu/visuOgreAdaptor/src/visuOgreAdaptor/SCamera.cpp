@@ -268,8 +268,9 @@ void SCamera::calibrate()
         const float nfx = fx * ratioH;
         const float nfy = fy * ratioH;
 
-        const float znear = m_nearClipDistance;
-        const float zfar  = m_farClipDistance;
+        const auto defaultCam = this->getLayer()->getDefaultCamera();
+        const float znear     = defaultCam->getNearClipDistance();
+        const float zfar      = defaultCam->getFarClipDistance();
 
         // compute principle point offset according to size of displayed image
         float px       = ratioH * cx;
