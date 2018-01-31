@@ -80,6 +80,8 @@ void SCamera::starting()
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
+    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_RANGE_UPDATED_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);

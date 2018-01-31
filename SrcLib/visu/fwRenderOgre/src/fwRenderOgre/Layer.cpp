@@ -46,11 +46,12 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG          = "layerInitialized";
-const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG        = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG  = "compositorUpdated";
-const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG = "StereoModeChanged";
-const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG      = "CameraUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
+const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG   = "compositorUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG  = "StereoModeChanged";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG       = "CameraUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT   = "resetCamera";
@@ -170,6 +171,7 @@ Layer::Layer() :
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
     newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
+    newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
@@ -755,6 +757,7 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
             m_camera->setNearClipDistance( maxNear );
             m_camera->setFarClipDistance( minFar );
         }
+        this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
     }
 }
 
