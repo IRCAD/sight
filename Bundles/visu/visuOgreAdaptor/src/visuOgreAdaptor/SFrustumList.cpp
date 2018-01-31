@@ -8,6 +8,8 @@
 
 #include <arData/Camera.hpp>
 
+#include <fwCom/Slots.hxx>
+
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
