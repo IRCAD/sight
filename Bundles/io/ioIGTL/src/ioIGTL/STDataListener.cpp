@@ -100,7 +100,7 @@ void STDataListener::runClient()
 
         if(!m_deviceNamesConfig.empty())
         {
-            for(auto dn : m_deviceNamesConfig)
+            for(const auto& dn : m_deviceNamesConfig)
             {
                 const std::string dnKey = ::ioIGTL::helper::getPreferenceKey<std::string>(dn->getValue());
                 m_client.addAuthorizedDevice(dnKey);
