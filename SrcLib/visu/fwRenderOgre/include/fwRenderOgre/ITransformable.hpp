@@ -7,8 +7,8 @@
 #pragma once
 
 #include "fwRenderOgre/config.hpp"
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/SRender.hpp>
+#include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/SRender.hpp"
 
 #include <OgreMatrix4.h>
 
@@ -60,4 +60,3 @@ protected:
 };
 
 } //namespace fwRenderOgre
-

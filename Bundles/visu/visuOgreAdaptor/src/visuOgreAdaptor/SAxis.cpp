@@ -20,14 +20,14 @@ const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
-const std::string SAxis::s_CONFIG_LENGHT = "length";
+const std::string SAxis::s_CONFIG_LENGTH = "length";
 
 //-----------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept :
     m_materialAdaptor(nullptr),
     m_material(nullptr),
-    m_length(50.f),
+    m_length(),
     m_isVisible(true)
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
@@ -81,19 +81,8 @@ void SAxis::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM))
-    {
-        this->setTransformId(config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM));
-    }
-    else
-    {
-        this->setTransformId(this->getID());
-    }
-
-    if(config.count(s_CONFIG_LENGHT))
-    {
-        m_length = config.get<float>(s_CONFIG_LENGHT);
-    }
+    this->setTransformId(config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, this->getID()));
+    m_length = config.get<float>(s_CONFIG_LENGTH, 50.f);
 }
 
 //-----------------------------------------------------------------------------

@@ -41,7 +41,7 @@ namespace visuOgreAdaptor
  * -\b layer (mandatory): defines the mesh's layer
  * -\b transform (optional): the name of the Ogre transform node where to attach the mesh, as it was specified
  * in the STransform adaptor
- * -\b length (optional): lenght of the axis in mm (default 50)
+ * -\b length (optional): (float) length of the axis in mm (default 50)
  *
  */
 class VISUOGREADAPTOR_CLASS_API SAxis : public ::fwRenderOgre::IAdaptor,
@@ -55,31 +55,24 @@ public:
     /// Destructor: Does nothing
     VISUOGREADAPTOR_API virtual ~SAxis() noexcept;
 
-    /**
-     * @name Slots API
-     * @{
-     */
+    /// Slot to set visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
-
+    /// Slot to toggle visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
     typedef ::fwCom::Slot<void ()> ToggleVisibilitySlotType;
 
     /// Sets visibility of axis
     VISUOGREADAPTOR_API void updateVisibility(bool isVisible);
-
     /// Toggle visibility of axis
     VISUOGREADAPTOR_API void toggleVisibility();
-
-    /** @} */
-
     /// Returns if the axis is visible in the scene or not.
     VISUOGREADAPTOR_API bool getVisibility() const;
-
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    static const std::string s_CONFIG_LENGHT;
+    /// Key for length
+    static const std::string s_CONFIG_LENGTH;
 
 private:
 
@@ -91,6 +84,7 @@ private:
     void stopping() override;
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
     void updating() override;
+
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
