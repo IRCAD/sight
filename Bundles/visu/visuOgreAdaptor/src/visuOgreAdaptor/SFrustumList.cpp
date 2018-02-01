@@ -34,6 +34,7 @@ static const std::string s_IN_TRANSFORM   = "transform";
 //-----------------------------------------------------------------------------
 
 SFrustumList::SFrustumList() noexcept :
+    m_material(nullptr),
     m_visibility(true),
     m_near(1.f),
     m_far(100.f),
@@ -90,12 +91,11 @@ void SFrustumList::starting()
     m_frustumList.set_capacity(m_capacity);
 
     // Create material
-    ::fwData::Material::sptr material = ::fwData::Material::New();
-
-    material->diffuse()->setRGBA(m_color);
+    m_material = ::fwData::Material::New();
+    m_material->diffuse()->setRGBA(m_color);
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
     m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
@@ -247,6 +247,9 @@ void SFrustumList::stopping()
 {
     this->unregisterServices();
     this->clear();
+    m_materialAdaptor.reset();
+    m_materialAdaptor = nullptr;
+    m_material        = nullptr;
 }
 
 //-----------------------------------------------------------------------------

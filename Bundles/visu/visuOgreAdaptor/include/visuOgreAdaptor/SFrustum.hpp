@@ -87,9 +87,9 @@ private:
 
     /// Ogre's camera used to displayed frustum
     Ogre::Camera* m_ogreCam;
-    /// Adaptor to create an ogre Ogre::Material from fwData::Material.
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
-    /// Frustum's visibility
+    /// Pointer to the Material data
+    ::fwData::Material::sptr m_material;
+    /// Hides or displays the frustum
     bool m_visibility;
     /// Near clipping
     float m_near;

@@ -125,6 +125,8 @@ private:
 
     /// Adaptor to create an ogre Ogre::Material from fwData::Material.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
+    /// Pointer to the Material data
+    ::fwData::Material::sptr m_material;
 
 };
 

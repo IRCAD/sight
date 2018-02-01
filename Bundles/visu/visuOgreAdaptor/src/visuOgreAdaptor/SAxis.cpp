@@ -25,7 +25,6 @@ const std::string SAxis::s_CONFIG_LENGTH = "length";
 //-----------------------------------------------------------------------------
 
 SAxis::SAxis() noexcept :
-    m_materialAdaptor(nullptr),
     m_material(nullptr),
     m_length(0.f),
     m_isVisible(true)
@@ -100,21 +99,22 @@ void SAxis::starting()
     // set the material
     m_material = ::fwData::Material::New();
 
-    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService( this->getRenderService() );
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_materialAdaptor->start();
+    ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
+        "::visuOgreAdaptor::SMaterial");
+    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
+    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
+    materialAdaptor->setRenderService( this->getRenderService() );
+    materialAdaptor->setLayerID(m_layerID);
+    materialAdaptor->setShadingMode("ambient");
+    materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->start();
 
-    m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
-    m_materialAdaptor->update();
+    materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    materialAdaptor->update();
 
     // Draw
-    xLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    xLine->begin(materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     xLine->position(0, 0, 0);
     xLine->colour(1.0f, 0, 0);
     xLine->position(m_length, 0, 0);
@@ -123,7 +123,7 @@ void SAxis::starting()
 
     this->attachNode(xLine);
 
-    yLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    yLine->begin(materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     yLine->position(0, 0, 0);
     yLine->colour(0, 1.0f, 0);
     yLine->position(0, m_length, 0);
@@ -132,7 +132,7 @@ void SAxis::starting()
 
     this->attachNode(yLine);
 
-    zLine->begin(m_materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    zLine->begin(materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
     zLine->position(0, 0, 0);
     zLine->colour(0, 0, 1.0f);
     zLine->position(0, 0, m_length);
@@ -163,7 +163,6 @@ void SAxis::updating()
 void SAxis::stopping()
 {
     this->unregisterServices();
-    m_materialAdaptor.reset();
     m_material = nullptr;
 }
 

@@ -88,8 +88,6 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
-    /// Pointer to a SMaterial adaptor
-    ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
     /// Handle the length of each axes (in mm)

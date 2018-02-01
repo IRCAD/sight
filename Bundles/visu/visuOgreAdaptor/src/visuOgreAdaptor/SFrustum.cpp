@@ -38,7 +38,8 @@ const std::string SFrustum::s_CONFIG_COLOR = "color";
 //-----------------------------------------------------------------------------
 
 SFrustum::SFrustum() noexcept :
-    m_materialAdaptor(nullptr),
+    m_ogreCam(nullptr),
+    m_material(nullptr),
     m_visibility(true),
     m_near(0.f),
     m_far(0.f),
@@ -76,25 +77,25 @@ void SFrustum::starting()
     this->initialize();
 
     // Create material
-    ::fwData::Material::sptr material = ::fwData::Material::New();
+    m_material = ::fwData::Material::New();
+    m_material->diffuse()->setRGBA(m_color);
 
-    material->diffuse()->setRGBA(m_color);
-
-    m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService( this->getRenderService() );
-    m_materialAdaptor->setLayerID(this->m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
-    m_materialAdaptor->start();
-    m_materialAdaptor->update();
+    ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
+        "::visuOgreAdaptor::SMaterial");
+    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
+    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
+    materialAdaptor->setRenderService( this->getRenderService() );
+    materialAdaptor->setLayerID(this->m_layerID);
+    materialAdaptor->setShadingMode("ambient");
+    materialAdaptor->setMaterialTemplateName(::fwRenderOgre::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->start();
+    materialAdaptor->update();
 
     // Create camera
     m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_INPUT_CAMERA));
     m_ogreCam->setPosition(Ogre::Vector3(0, 0, 0));
-    m_ogreCam->setMaterial(m_materialAdaptor->getMaterial());
+    m_ogreCam->setMaterial(materialAdaptor->getMaterial());
     m_ogreCam->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
     m_ogreCam->setDebugDisplayEnabled(true);
 
@@ -137,7 +138,7 @@ void SFrustum::updating()
 void SFrustum::stopping()
 {
     this->unregisterServices();
-    m_materialAdaptor.reset();
+    m_material = nullptr;
 }
 
 //-----------------------------------------------------------------------------
