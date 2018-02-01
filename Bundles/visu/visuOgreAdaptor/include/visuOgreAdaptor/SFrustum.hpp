@@ -63,13 +63,13 @@ public:
     VISUOGREADAPTOR_API void toggleVisibility();
 
     /// Key for the camera
-    static const std::string s_IN_CAMERA;
+    VISUOGREADAPTOR_API static const std::string s_INPUT_CAMERA;
     /// Key for the near plane
-    static const std::string s_CONFIG_NEAR;
+    VISUOGREADAPTOR_API static const std::string s_CONFIG_NEAR;
     /// Key for the far plane
-    static const std::string s_CONFIG_FAR;
+    VISUOGREADAPTOR_API static const std::string s_CONFIG_FAR;
     /// Key for color
-    static const std::string s_CONFIG_COLOR;
+    VISUOGREADAPTOR_API static const std::string s_CONFIG_COLOR;
 
 private:
 

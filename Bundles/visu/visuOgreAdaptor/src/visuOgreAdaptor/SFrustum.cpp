@@ -30,7 +30,7 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
 const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-const std::string SFrustum::s_IN_CAMERA    = "camera";
+const std::string SFrustum::s_INPUT_CAMERA = "camera";
 const std::string SFrustum::s_CONFIG_NEAR  = "near";
 const std::string SFrustum::s_CONFIG_FAR   = "far";
 const std::string SFrustum::s_CONFIG_COLOR = "color";
@@ -40,8 +40,8 @@ const std::string SFrustum::s_CONFIG_COLOR = "color";
 SFrustum::SFrustum() noexcept :
     m_materialAdaptor(nullptr),
     m_visibility(true),
-    m_near(0),
-    m_far(0),
+    m_near(0.f),
+    m_far(0.f),
     m_color()
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
@@ -92,7 +92,7 @@ void SFrustum::starting()
     m_materialAdaptor->update();
 
     // Create camera
-    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_IN_CAMERA));
+    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_INPUT_CAMERA));
     m_ogreCam->setPosition(Ogre::Vector3(0, 0, 0));
     m_ogreCam->setMaterial(m_materialAdaptor->getMaterial());
     m_ogreCam->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
@@ -144,7 +144,7 @@ void SFrustum::stopping()
 
 void SFrustum::setOgreCamFromData()
 {
-    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_IN_CAMERA);
+    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_INPUT_CAMERA);
     if(camera != nullptr)
     {
         const auto h    = static_cast<float>(camera->getHeight());
@@ -157,8 +157,24 @@ void SFrustum::setOgreCamFromData()
     }
     else
     {
-        SLM_WARN("the input '" + s_IN_CAMERA + "' is not set");
+        SLM_WARN("the input '" + s_INPUT_CAMERA + "' is not set");
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrustum::updateVisibility(bool isVisible)
+{
+    m_visibility = isVisible;
+    this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrustum::toggleVisibility()
+{
+    m_visibility = !m_visibility;
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------

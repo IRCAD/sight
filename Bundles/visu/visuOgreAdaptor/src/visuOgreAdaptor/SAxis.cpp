@@ -27,7 +27,7 @@ const std::string SAxis::s_CONFIG_LENGTH = "length";
 SAxis::SAxis() noexcept :
     m_materialAdaptor(nullptr),
     m_material(nullptr),
-    m_length(),
+    m_length(0.f),
     m_isVisible(true)
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SAxis::updateVisibility, this);
