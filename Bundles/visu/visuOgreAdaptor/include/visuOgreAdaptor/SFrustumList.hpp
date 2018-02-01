@@ -7,7 +7,7 @@
 #pragma once
 
 #include "visuOgreAdaptor/config.hpp"
-#include <visuOgreAdaptor/SFrustum.hpp>
+#include "visuOgreAdaptor/SFrustum.hpp"
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -18,12 +18,12 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief SFrustumList display a new Frustum each times the transform is updated.
- * The number of Frustum is fixed, if the maximum number of Frustum is reached the older one will be replaced.
+ * @brief SFrustumList displays a new Frustum each times the transform is updated.
+ * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots
- * - \b UpdateVisibilitySlotType(bool): update visibility of frustums with the boolean parameter
- * - \b ToggleVisibilitySlotType(): switch visibility from previsous state.
+ * - \b updateVisibility(bool): update visibility of frustums with the boolean parameter
+ * - \b toggleVisibility(): switch visibility from previsous state.
 
  * @section XML XML Configuration
  *
@@ -40,8 +40,8 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * -\b layer (mandatory): defines the frustum's layer
- * -\b near (optional): near clipping of the Ogre::Camera
- * -\b far (optional): far clipping of the Ogre::Camera
+ * -\b near (optional): near clipping distance of the Ogre::Camera
+ * -\b far (optional): far clipping distance of the Ogre::Camera
  * -\b color (optional): frustums's color
  */
 class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
@@ -67,57 +67,57 @@ public:
     /// Add new frustum slot (connected to the TransformationMatrix3D::Modified signal)
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT;
 
-    /// Slot for enable/disable visibility
+    /// Slot to enable/disable visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
-    /// Slot for toggle visibility
+    /// Slot toggling visibility
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
 
     /** @} */
 
-    /// Returns proposals to connect service slots to associated object signals
+    /// Connects fwData::TransformationMatrix3D::MODIFIED to the addFrustum slot
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
-    /// This method is used to configure the service.
+    /// configures the adaptor
     VISUOGREADAPTOR_API void configuring() override;
 
-    /// Do nothing.
+    /// starts the adaptor and initializes material
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Do nothing.
+    /// stops the adaptor and clear data
     VISUOGREADAPTOR_API void stopping() override;
 
-    /// Do nothing.
+    /// updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot)
     VISUOGREADAPTOR_API void updating() override;
 
 private:
 
-    /// clear frustum list
+    /// Clears frustum list
     void clear();
-    /// Sets visibility of the frustums
+    /// Shows/hides all frustums
     void updateVisibility(bool);
-    /// Toggle visibility of the frustums
+    /// Switchs visibilty of frustums
     void toggleVisibility();
 
     /// Adds a frustum in the list and display it
     void addFrustum();
 
-    /// iterate over frustums to change their visibility
+    /// Iterate over frustums to change their visibility
     void updateAllVisibility();
 
-    /// Visibility
+    /// Handles current visibilty
     bool m_visibility;
-    /// Near clipping
+    /// Near clipping distance
     float m_near;
-    /// Far clipping
+    /// Far clipping distance
     float m_far;
-    /// color of frustum
+    /// Frustums color (default blue)
     std::string m_color;
 
-    /// max capacity of frustum list
+    /// Maximum capacity of frustum list
     unsigned int m_capacity;
-    /// circular list of frustum adaptors
+    /// Circular list of frustum adaptors
     ::boost::circular_buffer< ::Ogre::Camera* > m_frustumList;
 
     /// Used to generate unique ID for each Ogre::Camera.

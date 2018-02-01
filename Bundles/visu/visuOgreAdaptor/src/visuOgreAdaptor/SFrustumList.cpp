@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2018-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -132,9 +132,9 @@ void SFrustumList::addFrustum()
 
     SLM_ASSERT("Required input '" + s_IN_CAMERA_NAME + "' is not set", fwCamera);
 
-    const auto h    = static_cast<float>(fwCamera->getHeight());
-    const auto fy   = fwCamera->getFy();
-    const auto fovY = 2.f * std::atan( static_cast<float>( h / (2.f * fy)));
+    const float h    = static_cast<float>(fwCamera->getHeight());
+    const double fy  = fwCamera->getFy();
+    const float fovY = 2.f * std::atan( static_cast<float>( h / (2.f * static_cast<float>(fy))));
 
     ::Ogre::Camera* camera;
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
@@ -149,7 +149,7 @@ void SFrustumList::addFrustum()
     camera->setDebugDisplayEnabled(m_visibility);
 
     ::Ogre::Matrix4 ogreMat;
-    auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_IN_TRANSFORM);
+    const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_IN_TRANSFORM);
 
     // Multithreaded lock
     {
@@ -204,9 +204,9 @@ void SFrustumList::addFrustum()
 
 void SFrustumList::updateAllVisibility()
 {
-    for(auto it : m_frustumList)
+    for(auto camera : m_frustumList)
     {
-        it->setDebugDisplayEnabled(m_visibility);
+        camera->setDebugDisplayEnabled(m_visibility);
     }
 }
 
@@ -214,9 +214,9 @@ void SFrustumList::updateAllVisibility()
 
 void SFrustumList::clear()
 {
-    for(auto it : m_frustumList)
+    for(auto camera : m_frustumList)
     {
-        this->getSceneManager()->destroyCamera(it);
+        this->getSceneManager()->destroyCamera(camera);
     }
 
     m_frustumList.clear();
