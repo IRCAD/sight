@@ -13,8 +13,8 @@ endif()
 
 fwLoadProperties()
 
-find_package (Boost COMPONENTS regex REQUIRED)
-find_package(OGRE REQUIRED)
+find_package(Boost QUIET COMPONENTS regex REQUIRED)
+find_package(OGRE QUIET REQUIRED)
 
 # Treat warnings as errors
 if ( CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
