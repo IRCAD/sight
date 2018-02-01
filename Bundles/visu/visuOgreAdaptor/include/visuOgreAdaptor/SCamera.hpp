@@ -108,12 +108,6 @@ private:
     /// Ogre camera managed by this adaptor.
     ::Ogre::Camera* m_camera;
 
-    /// Position of the near clipping plane.
-    ::Ogre::Real m_nearClipDistance;
-
-    /// Position of the far clipping plane.
-    ::Ogre::Real m_farClipDistance;
-
     /// Aspect ratio for the frustum viewport.
     ::Ogre::Real m_aspectRatio;
 

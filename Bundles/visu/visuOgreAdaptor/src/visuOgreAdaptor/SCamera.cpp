@@ -40,8 +40,6 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformat
 
 SCamera::SCamera() noexcept :
     m_camera(nullptr),
-    m_nearClipDistance(1.f),
-    m_farClipDistance(1000.f),
     m_aspectRatio(0.f)
 {
     newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
@@ -82,6 +80,8 @@ void SCamera::starting()
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
                               this->getSptr(), s_UPDATE_TF_SLOT);
+    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_RANGE_UPDATED_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
 
     m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
@@ -217,8 +217,7 @@ void SCamera::setNearClipDistance(::Ogre::Real _nearClipDistance)
 {
     SLM_ASSERT("The associated camera doesn't exist.", m_camera);
 
-    m_nearClipDistance = _nearClipDistance;
-    m_camera->setNearClipDistance(m_nearClipDistance);
+    m_camera->setNearClipDistance(_nearClipDistance);
 }
 
 //------------------------------------------------------------------------------
@@ -227,8 +226,7 @@ void SCamera::setFarClipDistance(::Ogre::Real _farClipDistance)
 {
     SLM_ASSERT("The associated camera doesn't exist.", m_camera);
 
-    m_farClipDistance = _farClipDistance;
-    m_camera->setFarClipDistance(m_farClipDistance);
+    m_camera->setFarClipDistance(_farClipDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -268,8 +266,8 @@ void SCamera::calibrate()
         const float nfx = fx * ratioH;
         const float nfy = fy * ratioH;
 
-        const float znear = m_nearClipDistance;
-        const float zfar  = m_farClipDistance;
+        const float znear = m_camera->getNearClipDistance();
+        const float zfar  = m_camera->getFarClipDistance();
 
         // compute principle point offset according to size of displayed image
         float px       = ratioH * cx;

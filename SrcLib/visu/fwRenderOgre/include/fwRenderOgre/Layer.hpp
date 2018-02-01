@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_LAYER_HPP__
-#define __FWRENDEROGRE_LAYER_HPP__
+#pragma once
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
 #include "fwRenderOgre/compositor/Core.hpp"
@@ -87,6 +86,7 @@ public:
     typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
     typedef ::fwCom::Signal<void ()> CameraUpdatedSignalType;
     /** @} */
 
@@ -357,5 +357,3 @@ private:
 };
 
 }
-
-#endif // __FWRENDEROGRE_LAYER_HPP__
