@@ -6,16 +6,16 @@
 
 #include "visuOgreAdaptor/SFrustum.hpp"
 
-#include "fwRenderOgre/helper/Scene.hpp"
-
 #include "visuOgreAdaptor/SCamera.hpp"
-#include <visuOgreAdaptor/SMaterial.hpp>
+#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <arData/Camera.hpp>
 
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Material.hpp>
+
+#include <fwRenderOgre/helper/Scene.hpp>
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -30,10 +30,10 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
 const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-const std::string SFrustum::s_IN_CAMERA_NAME = "camera";
-const std::string SFrustum::s_CONFIG_NEAR    = "near";
-const std::string SFrustum::s_CONFIG_FAR     = "far";
-const std::string SFrustum::s_CONFIG_COLOR   = "color";
+const std::string SFrustum::s_IN_CAMERA    = "camera";
+const std::string SFrustum::s_CONFIG_NEAR  = "near";
+const std::string SFrustum::s_CONFIG_FAR   = "far";
+const std::string SFrustum::s_CONFIG_COLOR = "color";
 
 //-----------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ SFrustum::SFrustum() noexcept :
     m_visibility(true),
     m_near(0),
     m_far(0),
-    m_color("#ff0000ff")
+    m_color()
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
@@ -59,7 +59,7 @@ SFrustum::~SFrustum() noexcept
 void SFrustum::updateVisibility(bool isVisible)
 {
     m_visibility = isVisible;
-    updating();
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void SFrustum::updateVisibility(bool isVisible)
 void SFrustum::toggleVisibility()
 {
     m_visibility = !m_visibility;
-    updating();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -78,29 +78,11 @@ void SFrustum::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count(::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM))
-    {
-        this->setTransformId(config.get<std::string>(::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM));
-    }
-    else
-    {
-        this->setTransformId(this->getID());
-    }
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM, this->getID() ));
 
-    if(config.count(s_CONFIG_NEAR))
-    {
-        m_near = config.get<float>(s_CONFIG_NEAR);
-    }
-
-    if(config.count(s_CONFIG_FAR))
-    {
-        m_far = config.get<float>(s_CONFIG_FAR);
-    }
-
-    if(config.count(s_CONFIG_COLOR))
-    {
-        m_color = config.get< std::string >(s_CONFIG_COLOR);
-    }
+    m_near  = config.get<float>(s_CONFIG_NEAR, 0.f);
+    m_far   = config.get<float>(s_CONFIG_FAR, 0.f);
+    m_color = config.get< std::string >(s_CONFIG_COLOR, "#ff0000ff");
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +108,7 @@ void SFrustum::starting()
     m_materialAdaptor->update();
 
     // Create camera
-    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_IN_CAMERA_NAME));
+    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_IN_CAMERA));
     m_ogreCam->setPosition(Ogre::Vector3(0, 0, 0));
     m_ogreCam->setMaterial(m_materialAdaptor->getMaterial());
     m_ogreCam->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
@@ -143,7 +125,7 @@ void SFrustum::starting()
     }
 
     // Set data to camera
-    setDataToOgreCam();
+    this->setOgreCamFromData();
 
     // Add camera to ogre scene
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
@@ -162,7 +144,7 @@ void SFrustum::starting()
 
 void SFrustum::updating()
 {
-    setDataToOgreCam();
+    this->setOgreCamFromData();
     this->requestRender();
 }
 
@@ -176,9 +158,9 @@ void SFrustum::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SFrustum::setDataToOgreCam()
+void SFrustum::setOgreCamFromData()
 {
-    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_IN_CAMERA_NAME);
+    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_IN_CAMERA);
     if(camera != nullptr)
     {
         const auto h    = static_cast<float>(camera->getHeight());
@@ -191,7 +173,7 @@ void SFrustum::setDataToOgreCam()
     }
     else
     {
-        SLM_WARN("the input '" + s_IN_CAMERA_NAME + "' is not set");
+        SLM_WARN("the input '" + s_IN_CAMERA + "' is not set");
     }
 }
 
