@@ -54,22 +54,6 @@ SFrustum::~SFrustum() noexcept
 {
 }
 
-//-----------------------------------------------------------------------------
-
-void SFrustum::updateVisibility(bool isVisible)
-{
-    m_visibility = isVisible;
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void SFrustum::toggleVisibility()
-{
-    m_visibility = !m_visibility;
-    this->updating();
-}
-
 //------------------------------------------------------------------------------
 
 void SFrustum::configuring()
