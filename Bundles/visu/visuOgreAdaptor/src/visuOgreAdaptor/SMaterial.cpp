@@ -70,11 +70,11 @@ SMaterial::~SMaterial() noexcept
 void SMaterial::createShaderParameterAdaptors()
 {
     // We retrieve the parameters of the base material in a temporary material
-    m_material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
+    auto material = this->getMaterial();
 
-    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", m_material );
+    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
 
-    const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*m_material);
+    const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
     for(const auto& constant : constants)
     {
         const std::string& constantName = std::get<0>(constant);

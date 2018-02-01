@@ -180,8 +180,6 @@ private:
     /// Current number of lights in the scene.
     int m_lightsNumber;
 
-    ::Ogre::MaterialPtr m_material;
-
     ::fwRenderOgre::Material::uptr m_materialFw;
     ::fwRenderOgre::R2VBRenderable* m_r2vbObject { nullptr };
 };
