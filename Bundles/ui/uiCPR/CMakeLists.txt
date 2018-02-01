@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 fwLink(
     ${Qt5Core_LIBRARIES}
     ${Qt5Gui_LIBRARIES}

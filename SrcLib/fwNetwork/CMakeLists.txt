@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(Qt5 COMPONENTS Core Gui Network REQUIRED)
+find_package(Qt5 QUIET COMPONENTS Core Gui Network REQUIRED)
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIR}
     ${Qt5Gui_INCLUDE_DIR}

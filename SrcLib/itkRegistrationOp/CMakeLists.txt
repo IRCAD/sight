@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(ITK REQUIRED)
+find_package(ITK QUIET REQUIRED)
 
 fwForwardLink(
     ITKOptimizersv4

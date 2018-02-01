@@ -1,9 +1,9 @@
 fwLoadProperties()
 
-find_package(ZLIB REQUIRED )
+find_package(ZLIB QUIET REQUIRED )
 
 # Boost shouldn't be necessary but not linking it results in weird linker errors (duplicate symbols).
-find_package(Boost COMPONENTS thread system REQUIRED)
+find_package(Boost QUIET COMPONENTS thread system REQUIRED)
 find_library(cgogn_LIBRARY NAMES cgogn libcgogn PATHS ${EXTERNAL_LIBRARIES}/lib)
 
 fwInclude(

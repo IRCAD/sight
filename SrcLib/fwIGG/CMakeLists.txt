@@ -1,7 +1,7 @@
 fwLoadProperties()
 
-find_package( ZLIB REQUIRED )
-find_package(Eigen REQUIRED)
+find_package(ZLIB QUIET REQUIRED )
+find_package(Eigen QUIET REQUIRED)
 
 find_library(cgogn_LIBRARY NAMES cgogn libcgogn PATHS ${EXTERNAL_LIBRARIES}/lib)
 
