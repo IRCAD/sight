@@ -174,10 +174,10 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
 
     // Registration.
     m_registrator = RegistrationMethodType::New();
-    auto optimizer = OptimizerType::New();
+    m_optimizer   = OptimizerType::New();
 
     m_registrator->SetMetric(metric);
-    m_registrator->SetOptimizer(optimizer);
+    m_registrator->SetOptimizer(m_optimizer);
 
     OptimizerType::ScalesType optimizerScales(static_cast<unsigned int>(itkTransform->GetNumberOfParameters()));
     const double translationScale = 1.0 / 1000.0;
@@ -188,11 +188,13 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     optimizerScales[4] = translationScale;
     optimizerScales[5] = translationScale;
 
-    optimizer->SetScales( optimizerScales );
-    optimizer->SetDoEstimateLearningRateAtEachIteration( true );
-    optimizer->SetMinimumStepLength(_minStep);
-    optimizer->SetReturnBestParametersAndValue(true);
-    optimizer->SetNumberOfIterations(_maxIterations);
+    m_optimizer->SetScales( optimizerScales );
+    m_optimizer->SetDoEstimateLearningRateAtEachIteration( true );
+    m_optimizer->SetMinimumStepLength(_minStep);
+
+    // The solution is the transform returned when optimization ends.
+    m_optimizer->SetReturnBestParametersAndValue(false);
+    m_optimizer->SetNumberOfIterations(_maxIterations);
 
     // The fixed image isn't transformed, nearest neighbor interpolation is enough.
     auto fixedInterpolator  = ::itk::NearestNeighborInterpolateImageFunction< RegisteredImageType, RealType >::New();
@@ -221,7 +223,13 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     m_registrator->SetInitialTransform(itkTransform);
     m_registrator->SetFixedImage(target);
     m_registrator->SetMovingImage(reference);
+
     m_registrator->SetMetricSamplingPercentage(_samplingPercentage);
+
+    const auto samplingStrategy = _samplingPercentage < 1.0 ?
+                                  RegistrationMethodType::REGULAR : RegistrationMethodType::NONE;
+
+    m_registrator->SetMetricSamplingStrategy(samplingStrategy);
     m_registrator->SetNumberOfLevels(::itk::SizeValueType(numberOfLevels));
     m_registrator->SetSmoothingSigmasPerLevel( smoothingSigmasPerLevel );
     m_registrator->SetShrinkFactorsPerLevel( shrinkFactorsPerLevel );
@@ -232,28 +240,19 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     if(_callback)
     {
         observer->setCallback(_callback);
-        optimizer->AddObserver( ::itk::IterationEvent(), observer );
+        m_optimizer->AddObserver( ::itk::IterationEvent(), observer );
     }
-
-    m_optimizer = optimizer;
 
     try
     {
         // Time for lift-off.
         m_registrator->Update();
+        this->getCurrentMatrix(_trf);
     }
     catch( ::itk::ExceptionObject& err )
     {
         OSLM_ERROR("Error while registering : " << err);
-        return;
     }
-
-    m_optimizer = nullptr;
-
-    // Get the last transform.
-    const TransformType* finalTransform = m_registrator->GetTransform();
-
-    this->convertToF4sMatrix(finalTransform, _trf);
 }
 
 //------------------------------------------------------------------------------
