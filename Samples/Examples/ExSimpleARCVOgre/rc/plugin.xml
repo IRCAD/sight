@@ -282,6 +282,7 @@
 
             <service uid="genericScene" type="::fwRenderOgre::SRender" autoConnect="yes">
                 <scene>
+                    <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="video" depth="1" />
                     <layer id="default" depth="2" />
                     <adaptor uid="videoAdpt" />
@@ -324,18 +325,15 @@
 
             <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
                 <scene>
+                    <background topColor="#46455A" bottomColor="#46455A" />
                     <layer id="default" depth="1" />
-                    <adaptor uid="interactorStyle1" />
                     <adaptor uid="axis2" />
                     <adaptor uid="trfAdpt" />
                     <adaptor uid="meshAdpt2" />
                     <adaptor uid="frustumAdpt" />
                     <adaptor uid="frustumListAdpt" />
+                    <adaptor uid="cameraAdpt2" />
                 </scene>
-            </service>
-
-            <service uid="interactorStyle1" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Trackball" />
             </service>
 
             <service uid="axis2" type="::visuOgreAdaptor::SAxis">
@@ -361,6 +359,11 @@
                 <in key="camera" uid="camera" />
                 <in key="transform" uid="inverseMat" />
                 <config layer="default" nbMax="200" near="1.f" far="20.f" />
+            </service>
+
+            <service uid="cameraAdpt2" type="::visuOgreAdaptor::SCamera" autoConnect="yes">
+                <inout key="transform" uid="identity" />
+                <config layer="default" />
             </service>
 
 
@@ -552,12 +555,12 @@
 
             <!-- Ogre debug scene -->
 
-            <start uid="interactorStyle1" />
             <start uid="axis2" />
             <start uid="trfAdpt" />
             <start uid="meshAdpt2" />
             <start uid="frustumAdpt" />
             <start uid="frustumListAdpt" />
+            <start uid="cameraAdpt2" />
 
             <update uid="actionHide" />
             <update uid="actionShowHideDebug" />
