@@ -256,4 +256,3 @@ inline ::fwRenderOgre::Material* SMaterial::getMaterialFw() const
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
