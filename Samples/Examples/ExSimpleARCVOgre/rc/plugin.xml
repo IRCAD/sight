@@ -69,11 +69,13 @@
                     <layout>
                         <menuItem name="Show Settings" shortcut="Ctrl+H" style="check" />
                         <menuItem name="Show Cube" shortcut="Ctrl+C" style="check" />
+                        <menuItem name="Show Debug" shortcut="Ctrl+D" style="check" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionHide" start="yes" />
                     <menuItem sid="actionUpdateCubeVisibility" start="yes" />
+                    <menuItem sid="actionShowHideDebug" start="yes" />
                 </registry>
             </service>
 
@@ -145,16 +147,64 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericScene" />
+                    <view sid="sceneView"  start="yes"/>
                     <view sid="errorLabel" start="yes" />
                 </registry>
             </service>
 
+            <service uid="sceneView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="3" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="arView" start="yes" />
+                    <view sid="debugView" start="yes" />
+                </registry>
+            </service>
+
+
+            <service uid="arView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" />
+                </registry>
+            </service>
+
+
+            <service uid="debugView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="debugScene" />
+                </registry>
+            </service>
+
+
             <!-- declaration of actions/slot callers -->
             <service uid="actionQuit" type="::gui::action::SQuit" />
+
             <service uid="actionHide" type="::gui::action::SModifyLayout">
                 <config>
                     <show_or_hide sid="parameters" />
+                </config>
+            </service>
+
+            <service uid="actionShowHideDebug" type="::gui::action::SModifyLayout">
+                <config>
+                    <show_or_hide sid="debugView" />
                 </config>
             </service>
 
@@ -186,12 +236,14 @@
             <service uid="actionUpdateAxesVisibility" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>axis/updateVisibility</slot>
+                    <slot>axis2/updateVisibility</slot>
                 </slots>
             </service>
 
             <service uid="actionUpdateCubeVisibility" type="::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>meshAdpt/updateVisibility</slot>
+                    <slot>meshAdpt2/updateVisibility</slot>
                 </slots>
             </service>
 
@@ -269,6 +321,48 @@
                 <inout key="mesh" uid="cube" />
                 <config layer="default" />
             </service>
+
+            <service uid="debugScene" type="::fwRenderOgre::SRender" autoConnect="yes">
+                <scene>
+                    <layer id="default" depth="1" />
+                    <adaptor uid="interactorStyle1" />
+                    <adaptor uid="axis2" />
+                    <adaptor uid="trfAdpt" />
+                    <adaptor uid="meshAdpt2" />
+                    <adaptor uid="frustumAdpt" />
+                    <adaptor uid="frustumListAdpt" />
+                </scene>
+            </service>
+
+            <service uid="interactorStyle1" type="::visuOgreAdaptor::SInteractorStyle">
+                <config layer="default" style="Trackball" />
+            </service>
+
+            <service uid="axis2" type="::visuOgreAdaptor::SAxis">
+                <config layer="default" transform="id" length="30" />
+            </service>
+
+            <service uid="trfAdpt" type="::visuOgreAdaptor::STransform" autoConnect="yes">
+                <inout key="transform" uid="inverseMat" />
+                <config layer="default" picker="" transform="cameraMatrixTrf" />
+            </service>
+
+            <service uid="meshAdpt2" type="::visuOgreAdaptor::SMesh" autoConnect="yes">
+                <inout key="mesh" uid="cube" />
+                <config layer="default" />
+            </service>
+
+            <service uid="frustumAdpt" type="::visuOgreAdaptor::SFrustum" autoConnect="yes">
+                <in key="camera" uid="camera" />
+                <config layer="default" transform="cameraMatrixTrf" near="1" far="100"/>
+            </service>
+
+            <service uid="frustumListAdpt" type="::visuOgreAdaptor::SFrustumList" autoConnect="yes">
+                <in key="camera" uid="camera" />
+                <in key="transform" uid="inverseMat" />
+                <config layer="default" nbMax="200" near="1.f" far="20.f" />
+            </service>
+
 
             <!-- *************************** End generic scene *************************** -->
 
@@ -443,11 +537,12 @@
             <start uid="registration" />
             <start uid="matrixReverser" />
             <start uid="genericScene" />
+            <start uid="debugScene" />
             <start uid="error" />
             <start uid="meshreader" />
             <start uid="actionUpdateAxesVisibility" />
 
-            <!-- VTK scene 'genericScene' -->
+            <!-- Ogre scene 'genericScene' -->
             <start uid="videoAdpt" />
             <start uid="interactorStyle" />
             <start uid="interactorStyle2" />
@@ -455,7 +550,17 @@
             <start uid="cameraAdpt" />
             <start uid="meshAdpt" />
 
+            <!-- Ogre debug scene -->
+
+            <start uid="interactorStyle1" />
+            <start uid="axis2" />
+            <start uid="trfAdpt" />
+            <start uid="meshAdpt2" />
+            <start uid="frustumAdpt" />
+            <start uid="frustumListAdpt" />
+
             <update uid="actionHide" />
+            <update uid="actionShowHideDebug" />
             <update uid="actionUpdateAxesVisibility" />
             <update uid="actionUpdateCubeVisibility" />
 
