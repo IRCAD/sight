@@ -28,19 +28,19 @@ const ::fwCom::Slots::SlotKeyType SFrustumList::s_UPDATE_VISIBILITY_SLOT = "upda
 const ::fwCom::Slots::SlotKeyType SFrustumList::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustumList::s_ADD_FRUSTUM_SLOT       = "addFrustum";
 
-static const std::string s_IN_CAMERA_NAME = "camera";
-static const std::string s_IN_TRANSFORM   = "transform";
+const std::string SFrustumList::s_CAMERA_NAME_INPUT = "camera";
+const std::string SFrustumList::s_TRANSFORM_INPUT   = "transform";
 
 //-----------------------------------------------------------------------------
 
 SFrustumList::SFrustumList() noexcept :
-    m_material(nullptr),
     m_visibility(true),
     m_near(1.f),
     m_far(100.f),
     m_color("#0000ffff"),
     m_capacity(50),
-    m_currentCamIndex(0)
+    m_currentCamIndex(0),
+    m_material(nullptr)
 {
 
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustumList::updateVisibility, this);
@@ -62,7 +62,7 @@ SFrustumList::~SFrustumList() noexcept
 fwServices::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IN_TRANSFORM, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT );
+    connections.push(s_TRANSFORM_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT );
     return connections;
 }
 
@@ -128,13 +128,13 @@ void SFrustumList::toggleVisibility()
 void SFrustumList::addFrustum()
 {
     //Get camera parameters
-    const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_IN_CAMERA_NAME);
+    const std::shared_ptr< const ::arData::Camera > fwCamera = this->getInput< ::arData::Camera >(s_CAMERA_NAME_INPUT);
 
-    SLM_ASSERT("Required input '" + s_IN_CAMERA_NAME + "' is not set", fwCamera);
+    SLM_ASSERT("Required input '" + s_CAMERA_NAME_INPUT + "' is not set", fwCamera);
 
-    const float h    = static_cast<float>(fwCamera->getHeight());
-    const double fy  = fwCamera->getFy();
-    const float fovY = 2.f * std::atan( static_cast<float>( h / (2.f * static_cast<float>(fy))));
+    const double h    = static_cast<double>(fwCamera->getHeight());
+    const double fy   = static_cast<double>(fwCamera->getFy());
+    const double fovY = 2. * std::atan(( h / (2. * fy)));
 
     ::Ogre::Camera* camera;
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
@@ -149,7 +149,7 @@ void SFrustumList::addFrustum()
     camera->setDebugDisplayEnabled(m_visibility);
 
     ::Ogre::Matrix4 ogreMat;
-    const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_IN_TRANSFORM);
+    const auto fwTransform = this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
 
     // Multithreaded lock
     {

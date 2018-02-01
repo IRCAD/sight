@@ -30,10 +30,10 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SFrustum);
 const ::fwCom::Slots::SlotKeyType SFrustum::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 const ::fwCom::Slots::SlotKeyType SFrustum::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 
-const std::string SFrustum::s_INPUT_CAMERA = "camera";
-const std::string SFrustum::s_CONFIG_NEAR  = "near";
-const std::string SFrustum::s_CONFIG_FAR   = "far";
-const std::string SFrustum::s_CONFIG_COLOR = "color";
+const std::string SFrustum::s_CAMERA_INPUT = "camera";
+const std::string SFrustum::s_NEAR_CONFIG  = "near";
+const std::string SFrustum::s_FAR_CONFIG   = "far";
+const std::string SFrustum::s_COLOR_CONFIG = "color";
 
 //-----------------------------------------------------------------------------
 
@@ -65,9 +65,9 @@ void SFrustum::configuring()
 
     this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM, this->getID() ));
 
-    m_near  = config.get<float>(s_CONFIG_NEAR, 0.f);
-    m_far   = config.get<float>(s_CONFIG_FAR, 0.f);
-    m_color = config.get< std::string >(s_CONFIG_COLOR, "#ff0000ff");
+    m_near  = config.get<float>(s_NEAR_CONFIG, 0.f);
+    m_far   = config.get<float>(s_FAR_CONFIG, 0.f);
+    m_color = config.get< std::string >(s_COLOR_CONFIG, "#ff0000ff");
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void SFrustum::starting()
     materialAdaptor->update();
 
     // Create camera
-    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_INPUT_CAMERA));
+    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_CAMERA_INPUT));
     m_ogreCam->setPosition(Ogre::Vector3(0, 0, 0));
     m_ogreCam->setMaterial(materialAdaptor->getMaterial());
     m_ogreCam->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
@@ -145,12 +145,12 @@ void SFrustum::stopping()
 
 void SFrustum::setOgreCamFromData()
 {
-    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_INPUT_CAMERA);
+    const std::shared_ptr< const ::arData::Camera > camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     if(camera != nullptr)
     {
-        const auto h    = static_cast<float>(camera->getHeight());
-        const auto fy   = camera->getFy();
-        const auto fovY = 2.f * std::atan( static_cast<float>( h / (2.f * fy)));
+        const double h    = static_cast<double>(camera->getHeight());
+        const double fy   = static_cast<double>(camera->getFy());
+        const double fovY = 2. * std::atan(( h / (2. * fy)));
 
         m_ogreCam->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
         m_ogreCam->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));
@@ -158,7 +158,7 @@ void SFrustum::setOgreCamFromData()
     }
     else
     {
-        SLM_WARN("the input '" + s_INPUT_CAMERA + "' is not set");
+        SLM_WARN("the input '" + s_CAMERA_INPUT + "' is not set");
     }
 }
 

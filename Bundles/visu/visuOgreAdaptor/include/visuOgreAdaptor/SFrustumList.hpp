@@ -78,6 +78,11 @@ public:
     /// Connects fwData::TransformationMatrix3D::MODIFIED to the addFrustum slot
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
+    /// Key for camera
+    static const std::string s_CAMERA_NAME_INPUT;
+    /// Key for transform
+    static const std::string s_TRANSFORM_INPUT;
+
 protected:
     /// configures the adaptor
     VISUOGREADAPTOR_API void configuring() override;
@@ -85,7 +90,7 @@ protected:
     /// starts the adaptor and initializes material
     VISUOGREADAPTOR_API void starting() override;
 
-    /// stops the adaptor and clear data
+    /// stops the adaptor and clears data
     VISUOGREADAPTOR_API void stopping() override;
 
     /// updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot)
@@ -97,13 +102,13 @@ private:
     void clear();
     /// Shows/hides all frustums
     void updateVisibility(bool);
-    /// Switchs visibilty of frustums
+    /// Switches visibilty of frustums
     void toggleVisibility();
 
-    /// Adds a frustum in the list and display it
+    /// Adds a frustum in the list and displays it
     void addFrustum();
 
-    /// Iterate over frustums to change their visibility
+    /// Iterates over frustums to change their visibility
     void updateAllVisibility();
 
     /// Handles current visibilty

@@ -72,7 +72,7 @@ public:
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Key for length
-    VISUOGREADAPTOR_API static const std::string s_CONFIG_LENGTH;
+    VISUOGREADAPTOR_API static const std::string s_LENGTH_CONFIG;
 
 private:
 

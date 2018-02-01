@@ -20,7 +20,7 @@ const ::fwCom::Slots::SlotKeyType SAxis::s_TOGGLE_VISIBILITY_SLOT = "toggleVisib
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SAxis);
 
-const std::string SAxis::s_CONFIG_LENGTH = "length";
+const std::string SAxis::s_LENGTH_CONFIG = "length";
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ void SAxis::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     this->setTransformId(config.get<std::string>(::visuOgreAdaptor::STransform::s_CONFIG_TRANSFORM, this->getID()));
-    m_length = config.get<float>(s_CONFIG_LENGTH, 50.f);
+    m_length = config.get<float>(s_LENGTH_CONFIG, 50.f);
 }
 
 //-----------------------------------------------------------------------------
