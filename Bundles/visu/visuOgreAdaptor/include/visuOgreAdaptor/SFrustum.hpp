@@ -82,10 +82,10 @@ private:
     /// Checks if the camera has changed, and updates it if it has.
     void updating() override;
 
-    /// Set data to Ogre::Camera
+    /// Sets Ogre::Camera from arData::Camera parameters
     void setOgreCamFromData();
 
-    /// Ogre's camera used to displayed frustum
+    /// Ogre's camera (frustum) representing arData::Camera position and parameters
     Ogre::Camera* m_ogreCam;
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;

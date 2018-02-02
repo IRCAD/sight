@@ -71,9 +71,6 @@ public:
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Key for length
-    VISUOGREADAPTOR_API static const std::string s_LENGTH_CONFIG;
-
 private:
 
     /// Configures the adaptor

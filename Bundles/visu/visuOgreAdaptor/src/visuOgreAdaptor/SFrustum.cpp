@@ -63,7 +63,8 @@ void SFrustum::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM, this->getID() ));
+    this->setTransformId(config.get<std::string>( ::fwRenderOgre::ITransformable::s_CONFIG_TRANSFORM,
+                                                  this->getID() + "_transform"));
 
     m_near  = config.get<float>(s_NEAR_CONFIG, 0.f);
     m_far   = config.get<float>(s_FAR_CONFIG, 0.f);
