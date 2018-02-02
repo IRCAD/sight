@@ -130,6 +130,10 @@ void SInteractorStyle::setInteractorStyle()
                                                                                    interactor));
         }
     }
+    else
+    {
+        SLM_WARN("'" + s_STYLES_PICKER +" is not set.");
+    }
 
     if(std::strcmp("", m_movementStyle.c_str()) != 0)
     {
@@ -145,6 +149,11 @@ void SInteractorStyle::setInteractorStyle()
                                                                                  interactor));
         }
     }
+    else
+    {
+        SLM_WARN("'" + s_STYLES_MOVEMENT +"' is not set.");
+    }
+
 }
 
 //------------------------------------------------------------------------------

@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "visuOgreAdaptor/config.hpp" > \
-    "
+#include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -33,8 +32,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type=" ::visuOgreAdaptor::SInteractorStyle ">
-            <config render=" ... " movement=" ... " picker=" ... \
-    " />
+            <config render=" ... " movement=" ... " picker=" ..." />
        </service>
    @endcode
  * @subsection Configuration Configuration:
@@ -49,11 +47,23 @@ public:
 
     fwCoreServiceClassDefinitionsMacro((SInteractorStyle)(::fwRenderOgre::IAdaptor))
 
+    /**
+     * @name Signals API
+     * @{
+     */
     /// Signal sent when a point is clicked
     typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSignalType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_POINT_CLICKED_SIG;
-    /// Slots used when a point
+    /** @} */
+
+    /**
+     * @name Slots API
+     * @{
+     */
+
+    /// Slots used when a point is clicked
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_POINT_CLICKED_SLOT;
+    /** @} */
 
     /// Constructor. Creates signals and slots
     VISUOGREADAPTOR_API SInteractorStyle() noexcept;
@@ -77,7 +87,6 @@ private:
     void clickedPoint(fwData::Object::sptr obj);
     /// Set interactor style
     void setInteractorStyle();
-
     /// Type of the picker style
     std::string m_pickerStyle;
     /// Type of the movement style
@@ -86,7 +95,6 @@ private:
     PointClickedSignalType::sptr m_sigPointClicked;
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
-
 };
 
-}
+} //namespace visuOgreAdaptor
