@@ -763,19 +763,18 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
 
 //-----------------------------------------------------------------------------
 
-void Layer::doRayCast(int x, int y, int width, int height)
+bool Layer::doRayCast(int x, int y, int width, int height)
 {
     if(m_selectInteractor)
     {
-        OSLM_ASSERT("SelectInteractor Isn't initialized, add the adaptor to your xml file.", m_selectInteractor);
-
         if(!m_selectInteractor->isPickerInitialized())
         {
             m_selectInteractor->initPicker();
         }
 
-        m_selectInteractor->mouseClickEvent(x, y, width, height);
+        return m_selectInteractor->mouseClickEvent(x, y, width, height);
     }
+    return false;
 }
 
 //-----------------------------------------------------------------------------

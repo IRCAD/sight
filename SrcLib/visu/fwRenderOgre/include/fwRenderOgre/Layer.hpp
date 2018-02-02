@@ -189,7 +189,7 @@ public:
     /// Sets the render service.
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
 
-    FWRENDEROGRE_API void doRayCast(int x, int y, int width, int height);
+    FWRENDEROGRE_API bool doRayCast(int x, int y, int width, int height);
 
     FWRENDEROGRE_API ::fwRenderOgre::interactor::IInteractor getInteractor(std::string type);
 

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_INTERACTOR_VIDEOPICKERINTERACTOR_HPP__
-#define __FWRENDEROGRE_INTERACTOR_VIDEOPICKERINTERACTOR_HPP__
+#pragma once
 
 #include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
@@ -50,9 +49,7 @@ protected:
      * @param width the render window width
      * @param height the render window height
      */
-    FWRENDEROGRE_API void mouseClickEvent(int x, int y, int width, int height);
+    FWRENDEROGRE_API bool mouseClickEvent(int x, int y, int width, int height);
 };
 } //namespace itneractor
 } //namespace fwRenderOgre
-
-#endif // __FWRENDEROGRE_INTERACTOR_VIDEOPICKERINTERACTOR_HPP__
