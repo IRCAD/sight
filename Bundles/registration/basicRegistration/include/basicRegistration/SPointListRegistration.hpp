@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __BASICREGISTRATION_SPOINTLISTREGISTRATION_HPP__
-#define __BASICREGISTRATION_SPOINTLISTREGISTRATION_HPP__
+#pragma once
 
 #include "basicRegistration/config.hpp"
 
 #include <fwCom/Slot.hpp>
 
-#include <fwServices/IController.hpp>
+#include <fwServices/IRegisterer.hpp>
 
 namespace basicRegistration
 {
@@ -24,6 +23,7 @@ namespace basicRegistration
  * - \b errorComputed(double): emitted when registration error is computed.
  * @section Slots Slots
  * - \b changeMode(std::string): called when registration mode is changed.
+ * - \b computeRegistration(::fwCore::HiResClock::HiResClockType timestamp): computes the registration.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
@@ -43,12 +43,12 @@ namespace basicRegistration
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
-class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IController
+class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IRegisterer
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SPointListRegistration)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro( (SPointListRegistration)(::fwServices::IRegisterer) );
 
     /**
      * @name Slots API
@@ -70,6 +70,9 @@ public:
     BASICREGISTRATION_API virtual ~SPointListRegistration();
 
 protected:
+
+    /// Register a point list slot
+    BASICREGISTRATION_API void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) override;
 
     /// Registration Mode (default: RIGID)
     typedef enum Mode
@@ -113,5 +116,3 @@ private:
 };
 
 } // namespace basicRegistration
-
-#endif /*__BASICREGISTRATION_SPOINTLISTREGISTRATION_HPP__*/
