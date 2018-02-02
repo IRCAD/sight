@@ -248,11 +248,11 @@
             </service>
 
             <service uid="interactorStyle" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="default" style="Fixed" />
+                <config layer="default" movement="Fixed" />
             </service>
 
             <service uid="interactorStyle2" type="::visuOgreAdaptor::SInteractorStyle">
-                <config layer="video" style="Fixed" />
+                <config layer="video" movement="Fixed" />
             </service>
 
             <service uid="axis" type="::visuOgreAdaptor::SAxis">
