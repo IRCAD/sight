@@ -105,7 +105,7 @@ void SAxis::starting()
 
     ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
         "::visuOgreAdaptor::SMaterial");
-    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
     materialAdaptor->setRenderService( this->getRenderService() );

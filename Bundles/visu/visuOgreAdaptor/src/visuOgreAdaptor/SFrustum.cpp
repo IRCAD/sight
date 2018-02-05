@@ -83,7 +83,7 @@ void SFrustum::starting()
 
     ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >(
         "::visuOgreAdaptor::SMaterial");
-    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
     materialAdaptor->setRenderService( this->getRenderService() );
@@ -151,7 +151,7 @@ void SFrustum::setOgreCamFromData()
     {
         const double h    = static_cast<double>(camera->getHeight());
         const double fy   = static_cast<double>(camera->getFy());
-        const double fovY = 2. * std::atan(( h / (2. * fy)));
+        const double fovY = 2. * std::atan( h / (2. * fy));
 
         m_ogreCam->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
         m_ogreCam->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));

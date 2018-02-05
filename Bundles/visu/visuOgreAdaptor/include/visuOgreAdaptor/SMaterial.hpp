@@ -119,7 +119,7 @@ public:
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    VISUOGREADAPTOR_API static const std::string s_INOUT_MATERIAL;
+    VISUOGREADAPTOR_API static const std::string s_MATERIAL_INOUT;
 
 protected:
 

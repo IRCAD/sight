@@ -44,7 +44,7 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_SWAP_TEXTURE_SLOT   = "swapTextur
 const ::fwCom::Slots::SlotKeyType SMaterial::s_ADD_TEXTURE_SLOT    = "addTexture";
 const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTexture";
 
-const std::string SMaterial::s_INOUT_MATERIAL = "material";
+const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
 //------------------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ void SMaterial::createShaderParameterAdaptors()
             srv->start();
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
-            ::fwData::Material::sptr material   = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+            ::fwData::Material::sptr material   = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
             ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters",
                                                                             ::fwData::Composite::New());
             (*composite)[constantName] = obj;
@@ -183,7 +183,7 @@ void SMaterial::starting()
 {
     this->initialize();
 
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     if(!m_shadingMode.empty())
     {
@@ -259,7 +259,7 @@ void SMaterial::stopping()
     m_textureConnection.disconnect();
     this->unregisterServices();
 
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     if(material->getField("shaderParameters"))
     {
         material->removeField("shaderParameters");
@@ -270,7 +270,7 @@ void SMaterial::stopping()
 
 void SMaterial::updating()
 {
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     if(m_r2vbObject)
     {
@@ -321,7 +321,7 @@ void SMaterial::swapTexture()
     m_materialFw->setDiffuseTexture(currentTexture);
 
     // Update the shaders
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
                                      this->hasDiffuseTexture(), m_texAdaptor->getUseAlpha() );
 
@@ -334,7 +334,7 @@ void SMaterial::createTextureAdaptor()
 {
     SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
-    ::fwData::Material::sptr f4sMaterial = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+    ::fwData::Material::sptr f4sMaterial = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
 
     // If the associated material has a texture, we have to create a texture adaptor to handle it
     if(f4sMaterial->getDiffuseTexture())
@@ -374,7 +374,7 @@ void SMaterial::removeTextureAdaptor()
     m_texAdaptor.reset();
 
     // Update the shaders
-    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_INOUT_MATERIAL);
+    ::fwData::Material::sptr material = this->getInOut< ::fwData::Material >(s_MATERIAL_INOUT);
     m_materialFw->updateShadingMode( material->getShadingMode(), this->getLayer()->getLightsNumber(),
                                      this->hasDiffuseTexture(), false );
 
@@ -386,11 +386,11 @@ void SMaterial::removeTextureAdaptor()
 ::fwServices::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push( s_INOUT_MATERIAL, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
-    connections.push( s_INOUT_MATERIAL, ::fwData::Object::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
-    connections.push( s_INOUT_MATERIAL, ::fwData::Object::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
-    connections.push( s_INOUT_MATERIAL, ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT );
-    connections.push( s_INOUT_MATERIAL, ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Object::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT );
+    connections.push( s_MATERIAL_INOUT, ::fwData::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT );
     return connections;
 }
 

@@ -95,7 +95,7 @@ void SFrustumList::starting()
     m_material->diffuse()->setRGBA(m_color);
 
     m_materialAdaptor = this->registerService< ::visuOgreAdaptor::SMaterial >("::visuOgreAdaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_INOUT_MATERIAL, true);
+    m_materialAdaptor->registerInOut(m_material, ::visuOgreAdaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
@@ -134,7 +134,7 @@ void SFrustumList::addFrustum()
 
     const double h    = static_cast<double>(fwCamera->getHeight());
     const double fy   = static_cast<double>(fwCamera->getFy());
-    const double fovY = 2. * std::atan(( h / (2. * fy)));
+    const double fovY = 2. * std::atan( h / (2. * fy));
 
     ::Ogre::Camera* camera;
     camera = this->getSceneManager()->createCamera(::Ogre::String(this->getID()+"_camera"
