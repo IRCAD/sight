@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -146,7 +146,9 @@ SVolume::SVolume() noexcept :
     m_croppingBoxDefaultState(true),
     m_cropBoxTransform(nullptr),
     m_autoResetCamera(true),
-    m_reductionFactor(1.0)
+    m_reductionFactor(1.0),
+    m_blendMode("composite")
+
 {
     m_boxWidget->KeyPressActivationOff();
     m_boxWidget->SetRotationEnabled(0);
@@ -223,6 +225,10 @@ void SVolume::configuring()
     m_cropBoxTransformID = config.get<std::string>("cropBoxTransform", "");
 
     m_reductionFactor = config.get<double>("reductionFactor", 1.);
+
+    // Blend Mode
+    m_blendMode = config.get<std::string>("blend", "composite");
+
 }
 
 //------------------------------------------------------------------------------
@@ -467,6 +473,31 @@ void SVolume::buildPipeline( )
     m_volumeProperty->SetDiffuse( 1.0 );
     m_volumeProperty->SetSpecular( 1.0 );
     m_volumeProperty->SetSpecularPower( 10.0 );
+
+    // set the mapper according to the blendMode
+    if(m_blendMode == "min")
+    {
+        m_volumeMapper->SetBlendModeToMinimumIntensity();
+    }
+    else if(m_blendMode == "max")
+    {
+        m_volumeMapper->SetBlendModeToMaximumIntensity();
+    }
+    else if(m_blendMode == "average")
+    {
+        m_volumeMapper->SetRequestedRenderMode(vtkSmartVolumeMapper::GPURenderMode);
+        m_volumeMapper->SetAverageIPScalarRange(-200, 2000);
+        m_volumeMapper->SetBlendModeToAverageIntensity();
+    }
+    else if(m_blendMode == "additive")
+    {
+        m_volumeMapper->SetBlendModeToAdditive();
+
+    }
+    else if(m_blendMode != "composite")
+    {
+        OSLM_WARN("blend mode '"<< m_blendMode <<"' is unkown. Should be min, max, average, composite or additive.");
+    }
 
     m_volume->SetMapper(m_volumeMapper);
     m_volume->SetProperty(m_volumeProperty);
