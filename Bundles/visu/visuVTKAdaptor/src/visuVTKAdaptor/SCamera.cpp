@@ -87,7 +87,7 @@ void SCamera::configuring()
     this->configureParams();
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>.");
-    m_viewAngle = config.get<double>("viewAngle", 30.0);
+    m_viewAngle = config.get<double>("viewAngle", m_viewAngle);
 
 }
 
@@ -111,7 +111,6 @@ void SCamera::starting()
     camera->SetFocalPoint(focal);
     camera->SetViewUp(viewUp);
     camera->SetViewAngle(m_viewAngle);
-    //camera->SetClippingRange(0.1, 10000);
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
     this->requestRender();
