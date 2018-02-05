@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SMESH_HPP__
-#define __VISUOGREADAPTOR_SMESH_HPP__
+#pragma once
 
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
@@ -78,7 +77,7 @@ namespace visuOgreAdaptor
  * template, the texture adaptor and the shading mode) :
  *  - \b materialTemplate (optional) : the name of the base Ogre material for the internally created SMaterial.
  *  - \b textureName (optional) : the name of the Ogre texture that the mesh will use.
- *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode.
+ *  - \b shadingMode (optional, none/flat/gouraud/phong/ambient, default=phong) : name of the used shading mode.
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -275,5 +274,3 @@ inline void SMesh::setIsReconstructionManaged(bool _isReconstructionManaged)
 //------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
-
-#endif // __VISUOGREADAPTOR_SMESH_HPP__
