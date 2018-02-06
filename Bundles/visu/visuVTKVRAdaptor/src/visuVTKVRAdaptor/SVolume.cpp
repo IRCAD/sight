@@ -148,7 +148,6 @@ SVolume::SVolume() noexcept :
     m_autoResetCamera(true),
     m_reductionFactor(1.0),
     m_blendMode("composite")
-
 {
     m_boxWidget->KeyPressActivationOff();
     m_boxWidget->SetRotationEnabled(0);
@@ -494,9 +493,13 @@ void SVolume::buildPipeline( )
         m_volumeMapper->SetBlendModeToAdditive();
 
     }
-    else if(m_blendMode != "composite")
+    else if(m_blendMode == "composite")
     {
-        OSLM_WARN("blend mode '"<< m_blendMode <<"' is unkown. Should be min, max, average, composite or additive.");
+        m_volumeMapper->SetBlendModeToComposite();
+    }
+    else
+    {
+        OSLM_WARN("blend mode '"<< m_blendMode <<"' is unknown. Should be min, max, average, composite or additive.");
     }
 
     m_volume->SetMapper(m_volumeMapper);

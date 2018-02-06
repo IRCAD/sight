@@ -62,7 +62,7 @@ namespace visuVTKVRAdaptor
  * - \b cropBoxTransform (optional) : vtkTransform applied to the cropping box.
  * - \b transform (optional) : vtkTransform applied to the volume.
  * - \b blend (optional) : vtk BlendMode used for rendering: composite, additive, min, max, average (default:
- *      composite).
+ *      composite). Warning : average mode will use GPU .
  */
 class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::fwRenderVTK::IAdaptor
