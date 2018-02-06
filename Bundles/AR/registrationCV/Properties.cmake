@@ -11,6 +11,7 @@ set( DEPENDENCIES
     fwMath
     fwRuntime
     fwServices
+    cvIO
 )
 
 set( REQUIREMENTS dataReg
