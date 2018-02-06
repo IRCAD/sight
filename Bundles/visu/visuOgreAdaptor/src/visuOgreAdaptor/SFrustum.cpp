@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,12 +38,10 @@ const std::string SFrustum::s_COLOR_CONFIG = "color";
 //-----------------------------------------------------------------------------
 
 SFrustum::SFrustum() noexcept :
-    m_ogreCam(nullptr),
-    m_material(nullptr),
+    m_ogreCamera(nullptr),
     m_visibility(true),
     m_near(0.f),
-    m_far(0.f),
-    m_color()
+    m_far(0.f)
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SFrustum::updateVisibility, this);
     newSlot(s_TOGGLE_VISIBILITY_SLOT, &SFrustum::toggleVisibility, this);
@@ -94,20 +92,20 @@ void SFrustum::starting()
     materialAdaptor->update();
 
     // Create camera
-    m_ogreCam = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_CAMERA_INPUT));
-    m_ogreCam->setPosition(Ogre::Vector3(0, 0, 0));
-    m_ogreCam->setMaterial(materialAdaptor->getMaterial());
-    m_ogreCam->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
-    m_ogreCam->setDebugDisplayEnabled(true);
+    m_ogreCamera = this->getSceneManager()->createCamera(::Ogre::String(this->getID() + s_CAMERA_INPUT));
+    m_ogreCamera->setPosition(::Ogre::Vector3(0, 0, 0));
+    m_ogreCamera->setMaterial(materialAdaptor->getMaterial());
+    m_ogreCamera->setDirection(::Ogre::Vector3(::Ogre::Real(0), ::Ogre::Real(0), ::Ogre::Real(1)));
+    m_ogreCamera->setDebugDisplayEnabled(true);
 
     // Clipping
     if(m_near != 0.f)
     {
-        m_ogreCam->setNearClipDistance(m_near);
+        m_ogreCamera->setNearClipDistance(m_near);
     }
     if(m_far != 0.f)
     {
-        m_ogreCam->setFarClipDistance(m_far);
+        m_ogreCamera->setFarClipDistance(m_far);
     }
 
     // Set data to camera
@@ -121,7 +119,7 @@ void SFrustum::starting()
     {
         transNode = rootSceneNode->createChildSceneNode(this->getTransformId());
     }
-    transNode->attachObject(m_ogreCam);
+    transNode->attachObject(m_ogreCamera);
 
     this->requestRender();
 }
@@ -153,9 +151,9 @@ void SFrustum::setOgreCamFromData()
         const double fy   = static_cast<double>(camera->getFy());
         const double fovY = 2. * std::atan( h / (2. * fy));
 
-        m_ogreCam->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
-        m_ogreCam->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));
-        m_ogreCam->setVisible(m_visibility);
+        m_ogreCamera->setFOVy(::Ogre::Radian( ::Ogre::Real(fovY)));
+        m_ogreCamera->setAspectRatio(::Ogre::Real(camera->getWidth()/camera->getHeight()));
+        m_ogreCamera->setVisible(m_visibility);
     }
     else
     {

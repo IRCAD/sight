@@ -182,18 +182,13 @@ void SFrustumList::addFrustum()
     camera->setNearClipDistance(m_near);
     camera->setFarClipDistance(m_far);
 
-    //if the list is not full
-    if(!m_frustumList.full())
-    {
-        m_frustumList.push_front(camera);
-    }
-    else
+    if(m_frustumList.full())
     {
         //Remove the oldest one
         this->getSceneManager()->destroyCamera(m_frustumList.back());
-        //Add the new one
-        m_frustumList.push_front(camera);
     }
+    //Add the new one
+    m_frustumList.push_front(camera);
 
     m_currentCamIndex++;
 

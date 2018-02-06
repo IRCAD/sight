@@ -118,7 +118,7 @@ void SAxis::starting()
     materialAdaptor->update();
 
     // Draw
-    xLine->begin(materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    xLine->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     xLine->position(0, 0, 0);
     xLine->colour(1.0f, 0, 0);
     xLine->position(m_length, 0, 0);
@@ -127,7 +127,7 @@ void SAxis::starting()
 
     this->attachNode(xLine);
 
-    yLine->begin(materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    yLine->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     yLine->position(0, 0, 0);
     yLine->colour(0, 1.0f, 0);
     yLine->position(0, m_length, 0);
@@ -136,7 +136,7 @@ void SAxis::starting()
 
     this->attachNode(yLine);
 
-    zLine->begin(materialAdaptor->getMaterialName(), Ogre::RenderOperation::OT_LINE_LIST);
+    zLine->begin(materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_LIST);
     zLine->position(0, 0, 0);
     zLine->colour(0, 0, 1.0f);
     zLine->position(0, 0, m_length);

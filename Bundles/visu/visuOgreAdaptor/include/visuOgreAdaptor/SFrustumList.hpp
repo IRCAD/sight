@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017-2018.
+ * FW4SPL - Copyright (C) IRCAD, 2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@ namespace visuOgreAdaptor
  * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): update visibility of frustums with the boolean parameter
- * - \b toggleVisibility(): switch visibility from previsous state.
+ * - \b updateVisibility(bool): Sets whether the frustum is shown or not.
+ * - \b toggleVisibility(): Toggles whether the frustum is shown or not.
 
  * @section XML XML Configuration
  *
@@ -40,9 +40,9 @@ namespace visuOgreAdaptor
  *
  * @subsection Configuration Configuration:
  * -\b layer (mandatory): defines the frustum's layer
- * -\b near (optional): near clipping distance of the Ogre::Camera
- * -\b far (optional): far clipping distance of the Ogre::Camera
- * -\b color (optional): frustums's color
+ * -\b near (optional): near clipping distance of the ::Ogre::Camera
+ * -\b far (optional): far clipping distance of the ::Ogre::Camera
+ * -\b color (optional): color of frustums
  */
 class VISUOGREADAPTOR_CLASS_API SFrustumList : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -75,7 +75,7 @@ public:
 
     /** @} */
 
-    /// Connects fwData::TransformationMatrix3D::MODIFIED to the addFrustum slot
+    /// Connects ::fwData::TransformationMatrix3D::MODIFIED to the addFrustum slot
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Key for camera
@@ -98,14 +98,13 @@ protected:
 
 private:
 
-    /// Clears frustum list
+    ///Slot: Clears frustum list
     void clear();
-    /// Shows/hides all frustums
+    ///Slot: Shows/hides all frustums
     void updateVisibility(bool);
-    /// Switches visibilty of frustums
+    ///Slot: Switches visibilty of frustums
     void toggleVisibility();
-
-    /// Adds a frustum in the list and displays it
+    ///Slot: Adds a frustum in the list and displays it
     void addFrustum();
 
     /// Iterates over frustums to change their visibility
@@ -119,16 +118,13 @@ private:
     float m_far;
     /// Frustums color (default blue)
     std::string m_color;
-
     /// Maximum capacity of frustum list
     unsigned int m_capacity;
     /// Circular list of frustum adaptors
     ::boost::circular_buffer< ::Ogre::Camera* > m_frustumList;
-
     /// Used to generate unique ID for each Ogre::Camera.
     size_t m_currentCamIndex;
-
-    /// Adaptor to create an ogre Ogre::Material from fwData::Material.
+    /// Adaptor to create an ogre ::Ogre::Material from ::fwData::Material.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Pointer to the Material data
     ::fwData::Material::sptr m_material;
