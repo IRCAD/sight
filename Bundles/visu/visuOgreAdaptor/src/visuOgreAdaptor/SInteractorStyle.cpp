@@ -43,10 +43,7 @@ static const std::map<std::string, std::string> s_STYLES_MOVEMENT = {
 
 //------------------------------------------------------------------------------
 
-SInteractorStyle::SInteractorStyle() noexcept :
-    m_pickerStyle(""),
-    m_movementStyle(""),
-    m_sigPointClicked(nullptr)
+SInteractorStyle::SInteractorStyle() noexcept
 {
     newSlot( s_POINT_CLICKED_SLOT, &::visuOgreAdaptor::SInteractorStyle::clickedPoint, this );
 
@@ -86,16 +83,16 @@ void SInteractorStyle::starting()
 
     this->setInteractorStyle();
 
-    if(std::strcmp("", m_pickerStyle.c_str()) != 0)
+    if(!m_pickerStyle.empty())
     {
         ::fwRenderOgre::interactor::IPickerInteractor::sptr pickerInteractor =
             this->getRenderService()->getLayer(m_layerID)->getSelectInteractor();
 
-        OSLM_ASSERT("There is no interactor found for this layer", pickerInteractor);
-        m_connections.connect(pickerInteractor,
-                              ::fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG,
-                              this->getSptr(),
-                              ::visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT);
+        if(pickerInteractor)
+        {
+            m_connections.connect(pickerInteractor, ::fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG,
+                                  this->getSptr(), ::visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT);
+        }
     }
 }
 
@@ -116,42 +113,50 @@ void SInteractorStyle::stopping()
 
 void SInteractorStyle::setInteractorStyle()
 {
-    if(std::strcmp("", m_pickerStyle.c_str()) != 0)
+    if(!m_pickerStyle.empty())
     {
-        const auto style = s_STYLES_PICKER.at(m_pickerStyle);
-
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
-        interactor->setSceneID(this->getSceneManager()->getName());
-
-        OSLM_WARN_IF("Unknown picker interactor style : " << style, interactor);
-        if(interactor)
+        if(s_STYLES_PICKER.count(m_pickerStyle))
         {
+            const auto style = s_STYLES_PICKER.at(m_pickerStyle);
+
+            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
+            OSLM_ASSERT("Unknown picker interactor style : " << style, interactor);
+
+            interactor->setSceneID(this->getSceneManager()->getName());
             this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(
                                                                                    interactor));
         }
-    }
-    else
-    {
-        SLM_WARN("'" + s_STYLES_PICKER +" is not set.");
-    }
-
-    if(std::strcmp("", m_movementStyle.c_str()) != 0)
-    {
-        const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
-
-        ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
-        interactor->setSceneID(this->getSceneManager()->getName());
-
-        OSLM_WARN_IF("Unknown movement interactor style : " << style, interactor);
-        if(interactor)
+        else
         {
-            this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
-                                                                                 interactor));
+            SLM_WARN("'" + s_CONFIG_PICKER +"' has an unknown value : '" + m_pickerStyle +"'");
         }
     }
     else
     {
-        SLM_WARN("'" + s_STYLES_MOVEMENT +"' is not set.");
+        SLM_WARN("'" + s_CONFIG_PICKER +"' is not set.");
+    }
+
+    if(!m_movementStyle.empty())
+    {
+        if(s_STYLES_MOVEMENT.count(m_movementStyle))
+        {
+            const auto style = s_STYLES_MOVEMENT.at(m_movementStyle);
+
+            ::fwRenderOgre::interactor::IInteractor::sptr interactor = ::fwRenderOgre::interactorFactory::New(style);
+            OSLM_ASSERT("Unknown movement interactor style : " << style, interactor);
+
+            interactor->setSceneID(this->getSceneManager()->getName());
+            this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
+                                                                                 interactor));
+        }
+        else
+        {
+            SLM_WARN("'" + s_CONFIG_MOVEMENT +"' has an unknown value : '" + m_movementStyle +"'");
+        }
+    }
+    else
+    {
+        SLM_WARN("'" + s_CONFIG_MOVEMENT +"' is not set.");
     }
 
 }
