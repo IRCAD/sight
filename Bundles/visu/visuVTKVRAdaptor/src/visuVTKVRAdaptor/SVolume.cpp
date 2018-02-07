@@ -340,6 +340,10 @@ void SVolume::updateTFWindowing(double /*window*/, double /*level*/)
 {
     ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
     this->updateVolumeTransferFunction(image);
+    if(m_blendMode == "average")
+    {
+        this->buildPipeline();
+    }
     this->requestRender();
 }
 
@@ -485,7 +489,10 @@ void SVolume::buildPipeline( )
     else if(m_blendMode == "average")
     {
         m_volumeMapper->SetRequestedRenderMode(vtkSmartVolumeMapper::GPURenderMode);
-        m_volumeMapper->SetAverageIPScalarRange(-200, 2000);
+
+        //use the TF windowing min and max values to set up the average blend range
+        std::pair< double, double > averageRange = this->getTransferFunction()->getWLMinMax();
+        m_volumeMapper->SetAverageIPScalarRange(averageRange.first, averageRange.second);
         m_volumeMapper->SetBlendModeToAverageIntensity();
     }
     else if(m_blendMode == "additive")
