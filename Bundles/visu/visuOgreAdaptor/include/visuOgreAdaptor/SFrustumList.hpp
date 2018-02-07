@@ -22,8 +22,8 @@ namespace visuOgreAdaptor
  * The number of Frustum is fixed, if the maximum number of Frustum is reached the oldest one will be replaced.
  *
  * @section Slots Slots
- * - \b updateVisibility(bool): Sets whether the frustum is shown or not.
- * - \b toggleVisibility(): Toggles whether the frustum is shown or not.
+ * - \b updateVisibility(bool): Sets whether frustums are shown or not.
+ * - \b toggleVisibility(): Toggles whether frustums are shown or not.
 
  * @section XML XML Configuration
  *
@@ -64,7 +64,7 @@ public:
     ///Clear all frustums slot
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT;
 
-    /// Add new frustum slot (connected to the TransformationMatrix3D::Modified signal)
+    /// Add new frustum slot (connected to the ::fwData::TransformationMatrix3D::s_MODIFIED_SIG signal)
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT;
 
     /// Slot to enable/disable visibility
@@ -75,7 +75,7 @@ public:
 
     /** @} */
 
-    /// Connects ::fwData::TransformationMatrix3D::MODIFIED to the addFrustum slot
+    /// Connects ::fwData::TransformationMatrix3D::s_MODIFIED_SIG to the addFrustum slot
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Key for camera
@@ -122,7 +122,7 @@ private:
     unsigned int m_capacity;
     /// Circular list of frustum adaptors
     ::boost::circular_buffer< ::Ogre::Camera* > m_frustumList;
-    /// Used to generate unique ID for each Ogre::Camera.
+    /// Used to generate unique ID for each ::Ogre::Camera.
     size_t m_currentCamIndex;
     /// Adaptor to create an ogre ::Ogre::Material from ::fwData::Material.
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
