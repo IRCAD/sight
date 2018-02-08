@@ -44,7 +44,7 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_SWAP_TEXTURE_SLOT   = "swapTextur
 const ::fwCom::Slots::SlotKeyType SMaterial::s_ADD_TEXTURE_SLOT    = "addTexture";
 const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTexture";
 
-static const std::string s_MATERIAL_INOUT = "material";
+const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
 //------------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ SMaterial::~SMaterial() noexcept
 void SMaterial::createShaderParameterAdaptors()
 {
     // We retrieve the parameters of the base material in a temporary material
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
+    auto material = this->getMaterial();
 
     SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
 
