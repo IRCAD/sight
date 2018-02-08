@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKVRADAPTOR_SVOLUME_HPP__
-#define __VISUVTKVRADAPTOR_SVOLUME_HPP__
+#pragma once
 
 #include "visuVTKVRAdaptor/config.hpp"
 
@@ -16,7 +15,7 @@
 #include <fwRenderVTK/IAdaptor.hpp>
 #include <fwRenderVTK/SRender.hpp>
 
-class vtkAbstractVolumeMapper;
+class vtkSmartVolumeMapper;
 class vtkBoxWidget2;
 class vtkColorTransferFunction;
 class vtkCommand;
@@ -32,10 +31,10 @@ namespace visuVTKVRAdaptor
  * @brief This adaptor displays a volume image.
  *
  * @section Slots Slots
- * - \b resetBoxWidget() : reset the clipping box widget around the volume.
- * - \b activateBoxClipping(bool) : show/hide clipping box.
- * - \b show(bool) : show/hide the volume.
- * - \b updateTFPoints() : updates the volume transfer function according to the new points
+ * - \b resetBoxWidget(): reset the clipping box widget around the volume.
+ * - \b activateBoxClipping(bool): show/hide clipping box.
+ * - \b show(bool): show/hide the volume.
+ * - \b updateTFPoints(): updates the volume transfer function according to the new points
  * - \b updateTFWindowing(double window, double level) : updates the volume transfer function according to the new
  *      window and level
  *
@@ -45,7 +44,7 @@ namespace visuVTKVRAdaptor
             <inout key="image" uid="..." />
             <inout key="tf" uid="..." optional="yes" />
             <config renderer="default"  clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"
-                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" />
+                    reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" blend="composite"/>
        </service
    @endcode
  * @subsection In-Out In-Out
@@ -55,13 +54,15 @@ namespace visuVTKVRAdaptor
  *      the slots 'updateTFPoints' and 'updateTFWindowing'.
  *
  * @subsection Configuration Configuration
- * - \b renderer : ID of renderer the adaptor must use
- * - \b clippingplanes (optional) : id of VTK object for clipping planes
- * - \b autoresetcamera (optional, default: yes) : defines if the renderer must reset camera when updating image
- * - \b croppingBox (optional, default: no) : defines if the cropping box must be shown
- * - \b reductionFactor (optional, [0-1]) : factor to resample the original image.
- * - \b cropBoxTransform (optional) : vtkTransform applied to the cropping box.
- * - \b transform (optional) : vtkTransform applied to the volume.
+ * - \b renderer: ID of renderer the adaptor must use
+ * - \b clippingplanes (optional): id of VTK object for clipping planes
+ * - \b autoresetcamera (optional, default: yes): defines if the renderer must reset camera when updating image
+ * - \b croppingBox (optional, default: no): defines if the cropping box must be shown.
+ * - \b reductionFactor (optional, [0-1]): factor to resample the original image.
+ * - \b cropBoxTransform (optional): vtkTransform applied to the cropping box.
+ * - \b transform (optional): vtkTransform applied to the volume.
+ * - \b blend (optional): vtk BlendMode used for rendering: composite, additive, min, max, average (default:
+ *      composite). Warning: average mode will use the GPU.
  */
 class VISUVTKVRADAPTOR_CLASS_API SVolume : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::fwRenderVTK::IAdaptor
@@ -133,7 +134,7 @@ protected:
 
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
-    vtkAbstractVolumeMapper* m_volumeMapper;
+    vtkSmartVolumeMapper* m_volumeMapper;
     vtkVolumeProperty* m_volumeProperty;
     vtkVolume* m_volume;
 
@@ -152,6 +153,9 @@ protected:
     /// XML ID for the transformation matrix affected only to the cropBox.
     std::string m_cropBoxTransformID;
 
+    /// Using the blend mode affects the VTKMapper class used for the rendering.
+    std::string m_blendMode;
+
     /// Transformation matrix affected only to the cropBox.
     vtkTransform* m_cropBoxTransform;
 
@@ -163,5 +167,3 @@ private:
 };
 
 } //namespace visuVTKVRAdaptor
-
-#endif // __VISUVTKVRADAPTOR_SVOLUME_HPP__
