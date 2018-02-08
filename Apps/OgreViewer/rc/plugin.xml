@@ -2,6 +2,7 @@
 
 <plugin id="OgreViewer" version="@PROJECT_VERSION@" >
 
+    <requirement id="arDataReg" />
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
