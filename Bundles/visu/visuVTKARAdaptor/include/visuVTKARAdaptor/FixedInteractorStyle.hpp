@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUVTKARADAPTOR_FIXEDINTERACTORSTYLE_HPP__
-#define __VISUVTKARADAPTOR_FIXEDINTERACTORSTYLE_HPP__
+#pragma once
+
+#include "fwRenderVTK/IInteractorStyle.hpp"
 
 #include "visuVTKARAdaptor/config.hpp"
 
@@ -26,7 +27,8 @@
  *
  *  @note All overriden methods do absolutely nothing.
  */
-class VISUVTKARADAPTOR_CLASS_API FixedInteractorStyle : public vtkInteractorStyleUser
+class VISUVTKARADAPTOR_CLASS_API FixedInteractorStyle : public vtkInteractorStyleUser,
+                                                        public ::fwRenderVTK::IInteractorStyle
 {
 
 public:
@@ -62,5 +64,3 @@ private:
     void operator=(const FixedInteractorStyle&);
 
 };
-
-#endif // __VISUVTKARADAPTOR_FIXEDINTERACTORSTYLE_HPP__
