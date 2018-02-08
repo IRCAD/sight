@@ -101,9 +101,8 @@ void SCompositorSelector::onSelectedLayerItem(int index)
     m_compositorChain->clear();
 
     // Update the current layer
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
-    // Update the layer's compositor chain
-    this->synchroniseWithLayerCompositorChain();
+    m_currentLayer         = m_layers[static_cast<size_t>(index)];
+    m_layerCompositorChain = m_currentLayer.lock()->getCompositorChain();
 
     // We need the ogre's viewport in order to add the compositors,
     // this is why we have to check the viewport's existence
@@ -162,13 +161,11 @@ void SCompositorSelector::refreshRenderers()
                                   this->getSptr(), s_INIT_COMPOSITOR_LIST_SLOT);
         }
     }
-}
 
-//------------------------------------------------------------------------------
-
-void SCompositorSelector::synchroniseWithLayerCompositorChain()
-{
-    m_layerCompositorChain = m_currentLayer.lock()->getCompositorChain();
+    if(!m_layers.empty())
+    {
+        this->onSelectedLayerItem(0);
+    }
 }
 
 //------------------------------------------------------------------------------
