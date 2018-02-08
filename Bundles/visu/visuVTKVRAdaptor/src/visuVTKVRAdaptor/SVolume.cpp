@@ -448,13 +448,15 @@ void SVolume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
 
-    this->setVtkPipelineModified();
     if(m_blendMode == "average")
     {
         //use the TF windowing min and max values to set up the average blend range
         std::pair< double, double > averageRange = this->getTransferFunction()->getWLMinMax();
         m_volumeMapper->SetAverageIPScalarRange(averageRange.first, averageRange.second);
     }
+
+    this->setVtkPipelineModified();
+
 }
 
 //------------------------------------------------------------------------------
