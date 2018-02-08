@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERVTK_IADAPTOR_HPP__
-#define __FWRENDERVTK_IADAPTOR_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/SRender.hpp"
@@ -101,17 +100,8 @@ public:
     /// End-user have to call this method when a vtk structure has been modified, thus a render request will be sent.
     FWRENDERVTK_API void setVtkPipelineModified();
 
-    /// Returns true if the service automatically triggers the rendering.
-    bool getAutoRender() const
-    {
-        return m_autoRender;
-    }
-
-    /// Sets if the service automatically triggers the rendering.
-    void setAutoRender(bool autoRender)
-    {
-        m_autoRender = autoRender;
-    }
+    /// Returns true if the service automatically triggers the rendering
+    FWRENDERVTK_API bool getAutoRender() const;
 
 protected:
 
@@ -177,10 +167,6 @@ protected:
     vtkPropCollection* m_propCollection;
 
     ::fwCom::helper::SigSlotConnection m_connections;
-
-    bool m_autoRender;
 };
 
 }
-
-#endif /*__FWRENDERVTK_IADAPTOR_HPP__*/

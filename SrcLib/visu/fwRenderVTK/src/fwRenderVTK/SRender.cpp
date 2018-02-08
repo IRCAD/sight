@@ -57,9 +57,10 @@ using namespace fwServices;
 
 namespace fwRenderVTK
 {
-const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG     = "dropped";
-const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT         = "render";
-const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT = "requestRender";
+const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG         = "dropped";
+const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT             = "render";
+const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT     = "requestRender";
+const ::fwCom::Slots::SlotKeyType SRender::s_TOGGLE_AUTO_RENDER_SLOT = "toggleAutoRender";
 
 static const ::fwServices::IService::KeyType s_OFFSCREEN_INOUT = "offScreen";
 
@@ -77,6 +78,7 @@ SRender::SRender() noexcept :
 
     newSlot(s_RENDER_SLOT, &SRender::render, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
+    newSlot(s_TOGGLE_AUTO_RENDER_SLOT, &SRender::toggleAutoRender, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -440,6 +442,24 @@ void SRender::requestRender()
         this->setPendingRenderRequest(true);
         this->slot(SRender::s_RENDER_SLOT)->asyncRun();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::toggleAutoRender()
+{
+    if(m_renderMode == RenderMode::AUTO)
+    {
+        m_renderMode = RenderMode::NONE;
+    }
+    else if(m_renderMode == RenderMode::NONE)
+    {
+        m_renderMode = RenderMode::AUTO;
+    }
+
+    auto interactor      = m_interactorManager->getInteractor()->GetInteractorStyle();
+    auto interactorStyle = dynamic_cast< IInteractorStyle* >(interactor);
+    interactorStyle->setAutoRender(m_renderMode == RenderMode::AUTO);
 }
 
 //-----------------------------------------------------------------------------

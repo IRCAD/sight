@@ -158,7 +158,6 @@ void SPointList::createServices(WeakPointListType& wPtList)
         pointAdaptor->setRenderService(this->getRenderService());
         pointAdaptor->setRendererId( this->getRendererId() );
         pointAdaptor->setPickerId( this->getPickerId() );
-        pointAdaptor->setAutoRender( this->getAutoRender() );
         pointAdaptor->start();
 
         pointAdaptor->setColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue(), m_ptColor->alpha());

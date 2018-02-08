@@ -263,7 +263,6 @@ void SLabeledPointList::updating()
 
         pointListAdaptor->setPickerId( this->getPickerId() );
         pointListAdaptor->setRenderService( this->getRenderService() );
-        pointListAdaptor->setAutoRender( this->getAutoRender() );
         pointListAdaptor->start();
 
         for( ::fwData::Point::sptr point :  landmarks->getPoints() )
@@ -273,7 +272,6 @@ void SLabeledPointList::updating()
             serviceLabel->registerInput(point, SPointLabel::s_POINT_INPUT, true);
 
             serviceLabel->setRenderService( this->getRenderService() );
-            serviceLabel->setAutoRender( this->getAutoRender() );
             serviceLabel->start();
         }
     }

@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERVTK_SRENDER_HPP__
-#define __FWRENDERVTK_SRENDER_HPP__
+#pragma once
 
 #include "fwRenderVTK/config.hpp"
 
@@ -51,6 +50,7 @@ class IVtkRenderWindowInteractorManager;
  * @section Slots Slots
  * - \b render() : render the scene
  * - \b requestRender() : request a render of the scene (call to render only if the scene is displayed)
+ * - \b toggleAutoRender() : toggle the render mode between AUTO and NONE
  *
  * @section XML XML Configuration
  *
@@ -110,6 +110,7 @@ public:
 
     FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_RENDER_SLOT;
     FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
+    FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_AUTO_RENDER_SLOT;
 
     FWRENDERVTK_API static const ::fwCom::Signals::SignalKeyType s_DROPPED_SIG;
     typedef ::fwCom::Signal< void (std::string)> DroppedSignalType;
@@ -169,8 +170,11 @@ protected:
 
 private:
 
-    /// Slot called when on each timer update
+    /// Slot: called when on each timer update
     void requestRender();
+
+    /// Slot: called to toggle the render mode between AUTO and NONE
+    void toggleAutoRender();
 
     /// Installs scene interactors
     void startContext();
@@ -246,5 +250,3 @@ inline SRender::RenderMode SRender::getRenderMode() const
 }
 
 }
-
-#endif //__FWRENDERVTK_SRENDER_HPP__

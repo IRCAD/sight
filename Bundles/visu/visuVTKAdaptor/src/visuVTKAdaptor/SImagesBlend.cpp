@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -124,13 +124,13 @@ void SImagesBlend::configuring()
 
     const ConfigType srvConfig = this->getConfigTree();
 
-    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &cfg, srvConfig.equal_range("inout"))
+    BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& cfg, srvConfig.equal_range("inout"))
     {
         const ConfigType inoutConfig = cfg.second;
         const std::string group      = inoutConfig.get<std::string>("<xmlattr>.group");
         if (group == s_IMAGE_GROUP)
         {
-            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type &v, inoutConfig.equal_range("key"))
+            BOOST_FOREACH(const ::fwServices::IService::ConfigType::value_type& v, inoutConfig.equal_range("key"))
             {
                 const ::fwServices::IService::ConfigType& specAssoc = v.second;
                 const ::fwServices::IService::ConfigType& attr      = specAssoc.get_child("<xmlattr>");
@@ -233,13 +233,13 @@ bool SImagesBlend::checkImageInformations()
 
                     OSLM_ERROR(
                         "imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<<
-                        img->getSize()[2] );
+                            img->getSize()[2] );
                     OSLM_ERROR(
                         "imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<<
-                        img->getSpacing()[2] );
+                            img->getSpacing()[2] );
                     OSLM_ERROR(
                         "imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<<
-                        img->getOrigin()[2] );
+                            img->getOrigin()[2] );
 
                     haveSameInfo = false;
                     std::string errorMsg = "Warning : images in blend have not the same";
@@ -381,7 +381,6 @@ void SImagesBlend::addImage(::fwData::Image::sptr img, ::fwData::TransferFunctio
     imageAdaptor->setRendererId( this->getRendererId() );
     imageAdaptor->setPickerId( this->getPickerId() );
     imageAdaptor->setTransformId( this->getTransformId() );
-    imageAdaptor->setAutoRender( this->getAutoRender() );
 
     imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
     imageAdaptor->setImageOpacity(info.m_imageOpacity);

@@ -86,7 +86,6 @@ void SResection::updating()
             reconstAdaptor->setRendererId( this->getRendererId() );
             reconstAdaptor->setPickerId( this->getPickerId() );
             reconstAdaptor->setRenderService(this->getRenderService());
-            reconstAdaptor->setAutoRender( this->getAutoRender() );
             if(!resectionIsValid)
             {
                 reconstAdaptor->setClippingPlanes( m_clippingPlanes );

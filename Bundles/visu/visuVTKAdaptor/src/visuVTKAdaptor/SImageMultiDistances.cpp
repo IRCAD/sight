@@ -266,7 +266,6 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         serviceDistance->setPickerId( this->getPickerId() );
         serviceDistance->setRendererId( this->getRendererId() );
         serviceDistance->setRenderService( this->getRenderService() );
-        serviceDistance->setAutoRender( this->getAutoRender() );
         serviceDistance->start();
 
         // create the srv configuration for objects auto-connection
@@ -278,7 +277,6 @@ void SImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRendererId( this->getRendererId() );
         servicePointList->setRenderService( this->getRenderService() );
-        servicePointList->setAutoRender(m_autoRender);
         servicePointList->start();
     }
 }

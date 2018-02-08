@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -74,7 +74,6 @@ void SResectionDB::updating()
         resecSrv->setRendererId( this->getRendererId() );
         resecSrv->setPickerId( this->getPickerId() );
         resecSrv->setRenderService(this->getRenderService());
-        resecSrv->setAutoRender( this->getAutoRender() );
 
         resecSrv->setClippingPlanes( m_clippingPlanes );
         resecSrv->setAutoResetCamera(m_autoResetCamera);
@@ -94,7 +93,6 @@ void SResectionDB::updating()
         service->setRendererId( this->getRendererId() );
         service->setPickerId( this->getPickerId() );
         service->setRenderService(this->getRenderService());
-        service->setAutoRender( this->getAutoRender() );
         service->setAutoResetCamera(m_autoResetCamera);
 
         service->start();

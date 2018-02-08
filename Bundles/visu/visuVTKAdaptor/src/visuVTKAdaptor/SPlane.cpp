@@ -100,7 +100,6 @@ void SPlane::starting()
         servicePoint->setRenderService(this->getRenderService());
         servicePoint->setRendererId( this->getRendererId() );
         servicePoint->setPickerId( this->getPickerId() );
-        servicePoint->setAutoRender( this->getAutoRender() );
         servicePoint->start();
 
         m_connections.connect(point, ::fwData::Object::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_POINTS_SLOT);

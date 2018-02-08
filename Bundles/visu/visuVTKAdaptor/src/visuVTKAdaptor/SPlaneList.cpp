@@ -252,7 +252,6 @@ void SPlaneList::updating()
             servicePlane->setRenderService(this->getRenderService());
             servicePlane->setRendererId(this->getRendererId());
             servicePlane->setPickerId(this->getPickerId());
-            servicePlane->setAutoRender(this->getAutoRender());
 
             if (!m_planeCollectionId.empty())
             {

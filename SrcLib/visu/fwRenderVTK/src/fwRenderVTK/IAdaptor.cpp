@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,8 +33,7 @@ IAdaptor::IAdaptor() noexcept :
     // by default no Picker
     m_transformId(""),
     // by default no Transform
-    m_propCollection( vtkPropCollection::New() ),
-    m_autoRender(true)
+    m_propCollection( vtkPropCollection::New() )
 {
 }
 
@@ -78,7 +77,6 @@ void IAdaptor::initialize()
         SLM_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
 
         ::fwRenderVTK::SRender::sptr renderService = ::fwRenderVTK::SRender::dynamicCast(*result);
-        m_autoRender                               = (renderService->getRenderMode() == SRender::RenderMode::AUTO);
         m_renderService                            = renderService;
     }
 }
@@ -109,12 +107,19 @@ void IAdaptor::setVtkPipelineModified()
 
 //------------------------------------------------------------------------------
 
+bool IAdaptor::getAutoRender() const
+{
+    return (m_renderService.lock()->getRenderMode() == SRender::RenderMode::AUTO);
+}
+
+//------------------------------------------------------------------------------
+
 void IAdaptor::requestRender()
 {
     if ( (this->getRenderService()->getStatus() == ::fwServices::IService::STARTED ||
           this->getRenderService()->getStatus() == ::fwServices::IService::SWAPPING)
          && this->getRenderService()->isShownOnScreen()
-         && m_vtkPipelineModified && m_autoRender )
+         && m_vtkPipelineModified && this->getAutoRender() )
     {
         if ( !this->getRenderService()->getPendingRenderRequest())
         {
@@ -347,4 +352,3 @@ void IAdaptor::removeAllPropFromRenderer()
 }
 
 } // namespace fwRenderVTK
-

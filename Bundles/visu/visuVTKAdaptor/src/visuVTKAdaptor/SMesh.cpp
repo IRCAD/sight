@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -286,7 +286,6 @@ public:
                 meshAdaptor->setMaterial(service->getMaterial());
                 meshAdaptor->setVtkClippingPlanes(newCollection);
                 meshAdaptor->setShowClippedPart(false);
-                meshAdaptor->setAutoRender(service->getAutoRender());
                 meshAdaptor->setTransformId(service->getTransformId());
 
                 meshAdaptor->start().wait();
@@ -527,7 +526,6 @@ void SMesh::createTransformService()
 
         transformService->setRenderService( this->getRenderService() );
         transformService->setRendererId( this->getRendererId() );
-        transformService->setAutoRender( this->getAutoRender() );
         transformService->setTransform(vtkFieldTransform);
         transformService->start();
 
@@ -599,7 +597,6 @@ void SMesh::setServiceOnMaterial(::fwRenderVTK::IAdaptor::sptr& srv, ::fwData::M
         srv->registerInput(material, SMaterial::s_MATERIAL_INPUT, true);
 
         srv->setRenderService(this->getRenderService());
-        srv->setAutoRender( this->getAutoRender() );
         srv->start();
         srv->update();
     }
@@ -649,7 +646,6 @@ void SMesh::createNormalsService()
         service->setRenderService( this->getRenderService() );
         service->setRendererId( this->getRendererId()      );
         service->setPickerId( this->getPickerId()      );
-        service->setAutoRender( this->getAutoRender()    );
         service->setPolyData( m_polyData );
         service->start();
 
@@ -1051,4 +1047,3 @@ void SMesh::updateMatrixField(::fwData::Object::FieldsContainerType fields)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-
