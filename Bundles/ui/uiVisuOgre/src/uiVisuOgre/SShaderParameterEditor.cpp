@@ -183,9 +183,7 @@ void SShaderParameterEditor::updateGuiInfo()
 
     ::fwGui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = ::fwServices::add(
-        this->getObject(), "::fwGui::editor::IEditor", "::guiQt::editor::SParameters",
-        m_editorInfo.uuid );
+    auto editorService = ::fwServices::add("::guiQt::editor::SParameters", m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
     ::fwServices::IService::ConfigType editorConfig;

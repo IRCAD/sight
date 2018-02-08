@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2018.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,6 +28,8 @@ namespace fwRenderOgre
 {
 namespace ui
 {
+
+const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
 
 //-----------------------------------------------------------------------------
 
@@ -194,21 +196,28 @@ void VRWidget::initWidgets()
 {
     // Create widget materials
     {
+        // Put those materials in a separate group so that we can't propose them as a choice for user meshes
+        auto& resourceMgr = ::Ogre::ResourceGroupManager::getSingleton();
+        if(!resourceMgr.resourceGroupExists(s_VR_MATERIALS_GROUP))
+        {
+            resourceMgr.createResourceGroup(s_VR_MATERIALS_GROUP);
+        }
+
         ::Ogre::MaterialPtr sphereMtl = ::Ogre::MaterialManager::getSingleton().getByName("Default");
-        m_sphereHighlightMtl          = sphereMtl->clone(m_id + "_SphereHighlight");
+        m_sphereHighlightMtl          = sphereMtl->clone(m_id + "_SphereHighlight", true, s_VR_MATERIALS_GROUP);
 
         m_sphereHighlightMtl->setAmbient(0.3f, 0.f, 0.f);
         m_sphereHighlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
 
-        m_frameMtl = sphereMtl->clone(m_id + "_Frame");
+        m_frameMtl = sphereMtl->clone(m_id + "_Frame", true, s_VR_MATERIALS_GROUP);
         m_frameMtl->setAmbient(1.f, 1.f, 1.f);
         m_frameMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
         m_frameMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
 
-        m_frameHighlightMtl = m_frameMtl->clone(m_id + "_FrameHighlight");
+        m_frameHighlightMtl = m_frameMtl->clone(m_id + "_FrameHighlight", true, s_VR_MATERIALS_GROUP);
         m_frameHighlightMtl->setAmbient(0.f, 1.f, 0.f);
 
-        m_faceMtl = sphereMtl->clone(m_id + "_FaceHighlight");
+        m_faceMtl = sphereMtl->clone(m_id + "_FaceHighlight", true, s_VR_MATERIALS_GROUP);
         m_faceMtl->setAmbient(1.f, 1.f, 0.f);
         m_faceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
         m_faceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);

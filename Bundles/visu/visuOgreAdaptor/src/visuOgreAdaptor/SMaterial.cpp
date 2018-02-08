@@ -69,7 +69,6 @@ SMaterial::~SMaterial() noexcept
 
 void SMaterial::createShaderParameterAdaptors()
 {
-    // We retrieve the parameters of the base material in a temporary material
     auto material = this->getMaterial();
 
     SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
@@ -294,11 +293,14 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
     {
         if (elt.first == "ogreMaterial")
         {
+            this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
+
             ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
             ::fwData::String::csptr string    = ::fwData::String::dynamicCast(elt.second);
             this->setMaterialTemplateName(string->getValue());
 
-            this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
+            m_materialFw->setTemplate(m_materialTemplateName);
+
             if(material->getField("shaderParameters"))
             {
                 material->removeField("shaderParameters");
